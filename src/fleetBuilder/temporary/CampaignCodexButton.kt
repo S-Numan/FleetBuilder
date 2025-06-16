@@ -1,19 +1,12 @@
-package fleetBuilder
+package fleetBuilder.temporary
 
-import MagicLib.Font
-import MagicLib.addButton
-import MagicLib.width
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.CutStyle
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import com.fs.starfarer.api.util.Misc
-import fleetBuilder.misc.MISC.getCodexDialog
-import fleetBuilder.misc.MISC.getCodexEntryParam
+import fleetBuilder.misc.MISC
 
 class CampaignCodexButton: EveryFrameScript {
     override fun isDone(): Boolean {
@@ -29,10 +22,13 @@ class CampaignCodexButton: EveryFrameScript {
     override fun advance(amount: Float) {
         if(!Global.getSector().isPaused) return
         if(Global.getSettings().isDevMode) {
-            val codex = getCodexDialog()
+            val codex = MISC.getCodexDialog()
             if(codex == null) return
+            val codexPanelChild = codex.childrenCopy[0]
+            //codex.opacity = 1f
+            //val uiFields = codex.getFieldsMatching(fieldAssignableTo = UIPanelAPI::class.java)
 
-            if(buttonThing == null) {
+            /*if(buttonThing == null) {
                 buttonThing = codex.addButton(
                     "Atatata",
                     null,
@@ -43,17 +39,17 @@ class CampaignCodexButton: EveryFrameScript {
                     Font.ORBITRON_20,
                     25f, 25f
                 ) as UIPanelAPI?
-            }
+            }*/
 
-            val param = getCodexEntryParam(codex)
+            val param = MISC.getCodexEntryParam(codex)
             if(param == null) return
 
             val shipHull = param as? ShipHullSpecAPI
             val fleetMember = param as? FleetMemberAPI
 
-            if(shipHull != null || fleetMember != null) {
+            //if(shipHull != null || fleetMember != null) {
                 var exists = false
-                val children = codex.childrenCopy as List<UIComponentAPI>
+                val children = codex.getChildrenCopy() as List<UIComponentAPI>
                 children.forEach { child ->
                     if(child === buttonThing) {
                         exists = true
@@ -62,7 +58,7 @@ class CampaignCodexButton: EveryFrameScript {
                 if(!exists) {
 
                 }
-            }
+            //}
             /*
             if (shipHull != null) {
                 val emptyVariant = Global.getSettings().createEmptyVariant(shipHull.hullId, shipHull)

@@ -219,8 +219,7 @@ object MISC {
             if(fleetTab != null)
                 fleetPanel = fleetTab.invoke("getFleetPanel") as? UIPanelAPI
         } catch (_: Exception) {}
-        if(fleetPanel != null)
-            fleetPanel.invoke("updateListContents")
+        fleetPanel?.invoke("updateListContents")
     }
 
     fun onGameLoad(newGame: Boolean) {
