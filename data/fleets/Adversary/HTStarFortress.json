@@ -1,0 +1,353 @@
+{
+    "aggression_doctrine": 5,
+    "commander": {
+        "first": "Ayu",
+        "gender": "FEMALE",
+        "last": "Tambo",
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_league10.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {},
+        "tags": []
+    },
+    "fleetName": "Isin Station",
+    "members": [{
+        "cr": 0.975,
+        "name": "Isin Station",
+        "officer": {
+            "aicoreid": "alpha_core",
+            "first": "Alpha Core",
+            "gender": "ANY",
+            "last": "",
+            "personality": "reckless",
+            "portrait": "graphics/portraits/portrait_ai2b.png",
+            "rank": "spaceCaptain",
+            "skills": {
+                "combat_endurance": 2,
+                "damage_control": 2,
+                "field_modulation": 2,
+                "gunnery_implants": 2,
+                "helmsmanship": 2,
+                "impact_mitigation": 2,
+                "target_analysis": 2
+            },
+            "tags": []
+        },
+        "variantId": "319a_0"
+    }],
+    "variants": [{
+        "displayName": "Star Fortress",
+        "fluxCapacitors": 0,
+        "fluxVents": 0,
+        "hullId": "station3_hightech",
+        "hullMods": [],
+        "moduleVariants": {
+            "WS 000": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_hightech_shield",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_hightech_shield_Standard_5",
+                "weaponGroups": []
+            },
+            "WS 001": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_hightech_shield",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_hightech_shield_Standard_6",
+                "weaponGroups": []
+            },
+            "WS 002": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_hightech_hangar",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_hightech_hangar_Standard_3",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "irautolance",
+                            "WS 005": "irautolance"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 002": "phasebeam",
+                            "WS 003": "phasebeam"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 001": "pdlaser",
+                            "WS 004": "pdlaser"
+                        }
+                    }
+                ],
+                "wings": [
+                    "cobra_wing",
+                    "cobra_wing",
+                    "trident_wing",
+                    "trident_wing"
+                ]
+            },
+            "WS 003": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_hightech_attack_minelayer",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_hightech_attack_minelayer_Standard_7",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "tachyonlance",
+                            "WS 002": "tachyonlance"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 001": "ionpulser",
+                            "WS 009": "ioncannon",
+                            "WS 010": "ioncannon"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 003": "gravitonbeam",
+                            "WS 006": "gravitonbeam"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 004": "ionbeam",
+                            "WS 005": "ionbeam"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 008": "pdlaser",
+                            "WS 011": "pdlaser"
+                        }
+                    }
+                ]
+            },
+            "WS 004": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_hightech_attack_minelayer",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_hightech_attack_minelayer_Standard_8",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "plasma",
+                            "WS 002": "plasma"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 001": "ionpulser",
+                            "WS 009": "irpulse",
+                            "WS 010": "ioncannon"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 003": "gravitonbeam",
+                            "WS 006": "gravitonbeam"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 004": "ionbeam",
+                            "WS 005": "ionbeam"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 008": "lrpdlaser"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 011": "pdlaser"}
+                    }
+                ]
+            },
+            "WS 005": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_hightech_armour",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_hightech_armour_Standard_9",
+                "weaponGroups": []
+            },
+            "WS 006": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_hightech_strut",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_hightech_strut_Standard_10",
+                "weaponGroups": []
+            },
+            "WS 007": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_hightech_citadel",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_hightech_citadel_Standard_4",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "plasma",
+                            "WS 001": "plasma"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS 010": "harpoonpod",
+                            "WS 012": "harpoonpod"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 006": "irpulse"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 002": "gravitonbeam",
+                            "WS 003": "gravitonbeam"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 008": "lrpdlaser"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 004": "pdlaser"}
+                    }
+                ]
+            },
+            "WS 008": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_hightech_strut",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_hightech_strut_Standard_11",
+                "weaponGroups": []
+            },
+            "WS 009": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_blocker2c",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_blocker2c_Standard_0",
+                "weaponGroups": []
+            },
+            "WS 010": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_blocker2c",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_blocker2c_Standard_1",
+                "weaponGroups": []
+            },
+            "WS 011": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_blocker2c",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_blocker2c_Standard_2",
+                "weaponGroups": []
+            }
+        },
+        "permaMods": [],
+        "sMods": [],
+        "variantId": "319a_0",
+        "weaponGroups": []
+    }]
+}

@@ -1,0 +1,578 @@
+{
+    "aggression_doctrine": 5,
+    "commander": {
+        "first": "Sim",
+        "gender": "FEMALE",
+        "last": "Henderson",
+        "member": {
+            "cr": 0.84999996,
+            "name": "Moloch's Bane",
+            "variantId": "adversary_prometheus2_Assault"
+        },
+        "personality": "reckless",
+        "portrait": "graphics/portraits/portrait_luddic03.png",
+        "post": "agent",
+        "rank": "spaceCommander",
+        "skills": {
+            "carrier_group": 1,
+            "combat_endurance": 2,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "damage_control": 2,
+            "electronic_warfare": 1,
+            "flux_regulation": 1,
+            "gunnery_implants": 2,
+            "impact_mitigation": 2,
+            "missile_specialization": 2,
+            "navigation": 1,
+            "point_defense": 2,
+            "support_doctrine": 1,
+            "tactical_drills": 1
+        },
+        "tags": []
+    },
+    "fleetName": "Adversary Righteous Flotilla",
+    "members": [
+        {
+            "cr": 0.7,
+            "name": "Blood of Martyrs",
+            "officer": {
+                "first": "Cleophas",
+                "gender": "FEMALE",
+                "last": "Bowers",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic08.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_prometheus2_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "Inferno-for-heresy",
+            "officer": {
+                "first": "Blair",
+                "gender": "FEMALE",
+                "last": "Landry",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait27.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_prometheus2_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "Hammer of Ludd",
+            "officer": {
+                "first": "Adewale",
+                "gender": "MALE",
+                "last": "Vinson",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait15.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_prometheus2_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "Azrael",
+            "officer": {
+                "first": "Ulag",
+                "gender": "MALE",
+                "last": "Shriver",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic13.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_prometheus2_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "Hayot Ha Kodesh",
+            "officer": {
+                "first": "Nadya",
+                "gender": "FEMALE",
+                "last": "Vegan",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic11.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_prometheus2_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "Hashmallim",
+            "officer": {
+                "first": "Moussa",
+                "gender": "MALE",
+                "last": "Alcor",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic02.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_prometheus2_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "Purgatory",
+            "officer": {
+                "first": "Azariah",
+                "gender": "MALE",
+                "last": "Singh",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic00.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_prometheus2_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "Burnt Offering",
+            "officer": {
+                "first": "Voronya",
+                "gender": "FEMALE",
+                "last": "Gagne",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic03.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_prometheus2_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "Gehenna",
+            "variantId": "adversary_venture_pather_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "Excommunication",
+            "variantId": "adversary_venture_pather_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "Bene Elohim",
+            "variantId": "adversary_venture_pather_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "Hashmallim",
+            "variantId": "adversary_venture_pather_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "Zealot",
+            "variantId": "adversary_venture_pather_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "Hafaza",
+            "variantId": "adversary_venture_pather_Assault"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Torment",
+            "variantId": "adversary_colossus2_Strike"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Azazel",
+            "variantId": "adversary_colossus2_Strike"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Burnt Offering",
+            "variantId": "adversary_colossus2_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "Ophanim",
+            "variantId": "adversary_manticore_luddic_path_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "Humble Submission",
+            "variantId": "adversary_manticore_luddic_path_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "Bene Elohim",
+            "variantId": "adversary_manticore_luddic_path_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "Zulif",
+            "variantId": "adversary_manticore_luddic_path_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "Raphael",
+            "variantId": "adversary_manticore_luddic_path_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "Torment",
+            "variantId": "adversary_manticore_luddic_path_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "Zulif",
+            "variantId": "adversary_brawler_pather_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "All Is Taken",
+            "variantId": "adversary_brawler_pather_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "Adriel",
+            "variantId": "adversary_brawler_pather_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "Keter",
+            "variantId": "adversary_brawler_pather_Assault"
+        },
+        {
+            "cr": 1,
+            "name": "Divine Judgement",
+            "variantId": "adversary_gremlin_luddic_path_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "Raphael",
+            "variantId": "adversary_gremlin_luddic_path_Strike"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 23,
+            "fluxVents": 26,
+            "hullId": "prometheus2",
+            "hullMods": [
+                "targetingunit",
+                "reinforcedhull",
+                "armoredweapons",
+                "heavyarmor"
+            ],
+            "permaMods": [
+                "targetingunit",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "targetingunit",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_prometheus2_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 031": "gigacannon"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 019": "dragonpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "lightac",
+                        "WS 004": "heavymg",
+                        "WS 005": "heavymg",
+                        "WS 013": "lightac",
+                        "WS 014": "lightac",
+                        "WS 032": "guardian"
+                    }
+                }
+            ],
+            "wings": [
+                "xyphos_wing",
+                "xyphos_wing"
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 6,
+            "fluxVents": 13,
+            "hullId": "venture_pather",
+            "hullMods": [
+                "heavyarmor",
+                "missile_autoloader",
+                "armoredweapons",
+                "missleracks",
+                "militarized_subsystems",
+                "reinforcedhull"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "missile_autoloader"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "missile_autoloader"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_venture_pather_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 005": "phasecl",
+                        "WS 006": "phasecl"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "reaper",
+                        "WS 007": "reaper"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "kineticblaster"}
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 6,
+            "fluxVents": 0,
+            "hullId": "colossus2",
+            "hullMods": [
+                "missleracks",
+                "heavyarmor",
+                "armoredweapons",
+                "autorepair",
+                "reinforcedhull"
+            ],
+            "permaMods": [
+                "missleracks",
+                "heavyarmor"
+            ],
+            "sMods": [
+                "missleracks",
+                "heavyarmor"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_colossus2_Strike",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "lightac",
+                        "WS 014": "lightac",
+                        "WS 015": "lightac",
+                        "WS 016": "lightac"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 017": "hammerrack"}
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 20,
+            "fluxVents": 6,
+            "hullId": "manticore_luddic_path",
+            "hullMods": [
+                "missleracks",
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "permaMods": [
+                "missleracks",
+                "heavyarmor"
+            ],
+            "sMods": [
+                "missleracks",
+                "heavyarmor"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_manticore_luddic_path_Strike",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "heavymortar",
+                        "WS 005": "heavymortar"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "dragonpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightdualac",
+                        "WS 002": "lightdualac",
+                        "WS 003": "lightdualac"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 10,
+            "fluxVents": 8,
+            "hullId": "brawler_pather",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "hardened_subsystems"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "hardened_subsystems"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "hardened_subsystems"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_brawler_pather_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "chaingun"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "ioncannon",
+                        "WS 004": "ioncannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavymg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 8,
+            "fluxVents": 0,
+            "hullId": "gremlin_luddic_path",
+            "hullMods": [
+                "missleracks",
+                "heavyarmor",
+                "adaptive_coils",
+                "armoredweapons",
+                "hardened_subsystems",
+                "reinforcedhull"
+            ],
+            "permaMods": [
+                "missleracks",
+                "heavyarmor"
+            ],
+            "sMods": [
+                "missleracks",
+                "heavyarmor"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_gremlin_luddic_path_Strike",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 000": "mininglaser",
+                    "WS 002": "gorgon",
+                    "WS 003": "gorgon"
+                }
+            }]
+        }
+    ]
+}

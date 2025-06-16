@@ -1,0 +1,403 @@
+{
+    "aggression_doctrine": 3,
+    "commander": {
+        "aicoreid": "alpha_core",
+        "first": "Alpha Core",
+        "gender": "ANY",
+        "last": "",
+        "member": {
+            "cr": 0.7,
+            "name": "TTDS Risk Accretion",
+            "variantId": "remnant_station2_Standard"
+        },
+        "personality": "reckless",
+        "portrait": "graphics/portraits/portrait_ai2b.png",
+        "rank": "spaceCaptain",
+        "skills": {
+            "coordinated_maneuvers": 1,
+            "damage_control": 2,
+            "energy_weapon_mastery": 2,
+            "field_modulation": 2,
+            "flux_regulation": 1,
+            "gunnery_implants": 2,
+            "helmsmanship": 2,
+            "impact_mitigation": 2,
+            "polarized_armor": 2,
+            "target_analysis": 2
+        },
+        "tags": []
+    },
+    "fleetName": "Nexus",
+    "members": [],
+    "variants": [{
+        "displayName": "Standard",
+        "fluxCapacitors": 0,
+        "fluxVents": 0,
+        "hullId": "remnant_station2",
+        "hullMods": [],
+        "moduleVariants": {
+            "WS 001": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_weapon_platform1",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_weapon_platform1_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {"WS 004": "squall"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 001": "hil"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 002": "gauss"}
+                    }
+                ]
+            },
+            "WS 007": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_weapon_platform1",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_weapon_platform1_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {"WS 004": "squall"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 001": "hil"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 002": "gauss"}
+                    }
+                ]
+            },
+            "WS 016": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_weapon_platform1",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_weapon_platform1_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {"WS 004": "squall"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 001": "hil"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 002": "gauss"}
+                    }
+                ]
+            },
+            "WS 024": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "remnant_armour3",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_armour3_Standard",
+                "weaponGroups": []
+            },
+            "WS 027": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "remnant_armour3",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_armour3_Standard",
+                "weaponGroups": []
+            },
+            "WS 030": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "remnant_armour3",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_armour3_Standard",
+                "weaponGroups": []
+            },
+            "WS 032": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_shield2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_shield2_Standard",
+                "weaponGroups": [{
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "guardian",
+                        "WS 002": "guardian"
+                    }
+                }]
+            },
+            "WS 033": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_shield2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_shield2_Standard",
+                "weaponGroups": [{
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "guardian",
+                        "WS 002": "guardian"
+                    }
+                }]
+            },
+            "WS 034": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_shield2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_shield2_Standard",
+                "weaponGroups": [{
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "guardian",
+                        "WS 002": "guardian"
+                    }
+                }]
+            },
+            "WS 035": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_weapon_platform2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_weapon_platform2_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {"WS 002": "autopulse"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 006": "pdburst",
+                            "WS 007": "pdburst"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 003": "pulselaser",
+                            "WS 004": "ionpulser"
+                        }
+                    }
+                ]
+            },
+            "WS 036": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_weapon_platform2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_weapon_platform2_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {"WS 002": "autopulse"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 006": "pdburst",
+                            "WS 007": "pdburst"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 003": "pulselaser",
+                            "WS 004": "ionpulser"
+                        }
+                    }
+                ]
+            },
+            "WS 037": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_weapon_platform2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_weapon_platform2_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {"WS 002": "autopulse"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 006": "pdburst",
+                            "WS 007": "pdburst"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 003": "pulselaser",
+                            "WS 004": "ionpulser"
+                        }
+                    }
+                ]
+            },
+            "WS 038": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_weapon_platform2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_weapon_platform2_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {"WS 002": "autopulse"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 006": "pdburst",
+                            "WS 007": "pdburst"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 003": "pulselaser",
+                            "WS 004": "ionpulser"
+                        }
+                    }
+                ]
+            },
+            "WS 039": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_hangar1",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_hangar1_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 001": "pulselaser",
+                            "WS 002": "pulselaser"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 004": "pdlaser",
+                            "WS 005": "pdlaser"
+                        }
+                    }
+                ],
+                "wings": [
+                    "lux_wing",
+                    "spark_wing",
+                    "spark_wing"
+                ]
+            },
+            "WS 040": {
+                "displayName": "Strike",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "remnant_hangar1",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "remnant_hangar1_Strike",
+                "weaponGroups": [{
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pulselaser",
+                        "WS 002": "pulselaser",
+                        "WS 004": "pdlaser",
+                        "WS 005": "pdlaser"
+                    }
+                }],
+                "wings": [
+                    "lux_wing",
+                    "flash_wing",
+                    "flash_wing"
+                ]
+            }
+        },
+        "permaMods": [],
+        "sMods": [],
+        "variantId": "remnant_station2_Standard",
+        "weaponGroups": []
+    }]
+}

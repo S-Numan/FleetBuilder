@@ -1,0 +1,705 @@
+{
+    "aggression_doctrine": 4,
+    "commander": {
+        "first": "Kianna",
+        "gender": "FEMALE",
+        "last": "Spacewalker",
+        "member": {
+            "cr": 1,
+            "name": "Death Star",
+            "variantId": "adversary_station3_midline_Elite"
+        },
+        "personality": "reckless",
+        "portrait": "graphics/portraits/portrait27.png",
+        "post": "warlord",
+        "rank": "pilot",
+        "skills": {
+            "ballistic_mastery": 2,
+            "combat_endurance": 2,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "damage_control": 2,
+            "energy_weapon_mastery": 2,
+            "field_modulation": 2,
+            "gunnery_implants": 2,
+            "helmsmanship": 2,
+            "impact_mitigation": 2,
+            "missile_specialization": 2,
+            "ordnance_expert": 2,
+            "point_defense": 2,
+            "polarized_armor": 2,
+            "systems_expertise": 2,
+            "target_analysis": 2
+        },
+        "tags": []
+    },
+    "fleetName": "Suspicious Station",
+    "members": [
+        {
+            "cr": 0.84999996,
+            "name": "Tyrfing",
+            "officer": {
+                "first": "Chiron",
+                "gender": "MALE",
+                "last": "Shrial",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "coordinated_maneuvers": 1,
+                    "crew_training": 1,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "ordnance_expert": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 1,
+            "name": "Strix",
+            "officer": {
+                "first": "Delga",
+                "gender": "FEMALE",
+                "last": "Rusa",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait39.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "systems_expertise": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 1,
+            "name": "Shift Enduring",
+            "officer": {
+                "first": "Themis",
+                "gender": "FEMALE",
+                "last": "Kirkland",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait29.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 2,
+                    "missile_specialization": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Kraken",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Gullveig",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Rigel Flyer",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Vidar",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Anann",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Jolly Skull",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Blackhat",
+            "officer": {
+                "first": "Dysnomia",
+                "gender": "FEMALE",
+                "last": "Mesec",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait39.png",
+                "skills": {
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 1,
+            "name": "Interstellar Rain",
+            "officer": {
+                "first": "Yurania",
+                "gender": "FEMALE",
+                "last": "Urania",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Behemoth",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperspace Dreaming",
+            "officer": {
+                "first": "Escape Pod",
+                "gender": "FEMALE",
+                "last": "Hopkins",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Chalmecatl",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 1,
+            "name": "Bebhionn",
+            "officer": {
+                "first": "Vach",
+                "gender": "MALE",
+                "last": "Jacquard",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "point_defense": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Midnight Rider",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Xiuhcoatl",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Steel Tomb",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Chalmecatl",
+            "officer": {
+                "first": "Fourth",
+                "gender": "MALE",
+                "last": "Eulalia",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate10.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Tengu",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Ant",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Kraken",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Badmark",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Caloris Born",
+            "officer": {
+                "first": "Boyana",
+                "gender": "FEMALE",
+                "last": "Quoin",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate09.png",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "missile_specialization": 1,
+                    "point_defense": 1,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vanguard_pirates_DIE"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Behemoth",
+            "variantId": "adversary_vanguard_pirates_DIE"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Star Fortress",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "station3_midline",
+            "hullMods": [],
+            "moduleVariants": {
+                "WS 002": {
+                    "displayName": "Elite",
+                    "fluxCapacitors": 10,
+                    "fluxVents": 10,
+                    "hullId": "module_midline_support",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "adversary_module_midline_support_Elite",
+                    "weaponGroups": [{
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "jackhammer",
+                            "WS 001": "jackhammer",
+                            "WS 002": "jackhammer",
+                            "WS 003": "jackhammer",
+                            "WS 004": "sabot",
+                            "WS 005": "sabot",
+                            "WS 006": "lightneedler",
+                            "WS 007": "lightneedler",
+                            "WS 008": "sabot",
+                            "WS 009": "sabot"
+                        }
+                    }],
+                    "wings": [
+                        "trident_wing",
+                        "trident_wing",
+                        "trident_wing",
+                        "trident_wing"
+                    ]
+                },
+                "WS 003": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_blocker2b",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_blocker2b_Standard",
+                    "weaponGroups": []
+                },
+                "WS 004": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_blocker2b",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_blocker2b_Standard",
+                    "weaponGroups": []
+                },
+                "WS 005": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_blocker2b",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_blocker2b_Standard",
+                    "weaponGroups": []
+                },
+                "WS 006": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_blocker2b",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_blocker2b_Standard",
+                    "weaponGroups": []
+                },
+                "WS 007": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_decor_midline1",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_decor_midline1_Standard",
+                    "weaponGroups": []
+                },
+                "WS 008": {
+                    "displayName": "Elite",
+                    "fluxCapacitors": 10,
+                    "fluxVents": 10,
+                    "hullId": "module_midline_bastion",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "adversary_module_midline_bastion_Elite",
+                    "weaponGroups": [{
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "heavymg",
+                            "WS 001": "hammerrack",
+                            "WS 002": "hammerrack",
+                            "WS 003": "heavymg",
+                            "WS 005": "lightneedler",
+                            "WS 006": "lightneedler",
+                            "WS 007": "lightneedler"
+                        }
+                    }]
+                },
+                "WS 009": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_decor_midline1",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_decor_midline1_Standard",
+                    "weaponGroups": []
+                },
+                "WS 010": {
+                    "displayName": "Elite",
+                    "fluxCapacitors": 10,
+                    "fluxVents": 10,
+                    "hullId": "module_midline_bastion",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "adversary_module_midline_bastion_Elite",
+                    "weaponGroups": [{
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "heavymg",
+                            "WS 001": "hammerrack",
+                            "WS 002": "hammerrack",
+                            "WS 003": "heavymg",
+                            "WS 005": "lightneedler",
+                            "WS 006": "lightneedler",
+                            "WS 007": "lightneedler"
+                        }
+                    }]
+                },
+                "WS 011": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour2",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour2_Standard",
+                    "weaponGroups": []
+                },
+                "WS 012": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour2",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour2_Standard",
+                    "weaponGroups": []
+                },
+                "WS 013": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour1",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour1_Standard",
+                    "weaponGroups": []
+                },
+                "WS 014": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour1",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour1_Standard",
+                    "weaponGroups": []
+                },
+                "WS 015": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_decor_midline2",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_decor_midline2_Standard",
+                    "weaponGroups": []
+                },
+                "WS 016": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour2",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour2_Standard",
+                    "weaponGroups": []
+                },
+                "WS 017": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour2",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour2_Standard",
+                    "weaponGroups": []
+                },
+                "WS 018": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour2",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour2_Standard",
+                    "weaponGroups": []
+                },
+                "WS 019": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour1",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour1_Standard",
+                    "weaponGroups": []
+                },
+                "WS 020": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour1",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour1_Standard",
+                    "weaponGroups": []
+                },
+                "WS 021": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour1",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour1_Standard",
+                    "weaponGroups": []
+                },
+                "WS 022": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour1",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour1_Standard",
+                    "weaponGroups": []
+                },
+                "WS 023": {
+                    "displayName": "Elite",
+                    "fluxCapacitors": 10,
+                    "fluxVents": 10,
+                    "hullId": "module_midline_broadside",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "adversary_module_midline_broadside_Elite",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS 000": "hephag",
+                                "WS 004": "hephag",
+                                "WS 008": "hephag"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS 001": "multineedler",
+                                "WS 002": "multineedler",
+                                "WS 003": "multineedler",
+                                "WS 005": "multineedler",
+                                "WS 006": "multineedler",
+                                "WS 007": "multineedler"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS 010": "irautolance",
+                                "WS 015": "irautolance"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS 012": "irautolance",
+                                "WS 013": "irautolance"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS 011": "irautolance",
+                                "WS 014": "irautolance",
+                                "WS 016": "vulcan",
+                                "WS 017": "vulcan",
+                                "WS 018": "vulcan",
+                                "WS 019": "vulcan",
+                                "WS 020": "vulcan",
+                                "WS 021": "vulcan",
+                                "WS 022": "vulcan"
+                            }
+                        }
+                    ]
+                },
+                "WS 024": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_armour2",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_armour2_Standard",
+                    "weaponGroups": []
+                }
+            },
+            "permaMods": [],
+            "sMods": [],
+            "variantId": "adversary_station3_midline_Elite",
+            "weaponGroups": []
+        },
+        {
+            "displayName": "DIE",
+            "fluxCapacitors": 0,
+            "fluxVents": 9,
+            "hullId": "vanguard_pirates",
+            "hullMods": [
+                "missleracks",
+                "reinforcedhull",
+                "armoredweapons",
+                "auxiliarythrusters",
+                "heavyarmor",
+                "insulatedengine",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "missleracks",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "missleracks",
+                "reinforcedhull"
+            ],
+            "variantId": "adversary_vanguard_pirates_DIE",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 000": "hammer",
+                    "WS 001": "hammer",
+                    "WS 002": "hammer",
+                    "WS 003": "vulcan",
+                    "WS 004": "vulcan",
+                    "WS 005": "railgun",
+                    "WS 006": "railgun",
+                    "WS 007": "lightmortar"
+                }
+            }]
+        }
+    ]
+}

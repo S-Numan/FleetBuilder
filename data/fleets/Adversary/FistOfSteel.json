@@ -1,0 +1,813 @@
+{
+    "aggression_doctrine": 3,
+    "commander": {
+        "first": "Wyatt",
+        "gender": "MALE",
+        "last": "Seamons",
+        "member": {
+            "cr": 0.91999996,
+            "name": "HSS Warrior's Spirit",
+            "variantId": "adversary_legion_xiv_Armored"
+        },
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_hegemony12.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "best_of_the_best": 1,
+            "combat_endurance": 2,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "damage_control": 2,
+            "electronic_warfare": 1,
+            "flux_regulation": 1,
+            "gunnery_implants": 2,
+            "impact_mitigation": 2,
+            "navigation": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "support_doctrine": 1,
+            "tactical_drills": 1
+        },
+        "tags": []
+    },
+    "fleetName": "The Fist of Steel",
+    "members": [
+        {
+            "cr": 0.91999996,
+            "name": "HSS Chicomoztoc Metroplex IIIL",
+            "officer": {
+                "first": "Hera",
+                "gender": "FEMALE",
+                "last": "Dysnomia",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_onslaught_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Vengeance",
+            "officer": {
+                "first": "Vania",
+                "gender": "FEMALE",
+                "last": "Hebe",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_onslaught_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Messene",
+            "officer": {
+                "first": "Light",
+                "gender": "FEMALE",
+                "last": "Cinnabar",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_hegemony11.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_onslaught_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Forgive Us Enos",
+            "officer": {
+                "first": "Zero",
+                "gender": "MALE",
+                "last": "Owens",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_onslaught_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Rigel Flyer",
+            "officer": {
+                "first": "Ganymede",
+                "gender": "MALE",
+                "last": "Farrell",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_dominator_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Corus",
+            "officer": {
+                "first": "Chase",
+                "gender": "FEMALE",
+                "last": "Benson",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait22.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_dominator_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Bright Spark",
+            "officer": {
+                "first": "Gabriela",
+                "gender": "FEMALE",
+                "last": "Marks",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_dominator_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Herulus",
+            "officer": {
+                "first": "Alastair",
+                "gender": "MALE",
+                "last": "McCray",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_dominator_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Red Dwarf",
+            "officer": {
+                "first": "Yurania",
+                "gender": "FEMALE",
+                "last": "Quell",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_dominator_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Favonius",
+            "officer": {
+                "first": "Volna",
+                "gender": "FEMALE",
+                "last": "Whitfield",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_dominator_xiv_Armored"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Sergestus",
+            "variantId": "adversary_eagle_xiv_Overdriven"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Vindicator",
+            "variantId": "adversary_eagle_xiv_Overdriven"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Caeculus",
+            "variantId": "adversary_eagle_xiv_Overdriven"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Duellona",
+            "variantId": "adversary_eagle_xiv_Overdriven"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Portunes",
+            "variantId": "adversary_falcon_xiv_Overdriven"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Skiron",
+            "variantId": "adversary_falcon_xiv_Overdriven"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Advantage",
+            "variantId": "adversary_falcon_xiv_Overdriven"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Tireless",
+            "variantId": "adversary_falcon_xiv_Overdriven"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Prize of High Orbit",
+            "variantId": "adversary_enforcer_xiv_Escort"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Undaunted",
+            "variantId": "adversary_enforcer_xiv_Escort"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Monkey Tank",
+            "variantId": "adversary_enforcer_xiv_Escort"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Indefatigable",
+            "variantId": "adversary_enforcer_xiv_Escort"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Pandora",
+            "variantId": "adversary_enforcer_xiv_Escort"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Azimuth",
+            "variantId": "adversary_enforcer_xiv_Escort"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Laputan Machine",
+            "variantId": "adversary_hound_hegemony_Support"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Mercury",
+            "variantId": "adversary_hound_hegemony_Support"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Carcinus",
+            "variantId": "adversary_hound_hegemony_Support"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Bright Burn",
+            "variantId": "adversary_hound_hegemony_Support"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "HSS Feather of the Phoenix",
+            "variantId": "adversary_hound_hegemony_Support"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Armored",
+            "fluxCapacitors": 1,
+            "fluxVents": 50,
+            "hullId": "onslaught_xiv",
+            "hullMods": [
+                "turretgyros",
+                "autorepair",
+                "shield_shunt",
+                "armoredweapons",
+                "blast_doors",
+                "heavyarmor",
+                "insulatedengine",
+                "pointdefenseai",
+                "targetingunit",
+                "reinforcedhull",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "turretgyros",
+                "autorepair",
+                "shield_shunt"
+            ],
+            "sMods": [
+                "turretgyros",
+                "autorepair",
+                "shield_shunt"
+            ],
+            "variantId": "adversary_onslaught_xiv_Armored",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 016": "tpc",
+                        "WS 017": "tpc"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 018": "devastator"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 019": "devastator"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 020": "devastator"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 021": "salamanderpod",
+                        "WS 022": "salamanderpod",
+                        "WS 023": "salamanderpod",
+                        "WS 024": "salamanderpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heavymg",
+                        "WS 002": "vulcan",
+                        "WS 003": "heavymg",
+                        "WS 004": "vulcan",
+                        "WS 005": "vulcan",
+                        "WS 006": "vulcan",
+                        "WS 007": "heavymg",
+                        "WS 008": "vulcan",
+                        "WS 009": "vulcan",
+                        "WS 010": "heavymg",
+                        "WS 011": "heavymg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 012": "lightac",
+                        "WS 013": "lightac",
+                        "WS 014": "lightac",
+                        "WS 015": "lightac"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Armored",
+            "fluxCapacitors": 0,
+            "fluxVents": 2,
+            "hullId": "legion_xiv",
+            "hullMods": [
+                "defensive_targeting_array",
+                "reinforcedhull",
+                "shield_shunt",
+                "armoredweapons",
+                "autorepair",
+                "blast_doors",
+                "heavyarmor",
+                "insulatedengine",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "defensive_targeting_array",
+                "reinforcedhull",
+                "shield_shunt"
+            ],
+            "sMods": [
+                "defensive_targeting_array",
+                "reinforcedhull",
+                "shield_shunt"
+            ],
+            "variantId": "adversary_legion_xiv_Armored",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "heavymauler",
+                        "WS 003": "heavymauler",
+                        "WS 004": "heavymauler",
+                        "WS 005": "heavymauler",
+                        "WS 007": "heavymauler"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "locust",
+                        "WS 001": "locust"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 018": "lightdualac",
+                        "WS 019": "lightdualac",
+                        "WS 020": "lightdualac",
+                        "WS 021": "lightdualac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "vulcan",
+                        "WS 009": "vulcan"
+                    }
+                }
+            ],
+            "wings": [
+                "sarissa_wing",
+                "sarissa_wing",
+                "sarissa_wing",
+                "xyphos_wing"
+            ]
+        },
+        {
+            "displayName": "Armored",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "dominator_xiv",
+            "hullMods": [
+                "autorepair",
+                "reinforcedhull",
+                "shield_shunt",
+                "armoredweapons",
+                "auxiliarythrusters",
+                "blast_doors",
+                "heavyarmor",
+                "insulatedengine",
+                "pointdefenseai",
+                "targetingunit",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "autorepair",
+                "reinforcedhull",
+                "shield_shunt"
+            ],
+            "sMods": [
+                "autorepair",
+                "reinforcedhull",
+                "shield_shunt"
+            ],
+            "variantId": "adversary_dominator_xiv_Armored",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "vulcan",
+                        "WS 005": "vulcan",
+                        "WS 012": "multineedler"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 014": "phasecl",
+                        "WS 015": "phasecl",
+                        "WS 016": "phasecl"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 013": "hephag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "mininglaser",
+                        "WS 002": "mininglaser",
+                        "WS 004": "mininglaser",
+                        "WS 006": "mininglaser",
+                        "WS 007": "mininglaser",
+                        "WS 008": "mininglaser",
+                        "WS 009": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "flak",
+                        "WS 011": "flak"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 21,
+            "fluxVents": 6,
+            "hullId": "eagle_xiv",
+            "hullMods": [
+                "magazines",
+                "hardenedshieldemitter",
+                "reinforcedhull",
+                "safetyoverrides"
+            ],
+            "permaMods": [
+                "magazines",
+                "hardenedshieldemitter",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "magazines",
+                "hardenedshieldemitter",
+                "reinforcedhull"
+            ],
+            "variantId": "adversary_eagle_xiv_Overdriven",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "ionpulser",
+                        "WS 006": "ionpulser",
+                        "WS 009": "miningblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "breach",
+                        "WS 002": "breach"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "heavymg",
+                        "WS 008": "heavymg",
+                        "WS 013": "heavymg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "mininglaser",
+                        "WS 004": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "pdburst",
+                        "WS 011": "pdburst",
+                        "WS 012": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 15,
+            "fluxVents": 9,
+            "hullId": "falcon_xiv",
+            "hullMods": [
+                "magazines",
+                "hardenedshieldemitter",
+                "reinforcedhull",
+                "safetyoverrides"
+            ],
+            "permaMods": [
+                "magazines",
+                "hardenedshieldemitter",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "magazines",
+                "hardenedshieldemitter",
+                "reinforcedhull"
+            ],
+            "variantId": "adversary_falcon_xiv_Overdriven",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "ionpulser",
+                        "WS 006": "miningblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "breach",
+                        "WS 002": "breach"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "heavymg",
+                        "WS 008": "heavymg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "mininglaser",
+                        "WS 004": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "pdburst",
+                        "WS 010": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Escort",
+            "fluxCapacitors": 17,
+            "fluxVents": 16,
+            "hullId": "enforcer_xiv",
+            "hullMods": [
+                "escort_package",
+                "heavyarmor",
+                "reinforcedhull",
+                "armoredweapons",
+                "hardenedshieldemitter",
+                "pointdefenseai",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "escort_package",
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "escort_package",
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "variantId": "adversary_enforcer_xiv_Escort",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "swarmer",
+                        "WS 009": "swarmer"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "breach",
+                        "WS 008": "breach"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightneedler",
+                        "WS 003": "lightneedler",
+                        "WS 004": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "flak",
+                        "WS 005": "flak"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 1,
+            "hullId": "hound_hegemony",
+            "hullMods": [
+                "auxiliarythrusters",
+                "nav_relay",
+                "reinforcedhull",
+                "blast_doors",
+                "ecm",
+                "heavyarmor",
+                "insulatedengine",
+                "targetingunit",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "auxiliarythrusters",
+                "nav_relay",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "auxiliarythrusters",
+                "nav_relay",
+                "reinforcedhull"
+            ],
+            "variantId": "adversary_hound_hegemony_Support",
+            "weaponGroups": [{
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {"WS 001": "hveldriver"}
+            }]
+        }
+    ]
+}

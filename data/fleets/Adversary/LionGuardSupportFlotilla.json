@@ -1,0 +1,790 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "first": "Hesperus",
+        "gender": "MALE",
+        "last": "Watkins",
+        "member": {
+            "cr": 0.75,
+            "name": "LGS Lioness of Andrada",
+            "variantId": "adversary_executor_Fire_Support"
+        },
+        "personality": "cautious",
+        "portrait": "graphics/portraits/portrait_diktat07.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "bulk_transport": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "derelict_contingent": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "flux_regulation": 1,
+            "gunnery_implants": 2,
+            "navigation": 1,
+            "officer_management": 1,
+            "ordnance_expert": 2,
+            "support_doctrine": 1,
+            "tactical_drills": 1
+        },
+        "tags": []
+    },
+    "fleetName": "Lion's Guard Support Flotilla",
+    "members": [
+        {
+            "cr": 0.9,
+            "name": "LGS Enterprise",
+            "officer": {
+                "first": "Catalina",
+                "gender": "FEMALE",
+                "last": "Ma",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat05.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eagle_LG_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Venusian",
+            "officer": {
+                "first": "Genat",
+                "gender": "FEMALE",
+                "last": "Eunomia",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat02.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eagle_LG_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Karkadann",
+            "officer": {
+                "first": "Tertia",
+                "gender": "FEMALE",
+                "last": "Demir",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat08.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eagle_LG_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Reign of Andrada",
+            "officer": {
+                "first": "Farah",
+                "gender": "FEMALE",
+                "last": "Bell",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat06.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eagle_LG_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Enterprise",
+            "officer": {
+                "first": "Juneau",
+                "gender": "FEMALE",
+                "last": "Quemener",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat08.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eagle_LG_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Polaris Traveller",
+            "variantId": "adversary_falcon_LG_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Latarius",
+            "variantId": "adversary_falcon_LG_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Roc",
+            "variantId": "adversary_falcon_LG_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Victorious",
+            "variantId": "adversary_falcon_LG_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Tithonus",
+            "variantId": "adversary_falcon_LG_Support"
+        },
+        {
+            "cr": 0.75,
+            "name": "LGS Vitumnus",
+            "officer": {
+                "first": "Umbriel",
+                "gender": "FEMALE",
+                "last": "Rana",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat08.png",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_sunder_LG_Close_Support"
+        },
+        {
+            "cr": 0.75,
+            "name": "LGS Bird",
+            "officer": {
+                "first": "Eugenia",
+                "gender": "FEMALE",
+                "last": "Belley",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat08.png",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_sunder_LG_Close_Support"
+        },
+        {
+            "cr": 0.75,
+            "name": "LGS Min",
+            "officer": {
+                "first": "Arise",
+                "gender": "MALE",
+                "last": "Yoon",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat04.png",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_sunder_LG_Close_Support"
+        },
+        {
+            "cr": 0.75,
+            "name": "LGS Veritas",
+            "officer": {
+                "first": "Hygiea",
+                "gender": "FEMALE",
+                "last": "Nessus",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat05.png",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_sunder_LG_Close_Support"
+        },
+        {
+            "cr": 0.75,
+            "name": "LGS Azhi Dahaka",
+            "officer": {
+                "first": "Min",
+                "gender": "MALE",
+                "last": "Rosi",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_diktat01.png",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_sunder_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Leucothea",
+            "variantId": "adversary_hammerhead_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Venusian",
+            "variantId": "adversary_hammerhead_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Anaxibia",
+            "variantId": "adversary_hammerhead_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Somnus",
+            "variantId": "adversary_hammerhead_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Huma",
+            "variantId": "adversary_hammerhead_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Dawn of the Final Era",
+            "variantId": "adversary_brawler_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Terminus",
+            "variantId": "adversary_brawler_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Pluto",
+            "variantId": "adversary_brawler_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Reign of the Conqueror",
+            "variantId": "adversary_brawler_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Novus Alexander",
+            "variantId": "adversary_brawler_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Nekhbet",
+            "variantId": "adversary_centurion_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Heket",
+            "variantId": "adversary_centurion_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Prince Regent",
+            "variantId": "adversary_centurion_LG_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "LGS Piri",
+            "variantId": "adversary_centurion_LG_Close_Support"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Fire Support",
+            "fluxCapacitors": 28,
+            "fluxVents": 50,
+            "hullId": "executor",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "targetingunit",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "autorepair",
+                "fluxdistributor",
+                "reinforcedhull",
+                "fluxbreakers",
+                "stabilizedshieldemitter"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "targetingunit",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "targetingunit"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_executor_Fire_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "hil",
+                        "WS 001": "hil"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 012": "squall",
+                        "WS 013": "squall"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "hveldriver",
+                        "WS 009": "hveldriver",
+                        "WS 010": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "irautolance",
+                        "WS 003": "irautolance",
+                        "WS 006": "irautolance",
+                        "WS 007": "irautolance"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "hveldriver",
+                        "WS 005": "hveldriver"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 3,
+            "fluxVents": 30,
+            "hullId": "eagle_LG",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "targetingunit",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "reinforcedhull",
+                "stabilizedshieldemitter"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "targetingunit",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "targetingunit"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_eagle_LG_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "gravitonbeam",
+                        "WS 008": "gravitonbeam"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heatseeker",
+                        "WS 002": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 013": "heavymauler"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "ionbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "gravitonbeam",
+                        "WS 006": "gravitonbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "taclaser",
+                        "WS 011": "taclaser",
+                        "WS 012": "taclaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 5,
+            "fluxVents": 30,
+            "hullId": "falcon_LG",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "targetingunit",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "reinforcedhull"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "targetingunit",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "targetingunit"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_falcon_LG_Support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "hveldriver",
+                        "WS 008": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heatseeker",
+                        "WS 002": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "gravitonbeam",
+                        "WS 006": "gravitonbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "taclaser",
+                        "WS 010": "taclaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Close Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 20,
+            "hullId": "sunder_LG",
+            "hullMods": [
+                "advancedoptics",
+                "hardenedshieldemitter",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "targetingunit",
+                "reinforcedhull"
+            ],
+            "permaMods": [
+                "advancedoptics",
+                "hardenedshieldemitter",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "advancedoptics",
+                "hardenedshieldemitter"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_sunder_LG_Close_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "hil"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heatseeker",
+                        "WS 005": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "gravitonbeam",
+                        "WS 004": "gravitonbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "taclaser",
+                        "WS 007": "taclaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Close Support",
+            "fluxCapacitors": 2,
+            "fluxVents": 20,
+            "hullId": "hammerhead_LG",
+            "hullMods": [
+                "ecm",
+                "hardenedshieldemitter",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "advancedoptics",
+                "targetingunit",
+                "reinforcedhull"
+            ],
+            "permaMods": [
+                "ecm",
+                "hardenedshieldemitter",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "ecm",
+                "hardenedshieldemitter"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_hammerhead_LG_Close_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "gravitonbeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heatseeker",
+                        "WS 004": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "ionbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "taclaser",
+                        "WS 006": "taclaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Close Support",
+            "fluxCapacitors": 2,
+            "fluxVents": 7,
+            "hullId": "brawler_LG",
+            "hullMods": [
+                "ecm",
+                "nav_relay",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "advancedoptics",
+                "targetingunit",
+                "stabilizedshieldemitter"
+            ],
+            "permaMods": [
+                "ecm",
+                "nav_relay",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "ecm",
+                "nav_relay"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_brawler_LG_Close_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "gravitonbeam",
+                        "WS 002": "gravitonbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "taclaser",
+                        "WS 004": "taclaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Close Support",
+            "fluxCapacitors": 4,
+            "fluxVents": 10,
+            "hullId": "centurion_LG",
+            "hullMods": [
+                "ecm",
+                "nav_relay",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "advancedoptics",
+                "hardenedshieldemitter",
+                "targetingunit",
+                "reinforcedhull"
+            ],
+            "permaMods": [
+                "ecm",
+                "nav_relay",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "ecm",
+                "nav_relay"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_centurion_LG_Close_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "taclaser",
+                        "WS 002": "taclaser",
+                        "WS 004": "taclaser",
+                        "WS 005": "taclaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heatseeker"}
+                }
+            ]
+        }
+    ]
+}

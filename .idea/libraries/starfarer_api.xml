@@ -1,0 +1,31 @@
+<component name="libraryTable">
+  <library name="starfarer.api">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../commons-compiler-jdk.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../commons-compiler.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../fs.common_obf.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../fs.sound_obf.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../janino.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../jaxb-api-2.4.0-b180830.0359.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../jinput.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../jogg-0.0.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../jorbis-0.0.15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../json.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../log4j-1.2.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../lwjgl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../lwjgl_util.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../starfarer.api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../starfarer_obf.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../txw2-3.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../webp-imageio-0.1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../xstream-1.4.10.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="https://starsectorcommunityapidocs.github.io/CommunityApiDocs/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../jaxb-api-2.4.0-b180830.0359-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../starfarer.api.zip!/" />
+    </SOURCES>
+  </library>
+</component>

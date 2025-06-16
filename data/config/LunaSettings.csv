@@ -1,0 +1,88 @@
+fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
+,,,,,,,,
+autofitMenuEnabled,Autofit Menu,Boolean,FALSE,,"If the autofit menu provided by this mod is enabled.
+See the Autofit Menu tab for more settings.",,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+keybindsHeader,Keybinds Header,Header,Keybinds,,,,,Autofit Menu
+autofitMenuHotkey,Autofit Menu Hotkey,Keycode,44,,Keybind to open this mod’s autofit menu. Use in the refit screen.,,,Autofit Menu
+,,,,,,,,
+uIHeader,UI Header,Header,UI,,,,,Autofit Menu
+selectorsPerRow,Selectors Per Row,Int,4,,"Amount of autofit loadouts you see per row.
+Setting this to a lower number will increase the size of your autofit options.",1,10,Autofit Menu
+showCoreGoalVariants,Show Core Goal Variants,Boolean,true,,Shows core game variants that are shown in the vanilla autofit menu,,,Autofit Menu
+showCoreNonGoalVariants,Show Core Non Goal Variants,Boolean,false,,Shows core game variants that aren’t shown in the vanila autofit menu,,,Autofit Menu
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+autofitDevHeader,Cheats,Header,Cheats,,,,,Autofit Menu
+forceAutofit,Force Autofit,Boolean,false,,"Autofit force applies a variant for free.
+This is true by default in missions, as there is no real cargo to source ship equipment from in missions.",,,Autofit Menu
+dontForceClearDMods,Dont Force Clear D-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove D-Mods on autofit",,,Autofit Menu
+dontForceClearSMods,Dont Force Clear S-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove S-Mods on autofit",,,Autofit Menu
+,,,,,,,,
+,,,,,,,,
+saveSMods,Save Smods,Boolean,true,,Whether SMods are saved to variants,,,Misc
+saveDMods,Save Dmods,Boolean,false,,Whether DMods are saved to variants,,,Misc
+backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
+This might be useful if your save game gets bricked and you can’t load it.
+Put “loadsave lastSave” in the console to load it. (case sensitive)",,,Misc
+fleetClipboardHotkeyHandler,Fleet Clipboard Hotkey Handler,Boolean,true,,If hotkeys for copying and pasting fleet or variant data are enabled.,,,
+copyText,Copy Text Field,Text,"Hotkeys:
+
+CTRL Click
+Fleet member: Copies clicked member
+Officer portrait: Copies clicked officer
+
+CTRL + C in
+Fleet screen: Copies own fleet
+Interaction screen: Copies fleet encounter (hold alt to avoid copying supporting fleets)
+Refit screen: Copies variant
+Codex: Copies variant/member
+
+CTRL + V in
+Refit Screen: Add variant in clipboard to the corresponding ship hull’s autofit menu.
+
+
+See the Dev tab for fun things you can do.",,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+devHeader,Developer Options,Header,Developer Section,,,,,
+devTextField,Dev Text Field,Text,"Requires dev mode to be true.
+
+CTRL + V in
+Fleet screen: Add the copied variant/member/officer to your fleet
+Campaign map: Spawn fleet in the clipboard into the campaign
+
+CTRL + D in
+Codex: Adds the codex entry you’re looking at to your fleet.",,,,,Dev
+unassignPlayer,Unassign Player,Boolean,false,,Remove your player officer with a right click: (places them in a command shuttle that can't fight or be copied. (Commander bonus still applies),,,Dev
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+showHiddenModsInTooltip,Show Hidden HullMods,Boolean,false,,Shows hullmods that are usually hidden in the tooltip,,,Dev
+showDebug,Show Debug,Boolean,false,,Show debug elements,,,Dev
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, automatically randomizes the ship name and officer name/portrait if present when pasting an element with them.
+
+This avoids pasted members looking like a clone army, and makes them look like a bunch of ships/officers that happen to have the same loadout instead",,,Dev
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+prefixHeader,Prefixes,Header,Prefix Section,,,,,Dev
+prefixText,Prefix Text Field,Text,"Prefixes do not accept anything other than one or two characters, A to Z
+Must restart game to apply",,,,,Dev
+defaultPrefix,Default Prefix,String,DF,,Default prefix that loadouts are saved to.,,,Dev
+importPrefix,Import Prefix,String,IN,,Default prefix that loadouts are imported,,,Dev

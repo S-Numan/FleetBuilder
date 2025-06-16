@@ -1,0 +1,711 @@
+{
+    "aggression_doctrine": 3,
+    "commander": {
+        "first": "Kim",
+        "gender": "FEMALE",
+        "last": "Hodge",
+        "member": {
+            "cr": 0.95,
+            "name": "ADS God's Chosen",
+            "variantId": "adversary_invictus_Siege"
+        },
+        "personality": "cautious",
+        "portrait": "graphics/portraits/portrait_pirate18.png",
+        "post": "activist",
+        "rank": "spaceCommander",
+        "skills": {
+            "ballistic_mastery": 2,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "combat_endurance": 2,
+            "containment_procedures": 1,
+            "crew_training": 1,
+            "damage_control": 2,
+            "derelict_contingent": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "impact_mitigation": 2,
+            "polarized_armor": 2,
+            "support_doctrine": 1,
+            "systems_expertise": 2,
+            "tactical_drills": 1
+        },
+        "tags": []
+    },
+    "fleetName": "Reformed Hope",
+    "members": [
+        {
+            "cr": 0.7,
+            "name": "ADS Caloris Born",
+            "officer": {
+                "first": "Alexander",
+                "gender": "MALE",
+                "last": "Johns",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate02.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_retribution_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "ADS Stellar Rose",
+            "officer": {
+                "first": "Europa",
+                "gender": "FEMALE",
+                "last": "McGowan",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait45.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_retribution_Assault"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Blue Star",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Red Dwarf",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Rigel Flyer",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Nightrunner",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Chatelain Thea",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Starflyer",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Zenith",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Laika",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Korolev Dreaming",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Via Acubens",
+            "variantId": "adversary_mora_Attack"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ADS Dark Matters",
+            "officer": {
+                "first": "Quinn",
+                "gender": "FEMALE",
+                "last": "Suhail",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eradicator_Close_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ADS High Moon",
+            "officer": {
+                "first": "Hektor",
+                "gender": "MALE",
+                "last": "Richter",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait48.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eradicator_Close_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ADS 10000 Lightyears",
+            "officer": {
+                "first": "Morgan",
+                "gender": "FEMALE",
+                "last": "Bowers",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait39.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eradicator_Close_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ADS Einstein's Demon",
+            "officer": {
+                "first": "Emma",
+                "gender": "FEMALE",
+                "last": "Callisto",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_pirate05.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eradicator_Close_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ADS Blueshift",
+            "officer": {
+                "first": "Bennett",
+                "gender": "MALE",
+                "last": "Gliese",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_pirate02.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eradicator_Close_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ADS Bon Comet",
+            "officer": {
+                "first": "Luna",
+                "gender": "FEMALE",
+                "last": "Castor",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_eradicator_Close_Support"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Orphan of Earth",
+            "variantId": "adversary_condor_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Ion Rose",
+            "variantId": "adversary_condor_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Forgive Us Enos",
+            "variantId": "adversary_condor_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Via Acubens",
+            "variantId": "adversary_condor_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Laika",
+            "variantId": "adversary_condor_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Arising Hyperbolic",
+            "variantId": "adversary_condor_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Interstitial Breeze",
+            "variantId": "adversary_condor_Attack"
+        },
+        {
+            "cr": 0.95,
+            "name": "ADS Interstellar Rain",
+            "variantId": "adversary_condor_Attack"
+        },
+        {
+            "cr": 0.89,
+            "name": "ADS Meteor",
+            "variantId": "adversary_vanguard_Attack"
+        },
+        {
+            "cr": 0.89,
+            "name": "ADS Kosmoskva",
+            "variantId": "adversary_vanguard_Attack"
+        },
+        {
+            "cr": 0.89,
+            "name": "ADS Venusian",
+            "variantId": "adversary_vanguard_Attack"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Siege",
+            "fluxCapacitors": 0,
+            "fluxVents": 49,
+            "hullId": "invictus",
+            "hullMods": [
+                "auxiliarythrusters",
+                "reinforcedhull",
+                "damaged_mounts",
+                "erratic_injector",
+                "faulty_grid",
+                "glitched_sensors",
+                "fragile_subsystems",
+                "armoredweapons",
+                "autorepair",
+                "blast_doors",
+                "converted_hangar",
+                "insulatedengine",
+                "fluxbreakers",
+                "solar_shielding"
+            ],
+            "permaMods": [
+                "auxiliarythrusters",
+                "reinforcedhull",
+                "damaged_mounts",
+                "erratic_injector",
+                "faulty_grid",
+                "glitched_sensors",
+                "fragile_subsystems"
+            ],
+            "sMods": [
+                "auxiliarythrusters",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_invictus_Siege",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "mark9",
+                        "WS 009": "mark9",
+                        "WS 010": "mark9"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "locust",
+                        "WS 007": "locust"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hellbore"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "devastator",
+                        "WS 026": "devastator"
+                    }
+                }
+            ],
+            "wings": [
+                "mining_drone_wing",
+                "mining_drone_wing"
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 21,
+            "fluxVents": 50,
+            "hullId": "retribution",
+            "hullMods": [
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "fragile_subsystems",
+                "hardenedshieldemitter",
+                "reinforcedhull",
+                "armoredweapons",
+                "autorepair",
+                "heavyarmor",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "fragile_subsystems",
+                "hardenedshieldemitter",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_retribution_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "devastator",
+                        "WS 001": "devastator",
+                        "WS 002": "devastator"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 007": "swarmer",
+                        "WS 008": "swarmer",
+                        "WS 009": "swarmer",
+                        "WS 010": "swarmer",
+                        "WS 020": "swarmer",
+                        "WS 021": "swarmer"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heavymg",
+                        "WS 004": "heavymg",
+                        "WS 005": "heavymg",
+                        "WS 006": "heavymg",
+                        "WS 016": "lightmg",
+                        "WS 017": "lightmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 011": "vulcan",
+                        "WS 012": "vulcan",
+                        "WS 013": "vulcan",
+                        "WS 014": "vulcan",
+                        "WS 015": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 9,
+            "fluxVents": 13,
+            "hullId": "mora",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_shields",
+                "erratic_injector",
+                "faulty_grid",
+                "glitched_sensors",
+                "armoredweapons",
+                "expanded_deck_crew",
+                "insulatedengine"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_shields",
+                "erratic_injector",
+                "faulty_grid",
+                "glitched_sensors"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_mora_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "lightdualac",
+                        "WS 011": "lightdualac"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "phasecl",
+                        "WS 004": "phasecl"
+                    }
+                }
+            ],
+            "wings": [
+                "warthog_wing",
+                "warthog_wing",
+                "warthog_wing"
+            ]
+        },
+        {
+            "displayName": "Close Support",
+            "fluxCapacitors": 6,
+            "fluxVents": 30,
+            "hullId": "eradicator",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "fragile_subsystems",
+                "armoredweapons",
+                "missleracks",
+                "targetingunit",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "fragile_subsystems"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_eradicator_Close_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "hveldriver"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "breach",
+                        "WS 001": "breach",
+                        "WS 002": "breach",
+                        "WS 003": "breach",
+                        "WS 004": "breach"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "hveldriver",
+                        "WS 007": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "mininglaser",
+                        "WS 009": "mininglaser",
+                        "WS 010": "mininglaser",
+                        "WS 011": "mininglaser",
+                        "WS 012": "mininglaser",
+                        "WS 013": "mininglaser",
+                        "WS 014": "mininglaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 8,
+            "fluxVents": 7,
+            "hullId": "condor",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_shields",
+                "erratic_injector",
+                "faulty_grid",
+                "glitched_sensors"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_shields",
+                "erratic_injector",
+                "faulty_grid",
+                "glitched_sensors"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_condor_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "salamanderpod"}
+                }
+            ],
+            "wings": [
+                "broadsword_wing",
+                "broadsword_wing"
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 0,
+            "fluxVents": 5,
+            "hullId": "vanguard",
+            "hullMods": [
+                "pointdefenseai",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "fragile_subsystems",
+                "armoredweapons",
+                "autorepair",
+                "auxiliarythrusters",
+                "blast_doors",
+                "heavyarmor",
+                "insulatedengine",
+                "targetingunit",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "pointdefenseai",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance",
+                "fragile_subsystems"
+            ],
+            "sMods": [
+                "pointdefenseai",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_vanguard_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "railgun",
+                        "WS 006": "railgun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "swarmer",
+                        "WS 001": "swarmer",
+                        "WS 002": "swarmer"
+                    }
+                }
+            ]
+        }
+    ]
+}

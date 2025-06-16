@@ -1,0 +1,597 @@
+{
+    "aggression_doctrine": 5,
+    "commander": {
+        "first": "Maud",
+        "gender": "FEMALE",
+        "last": "Curran",
+        "member": {
+            "cr": 0.97999996,
+            "name": "ADS Starbound",
+            "variantId": "adversary_hyperion_Attack"
+        },
+        "personality": "reckless",
+        "portrait": "graphics/portraits/portrait_hegemony17.png",
+        "post": "mercenary",
+        "rank": "spaceCommander",
+        "skills": {
+            "combat_endurance": 2,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_modulation": 2,
+            "flux_regulation": 1,
+            "gunnery_implants": 2,
+            "helmsmanship": 2,
+            "officer_management": 1,
+            "sensors": 1,
+            "support_doctrine": 1,
+            "systems_expertise": 2,
+            "target_analysis": 2,
+            "wolfpack_tactics": 1
+        },
+        "tags": []
+    },
+    "fleetName": "Adversary Wolfpack",
+    "members": [
+        {
+            "cr": 0.97999996,
+            "name": "ADS Interstellar Rain",
+            "officer": {
+                "first": "Cameron",
+                "gender": "FEMALE",
+                "last": "Cephei",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait29.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Orphan of Earth",
+            "officer": {
+                "first": "Hom",
+                "gender": "FEMALE",
+                "last": "Munoz",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Sol Long",
+            "officer": {
+                "first": "America",
+                "gender": "MALE",
+                "last": "Serian",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_league13.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Blue Star",
+            "officer": {
+                "first": "Andronica",
+                "gender": "FEMALE",
+                "last": "Campbell",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Taikonaut",
+            "officer": {
+                "first": "Zhivko",
+                "gender": "MALE",
+                "last": "Lange",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate14.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Queen of Jupiter",
+            "officer": {
+                "first": "Enki",
+                "gender": "MALE",
+                "last": "Holt",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_diktat16.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Azimuth",
+            "officer": {
+                "first": "Abaeze",
+                "gender": "MALE",
+                "last": "Alvarez",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait43.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Stars Below",
+            "officer": {
+                "first": "Ceres",
+                "gender": "FEMALE",
+                "last": "Themis",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_hegemony17.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Aloft Parabolic",
+            "officer": {
+                "first": "Moses",
+                "gender": "MALE",
+                "last": "Pyramus",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_league01.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Tereshkova",
+            "officer": {
+                "first": "Wadjet",
+                "gender": "FEMALE",
+                "last": "Io",
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic08.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_hyperion_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Laika",
+            "variantId": "adversary_afflictor_Strike"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Polaris Traveller",
+            "variantId": "adversary_afflictor_Strike"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Third Moon Of Mars",
+            "variantId": "adversary_afflictor_Strike"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Kosmoskva",
+            "variantId": "adversary_afflictor_Strike"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Orphan of Earth",
+            "variantId": "adversary_tempest_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Interstellaration",
+            "variantId": "adversary_tempest_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Nova",
+            "variantId": "adversary_tempest_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Apologies To Goddard",
+            "variantId": "adversary_tempest_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Old Earth Or Bust",
+            "variantId": "adversary_scarab_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Caspian Sky",
+            "variantId": "adversary_scarab_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Orphan of Earth",
+            "variantId": "adversary_scarab_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Chatelain Thea",
+            "variantId": "adversary_scarab_Attack"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Kosmonaut",
+            "variantId": "adversary_brawler_tritachyon_Assault"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Aldebaran Rising",
+            "variantId": "adversary_brawler_tritachyon_Assault"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS 10000 Lightyears",
+            "variantId": "adversary_brawler_tritachyon_Assault"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Star Witch",
+            "variantId": "adversary_omen_Strike"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Forgive Us Enos",
+            "variantId": "adversary_omen_Strike"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Interstitial Breeze",
+            "variantId": "adversary_omen_Strike"
+        },
+        {
+            "cr": 0.97999996,
+            "name": "ADS Interstellar Rain",
+            "variantId": "adversary_omen_Strike"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 10,
+            "fluxVents": 6,
+            "hullId": "hyperion",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "hardened_subsystems",
+                "auxiliarythrusters",
+                "extendedshieldemitter",
+                "targetingunit",
+                "fluxbreakers",
+                "stabilizedshieldemitter"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "hardened_subsystems"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "hardened_subsystems"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_hyperion_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heavyblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "gravitonbeam",
+                        "WS 003": "heavymg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "hullId": "afflictor",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "adaptive_coils",
+                "armoredweapons",
+                "hardened_subsystems",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_afflictor_Strike",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "reaper",
+                        "WS 004": "reaper"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightneedler",
+                        "WS 003": "lightneedler"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 10,
+            "fluxVents": 9,
+            "hullId": "tempest",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "missile_autoloader",
+                "defensive_targeting_array",
+                "hardened_subsystems"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "missile_autoloader"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "missile_autoloader"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_tempest_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "pulselaser",
+                        "WS 002": "pulselaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "gazer"}
+                }
+            ],
+            "wings": []
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "scarab",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "high_scatter_amp",
+                "hardened_subsystems",
+                "targetingunit",
+                "frontemitter",
+                "stabilizedshieldemitter"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "high_scatter_amp"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "high_scatter_amp"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_scarab_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "taclaser",
+                        "WS 003": "taclaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "taclaser",
+                        "WS 005": "taclaser",
+                        "WS 010": "taclaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "brawler_tritachyon",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "stabilizedshieldemitter",
+                "fluxcoil",
+                "fluxdistributor",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "stabilizedshieldemitter"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "stabilizedshieldemitter"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_brawler_tritachyon_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "ionpulser",
+                        "WS 002": "ionpulser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "breach",
+                        "WS 004": "breach"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 10,
+            "fluxVents": 6,
+            "hullId": "omen",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "missile_autoloader",
+                "magazines",
+                "hardened_subsystems",
+                "pointdefenseai"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "missile_autoloader"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "missile_autoloader"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_omen_Strike",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "sabot"}
+                }
+            ]
+        }
+    ]
+}

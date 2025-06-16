@@ -1,0 +1,628 @@
+{
+    "aggression_doctrine": 3,
+    "commander": {
+        "first": "Symbiote",
+        "gender": "FEMALE",
+        "last": "Phobos",
+        "member": {
+            "cr": 0.91999996,
+            "name": "Coward's Trial",
+            "variantId": "adversary_shade_Command"
+        },
+        "personality": "timid",
+        "portrait": "graphics/portraits/portrait_luddic14.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "bulk_transport": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "field_repairs": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "navigation": 1,
+            "officer_training": 1,
+            "ordnance_expert": 2,
+            "phase_corps": 1,
+            "sensors": 1,
+            "support_doctrine": 1,
+            "tactical_drills": 1
+        },
+        "tags": []
+    },
+    "fleetName": "Mercenary Phase Corps",
+    "members": [
+        {
+            "cr": 0.91999996,
+            "name": "ADS Hyperspace Dreaming",
+            "officer": {
+                "first": "Dysnomia",
+                "gender": "FEMALE",
+                "last": "Gula",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait39.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_doom_Attack"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "ADS Imbrium Flyer",
+            "officer": {
+                "first": "Lamb",
+                "gender": "FEMALE",
+                "last": "Sellers",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_pirate05.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_doom_Attack"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "ADS Stellarian",
+            "officer": {
+                "first": "Elim",
+                "gender": "MALE",
+                "last": "Johnson",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait43.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_doom_Attack"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "ADS Forgive Us Enos",
+            "officer": {
+                "first": "Esther",
+                "gender": "FEMALE",
+                "last": "Belley",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate07.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_doom_Attack"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "ADS Black Sun",
+            "officer": {
+                "first": "Four",
+                "gender": "FEMALE",
+                "last": "Greene",
+                "personality": "steady",
+                "portrait": "graphics/portraits/characters/old_spacer01.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_doom_Attack"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "ADS Third Moon Of Mars",
+            "officer": {
+                "first": "Saturn",
+                "gender": "MALE",
+                "last": "Farah",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait40.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_doom_Attack"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "ADS Gagarin's Dream",
+            "officer": {
+                "first": "Bulan",
+                "gender": "FEMALE",
+                "last": "Kramer",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_apogee_Elite"
+        },
+        {
+            "cr": 0.91999996,
+            "name": "ADS Stellar Rose",
+            "officer": {
+                "first": "Maud",
+                "gender": "FEMALE",
+                "last": "Lucida",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_apogee_Elite"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Polaris Traveller",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Green Moon",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Ion Rose",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Bright Burn",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Starflyer",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Tsiolkovsky's Vision",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Blueshift",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Queen of Jupiter",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Sol Long",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Chatelain Thea",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Kosmoskva",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Red Dwarf",
+            "variantId": "adversary_harbinger_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Queen of Jupiter",
+            "variantId": "adversary_afflictor_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Caloris Born",
+            "variantId": "adversary_afflictor_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Tereshkova",
+            "variantId": "adversary_afflictor_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Prize of High Orbit",
+            "variantId": "adversary_afflictor_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Taikonaut",
+            "variantId": "adversary_afflictor_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Glory of the Stars",
+            "variantId": "adversary_shade_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Don't Stop Until C",
+            "variantId": "adversary_shade_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Bright Burn",
+            "variantId": "adversary_shade_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "ADS Via Acubens",
+            "variantId": "adversary_shade_Strike"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 8,
+            "fluxVents": 0,
+            "hullId": "doom",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "armoredweapons",
+                "targetingunit",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_doom_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "lightneedler",
+                        "WS 004": "lightneedler",
+                        "WS 005": "lightneedler",
+                        "WS 006": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "phasecl",
+                        "WS 002": "phasecl"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "ionbeam",
+                        "WS 008": "ionbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "pdburst",
+                        "WS 010": "pdburst",
+                        "WS 011": "pdburst",
+                        "WS 012": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Elite",
+            "fluxCapacitors": 0,
+            "fluxVents": 18,
+            "hullId": "apogee",
+            "hullMods": [
+                "missleracks",
+                "nav_relay",
+                "hardenedshieldemitter",
+                "insulatedengine",
+                "targetingunit",
+                "stabilizedshieldemitter"
+            ],
+            "permaMods": [
+                "missleracks",
+                "nav_relay"
+            ],
+            "sMods": [
+                "missleracks",
+                "nav_relay"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_apogee_Elite",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "autopulse"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "locust"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "gazer"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "kineticblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "taclaser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "irautolance",
+                        "WS 002": "irautolance"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 17,
+            "fluxVents": 0,
+            "hullId": "harbinger",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "adaptive_coils",
+                "armoredweapons",
+                "hardened_subsystems",
+                "targetingunit",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_harbinger_Strike",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "miningblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "ionpulser",
+                        "WS 003": "ionpulser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "swarmer",
+                        "WS 005": "swarmer"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "hullId": "afflictor",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "adaptive_coils",
+                "armoredweapons",
+                "hardened_subsystems",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_afflictor_Strike",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "reaper",
+                        "WS 004": "reaper"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightneedler",
+                        "WS 003": "lightneedler"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Command",
+            "fluxCapacitors": 10,
+            "fluxVents": 1,
+            "hullId": "shade",
+            "hullMods": [
+                "nav_relay",
+                "operations_center",
+                "hardened_subsystems",
+                "pointdefenseai",
+                "phase_anchor",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "nav_relay",
+                "operations_center"
+            ],
+            "sMods": [
+                "nav_relay",
+                "operations_center"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_shade_Command",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "lrpdlaser",
+                        "WS 004": "lrpdlaser",
+                        "WS 005": "lrpdlaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heatseeker",
+                        "WS 002": "heatseeker"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 9,
+            "fluxVents": 0,
+            "hullId": "shade",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "adaptive_coils",
+                "armoredweapons",
+                "hardened_subsystems",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_shade_Strike",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightneedler",
+                        "WS 002": "lightneedler"
+                    }
+                }
+            ]
+        }
+    ]
+}

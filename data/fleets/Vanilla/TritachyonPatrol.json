@@ -1,0 +1,171 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "first": "Liam",
+        "gender": "MALE",
+        "last": "Ezana",
+        "member": {
+            "cr": 0.7,
+            "name": "TTS Fortunate Cloud",
+            "variantId": "1b702_0"
+        },
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait26.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "energy_weapon_mastery": 2,
+            "field_modulation": 1
+        },
+        "tags": []
+    },
+    "fleetName": "Fleet",
+    "members": [
+        {
+            "cr": 0.7,
+            "name": "TTS Gegenschein",
+            "officer": {
+                "first": "Allat",
+                "gender": "FEMALE",
+                "last": "Bernard",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2
+                },
+                "tags": []
+            },
+            "variantId": "1b702_2"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Hoderi",
+            "officer": {
+                "first": "Dajeil",
+                "gender": "FEMALE",
+                "last": "Shannon",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait41.png",
+                "skills": {"field_modulation": 2},
+                "tags": []
+            },
+            "variantId": "1b702_3"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 28,
+            "fluxVents": 18,
+            "hullId": "fury",
+            "hullMods": [
+                "targetingunit",
+                "hardenedshieldemitter"
+            ],
+            "permaMods": [],
+            "sMods": [],
+            "variantId": "1b702_0",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "pulselaser"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "breachpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "ionbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "pdburst",
+                        "WS 007": "pdburst",
+                        "WS 008": "pdburst"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "lrpdlaser"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 8,
+            "fluxVents": 10,
+            "hullId": "shade",
+            "hullMods": [
+                "fluxbreakers",
+                "fluxdistributor"
+            ],
+            "permaMods": [],
+            "sMods": [],
+            "variantId": "1b702_2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "breach",
+                        "WS 002": "breach"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "irpulse",
+                        "WS 005": "irpulse"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 4,
+            "fluxVents": 10,
+            "hullId": "brawler_tritachyon",
+            "hullMods": [
+                "missleracks",
+                "advancedoptics",
+                "targetingunit",
+                "fluxbreakers"
+            ],
+            "permaMods": [],
+            "sMods": [],
+            "variantId": "1b702_3",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heavyburst",
+                        "WS 002": "heavyburst"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "harpoon",
+                        "WS 004": "harpoon"
+                    }
+                }
+            ]
+        }
+    ]
+}

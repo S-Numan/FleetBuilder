@@ -1,0 +1,392 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "first": "Aeolis",
+        "gender": "MALE",
+        "last": "Mizar",
+        "member": {
+            "cr": 0.84999996,
+            "name": "Tech Lab 13",
+            "variantId": "adversary_station3_hightech_Elite"
+        },
+        "personality": "reckless",
+        "portrait": "graphics/portraits/portrait_league09.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "ballistic_mastery": 2,
+            "combat_endurance": 2,
+            "coordinated_maneuvers": 1,
+            "damage_control": 2,
+            "electronic_warfare": 1,
+            "energy_weapon_mastery": 2,
+            "field_modulation": 2,
+            "gunnery_implants": 2,
+            "helmsmanship": 2,
+            "impact_mitigation": 2,
+            "missile_specialization": 2,
+            "ordnance_expert": 2,
+            "point_defense": 2,
+            "polarized_armor": 2,
+            "systems_expertise": 2,
+            "target_analysis": 2
+        },
+        "tags": []
+    },
+    "fleetName": "Tech Lab 13",
+    "members": [
+        {
+            "cr": 1,
+            "name": "PLS Mormo",
+            "officer": {
+                "first": "Ganymede",
+                "gender": "MALE",
+                "last": "Athabasca",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "crew_training": 1,
+                    "electronic_warfare": 1,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vigilance_DEM"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "PLS Minos",
+            "officer": {
+                "first": "Tyler",
+                "gender": "MALE",
+                "last": "Knapp",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait20.png",
+                "skills": {
+                    "damage_control": 2,
+                    "gunnery_implants": 1,
+                    "missile_specialization": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vigilance_DEM"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "PLS Thyestes",
+            "variantId": "adversary_vigilance_DEM"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "PLS Baucis",
+            "variantId": "adversary_vigilance_DEM"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "PLS Galahad",
+            "officer": {
+                "first": "Frost",
+                "gender": "FEMALE",
+                "last": "Elysium",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait27.png",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "missile_specialization": 1,
+                    "point_defense": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_vigilance_DEM"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Star Fortress",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "station3_hightech",
+            "hullMods": [],
+            "moduleVariants": {
+                "WS 000": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_hightech_shield",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_hightech_shield_Standard",
+                    "weaponGroups": []
+                },
+                "WS 001": {
+                    "displayName": "Standard",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_hightech_shield",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_hightech_shield_Standard",
+                    "weaponGroups": []
+                },
+                "WS 002": {
+                    "displayName": "Elite",
+                    "fluxCapacitors": 10,
+                    "fluxVents": 10,
+                    "hullId": "module_hightech_hangar",
+                    "hullMods": ["fluxbreakers"],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "adversary_module_hightech_hangar_Elite",
+                    "weaponGroups": [{
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "dragon",
+                            "WS 001": "pdburst",
+                            "WS 002": "dragon",
+                            "WS 003": "dragon",
+                            "WS 004": "pdburst",
+                            "WS 005": "dragon"
+                        }
+                    }],
+                    "wings": [
+                        "longbow_wing",
+                        "longbow_wing",
+                        "longbow_wing",
+                        "longbow_wing"
+                    ]
+                },
+                "WS 003": {
+                    "displayName": "Elite",
+                    "fluxCapacitors": 10,
+                    "fluxVents": 10,
+                    "hullId": "module_hightech_attack_minelayer",
+                    "hullMods": ["fluxbreakers"],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "adversary_module_hightech_attack_minelayer_Elite",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS 000": "plasma"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS 001": "plasma"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS 002": "plasma"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS 003": "dragon",
+                                "WS 004": "dragon",
+                                "WS 005": "dragon",
+                                "WS 006": "dragon",
+                                "WS 007": "gorgon",
+                                "WS 008": "pdburst",
+                                "WS 009": "pdburst",
+                                "WS 010": "pdburst",
+                                "WS 011": "pdburst",
+                                "WS 012": "gorgon"
+                            }
+                        }
+                    ]
+                },
+                "WS 004": {
+                    "displayName": "Elite",
+                    "fluxCapacitors": 10,
+                    "fluxVents": 10,
+                    "hullId": "module_hightech_attack_minelayer",
+                    "hullMods": ["fluxbreakers"],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "adversary_module_hightech_attack_minelayer_Elite",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS 000": "plasma"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS 001": "plasma"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS 002": "plasma"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS 003": "dragon",
+                                "WS 004": "dragon",
+                                "WS 005": "dragon",
+                                "WS 006": "dragon",
+                                "WS 007": "gorgon",
+                                "WS 008": "pdburst",
+                                "WS 009": "pdburst",
+                                "WS 010": "pdburst",
+                                "WS 011": "pdburst",
+                                "WS 012": "gorgon"
+                            }
+                        }
+                    ]
+                },
+                "WS 005": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_hightech_armour",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_hightech_armour_Standard",
+                    "weaponGroups": []
+                },
+                "WS 006": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_hightech_strut",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_hightech_strut_Standard",
+                    "weaponGroups": []
+                },
+                "WS 007": {
+                    "displayName": "Elite",
+                    "fluxCapacitors": 10,
+                    "fluxVents": 10,
+                    "hullId": "module_hightech_citadel",
+                    "hullMods": ["fluxbreakers"],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "adversary_module_hightech_citadel_Elite",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS 000": "plasma"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS 001": "plasma"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS 002": "heavyburst",
+                                "WS 003": "heavyburst",
+                                "WS 004": "gorgon",
+                                "WS 006": "gorgon",
+                                "WS 008": "gorgon",
+                                "WS 010": "dragon",
+                                "WS 012": "dragon"
+                            }
+                        }
+                    ]
+                },
+                "WS 008": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_hightech_strut",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_hightech_strut_Standard",
+                    "weaponGroups": []
+                },
+                "WS 009": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_blocker2c",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_blocker2c_Standard",
+                    "weaponGroups": []
+                },
+                "WS 010": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_blocker2c",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_blocker2c_Standard",
+                    "weaponGroups": []
+                },
+                "WS 011": {
+                    "displayName": "",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "module_blocker2c",
+                    "hullMods": [],
+                    "permaMods": [],
+                    "sMods": [],
+                    "variantId": "module_blocker2c_Standard",
+                    "weaponGroups": []
+                }
+            },
+            "permaMods": [],
+            "sMods": [],
+            "variantId": "adversary_station3_hightech_Elite",
+            "weaponGroups": []
+        },
+        {
+            "displayName": "DEM",
+            "fluxCapacitors": 10,
+            "fluxVents": 9,
+            "hullId": "vigilance",
+            "hullMods": [
+                "eccm",
+                "missleracks",
+                "stabilizedshieldemitter"
+            ],
+            "permaMods": [
+                "eccm",
+                "missleracks"
+            ],
+            "sMods": [
+                "eccm",
+                "missleracks"
+            ],
+            "variantId": "adversary_vigilance_DEM",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hveldriver"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "dragon"}
+                }
+            ]
+        }
+    ]
+}

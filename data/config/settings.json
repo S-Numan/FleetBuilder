@@ -1,0 +1,13 @@
+{
+	"plugins":{
+		"AutofitCombatRefitAdder":"fleetBuilder.ui.AutofitCombatRefitAdder",
+		"DrawMessageInCombat":"fleetBuilder.misc.DrawMessageInCombat",
+		"CombatClipboardHotkeyHandler":"fleetBuilder.CombatClipboardHotkeyHandler",
+	},
+
+	"graphics":{
+		"FleetBuilder":{
+			"mission_indicator":"graphics/icons/mission_marker.png",
+		}
+	}
+}

@@ -1,0 +1,781 @@
+{
+    "aggression_doctrine": 3,
+    "commander": {
+        "first": "Dulga",
+        "gender": "FEMALE",
+        "last": "Oberon",
+        "member": {
+            "cr": 0.6,
+            "name": "Binding of Loke",
+            "variantId": "adversary_colossus3_Attack"
+        },
+        "personality": "aggressive",
+        "portrait": "graphics/portraits/portrait37.png",
+        "post": "mercenary",
+        "rank": "spaceCommander",
+        "skills": {
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "derelict_contingent": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "flux_regulation": 1,
+            "gunnery_implants": 2,
+            "navigation": 1,
+            "ordnance_expert": 2,
+            "support_doctrine": 1,
+            "tactical_drills": 1
+        },
+        "tags": []
+    },
+    "fleetName": "Adversary Armada",
+    "members": [
+        {
+            "cr": 0.55,
+            "name": "Pooka",
+            "officer": {
+                "first": "Halima",
+                "gender": "FEMALE",
+                "last": "Hancock",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait49.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_atlas2_Close_Support"
+        },
+        {
+            "cr": 0.55,
+            "name": "I'm A Torpedo",
+            "officer": {
+                "first": "Wade",
+                "gender": "MALE",
+                "last": "Jacobs",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait26.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_atlas2_Close_Support"
+        },
+        {
+            "cr": 0.55,
+            "name": "Poor Target",
+            "officer": {
+                "first": "Allison",
+                "gender": "FEMALE",
+                "last": "Nayar",
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "adversary_atlas2_Close_Support"
+        },
+        {
+            "cr": 0.7,
+            "name": "Xipe Totec",
+            "variantId": "adversary_atlas2_Close_Support"
+        },
+        {
+            "cr": 0.7,
+            "name": "Caspian Sky",
+            "variantId": "adversary_atlas2_Close_Support"
+        },
+        {
+            "cr": 0.7,
+            "name": "Astrovore",
+            "variantId": "adversary_atlas2_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "Quetzalcoatl",
+            "variantId": "adversary_eradicator_pirates_Assault"
+        },
+        {
+            "cr": 0.9,
+            "name": "Cailleach",
+            "variantId": "adversary_eradicator_pirates_Assault"
+        },
+        {
+            "cr": 0.9,
+            "name": "Firbolg",
+            "variantId": "adversary_eradicator_pirates_Assault"
+        },
+        {
+            "cr": 0.9,
+            "name": "Fodla",
+            "variantId": "adversary_eradicator_pirates_Assault"
+        },
+        {
+            "cr": 0.9,
+            "name": "Chantico",
+            "variantId": "adversary_eradicator_pirates_Assault"
+        },
+        {
+            "cr": 0.9,
+            "name": "Astene Key",
+            "officer": {
+                "first": "Lewis",
+                "gender": "MALE",
+                "last": "Burns",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_luddic00.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_falcon_p_Strike"
+        },
+        {
+            "cr": 0.9,
+            "name": "Balor One-Eye",
+            "officer": {
+                "first": "Three",
+                "gender": "MALE",
+                "last": "Spica",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_diktat04.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_falcon_p_Strike"
+        },
+        {
+            "cr": 0.9,
+            "name": "Eriu",
+            "officer": {
+                "first": "Hu",
+                "gender": "MALE",
+                "last": "Pittman",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_luddic13.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_falcon_p_Strike"
+        },
+        {
+            "cr": 0.9,
+            "name": "Bon Comet",
+            "officer": {
+                "first": "Wade",
+                "gender": "MALE",
+                "last": "Phobos",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_luddic00.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_falcon_p_Strike"
+        },
+        {
+            "cr": 0.9,
+            "name": "Vetala",
+            "officer": {
+                "first": "Morgan",
+                "gender": "MALE",
+                "last": "Langsdale",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_hegemony09.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 1,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_falcon_p_Strike"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Foravenger",
+            "variantId": "adversary_venture_p_Fire_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Ymir",
+            "variantId": "adversary_venture_p_Fire_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Skullver Cuss",
+            "variantId": "adversary_venture_p_Fire_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Mercurial",
+            "variantId": "adversary_venture_p_Fire_Support"
+        },
+        {
+            "cr": 0.75,
+            "name": "Astrovore",
+            "variantId": "adversary_colossus3_Attack"
+        },
+        {
+            "cr": 0.75,
+            "name": "Bragi",
+            "variantId": "adversary_colossus3_Attack"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Simurgh",
+            "variantId": "adversary_manticore_pirates_Close_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Vetala",
+            "variantId": "adversary_manticore_pirates_Close_Support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "Ehecatl",
+            "variantId": "adversary_manticore_pirates_Close_Support"
+        },
+        {
+            "cr": 0.9,
+            "name": "Chimera",
+            "variantId": "adversary_shrike_pirates_Attack"
+        },
+        {
+            "cr": 0.9,
+            "name": "Chatelain Thea",
+            "variantId": "adversary_shrike_pirates_Attack"
+        },
+        {
+            "cr": 1,
+            "name": "Werewolf",
+            "variantId": "adversary_vanguard_pirates_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Cipactli",
+            "variantId": "adversary_vanguard_pirates_Overdriven"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Close Support",
+            "fluxCapacitors": 15,
+            "fluxVents": 50,
+            "hullId": "atlas2",
+            "hullMods": [
+                "missleracks",
+                "reinforcedhull",
+                "degraded_life_support",
+                "erratic_injector",
+                "faulty_auto",
+                "increased_maintenance",
+                "fragile_subsystems",
+                "turretgyros",
+                "fluxdistributor",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "missleracks",
+                "reinforcedhull",
+                "degraded_life_support",
+                "erratic_injector",
+                "faulty_auto",
+                "increased_maintenance",
+                "fragile_subsystems"
+            ],
+            "sMods": [
+                "missleracks",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_atlas2_Close_Support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "gauss"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "gauss"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 012": "hurricane",
+                        "WS 013": "hurricane"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 6,
+            "fluxVents": 30,
+            "hullId": "eradicator_pirates",
+            "hullMods": [
+                "missleracks",
+                "reinforcedhull",
+                "degraded_life_support",
+                "degraded_shields",
+                "erratic_injector",
+                "increased_maintenance",
+                "fragile_subsystems",
+                "armoredweapons",
+                "converted_hangar",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "missleracks",
+                "reinforcedhull",
+                "degraded_life_support",
+                "degraded_shields",
+                "erratic_injector",
+                "increased_maintenance",
+                "fragile_subsystems"
+            ],
+            "sMods": [
+                "missleracks",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_eradicator_pirates_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "heavymauler"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "harpoon",
+                        "WS 001": "harpoon",
+                        "WS 002": "harpoon",
+                        "WS 003": "harpoon",
+                        "WS 004": "harpoon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "arbalest",
+                        "WS 007": "arbalest"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "railgun",
+                        "WS 010": "railgun"
+                    }
+                }
+            ],
+            "wings": ["xyphos_wing"]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 18,
+            "fluxVents": 13,
+            "hullId": "falcon_p",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "glitched_sensors",
+                "increased_maintenance",
+                "converted_hangar",
+                "missleracks"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "glitched_sensors",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_falcon_p_Strike",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 007": "phasecl",
+                        "WS 008": "phasecl"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "atropos",
+                        "WS 002": "atropos"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 005": "sabotpod",
+                        "WS 006": "sabotpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "mininglaser",
+                        "WS 010": "mininglaser"
+                    }
+                }
+            ],
+            "wings": ["sarissa_wing"]
+        },
+        {
+            "displayName": "Fire Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 1,
+            "hullId": "venture_p",
+            "hullMods": [
+                "missleracks",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_shields",
+                "erratic_injector",
+                "fragile_subsystems",
+                "converted_hangar",
+                "targetingunit",
+                "missile_autoloader"
+            ],
+            "permaMods": [
+                "missleracks",
+                "reinforcedhull",
+                "damaged_mounts",
+                "degraded_shields",
+                "erratic_injector",
+                "fragile_subsystems"
+            ],
+            "sMods": [
+                "missleracks",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_venture_p_Fire_Support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "squall"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "harpoon",
+                        "WS 007": "harpoon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "gravitonbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heavymauler",
+                        "WS 003": "heavymauler"
+                    }
+                }
+            ],
+            "wings": ["broadsword_wing"]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 19,
+            "fluxVents": 8,
+            "hullId": "colossus3",
+            "hullMods": [
+                "reinforcedhull",
+                "adaptiveshields",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "glitched_sensors",
+                "increased_maintenance"
+            ],
+            "permaMods": [
+                "reinforcedhull",
+                "adaptiveshields",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "glitched_sensors",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "reinforcedhull",
+                "adaptiveshields"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_colossus3_Attack",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 013": "vulcan",
+                    "WS 014": "vulcan",
+                    "WS 015": "vulcan",
+                    "WS 016": "vulcan"
+                }
+            }],
+            "wings": [
+                "gladius_wing",
+                "gladius_wing"
+            ]
+        },
+        {
+            "displayName": "Close Support",
+            "fluxCapacitors": 14,
+            "fluxVents": 14,
+            "hullId": "manticore_pirates",
+            "hullMods": [
+                "converted_hangar",
+                "reinforcedhull",
+                "degraded_life_support",
+                "degraded_shields",
+                "erratic_injector",
+                "faulty_auto",
+                "increased_maintenance",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "converted_hangar",
+                "reinforcedhull",
+                "degraded_life_support",
+                "degraded_shields",
+                "erratic_injector",
+                "faulty_auto",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "converted_hangar",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_manticore_pirates_Close_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "hellbore"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "gazerpod",
+                        "WS 005": "gazerpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightac",
+                        "WS 002": "lightac",
+                        "WS 003": "lightac"
+                    }
+                }
+            ],
+            "wings": ["claw_wing"]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 20,
+            "fluxVents": 10,
+            "hullId": "shrike_pirates",
+            "hullMods": [
+                "converted_hangar",
+                "reinforcedhull",
+                "comp_armor",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "permaMods": [
+                "converted_hangar",
+                "reinforcedhull",
+                "comp_armor",
+                "damaged_mounts",
+                "degraded_life_support",
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "sMods": [
+                "converted_hangar",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_shrike_pirates_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "ionpulser"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "phasecl"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lightneedler"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "mininglaser",
+                        "WS 002": "mininglaser"
+                    }
+                }
+            ],
+            "wings": ["sarissa_wing"]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "vanguard_pirates",
+            "hullMods": [
+                "eccm",
+                "auxiliarythrusters",
+                "damaged_mounts",
+                "erratic_injector",
+                "faulty_grid",
+                "glitched_sensors",
+                "fragile_subsystems",
+                "armoredweapons",
+                "missleracks",
+                "reinforcedhull",
+                "safetyoverrides",
+                "unstable_injector"
+            ],
+            "permaMods": [
+                "eccm",
+                "auxiliarythrusters",
+                "damaged_mounts",
+                "erratic_injector",
+                "faulty_grid",
+                "glitched_sensors",
+                "fragile_subsystems"
+            ],
+            "sMods": [
+                "eccm",
+                "auxiliarythrusters"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_vanguard_pirates_Overdriven",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 000": "gorgon",
+                    "WS 001": "gorgon",
+                    "WS 002": "gorgon",
+                    "WS 003": "mininglaser",
+                    "WS 004": "mininglaser",
+                    "WS 005": "lightdualac",
+                    "WS 006": "lightdualac"
+                }
+            }]
+        }
+    ]
+}

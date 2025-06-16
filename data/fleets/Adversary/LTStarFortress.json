@@ -1,0 +1,577 @@
+{
+    "aggression_doctrine": 5,
+    "commander": {
+        "first": "Three",
+        "gender": "FEMALE",
+        "last": "Tobol",
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_pirate04.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {},
+        "tags": []
+    },
+    "fleetName": "Stygia Station",
+    "members": [{
+        "cr": 0.975,
+        "name": "Stygia Station",
+        "officer": {
+            "aicoreid": "alpha_core",
+            "first": "Alpha Core",
+            "gender": "ANY",
+            "last": "",
+            "personality": "reckless",
+            "portrait": "graphics/portraits/portrait_ai2b.png",
+            "rank": "spaceCaptain",
+            "skills": {
+                "combat_endurance": 2,
+                "damage_control": 2,
+                "field_modulation": 2,
+                "gunnery_implants": 2,
+                "helmsmanship": 2,
+                "impact_mitigation": 2,
+                "target_analysis": 2
+            },
+            "tags": []
+        },
+        "variantId": "318e_0"
+    }],
+    "variants": [{
+        "displayName": "Star Fortress",
+        "fluxCapacitors": 0,
+        "fluxVents": 0,
+        "hullId": "station3",
+        "hullMods": [],
+        "moduleVariants": {
+            "WS 006": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour4",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour4_Standard_17",
+                "weaponGroups": []
+            },
+            "WS 007": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour4",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour4_Standard_15",
+                "weaponGroups": []
+            },
+            "WS 008": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour4",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour4_Standard_16",
+                "weaponGroups": []
+            },
+            "WS 009": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "goalVariant": true,
+                "hullId": "module_large1_lowtech",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_large1_lowtech_Standard_18",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS 010": "salamanderpod",
+                            "WS 011": "harpoonpod",
+                            "WS 013": "salamanderpod"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {"WS 012": "sabotpod"}
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS 005": "typhoon",
+                            "WS 008": "typhoon"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 001": "hellbore",
+                            "WS 002": "hellbore"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "gauss",
+                            "WS 003": "gauss"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 004": "dualflak",
+                            "WS 006": "dualflak",
+                            "WS 007": "dualflak",
+                            "WS 009": "dualflak",
+                            "WS 015": "vulcan",
+                            "WS 018": "vulcan",
+                            "WS 020": "vulcan",
+                            "WS 021": "vulcan",
+                            "WS 023": "vulcan",
+                            "WS 026": "vulcan"
+                        }
+                    }
+                ]
+            },
+            "WS 010": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_large2_lowtech",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_large2_lowtech_Standard_19",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 004": "hveldriver"}
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS 001": "pilum",
+                            "WS 003": "pilum",
+                            "WS 008": "pilum",
+                            "WS 009": "pilum"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 000": "heavyac"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 002": "dualflak"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 007": "vulcan"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 005": "lightdualmg",
+                            "WS 010": "lightdualmg",
+                            "WS 012": "lightdualmg"
+                        }
+                    }
+                ],
+                "wings": [
+                    "gladius_wing",
+                    "trident_wing"
+                ]
+            },
+            "WS 011": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_large2_lowtech",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_large2_lowtech_Standard_20",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "hveldriver",
+                            "WS 004": "hveldriver"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS 001": "salamanderpod",
+                            "WS 003": "pilum",
+                            "WS 008": "salamanderpod",
+                            "WS 009": "salamanderpod"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 002": "dualflak"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 007": "vulcan",
+                            "WS 010": "vulcan"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 005": "lightmg",
+                            "WS 012": "lightmg"
+                        }
+                    }
+                ],
+                "wings": [
+                    "broadsword_wing",
+                    "trident_wing"
+                ]
+            },
+            "WS 012": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "goalVariant": true,
+                "hullId": "module_bastion1_lowtech",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_bastion1_lowtech_Standard_21",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 001": "dualflak",
+                            "WS 002": "dualflak"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {"WS 008": "heatseeker"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "vulcan",
+                            "WS 003": "vulcan",
+                            "WS 004": "vulcan",
+                            "WS 005": "vulcan"
+                        }
+                    }
+                ]
+            },
+            "WS 013": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_citadel1_lowtech",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_citadel1_lowtech_Standard_22",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 015": "mjolnir",
+                            "WS 016": "mjolnir"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 001": "gauss",
+                            "WS 014": "gauss"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 004": "heavymauler",
+                            "WS 010": "heavymauler"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "dualflak",
+                            "WS 002": "vulcan",
+                            "WS 006": "dualflak",
+                            "WS 008": "vulcan",
+                            "WS 009": "dualflak",
+                            "WS 012": "vulcan",
+                            "WS 013": "dualflak"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS 007": "lightmg"}
+                    }
+                ]
+            },
+            "WS 014": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "goalVariant": true,
+                "hullId": "module_bastion1_lowtech",
+                "hullMods": [
+                    "fluxdistributor",
+                    "fluxcoil"
+                ],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_bastion1_lowtech_Standard_23",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 001": "dualflak",
+                            "WS 002": "dualflak"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "LINKED",
+                        "weapons": {"WS 008": "heatseeker"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 004": "lightdualmg",
+                            "WS 005": "lightdualmg"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "vulcan",
+                            "WS 003": "vulcan"
+                        }
+                    }
+                ]
+            },
+            "WS 015": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_3",
+                "weaponGroups": []
+            },
+            "WS 016": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_4",
+                "weaponGroups": []
+            },
+            "WS 017": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_5",
+                "weaponGroups": []
+            },
+            "WS 018": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour3",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour3_Standard_0",
+                "weaponGroups": []
+            },
+            "WS 019": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour3",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour3_Standard_1",
+                "weaponGroups": []
+            },
+            "WS 020": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour3",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour3_Standard_2",
+                "weaponGroups": []
+            },
+            "WS 021": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_6",
+                "weaponGroups": []
+            },
+            "WS 022": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_7",
+                "weaponGroups": []
+            },
+            "WS 023": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_8",
+                "weaponGroups": []
+            },
+            "WS 024": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_9",
+                "weaponGroups": []
+            },
+            "WS 025": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_10",
+                "weaponGroups": []
+            },
+            "WS 026": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_11",
+                "weaponGroups": []
+            },
+            "WS 027": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_12",
+                "weaponGroups": []
+            },
+            "WS 028": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_13",
+                "weaponGroups": []
+            },
+            "WS 029": {
+                "displayName": "Standard",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_armour2",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_armour2_Standard_14",
+                "weaponGroups": []
+            }
+        },
+        "permaMods": [],
+        "sMods": [],
+        "variantId": "318e_0",
+        "weaponGroups": []
+    }]
+}

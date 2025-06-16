@@ -1,0 +1,4430 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "first": "Amina",
+        "gender": "FEMALE",
+        "last": "Hektor",
+        "member": {
+            "cr": 0.79999995,
+            "name": "HSS Cerf-Volant 53",
+            "variantId": "adversary_kite_original_Support"
+        },
+        "personality": "timid",
+        "portrait": "graphics/portraits/portrait_hegemony10.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "derelict_contingent": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "flux_regulation": 1,
+            "navigation": 1,
+            "ordnance_expert": 2,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        },
+        "tags": []
+    },
+    "fleetName": "Hegemony Auxiliary Armada",
+    "members": [
+        {
+            "cr": 1,
+            "name": "HSS Space Dog",
+            "officer": {
+                "first": "Osa",
+                "gender": "FEMALE",
+                "last": "Baker",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Roman Road",
+            "officer": {
+                "first": "Reese",
+                "gender": "FEMALE",
+                "last": "Elysium",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Sthenelus",
+            "officer": {
+                "first": "Io",
+                "gender": "FEMALE",
+                "last": "Mittwoch",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Sol Long",
+            "officer": {
+                "first": "Io",
+                "gender": "FEMALE",
+                "last": "Kila",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Tibertus",
+            "officer": {
+                "first": "Tuan",
+                "gender": "MALE",
+                "last": "Elysium",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Picus",
+            "officer": {
+                "first": "Elektra",
+                "gender": "FEMALE",
+                "last": "Quinlan",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Border",
+            "officer": {
+                "first": "Shannon",
+                "gender": "FEMALE",
+                "last": "Chiron",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Ausonia",
+            "officer": {
+                "first": "Pierce",
+                "gender": "MALE",
+                "last": "Mercier",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Boreas",
+            "officer": {
+                "first": "Set",
+                "gender": "MALE",
+                "last": "Ganymede",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Parcae",
+            "officer": {
+                "first": "Artemis",
+                "gender": "FEMALE",
+                "last": "Jura",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Impartial Eclipse",
+            "officer": {
+                "first": "Hektor",
+                "gender": "MALE",
+                "last": "Verma",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Queen of Jupiter",
+            "officer": {
+                "first": "Gabriel",
+                "gender": "MALE",
+                "last": "Dunn",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Viking",
+            "officer": {
+                "first": "Second",
+                "gender": "MALE",
+                "last": "Io",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Inevitable",
+            "officer": {
+                "first": "Hercules",
+                "gender": "MALE",
+                "last": "Jean-Talon",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony09.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victory",
+            "officer": {
+                "first": "Lawrence",
+                "gender": "MALE",
+                "last": "Matar",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Audacious",
+            "officer": {
+                "first": "Dudley",
+                "gender": "MALE",
+                "last": "Cotton",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS 10000 Lightyears",
+            "officer": {
+                "first": "Psyche",
+                "gender": "FEMALE",
+                "last": "Ksora",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chicomoztoc Metroplex IIIL",
+            "officer": {
+                "first": "Elim",
+                "gender": "MALE",
+                "last": "House",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chicomoztoc Metroplex IV",
+            "officer": {
+                "first": "Essun",
+                "gender": "FEMALE",
+                "last": "Rollins",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Eidyia",
+            "officer": {
+                "first": "Yurania",
+                "gender": "FEMALE",
+                "last": "Terry",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony17.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Atropos",
+            "officer": {
+                "first": "Nessus",
+                "gender": "MALE",
+                "last": "Titanian",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Triumph",
+            "officer": {
+                "first": "Dixon",
+                "gender": "MALE",
+                "last": "Hamal",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Egestes",
+            "officer": {
+                "first": "Psyche",
+                "gender": "FEMALE",
+                "last": "Gauthier",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Diana",
+            "officer": {
+                "first": "Mercury",
+                "gender": "MALE",
+                "last": "Park",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Lord Scarlet",
+            "officer": {
+                "first": "Petra",
+                "gender": "FEMALE",
+                "last": "Tucker",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait22.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Averna",
+            "officer": {
+                "first": "Moses",
+                "gender": "MALE",
+                "last": "Bird",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Aurochs",
+            "officer": {
+                "first": "Dudley",
+                "gender": "MALE",
+                "last": "Baker",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony09.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chatelain Thea",
+            "officer": {
+                "first": "Aisha",
+                "gender": "FEMALE",
+                "last": "Heka",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Apologies To Goddard",
+            "officer": {
+                "first": "Zun",
+                "gender": "MALE",
+                "last": "Metro",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Siege of Raesvelg",
+            "officer": {
+                "first": "Lucida",
+                "gender": "FEMALE",
+                "last": "Urania",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Aurora",
+            "officer": {
+                "first": "Saturn",
+                "gender": "MALE",
+                "last": "Olsen",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Patalena",
+            "officer": {
+                "first": "Zarine",
+                "gender": "FEMALE",
+                "last": "Peltonen",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Tireless",
+            "officer": {
+                "first": "Kim",
+                "gender": "FEMALE",
+                "last": "Nelson",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony17.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Memory of Hanan Pacha",
+            "officer": {
+                "first": "Moon",
+                "gender": "FEMALE",
+                "last": "Chiron",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Telesphorus",
+            "officer": {
+                "first": "Juliette",
+                "gender": "FEMALE",
+                "last": "Thomas",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Asp",
+            "officer": {
+                "first": "Mimas",
+                "gender": "MALE",
+                "last": "Snowbank",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony01.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Stercutus",
+            "officer": {
+                "first": "Nin",
+                "gender": "FEMALE",
+                "last": "Soltis",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Andraemon",
+            "officer": {
+                "first": "Hebe",
+                "gender": "FEMALE",
+                "last": "Parsons",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony04.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Amon-rex",
+            "officer": {
+                "first": "Compton",
+                "gender": "MALE",
+                "last": "Fernandez",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victory of Chicomoztoc",
+            "officer": {
+                "first": "Oberon",
+                "gender": "MALE",
+                "last": "Tarazet",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Antares Bright",
+            "officer": {
+                "first": "Riley",
+                "gender": "FEMALE",
+                "last": "Ewing",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Aldebaran Rising",
+            "officer": {
+                "first": "Eunomia",
+                "gender": "FEMALE",
+                "last": "Polaris",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Autonoe",
+            "officer": {
+                "first": "Ard",
+                "gender": "FEMALE",
+                "last": "Richardson",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Pomona",
+            "officer": {
+                "first": "Purslane",
+                "gender": "FEMALE",
+                "last": "Hurst",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait22.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Ophion",
+            "officer": {
+                "first": "Lara",
+                "gender": "FEMALE",
+                "last": "Yang",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony04.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Virbius",
+            "officer": {
+                "first": "Irene",
+                "gender": "FEMALE",
+                "last": "Stewart",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony11.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Coatl",
+            "officer": {
+                "first": "Thisbe",
+                "gender": "FEMALE",
+                "last": "Hebert",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Occator",
+            "officer": {
+                "first": "Howard",
+                "gender": "MALE",
+                "last": "Psyche",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Fornax",
+            "officer": {
+                "first": "Lindsey",
+                "gender": "MALE",
+                "last": "Burch",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Queen of Jupiter",
+            "officer": {
+                "first": "Kim",
+                "gender": "FEMALE",
+                "last": "Fuller",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Securitas",
+            "officer": {
+                "first": "Miranda",
+                "gender": "FEMALE",
+                "last": "Ocampo",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Fire of the Phoenix",
+            "officer": {
+                "first": "Clarke",
+                "gender": "MALE",
+                "last": "Duncan",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Crete",
+            "officer": {
+                "first": "Arinna",
+                "gender": "FEMALE",
+                "last": "Hyadum",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony17.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Deverra",
+            "officer": {
+                "first": "Terry",
+                "gender": "FEMALE",
+                "last": "Tjon",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony04.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Tydeus",
+            "officer": {
+                "first": "Carson",
+                "gender": "MALE",
+                "last": "McCullough",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chicomoztoc Metroplex VXI",
+            "officer": {
+                "first": "Jules",
+                "gender": "MALE",
+                "last": "Bentley",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Bird",
+            "officer": {
+                "first": "Innon",
+                "gender": "MALE",
+                "last": "Nephus",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Lucina",
+            "officer": {
+                "first": "Norman",
+                "gender": "MALE",
+                "last": "Europa",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Trenchant",
+            "officer": {
+                "first": "Keith",
+                "gender": "MALE",
+                "last": "Ezana",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Venus",
+            "officer": {
+                "first": "Eunomia",
+                "gender": "FEMALE",
+                "last": "Wynn",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Mulciber",
+            "officer": {
+                "first": "Kuma",
+                "gender": "FEMALE",
+                "last": "Nessus",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Letum",
+            "officer": {
+                "first": "Pollux",
+                "gender": "MALE",
+                "last": "Heka",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Scudding Swiftly",
+            "officer": {
+                "first": "Terry",
+                "gender": "FEMALE",
+                "last": "Giedi",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Spirit of the XIV",
+            "officer": {
+                "first": "Kezia",
+                "gender": "FEMALE",
+                "last": "Quell",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Polaris Traveller",
+            "officer": {
+                "first": "Frederick",
+                "gender": "MALE",
+                "last": "Cabrakan",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victoria",
+            "officer": {
+                "first": "Nasa",
+                "gender": "FEMALE",
+                "last": "McFadden",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony04.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Briseus",
+            "officer": {
+                "first": "Mars",
+                "gender": "MALE",
+                "last": "Petra",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS High Moon",
+            "officer": {
+                "first": "Eris",
+                "gender": "FEMALE",
+                "last": "Weber",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Gegenschein",
+            "officer": {
+                "first": "Clarke",
+                "gender": "MALE",
+                "last": "Bijl",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Golden Glow",
+            "officer": {
+                "first": "Haliim",
+                "gender": "MALE",
+                "last": "Thisbe",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victory at Jangala",
+            "officer": {
+                "first": "Ezana",
+                "gender": "MALE",
+                "last": "Hygiea",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Selene",
+            "officer": {
+                "first": "Lara",
+                "gender": "FEMALE",
+                "last": "Aziza",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Legacy of the Domain",
+            "officer": {
+                "first": "Orion",
+                "gender": "MALE",
+                "last": "Struve",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Upholder",
+            "officer": {
+                "first": "Isis",
+                "gender": "FEMALE",
+                "last": "Olympus",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chicomoztoc Metroplex IV",
+            "officer": {
+                "first": "Kleopatra",
+                "gender": "FEMALE",
+                "last": "Fourth",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony11.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Geminus",
+            "officer": {
+                "first": "Kim",
+                "gender": "MALE",
+                "last": "Gupta",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Audacious",
+            "officer": {
+                "first": "Tuan",
+                "gender": "MALE",
+                "last": "Ocampo",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Legionnaire",
+            "officer": {
+                "first": "Valentine",
+                "gender": "FEMALE",
+                "last": "Rankin",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony17.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chryseis",
+            "officer": {
+                "first": "Tuan",
+                "gender": "MALE",
+                "last": "Scripps",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Amarynceus",
+            "officer": {
+                "first": "Kuma",
+                "gender": "MALE",
+                "last": "Torrey",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Caeculus",
+            "officer": {
+                "first": "Sheliak",
+                "gender": "FEMALE",
+                "last": "Fernandez",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS 10000 Lightyears",
+            "officer": {
+                "first": "Hayden",
+                "gender": "MALE",
+                "last": "Frimaire",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Comet",
+            "officer": {
+                "first": "Megas",
+                "gender": "MALE",
+                "last": "Murphy",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victory of Galatia",
+            "officer": {
+                "first": "Mira",
+                "gender": "FEMALE",
+                "last": "Booker",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victory of Chicomoztoc",
+            "officer": {
+                "first": "Gordon",
+                "gender": "MALE",
+                "last": "Gula",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Verminus",
+            "officer": {
+                "first": "Pollux",
+                "gender": "MALE",
+                "last": "Luytenian",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Borage",
+            "officer": {
+                "first": "Martin",
+                "gender": "MALE",
+                "last": "Simpson",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Sergestus",
+            "officer": {
+                "first": "Hasper",
+                "gender": "MALE",
+                "last": "Lahoti",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Erycina",
+            "officer": {
+                "first": "Farel",
+                "gender": "MALE",
+                "last": "Chiron",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Niobe",
+            "officer": {
+                "first": "Ray",
+                "gender": "MALE",
+                "last": "Patrick",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Quirinus",
+            "officer": {
+                "first": "Filipa",
+                "gender": "FEMALE",
+                "last": "Phobos",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Mephitis",
+            "officer": {
+                "first": "Zun",
+                "gender": "MALE",
+                "last": "Ngo",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Soranus",
+            "officer": {
+                "first": "Mason",
+                "gender": "MALE",
+                "last": "Parsons",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Bias",
+            "officer": {
+                "first": "Shannon",
+                "gender": "FEMALE",
+                "last": "Basumatary",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Quirinus",
+            "officer": {
+                "first": "Zec",
+                "gender": "MALE",
+                "last": "Moise",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Aphaea",
+            "officer": {
+                "first": "Lee",
+                "gender": "MALE",
+                "last": "Allat",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony01.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Venus",
+            "officer": {
+                "first": "Casey",
+                "gender": "FEMALE",
+                "last": "Webb",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Phocus",
+            "officer": {
+                "first": "Michael",
+                "gender": "MALE",
+                "last": "Dickerson",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony01.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victory of Galatia",
+            "officer": {
+                "first": "Arinna",
+                "gender": "FEMALE",
+                "last": "Hygiea",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Cecrops",
+            "officer": {
+                "first": "Hektor",
+                "gender": "MALE",
+                "last": "McIntyre",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Obarator",
+            "officer": {
+                "first": "Lamb",
+                "gender": "FEMALE",
+                "last": "Gliese",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony17.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Unrivalled",
+            "officer": {
+                "first": "Thanh",
+                "gender": "MALE",
+                "last": "Mantaro",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Pax",
+            "officer": {
+                "first": "Noel",
+                "gender": "FEMALE",
+                "last": "Kyugu",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Castores",
+            "officer": {
+                "first": "America",
+                "gender": "FEMALE",
+                "last": "West",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Thalia",
+            "officer": {
+                "first": "Kezia",
+                "gender": "FEMALE",
+                "last": "Pyramus",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Endymion",
+            "officer": {
+                "first": "Anath",
+                "gender": "FEMALE",
+                "last": "Eulalia",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Spirit of the XIV",
+            "officer": {
+                "first": "Ayomide",
+                "gender": "FEMALE",
+                "last": "Odonnell",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Defiant",
+            "officer": {
+                "first": "Hayden",
+                "gender": "MALE",
+                "last": "Ganymede",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Apis",
+            "officer": {
+                "first": "Joyce",
+                "gender": "FEMALE",
+                "last": "Riggs",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony17.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Prize of High Orbit",
+            "officer": {
+                "first": "Prozor",
+                "gender": "FEMALE",
+                "last": "Mintaka",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Phaenon",
+            "officer": {
+                "first": "Ashley",
+                "gender": "FEMALE",
+                "last": "Briggs",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Eurus",
+            "officer": {
+                "first": "Cosimo",
+                "gender": "MALE",
+                "last": "Secondshift",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Hylas",
+            "officer": {
+                "first": "George",
+                "gender": "MALE",
+                "last": "Aldebaran",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony09.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Coatl",
+            "officer": {
+                "first": "Fourth",
+                "gender": "MALE",
+                "last": "Anath",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Diana",
+            "officer": {
+                "first": "Dawit",
+                "gender": "MALE",
+                "last": "Hebe",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Triumph of CXCIV",
+            "officer": {
+                "first": "Addo",
+                "gender": "MALE",
+                "last": "Richard",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Stercutus",
+            "officer": {
+                "first": "Purslane",
+                "gender": "FEMALE",
+                "last": "Rocha",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Highest High",
+            "officer": {
+                "first": "Alice",
+                "gender": "FEMALE",
+                "last": "Kirk",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Conny's Heart",
+            "officer": {
+                "first": "Ares",
+                "gender": "MALE",
+                "last": "Richter",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chicomoztoc Metroplex XXI",
+            "officer": {
+                "first": "Oberon",
+                "gender": "MALE",
+                "last": "Ganymede",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Ceisus",
+            "officer": {
+                "first": "Apollo",
+                "gender": "MALE",
+                "last": "Buckner",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Vigilant",
+            "officer": {
+                "first": "David",
+                "gender": "MALE",
+                "last": "Schmidt",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Remember the Bismar",
+            "officer": {
+                "first": "Two",
+                "gender": "MALE",
+                "last": "Brock",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Mars",
+            "officer": {
+                "first": "Volta",
+                "gender": "MALE",
+                "last": "Zuan",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Old Earth Or Bust",
+            "officer": {
+                "first": "Hayden",
+                "gender": "MALE",
+                "last": "Three",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Dark Matters",
+            "officer": {
+                "first": "Second",
+                "gender": "FEMALE",
+                "last": "Dysnomia",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Hyperspace Dreaming",
+            "officer": {
+                "first": "Titania",
+                "gender": "FEMALE",
+                "last": "Dubois",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Novensilus",
+            "officer": {
+                "first": "Alaska",
+                "gender": "FEMALE",
+                "last": "Psyche",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Gagarin's Dream",
+            "officer": {
+                "first": "Varuna",
+                "gender": "FEMALE",
+                "last": "Oni",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Undaunted",
+            "officer": {
+                "first": "Hasper",
+                "gender": "MALE",
+                "last": "Hadir",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Venerable",
+            "officer": {
+                "first": "Kim",
+                "gender": "FEMALE",
+                "last": "Europa",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Amphidamas",
+            "officer": {
+                "first": "Ceres",
+                "gender": "FEMALE",
+                "last": "Hyadum",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Sophie",
+            "officer": {
+                "first": "Morgan",
+                "gender": "MALE",
+                "last": "Ward",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Brightwitch",
+            "officer": {
+                "first": "Summer",
+                "gender": "FEMALE",
+                "last": "Stark",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Volturnus",
+            "officer": {
+                "first": "Paris",
+                "gender": "MALE",
+                "last": "Roberts",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Ixion",
+            "officer": {
+                "first": "Nour",
+                "gender": "FEMALE",
+                "last": "Thisbe",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony11.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Aequitas",
+            "officer": {
+                "first": "Alice",
+                "gender": "FEMALE",
+                "last": "Andrews",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony11.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Triumph of CVII",
+            "officer": {
+                "first": "Claudia",
+                "gender": "FEMALE",
+                "last": "Vegan",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony10.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Aquilo",
+            "officer": {
+                "first": "Cybele",
+                "gender": "FEMALE",
+                "last": "Meissa",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Psire",
+            "officer": {
+                "first": "Rosemary",
+                "gender": "FEMALE",
+                "last": "Heka",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Feather of the Phoenix",
+            "officer": {
+                "first": "Abdou",
+                "gender": "MALE",
+                "last": "Allat",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Two Pleas",
+            "officer": {
+                "first": "Ishtar",
+                "gender": "FEMALE",
+                "last": "Iraklidis",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Melanthus",
+            "officer": {
+                "first": "Bogdan",
+                "gender": "MALE",
+                "last": "Matawak",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Prize of High Orbit",
+            "officer": {
+                "first": "Vantu",
+                "gender": "MALE",
+                "last": "Pham",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Nerites",
+            "officer": {
+                "first": "Louis",
+                "gender": "MALE",
+                "last": "Ito",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chicomoztoc Metroplex XXI",
+            "officer": {
+                "first": "Monday",
+                "gender": "MALE",
+                "last": "Lange",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Triumph",
+            "officer": {
+                "first": "Charon",
+                "gender": "MALE",
+                "last": "Dalmar",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Trenchant",
+            "officer": {
+                "first": "Gilbert",
+                "gender": "MALE",
+                "last": "Eunomia",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Vanquilon-Echo",
+            "officer": {
+                "first": "Lazar",
+                "gender": "MALE",
+                "last": "Titan",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Inevitable",
+            "officer": {
+                "first": "Norton",
+                "gender": "MALE",
+                "last": "Belley",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Come And Gone",
+            "officer": {
+                "first": "Elektra",
+                "gender": "FEMALE",
+                "last": "Kinney",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Caeneus",
+            "officer": {
+                "first": "Anastasia",
+                "gender": "FEMALE",
+                "last": "Robles",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony04.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Illustrious",
+            "officer": {
+                "first": "Rania",
+                "gender": "FEMALE",
+                "last": "Rosemont",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Mulciber",
+            "officer": {
+                "first": "Boudicca",
+                "gender": "FEMALE",
+                "last": "Maragos",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Enigmata",
+            "officer": {
+                "first": "Kali",
+                "gender": "FEMALE",
+                "last": "McCarty",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Hot Pursuit",
+            "officer": {
+                "first": "Riddle",
+                "gender": "MALE",
+                "last": "Bijl",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Melanthus",
+            "officer": {
+                "first": "Izar",
+                "gender": "MALE",
+                "last": "Worthing",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Inuus",
+            "officer": {
+                "first": "Intan",
+                "gender": "FEMALE",
+                "last": "Allat",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Amon Roc",
+            "officer": {
+                "first": "Mir",
+                "gender": "MALE",
+                "last": "Pinard",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Coatl",
+            "officer": {
+                "first": "Kemi",
+                "gender": "FEMALE",
+                "last": "Altair",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Bicentennial",
+            "officer": {
+                "first": "Gao",
+                "gender": "MALE",
+                "last": "Pratt",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chicomoztoc Metroplex IIIL",
+            "officer": {
+                "first": "Orion",
+                "gender": "MALE",
+                "last": "Kleopatra",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Procas",
+            "officer": {
+                "first": "Kelly",
+                "gender": "MALE",
+                "last": "Urania",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chance",
+            "officer": {
+                "first": "Farel",
+                "gender": "MALE",
+                "last": "Franks",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Novensilus",
+            "officer": {
+                "first": "Ares",
+                "gender": "MALE",
+                "last": "Figueroa",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony01.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Caeculus",
+            "officer": {
+                "first": "Valentine",
+                "gender": "FEMALE",
+                "last": "Richardson",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victory of Maxios",
+            "officer": {
+                "first": "Emma",
+                "gender": "FEMALE",
+                "last": "Tau Ceti",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Tabard",
+            "officer": {
+                "first": "Gregory",
+                "gender": "MALE",
+                "last": "Dalmar",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Deverra",
+            "officer": {
+                "first": "Luna",
+                "gender": "FEMALE",
+                "last": "Cotton",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Augustus",
+            "officer": {
+                "first": "Megas",
+                "gender": "MALE",
+                "last": "Colors",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Starfarer",
+            "officer": {
+                "first": "Howard",
+                "gender": "MALE",
+                "last": "Aetos",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Mulciber",
+            "officer": {
+                "first": "Kezia",
+                "gender": "FEMALE",
+                "last": "Psyche",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Eidothea",
+            "officer": {
+                "first": "Adewale",
+                "gender": "MALE",
+                "last": "Bender",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Oph-Bellar Rock",
+            "officer": {
+                "first": "Paolo",
+                "gender": "MALE",
+                "last": "Richards",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Aurochs",
+            "officer": {
+                "first": "Psyche",
+                "gender": "FEMALE",
+                "last": "Ganymede",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Baucis",
+            "officer": {
+                "first": "Ares",
+                "gender": "MALE",
+                "last": "Blackwell",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony13.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Dawn Taken",
+            "officer": {
+                "first": "Frost",
+                "gender": "MALE",
+                "last": "Carey",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony01.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Triumph of CXCIV",
+            "officer": {
+                "first": "Fourth",
+                "gender": "FEMALE",
+                "last": "Alderamin",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony04.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Remember the Bismar",
+            "officer": {
+                "first": "Aisha",
+                "gender": "FEMALE",
+                "last": "Valentine",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Antevorte",
+            "officer": {
+                "first": "Dale",
+                "gender": "MALE",
+                "last": "Jacquard",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Kardashevian",
+            "officer": {
+                "first": "Friday",
+                "gender": "MALE",
+                "last": "Hebe",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Cleodaeus",
+            "officer": {
+                "first": "Titan",
+                "gender": "MALE",
+                "last": "Lamana",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Nox",
+            "officer": {
+                "first": "Zosma",
+                "gender": "FEMALE",
+                "last": "Thisbe",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Cleodaeus",
+            "officer": {
+                "first": "Reese",
+                "gender": "FEMALE",
+                "last": "Elektra",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Hippomenes",
+            "officer": {
+                "first": "Triton",
+                "gender": "MALE",
+                "last": "Nephus",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Tsiolkovsky's Vision",
+            "officer": {
+                "first": "Hesperus",
+                "gender": "MALE",
+                "last": "McFadden",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony01.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Upholder",
+            "officer": {
+                "first": "Ali",
+                "gender": "MALE",
+                "last": "Europa",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony01.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Forgive Us Enos",
+            "officer": {
+                "first": "Titan",
+                "gender": "MALE",
+                "last": "Elektra",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Nemestrinus",
+            "officer": {
+                "first": "Ursa",
+                "gender": "FEMALE",
+                "last": "Oberon",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Inevitable",
+            "officer": {
+                "first": "Orion",
+                "gender": "MALE",
+                "last": "Monroe",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victoria",
+            "officer": {
+                "first": "Adewale",
+                "gender": "MALE",
+                "last": "Sutton",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Romulus",
+            "officer": {
+                "first": "Moussa",
+                "gender": "MALE",
+                "last": "Johnston",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony09.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Busiris",
+            "officer": {
+                "first": "Egypt",
+                "gender": "FEMALE",
+                "last": "Hektor",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Astute",
+            "officer": {
+                "first": "Ganymede",
+                "gender": "MALE",
+                "last": "Barlow",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony05.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Shift Enduring",
+            "officer": {
+                "first": "Halima",
+                "gender": "FEMALE",
+                "last": "Combs",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Trooper",
+            "officer": {
+                "first": "Andronica",
+                "gender": "FEMALE",
+                "last": "Jenkins",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Venus",
+            "officer": {
+                "first": "Rania",
+                "gender": "FEMALE",
+                "last": "Dunn",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Inevitable",
+            "officer": {
+                "first": "Chase",
+                "gender": "FEMALE",
+                "last": "Quick",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait22.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Kamiture Anos",
+            "officer": {
+                "first": "Douglas",
+                "gender": "MALE",
+                "last": "Vaughn",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Vulturnus",
+            "officer": {
+                "first": "Ashley",
+                "gender": "FEMALE",
+                "last": "Ellis",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Ulysses",
+            "officer": {
+                "first": "Day",
+                "gender": "FEMALE",
+                "last": "Buckley",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony04.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Aeacus",
+            "officer": {
+                "first": "Kim",
+                "gender": "MALE",
+                "last": "Rice",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony02.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Remus",
+            "officer": {
+                "first": "Luna",
+                "gender": "FEMALE",
+                "last": "Torres",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Triumph of CXCIV",
+            "officer": {
+                "first": "Raymond",
+                "gender": "MALE",
+                "last": "Eulalia",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Outcast",
+            "officer": {
+                "first": "Nisa",
+                "gender": "FEMALE",
+                "last": "Orr",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Astraeus",
+            "officer": {
+                "first": "Julia",
+                "gender": "FEMALE",
+                "last": "Zuan",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait22.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Minerva",
+            "officer": {
+                "first": "Mercury",
+                "gender": "MALE",
+                "last": "Schmidt",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Space Dog",
+            "officer": {
+                "first": "Kennedy",
+                "gender": "FEMALE",
+                "last": "Cygnus",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Fulgora",
+            "officer": {
+                "first": "Wadjet",
+                "gender": "FEMALE",
+                "last": "Wheeler",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony04.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chicomoztoc Metroplex IV",
+            "officer": {
+                "first": "Symbiote",
+                "gender": "MALE",
+                "last": "Desjardins",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Cleochareia",
+            "officer": {
+                "first": "Amaru",
+                "gender": "MALE",
+                "last": "Hygiea",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony01.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Hersilia",
+            "officer": {
+                "first": "Martin",
+                "gender": "MALE",
+                "last": "Triton",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Pomona",
+            "officer": {
+                "first": "Aurora",
+                "gender": "FEMALE",
+                "last": "Korelev",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Consus",
+            "officer": {
+                "first": "Titan",
+                "gender": "MALE",
+                "last": "Best",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victory at Jangala",
+            "officer": {
+                "first": "River",
+                "gender": "FEMALE",
+                "last": "Bellis",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Chicomoztoc Metroplex XXI",
+            "officer": {
+                "first": "Ares",
+                "gender": "MALE",
+                "last": "Kolva",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Glower",
+            "officer": {
+                "first": "Lina",
+                "gender": "FEMALE",
+                "last": "Aludra",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Coeurl",
+            "officer": {
+                "first": "Kleopatra",
+                "gender": "FEMALE",
+                "last": "Coleman",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Laniakea Traveller",
+            "officer": {
+                "first": "Titania",
+                "gender": "FEMALE",
+                "last": "Curran",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony11.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Triumph",
+            "officer": {
+                "first": "Uther",
+                "gender": "MALE",
+                "last": "Pepin",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Akheilos",
+            "officer": {
+                "first": "Spring",
+                "gender": "FEMALE",
+                "last": "Kleopatra",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Space Raptor",
+            "officer": {
+                "first": "Ara",
+                "gender": "FEMALE",
+                "last": "Perez",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony03.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Rhesus",
+            "officer": {
+                "first": "Zarine",
+                "gender": "FEMALE",
+                "last": "Clinker",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony17.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Glaucus",
+            "officer": {
+                "first": "Arafura",
+                "gender": "FEMALE",
+                "last": "Verdun",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Cromo",
+            "officer": {
+                "first": "Allat",
+                "gender": "FEMALE",
+                "last": "Chiron",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Mercurial",
+            "officer": {
+                "first": "Eulalia",
+                "gender": "FEMALE",
+                "last": "Park",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Hot Pursuit",
+            "officer": {
+                "first": "Ursa",
+                "gender": "FEMALE",
+                "last": "Pyramus",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Faustulus",
+            "officer": {
+                "first": "Tertia",
+                "gender": "FEMALE",
+                "last": "Guthrie",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Zetamax",
+            "officer": {
+                "first": "Boudicca",
+                "gender": "FEMALE",
+                "last": "Maddox",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait42.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Eurus",
+            "officer": {
+                "first": "Hayden",
+                "gender": "MALE",
+                "last": "Zuan",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait33.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Star Blazer",
+            "officer": {
+                "first": "Aisha",
+                "gender": "FEMALE",
+                "last": "Hygiea",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony08.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Fraus",
+            "officer": {
+                "first": "Esther",
+                "gender": "FEMALE",
+                "last": "Ramirez",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony14.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Polaris Traveller",
+            "officer": {
+                "first": "Chaiya",
+                "gender": "MALE",
+                "last": "Imran",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony09.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Callirhoe",
+            "officer": {
+                "first": "Salha",
+                "gender": "MALE",
+                "last": "Blake",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony12.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Ulysses",
+            "officer": {
+                "first": "Psyche",
+                "gender": "FEMALE",
+                "last": "Powell",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait37.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Victory of Maxios",
+            "officer": {
+                "first": "Irene",
+                "gender": "FEMALE",
+                "last": "Alvarez",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait16.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Metope",
+            "officer": {
+                "first": "Charon",
+                "gender": "MALE",
+                "last": "Qasim",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony09.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Nova",
+            "officer": {
+                "first": "Ares",
+                "gender": "MALE",
+                "last": "Kila",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony15.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        },
+        {
+            "cr": 1,
+            "name": "HSS Siege of Raesvelg",
+            "officer": {
+                "first": "Addo",
+                "gender": "MALE",
+                "last": "Wu",
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony07.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "adversary_kite_hegemony_Strike"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 4,
+            "fluxVents": 4,
+            "hullId": "kite_hegemony",
+            "hullMods": [
+                "eccm",
+                "missleracks",
+                "pointdefenseai",
+                "comp_armor",
+                "damaged_mounts",
+                "erratic_injector",
+                "glitched_sensors",
+                "fragile_subsystems",
+                "missile_autoloader"
+            ],
+            "permaMods": [
+                "eccm",
+                "missleracks",
+                "pointdefenseai",
+                "comp_armor",
+                "damaged_mounts",
+                "erratic_injector",
+                "glitched_sensors",
+                "fragile_subsystems"
+            ],
+            "sMods": [
+                "eccm",
+                "missleracks",
+                "pointdefenseai"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_kite_hegemony_Strike",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "gorgon",
+                    "WS 002": "gorgon",
+                    "WS 003": "lightneedler"
+                }
+            }]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 8,
+            "fluxVents": 0,
+            "hullId": "kite_original",
+            "hullMods": [
+                "ecm",
+                "nav_relay",
+                "operations_center",
+                "comp_storage",
+                "degraded_drive_field",
+                "erratic_injector",
+                "increased_maintenance",
+                "comp_structure",
+                "auxiliarythrusters",
+                "blast_doors",
+                "militarized_subsystems",
+                "reinforcedhull",
+                "unstable_injector"
+            ],
+            "permaMods": [
+                "ecm",
+                "nav_relay",
+                "operations_center",
+                "comp_storage",
+                "degraded_drive_field",
+                "erratic_injector",
+                "increased_maintenance",
+                "comp_structure"
+            ],
+            "sMods": [
+                "ecm",
+                "nav_relay",
+                "operations_center"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "adversary_kite_original_Support",
+            "weaponGroups": []
+        }
+    ]
+}

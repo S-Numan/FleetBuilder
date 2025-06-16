@@ -1,0 +1,701 @@
+{
+    "aggression_doctrine": 3,
+    "commander": {
+        "first": "Farah",
+        "gender": "FEMALE",
+        "last": "Keid",
+        "member": {
+            "cr": 1,
+            "name": "ISS Knuckle-Duster",
+            "variantId": "LaL_eradicator_strike"
+        },
+        "personality": "aggressive",
+        "portrait": "graphics/portraits/portrait37.png",
+        "post": "fleetCommander",
+        "rank": "spaceCaptain",
+        "skills": {
+            "combat_endurance": 1,
+            "crew_training": 1,
+            "damage_control": 1,
+            "electronic_warfare": 1,
+            "impact_mitigation": 1,
+            "point_defense": 1,
+            "systems_expertise": 1,
+            "target_analysis": 2
+        },
+        "tags": []
+    },
+    "fleetName": "Rogue mercenary fleet",
+    "members": [
+        {
+            "cr": 1,
+            "name": "ISS Dark Matters",
+            "officer": {
+                "first": "Thisbe",
+                "gender": "FEMALE",
+                "last": "Cole",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1
+                },
+                "tags": []
+            },
+            "variantId": "LaL_eradicator_support"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ISS Advantage",
+            "variantId": "LaL_eradicator_support"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Let's Give It Another Go",
+            "variantId": "colossus_Standard"
+        },
+        {
+            "cr": 1,
+            "name": "ISS Hymenaios",
+            "officer": {
+                "first": "Urania",
+                "gender": "FEMALE",
+                "last": "Ginan",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait32.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "field_modulation": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2
+                },
+                "tags": []
+            },
+            "variantId": "LaL_manticore_shield"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ISS Pwyll",
+            "officer": {
+                "first": "Irene",
+                "gender": "FEMALE",
+                "last": "Martinez",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait41.png",
+                "skills": {
+                    "damage_control": 2,
+                    "field_modulation": 1,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "LaL_manticore_shield"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ISS Admirable",
+            "officer": {
+                "first": "Two",
+                "gender": "FEMALE",
+                "last": "Heka",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait22.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "point_defense": 1
+                },
+                "tags": []
+            },
+            "variantId": "LaL_manticore_standoff"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ISS Upholder",
+            "officer": {
+                "first": "Dajeil",
+                "gender": "FEMALE",
+                "last": "Pyramus",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait28.png",
+                "skills": {
+                    "helmsmanship": 1,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 1
+                },
+                "tags": []
+            },
+            "variantId": "LaL_manticore_standoff"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Persephone",
+            "variantId": "phaeton_Standard"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ISS Ventir Traviolet",
+            "officer": {
+                "first": "Wezen",
+                "gender": "MALE",
+                "last": "Holloway",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait25.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1
+                },
+                "tags": []
+            },
+            "variantId": "LaL_vanguard_reliable"
+        },
+        {
+            "cr": 1,
+            "name": "ISS Admirable",
+            "officer": {
+                "first": "Jupiter",
+                "gender": "MALE",
+                "last": "Pleione",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait40.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1
+                },
+                "tags": []
+            },
+            "variantId": "LaL_vanguard_reliable"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ISS Golden Arrow",
+            "variantId": "LaL_vanguard_reliable"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ISS Thersites",
+            "variantId": "LaL_vanguard_reliable"
+        },
+        {
+            "cr": 1,
+            "name": "ISS Adamant",
+            "officer": {
+                "first": "Amina",
+                "gender": "FEMALE",
+                "last": "Europa",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait22.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                },
+                "tags": []
+            },
+            "variantId": "LaL_vanguard_reliable"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "ISS Star Witch",
+            "variantId": "13927_0"
+        },
+        {
+            "cr": 0.8499722,
+            "name": "ISS Tabard",
+            "officer": {
+                "first": "Jordan",
+                "gender": "MALE",
+                "last": "Zeya",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "impact_mitigation": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "13927_1"
+        },
+        {
+            "cr": 0.8499652,
+            "name": "ISS Forgive Us Enos",
+            "officer": {
+                "first": "Ixchel",
+                "gender": "FEMALE",
+                "last": "Urania",
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait39.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "missile_specialization": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "13927_2"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 18,
+            "fluxVents": 30,
+            "hullId": "eradicator",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "unstable_injector"
+            ],
+            "permaMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit",
+                "always_recoverable"
+            ],
+            "variantId": "LaL_eradicator_strike",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "heavymortar",
+                        "WS 007": "heavymortar"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "heatseeker",
+                        "WS 001": "heatseeker",
+                        "WS 002": "heatseeker",
+                        "WS 003": "heatseeker",
+                        "WS 004": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "railgun",
+                        "WS 011": "railgun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "railgun",
+                        "WS 010": "railgun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "dualflak"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "vulcan",
+                        "WS 014": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 30,
+            "hullId": "eradicator",
+            "hullMods": [
+                "missleracks",
+                "eccm",
+                "targetingunit"
+            ],
+            "permaMods": ["targetingunit"],
+            "sMods": ["targetingunit"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "LaL_eradicator_support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "hveldriver"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "sabot",
+                        "WS 001": "sabot",
+                        "WS 002": "sabot",
+                        "WS 003": "sabot",
+                        "WS 004": "sabot"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "heavymauler",
+                        "WS 007": "heavymauler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "vulcan",
+                        "WS 009": "vulcan",
+                        "WS 010": "vulcan",
+                        "WS 011": "vulcan",
+                        "WS 012": "vulcan",
+                        "WS 013": "vulcan",
+                        "WS 014": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 9,
+            "goalVariant": true,
+            "hullId": "colossus",
+            "hullMods": [
+                "insulatedengine",
+                "unstable_injector"
+            ],
+            "permaMods": [],
+            "sMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "colossus_Standard",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "lightmg",
+                    "WS 002": "lightmg",
+                    "WS 003": "lightmg",
+                    "WS 004": "lightmg"
+                }
+            }]
+        },
+        {
+            "displayName": "Shield cracker",
+            "fluxCapacitors": 4,
+            "fluxVents": 20,
+            "hullId": "manticore",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "fluxbreakers"
+            ],
+            "permaMods": ["hardenedshieldemitter"],
+            "sMods": ["hardenedshieldemitter"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "LaL_manticore_shield",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "multineedler"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "typhoon",
+                        "WS 005": "typhoon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan",
+                        "WS 003": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Stand-off",
+            "fluxCapacitors": 3,
+            "fluxVents": 20,
+            "hullId": "manticore",
+            "hullMods": [
+                "missleracks",
+                "targetingunit"
+            ],
+            "permaMods": ["missleracks"],
+            "sMods": ["missleracks"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "LaL_manticore_standoff",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "gauss"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "annihilatorpod",
+                        "WS 005": "annihilatorpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightag",
+                        "WS 003": "lightag"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "goalVariant": true,
+            "hullId": "phaeton",
+            "hullMods": ["heavyarmor"],
+            "permaMods": [],
+            "sMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "phaeton_Standard",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "lightdualmg",
+                    "WS 002": "lightdualmg",
+                    "WS 003": "lightdualmg",
+                    "WS 004": "lightdualmg"
+                }
+            }]
+        },
+        {
+            "displayName": "Reliable",
+            "fluxCapacitors": 4,
+            "fluxVents": 10,
+            "hullId": "vanguard",
+            "hullMods": [
+                "reinforcedhull",
+                "fluxbreakers"
+            ],
+            "permaMods": [],
+            "sMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "LaL_vanguard_reliable",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 005": "lightneedler",
+                        "WS 006": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "swarmer",
+                        "WS 001": "swarmer",
+                        "WS 002": "swarmer"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "lightag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "vulcan",
+                        "WS 004": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 7,
+            "fluxVents": 10,
+            "hullId": "vigilance_default_D",
+            "hullMods": [
+                "fluxdistributor",
+                "fluxcoil",
+                "comp_hull",
+                "degraded_shields",
+                "faulty_grid"
+            ],
+            "permaMods": [
+                "comp_hull",
+                "degraded_shields",
+                "faulty_grid"
+            ],
+            "sMods": [],
+            "variantId": "13927_0",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "typhoon"}
+                }
+            ]
+        },
+        {
+            "displayName": "Escort",
+            "fluxCapacitors": 0,
+            "fluxVents": 10,
+            "hullId": "monitor_default_D",
+            "hullMods": [
+                "extendedshieldemitter",
+                "hardenedshieldemitter",
+                "increased_maintenance"
+            ],
+            "permaMods": [
+                "hardenedshieldemitter",
+                "increased_maintenance"
+            ],
+            "sMods": ["hardenedshieldemitter"],
+            "variantId": "13927_1",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "lightneedler",
+                        "WS 004": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "flak",
+                        "WS 002": "flak"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Point Defense",
+            "fluxCapacitors": 0,
+            "fluxVents": 9,
+            "hullId": "wolf_default_D",
+            "hullMods": [
+                "turretgyros",
+                "fluxdistributor",
+                "fluxcoil",
+                "targetingunit",
+                "armoredweapons",
+                "erratic_injector",
+                "faulty_auto",
+                "degraded_life_support"
+            ],
+            "permaMods": [
+                "erratic_injector",
+                "faulty_auto",
+                "degraded_life_support"
+            ],
+            "sMods": [],
+            "variantId": "13927_2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "phasebeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 005": "swarmer",
+                        "WS 006": "swarmer"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "pdburst",
+                        "WS 003": "pdlaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lrpdlaser"}
+                }
+            ]
+        }
+    ]
+}
