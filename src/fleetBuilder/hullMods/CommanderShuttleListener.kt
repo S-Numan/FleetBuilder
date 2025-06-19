@@ -10,8 +10,8 @@ import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
 import com.fs.starfarer.campaign.CampaignEngine
-import fleetBuilder.ModSettings.commandShuttleId
-import fleetBuilder.misc.MISC
+import fleetBuilder.config.ModSettings.commandShuttleId
+import fleetBuilder.util.MISC
 import java.awt.Color
 
 

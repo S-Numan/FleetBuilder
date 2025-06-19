@@ -6,8 +6,8 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.VariantSource
-import fleetBuilder.getCompatibleDLessHullId
-import fleetBuilder.getEffectiveHullId
+import fleetBuilder.util.getCompatibleDLessHullId
+import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.variants.LoadoutManager.getAnyVariantsForHullspec
 
 object VariantLib {

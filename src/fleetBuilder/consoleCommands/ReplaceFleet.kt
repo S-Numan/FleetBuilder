@@ -1,14 +1,11 @@
 package fleetBuilder.consoleCommands
 
-import fleetBuilder.serialization.FleetSerialization.getFleetFromJson
 import com.fs.starfarer.api.Global
-import fleetBuilder.misc.Clipboard.getClipboardTextSafe
-import fleetBuilder.misc.MISC.addPlayerShuttle
-import fleetBuilder.misc.MISC.getFleetFromJsonComplainIfMissing
-import fleetBuilder.misc.MISC.removePlayerShuttle
-import fleetBuilder.misc.MISC.togglePlayerShuttle
-import fleetBuilder.misc.MISC.showError
-import fleetBuilder.misc.MISC.updateFleetPanelContents
+import fleetBuilder.misc.ClipboardUtil.getClipboardTextSafe
+import fleetBuilder.util.MISC.addPlayerShuttle
+import fleetBuilder.util.MISC.getFleetFromJsonComplainIfMissing
+import fleetBuilder.util.MISC.removePlayerShuttle
+import fleetBuilder.util.MISC.updateFleetPanelContents
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings

@@ -1,6 +1,6 @@
 package fleetBuilder.consoleCommands
 
-import fleetBuilder.misc.MISC
+import fleetBuilder.util.MISC
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.CommandListener

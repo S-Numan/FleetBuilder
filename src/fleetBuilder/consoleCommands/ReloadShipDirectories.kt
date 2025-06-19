@@ -1,8 +1,6 @@
 package fleetBuilder.consoleCommands
 
-import fleetBuilder.Reporter
-import fleetBuilder.variants.LoadoutManager.loadAllDirectories
-import fleetBuilder.variants.VariantLib
+import fleetBuilder.util.Reporter
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.Console
 

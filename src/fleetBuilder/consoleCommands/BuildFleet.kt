@@ -2,7 +2,7 @@ package fleetBuilder.consoleCommands
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.impl.campaign.ids.Industries
-import fleetBuilder.misc.MISC.addPlayerShuttle
+import fleetBuilder.util.MISC.addPlayerShuttle
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console

@@ -1,12 +1,12 @@
 package fleetBuilder.variants
 
-import fleetBuilder.serialization.VariantSerialization.getVariantFromJson
-import fleetBuilder.serialization.VariantSerialization.saveVariantToJson
+import fleetBuilder.persistence.VariantSerialization.getVariantFromJson
+import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.containsString
-import fleetBuilder.getEffectiveHullId
+import fleetBuilder.util.containsString
+import fleetBuilder.util.getEffectiveHullId
 import org.json.JSONArray
 
 class ShipDirectory(

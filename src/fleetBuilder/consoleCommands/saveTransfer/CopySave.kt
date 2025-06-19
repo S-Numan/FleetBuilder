@@ -1,7 +1,7 @@
 package fleetBuilder.consoleCommands.saveTransfer
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.misc.MISC
+import fleetBuilder.util.MISC
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console

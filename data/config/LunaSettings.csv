@@ -53,7 +53,7 @@ See the Dev tab for fun things you can do.",,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
-devHeader,Developer Options,Header,Developer Section,,,,,
+devHeader,Developer Header,Header,Developer Options,,,,,Dev
 devTextField,Dev Text Field,Text,"Requires dev mode to be true.
 
 CTRL + V in
@@ -62,10 +62,16 @@ Campaign map: Spawn fleet in the clipboard into the campaign
 
 CTRL + D in
 Codex: Adds the codex entry you’re looking at to your fleet.",,,,,Dev
+randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, automatically randomizes the ship name and officer name/portrait if present when pasting an element with them.
+
+This avoids pasted members looking like a clone army, and makes them look like a bunch of ships/officers that happen to have the same loadout instead",,,Dev
 unassignPlayer,Unassign Player,Boolean,false,,Remove your player officer with a right click: (places them in a command shuttle that can't fight or be copied. (Commander bonus still applies),,,Dev
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+visualHeader,Visual Header,Header,Visual Only,,,,,Dev
 showHiddenModsInTooltip,Show Hidden HullMods,Boolean,false,,Shows hullmods that are usually hidden in the tooltip,,,Dev
 showDebug,Show Debug,Boolean,false,,Show debug elements,,,Dev
 ,,,,,,,,
@@ -74,14 +80,8 @@ showDebug,Show Debug,Boolean,false,,Show debug elements,,,Dev
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
-randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, automatically randomizes the ship name and officer name/portrait if present when pasting an element with them.
-
-This avoids pasted members looking like a clone army, and makes them look like a bunch of ships/officers that happen to have the same loadout instead",,,Dev
 ,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-prefixHeader,Prefixes,Header,Prefix Section,,,,,Dev
+prefixHeader,Prefix Header,Header,Prefixes,,,,,Dev
 prefixText,Prefix Text Field,Text,"Prefixes do not accept anything other than one or two characters, A to Z
 Must restart game to apply",,,,,Dev
 defaultPrefix,Default Prefix,String,DF,,Default prefix that loadouts are saved to.,,,Dev

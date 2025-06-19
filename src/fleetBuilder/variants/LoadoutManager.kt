@@ -1,13 +1,13 @@
 package fleetBuilder.variants
 
-import fleetBuilder.ui.AutofitSpec
-import fleetBuilder.serialization.VariantSerialization.getVariantFromJsonWithMissing
+import fleetBuilder.ui.autofit.AutofitSpec
+import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.ModSettings
-import fleetBuilder.ModSettings.defaultPrefix
-import fleetBuilder.ModSettings.importPrefix
+import fleetBuilder.config.ModSettings
+import fleetBuilder.config.ModSettings.defaultPrefix
+import fleetBuilder.config.ModSettings.importPrefix
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
 import org.json.JSONObject
