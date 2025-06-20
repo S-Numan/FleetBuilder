@@ -3,7 +3,7 @@ package fleetBuilder.temporary
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
-import fleetBuilder.misc.ClipboardUtil.getClipboardJson
+import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.MISC
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings

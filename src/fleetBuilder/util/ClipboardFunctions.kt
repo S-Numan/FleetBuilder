@@ -9,9 +9,9 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
-import fleetBuilder.misc.ClipboardUtil.setClipboardText
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.variants.VariantLib.makeVariantID
 import starficz.ReflectionUtils
 

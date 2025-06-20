@@ -20,8 +20,6 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.coreui.CaptainPickerDialog
-import fleetBuilder.misc.ClipboardUtil.getClipboardJson
-import fleetBuilder.misc.ClipboardUtil.setClipboardText
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
@@ -41,6 +39,8 @@ import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
+import fleetBuilder.util.ClipboardUtil.getClipboardJson
+import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.MISC.addParamEntryToFleet
 import fleetBuilder.util.MISC.campaignPaste
 import fleetBuilder.util.MISC.fleetPaste

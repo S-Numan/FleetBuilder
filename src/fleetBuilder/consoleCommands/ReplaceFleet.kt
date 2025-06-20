@@ -1,7 +1,7 @@
 package fleetBuilder.consoleCommands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.misc.ClipboardUtil.getClipboardTextSafe
+import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe
 import fleetBuilder.util.MISC.addPlayerShuttle
 import fleetBuilder.util.MISC.getFleetFromJsonComplainIfMissing
 import fleetBuilder.util.MISC.removePlayerShuttle

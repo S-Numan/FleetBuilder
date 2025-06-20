@@ -14,9 +14,9 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.misc.ClipboardUtil.setClipboardText
 import fleetBuilder.config.ModSettings
 import fleetBuilder.autofit.AutofitApplier.applyVariantInRefitScreen
+import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.getAllAutofitSpecsForShip
 import fleetBuilder.variants.LoadoutManager.getAnyVariant

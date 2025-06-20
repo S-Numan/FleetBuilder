@@ -1,4 +1,4 @@
-package fleetBuilder.misc
+package fleetBuilder.util
 
 import org.json.JSONObject
 import java.awt.Toolkit
