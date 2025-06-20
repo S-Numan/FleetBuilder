@@ -9,7 +9,6 @@ import MagicLib.xAlignOffset
 import MagicLib.yAlignOffset
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.campaign.SpecialItemSpecAPI
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
