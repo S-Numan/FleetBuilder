@@ -8,6 +8,9 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.util.containsString
 import fleetBuilder.util.getEffectiveHullId
 import org.json.JSONArray
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ShipDirectory(
     val dir: String,
@@ -79,13 +82,27 @@ class ShipDirectory(
         shipPaths.remove(variantId)
         shipMissings.remove(variantId)
     }
-    fun addShip(variant: ShipVariantAPI, missingFromVariant: MissingElements = MissingElements(), applySMods: Boolean = true, includeDMods: Boolean = true, includeTags: Boolean = true): String{
+    fun addShip(variant: ShipVariantAPI, missingFromVariant: MissingElements = MissingElements(), applySMods: Boolean = true, includeDMods: Boolean = true, includeTags: Boolean = true, includeTime: Boolean = true): String{
         val variantToSave = variant.clone()
         variantToSave.hullVariantId = makeVariantID(variant)
 
         val json = saveVariantToJson(variantToSave, applySMods, includeDMods, includeTags)
 
+        //Ensures the JSON is readable, and uses the saved version of the variant to guarantee consistency across game restarts.
         val savedVariant = getVariantFromJson(json)
+
+        //Add time saved to file
+        if(includeTime) {
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+            val currentTime = Date()
+            val timeString = formatter.format(currentTime)
+            json.put("timeSaved", timeString)
+
+            //Example read time
+            //val parsedDate: Date = formatter.parse(timeString)
+            //val millis = parsedDate.time  // Get milliseconds since epoch if needed
+            //millis
+        }
 
         val shipPath = "${variant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"
 

@@ -211,8 +211,8 @@ object LoadoutManager {
         return Triple(ships, shipMissings, shipSources)
     }
 
-    fun saveLoadoutVariant(variant: ShipVariantAPI, prefix: String = "DF", missingFromVariant: MissingElements = MissingElements(), applySMods: Boolean = true, includeDMods: Boolean = true, includeTags: Boolean = true): String {//TODO, implement "includeHiddenHullmods"
-        return getShipDirectoryWithPrefix(prefix)?.addShip(variant, missingFromVariant, applySMods, includeDMods, includeTags) ?: return ""
+    fun saveLoadoutVariant(variant: ShipVariantAPI, prefix: String = "DF", missingFromVariant: MissingElements = MissingElements(), applySMods: Boolean = true, includeDMods: Boolean = true, includeTags: Boolean = true, includeTime: Boolean = true): String {//TODO, implement "includeHiddenHullmods"
+        return getShipDirectoryWithPrefix(prefix)?.addShip(variant, missingFromVariant, applySMods, includeDMods, includeTags, includeTime) ?: return ""
     }
 
     fun deleteLoadoutVariant(variantId: String) {
