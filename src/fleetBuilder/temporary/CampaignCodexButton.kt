@@ -116,7 +116,7 @@ class CampaignCodexButton: EveryFrameScript {
 
             val entry: String
 
-            if(ctrl)
+            if(ctrl && param !is CommoditySpecAPI && param !is SpecialItemSpecAPI)
                 entry = "Add blueprint"
             else if(param is HullModSpecAPI)
                 entry = "Add to faction"
