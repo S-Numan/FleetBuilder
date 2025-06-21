@@ -18,11 +18,11 @@
         "id": "MagicLib",
         "name": "MagicLib",
         #"version": "0.34"
-    },
-    {
-          "id": "lunalib",
-          "name": "LunaLib",
-          "version": { "major": "2", "minor": "0", "patch": "3"}
-    }
+    }#,
+    #{
+    #      "id": "lunalib",
+    #      "name": "LunaLib",
+    #      "version": { "major": "2", "minor": "0", "patch": "3"}
+    #}
   ],
 }
