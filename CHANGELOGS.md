@@ -1,3 +1,7 @@
+Version 1.3.5
+- Codex button now supports adding hullmods to your faction
+- Codex button supports giving the blueprint for the viewed entry by holding CTRL when clicking.
+
 Version 1.3.4
 - Moved mod_info to top-most json. No more duplicate mod_info entries for each and every variant in a fleet.
 

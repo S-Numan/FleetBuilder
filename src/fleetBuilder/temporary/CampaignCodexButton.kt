@@ -112,9 +112,13 @@ class CampaignCodexButton: EveryFrameScript {
                 else -> 1
             }
 
+            val ctrl = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
+
             val entry: String
 
-            if(param is HullModSpecAPI)
+            if(ctrl)
+                entry = "Add blueprint"
+            else if(param is HullModSpecAPI)
                 entry = "Add to faction"
              else
                 entry = "Add $count to fleet"
@@ -124,7 +128,6 @@ class CampaignCodexButton: EveryFrameScript {
             addToFleetButton!!.text = entry
             addToFleetButton!!.xAlignOffset = codex.width - addToFleetButton!!.width - pad
             addToFleetButton!!.yAlignOffset = -codex.height + addToFleetButton!!.height + pad
-
 
 
         } else {

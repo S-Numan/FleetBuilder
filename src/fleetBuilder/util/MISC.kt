@@ -223,6 +223,7 @@ object MISC {
     fun addParamEntryToFleet(sector: SectorAPI, ui: CampaignUIAPI, param: Any) {
         val shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)
         val alt = Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)
+        val ctrl = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
 
         val count = when {
             shift && alt -> 100
@@ -231,8 +232,11 @@ object MISC {
         }
 
         val cargo = Global.getSector().playerFleet.cargo
+        val faction = Global.getSector().playerFaction
 
         var message: String? = null
+
+        var json: JSONObject? = null
 
         when (param) {
             is CommoditySpecAPI -> {
@@ -246,45 +250,64 @@ object MISC {
             }
 
             is WeaponSpecAPI -> {
-                cargo.addWeapons(param.weaponId, count)
-                message = "Added $count '${param.weaponName}' to cargo"
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("weapon_bp", param.weaponId), count.toFloat())
+                    message = "Added $count '${param.weaponName}' blueprint to your cargo"
+                } else {
+                    cargo.addWeapons(param.weaponId, count)
+                    message = "Added $count '${param.weaponName}' to cargo"
+                }
             }
 
             is FighterWingSpecAPI -> {
-                cargo.addFighters(param.id, count)
-                message = "Added $count '${param.wingName}' to cargo"
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("fighter_bp", param.id), count.toFloat())
+                    message = "Added $count '${param.wingName}' blueprint to your cargo"
+                } else {
+                    cargo.addFighters(param.id, count)
+                    message = "Added $count '${param.wingName}' to cargo"
+                }
             }
 
             is HullModSpecAPI -> {
-                Global.getSector().playerFaction.addKnownHullMod(param.id)
-                message = "Added '${param.displayName}' your faction's known hullmods"
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("modspec", param.id), count.toFloat())
+                    message = "Added $count '${param.displayName}' blueprint to your cargo"
+                } else {
+                    Global.getSector().playerFaction.addKnownHullMod(param.id)
+                    message = "Added '${param.displayName}' your faction's known hullmods"
+                }
             }
-        }
 
-        if (!message.isNullOrEmpty()) {
-            ui.messageDisplay.addMessage(message)
-            return
-        }
-
-        repeat(count) {
-            val json = when (param) {
-                is ShipHullSpecAPI -> {
+            is ShipHullSpecAPI -> {
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("ship_bp", param.hullId), count.toFloat())
+                    message = "Added $count '${param.hullName}' blueprint to your cargo"
+                } else {
                     val emptyVariant =
                         Global.getSettings().createEmptyVariant(param.hullId, param)
-                    saveVariantToJson(emptyVariant)
+                    json = saveVariantToJson(emptyVariant)
                 }
-
-                is FleetMemberAPI -> {
-                    saveMemberToJson(param)
-                }
-
-                else -> null
             }
 
-            json?.let {
-                fleetPaste(sector, ui, it)
+            is FleetMemberAPI -> {
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("ship_bp", param.hullId), count.toFloat())
+                    message = "Added $count '${param.hullSpec.hullName}' blueprint to your cargo"
+                } else {
+                    json = saveMemberToJson(param)
+                }
             }
         }
+
+        if (json != null) {
+            repeat(count) {
+                fleetPaste(sector, ui, json)
+            }
+        }
+
+        if (!message.isNullOrEmpty())
+            ui.messageDisplay.addMessage(message)
     }
 
     fun campaignPaste(

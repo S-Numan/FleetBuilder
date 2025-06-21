@@ -184,6 +184,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     if (event.isLMBDownEvent || event.isRMBDownEvent ) {
 
                         try {
+
+                            val codex = getCodexDialog()
+
+                            if (codex != null)//If in codex, stop!
+                                continue
+
+
                             val core = getCoreUI() ?: continue
 
                             val children = (core.invoke("getChildrenNonCopy") as MutableList<*>?)
