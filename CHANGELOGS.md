@@ -1,3 +1,7 @@
+Version 1.3.3
+- Made LunaLib dependency optional
+- Added includeCommanderAsOfficer to saveFleetToJson, to allow avoiding adding the commander as an officer.
+
 Version 1.3.2
 - Tracks the time a variant was saved to the custom autofit UI, for future use. Does nothing as of now.
 
