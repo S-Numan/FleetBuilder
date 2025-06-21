@@ -118,9 +118,12 @@ class CampaignCodexButton: EveryFrameScript {
 
             if(ctrl && param !is CommoditySpecAPI && param !is SpecialItemSpecAPI)
                 entry = "Add blueprint"
-            else if(param is HullModSpecAPI)
-                entry = "Add to faction"
-             else
+            else if(param is HullModSpecAPI) {
+                if(Global.getSector().playerFaction.knowsHullMod((param as HullModSpecAPI).id))
+                    entry = "Already known"
+                else
+                    entry = "Add to faction"
+            } else
                 entry = "Add $count to fleet"
 
             val width = Global.getSettings().computeStringWidth(entry, Font.ORBITRON_20.name)
