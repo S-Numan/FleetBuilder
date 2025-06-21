@@ -544,6 +544,7 @@ object MISC {
             val fleetJson = saveFleetToJson(
                 sector.playerFleet,
                 includeCommander = false,
+                includeCommanderAsOfficer = false,
                 includeOfficers = handleOfficers,
                 includeIdleOfficers = handleOfficers
             )

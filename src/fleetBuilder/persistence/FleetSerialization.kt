@@ -167,7 +167,8 @@ object FleetSerialization {
     fun saveFleetToJson(
         campFleet: CampaignFleetAPI,
         includeOfficers: Boolean = true,
-        includeCommander: Boolean = true,
+        includeCommander: Boolean = true,//If a PersonAPI is set as a commander of the fleet.
+        includeCommanderAsOfficer: Boolean = true,//If a PersonAPI is set as an officer in the fleet.
         includeOfficerLevelingStats: Boolean = true,
         includeIdleOfficers: Boolean = false,
         includeCR: Boolean = true
@@ -188,13 +189,21 @@ object FleetSerialization {
         var commanderJson: JSONObject? = null
 
         for (member in fleet.membersListCopy) {
-            val isCommander = includeCommander && member.captain?.id == fleet.commander?.id
+            val isCommander = member.captain?.id == fleet.commander?.id
+
+            val shouldIncludeOfficer = if (isCommander) {
+                includeCommanderAsOfficer && includeOfficers
+            } else {
+                includeOfficers
+            }
+
             val memberJson = saveMemberToJson(
                 member,
-                includeOfficer = includeOfficers && !isCommander,
+                includeOfficer = shouldIncludeOfficer,
                 includeOfficerLevelingStats = includeOfficerLevelingStats,
                 includeCR = includeCR
             )
+
 
             val variant = memberJson.optJSONObject("variant")
                 ?: throw Exception("Failed to read variant from json after just creating it")
@@ -230,7 +239,7 @@ object FleetSerialization {
             memberJson.remove("variant")
             memberJson.put("variantId", uniqueVariantId)
 
-            if (isCommander) {
+            if (isCommander && includeCommander) {
                 commanderJson = saveOfficerToJson(fleet.commander, storeLevelingStats = includeOfficerLevelingStats)
                 if(!member.variant.hasHullMod(commandShuttleId))
                     commanderJson.put("member", memberJson)
