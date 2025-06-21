@@ -239,7 +239,7 @@ object FleetSerialization {
             memberJson.remove("variant")
             memberJson.put("variantId", uniqueVariantId)
 
-            if (isCommander && includeCommander) {
+            if (isCommander && includeCommander && includeCommanderAsOfficer) {
                 commanderJson = saveOfficerToJson(fleet.commander, storeLevelingStats = includeOfficerLevelingStats)
                 if(!member.variant.hasHullMod(commandShuttleId))
                     commanderJson.put("member", memberJson)
