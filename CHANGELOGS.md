@@ -1,3 +1,6 @@
+Version 1.3.4
+- Moved mod_info to top-most json. No more duplicate mod_info entries for each and every variant in a fleet.
+
 Version 1.3.3
 - Made LunaLib dependency optional
 - Added includeCommanderAsOfficer to saveFleetToJson, to allow avoiding adding the commander as an officer.
