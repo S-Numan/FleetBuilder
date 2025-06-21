@@ -6,6 +6,7 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.MISC
+import fleetBuilder.util.MISC.getMissingFromModInfo
 import fleetBuilder.util.toBinary
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib.getAllDMods
@@ -15,30 +16,8 @@ import org.json.JSONObject
 object VariantSerialization {
 
     fun getVariantFromJsonWithMissing(json: JSONObject): Pair<ShipVariantAPI, MissingElements>{
-
         val missingElements = MissingElements()
-
-        json.optJSONArray("mod_info")?.let {
-            repeat(it.length()) { i ->
-                val modSpecJson = it.optJSONObject(i)
-                if(modSpecJson != null) {
-                    val modSpecId = modSpecJson.optString("mod_id")
-                    val modSpecName = modSpecJson.optString("mod_name")
-                    val modSpecVersion = modSpecJson.optString("mod_version")
-
-                    var hasMod = false
-                    for (modSpecAPI in Global.getSettings().modManager.enabledModsCopy) {
-                        if (modSpecAPI.id == modSpecId) {
-                            hasMod = true
-                            break
-                        }
-                    }
-                    if (!hasMod) {
-                        missingElements.gameMods.add(Triple(modSpecId, modSpecName, modSpecVersion))
-                    }
-                }
-            }
-        }
+        getMissingFromModInfo(json, missingElements)
 
         val hullId = json.optString("hullId")
         if(hullId.isEmpty()) {
@@ -257,34 +236,24 @@ object VariantSerialization {
         variant: ShipVariantAPI,
         applySMods: Boolean = true,//If false, SMods will be treated like normal mods.
         includeDMods: Boolean = true,
-        includeTags: Boolean = true
+        includeTags: Boolean = true,
+        includeModInfo: Boolean = true,
     ): JSONObject {
-        val addedModIds = mutableSetOf<Triple<String, String, String>>()
-
-        val jsonVariant = saveModuleVariantToJson(variant, applySMods, includeDMods, includeTags, addedModIds)
+        val jsonVariant = saveModuleVariantToJson(variant, applySMods, includeDMods, includeTags)
 
         val jsonModules = JSONObject()
         for (moduleSlot in variant.moduleSlots) {
             val module = variant.getModuleVariant(moduleSlot)
-            val jsonModuleVariant = saveModuleVariantToJson(module, applySMods, includeDMods, includeTags, addedModIds)
+            val jsonModuleVariant = saveModuleVariantToJson(module, applySMods, includeDMods, includeTags)
 
             jsonModules.put(moduleSlot, jsonModuleVariant)
         }
         if(jsonModules.length() != 0)
             jsonVariant.put("moduleVariants", jsonModules)
 
-        if(addedModIds.isNotEmpty()) {
-            val sourceMods = JSONArray()
-            for (addedModId in addedModIds) {
-                val smjs = JSONObject().apply {
-                    put("mod_id", addedModId.first)
-                    put("mod_name", addedModId.second)
-                    put("mod_version", addedModId.third)
-                }
-                sourceMods.put(smjs)
-            }
-            jsonVariant.put("mod_info", sourceMods)
-        }
+        if(includeModInfo)
+            addVariantSourceModsToJson(variant, jsonVariant)
+
 
         return jsonVariant
     }
@@ -294,7 +263,6 @@ object VariantSerialization {
         applySMods: Boolean,
         includeDMods: Boolean,
         includeTags: Boolean,
-        addedModIds: MutableSet<Triple<String, String, String>>
     ) : JSONObject{
         val variant = insertVariant.clone()
 
@@ -378,49 +346,87 @@ object VariantSerialization {
             if (!includeTags) {
                 remove("tags")
             }
-
-
-            fun addSourceMod(modId: String, modName: String, modVersion: String) {
-                if (Triple(modId, modName, modVersion) !in addedModIds) {
-                    addedModIds.add(Triple(modId, modName, modVersion))
-                }
-            }
-
-            //HullSpec
-            variant.hullSpec.sourceMod?.let { sm ->
-                addSourceMod(sm.id, sm.name, sm.version)
-            }
-
-            // HullMods
-            for (mod in variant.hullMods) {
-                Global.getSettings().getHullModSpec(mod).sourceMod?.let { sm ->
-                    addSourceMod(sm.id, sm.name, sm.version)
-                }
-            }
-
-            // Weapons
-            for (slot in variant.fittedWeaponSlots) {
-                variant.getWeaponSpec(slot).sourceMod?.let { sm ->
-                    addSourceMod(sm.id, sm.name, sm.version)
-                }
-            }
-
-            // Fighter Wings
-            for (wing in variant.fittedWings) {
-                Global.getSettings().getFighterWingSpec(wing).sourceMod?.let { sm ->
-                    addSourceMod(sm.id, sm.name, sm.version)
-                }
-            }
         }
     }
 
+    fun addVariantSourceModsToJson(
+        variant: ShipVariantAPI,
+        json: JSONObject
+    ) {
+        val addedModIds = mutableSetOf<Triple<String, String, String>>()
+        getSourceModsFromVariant(addedModIds, variant)
 
+        if (addedModIds.isNotEmpty()) {
+            val existingMods = mutableSetOf<Triple<String, String, String>>()
+            val modInfoArray = if (json.has("mod_info")) json.getJSONArray("mod_info") else JSONArray()
 
+            // Collect existing mods to avoid duplicates
+            for (i in 0 until modInfoArray.length()) {
+                val mod = modInfoArray.getJSONObject(i)
+                val modId = mod.optString("mod_id")
+                val modName = mod.optString("mod_name")
+                val modVersion = mod.optString("mod_version")
+                existingMods.add(Triple(modId, modName, modVersion))
+            }
 
+            // Add only new entries
+            for (mod in addedModIds) {
+                if (mod !in existingMods) {
+                    val newMod = JSONObject().apply {
+                        put("mod_id", mod.first)
+                        put("mod_name", mod.second)
+                        put("mod_version", mod.third)
+                    }
+                    modInfoArray.put(newMod)
+                }
+            }
 
+            // Write back merged array
+            json.put("mod_info", modInfoArray)
+        }
+    }
 
+    fun getSourceModsFromVariant(
+        addedModIds: MutableSet<Triple<String, String, String>>,
+        variant: ShipVariantAPI
+    ) {
+        for (moduleSlot in variant.moduleSlots) {
+            val module = variant.getModuleVariant(moduleSlot)
+            getSourceModsFromVariant(addedModIds, module)
+        }
 
+        fun addSourceMod(modId: String, modName: String, modVersion: String) {
+            if (Triple(modId, modName, modVersion) !in addedModIds) {
+                addedModIds.add(Triple(modId, modName, modVersion))
+            }
+        }
 
+        //HullSpec
+        variant.hullSpec.sourceMod?.let { sm ->
+            addSourceMod(sm.id, sm.name, sm.version)
+        }
+
+        // HullMods
+        for (mod in variant.hullMods) {
+            Global.getSettings().getHullModSpec(mod).sourceMod?.let { sm ->
+                addSourceMod(sm.id, sm.name, sm.version)
+            }
+        }
+
+        // Weapons
+        for (slot in variant.fittedWeaponSlots) {
+            variant.getWeaponSpec(slot).sourceMod?.let { sm ->
+                addSourceMod(sm.id, sm.name, sm.version)
+            }
+        }
+
+        // Fighter Wings
+        for (wing in variant.fittedWings) {
+            Global.getSettings().getFighterWingSpec(wing).sourceMod?.let { sm ->
+                addSourceMod(sm.id, sm.name, sm.version)
+            }
+        }
+    }
 
 
     val sep = ","
@@ -435,6 +441,7 @@ object VariantSerialization {
         includeDMods: Boolean = true,
         includeTags: Boolean = true,
         includePrepend: Boolean = true,
+        includeModInfo: Boolean = true
     ): String {
 
         val structureVersion = 0
@@ -442,15 +449,14 @@ object VariantSerialization {
 
         val ver = "$metaSep$structureVersion$metaSep"
 
-        val addedModIds = mutableSetOf<Triple<String, String, String>>()
 
         var compressedVariant = ""
-        compressedVariant += saveModuleVariantToCompString(variant, applySMods, includeDMods, includeTags, addedModIds)
+        compressedVariant += saveModuleVariantToCompString(variant, applySMods, includeDMods, includeTags)
 
         for (moduleSlot in variant.moduleSlots) {
             val module = variant.getModuleVariant(moduleSlot)
 
-            val compressedModuleVariant = saveModuleVariantToCompString(module, applySMods, includeDMods, includeTags, addedModIds)
+            val compressedModuleVariant = saveModuleVariantToCompString(module, applySMods, includeDMods, includeTags)
 
             compressedVariant += ":$compressedModuleVariant"
         }
@@ -458,19 +464,21 @@ object VariantSerialization {
         var requiredMods = ""//For the user to see
         var addedModDetails = ""//For the computer to see
 
-        if(addedModIds.size != 0)
-        {
-            requiredMods = "Req Mods: "
+        if(includeModInfo) {
+            val addedModIds = mutableSetOf<Triple<String, String, String>>()
+            getSourceModsFromVariant(addedModIds, variant)
 
+            if(addedModIds.isNotEmpty()) {
 
-            for (mod in addedModIds) {
-                addedModDetails += "${mod.first}$sep${mod.second}$sep${mod.third}$fieldSep"
-                requiredMods += "${mod.second} $sep "
+                requiredMods = "Req Mods: "
+
+                for (mod in addedModIds) {
+                    addedModDetails += "${mod.first}$sep${mod.second}$sep${mod.third}$fieldSep"
+                    requiredMods += "${mod.second} $sep "
+                }
+                requiredMods = requiredMods.dropLast(3)
+                addedModDetails = addedModDetails.dropLast(1)
             }
-            requiredMods = requiredMods.dropLast(3)
-            addedModDetails = addedModDetails.dropLast(1)
-
-
         }
 
         compressedVariant = "$addedModDetails$fieldSep$compressedVariant"
@@ -491,7 +499,6 @@ object VariantSerialization {
         applySMods: Boolean,
         includeDMods: Boolean,
         includeTags: Boolean,
-        addedModIds: MutableSet<Triple<String, String, String>>
     ) : String{
         val variant = insertVariant.clone()
 
@@ -558,39 +565,6 @@ object VariantSerialization {
         parts += if (includeTags) variant.tags.joinToString(sep) else ""
 
 
-
-
-        fun addSourceMod(modId: String, modName: String, modVersion: String) {
-            if (Triple(modId, modName, modVersion) !in addedModIds) {
-                addedModIds.add(Triple(modId, modName, modVersion))
-            }
-        }
-
-        //HullSpec
-        variant.hullSpec.sourceMod?.let { sm ->
-            addSourceMod(sm.id, sm.name, sm.version)
-        }
-
-        // HullMods
-        for (mod in variant.hullMods) {
-            Global.getSettings().getHullModSpec(mod).sourceMod?.let { sm ->
-                addSourceMod(sm.id, sm.name, sm.version)
-            }
-        }
-
-        // Weapons
-        for (slot in variant.fittedWeaponSlots) {
-            variant.getWeaponSpec(slot).sourceMod?.let { sm ->
-                addSourceMod(sm.id, sm.name, sm.version)
-            }
-        }
-
-        // Fighter Wings
-        for (wing in variant.fittedWings) {
-            Global.getSettings().getFighterWingSpec(wing).sourceMod?.let { sm ->
-                addSourceMod(sm.id, sm.name, sm.version)
-            }
-        }
 
         return parts.joinToString(fieldSep)
     }

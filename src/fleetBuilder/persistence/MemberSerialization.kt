@@ -8,7 +8,9 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
+import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.util.MISC.createErrorVariant
+import fleetBuilder.util.MISC.getMissingFromModInfo
 import fleetBuilder.variants.MissingElements
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
@@ -22,15 +24,18 @@ object MemberSerialization {
         val variantJson = json.optJSONObject("variant")
 
         val variant: ShipVariantAPI
-        var missing = MissingElements()
+        var missingElements: MissingElements
         if (variantJson != null) {
-            val (deserializedVariant, missingElements) = getVariantFromJsonWithMissing(variantJson)
+            val (deserializedVariant, _missing) = getVariantFromJsonWithMissing(variantJson)
             variant = deserializedVariant
-            missing = missingElements
+            missingElements = _missing
         } else { //Handle when no variantJson exists. This makes a temp variant to avoid losing the officer.
             variant = createErrorVariant()
-            missing.hullIds.add("")
+            missingElements = MissingElements()
+            missingElements.hullIds.add("")
         }
+
+        getMissingFromModInfo(json, missingElements)
 
         // Create the FleetMemberAPI object
         val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)
@@ -42,7 +47,7 @@ object MemberSerialization {
             setMemberOfficerFromJson(json, member)
         }
 
-        return Pair(member, missing)
+        return Pair(member, missingElements)
     }
 
     @JvmOverloads
@@ -69,10 +74,9 @@ object MemberSerialization {
     }
 
     @JvmOverloads
-    fun saveMemberToJson(member: FleetMemberAPI, includeOfficer: Boolean = true, includeOfficerLevelingStats: Boolean = true, includeCR: Boolean = true): JSONObject {
-
+    fun saveMemberToJson(member: FleetMemberAPI, includeOfficer: Boolean = true, includeOfficerLevelingStats: Boolean = true, includeCR: Boolean = true, includeModInfo: Boolean = true): JSONObject {
         val memberJson = JSONObject()
-        val variantJson = saveVariantToJson(member.variant)
+        val variantJson = saveVariantToJson(member.variant, includeModInfo = false)
         memberJson.put("variant", variantJson)
         //memberJson.put("id", member.id)
         if(includeCR) {
@@ -90,6 +94,9 @@ object MemberSerialization {
                 memberJson.put("officer", officerJson)
             }
         }
+
+        if(includeModInfo)
+            addVariantSourceModsToJson(member.variant, memberJson)
 
         return memberJson
     }

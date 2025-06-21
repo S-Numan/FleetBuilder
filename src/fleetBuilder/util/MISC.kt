@@ -706,4 +706,26 @@ object MISC {
         return missing
     }
 
+
+    fun getMissingFromModInfo(json: JSONObject, missingElements: MissingElements) {
+        json.optJSONArray("mod_info")?.let {
+            repeat(it.length()) { i ->
+                val modSpecJson = it.optJSONObject(i)
+                val modSpecId = modSpecJson.optString("mod_id")
+                val modSpecName = modSpecJson.optString("mod_name")
+                val modSpecVersion = modSpecJson.optString("mod_version")
+
+                var hasMod = false
+                for (modSpecAPI in Global.getSettings().modManager.enabledModsCopy) {
+                    if (modSpecAPI.id == modSpecId) {
+                        hasMod = true
+                        break
+                    }
+                }
+                if (!hasMod) {
+                    missingElements.gameMods.add(Triple(modSpecId, modSpecName, modSpecVersion))
+                }
+            }
+        }
+    }
 }

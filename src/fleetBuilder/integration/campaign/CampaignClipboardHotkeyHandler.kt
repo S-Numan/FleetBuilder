@@ -285,11 +285,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                             if (event.isCtrlDown && event.isLMBDownEvent) {//Copy to clipboard
                                 if (isPortraitHoveredOver) {
                                     val json = saveOfficerToJson(mouseOverMember.captain)
-                                    setClipboardText(json.toString())
+                                    setClipboardText(json.toString(4))
                                     ui.messageDisplay.addMessage("Officer copied to clipboard")
                                 } else {
                                     val json = saveMemberToJson(mouseOverMember)
-                                    setClipboardText(json.toString())
+                                    setClipboardText(json.toString(4))
                                     ui.messageDisplay.addMessage("Fleet member copied to clipboard")
                                 }
                                 event.consume(); continue

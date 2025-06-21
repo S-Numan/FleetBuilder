@@ -14,7 +14,9 @@ import fleetBuilder.util.MISC.createErrorVariant
 import fleetBuilder.util.MISC.showError
 import fleetBuilder.persistence.MemberSerialization.setMemberOfficerFromJson
 import fleetBuilder.persistence.MemberSerialization.setMemberValuesFromJson
+import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
+import fleetBuilder.util.MISC.getMissingFromModInfo
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
@@ -34,6 +36,7 @@ object FleetSerialization {
         setFlagship: Boolean = true,
     ): MissingElements {
         val missingElements = MissingElements()
+        getMissingFromModInfo(json, missingElements)
 
         val fleet = campFleet.fleetData
         if(fleet == null) {
@@ -44,7 +47,6 @@ object FleetSerialization {
         campFleet.name = json.optString("fleetName", "Nameless fleet")
 
         val aggressionDoctrine = json.optInt("aggression_doctrine", 2)
-
 
         val fleetVariants = mutableListOf<ShipVariantAPI>()
 
@@ -171,7 +173,8 @@ object FleetSerialization {
         includeCommanderAsOfficer: Boolean = true,//If a PersonAPI is set as an officer in the fleet.
         includeOfficerLevelingStats: Boolean = true,
         includeIdleOfficers: Boolean = false,
-        includeCR: Boolean = true
+        includeCR: Boolean = true,
+        includeModInfo: Boolean = true,
     ): JSONObject {
         val fleetJson = JSONObject()
 
@@ -189,6 +192,9 @@ object FleetSerialization {
         var commanderJson: JSONObject? = null
 
         for (member in fleet.membersListCopy) {
+            if(includeModInfo)
+                addVariantSourceModsToJson(member.variant, fleetJson)
+
             val isCommander = member.captain?.id == fleet.commander?.id
 
             val shouldIncludeOfficer = if (isCommander) {
@@ -201,9 +207,9 @@ object FleetSerialization {
                 member,
                 includeOfficer = shouldIncludeOfficer,
                 includeOfficerLevelingStats = includeOfficerLevelingStats,
-                includeCR = includeCR
+                includeCR = includeCR,
+                includeModInfo = false
             )
-
 
             val variant = memberJson.optJSONObject("variant")
                 ?: throw Exception("Failed to read variant from json after just creating it")
