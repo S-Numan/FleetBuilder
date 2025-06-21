@@ -20,6 +20,7 @@ import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
+import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
@@ -231,32 +232,37 @@ object MISC {
 
         val cargo = Global.getSector().playerFleet.cargo
 
-        var addedName: String? = null
+        var message: String? = null
 
         when (param) {
             is CommoditySpecAPI -> {
                 cargo.addCommodity(param.id, count.toFloat())
-                addedName = param.name
+                message = "Added $count '${param.name}' to cargo"
             }
 
             is SpecialItemSpecAPI -> {
                 cargo.addSpecial(SpecialItemData(param.id, null), count.toFloat())
-                addedName = param.name
+                message = "Added $count '${param.name}' to cargo"
             }
 
             is WeaponSpecAPI -> {
                 cargo.addWeapons(param.weaponId, count)
-                addedName = param.weaponName
+                message = "Added $count '${param.weaponName}' to cargo"
             }
 
             is FighterWingSpecAPI -> {
                 cargo.addFighters(param.id, count)
-                addedName = param.wingName
+                message = "Added $count '${param.wingName}' to cargo"
+            }
+
+            is HullModSpecAPI -> {
+                Global.getSector().playerFaction.addKnownHullMod(param.id)
+                message = "Added '${param.displayName}' your faction's known hullmods"
             }
         }
 
-        if (!addedName.isNullOrEmpty()) {
-            ui.messageDisplay.addMessage("Added $count $addedName to cargo")
+        if (!message.isNullOrEmpty()) {
+            ui.messageDisplay.addMessage(message)
             return
         }
 

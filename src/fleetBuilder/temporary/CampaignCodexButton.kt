@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
+import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
@@ -68,7 +69,9 @@ class CampaignCodexButton: EveryFrameScript {
             param is WeaponSpecAPI ||
             param is FighterWingSpecAPI ||
             param is ShipHullSpecAPI ||
-            param is FleetMemberAPI) {
+            param is FleetMemberAPI ||
+            param is HullModSpecAPI
+            ) {
             val pad = 18f
 
             var exists = false
@@ -109,7 +112,13 @@ class CampaignCodexButton: EveryFrameScript {
                 else -> 1
             }
 
-            val entry = "Add $count to fleet"
+            val entry: String
+
+            if(param is HullModSpecAPI)
+                entry = "Add to faction"
+             else
+                entry = "Add $count to fleet"
+
             val width = Global.getSettings().computeStringWidth(entry, Font.ORBITRON_20.name)
             addToFleetButton!!.width = width + 52f
             addToFleetButton!!.text = entry
