@@ -28,7 +28,7 @@ import fleetBuilder.variants.LoadoutManager.generatePrefixes
 import org.lwjgl.input.Keyboard
 
 
-class ModSettingsListener : LunaSettingsListener {
+internal class ModSettingsListener : LunaSettingsListener {
     init {
         settingsChanged(modID)
 
@@ -70,7 +70,7 @@ class ModSettingsListener : LunaSettingsListener {
             autofitMenuHotkey = _autofitMenuHotkey
         }
 
-        Reporter.Companion.onApplicationLoad()
+        Reporter.onApplicationLoad()
     }
 }
 

@@ -23,7 +23,7 @@ import com.fs.starfarer.loading.specs.FighterWingSpec
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import starficz.ReflectionUtils
 
-class MLPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
+class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
                               private val faction: FactionAPI,
                               private val ship: ShipAPI,
                               private val coreUI: CoreUIAPI,

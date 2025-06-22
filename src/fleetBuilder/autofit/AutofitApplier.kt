@@ -33,7 +33,7 @@ object AutofitApplier {
 
             baseVariant.source = VariantSource.REFIT
 
-            val delegate = MLPlayerAutofitDelegate(
+            val delegate = FBPlayerAutofitDelegate(
                 fleetMember,
                 Global.getSector().playerFaction,
                 ship,

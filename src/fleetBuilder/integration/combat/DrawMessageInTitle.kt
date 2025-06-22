@@ -12,7 +12,7 @@ import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
 
-class DrawMessageInTitle: EveryFrameCombatPlugin
+internal class DrawMessageInTitle: EveryFrameCombatPlugin
 {
     override fun init(engine: CombatEngineAPI?) {}
 

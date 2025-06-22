@@ -19,7 +19,7 @@ class FleetBuilderPlugin : BaseModPlugin() {
         if (Global.getSettings().modManager.isModEnabled("lunalib"))
             LunaSettings.addSettingsListener(ModSettingsListener())
 
-        Reporter.Companion.onApplicationLoad()
+        Reporter.onApplicationLoad()
     }
     override fun onGameLoad(newGame: Boolean) {
         super.onGameLoad(newGame)

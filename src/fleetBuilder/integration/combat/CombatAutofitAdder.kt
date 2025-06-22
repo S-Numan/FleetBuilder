@@ -27,7 +27,7 @@ import fleetBuilder.util.MISC.showError
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
 
-class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
+internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
     companion object {
         var SHIP_PREVIEW_CLASS: Class<*>? = null
         var SHIPS_FIELD: String? = null

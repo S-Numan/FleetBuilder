@@ -10,7 +10,7 @@ import fleetBuilder.config.ModSettings
 
 //Credit to Genrir for this code
 
-class MakeSaveRemoveable {
+internal class MakeSaveRemoveable {
     companion object {
         private data class Hullmod(val name: String, val key: String)
 
