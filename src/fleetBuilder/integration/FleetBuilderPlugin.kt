@@ -52,11 +52,6 @@ class FleetBuilderPlugin : BaseModPlugin() {
         super.afterGameSave()
 
         reporter.afterGameSave()
-
-        if(ModSettings.backupSave) {
-            val json = MISC.createPlayerSaveJson()
-            Global.getSettings().writeJSONToCommon("SaveTransfer/lastSave", json, false)
-        }
     }
 
 }

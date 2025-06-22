@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import fleetBuilder.config.ModSettings
 import fleetBuilder.integration.save.MakeSaveRemoveable
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
@@ -47,6 +48,11 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
         MakeSaveRemoveable.afterGameSave()
 
         MISC.afterGameSave()
+
+        if(ModSettings.backupSave) {
+            val json = MISC.createPlayerSaveJson()
+            Global.getSettings().writeJSONToCommon("SaveTransfer/lastSave", json, false)
+        }
     }
 
     override fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
