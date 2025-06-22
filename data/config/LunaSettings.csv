@@ -1,6 +1,6 @@
 fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
 ,,,,,,,,
-autofitMenuEnabled,Autofit Menu,Boolean,FALSE,,"If the autofit menu provided by this mod is enabled.
+autofitMenuEnabled,Autofit Menu,Boolean,true,,"If the autofit menu provided by this mod is enabled.
 See the Autofit Menu tab for more settings.",,,
 ,,,,,,,,
 ,,,,,,,,
