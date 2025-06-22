@@ -1,4 +1,4 @@
-Version 1.3.5
+Version 1.3.7
 - Unscuffed the combat(titlescreen mission) autofit adder.
 
 Version 1.3.5
