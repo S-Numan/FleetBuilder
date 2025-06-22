@@ -1,6 +1,6 @@
 {
 	"plugins":{
-		"AutofitCombatRefitAdder":"fleetBuilder.integration.combat.AutofitCombatRefitAdder",
+		"CombatAutofitAdder":"fleetBuilder.integration.combat.CombatAutofitAdder",
 		#"DrawMessageInCombat":"fleetBuilder.DrawMessageInCombat",
 		"CombatClipboardHotkeyHandler":"fleetBuilder.integration.combat.CombatClipboardHotkeyHandler",
 	},
