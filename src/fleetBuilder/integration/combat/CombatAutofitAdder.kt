@@ -19,17 +19,24 @@ import fleetBuilder.ui.autofit.AutofitPanelCreator
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import MagicLib.ReflectionUtils
+import com.fs.starfarer.api.input.InputEventType
+import fleetBuilder.config.ModSettings.autofitMenuHotkey
+import fleetBuilder.util.ClipboardFunctions.codexEntryToClipboard
+import fleetBuilder.util.MISC.getCodexDialog
+import fleetBuilder.util.MISC.showError
+import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
 
-class AutofitCombatRefitAdder : BaseEveryFrameCombatPlugin() {
+class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
     companion object {
         var SHIP_PREVIEW_CLASS: Class<*>? = null
         var SHIPS_FIELD: String? = null
     }
 
-    var hackButton: ButtonAPI? = null
+    //var hackButton: ButtonAPI? = null
+    var keyDown = false
 
-    override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
+    override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
         val state = AppDriver.getInstance().currentState
 
         val newCoreUI = (state as? TitleScreenState)?.let {
@@ -47,6 +54,18 @@ class AutofitCombatRefitAdder : BaseEveryFrameCombatPlugin() {
 
 
 
+        if (Keyboard.isKeyDown(autofitMenuHotkey)) {
+            if(!keyDown) {
+                AutofitPanelCreator.toggleAutofitButton(refitTab, false)
+                keyDown = true
+            }
+        } else if(keyDown) {
+            keyDown = false
+        }
+
+
+
+        /*
         if(hackButton != null) return
 
         //HACK
@@ -65,7 +84,9 @@ class AutofitCombatRefitAdder : BaseEveryFrameCombatPlugin() {
         hackButton!!.setShortcut(ModSettings.autofitMenuHotkey, true)
         hackButton!!.onClick {
             AutofitPanelCreator.toggleAutofitButton(refitTab, false)
-        }
+        }*/
+
+
         /*
         for (event in events) {
             if (event.isConsumed) continue

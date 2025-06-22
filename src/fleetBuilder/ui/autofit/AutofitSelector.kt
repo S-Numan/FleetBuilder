@@ -10,7 +10,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.integration.combat.AutofitCombatRefitAdder
+import fleetBuilder.integration.combat.CombatAutofitAdder
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import java.awt.Color
@@ -259,7 +259,7 @@ internal object AutofitSelector {
             MagicPaintjobManager.removePaintjobFromShip(moduleVariant as ShipVariantAPI)
         }*/
 
-        val shipPreview = ReflectionUtils.instantiate(AutofitCombatRefitAdder.SHIP_PREVIEW_CLASS!!)!!
+        val shipPreview = ReflectionUtils.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!!
         ReflectionUtils.invoke("setVariant", shipPreview, clonedVariant)
         ReflectionUtils.invoke("overrideVariant", shipPreview, clonedVariant)
         ReflectionUtils.invoke("setShowBorder", shipPreview, false)

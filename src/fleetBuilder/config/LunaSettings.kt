@@ -91,7 +91,7 @@ object ModSettings {
 
     var saveSMods = true
 
-    var autofitMenuEnabled = false
+    var autofitMenuEnabled = true
 
     var autofitMenuHotkey = Keyboard.KEY_Z
 
