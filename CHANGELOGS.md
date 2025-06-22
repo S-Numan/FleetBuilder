@@ -1,4 +1,7 @@
 Version 1.3.5
+- Unscuffed the combat(titlescreen mission) autofit adder.
+
+Version 1.3.5
 - Codex button now supports adding hullmods to your faction
 - Codex button supports giving the blueprint for the viewed entry by holding CTRL when clicking.
 
