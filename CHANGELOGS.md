@@ -1,5 +1,6 @@
 Version 1.3.7
 - Unscuffed the combat(titlescreen mission) autofit adder.
+- The loadout importer now supports importing from a pasted fleet member by extracting the member's variant data.
 
 Version 1.3.5
 - Codex button now supports adding hullmods to your faction
