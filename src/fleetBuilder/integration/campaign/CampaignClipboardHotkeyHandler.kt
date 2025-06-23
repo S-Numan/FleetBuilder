@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.ids.Factions
@@ -46,6 +47,7 @@ import fleetBuilder.util.MISC.campaignPaste
 import fleetBuilder.util.MISC.fleetPaste
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
+import fleetBuilder.variants.MissingElements
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
@@ -151,11 +153,21 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                             //Import loadout
 
                             val json = getClipboardJson() ?: continue
-                            val (variant, missing) = getVariantFromJsonWithMissing(json)
-                            if (missing.hullIds.size != 0) {
-                                ui.messageDisplay.addMessage("Failed to import loadout. Could not find hullId ${json.optString("hullId", "")}", Color.RED)
-                                event.consume(); continue
+
+                            val (variant, missing) = json.optJSONObject("variant")?.let { variantJson ->
+                                getVariantFromJsonWithMissing(variantJson)//JSON is of a FleetMemberAPI
+                            } ?: getVariantFromJsonWithMissing(json)//JSON is of a ShipVariantAPI (fallback)
+
+                            if (missing.hullIds.isNotEmpty()) {
+                                val missingHullId = json.optString("hullId", "")
+                                ui.messageDisplay.addMessage(
+                                    "Failed to import loadout. Could not find hullId $missingHullId",
+                                    Color.RED
+                                )
+                                event.consume()
+                                continue
                             }
+
                             val loadoutExists = importShipLoadout(variant, missing)
 
                             if (!loadoutExists) {
