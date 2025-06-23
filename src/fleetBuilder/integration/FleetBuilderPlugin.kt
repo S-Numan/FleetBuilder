@@ -2,11 +2,9 @@ package fleetBuilder.integration
 
 import com.fs.starfarer.api.BaseModPlugin
 import com.fs.starfarer.api.Global
-import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettingsListener
-import fleetBuilder.integration.campaign.CampaignClipboardHotkeyHandler
-import fleetBuilder.util.MISC
 import fleetBuilder.integration.campaign.CampaignAutofitAdder
+import fleetBuilder.integration.campaign.CampaignClipboardHotkeyHandler
 import fleetBuilder.temporary.CampaignCodexButton
 import fleetBuilder.util.Reporter
 import lunalib.lunaSettings.LunaSettings
