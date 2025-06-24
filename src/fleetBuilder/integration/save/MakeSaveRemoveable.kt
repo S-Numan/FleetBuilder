@@ -73,8 +73,15 @@ internal class MakeSaveRemoveable {
                 Global.getSector().allFactions.map { Faction(it) }, // Factions.
                 submarkets.map { Submarket(it) }, // Submarkets.
                 fleetMembers.map { Ship(it) }, // Ships.
-                CampaignEngine.getInstance().savedVariantData.variantMap.map { Variant(it.key, it.value) }, // Global variants.
-                fleetMembers.flatMap { ship -> ship.moduleVariants().map { Variant("${it.key} ${ship.id}", it.value) } }, // Ship modules.
+                CampaignEngine.getInstance().savedVariantData.variantMap.map {
+                    Variant(
+                        it.key,
+                        it.value
+                    )
+                }, // Global variants.
+                fleetMembers.flatMap { ship ->
+                    ship.moduleVariants().map { Variant("${it.key} ${ship.id}", it.value) }
+                }, // Ship modules.
             ).flatten()
         }
 

@@ -19,8 +19,7 @@ class CopySave : BaseCommand {
     val handleCredits = true
 
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
-        if (!context.isInCampaign)
-        {
+        if (!context.isInCampaign) {
             Console.showMessage(CommonStrings.ERROR_CAMPAIGN_ONLY)
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }

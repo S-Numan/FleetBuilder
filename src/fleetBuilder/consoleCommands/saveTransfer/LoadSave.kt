@@ -27,14 +27,14 @@ class LoadSave : BaseCommand {
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
         var filename = ""
-        if(args.isEmpty()) {
-           filename = "CopySave"
+        if (args.isEmpty()) {
+            filename = "CopySave"
         } else {
             filename = args
         }
         val configPath = "SaveTransfer/$filename"
 
-        if(!Global.getSettings().fileExistsInCommon(configPath)) {
+        if (!Global.getSettings().fileExistsInCommon(configPath)) {
             Console.showMessage("Failed to find $configPath")
             return BaseCommand.CommandResult.ERROR
         }
@@ -47,7 +47,8 @@ class LoadSave : BaseCommand {
             return BaseCommand.CommandResult.ERROR
         }
 
-        val missing = MISC.loadPlayerSaveJson(json,
+        val missing = MISC.loadPlayerSaveJson(
+            json,
             handleCargo = handleCargo,
             handleRelations = handleRelations,
             handleKnownBlueprints = handleKnownBlueprints,

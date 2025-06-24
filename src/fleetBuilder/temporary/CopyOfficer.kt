@@ -5,10 +5,10 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.util.MISC
 import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
+import fleetBuilder.util.MISC
+import fleetBuilder.util.getActualCurrentTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
@@ -31,12 +31,14 @@ class CopyOfficer : BaseCommand {
 
         val refitTab = MISC.getRefitTab() ?: return BaseCommand.CommandResult.ERROR
 
-        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return BaseCommand.CommandResult.ERROR
-        val fleetMember = ReflectionUtils.invoke(refitPanel, "getMember") as? FleetMemberAPI ?: return BaseCommand.CommandResult.ERROR
+        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
+            ?: return BaseCommand.CommandResult.ERROR
+        val fleetMember =
+            ReflectionUtils.invoke(refitPanel, "getMember") as? FleetMemberAPI ?: return BaseCommand.CommandResult.ERROR
 
         val officer = fleetMember.captain
 
-        if(officer.isDefault) {
+        if (officer.isDefault) {
             Console.showMessage("No officer to copy")
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }

@@ -5,7 +5,7 @@ import com.fs.starfarer.api.Global
 import fleetBuilder.config.ModSettingsListener
 import fleetBuilder.integration.campaign.CampaignAutofitAdder
 import fleetBuilder.integration.campaign.CampaignClipboardHotkeyHandler
-import fleetBuilder.temporary.CampaignCodexButton
+import fleetBuilder.integration.campaign.CampaignCodexButton
 import fleetBuilder.util.Reporter
 import lunalib.lunaSettings.LunaSettings
 
@@ -19,6 +19,7 @@ class FleetBuilderPlugin : BaseModPlugin() {
 
         Reporter.onApplicationLoad()
     }
+
     override fun onGameLoad(newGame: Boolean) {
         super.onGameLoad(newGame)
 

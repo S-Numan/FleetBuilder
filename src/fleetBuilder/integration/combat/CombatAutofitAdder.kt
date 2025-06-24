@@ -1,31 +1,20 @@
 package fleetBuilder.integration.combat
 
-import MagicLib.Font
-import MagicLib.addButton
+import MagicLib.ReflectionUtils
 import MagicLib.findChildWithMethod
 import MagicLib.getChildrenCopy
-import MagicLib.onClick
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.CutStyle
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.combat.entities.Ship
 import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
-import fleetBuilder.ui.autofit.AutofitPanelCreator
-import starficz.ReflectionUtils.invoke
-import java.awt.Color
-import MagicLib.ReflectionUtils
-import com.fs.starfarer.api.input.InputEventType
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
-import fleetBuilder.util.ClipboardFunctions.codexEntryToClipboard
-import fleetBuilder.util.MISC.getCodexDialog
-import fleetBuilder.util.MISC.showError
+import fleetBuilder.ui.autofit.AutofitPanelCreator
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
+import starficz.ReflectionUtils.invoke
 
 internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
     companion object {
@@ -44,7 +33,7 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
         } ?: return
         cacheShipPreviewClass(newCoreUI)
 
-        if(!ModSettings.autofitMenuEnabled) return
+        if (!ModSettings.autofitMenuEnabled) return
 
         val delegateChild = newCoreUI.findChildWithMethod("dismiss") as? UIPanelAPI ?: return
         val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return
@@ -55,14 +44,13 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
 
 
         if (Keyboard.isKeyDown(autofitMenuHotkey)) {
-            if(!keyDown) {
+            if (!keyDown) {
                 AutofitPanelCreator.toggleAutofitButton(refitTab, false)
                 keyDown = true
             }
-        } else if(keyDown) {
+        } else if (keyDown) {
             keyDown = false
         }
-
 
 
         /*

@@ -19,6 +19,7 @@ object ClipboardUtil {
             null
         }
     }
+
     fun setClipboardText(text: String) {
         try {
             val clipboard = Toolkit.getDefaultToolkit().systemClipboard

@@ -22,15 +22,18 @@ object CargoSerialization {
                 "RESOURCES" -> {
                     cargo.addCommodity(id, size.toFloat())
                 }
+
                 "WEAPONS" -> {
                     cargo.addWeapons(id, size)
                 }
+
                 "FIGHTER_CHIP" -> {
                     cargo.addFighters(id, size)
                 }
+
                 "SPECIAL" -> {
                     var data = cargoThing.optString("data", "")
-                    if(data.isEmpty())
+                    if (data.isEmpty())
                         data = null
                     cargo.addSpecial(SpecialItemData(id, data), size.toFloat())
                 }

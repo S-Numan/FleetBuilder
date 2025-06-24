@@ -28,7 +28,8 @@ object ClipboardFunctions {
 
         //setClipboardText(saveVariantToCompString(variantToSave, includeDMods = ModSettings.saveDMods, applySMods = ModSettings.saveSMods))
 
-        val json = saveVariantToJson(variantToSave, includeDMods = ModSettings.saveDMods, applySMods = ModSettings.saveSMods)
+        val json =
+            saveVariantToJson(variantToSave, includeDMods = ModSettings.saveDMods, applySMods = ModSettings.saveSMods)
 
         setClipboardText(json.toString(4))
         return true

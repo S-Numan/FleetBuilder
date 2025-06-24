@@ -16,7 +16,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
         amount: Float,
         events: List<InputEventAPI>
     ) {
-        if(!fleetClipboardHotkeyHandler) return
+        if (!fleetClipboardHotkeyHandler) return
 
         for (event in events) {
             if (event.isConsumed) continue

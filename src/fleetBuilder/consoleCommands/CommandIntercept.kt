@@ -7,7 +7,12 @@ import org.lazywizard.console.CommandListener
 
 
 class CommandIntercept : CommandListener {
-    override fun onPreExecute(command: String, args: String, context: CommandContext, alreadyIntercepted: Boolean): Boolean {
+    override fun onPreExecute(
+        command: String,
+        args: String,
+        context: CommandContext,
+        alreadyIntercepted: Boolean
+    ): Boolean {
         return false // do nothing
     }
 

@@ -22,12 +22,14 @@ import com.fs.starfarer.loading.specs.BaseWeaponSpec
 import com.fs.starfarer.loading.specs.FighterWingSpec
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import starficz.ReflectionUtils
+import starficz.ReflectionUtils.invoke
 
-class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
-                              private val faction: FactionAPI,
-                              private val ship: ShipAPI,
-                              private val coreUI: CoreUIAPI,
-                              private val shipDisplay: UIPanelAPI
+class FBPlayerAutofitDelegate(
+    private val fleetMember: FleetMemberAPI,
+    private val faction: FactionAPI,
+    private val ship: ShipAPI,
+    private val coreUI: CoreUIAPI,
+    private val shipDisplay: UIPanelAPI
 ) : AutofitPlugin.AutofitPluginDelegate {
 
     private val fighters: MutableList<FighterPickerDialog.o> = ArrayList()
@@ -43,8 +45,10 @@ class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
                 .toMutableList()
         }
     }
+
     //When null, source is assumed to be from player cargo
     private var market: MarketAPI? = null
+
     /*private val fighterSlotSources: MutableMap<Int, SubmarketAPI?> = mutableMapOf()
     private val weaponSlotSources: MutableMap<String, SubmarketAPI?> = mutableMapOf()
 */
@@ -76,25 +80,26 @@ class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
         //val wing = FighterPickerDialog.o(oFighter.quantity, oFighter.source, oFighter.wingSpec as FighterWingSpec, oFighter.id, oFighter.submarket as Submarket, coreUI)
 
         val oFighter = fighters.find { it.id == fighter.id }
-        ReflectionUtils.invoke(shipDisplay, "insertInFighterSlot"
-            , index//Fighter bay slot
-            , oFighter
-            , false//Clear slot
+        shipDisplay.invoke(
+            "insertInFighterSlot",
+            index//Fighter bay slot
+            , oFighter, false//Boolean: Clear Slot
             , variant as HullVariantSpec
         )
 
         if (oFighter != null) {
-            if(oFighter.source.getNumFighters(oFighter.id) == 0) {
+            if (oFighter.source.getNumFighters(oFighter.id) == 0) {
                 fighters.remove(oFighter)
             }
         }
         //if(oFighter != null) {
-            //oFighter.quantity--
+        //oFighter.quantity--
         //}
         //val slottedFighters = ReflectionUtils.invoke("getSlottedFighters", shipDisplay) as MutableMap<String, FighterPickerDialog.o?>
         //slottedFighters.put("${variant.getHullVariantId()}_$index", oFighter)
 
     }
+
     override fun clearFighterSlot(index: Int, variant: ShipVariantAPI) {
         /*val spec = variant.getWing(index)
         if(spec == null) return
@@ -116,11 +121,12 @@ class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
         variant.setWingId(index, null)
         */
 
-        ReflectionUtils.invoke(shipDisplay, "clearFighterSlot"
-            , index//Fighter slot
+        ReflectionUtils.invoke(
+            shipDisplay, "clearFighterSlot", index//Fighter slot
             , variant as HullVariantSpec
         )
     }
+
     override fun fitWeaponInSlot(slot: WeaponSlotAPI, weapon: AutofitPlugin.AvailableWeapon, variant: ShipVariantAPI) {
         /*
         if(market != null && weapon.submarket != null) {//Came from a submarket
@@ -134,14 +140,13 @@ class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
         variant.addWeapon(slot.id, weapon.id)*/
 
         val oWeapon = weapons.find { it.id == weapon.id }
-        ReflectionUtils.invoke(shipDisplay, "insertInSlot"
-            , slot//Weapon bay slot
-            , oWeapon
-            , false//Clear slot
+        ReflectionUtils.invoke(
+            shipDisplay, "insertInSlot", slot//Weapon bay slot
+            , oWeapon, false//Clear slot
             , variant as HullVariantSpec
         )
         if (oWeapon != null) {
-            if(oWeapon.source.getNumWeapons(oWeapon.id) == 0) {
+            if (oWeapon.source.getNumWeapons(oWeapon.id) == 0) {
                 weapons.remove(oWeapon)
             }
         }
@@ -149,6 +154,7 @@ class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
             oWeapon.quantity--
         }*/
     }
+
     override fun clearWeaponSlot(slot: WeaponSlotAPI, variant: ShipVariantAPI) {
         /*val spec = variant.getWeaponSpec(slot.id)
         if(spec == null) return
@@ -183,23 +189,32 @@ class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
             }
         }*/
 
-        ReflectionUtils.invoke(shipDisplay, "clearSlot"
-            , slot//Weapon slot
+        ReflectionUtils.invoke(
+            shipDisplay, "clearSlot", slot//Weapon slot
             , variant as HullVariantSpec
         )
 
         //weapon.quantity++
     }
+
     override fun getAvailableWeapons(): List<AutofitPlugin.AvailableWeapon> {
         return weapons.toList()
     }
-    fun addAvailableWeapon(weaponSpec: WeaponSpecAPI, count: Int, cargo: CargoAPI, submarket: SubmarketAPI?) {
-        val weap = WeaponPickerDialog.o(count, cargo, weaponSpec as BaseWeaponSpec, weaponSpec.weaponId, submarket as? Submarket, coreUI)
 
-        if(submarket == null) {//Player cargo
+    fun addAvailableWeapon(weaponSpec: WeaponSpecAPI, count: Int, cargo: CargoAPI, submarket: SubmarketAPI?) {
+        val weap = WeaponPickerDialog.o(
+            count,
+            cargo,
+            weaponSpec as BaseWeaponSpec,
+            weaponSpec.weaponId,
+            submarket as? Submarket,
+            coreUI
+        )
+
+        if (submarket == null) {//Player cargo
             weapons.add(0, weap)//Put first
         } else {//Submarket
-            if(!submarket.plugin.isFreeTransfer)
+            if (!submarket.plugin.isFreeTransfer)
                 weap.setPrice(weaponSpec.baseValue * (1 + submarket.tariff))
             weapons.add(weap)//Put last
         }
@@ -208,13 +223,21 @@ class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
     override fun getAvailableFighters(): List<AutofitPlugin.AvailableFighter> {
         return fighters.toList()
     }
-    fun addAvailableFighter(fighterSpec: FighterWingSpecAPI, count: Int, cargo: CargoAPI, submarket: SubmarketAPI?) {
-        val wing = FighterPickerDialog.o(count, cargo, fighterSpec as FighterWingSpec, fighterSpec.id, submarket as? Submarket, coreUI)
 
-        if(submarket == null) {//Player cargo
+    fun addAvailableFighter(fighterSpec: FighterWingSpecAPI, count: Int, cargo: CargoAPI, submarket: SubmarketAPI?) {
+        val wing = FighterPickerDialog.o(
+            count,
+            cargo,
+            fighterSpec as FighterWingSpec,
+            fighterSpec.id,
+            submarket as? Submarket,
+            coreUI
+        )
+
+        if (submarket == null) {//Player cargo
             fighters.add(0, wing)//Put first
         } else {//Submarket
-            if(!submarket.plugin.isFreeTransfer)
+            if (!submarket.plugin.isFreeTransfer)
                 wing.setPrice(fighterSpec.baseValue * (1 + submarket.tariff))
             fighters.add(wing)//Put last
         }
@@ -223,33 +246,40 @@ class FBPlayerAutofitDelegate(private val fleetMember: FleetMemberAPI,
     override fun isPriority(weapon: WeaponSpecAPI): Boolean {
         return faction.isWeaponPriority(weapon.weaponId)
     }
+
     override fun isPriority(wing: FighterWingSpecAPI): Boolean {
         return faction.isFighterPriority(wing.id)
     }
+
     override fun getAvailableHullmods(): MutableList<String> {
         return hullmods
     }
+
     override fun syncUIWithVariant(variant: ShipVariantAPI) {}
     override fun getShip(): ShipAPI {
         //throw UnsupportedOperationException("Not implemented1")
         return ship
     }
+
     override fun getFaction(): FactionAPI {
         return faction
     }
+
     override fun isAllowSlightRandomization(): Boolean = false
     override fun isPlayerCampaignRefit(): Boolean = true//If in campaign, true. If not, false?
     override fun canAddRemoveHullmodInPlayerCampaignRefit(modId: String): Boolean {//If this mod can be removed at this time.
-        if(market != null) {
+        if (market != null) {
             return true
         } else {
             val mod = Global.getSettings().getHullModSpec(modId) ?: return false
             return mod.effect.canBeAddedOrRemovedNow(ship, market, CampaignUIAPI.CoreUITradeMode.NONE)
         }
     }
+
     override fun getMarket(): MarketAPI? {
         return market
     }
+
     override fun getFleetMember(): FleetMemberAPI {
         return fleetMember
     }

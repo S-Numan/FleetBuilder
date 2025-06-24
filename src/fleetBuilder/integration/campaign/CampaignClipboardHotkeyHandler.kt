@@ -2,18 +2,11 @@ package fleetBuilder.integration.campaign
 
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.BattleAPI
-import com.fs.starfarer.api.campaign.CampaignFleetAPI
-import com.fs.starfarer.api.campaign.CampaignUIAPI
-import com.fs.starfarer.api.campaign.CoreUITabId
-import com.fs.starfarer.api.campaign.SectorAPI
+import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
-import com.fs.starfarer.api.impl.campaign.ids.Factions
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.UIComponentAPI
@@ -23,31 +16,27 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
-import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.config.ModSettings.unassignPlayer
+import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
+import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
+import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
+import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
 import fleetBuilder.util.ClipboardFunctions.codexEntryToClipboard
 import fleetBuilder.util.ClipboardFunctions.refitScreenVariantToClipboard
+import fleetBuilder.util.ClipboardUtil.getClipboardJson
+import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.MISC
-import fleetBuilder.util.MISC.addMemberToFleet
-import fleetBuilder.util.MISC.addOfficerToFleet
+import fleetBuilder.util.MISC.addParamEntryToFleet
 import fleetBuilder.util.MISC.addPlayerShuttle
+import fleetBuilder.util.MISC.campaignPaste
+import fleetBuilder.util.MISC.fleetPaste
 import fleetBuilder.util.MISC.getCodexDialog
 import fleetBuilder.util.MISC.getCodexEntryParam
 import fleetBuilder.util.MISC.getCoreUI
 import fleetBuilder.util.MISC.removePlayerShuttle
 import fleetBuilder.util.MISC.showError
-import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
-import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
-import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
-import fleetBuilder.util.ClipboardUtil.getClipboardJson
-import fleetBuilder.util.ClipboardUtil.setClipboardText
-import fleetBuilder.util.MISC.addParamEntryToFleet
-import fleetBuilder.util.MISC.campaignPaste
-import fleetBuilder.util.MISC.fleetPaste
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
-import fleetBuilder.variants.MissingElements
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
@@ -62,7 +51,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
-        if(!fleetClipboardHotkeyHandler) return
+        if (!fleetClipboardHotkeyHandler) return
 
 
         val sector = Global.getSector() ?: return
@@ -74,7 +63,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         for (event in events) {
             if (event.isConsumed) continue
             if (event.eventType == InputEventType.KEY_DOWN) {
-                if(event.isCtrlDown) {
+                if (event.isCtrlDown) {
                     if (event.eventValue == Keyboard.KEY_D && Global.getSettings().isDevMode) {
                         try {
                             val codex = getCodexDialog()
@@ -82,7 +71,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                             if (codex != null) {
                                 val param = getCodexEntryParam(codex) ?: return
 
-                                addParamEntryToFleet(sector, ui, param)
+                                addParamEntryToFleet(sector, param)
 
                                 event.consume(); continue
                             }
@@ -149,7 +138,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                             showError("FleetBuilder hotkey failed", e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V) {
-                        if(ui.getActualCurrentTab() == CoreUITabId.REFIT) {
+                        if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
                             //Import loadout
 
                             val json = getClipboardJson() ?: continue
@@ -160,15 +149,26 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                             if (missing.hullIds.isNotEmpty()) {
                                 val missingHullId = json.optString("hullId", "")
-                                MISC.showMessage("Failed to import loadout. Could not find hullId $missingHullId", Color.RED); event.consume(); continue
+                                MISC.showMessage(
+                                    "Failed to import loadout. Could not find hullId $missingHullId",
+                                    Color.RED
+                                ); event.consume(); continue
                             }
 
                             val loadoutExists = importShipLoadout(variant, missing)
 
                             if (!loadoutExists) {
-                                MISC.showMessage("Imported loadout with hull: ${variant.hullSpec.hullId}", variant.hullSpec.hullId, Misc.getHighlightColor())
+                                MISC.showMessage(
+                                    "Imported loadout with hull: ${variant.hullSpec.hullId}",
+                                    variant.hullSpec.hullId,
+                                    Misc.getHighlightColor()
+                                )
                             } else {
-                                MISC.showMessage("Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}\n", variant.hullSpec.hullId, Misc.getHighlightColor())
+                                MISC.showMessage(
+                                    "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}\n",
+                                    variant.hullSpec.hullId,
+                                    Misc.getHighlightColor()
+                                )
                             }
 
                             event.consume(); continue
@@ -185,9 +185,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     }
                 }
             } else if (event.eventType == InputEventType.MOUSE_DOWN) {
-                if(ui.getActualCurrentTab() == CoreUITabId.FLEET) {
+                if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
 
-                    if (event.isLMBDownEvent || event.isRMBDownEvent ) {
+                    if (event.isLMBDownEvent || event.isRMBDownEvent) {
 
                         try {
 
@@ -315,12 +315,18 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                                 if (event.isRMBDownEvent) {
                                     if (mouseOverMember.variant.hasHullMod(commandShuttleId)) {
                                         if (sector.playerFleet.fleetSizeCount == 1) {//Prevent removing last fleet member
-                                            MISC.showMessage("Cannot remove last ship in fleet", Color.RED); event.consume(); continue
+                                            MISC.showMessage(
+                                                "Cannot remove last ship in fleet",
+                                                Color.RED
+                                            ); event.consume(); continue
                                         }
                                         removePlayerShuttle()
                                     } else {
                                         if (!unassignPlayer) {
-                                            MISC.showMessage("Unassign Player must be on in the FleetBuilder mod settings to unassign the player", Color.RED); event.consume(); continue
+                                            MISC.showMessage(
+                                                "Unassign Player must be on in the FleetBuilder mod settings to unassign the player",
+                                                Color.RED
+                                            ); event.consume(); continue
                                         }
                                         addPlayerShuttle()
                                     }
@@ -334,20 +340,20 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     }
                 }
 
-                if(event.isCtrlDown && event.isLMBDownEvent) {
+                if (event.isCtrlDown && event.isLMBDownEvent) {
                     if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
-
                         try {
                             val refitTab = MISC.getRefitTab()
                             if (refitTab == null)
                                 continue
+
                             val refitTabChildren = refitTab.invoke("getChildrenCopy") as MutableList<*>
 
                             var thing: Any? = null
                             refitTabChildren.forEach { child ->
                                 if (child?.getMethodsMatching("getFleetMemberIndex") != null) {
                                     thing = child
-                                    //break
+                                    // break
                                 }
                             }
 

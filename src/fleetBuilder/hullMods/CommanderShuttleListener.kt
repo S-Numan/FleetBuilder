@@ -9,7 +9,6 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
-import com.fs.starfarer.campaign.CampaignEngine
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.util.MISC
 import java.awt.Color
@@ -29,18 +28,18 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
 
     fun reportCurrentLocationChanged(prev: LocationAPI, curr: LocationAPI) {
 
-        if(MISC.playerShuttleExists() && !prev.isHyperspace && curr.isHyperspace) {
+        if (MISC.playerShuttleExists() && !prev.isHyperspace && curr.isHyperspace) {
             prevLocationSetter = prev
         }
 
     }
 
     override fun advance(amount: Float) {
-        if(!Global.getSettings().isInCampaignState) return
+        if (!Global.getSettings().isInCampaignState) return
 
-        if(Global.getSector().campaignUI.currentInteractionDialog != null) return
+        if (Global.getSector().campaignUI.currentInteractionDialog != null) return
 
-        if(prevLocationSetter != null) {
+        if (prevLocationSetter != null) {
             val playerFleet = Global.getSector().playerFleet
             playerFleet.containingLocation.removeEntity(playerFleet)
             prevLocationSetter!!.addEntity(playerFleet)
@@ -67,7 +66,10 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
     override fun reportShownInteractionDialog(dialog: InteractionDialogAPI) {
         val playerFleet = Global.getSector().playerFleet
 
-        if (playerFleet.fleetData.membersListCopy.size == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(commandShuttleId)) {
+        if (playerFleet.fleetData.membersListCopy.size == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(
+                commandShuttleId
+            )
+        ) {
             //No getting around jumping with only the command shuttle
 
             if (dialog.plugin is JumpPointInteractionDialogPluginImpl
@@ -86,7 +88,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
 
 
 
-        if(marketOpened) {
+        if (marketOpened) {
             marketOpened = false
             return
         }
@@ -114,13 +116,13 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
     }
 
     override fun reportPlayerMarketTransaction(transaction: PlayerMarketTransaction) {
-        if(transaction.shipsSold.isNotEmpty()){
+        if (transaction.shipsSold.isNotEmpty()) {
             val member = transaction.shipsSold.first().member
-            if(member.variant.hasHullMod(commandShuttleId)){
+            if (member.variant.hasHullMod(commandShuttleId)) {
                 transaction.submarket.cargo.mothballedShips.removeFleetMember(member)
 
                 var message = "You cannot transfer your command shuttle."
-                if(transaction.creditValue > 0) {
+                if (transaction.creditValue > 0) {
                     message += " Refunding market ${transaction.creditValue.toInt()} credits"
                     Global.getSector().playerFleet.cargo.credits.subtract(transaction.creditValue)
                 }

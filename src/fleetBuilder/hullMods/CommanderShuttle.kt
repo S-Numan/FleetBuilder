@@ -3,13 +3,14 @@ package fleetBuilder.hullMods
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.econ.MarketAPI
-import com.fs.starfarer.api.combat.*
+import com.fs.starfarer.api.combat.BaseHullMod
+import com.fs.starfarer.api.combat.MutableShipStatsAPI
+import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.loading.HullModSpecAPI
 
 
-class CommanderShuttle : BaseHullMod()
-{
+class CommanderShuttle : BaseHullMod() {
     override fun init(spec: HullModSpecAPI?) {
         super.init(spec)
     }

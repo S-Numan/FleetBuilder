@@ -49,7 +49,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
 
         MISC.afterGameSave()
 
-        if(ModSettings.backupSave) {
+        if (ModSettings.backupSave) {
             val json = MISC.createPlayerSaveJson()
             Global.getSettings().writeJSONToCommon("SaveTransfer/lastSave", json, false)
         }
@@ -65,7 +65,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
 
 
     override fun advance(amount: Float) {
-        if(Global.getSector().isPaused) {
+        if (Global.getSector().isPaused) {
             val changed = officerTracker.getChangedAssignments()
             //TODO, make a proper listener for this sort of thing. Let's other people use it too.
             for (change in changed) {

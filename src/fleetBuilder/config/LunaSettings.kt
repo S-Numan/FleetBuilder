@@ -1,11 +1,6 @@
 package fleetBuilder.config
 
-import fleetBuilder.util.Reporter
 import fleetBuilder.config.ModSettings.autofitMenuEnabled
-import lunalib.lunaSettings.LunaSettings.getBoolean
-import lunalib.lunaSettings.LunaSettings.getInt
-import lunalib.lunaSettings.LunaSettings.getString
-import lunalib.lunaSettings.LunaSettingsListener
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.config.ModSettings.backupSave
 import fleetBuilder.config.ModSettings.defaultPrefix
@@ -14,6 +9,7 @@ import fleetBuilder.config.ModSettings.dontForceClearSMods
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.config.ModSettings.forceAutofit
 import fleetBuilder.config.ModSettings.importPrefix
+import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.config.ModSettings.saveDMods
 import fleetBuilder.config.ModSettings.saveSMods
@@ -22,9 +18,13 @@ import fleetBuilder.config.ModSettings.showCoreGoalVariants
 import fleetBuilder.config.ModSettings.showCoreNonGoalVariants
 import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
-import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.unassignPlayer
+import fleetBuilder.util.Reporter
 import fleetBuilder.variants.LoadoutManager.generatePrefixes
+import lunalib.lunaSettings.LunaSettings.getBoolean
+import lunalib.lunaSettings.LunaSettings.getInt
+import lunalib.lunaSettings.LunaSettings.getString
+import lunalib.lunaSettings.LunaSettingsListener
 import org.lwjgl.input.Keyboard
 
 
@@ -66,7 +66,7 @@ internal class ModSettingsListener : LunaSettingsListener {
         autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
 
         val _autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
-        if(_autofitMenuHotkey != 0) {
+        if (_autofitMenuHotkey != 0) {
             autofitMenuHotkey = _autofitMenuHotkey
         }
 

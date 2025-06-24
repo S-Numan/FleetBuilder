@@ -1,4 +1,4 @@
-package fleetBuilder.temporary
+package fleetBuilder.integration.campaign
 
 import MagicLib.Font
 import MagicLib.addButton
@@ -22,11 +22,9 @@ import com.fs.starfarer.api.ui.CutStyle
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.MISC
-import fleetBuilder.util.MISC.addParamEntryToFleet
-import fleetBuilder.util.MISC.showError
 import org.lwjgl.input.Keyboard
 
-class CampaignCodexButton: EveryFrameScript {
+class CampaignCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {
         return false
     }
@@ -39,12 +37,12 @@ class CampaignCodexButton: EveryFrameScript {
     var param: Any? = null
 
     override fun advance(amount: Float) {
-        if(!Global.getSector().isPaused) return
-        if(!Global.getSettings().isDevMode) return
+        if (!Global.getSector().isPaused) return
+        if (!Global.getSettings().isDevMode) return
 
         val codex = MISC.getCodexDialog()
-        if(codex == null) {
-            if(addToFleetButton != null)
+        if (codex == null) {
+            if (addToFleetButton != null)
                 addToFleetButton = null
             return
         }
@@ -56,14 +54,14 @@ class CampaignCodexButton: EveryFrameScript {
         val navContainer = (tempArray[3] as UIPanelAPI)//Bottom left: Left, Right, Up, Random, icons UI container.*/
 
         val newParam = MISC.getCodexEntryParam(codex)
-        if(param !== newParam) {
+        if (param !== newParam) {
             param = newParam
 
             codex.removeComponent(addToFleetButton)
             addToFleetButton = null
         }
 
-        if(//Can this param be added to the fleet
+        if (//Can this param be added to the fleet
             param is CommoditySpecAPI ||
             param is SpecialItemSpecAPI ||
             param is WeaponSpecAPI ||
@@ -71,17 +69,17 @@ class CampaignCodexButton: EveryFrameScript {
             param is ShipHullSpecAPI ||
             param is FleetMemberAPI ||
             param is HullModSpecAPI
-            ) {
+        ) {
             val pad = 18f
 
             var exists = false
             val children = codex.getChildrenCopy() as List<UIComponentAPI>
             children.forEach { child ->
-                if(child === addToFleetButton) {
+                if (child === addToFleetButton) {
                     exists = true
                 }
             }
-            if(!exists) {
+            if (!exists) {
                 addToFleetButton = codex.addButton(
                     "",
                     null,
@@ -94,12 +92,12 @@ class CampaignCodexButton: EveryFrameScript {
                 ) as ButtonAPI?
 
                 addToFleetButton!!.onClick { ->
-                    addParamEntryToFleet(Global.getSector(), Global.getSector().campaignUI, param!!)
+                    MISC.addParamEntryToFleet(Global.getSector(), param!!)
                 }
             }
 
-            if(addToFleetButton == null) {
-                showError("addToFleetButton was null, when it shouldn't be.")
+            if (addToFleetButton == null) {
+                MISC.showError("addToFleetButton was null, when it shouldn't be.")
                 return
             }
 
@@ -116,10 +114,10 @@ class CampaignCodexButton: EveryFrameScript {
 
             val entry: String
 
-            if(ctrl && param !is CommoditySpecAPI && param !is SpecialItemSpecAPI)
+            if (ctrl && param !is CommoditySpecAPI && param !is SpecialItemSpecAPI)
                 entry = "Add blueprint"
-            else if(param is HullModSpecAPI) {
-                if(Global.getSector().playerFaction.knowsHullMod((param as HullModSpecAPI).id))
+            else if (param is HullModSpecAPI) {
+                if (Global.getSector().playerFaction.knowsHullMod((param as HullModSpecAPI).id))
                     entry = "Already known"
                 else
                     entry = "Add to faction"
