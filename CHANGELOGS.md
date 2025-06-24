@@ -2,6 +2,8 @@ Version 1.3.7
 - Unscuffed the combat(titlescreen mission) autofit adder.
 - The loadout importer now supports importing from a pasted fleet member by extracting the member's variant data.
 - Fix getEffectiveHullId(). This resolves the issue of the wrong variant type appearing in the autofit UI sometimes.
+- JSON variant saving is now custom: hullmods like S-mods are stored only once, under sMods, not duplicated in hullMods or permaMods.
+- A notable amount of backend changes
 
 Version 1.3.5
 - Codex button now supports adding hullmods to your faction
