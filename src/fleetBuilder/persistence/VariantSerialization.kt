@@ -7,6 +7,7 @@ import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.getMissingFromModInfo
+import fleetBuilder.util.containsString
 import fleetBuilder.util.toBinary
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib.getAllDMods
@@ -274,84 +275,91 @@ object VariantSerialization {
         if (variant.weaponGroups.isEmpty())
             variant.autoGenerateWeaponGroups()//Sometimes weapon groups on other fleets are empty. Weapons are stored in the json by weapon groups, so make sure to generate some weapon groups before converting to json.
 
-        //TODO: avoid toJSONObject(). Do it manually.
-        //TODO: Ideally, only have hullmods in one section, not multiple places at once. SMods only go once into SMods spot, not anywhere else. SModdedBuiltIns only go in that spot. permaMods only go in permaMods, not in SMods. Everything else in hullMods
-        return variant.toJSONObject().apply {
 
-            if (has("modules")) remove("modules")//We don't want this. We have our own functionality.
+        val json = JSONObject()
+        //json.put("goalVariant", true)
 
-            //put("goalVariant", true)
+        json.put("displayName", variant.displayName)
+        json.put("variantId", variant.hullVariantId)
+        json.put("hullId", variant.hullSpec.hullId)
+        json.put("fluxCapacitors", variant.numFluxCapacitors)
+        json.put("fluxVents", variant.numFluxVents)
 
-            /*
-            val weaponGroupsJson = JSONArray()
+        val weaponGroupsJson = JSONArray()
+        for (wg in variant.weaponGroups) {
+            val groupJson = JSONObject()
 
-            for (wg in variant.weaponGroups) {
-                val groupJson = JSONObject()
+            // Add autofire and mode
+            groupJson.put("autofire", wg.isAutofireOnByDefault)
+            groupJson.put("mode", wg.type.name)
 
-                // Add autofire and mode
-                groupJson.put("autofire", wg.isAutofireOnByDefault)
-                groupJson.put("mode", wg.type.name)
-
-                // Add weapons map
-                val weaponsJson = JSONObject()
-                for (slotId in wg.slots) {
-                    val weaponId = variant.getWeaponId(slotId)
-                    if (weaponId != null) {
-                        weaponsJson.put(slotId, weaponId)
-                    }
-                }
-                groupJson.put("weapons", weaponsJson)
-
-                weaponGroupsJson.put(groupJson)
-            }
-
-            put("weaponGroups", weaponGroupsJson)*/
-
-            //toJSONObject does not put the variant's SModded built ins into the JSONObject. This does that.
-            if (applySMods && variant.sModdedBuiltIns.size != 0) {
-                val sModdedbuiltins = JSONArray()
-                for (mod in variant.sModdedBuiltIns) {
-                    sModdedbuiltins.put(mod)
-                }
-                put("sModdedbuiltins", sModdedbuiltins)
-            }
-
-            if (!applySMods && has("sMods")) {
-                val sMods = getJSONArray("sMods").let { (0 until it.length()).map(it::getString) }
-
-                if (has("permaMods")) {
-                    val permaMods = getJSONArray("permaMods")
-                    val filteredMods = JSONArray()
-
-                    for (i in 0 until permaMods.length()) {
-                        val mod = permaMods.getString(i)
-                        if (mod !in sMods) {
-                            filteredMods.put(mod)
-                        }
-                    }
-                    put("permaMods", filteredMods)
-                }
-                put("sMods", JSONArray())
-            }
-
-            if (!includeDMods) {
-                val dmods = getAllDMods()
-
-                listOf("hullMods", "permaMods").forEach { key ->
-                    optJSONArray(key)?.let { jsonArray ->
-                        val filtered = (0 until jsonArray.length())
-                            .mapNotNull { jsonArray.optString(it) }
-                            .filterNot { it in dmods }
-
-                        put(key, JSONArray(filtered))
-                    }
+            // Add weapons map
+            val weaponsJson = JSONObject()
+            for (slotId in wg.slots) {
+                val weaponId = variant.getWeaponId(slotId)
+                if (weaponId != null) {
+                    weaponsJson.put(slotId, weaponId)
                 }
             }
+            groupJson.put("weapons", weaponsJson)
 
-            if (!includeTags) {
-                remove("tags")
+            weaponGroupsJson.put(groupJson)
+        }
+        json.put("weaponGroups", weaponGroupsJson)
+
+
+        if (applySMods && variant.sModdedBuiltIns.isNotEmpty()) {
+            val sModdedbuiltins = JSONArray()
+            variant.sModdedBuiltIns.forEach { mod ->
+                sModdedbuiltins.put(mod)
+            }
+            json.put("sModdedbuiltins", sModdedbuiltins)
+        }
+
+        val allDmods = getAllDMods()
+
+        val hullMods = JSONArray()
+        val sMods = JSONArray()
+        val permaMods = JSONArray()
+
+        if (applySMods) {
+            variant.sMods.forEach { mod ->
+                if (!variant.sModdedBuiltIns.contains(mod))
+                    sMods.put(mod)
+            }
+        } else {
+            variant.sMods.forEach { mod ->
+                hullMods.put(mod)
             }
         }
+
+        variant.permaMods.forEach { mod ->
+            if (!sMods.containsString(mod) && !hullMods.containsString(mod) && !variant.hullSpec.builtInMods.contains(mod)) {
+                if (!includeDMods && allDmods.contains(mod))
+                    return@forEach
+                permaMods.put(mod)
+            }
+        }
+
+        variant.hullMods.forEach { mod ->
+            if (!sMods.containsString(mod) && !permaMods.containsString(mod) && !hullMods.containsString(mod) && !variant.hullSpec.builtInMods.contains(mod))
+                hullMods.put(mod)
+        }
+
+        json.put("hullMods", hullMods)
+        json.put("permaMods", permaMods)
+        json.put("sMods", sMods)
+
+        if (includeTags) {
+            val tags = JSONArray()
+            variant.tags.forEach { tag ->
+                tags.put(tag)
+            }
+            if (tags.length() > 0)
+                json.put("tags", tags)
+        }
+
+        return json
     }
 
     fun addVariantSourceModsToJson(
