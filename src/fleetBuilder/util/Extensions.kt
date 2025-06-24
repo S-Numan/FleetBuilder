@@ -20,11 +20,12 @@ fun JSONArray.containsString(value: String): Boolean {
 // Extension to get the effective hull ID
 fun ShipHullSpecAPI.getEffectiveHullId(): String {
     return if (isCompatibleWithBase){//If the ship's variants are mostly compatible with the variant's of the base hull.
-        if(!dParentHullId.isNullOrEmpty() && dParentHullId != hullId) {//If is DHull
+        if(!dParentHullId.isNullOrEmpty() && dParentHullId != hullId)//If is DHull
             dParentHullId//Get D Parent Hull
-        }
-        baseHullId//Otherwise, get de base hull
-    } else hullId
+        else
+            baseHullId//Otherwise, get de base hull
+    } else
+        hullId
 }
 
 fun ShipHullSpecAPI.getCompatibleDLessHullId(): String {
