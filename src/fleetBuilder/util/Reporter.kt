@@ -9,7 +9,7 @@ import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.config.ModSettings
-import fleetBuilder.integration.save.MakeSaveRemoveable
+import fleetBuilder.integration.save.MakeSaveRemovable
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
 
@@ -30,7 +30,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     }
 
     fun onGameLoad(newGame: Boolean) {
-        MakeSaveRemoveable.onGameLoad()
+        MakeSaveRemovable.onGameLoad()
 
         officerTracker.reset()
         officerTracker.getChangedAssignments()
@@ -41,11 +41,11 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     fun beforeGameSave() {
         MISC.beforeGameSave()
 
-        MakeSaveRemoveable.beforeGameSave()
+        MakeSaveRemovable.beforeGameSave()
     }
 
     fun afterGameSave() {
-        MakeSaveRemoveable.afterGameSave()
+        MakeSaveRemovable.afterGameSave()
 
         MISC.afterGameSave()
 
