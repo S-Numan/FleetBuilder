@@ -79,15 +79,37 @@ object MISC {
         showError(short, short, e)
     }
 
-    fun showMessage(short: String, color: Color = Misc.getTooltipTitleAndLightHighlightColor()) {
+    fun showMessage(short: String, color: Color?, highlight: String, highlightColor: Color = Misc.getHighlightColor()) {
+        var defaultColor = color
+
         val gameState = Global.getCurrentState()
         if(gameState == GameState.CAMPAIGN) {
+            if(defaultColor == null)
+                defaultColor = Misc.getTooltipTitleAndLightHighlightColor()
+
             val ui = Global.getSector().campaignUI
-            ui.messageDisplay.addMessage(short, color)
+            ui.messageDisplay.addMessage(short, defaultColor, highlight, highlightColor)
         } else if(gameState == GameState.COMBAT) {
+            if(defaultColor == null)
+                defaultColor = Misc.getTextColor()
+
             val engine = Global.getCombatEngine()
             val ui = engine.combatUI
-            ui.addMessage(1, short)
+
+            val highlightIndex = short.indexOf(highlight)
+            if (highlight.isEmpty() || highlightIndex == -1) { // Highlight text not found.
+                ui.addMessage(1, defaultColor, short)
+            } else {
+                val before = short.substring(0, highlightIndex)
+                val after = short.substring(highlightIndex + highlight.length)
+
+                ui.addMessage(
+                    0,
+                    defaultColor, before,
+                    highlightColor, highlight,
+                    defaultColor, after
+                )
+            }
         } else if (gameState == GameState.TITLE) {
             //TEMP
             val state = AppDriver.getInstance().currentState
@@ -95,6 +117,12 @@ object MISC {
 
             Global.getSoundPlayer().playUISound("ui_selection_cleared", 1f, 1f)
         }
+    }
+    fun showMessage(short: String, color: Color? = null) {
+        showMessage(short, color, "")
+    }
+    fun showMessage(short: String, highlight: String, highlightColor: Color = Misc.getHighlightColor()) {
+        showMessage(short, null, highlight, highlightColor)
     }
     /*
     val stackTrace = Exception().stackTrace
@@ -302,40 +330,38 @@ object MISC {
 
         if (json != null) {
             repeat(count) {
-                fleetPaste(sector, ui, json)
+                fleetPaste(sector, json)
             }
         }
 
         if (!message.isNullOrEmpty())
-            ui.messageDisplay.addMessage(message)
+            showMessage(message)
     }
 
     fun campaignPaste(
         sector: SectorAPI,
-        ui: CampaignUIAPI,
         json: JSONObject): Boolean {
         val fleet = MISC.createFleetFromJson(json, faction = Factions.PIRATES)
         if (fleet.fleetSizeCount == 0) {
-            ui.messageDisplay.addMessage("Failed to create fleet from clipboard", Color.RED)
+            showMessage("Failed to create fleet from clipboard", Color.RED)
             return false
         }
 
         sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
         Global.getSector().campaignUI.showInteractionDialog(fleet)
         fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
-        ui.messageDisplay.addMessage("Fleet from clipboard added to campaign")
+        showMessage("Fleet from clipboard added to campaign")
         return true
     }
 
     fun fleetPaste(
         sector: SectorAPI,
-        ui: CampaignUIAPI,
         json: JSONObject): Boolean {
         return when {
             json.has("skills") -> {
                 // Officer
                 addOfficerToFleet(json, sector.playerFleet.fleetData, randomPastedCosmetics)
-                ui.messageDisplay.addMessage("Added officer to fleet")
+                showMessage("Added officer to fleet")
                 true
             }
 
@@ -343,7 +369,7 @@ object MISC {
                 // Fleet member
                 val (member, _) = addMemberToFleet(json, sector.playerFleet.fleetData, randomPastedCosmetics)
                 if (member == null) {
-                    ui.messageDisplay.addMessage("Failed to create member from clipboard", Color.RED)
+                    showMessage("Failed to create member from clipboard", Color.RED)
                     return false
                 }
 
@@ -353,11 +379,11 @@ object MISC {
 
                 val shipName = member.hullSpec.hullName
                 val message = buildString {
-                    append("Added '${shipName}' to fleet,")
-                    if (!member.captain.isDefault) append(" with an officer")
+                    append("Added '${shipName}' to fleet")
+                    if (!member.captain.isDefault) append(", with an officer")
                 }
 
-                ui.messageDisplay.addMessage(message, shipName, Misc.getHighlightColor())
+                showMessage(message, shipName, Misc.getHighlightColor())
                 true
             }
 
@@ -371,12 +397,12 @@ object MISC {
                 if (member == null) return false
 
                 val shipName = member.hullSpec.hullName
-                ui.messageDisplay.addMessage("Added '$shipName' to fleet", shipName, Misc.getHighlightColor())
+                showMessage("Added '$shipName' to fleet", shipName, Misc.getHighlightColor())
                 true
             }
 
             else -> {
-                ui.messageDisplay.addMessage("No valid data found in clipboard", Color.RED)
+                showMessage("No valid data found in clipboard", Color.RED)
                 false
             }
         }

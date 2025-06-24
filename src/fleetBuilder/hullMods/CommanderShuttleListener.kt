@@ -48,7 +48,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
             Global.getSector().currentLocation = prevLocationSetter
 
             playerFleet.setLocation(0f, 0f)
-            CampaignEngine.getInstance().addMessage("Your command shuttle cannot jump alone", Color.RED)
+            MISC.showMessage("Your command shuttle cannot jump alone", Color.RED)
 
             prevLocationSetter = null
         }
@@ -74,7 +74,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
                 || (dialog.interactionTarget != null && dialog.interactionTarget.customPlugin is GateEntityPlugin)
             ) {
                 dialog.dismiss()
-                CampaignEngine.getInstance().addMessage("Your command shuttle cannot jump alone", Color.RED)
+                MISC.showMessage("Your command shuttle cannot jump alone", Color.RED)
             }
             //val pods = Misc.addCargoPods(playerFleet.containingLocation, playerFleet.location)
             //pods.cargo.addFuel(playerFleet.cargo.fuel)
@@ -124,7 +124,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
                     message += " Refunding market ${transaction.creditValue.toInt()} credits"
                     Global.getSector().playerFleet.cargo.credits.subtract(transaction.creditValue)
                 }
-                CampaignEngine.getInstance().campaignUI.messageDisplay.addMessage(message, Color.RED)
+                MISC.showMessage(message, Color.RED)
             }
         }
     }

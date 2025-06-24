@@ -69,7 +69,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
             val changed = officerTracker.getChangedAssignments()
             //TODO, make a proper listener for this sort of thing. Let's other people use it too.
             for (change in changed) {
-                //CampaignEngine.getInstance().campaignUI.messageDisplay.addMessage( "Officer changed on ${change.member.shipName}. TEMP, REMOVE LATER", Color.RED )
+                //showMessage( "Officer changed on ${change.member.shipName}. TEMP, REMOVE LATER", Color.RED )
                 MISC.onOfficerChange(change)
             }
         }

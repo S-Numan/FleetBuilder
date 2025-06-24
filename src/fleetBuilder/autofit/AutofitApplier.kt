@@ -154,7 +154,7 @@ object AutofitApplier {
                     }
 
                     if(auto.creditCost > 0) {
-                        CampaignEngine.getInstance().campaignUI.messageDisplay.addMessage(
+                        MISC.showMessage(
                             "Autofit confirmed, purchased ${Misc.getDGSCredits(auto.creditCost.toFloat())} worth of ordnance",
                             Misc.getDGSCredits(auto.creditCost.toFloat()), Misc.getHighlightColor()
                         )

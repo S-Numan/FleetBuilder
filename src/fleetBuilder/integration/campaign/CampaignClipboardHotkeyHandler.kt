@@ -123,9 +123,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                                     val json = saveFleetToJson(fleet, includeOfficerLevelingStats = false)
                                     setClipboardText(json.toString(4))
                                     if (fleetCount > 1) {
-                                        ui.messageDisplay.addMessage("Copied interaction fleet with supporting fleets to clipboard");
+                                        MISC.showMessage("Copied interaction fleet with supporting fleets to clipboard");
                                     } else {
-                                        ui.messageDisplay.addMessage("Copied interaction fleet to clipboard");
+                                        MISC.showMessage("Copied interaction fleet to clipboard");
                                     }
                                 }
 
@@ -137,13 +137,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                                 val json = saveFleetToJson(sector.playerFleet)
                                 setClipboardText(json.toString(4))
 
-                                ui.messageDisplay.addMessage("Copied entire fleet to clipboard"); event.consume(); continue
+                                MISC.showMessage("Copied entire fleet to clipboard"); event.consume(); continue
                             }
                             if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
                                 if (!refitScreenVariantToClipboard()) {
                                     event.consume(); continue
                                 }
-                                ui.messageDisplay.addMessage("Copied variant to clipboard"); event.consume(); continue
+                                MISC.showMessage("Variant copied to clipboard"); event.consume(); continue
                             }
                         } catch (e: Exception) {
                             showError("FleetBuilder hotkey failed", e)
@@ -160,20 +160,15 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                             if (missing.hullIds.isNotEmpty()) {
                                 val missingHullId = json.optString("hullId", "")
-                                ui.messageDisplay.addMessage(
-                                    "Failed to import loadout. Could not find hullId $missingHullId",
-                                    Color.RED
-                                )
-                                event.consume()
-                                continue
+                                MISC.showMessage("Failed to import loadout. Could not find hullId $missingHullId", Color.RED); event.consume(); continue
                             }
 
                             val loadoutExists = importShipLoadout(variant, missing)
 
                             if (!loadoutExists) {
-                                ui.messageDisplay.addMessage("Imported loadout with hull: ${variant.hullSpec.hullId}", variant.hullSpec.hullId, Misc.getHighlightColor())
+                                MISC.showMessage("Imported loadout with hull: ${variant.hullSpec.hullId}", variant.hullSpec.hullId, Misc.getHighlightColor())
                             } else {
-                                ui.messageDisplay.addMessage("Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}\n", variant.hullSpec.hullId, Misc.getHighlightColor())
+                                MISC.showMessage("Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}\n", variant.hullSpec.hullId, Misc.getHighlightColor())
                             }
 
                             event.consume(); continue
@@ -182,8 +177,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                             val json = getClipboardJson()
                             if (json == null) {
-                                ui.messageDisplay.addMessage("No valid fleet data.", Color.RED)
-                                event.consume(); continue
+                                MISC.showMessage("No valid fleet data.", Color.RED); event.consume(); continue
                             }
                             handleHotkeyModePaste(sector, ui, json)
                             event.consume(); continue
@@ -252,8 +246,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                                 if (hoverOfficer != null) {
                                     val json = saveOfficerToJson(hoverOfficer)
                                     setClipboardText(json.toString())
-                                    ui.messageDisplay.addMessage("Officer copied to clipboard")
-                                    event.consume()
+                                    MISC.showMessage("Officer copied to clipboard"); event.consume()
                                 }
 
                                 continue
@@ -305,11 +298,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                                 if (isPortraitHoveredOver) {
                                     val json = saveOfficerToJson(mouseOverMember.captain)
                                     setClipboardText(json.toString(4))
-                                    ui.messageDisplay.addMessage("Officer copied to clipboard")
+                                    MISC.showMessage("Officer copied to clipboard")
                                 } else {
                                     val json = saveMemberToJson(mouseOverMember)
                                     setClipboardText(json.toString(4))
-                                    ui.messageDisplay.addMessage("Fleet member copied to clipboard")
+                                    MISC.showMessage("Fleet member copied to clipboard")
                                 }
                                 event.consume(); continue
                             } else if (isPortraitHoveredOver && mouseOverMember.captain.isPlayer) {//Unassign player officer
@@ -322,17 +315,12 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                                 if (event.isRMBDownEvent) {
                                     if (mouseOverMember.variant.hasHullMod(commandShuttleId)) {
                                         if (sector.playerFleet.fleetSizeCount == 1) {//Prevent removing last fleet member
-                                            ui.messageDisplay.addMessage("Cannot remove last ship in fleet", Color.RED)
-                                            event.consume(); continue
+                                            MISC.showMessage("Cannot remove last ship in fleet", Color.RED); event.consume(); continue
                                         }
                                         removePlayerShuttle()
                                     } else {
                                         if (!unassignPlayer) {
-                                            ui.messageDisplay.addMessage(
-                                                "Unassign Player must be on in the FleetBuilder mod settings to unassign the player",
-                                                Color.RED
-                                            )
-                                            event.consume(); continue
+                                            MISC.showMessage("Unassign Player must be on in the FleetBuilder mod settings to unassign the player", Color.RED); event.consume(); continue
                                         }
                                         addPlayerShuttle()
                                     }
@@ -388,7 +376,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                                 val json = saveOfficerToJson(member.captain)
                                 setClipboardText(json.toString())
-                                ui.messageDisplay.addMessage("Officer copied to clipboard")
+                                MISC.showMessage("Officer copied to clipboard")
                                 event.consume()
                             }
 
@@ -418,7 +406,7 @@ fun handleHotkeyModePaste(
     json: JSONObject
 ): Boolean {
     if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-        return fleetPaste(sector, ui, json)
+        return fleetPaste(sector, json)
     }
 
     // Handle campaign map paste (no dialog/menu showing)
@@ -426,7 +414,7 @@ fun handleHotkeyModePaste(
         !ui.isShowingDialog &&
         !ui.isShowingMenu
     ) {
-        return campaignPaste(sector, ui, json)
+        return campaignPaste(sector, json)
     }
 
     return false
