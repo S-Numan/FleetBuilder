@@ -143,7 +143,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                                 if (!refitScreenVariantToClipboard()) {
                                     event.consume(); continue
                                 }
-                                ui.messageDisplay.addMessage("Copied current variant to clipboard"); event.consume(); continue
+                                ui.messageDisplay.addMessage("Copied variant to clipboard"); event.consume(); continue
                             }
                         } catch (e: Exception) {
                             showError("FleetBuilder hotkey failed", e)

@@ -17,6 +17,7 @@ import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.autofit.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.util.ClipboardUtil.setClipboardText
+import fleetBuilder.util.MISC
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.getAllAutofitSpecsForShip
 import fleetBuilder.variants.LoadoutManager.getAnyVariant
@@ -203,8 +204,6 @@ internal object AutofitPanel {
                 if (selectorPlugin.isUnlocked || Global.getSettings().isDevMode) {
                     Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 1f)
                     if (event.isCtrlDown) {//Copy variant to clipboard
-                        Global.getLogger(this.javaClass).info("Variant to clipboard")
-
                         var saveVariant: ShipVariantAPI?
                         if (selectorPlugin.paintjobSpec == null) {
                             saveVariant = baseVariant
@@ -219,6 +218,8 @@ internal object AutofitPanel {
                             val json = saveVariantToJson(variantToSave)
 
                             setClipboardText(json.toString(4))
+
+                            MISC.showMessage("Variant copied to clipboard")
                         }
                     }
                     else {//Save and load variant
