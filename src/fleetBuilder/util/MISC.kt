@@ -456,6 +456,8 @@ object MISC {
             sector.addTransientScript(commanderShuttleListener)
             sector.addTransientListener(commanderShuttleListener)
         }
+
+        OfficerAssignmentEvents.addListener(shuttleUnassigner)
     }
 
 
@@ -474,15 +476,21 @@ object MISC {
         }
     }
 
+    private val shuttleUnassigner = ShuttleUnassigner()
 
-    fun onOfficerChange(changed: OfficerAssignmentTracker.OfficerChange) {
+    class ShuttleUnassigner : OfficerAssignmentListener {
+        override fun onOfficerAssignmentChanged(change: OfficerAssignmentTracker.OfficerChange) {
 
-        //Remove commandShuttle if was piloted by player and is no longer
-        if (changed.member.variant.hasHullMod(commandShuttleId)
-            && changed.previous != null && changed.previous.isPlayer
-        ) {
-            Global.getSector().playerFleet.fleetData.removeFleetMember(changed.member)
-            updateFleetPanelContents()
+            //Remove commandShuttle if was piloted by player and is no longer
+            if (change.member.variant.hasHullMod(commandShuttleId)
+                && change.previous != null && change.previous.isPlayer
+            ) {
+                Global.getSector().playerFleet.fleetData.removeFleetMember(change.member)
+                updateFleetPanelContents()
+            }
+
+            //val name = change.member.shipName
+            //showMessage("Officer changed on $name: Previously captained by: ${change.previous?.name?.fullName} Currently: ${change.current?.name?.fullName}")
         }
     }
 
@@ -490,8 +498,7 @@ object MISC {
         commanderShuttleListener.reportCurrentLocationChanged(prev, curr)
     }
 
-    var commanderShuttleListener =
-        CommanderShuttleListener()//Should not be present as a script if the shuttle is not in the player's fleet
+    var commanderShuttleListener = CommanderShuttleListener()//Should not be present as a script if the shuttle is not in the player's fleet
 
     fun removePlayerShuttle() {
         val sector = Global.getSector()

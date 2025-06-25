@@ -20,6 +20,7 @@ import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
 import fleetBuilder.config.ModSettings.unassignPlayer
 import fleetBuilder.util.Reporter
+import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.generatePrefixes
 import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
@@ -70,7 +71,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             autofitMenuHotkey = _autofitMenuHotkey
         }
 
-        Reporter.onApplicationLoad()
+        LoadoutManager.loadAllDirectories()//Reload the LoadoutManager
     }
 }
 
