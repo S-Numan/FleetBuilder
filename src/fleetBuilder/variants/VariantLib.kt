@@ -40,6 +40,10 @@ object VariantLib {
                 }
             }*/
 
+            //getOrPut
+            //Checks if variantMap contains the key hullId.
+            //    If yes: returns the existing list.
+            //    If no: creates a new mutableListOf() and puts it into the map under hullId
             val variantsForHull = variantMap.getOrPut(hullId) { mutableListOf() }
             variantsForHull.add(variant)
         }
