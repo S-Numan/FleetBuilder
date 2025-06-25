@@ -4,18 +4,18 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
-interface OfficerAssignmentListener {
-    fun onOfficerAssignmentChanged(change: OfficerAssignmentTracker.OfficerChange)
+fun interface ShipOfficerChangeListener {
+    fun onOfficerAssignmentChanged(change: ShipOfficerChangeTracker.OfficerChange)
 }
 
-object OfficerAssignmentEvents {
-    private val listeners = mutableListOf<OfficerAssignmentListener>()
+object ShipOfficerChangeEvents {
+    private val listeners = mutableListOf<ShipOfficerChangeListener>()
 
-    fun addListener(listener: OfficerAssignmentListener) {
+    fun addListener(listener: ShipOfficerChangeListener) {
         listeners += listener
     }
 
-    fun removeListener(listener: OfficerAssignmentListener) {
+    fun removeListener(listener: ShipOfficerChangeListener) {
         listeners -= listener
     }
 
@@ -23,20 +23,20 @@ object OfficerAssignmentEvents {
         listeners.clear()
     }
 
-    fun notify(change: OfficerAssignmentTracker.OfficerChange) {
+    fun notify(change: ShipOfficerChangeTracker.OfficerChange) {
         for (listener in listeners) {
             listener.onOfficerAssignmentChanged(change)
         }
     }
 
-    fun notifyAll(changes: List<OfficerAssignmentTracker.OfficerChange>) {
+    fun notifyAll(changes: List<ShipOfficerChangeTracker.OfficerChange>) {
         for (change in changes) {
             notify(change)
         }
     }
 }
 
-class OfficerAssignmentTracker {
+class ShipOfficerChangeTracker {
     data class OfficerChange(
         val member: FleetMemberAPI,
         val previous: PersonAPI?,
@@ -79,5 +79,7 @@ class OfficerAssignmentTracker {
 
     fun reset() {
         lastAssignments.clear()
+        changed.clear()
+        getChangedAssignments()
     }
 }

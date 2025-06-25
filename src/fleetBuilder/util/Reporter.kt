@@ -20,15 +20,14 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
         LoadoutManager.loadAllDirectories()
     }
 
-    private val officerTracker = OfficerAssignmentTracker()
+    private val officerTracker = ShipOfficerChangeTracker()
 
     fun onGameLoad(newGame: Boolean) {
-        OfficerAssignmentEvents.removeAllListeners()
+        ShipOfficerChangeEvents.removeAllListeners()
 
         MakeSaveRemovable.onGameLoad()
 
         officerTracker.reset()
-        officerTracker.getChangedAssignments()
 
         MISC.onGameLoad(newGame)
     }
@@ -66,7 +65,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     override fun advance(amount: Float) {
         if (Global.getSector().isPaused) {
             val changed = officerTracker.getChangedAssignments()
-            OfficerAssignmentEvents.notifyAll(changed)
+            ShipOfficerChangeEvents.notifyAll(changed)
         }
     }
 }

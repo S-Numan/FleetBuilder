@@ -457,7 +457,19 @@ object MISC {
             sector.addTransientListener(commanderShuttleListener)
         }
 
-        OfficerAssignmentEvents.addListener(shuttleUnassigner)
+        ShipOfficerChangeEvents.addListener { change ->
+            //Remove commandShuttle if was piloted by player and is no longer
+            if (change.member.variant.hasHullMod(commandShuttleId)
+                && change.previous != null && change.previous.isPlayer
+            ) {
+                Global.getSector().playerFleet.fleetData.removeFleetMember(change.member)
+                updateFleetPanelContents()
+            }
+        }
+
+        //ShipOfficerChangeEvents.addListener { change ->
+        //    showMessage("Officer changed on ${change.member.shipName}: Previously captained by: ${change.previous?.name?.fullName} Currently: ${change.current?.name?.fullName}")
+        //}
     }
 
 
@@ -473,24 +485,6 @@ object MISC {
     fun afterGameSave() {
         if (Global.getSector().memoryWithoutUpdate.getBoolean("\$FB_hadCommandShuttle")) {
             addPlayerShuttle()
-        }
-    }
-
-    private val shuttleUnassigner = ShuttleUnassigner()
-
-    class ShuttleUnassigner : OfficerAssignmentListener {
-        override fun onOfficerAssignmentChanged(change: OfficerAssignmentTracker.OfficerChange) {
-
-            //Remove commandShuttle if was piloted by player and is no longer
-            if (change.member.variant.hasHullMod(commandShuttleId)
-                && change.previous != null && change.previous.isPlayer
-            ) {
-                Global.getSector().playerFleet.fleetData.removeFleetMember(change.member)
-                updateFleetPanelContents()
-            }
-
-            //val name = change.member.shipName
-            //showMessage("Officer changed on $name: Previously captained by: ${change.previous?.name?.fullName} Currently: ${change.current?.name?.fullName}")
         }
     }
 
