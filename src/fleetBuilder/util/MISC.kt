@@ -22,6 +22,7 @@ import com.fs.starfarer.codex2.CodexDetailPanel
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
+import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.hullMods.CommanderShuttleListener

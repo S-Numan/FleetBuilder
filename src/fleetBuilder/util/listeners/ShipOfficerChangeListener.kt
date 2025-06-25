@@ -1,4 +1,4 @@
-package fleetBuilder.util
+package fleetBuilder.util.listeners
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.PersonAPI
