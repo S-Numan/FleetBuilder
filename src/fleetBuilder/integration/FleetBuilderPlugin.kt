@@ -53,4 +53,9 @@ class FleetBuilderPlugin : BaseModPlugin() {
         reporter.afterGameSave()
     }
 
+    override fun onDevModeF8Reload() {
+        super.onDevModeF8Reload()
+
+        reporter.onApplicationLoad()
+    }
 }
