@@ -2,41 +2,33 @@ package fleetBuilder.integration.campaign
 
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.*
+import com.fs.starfarer.api.campaign.CampaignFleetAPI
+import com.fs.starfarer.api.campaign.CampaignUIAPI
+import com.fs.starfarer.api.campaign.CoreUITabId
+import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
-import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
+import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
-import fleetBuilder.config.ModSettings.commandShuttleId
-import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
-import fleetBuilder.config.ModSettings.unassignPlayer
-import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
-import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
-import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
-import fleetBuilder.util.ClipboardFunctions.codexEntryToClipboard
-import fleetBuilder.util.ClipboardFunctions.refitScreenVariantToClipboard
-import fleetBuilder.util.ClipboardUtil.getClipboardJson
-import fleetBuilder.util.ClipboardUtil.setClipboardText
+import fleetBuilder.config.ModSettings
+import fleetBuilder.persistence.FleetSerialization
+import fleetBuilder.persistence.MemberSerialization
+import fleetBuilder.persistence.OfficerSerialization
+import fleetBuilder.persistence.VariantSerialization
+import fleetBuilder.util.ClipboardFunctions
+import fleetBuilder.util.ClipboardUtil
 import fleetBuilder.util.MISC
-import fleetBuilder.util.MISC.addParamEntryToFleet
-import fleetBuilder.util.MISC.addPlayerShuttle
 import fleetBuilder.util.MISC.campaignPaste
 import fleetBuilder.util.MISC.fleetPaste
-import fleetBuilder.util.MISC.getCodexDialog
-import fleetBuilder.util.MISC.getCodexEntryParam
-import fleetBuilder.util.MISC.getCoreUI
-import fleetBuilder.util.MISC.removePlayerShuttle
-import fleetBuilder.util.MISC.showError
 import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.variants.LoadoutManager.importShipLoadout
+import fleetBuilder.variants.LoadoutManager
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
@@ -46,361 +38,306 @@ import java.awt.Color
 
 
 internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
-    override fun getListenerInputPriority(): Int {
-        return 1
-    }
+    override fun getListenerInputPriority(): Int = 1
 
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
         val sector = Global.getSector() ?: return
-
-        //if (!sector.isPaused) return //Return if not paused
         val ui = sector.campaignUI ?: return
 
+        events.forEach { event ->
+            if (event.isConsumed) return@forEach
 
-        for (event in events) {
-            if (event.isConsumed) continue
-            if (event.eventType == InputEventType.KEY_DOWN) {
-                if (event.isCtrlDown) {
-                    if (event.eventValue == Keyboard.KEY_D && Global.getSettings().isDevMode) {
-                        try {
-                            val codex = getCodexDialog()
-
-                            if (codex != null) {
-                                val param = getCodexEntryParam(codex) ?: return
-
-                                addParamEntryToFleet(sector, param)
-
-                                event.consume(); continue
-                            }
-
-                        } catch (e: Exception) {
-                            showError("FleetBuilder hotkey failed", e)
-                        }
-                    }
-                    if (event.eventValue == Keyboard.KEY_C) {
-
-                        try {
-                            //Codex
-                            val codex = getCodexDialog()
-
-                            if (codex != null) {
-                                codexEntryToClipboard(codex)
-                                event.consume(); continue
-                            }
-
-                            //Interaction
-                            val interaction = ui.currentInteractionDialog
-                            if (interaction != null) {//Interacting with a target?
-                                val plugin = interaction.plugin
-                                var battle: BattleAPI? = null
-                                if (plugin.context is FleetEncounterContext) {
-                                    battle = (plugin.context as FleetEncounterContext).battle
-                                }
-                                val fleet: CampaignFleetAPI?
-                                var fleetCount = 1
-
-                                if (battle != null && !event.isAltDown) {
-                                    fleet = battle.nonPlayerCombined
-                                    fleetCount = battle.nonPlayerSide.size
-                                } else
-                                    fleet = interaction.interactionTarget as? CampaignFleetAPI
-
-                                if (fleet != null) {
-                                    val json = saveFleetToJson(fleet, includeOfficerLevelingStats = false)
-                                    setClipboardText(json.toString(4))
-                                    if (fleetCount > 1) {
-                                        MISC.showMessage("Copied interaction fleet with supporting fleets to clipboard");
-                                    } else {
-                                        MISC.showMessage("Copied interaction fleet to clipboard");
-                                    }
-                                }
-
-                                event.consume(); continue
-                            }
-
-
-                            if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-                                val json = saveFleetToJson(sector.playerFleet)
-                                setClipboardText(json.toString(4))
-
-                                MISC.showMessage("Copied entire fleet to clipboard"); event.consume(); continue
-                            }
-                            if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
-                                if (!refitScreenVariantToClipboard()) {
-                                    event.consume(); continue
-                                }
-                                MISC.showMessage("Variant copied to clipboard"); event.consume(); continue
-                            }
-                        } catch (e: Exception) {
-                            showError("FleetBuilder hotkey failed", e)
-                        }
-                    } else if (event.eventValue == Keyboard.KEY_V) {
-                        if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
-                            //Import loadout
-
-                            val json = getClipboardJson() ?: continue
-
-                            val (variant, missing) = json.optJSONObject("variant")?.let { variantJson ->
-                                getVariantFromJsonWithMissing(variantJson)//JSON is of a FleetMemberAPI
-                            } ?: getVariantFromJsonWithMissing(json)//JSON is of a ShipVariantAPI (fallback)
-
-                            if (missing.hullIds.isNotEmpty()) {
-                                val missingHullId = json.optString("hullId", "")
-                                MISC.showMessage(
-                                    "Failed to import loadout. Could not find hullId $missingHullId",
-                                    Color.RED
-                                ); event.consume(); continue
-                            }
-
-                            val loadoutExists = importShipLoadout(variant, missing)
-
-                            if (!loadoutExists) {
-                                MISC.showMessage(
-                                    "Imported loadout with hull: ${variant.hullSpec.hullId}",
-                                    variant.hullSpec.hullId,
-                                    Misc.getHighlightColor()
-                                )
-                            } else {
-                                MISC.showMessage(
-                                    "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}\n",
-                                    variant.hullSpec.hullId,
-                                    Misc.getHighlightColor()
-                                )
-                            }
-
-                            event.consume(); continue
-                        } else {
-                            if (!Global.getSettings().isDevMode) continue
-
-                            val json = getClipboardJson()
-                            if (json == null) {
-                                MISC.showMessage("No valid fleet data.", Color.RED); event.consume(); continue
-                            }
-                            handleHotkeyModePaste(sector, ui, json)
-                            event.consume(); continue
-                        }
-                    }
-                }
-            } else if (event.eventType == InputEventType.MOUSE_DOWN) {
-                if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-
-                    if (event.isLMBDownEvent || event.isRMBDownEvent) {
-
-                        try {
-
-                            val codex = getCodexDialog()
-
-                            if (codex != null)//If in codex, stop!
-                                continue
-
-
-                            val core = getCoreUI() ?: continue
-
-                            val children = (core.invoke("getChildrenNonCopy") as MutableList<*>?)
-
-                            var captainPicker: Any? = null
-
-                            if (children != null) {
-                                for (i in 0..<children.size) {
-                                    val component: Any? = children[i]
-                                    if (component is CaptainPickerDialog) {
-                                        captainPicker = component
-                                        break
-                                    }
-                                }
-                            }
-
-                            if (captainPicker != null) { //Captain picker is open?
-                                if (!event.isCtrlDown)
-                                    continue
-
-                                val officers =
-                                    captainPicker.invoke("getListOfficers")?.invoke("getItems") as MutableList<*>?
-                                if (officers == null)
-                                    continue
-
-                                var hoverOfficer: PersonAPI? = null
-
-                                for (officer in officers) {
-                                    val selector = officer?.invoke("getSelector")
-                                    if (selector != null) {
-                                        val fader = selector.invoke("getMouseoverHighlightFader") as? Fader
-                                            ?: continue
-                                        val isHoveredOver = (fader.isFadingIn || fader.brightness == 1f)
-
-                                        if (isHoveredOver) {
-                                            //hoverOfficer = officer
-                                            val parent = selector.invoke("getParent")
-                                            if (parent == null)
-                                                continue
-                                            val person = parent.invoke("getPerson") as PersonAPI
-                                            hoverOfficer = person
-                                            break
-                                        }
-                                    }
-                                }
-
-                                if (hoverOfficer != null) {
-                                    val json = saveOfficerToJson(hoverOfficer)
-                                    setClipboardText(json.toString())
-                                    MISC.showMessage("Officer copied to clipboard"); event.consume()
-                                }
-
-                                continue
-                            }
-
-                            val fleetTab = MISC.getFleetTab() ?: continue
-
-                            val mouseOverMember =
-                                fleetTab.invoke("getMousedOverFleetMember") as? FleetMemberAPI ?: continue
-
-                            val fleetPanel = fleetTab.invoke("getFleetPanel") as? UIPanelAPI ?: continue
-
-                            val list = fleetPanel.invoke("getList") ?: continue
-
-                            val items = list.invoke("getItems") as? List<Any?>
-                                ?: continue //Core UI box that contains everything related to the fleet member, including the ship, officer, cr, etc. There is one for each member in your fleet.
-
-                            // Find UI element of which the mouse is hovering over
-                            val memberUI = items.firstNotNullOfOrNull { item ->
-                                if (item == null) return@firstNotNullOfOrNull null
-
-                                //Get all children for this item
-                                val children =
-                                    item.invoke("getChildrenCopy") as? List<Any?> ?: return@firstNotNullOfOrNull null
-
-                                //Find the UI child with a portrait button
-                                val foundUI = children.firstOrNull { child ->
-                                    child != null && child.getMethodsMatching(name = "getPortraitButton").isNotEmpty()
-                                } ?: return@firstNotNullOfOrNull null
-
-                                //Get FleetMember
-                                val fields = foundUI.getFieldsMatching(type = FleetMember::class.java)
-                                if (fields.isEmpty()) return@firstNotNullOfOrNull null
-
-                                //Return if this item's fleet member is not the one we are hovering over
-                                val member = fields[0].get(foundUI) as? FleetMemberAPI
-                                if (member?.id != mouseOverMember.id) return@firstNotNullOfOrNull null
-
-                                //If we've got here, this is the UI item the mouse is hovering over.
-                                foundUI
-                            } ?: continue
-
-                            val portraitPanel = memberUI.invoke("getPortraitButton") ?: continue
-                            val fader = portraitPanel.invoke("getMouseoverHighlightFader") as? Fader
-                                ?: continue
-                            val isPortraitHoveredOver = (fader.isFadingIn || fader.brightness == 1f)
-
-                            if (event.isCtrlDown && event.isLMBDownEvent) {//Copy to clipboard
-                                if (isPortraitHoveredOver) {
-                                    val json = saveOfficerToJson(mouseOverMember.captain)
-                                    setClipboardText(json.toString(4))
-                                    MISC.showMessage("Officer copied to clipboard")
-                                } else {
-                                    val json = saveMemberToJson(mouseOverMember)
-                                    setClipboardText(json.toString(4))
-                                    MISC.showMessage("Fleet member copied to clipboard")
-                                }
-                                event.consume(); continue
-                            } else if (isPortraitHoveredOver && mouseOverMember.captain.isPlayer) {//Unassign player officer
-                                if (event.isLMBDownEvent) {
-                                    //Stop officer assignment screen from showing up on the shuttle. If you change your officer from the player's ship, the ship is removed, then reassign to the ship, the game will crash.
-                                    if (mouseOverMember.variant.hasHullMod(commandShuttleId)) {
-                                        event.consume(); continue
-                                    }
-                                }
-                                if (event.isRMBDownEvent) {
-                                    if (mouseOverMember.variant.hasHullMod(commandShuttleId)) {
-                                        if (sector.playerFleet.fleetSizeCount == 1) {//Prevent removing last fleet member
-                                            MISC.showMessage(
-                                                "Cannot remove last ship in fleet",
-                                                Color.RED
-                                            ); event.consume(); continue
-                                        }
-                                        removePlayerShuttle()
-                                    } else {
-                                        if (!unassignPlayer) {
-                                            MISC.showMessage(
-                                                "Unassign Player must be on in the FleetBuilder mod settings to unassign the player",
-                                                Color.RED
-                                            ); event.consume(); continue
-                                        }
-                                        addPlayerShuttle()
-                                    }
-                                    Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 1f)
-                                    event.consume(); continue
-                                }
-                            }
-                        } catch (e: Exception) {
-                            showError("FleetBuilder hotkey failed", e)
-                        }
-                    }
-                }
-
-                if (event.isCtrlDown && event.isLMBDownEvent) {
-                    if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
-                        try {
-                            val refitTab = MISC.getRefitTab()
-                            if (refitTab == null)
-                                continue
-
-                            val refitTabChildren = refitTab.invoke("getChildrenCopy") as MutableList<*>
-
-                            var thing: Any? = null
-                            refitTabChildren.forEach { child ->
-                                if (child?.getMethodsMatching("getFleetMemberIndex") != null) {
-                                    thing = child
-                                    // break
-                                }
-                            }
-
-                            if (thing == null)
-                                continue
-
-                            val officerCRDisplay = thing.invoke("getOfficerAndCRDisplay") as UIPanelAPI
-
-                            val children = officerCRDisplay.invoke("getChildrenCopy") as List<UIComponentAPI>
-
-                            val officerPanel: Any? = children.find {
-                                it.getMethodsMatching(name = "getBar")
-                                    .isEmpty() && it.getMethodsMatching(name = "getMouseoverHighlightFader")
-                                    .isNotEmpty()
-                            }
-
-                            if (officerPanel == null)
-                                continue
-
-                            val fader = officerPanel.invoke("getMouseoverHighlightFader") as? Fader
-                                ?: continue
-                            val isHoveredOver = (fader.isFadingIn || fader.brightness == 1f)
-
-                            if (isHoveredOver) {
-                                val member = thing.invoke("getMember") as FleetMemberAPI
-
-                                val json = saveOfficerToJson(member.captain)
-                                setClipboardText(json.toString())
-                                MISC.showMessage("Officer copied to clipboard")
-                                event.consume()
-                            }
-
-                            continue
-                        } catch (e: Exception) {
-                            showError("FleetBuilder hotkey failed", e)
-                        }
-                    }
-
-                }
+            when (event.eventType) {
+                InputEventType.KEY_DOWN -> handleKeyDownEvents(event, sector, ui)
+                InputEventType.MOUSE_DOWN -> handleMouseDownEvents(event, sector, ui)
+                else -> Unit
             }
         }
     }
 
-    override fun processCampaignInputPreFleetControl(events: MutableList<InputEventAPI>) {
+    private fun handleKeyDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
+        if (!event.isCtrlDown) return
 
+        when (event.eventValue) {
+            Keyboard.KEY_D -> handleDevModeHotkey(event, sector)
+            Keyboard.KEY_C -> handleCopyHotkey(event, sector, ui)
+            Keyboard.KEY_V -> handlePasteHotkey(event, ui, sector)
+        }
     }
 
-    override fun processCampaignInputPostCore(events: MutableList<InputEventAPI>) {
+    private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
+        if (MISC.getCodexDialog() != null) return//If codex is open, halt.
 
+        val captainPicker = MISC.getCaptainPickerDialog()
+        if (captainPicker != null) {
+            if (event.isCtrlDown && event.isLMBDownEvent)
+                handleCaptainPickerMouseEvents(event, captainPicker)
+        } else if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
+            if (event.isCtrlDown && event.isLMBDownEvent)
+                handleRefitMouseEvents(event)
+        } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
+            handleFleetMouseEvents(event, sector)
+        }
     }
+
+    private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
+        if (!Global.getSettings().isDevMode) return
+
+        try {
+            val codex = MISC.getCodexDialog()
+            val param = codex?.let { MISC.getCodexEntryParam(it) } ?: return
+            MISC.addParamEntryToFleet(sector, param, false)
+            event.consume()
+        } catch (e: Exception) {
+            MISC.showError("FleetBuilder hotkey failed", e)
+        }
+    }
+
+    private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
+        try {
+            val codex = MISC.getCodexDialog()
+            when {
+                codex != null -> handleCodexCopy(event, codex)
+                ui.getActualCurrentTab() == CoreUITabId.FLEET -> handleFleetCopy(event, sector)
+                ui.getActualCurrentTab() == CoreUITabId.REFIT -> handleRefitCopy(event)
+                ui.currentInteractionDialog != null -> handleInteractionCopy(event, ui)
+            }
+        } catch (e: Exception) {
+            MISC.showError("FleetBuilder hotkey failed", e)
+        }
+    }
+
+    private fun handleCodexCopy(event: InputEventAPI, codex: CodexDialog) {
+        ClipboardFunctions.codexEntryToClipboard(codex)
+        event.consume()
+    }
+
+    private fun handleInteractionCopy(event: InputEventAPI, ui: CampaignUIAPI) {
+        val interaction = ui.currentInteractionDialog
+        val plugin = interaction?.plugin
+        val battle = (plugin?.context as? FleetEncounterContext)?.battle
+        val fleet = if (battle != null && !event.isAltDown) {
+            battle.nonPlayerCombined
+        } else {
+            interaction?.interactionTarget as? CampaignFleetAPI
+        }
+
+        fleet?.let { fleetToCopy ->
+            val json = FleetSerialization.saveFleetToJson(fleetToCopy, includeOfficerLevelingStats = false)
+            ClipboardUtil.setClipboardText(json.toString(4))
+            MISC.showMessage(
+                if (!event.isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1) {
+                    "Copied interaction fleet with supporting fleets to clipboard"
+                } else {
+                    "Copied interaction fleet to clipboard"
+                }
+            )
+            event.consume()
+        }
+    }
+
+    private fun handleFleetCopy(event: InputEventAPI, sector: SectorAPI) {
+        val json = FleetSerialization.saveFleetToJson(sector.playerFleet)
+        ClipboardUtil.setClipboardText(json.toString(4))
+        MISC.showMessage("Copied entire fleet to clipboard")
+        event.consume()
+    }
+
+    private fun handleRefitCopy(event: InputEventAPI) {
+        if (ClipboardFunctions.refitScreenVariantToClipboard()) {
+            MISC.showMessage("Variant copied to clipboard")
+            event.consume()
+        }
+    }
+
+    private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
+        if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
+            handleRefitPaste(event)
+        } else if (Global.getSettings().isDevMode) {
+            handleFleetPaste(event, sector, ui)
+        }
+    }
+
+    private fun handleRefitPaste(event: InputEventAPI) {
+        val json = ClipboardUtil.getClipboardJson() ?: return
+        val (variant, missing) = json.optJSONObject("variant")?.let { variantJson ->
+            VariantSerialization.getVariantFromJsonWithMissing(variantJson)//JSON is of a FleetMemberAPI
+        } ?: VariantSerialization.getVariantFromJsonWithMissing(json)//JSON is of a ShipVariantAPI (also fallback)
+
+        if (missing.hullIds.isNotEmpty()) {
+            MISC.showMessage(
+                "Failed to import loadout. Could not find hullId ${json.optString("hullId", "")}",
+                Color.YELLOW
+            )
+            event.consume()
+            return
+        }
+
+        val loadoutExists = LoadoutManager.importShipLoadout(variant, missing)
+        MISC.showMessage(
+            if (!loadoutExists) {
+                "Imported loadout with hull: ${variant.hullSpec.hullId}"
+            } else {
+                "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}\n"
+            },
+            variant.hullSpec.hullId,
+            Misc.getHighlightColor()
+        )
+        event.consume()
+    }
+
+    private fun handleFleetPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
+        val json = ClipboardUtil.getClipboardJson() ?: run {
+            MISC.showMessage("No valid json in clipboard", Color.YELLOW)
+            event.consume()
+            return
+        }
+        handleHotkeyModePaste(sector, ui, json)
+        event.consume()
+    }
+
+    private fun handleCaptainPickerMouseEvents(event: InputEventAPI, captainPicker: CaptainPickerDialog) {
+        try {
+            val officers = captainPicker.invoke("getListOfficers")?.invoke("getItems") as? MutableList<*> ?: return
+            val hoverOfficer = officers.firstNotNullOfOrNull { officer ->
+                val selector = officer?.invoke("getSelector") ?: return@firstNotNullOfOrNull null
+                val fader = selector.invoke("getMouseoverHighlightFader") as? Fader ?: return@firstNotNullOfOrNull null
+                if (fader.isFadingIn || fader.brightness == 1f) {
+                    val parent = selector.invoke("getParent") ?: return@firstNotNullOfOrNull null
+                    parent.invoke("getPerson") as? PersonAPI
+                } else null
+            } ?: return
+
+            val json = OfficerSerialization.saveOfficerToJson(hoverOfficer)
+            ClipboardUtil.setClipboardText(json.toString())
+            MISC.showMessage("Officer copied to clipboard")
+            event.consume()
+        } catch (e: Exception) {
+            MISC.showError("FleetBuilder hotkey failed", e)
+        }
+    }
+
+    private fun handleFleetMouseEvents(event: InputEventAPI, sector: SectorAPI) {
+        try {
+            val fleetTab = MISC.getFleetTab() ?: return
+            val mouseOverMember = fleetTab.invoke("getMousedOverFleetMember") as? FleetMemberAPI ?: return
+
+            val fleetPanel = fleetTab.invoke("getFleetPanel") as? UIPanelAPI ?: return
+            val list = fleetPanel.invoke("getList") ?: return
+            val items = list.invoke("getItems") as? List<Any?>
+                ?: return//Core UI box that contains everything related to the fleet member, including the ship, officer, cr, etc. There is one for each member in your fleet.
+
+            // Find UI element of which the mouse is hovering over
+            val memberUI = items.firstNotNullOfOrNull { item ->
+                if (item == null) return@firstNotNullOfOrNull null
+
+                //Get all children for this item
+                val children = item.invoke("getChildrenCopy") as? List<Any?> ?: return@firstNotNullOfOrNull null
+
+                //Find the UI child with a portrait button
+                val foundUI = children.firstOrNull { child ->
+                    child != null && child.getMethodsMatching(name = "getPortraitButton").isNotEmpty()
+                } ?: return@firstNotNullOfOrNull null
+
+                //Get FleetMember
+                val fields = foundUI.getFieldsMatching(type = FleetMember::class.java)
+                if (fields.isEmpty()) return@firstNotNullOfOrNull null
+
+                //Return if this item's fleet member is not the one we are hovering over
+                val member = fields[0].get(foundUI) as? FleetMemberAPI
+                if (member?.id != mouseOverMember.id) return@firstNotNullOfOrNull null
+
+                //If we've got here, this is the UI item the mouse is hovering over.
+                foundUI
+            } ?: return
+
+            val portraitPanel = memberUI.invoke("getPortraitButton") ?: return
+            val fader = portraitPanel.invoke("getMouseoverHighlightFader") as? Fader ?: return
+            val isPortraitHoveredOver = fader.isFadingIn || fader.brightness == 1f
+
+            if (event.isCtrlDown && event.isLMBDownEvent) {
+                if (isPortraitHoveredOver) {
+                    val json = OfficerSerialization.saveOfficerToJson(mouseOverMember.captain)
+                    ClipboardUtil.setClipboardText(json.toString(4))
+                    MISC.showMessage("Officer copied to clipboard")
+                } else {
+                    val json = MemberSerialization.saveMemberToJson(mouseOverMember)
+                    ClipboardUtil.setClipboardText(json.toString(4))
+                    MISC.showMessage("Fleet member copied to clipboard")
+                }
+                event.consume()
+            } else if (isPortraitHoveredOver && mouseOverMember.captain.isPlayer) {
+                //Hovering over player portrait
+
+                val isShuttle = mouseOverMember.variant.hasHullMod(ModSettings.commandShuttleId)
+
+                if (event.isLMBDownEvent && isShuttle) {
+                    event.consume()
+                    return
+                }
+
+                if (event.isRMBDownEvent) {
+                    when {
+                        isShuttle -> {
+                            if (sector.playerFleet.fleetSizeCount == 1)
+                                MISC.showMessage("Cannot remove last ship in fleet", Color.YELLOW)
+                            else
+                                MISC.removePlayerShuttle()
+                        }
+
+                        ModSettings.unassignPlayer -> {
+                            MISC.addPlayerShuttle()
+                        }
+
+                        else -> {
+                            MISC.showMessage(
+                                "Unassign Player must be on in the FleetBuilder mod settings to unassign the player",
+                                Color.YELLOW
+                            )
+                        }
+                    }
+
+                    Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 1f)
+                    event.consume()
+                }
+            }
+        } catch (e: Exception) {
+            MISC.showError("FleetBuilder hotkey failed", e)
+        }
+    }
+
+    private fun handleRefitMouseEvents(event: InputEventAPI) {
+        try {
+            val refitTab = MISC.getRefitTab() ?: return
+            val refitTabChildren = refitTab.invoke("getChildrenCopy") as? MutableList<*> ?: return
+            val thing = refitTabChildren.lastOrNull() { child ->
+                child?.getMethodsMatching("getFleetMemberIndex") != null
+            } ?: return
+            if (thing.getMethodsMatching("getOfficerAndCRDisplay").isEmpty()) return // The previous thing getter may get children we do not want, as it wasn't programmed good enough. I'm too lazy to fix it right now, so this is here to avoid issues.
+
+            val officerCRDisplay = thing.invoke("getOfficerAndCRDisplay") as? UIPanelAPI ?: return
+            val children = officerCRDisplay.invoke("getChildrenCopy") as? List<*> ?: return
+            val officerPanel = children.firstOrNull {
+                it?.getMethodsMatching(name = "getBar")?.isEmpty() ?: true &&
+                        it?.getMethodsMatching(name = "getMouseoverHighlightFader")?.isNotEmpty() ?: false
+            } ?: return
+
+            val fader = officerPanel.invoke("getMouseoverHighlightFader") as? Fader ?: return
+            if (!(fader.isFadingIn || fader.brightness == 1f)) return
+
+            val member = thing.invoke("getMember") as? FleetMemberAPI ?: return
+            val json = OfficerSerialization.saveOfficerToJson(member.captain)
+            ClipboardUtil.setClipboardText(json.toString())
+            MISC.showMessage("Officer copied to clipboard")
+            event.consume()
+        } catch (e: Exception) {
+            MISC.showError("FleetBuilder hotkey failed", e)
+        }
+    }
+
+    override fun processCampaignInputPreFleetControl(events: MutableList<InputEventAPI>) = Unit
+
+    override fun processCampaignInputPostCore(events: MutableList<InputEventAPI>) = Unit
 }
 
 fun handleHotkeyModePaste(

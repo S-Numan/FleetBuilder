@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.CampaignState
 import com.fs.starfarer.codex2.CodexDetailPanel
 import com.fs.starfarer.codex2.CodexDialog
+import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
@@ -274,10 +275,16 @@ object MISC {
         return codexEntry.invoke("getParam")
     }
 
-    fun addParamEntryToFleet(sector: SectorAPI, param: Any) {
+    fun getCaptainPickerDialog(): CaptainPickerDialog? {
+        val core = getCoreUI() ?: return null
+        val children = core.invoke("getChildrenNonCopy") as? MutableList<*> ?: return null
+        return children.firstOrNull { it is CaptainPickerDialog } as? CaptainPickerDialog
+    }
+
+    fun addParamEntryToFleet(sector: SectorAPI, param: Any, ctrlCreatesBlueprints: Boolean = true) {
         val shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)
         val alt = Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)
-        val ctrl = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
+        val ctrl = ctrlCreatesBlueprints && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
 
         val count = when {
             shift && alt -> 100
@@ -369,7 +376,7 @@ object MISC {
     ): Boolean {
         val fleet = MISC.createFleetFromJson(json, faction = Factions.PIRATES)
         if (fleet.fleetSizeCount == 0) {
-            showMessage("Failed to create fleet from clipboard", Color.RED)
+            showMessage("Failed to create fleet from clipboard", Color.YELLOW)
             return false
         }
 
@@ -394,9 +401,9 @@ object MISC {
 
             json.has("variant") || json.has("officer") -> {
                 // Fleet member
-                val (member, _) = addMemberToFleet(json, sector.playerFleet.fleetData, randomPastedCosmetics)
-                if (member == null) {
-                    showMessage("Failed to create member from clipboard", Color.RED)
+                val (member, missing) = addMemberToFleet(json, sector.playerFleet.fleetData, randomPastedCosmetics)
+                if (missing.hullIds.isNotEmpty()) {
+                    showMessage("Failed to create member from clipboard", Color.YELLOW)
                     return false
                 }
 
@@ -416,12 +423,12 @@ object MISC {
 
             json.has("hullId") -> {
                 val wrappedJson = JSONObject().put("variant", json)
-                val (member, missing) = addMemberToFleet(
-                    wrappedJson,
-                    sector.playerFleet.fleetData,
-                    randomPastedCosmetics
-                )
-                if (member == null) return false
+                val (member, missing) = addMemberToFleet(wrappedJson, sector.playerFleet.fleetData, randomPastedCosmetics)
+
+                if (missing.hullIds.isNotEmpty()) {
+                    showMessage("Failed to create hull '${json.optString("hullId")}' from clipboard", Color.YELLOW)
+                    return false
+                }
 
                 val shipName = member.hullSpec.hullName
                 showMessage("Added '$shipName' to fleet", shipName, Misc.getHighlightColor())
@@ -429,7 +436,7 @@ object MISC {
             }
 
             else -> {
-                showMessage("No valid data found in clipboard", Color.RED)
+                showMessage("No valid data found in clipboard", Color.YELLOW)
                 false
             }
         }
@@ -563,10 +570,10 @@ object MISC {
         json: JSONObject,
         fleet: FleetDataAPI,
         randomPastedCosmetics: Boolean = false
-    ): Pair<FleetMemberAPI?, MissingElements> {
+    ): Pair<FleetMemberAPI, MissingElements> {
         val (member, missing) = getMemberFromJsonWithMissing(json)
-        if (missing.hullIds.size != 0) {
-            return Pair(null, missing)
+        if (missing.hullIds.isNotEmpty()) {
+            return Pair(member, missing)
         }
 
         if (randomPastedCosmetics) {
