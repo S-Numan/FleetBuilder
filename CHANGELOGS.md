@@ -5,7 +5,8 @@ Version 1.4.0
 - JSON variant saving is now custom: hullmods like S-mods are stored only once, under sMods, not duplicated in hullMods or permaMods.
 Technical
 - Added OfficerAssignmentListener
-- A notable amount of backend changes
+- Changed ship directory formatting. The pre 1.4.0 format will automatically convert to the new format to preserve your loadouts.
+- An additional, notable amount of backend changes, though less impactful
 
 Version 1.3.5
 - Codex button now supports adding hullmods to your faction

@@ -10,7 +10,11 @@ import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissi
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
+import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object LoadoutManager {
 
@@ -58,6 +62,7 @@ object LoadoutManager {
     }
 
     fun loadShipDirectory(dirPath: String, prefix: String): ShipDirectory? {
+
         val configFilePath = "$dirPath$prefix/$directoryConfigName"
         return try {
             val directory: JSONObject
@@ -68,17 +73,32 @@ object LoadoutManager {
             } else
                 return null
 
+
+            upgradeLegacyShipPaths(directory, configFilePath)
+
+
             val ships = mutableMapOf<String, ShipVariantAPI>()
             val shipPaths = mutableMapOf<String, String>()
             val shipMissings = mutableMapOf<String, MissingElements>()
+            val shipTimeSaved = mutableMapOf<String, Date>()
 
             val description = directory.optString("description", "$prefix Loadout")
 
-            directory.optJSONArray("shipPaths")?.let { jsonArray ->
+            directory.optJSONArray("shipPaths")?.let { shipJsonPaths ->
                 val seenPaths = mutableSetOf<String>()
 
-                for (i in 0 until jsonArray.length()) {
-                    val shipPath = jsonArray.getString(i)
+                for (i in 0 until shipJsonPaths.length()) {
+                    val shipJson = shipJsonPaths.getJSONObject(i)
+
+                    val shipPath = shipJson.getString("shipPath")
+
+                    val parsedDate: Date = try {
+                        val dateString = shipJson.getString("modifyTime")
+                        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+                        formatter.parse(dateString) ?: Date(0)
+                    } catch (_: Exception) {
+                        Date(0) // Oldest possible date (Unix epoch start)
+                    }
 
                     // Check for duplicate ship path
                     if (!seenPaths.add(shipPath)) {
@@ -103,7 +123,7 @@ object LoadoutManager {
                         val result = getVariantFromJsonWithMissing(variantJson)
                         variant = result.first
                         missings = result.second
-                        if (missings.hullIds.size != 0) {//Could not find hullSpec. Most likely it is a hullspec from a mod which was disabled.
+                        if (missings.hullIds.isNotEmpty()) {//Could not find hullSpec. Most likely it is a hullspec from a mod which was disabled.
                             continue
                         }
                     } else {//Failed to find ship at specific path.
@@ -126,14 +146,50 @@ object LoadoutManager {
                     shipPaths[variant.hullVariantId] = shipPath
                     ships[variant.hullVariantId] = variant
                     shipMissings[variant.hullVariantId] = missings
+                    shipTimeSaved[variant.hullVariantId] = parsedDate
                 }
             }
 
-            ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, description)
+            ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, shipTimeSaved, description)
         } catch (e: Exception) {
             Global.getLogger(this.javaClass).error("Failed to read JSON from within /saves/common/$dirPath\n", e)
             null
         }
+    }
+
+    private fun upgradeLegacyShipPaths(directory: JSONObject, configFilePath: String) {
+
+        // Convert pre-1.4.0 ship dir files into post-1.4.0 format if needed.
+        val isPreOnePointFour: Boolean = directory.optJSONArray("shipPaths")?.let { shipJsonPaths ->
+            (0 until shipJsonPaths.length()).any { i ->
+                val item = shipJsonPaths.get(i)
+                item is String && item.isNotEmpty()
+            }
+        } ?: false
+
+        if (isPreOnePointFour) {
+            val oldArray = directory.optJSONArray("shipPaths")
+            val newArray = JSONArray()
+
+            for (i in 0 until oldArray.length()) {
+                val path = oldArray.optString(i, "")
+                if (path.isNotEmpty()) {
+                    val obj = JSONObject()
+                    obj.put("shipPath", path)
+
+                    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+                    val timeString = formatter.format(Date(0))
+                    obj.put("modifyTime", timeString)
+
+                    newArray.put(obj)
+                }
+            }
+
+            // Replace the old array with the new formatted one
+            directory.put("shipPaths", newArray)
+        }
+
+        Global.getSettings().writeJSONToCommon(configFilePath, directory, false)
     }
 
 
@@ -245,8 +301,7 @@ object LoadoutManager {
         missingFromVariant: MissingElements = MissingElements(),
         applySMods: Boolean = true,
         includeDMods: Boolean = true,
-        includeTags: Boolean = true,
-        includeTime: Boolean = true
+        includeTags: Boolean = true
     ): String {//TODO, implement "includeHiddenHullmods"
         return getShipDirectoryWithPrefix(prefix)?.addShip(
             variant,
@@ -254,7 +309,6 @@ object LoadoutManager {
             applySMods,
             includeDMods,
             includeTags,
-            includeTime
         ) ?: return ""
     }
 
