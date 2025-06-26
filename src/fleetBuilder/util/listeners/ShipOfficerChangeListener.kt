@@ -11,15 +11,15 @@ fun interface ShipOfficerChangeListener {
 object ShipOfficerChangeEvents {
     private val listeners = mutableListOf<ShipOfficerChangeListener>()
 
-    fun addListener(listener: ShipOfficerChangeListener) {
+    fun addTransientListener(listener: ShipOfficerChangeListener) {
         listeners += listener
     }
 
-    fun removeListener(listener: ShipOfficerChangeListener) {
+    fun removeTransientListener(listener: ShipOfficerChangeListener) {
         listeners -= listener
     }
 
-    fun removeAllListeners() {
+    fun clearAll() {
         listeners.clear()
     }
 

@@ -458,7 +458,7 @@ object MISC {
             sector.addTransientListener(commanderShuttleListener)
         }
 
-        ShipOfficerChangeEvents.addListener { change ->
+        ShipOfficerChangeEvents.addTransientListener { change ->
             //Remove commandShuttle if was piloted by player and is no longer
             if (change.member.variant.hasHullMod(commandShuttleId)
                 && change.previous != null && change.previous.isPlayer

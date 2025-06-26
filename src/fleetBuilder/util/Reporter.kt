@@ -25,7 +25,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     private val officerTracker = ShipOfficerChangeTracker()
 
     fun onGameLoad(newGame: Boolean) {
-        ShipOfficerChangeEvents.removeAllListeners()
+        ShipOfficerChangeEvents.clearAll()
 
         MakeSaveRemovable.onGameLoad()
 
