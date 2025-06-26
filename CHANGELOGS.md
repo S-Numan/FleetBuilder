@@ -3,6 +3,7 @@ Version 1.4.0
 - The loadout importer now supports importing from a pasted fleet member by extracting the member's variant data.
 - Fix getEffectiveHullId(). This resolves the issue of the wrong variant type appearing in the autofit UI sometimes.
 - JSON variant saving is now custom: hullmods like S-mods are stored only once, under sMods, not duplicated in hullMods or permaMods.
+- The state of AI cores being built in is now saved.
 Technical
 - Added OfficerAssignmentListener
 - Changed ship directory formatting. The pre 1.4.0 format will automatically convert to the new format to preserve your loadouts.

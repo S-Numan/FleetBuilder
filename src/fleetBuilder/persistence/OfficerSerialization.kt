@@ -63,6 +63,10 @@ object OfficerSerialization {
             person.setMercenary(true)
         }
 
+        if (json.optBoolean("unremovable", false)) {
+            person.memory.set("\$captain_unremovable", true)
+        }
+
         // Handle skills safely
         val skillsObject = json.optJSONObject("skills")
         if (skillsObject != null) {
@@ -129,6 +133,9 @@ object OfficerSerialization {
         }
         if (person.isPlayer) {
             json.put("wasplayer", person.isPlayer)
+        }
+        if (person.memoryWithoutUpdate.getBoolean("\$captain_unremovable")) {
+            json.put("unremovable", true)
         }
 
         val skillsObject = JSONObject()

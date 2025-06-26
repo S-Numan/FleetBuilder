@@ -587,12 +587,14 @@ object MISC {
 
     fun addOfficerToFleet(json: JSONObject, fleet: FleetDataAPI, randomPastedCosmetics: Boolean = false) {
         val officer = getOfficerFromJson(json)
+
         if (randomPastedCosmetics && !officer.isDefault && !officer.isAICore) {
             val randomPerson = fleet.fleet.faction.createRandomPerson()
             officer.name = randomPerson.name
             officer.portraitSprite = randomPerson.portraitSprite
         }
-        fleet.addOfficer(officer)
+
+        fleet.addOfficer(officer) // Note, it doesn't seem possible to add AI cores as officers
     }
 
     //TODO, an option that enables grabbing things from your markets. Items in storage, ships in storage, items in industries. Then putting it all in an abandoned station somewhere in the new sector on load.
