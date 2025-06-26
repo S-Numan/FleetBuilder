@@ -9,6 +9,7 @@ Technical
 - Added OfficerAssignmentListener
 - Changed ship directory formatting. The pre 1.4.0 format will automatically convert to the new format to preserve your loadouts.
 - The scripts/listeners of the autofit menu, hotkey handler, and codex button now are no longer added as a script/listener if disabled.
+- Hotkey handler refactor
 - An additional, notable amount of backend changes, though less impactful
 
 Version 1.3.5
