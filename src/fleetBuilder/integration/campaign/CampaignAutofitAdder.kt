@@ -6,8 +6,8 @@ import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import fleetBuilder.config.ModSettings
-import fleetBuilder.util.MISC
 import fleetBuilder.ui.autofit.AutofitPanelCreator
+import fleetBuilder.util.MISC
 import fleetBuilder.util.getActualCurrentTab
 
 internal class CampaignAutofitAdder : CampaignInputListener {
@@ -16,8 +16,6 @@ internal class CampaignAutofitAdder : CampaignInputListener {
     }
 
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
-        if(!ModSettings.autofitMenuEnabled) return
-
         val sector = Global.getSector() ?: return
 
         //if (!sector.isPaused) return //Return if not paused

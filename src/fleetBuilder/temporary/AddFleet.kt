@@ -19,14 +19,14 @@ class AddFleet : BaseCommand {
         }
 
         val json = getClipboardJson()
-        if(json == null) {
+        if (json == null) {
             Console.showMessage("No valid fleet data found in clipboard")
             return BaseCommand.CommandResult.ERROR
         }
         val fleet = MISC.createFleetFromJson(json, faction = Factions.PIRATES)
         fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
 
-        if(fleet.fleetSizeCount == 0) {
+        if (fleet.fleetSizeCount == 0) {
             Console.showMessage("Failed to create fleet from clipboard")
             return BaseCommand.CommandResult.ERROR
         }

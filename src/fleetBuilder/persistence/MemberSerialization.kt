@@ -1,14 +1,14 @@
 package fleetBuilder.persistence
 
-import fleetBuilder.persistence.OfficerSerialization.getOfficerFromJson
-import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
-import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
-import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
+import fleetBuilder.persistence.OfficerSerialization.getOfficerFromJson
+import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
+import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
+import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.MISC.createErrorVariant
 import fleetBuilder.util.MISC.getMissingFromModInfo
 import fleetBuilder.variants.MissingElements
@@ -19,7 +19,10 @@ object MemberSerialization {
 
     //You may want to add the officer on the fleet member to the fleet, provided there is an officer. Otherwise the logic may not behave as expected
     @JvmOverloads
-    fun getMemberFromJsonWithMissing(json: JSONObject, includeOfficer: Boolean = true): Pair<FleetMemberAPI, MissingElements> {
+    fun getMemberFromJsonWithMissing(
+        json: JSONObject,
+        includeOfficer: Boolean = true
+    ): Pair<FleetMemberAPI, MissingElements> {
         // Extract and validate "variant" JSON
         val variantJson = json.optJSONObject("variant")
 
@@ -59,43 +62,49 @@ object MemberSerialization {
         val cr = json.optFloat("cr", 0.7f)
         val shipName = json.optString("name", "")
         member.repairTracker.cr = cr.coerceIn(0f, 1f) // Ensure CR is within [0, 1]
-        if(shipName.isNotEmpty()){
+        if (shipName.isNotEmpty()) {
             member.shipName = shipName
         }
-        if(json.optBoolean("ismothballed"))
+        if (json.optBoolean("ismothballed"))
             member.repairTracker.isMothballed = true
     }
 
     fun setMemberOfficerFromJson(json: JSONObject, member: FleetMemberAPI) {
         val officerJson = json.optJSONObject("officer")
-        if(officerJson != null) {
+        if (officerJson != null) {
             member.captain = getOfficerFromJson(officerJson)
         }
     }
 
     @JvmOverloads
-    fun saveMemberToJson(member: FleetMemberAPI, includeOfficer: Boolean = true, includeOfficerLevelingStats: Boolean = true, includeCR: Boolean = true, includeModInfo: Boolean = true): JSONObject {
+    fun saveMemberToJson(
+        member: FleetMemberAPI,
+        includeOfficer: Boolean = true,
+        includeOfficerLevelingStats: Boolean = true,
+        includeCR: Boolean = true,
+        includeModInfo: Boolean = true
+    ): JSONObject {
         val memberJson = JSONObject()
         val variantJson = saveVariantToJson(member.variant, includeModInfo = false)
         memberJson.put("variant", variantJson)
         //memberJson.put("id", member.id)
-        if(includeCR) {
+        if (includeCR) {
             memberJson.put("cr", member.repairTracker.cr)
         }
 
         memberJson.put("name", member.shipName)
-        if(member.isMothballed)
+        if (member.isMothballed)
             memberJson.put("ismothballed", true)
 
 
-        if(includeOfficer) {
-            if(member.captain != null && !member.captain.isDefault) {
+        if (includeOfficer) {
+            if (member.captain != null && !member.captain.isDefault) {
                 val officerJson = saveOfficerToJson(member.captain, storeLevelingStats = includeOfficerLevelingStats)
                 memberJson.put("officer", officerJson)
             }
         }
 
-        if(includeModInfo)
+        if (includeModInfo)
             addVariantSourceModsToJson(member.variant, memberJson)
 
         return memberJson

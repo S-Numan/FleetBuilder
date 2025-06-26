@@ -10,12 +10,11 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
-import com.fs.starfarer.campaign.CampaignEngine
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.MISC
 import fleetBuilder.variants.VariantLib
 import starficz.ReflectionUtils.invoke
-import java.util.Random
+import java.util.*
 
 object AutofitApplier {
 
@@ -27,13 +26,13 @@ object AutofitApplier {
         coreUI: CoreUIAPI,
         shipDisplay: UIPanelAPI
     ) {
-        shipDisplay.invoke( "setSuppressMessages", true)
+        shipDisplay.invoke("setSuppressMessages", true)
 
         try {
 
             baseVariant.source = VariantSource.REFIT
 
-            val delegate = MLPlayerAutofitDelegate(
+            val delegate = FBPlayerAutofitDelegate(
                 fleetMember,
                 Global.getSector().playerFaction,
                 ship,
@@ -43,7 +42,7 @@ object AutofitApplier {
 
             val auto: CoreAutofitPlugin
 
-            if(!Global.getSettings().isInCampaignState) {
+            if (!Global.getSettings().isInCampaignState) {
                 copyVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
 
             } else {
@@ -107,16 +106,16 @@ object AutofitApplier {
                 for (moduleSlot in baseVariant.moduleSlots) {
                     val baseModule = baseVariant.getModuleVariant(moduleSlot)
                     val loadoutModule = loadout.getModuleVariant(moduleSlot)
-                    if(baseModule == null) {
-                            throw Exception("base ship module was null")
-                        } else if (loadoutModule == null) {
+                    if (baseModule == null) {
+                        throw Exception("base ship module was null")
+                    } else if (loadoutModule == null) {
                         throw Exception("loadout ship module was null")
                     }
                     stripVaraint(baseModule, loadoutModule)
                 }
 
 
-                if(ModSettings.forceAutofit) {
+                if (ModSettings.forceAutofit) {
                     copyVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
                     //baseVariant.addTag(Tags.SHIP_RECOVERABLE)
                     //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
@@ -153,8 +152,8 @@ object AutofitApplier {
                         auto.addHullmods(baseModVariant, delegate, *loadoutModVariant.nonBuiltInHullmods.toTypedArray())
                     }
 
-                    if(auto.creditCost > 0) {
-                        CampaignEngine.getInstance().campaignUI.messageDisplay.addMessage(
+                    if (auto.creditCost > 0) {
+                        MISC.showMessage(
                             "Autofit confirmed, purchased ${Misc.getDGSCredits(auto.creditCost.toFloat())} worth of ordnance",
                             Misc.getDGSCredits(auto.creditCost.toFloat()), Misc.getHighlightColor()
                         )
@@ -170,7 +169,12 @@ object AutofitApplier {
         shipDisplay.invoke("setSuppressMessages", false)
     }
 
-    fun copyVariant(to: ShipVariantAPI, from: ShipVariantAPI, dontForceClearDMods: Boolean = false, dontForceClearSMods: Boolean = false) {
+    fun copyVariant(
+        to: ShipVariantAPI,
+        from: ShipVariantAPI,
+        dontForceClearDMods: Boolean = false,
+        dontForceClearSMods: Boolean = false
+    ) {
         to.clear()
         to.weaponGroups.clear()
         to.clearTags()
@@ -184,7 +188,7 @@ object AutofitApplier {
         //to.sModdedBuiltIns.clear()
         //to.suppressedMods.clear()
         to.hullMods.toList().forEach { mod ->
-            if(to.hullSpec.builtInMods.contains(mod))
+            if (to.hullSpec.builtInMods.contains(mod))
                 return@forEach
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
@@ -196,7 +200,7 @@ object AutofitApplier {
             to.removeSuppressedMod(mod)
         }
 
-        if(!dontForceClearSMods) {
+        if (!dontForceClearSMods) {
             to.sModdedBuiltIns.clear()
         }
         /*to.weaponGroups.forEachIndexed { index, group ->
@@ -206,7 +210,7 @@ object AutofitApplier {
         }*/
 
         // Copy tags
-        for (tag in from.tags){
+        for (tag in from.tags) {
             to.addTag(tag)
         }
 
@@ -216,17 +220,17 @@ object AutofitApplier {
         }
 
         // Copy perma-mods
-        for(mod in from.permaMods) {
+        for (mod in from.permaMods) {
             to.addPermaMod(mod, false)
         }
 
         // Copy S-mods
-        for(mod in from.sMods) {
+        for (mod in from.sMods) {
             to.addPermaMod(mod, true)
         }
 
         // Copy S-modded built-ins
-        for(mod in from.sModdedBuiltIns) {
+        for (mod in from.sModdedBuiltIns) {
             to.sModdedBuiltIns.add(mod)
         }
 
@@ -274,7 +278,12 @@ object AutofitApplier {
 
         for (slot in from.moduleSlots) {
             //to.setModuleVariant(slot, from.getModuleVariant(slot))
-            copyVariant(to.getModuleVariant(slot), from.getModuleVariant(slot), dontForceClearDMods, dontForceClearSMods)
+            copyVariant(
+                to.getModuleVariant(slot),
+                from.getModuleVariant(slot),
+                dontForceClearDMods,
+                dontForceClearSMods
+            )
         }
     }
 }

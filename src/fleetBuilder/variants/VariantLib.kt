@@ -27,7 +27,7 @@ object VariantLib {
         variantMap = mutableMapOf()
         for (variantId in Global.getSettings().allVariantIds) {
             val variant = Global.getSettings().getVariant(variantId) ?: continue
-            if(variant.source != VariantSource.STOCK) continue
+            if (variant.source != VariantSource.STOCK) continue
             val hullId = variant.hullSpec?.getEffectiveHullId() ?: continue
 
             //Are modules automatically put in every variant?
@@ -40,6 +40,10 @@ object VariantLib {
                 }
             }*/
 
+            //getOrPut
+            //Checks if variantMap contains the key hullId.
+            //    If yes: returns the existing list.
+            //    If no: creates a new mutableListOf() and puts it into the map under hullId
             val variantsForHull = variantMap.getOrPut(hullId) { mutableListOf() }
             variantsForHull.add(variant)
         }
@@ -88,26 +92,35 @@ object VariantLib {
     }
 
     @JvmOverloads
-    fun compareVariantContents(variant1: ShipVariantAPI, variant2: ShipVariantAPI, compareFlux: Boolean = true, compareWeapons: Boolean = true, compareWings: Boolean = true, compareHullMods: Boolean = true,
-                               compareModules: Boolean = true, compareTags: Boolean = false, useEffectiveHull: Boolean = false)
-    : Boolean {
-        if(useEffectiveHull && variant1.hullSpec.getEffectiveHullId() != variant2.hullSpec.getEffectiveHullId())
+    fun compareVariantContents(
+        variant1: ShipVariantAPI,
+        variant2: ShipVariantAPI,
+        compareFlux: Boolean = true,
+        compareWeapons: Boolean = true,
+        compareWings: Boolean = true,
+        compareHullMods: Boolean = true,
+        compareModules: Boolean = true,
+        compareTags: Boolean = false,
+        useEffectiveHull: Boolean = false
+    )
+            : Boolean {
+        if (useEffectiveHull && variant1.hullSpec.getEffectiveHullId() != variant2.hullSpec.getEffectiveHullId())
             return false
         else if (variant1.hullSpec.hullId != variant2.hullSpec.hullId)
             return false
 
-        if(compareFlux) {
-            if(variant1.numFluxVents != variant2.numFluxVents || variant1.numFluxCapacitors != variant2.numFluxCapacitors)
+        if (compareFlux) {
+            if (variant1.numFluxVents != variant2.numFluxVents || variant1.numFluxCapacitors != variant2.numFluxCapacitors)
                 return false
         }
-        if(compareWeapons){
+        if (compareWeapons) {
             if (variant1.fittedWeaponSlots.size != variant2.fittedWeaponSlots.size) return false
             for (slotId in variant1.fittedWeaponSlots) {
                 if (variant1.getWeaponId(slotId) != variant2.getWeaponId(slotId))
                     return false
             }
         }
-        if(compareWings){
+        if (compareWings) {
             if (variant1.fittedWings.size != variant2.fittedWings.size) return false
             for (i in variant1.fittedWings.indices) {
                 if (variant1.getWingId(i) != variant2.getWingId(i)) {
@@ -115,7 +128,7 @@ object VariantLib {
                 }
             }
         }
-        if(compareHullMods){
+        if (compareHullMods) {
             if (variant1.hullMods.size != variant2.hullMods.size) return false
             for (hullMod in variant1.hullMods) {
                 if (!variant2.hullMods.contains(hullMod))
@@ -143,7 +156,7 @@ object VariantLib {
             }
 
         }
-        if(compareTags){
+        if (compareTags) {
             if (variant1.tags.size != variant2.tags.size) return false
             for (tag in variant1.tags) {
                 if (!variant2.tags.contains(tag))
@@ -151,9 +164,9 @@ object VariantLib {
             }
         }
 
-        if(compareModules) {
+        if (compareModules) {
             variant1.moduleSlots.forEach { slot ->
-                if(!compareVariantContents(variant1.getModuleVariant(slot), variant2.getModuleVariant(slot))){
+                if (!compareVariantContents(variant1.getModuleVariant(slot), variant2.getModuleVariant(slot))) {
                     return false
                 }
             }

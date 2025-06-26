@@ -1,35 +1,31 @@
 package fleetBuilder.integration.combat
 
-import MagicLib.Font
-import MagicLib.addButton
+import MagicLib.ReflectionUtils
 import MagicLib.findChildWithMethod
 import MagicLib.getChildrenCopy
-import MagicLib.onClick
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.CutStyle
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.combat.entities.Ship
 import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
+import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.ui.autofit.AutofitPanelCreator
-import starficz.ReflectionUtils.invoke
-import java.awt.Color
-import MagicLib.ReflectionUtils
+import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
+import starficz.ReflectionUtils.invoke
 
-class AutofitCombatRefitAdder : BaseEveryFrameCombatPlugin() {
+internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
     companion object {
         var SHIP_PREVIEW_CLASS: Class<*>? = null
         var SHIPS_FIELD: String? = null
     }
 
-    var hackButton: ButtonAPI? = null
+    //var hackButton: ButtonAPI? = null
+    var keyDown = false
 
-    override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
+    override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
         val state = AppDriver.getInstance().currentState
 
         val newCoreUI = (state as? TitleScreenState)?.let {
@@ -37,7 +33,7 @@ class AutofitCombatRefitAdder : BaseEveryFrameCombatPlugin() {
         } ?: return
         cacheShipPreviewClass(newCoreUI)
 
-        if(!ModSettings.autofitMenuEnabled) return
+        if (!ModSettings.autofitMenuEnabled) return
 
         val delegateChild = newCoreUI.findChildWithMethod("dismiss") as? UIPanelAPI ?: return
         val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return
@@ -47,6 +43,17 @@ class AutofitCombatRefitAdder : BaseEveryFrameCombatPlugin() {
 
 
 
+        if (Keyboard.isKeyDown(autofitMenuHotkey)) {
+            if (!keyDown) {
+                AutofitPanelCreator.toggleAutofitButton(refitTab, false)
+                keyDown = true
+            }
+        } else if (keyDown) {
+            keyDown = false
+        }
+
+
+        /*
         if(hackButton != null) return
 
         //HACK
@@ -65,7 +72,9 @@ class AutofitCombatRefitAdder : BaseEveryFrameCombatPlugin() {
         hackButton!!.setShortcut(ModSettings.autofitMenuHotkey, true)
         hackButton!!.onClick {
             AutofitPanelCreator.toggleAutofitButton(refitTab, false)
-        }
+        }*/
+
+
         /*
         for (event in events) {
             if (event.isConsumed) continue

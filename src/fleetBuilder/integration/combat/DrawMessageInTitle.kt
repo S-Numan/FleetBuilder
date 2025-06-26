@@ -5,15 +5,13 @@ import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.campaign.CampaignState
 import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
 
-class DrawMessageInTitle: EveryFrameCombatPlugin
-{
+internal class DrawMessageInTitle : EveryFrameCombatPlugin {
     override fun init(engine: CombatEngineAPI?) {}
 
 
@@ -43,9 +41,11 @@ class DrawMessageInTitle: EveryFrameCombatPlugin
 
         // If you need to add text to the DrawableString, do so like this:
         toDraw!!.append("\nThis is a second line of sample text. It will be drawn orange.", Color.ORANGE)
-        toDraw!!.append("\nThis is a third line of sample text that shows off the automatic" +
-                " word wrapping when a line of text reaches the maximum width you've chosen.\n" +
-                "Since this append doesn't have a color attached, it will return to the original yellow.")
+        toDraw!!.append(
+            "\nThis is a third line of sample text that shows off the automatic" +
+                    " word wrapping when a line of text reaches the maximum width you've chosen.\n" +
+                    "Since this append doesn't have a color attached, it will return to the original yellow."
+        )
 
         toDraw!!.append("You can also chain appends,").append(" like this,", Color.BLUE)
             .append(" to make writing text easier.");
@@ -60,7 +60,7 @@ class DrawMessageInTitle: EveryFrameCombatPlugin
         val state = AppDriver.getInstance().currentState
         if (state !is TitleScreenState) return
 
-        if(!init) {
+        if (!init) {
             doInit(Global.getCombatEngine())
             init = true
         }

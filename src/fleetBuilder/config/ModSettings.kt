@@ -1,19 +1,16 @@
 package fleetBuilder.config
 
-import fleetBuilder.util.Reporter
 import fleetBuilder.config.ModSettings.autofitMenuEnabled
-import lunalib.lunaSettings.LunaSettings.getBoolean
-import lunalib.lunaSettings.LunaSettings.getInt
-import lunalib.lunaSettings.LunaSettings.getString
-import lunalib.lunaSettings.LunaSettingsListener
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.config.ModSettings.backupSave
 import fleetBuilder.config.ModSettings.defaultPrefix
+import fleetBuilder.config.ModSettings.devModeCodexButtonEnabled
 import fleetBuilder.config.ModSettings.dontForceClearDMods
 import fleetBuilder.config.ModSettings.dontForceClearSMods
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.config.ModSettings.forceAutofit
 import fleetBuilder.config.ModSettings.importPrefix
+import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.config.ModSettings.saveDMods
 import fleetBuilder.config.ModSettings.saveSMods
@@ -22,13 +19,18 @@ import fleetBuilder.config.ModSettings.showCoreGoalVariants
 import fleetBuilder.config.ModSettings.showCoreNonGoalVariants
 import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
-import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.unassignPlayer
+import fleetBuilder.util.Reporter
+import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.generatePrefixes
+import lunalib.lunaSettings.LunaSettings.getBoolean
+import lunalib.lunaSettings.LunaSettings.getInt
+import lunalib.lunaSettings.LunaSettings.getString
+import lunalib.lunaSettings.LunaSettingsListener
 import org.lwjgl.input.Keyboard
 
 
-class ModSettingsListener : LunaSettingsListener {
+internal class ModSettingsListener : LunaSettingsListener {
     init {
         settingsChanged(modID)
 
@@ -62,15 +64,17 @@ class ModSettingsListener : LunaSettingsListener {
         randomPastedCosmetics = getBoolean(modID, "randomPastedCosmetics")!!
         backupSave = getBoolean(modID, "backupSave")!!
         fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
+        devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
 
         autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
 
         val _autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
-        if(_autofitMenuHotkey != 0) {
+        if (_autofitMenuHotkey != 0) {
             autofitMenuHotkey = _autofitMenuHotkey
         }
 
-        Reporter.Companion.onApplicationLoad()
+        LoadoutManager.loadAllDirectories()//Reload the LoadoutManager
+        Reporter.setListeners()
     }
 }
 
@@ -91,7 +95,7 @@ object ModSettings {
 
     var saveSMods = true
 
-    var autofitMenuEnabled = false
+    var autofitMenuEnabled = true
 
     var autofitMenuHotkey = Keyboard.KEY_Z
 
@@ -111,6 +115,8 @@ object ModSettings {
     var backupSave = true
 
     var fleetClipboardHotkeyHandler = true
+
+    var devModeCodexButtonEnabled = true
 
     val commandShuttleId = "FB_commandershuttle"
 }

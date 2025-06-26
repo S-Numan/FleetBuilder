@@ -33,14 +33,16 @@ class ReplaceFleet : BaseCommand {
         for (member in playerFleet.fleetData.membersListCopy) {
             playerFleet.fleetData.removeFleetMember(member)
         }
-        for(officer in playerFleet.fleetData.officersCopy) {
+        for (officer in playerFleet.fleetData.officersCopy) {
             playerFleet.fleetData.removeOfficer(officer.person)
         }
 
         addPlayerShuttle()
 
-        getFleetFromJsonComplainIfMissing(json, playerFleet, includeCommander = false,
-            setFlagship = false)//The player is always commanding the flagship. Thus if this isn't false, the player will displace the officer of that ship with themselves.
+        getFleetFromJsonComplainIfMissing(
+            json, playerFleet, includeCommander = false,
+            setFlagship = false
+        )//The player is always commanding the flagship. Thus if this isn't false, the player will displace the officer of that ship with themselves.
 
         //Need to move the shuttle to the last member in the fleet, but I don't care enough to do this properly.
         removePlayerShuttle()

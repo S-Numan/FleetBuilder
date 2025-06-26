@@ -19,23 +19,24 @@ fun JSONArray.containsString(value: String): Boolean {
 
 // Extension to get the effective hull ID
 fun ShipHullSpecAPI.getEffectiveHullId(): String {
-    return if (isCompatibleWithBase){//If the ship's variants are mostly compatible with the variant's of the base hull.
-        if(!dParentHullId.isNullOrEmpty() && dParentHullId != hullId) {//If is DHull
+    return if (isCompatibleWithBase) {//If the ship's variants are mostly compatible with the variant's of the base hull.
+        if (!dParentHullId.isNullOrEmpty() && dParentHullId != hullId)//If is DHull
             dParentHullId//Get D Parent Hull
-        }
-        baseHullId//Otherwise, get de base hull
-    } else hullId
+        else
+            baseHullId//Otherwise, get de base hull
+    } else
+        hullId
 }
 
 fun ShipHullSpecAPI.getCompatibleDLessHullId(): String {
-    return if(isCompatibleWithBase && !dParentHullId.isNullOrEmpty())
+    return if (isCompatibleWithBase && !dParentHullId.isNullOrEmpty())
         dParentHullId
     else hullId
 }
 
 fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
-    if(!Global.getSector().isPaused) return null
-    if(currentInteractionDialog != null && currentInteractionDialog.interactionTarget != null) {
+    if (!Global.getSector().isPaused) return null
+    if (currentInteractionDialog != null && currentInteractionDialog.interactionTarget != null) {
         //Validate that we're not stuck in a ghost interaction dialog. (Happens when you escape out of a UI screen while in an interaction dialog. It reports that the player is still in that ui screen, which is false)
         if (currentInteractionDialog.optionPanel != null && currentInteractionDialog.optionPanel.savedOptionList.isNotEmpty()) return null
     }

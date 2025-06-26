@@ -34,7 +34,9 @@ class BuildFleet : BaseCommand {
         GoTo().runCommand("corvus_abandoned_station", context)
 
         //Give the corvus abandoned station a spaceport
-        Global.getSector().getStarSystem("corvus").getEntityById("corvus_abandoned_station").market.addIndustry(Industries.SPACEPORT)
+        Global.getSector().getStarSystem("corvus").getEntityById("corvus_abandoned_station").market.addIndustry(
+            Industries.SPACEPORT
+        )
         AddCredits().runCommand("30000000", context)
         AddXP().runCommand("30000000", context)
         AddStoryPoints().runCommand("500", context)

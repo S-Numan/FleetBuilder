@@ -18,7 +18,7 @@ object OfficerSerialization {
         val person = Global.getFactory().createPerson()
         val aiCoreId = json.optString("aicoreid", "")
 
-        if(aiCoreId.isNotEmpty())
+        if (aiCoreId.isNotEmpty())
             person.aiCoreId = aiCoreId
 
         // Safely handle name and gender
@@ -63,6 +63,10 @@ object OfficerSerialization {
             person.setMercenary(true)
         }
 
+        if (json.optBoolean("unremovable", false)) {
+            person.memory.set("\$captain_unremovable", true)
+        }
+
         // Handle skills safely
         val skillsObject = json.optJSONObject("skills")
         if (skillsObject != null) {
@@ -76,7 +80,7 @@ object OfficerSerialization {
             }
         }
 
-        if(personLevel == 0)//Person level was unset?
+        if (personLevel == 0)//Person level was unset?
             person.stats.level = person.stats.skillsCopy.size//Set it to the amount of skills, it's probably correct.
 
 
@@ -84,7 +88,7 @@ object OfficerSerialization {
         person.stats.bonusXp = json.optLong("bonusxp", 0)
         person.stats.points = json.optInt("points", 0)
 
-        if(json.has("wasplayer"))
+        if (json.has("wasplayer"))
             person.addTag("wasplayer")
 
         return person
@@ -94,7 +98,7 @@ object OfficerSerialization {
     fun saveOfficerToJson(person: PersonAPI, storeLevelingStats: Boolean = true): JSONObject {
         val json = JSONObject()
 
-        if(person.isAICore)
+        if (person.isAICore)
             json.put("aicoreid", person.aiCoreId)
 
         json.put("first", person.name.first)
@@ -102,33 +106,36 @@ object OfficerSerialization {
         json.put("gender", person.gender.name)
         json.put("portrait", person.portraitSprite)
         json.put("tags", JSONArray(person.tags))
-        if(person.rankId != Ranks.SPACE_LIEUTENANT)
+        if (person.rankId != Ranks.SPACE_LIEUTENANT)
             json.put("rank", person.rankId)
-        if(person.postId != Ranks.POST_OFFICER)
+        if (person.postId != Ranks.POST_OFFICER)
             json.put("post", person.postId)
         json.put("personality", person.personalityAPI.id)
 
-        if(storeLevelingStats) {
+        if (storeLevelingStats) {
             json.put("level", person.stats.level)
 
             if (person.isMentored()) {
                 json.put("mentored", person.isMentored())
             }
-            if(person.stats.xp != 0L){
+            if (person.stats.xp != 0L) {
                 json.put("xp", person.stats.xp)
             }
-            if(person.stats.bonusXp != 0L) {
+            if (person.stats.bonusXp != 0L) {
                 json.put("bonusxp", person.stats.bonusXp)
             }
-            if(person.stats.points != 0) {
+            if (person.stats.points != 0) {
                 json.put("points", person.stats.points)
             }
         }
-        if(person.isMercenary()) {
+        if (person.isMercenary()) {
             json.put("mercenary", person.isMercenary())
         }
-        if(person.isPlayer){
+        if (person.isPlayer) {
             json.put("wasplayer", person.isPlayer)
+        }
+        if (person.memoryWithoutUpdate.getBoolean("\$captain_unremovable")) {
+            json.put("unremovable", true)
         }
 
         val skillsObject = JSONObject()

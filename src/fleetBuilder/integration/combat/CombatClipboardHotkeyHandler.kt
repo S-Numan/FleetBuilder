@@ -11,12 +11,12 @@ import fleetBuilder.util.MISC.getCodexDialog
 import fleetBuilder.util.MISC.showError
 import org.lwjgl.input.Keyboard
 
-class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
+internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
     override fun processInputPreCoreControls(
         amount: Float,
         events: List<InputEventAPI>
     ) {
-        if(!fleetClipboardHotkeyHandler) return
+        if (!fleetClipboardHotkeyHandler) return
 
         for (event in events) {
             if (event.isConsumed) continue

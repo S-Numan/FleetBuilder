@@ -5,10 +5,11 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.plugins.AutofitPlugin
 
-class MLAvailableFighter(private val id: String,
-                         private val wingspec: FighterWingSpecAPI,
-                         private val source: CargoAPI,
-                         private val submarket: SubmarketAPI?
+class MLAvailableFighter(
+    private val id: String,
+    private val wingspec: FighterWingSpecAPI,
+    private val source: CargoAPI,
+    private val submarket: SubmarketAPI?
 ) : AutofitPlugin.AvailableFighter {
 
     override fun getId(): String {
@@ -24,9 +25,9 @@ class MLAvailableFighter(private val id: String,
     }
 
     override fun setQuantity(x: Int) {
-        if(x > quantity) {
+        if (x > quantity) {
             source.addFighters(id, x - quantity)
-        } else if(x < quantity) {
+        } else if (x < quantity) {
             source.removeFighters(id, quantity - x)
         } else {
             return
@@ -43,8 +44,9 @@ class MLAvailableFighter(private val id: String,
     override fun getSubmarket(): SubmarketAPI? {
         return submarket
     }
+
     override fun getPrice(): Float {
-        if(submarket != null) {
+        if (submarket != null) {
             return wingspec.baseValue * (1 + submarket.tariff)
         } else {
             return wingspec.baseValue

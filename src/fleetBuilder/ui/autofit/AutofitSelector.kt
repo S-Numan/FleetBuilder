@@ -10,7 +10,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.integration.combat.AutofitCombatRefitAdder
+import fleetBuilder.integration.combat.CombatAutofitAdder
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import java.awt.Color
@@ -55,13 +55,13 @@ internal object AutofitSelector {
         var hasClicked = false
             private set
 
-        init{
+        init {
             onClickFunctions.add {
-                if(isUnlocked) clickFader.fadeIn()
+                if (isUnlocked) clickFader.fadeIn()
             }
             onClickReleaseFunctions.add { clickFader.fadeOut() }
             onHoverEnterFunctions.add {
-                if(isUnlocked) hoverFader.fadeIn()
+                if (isUnlocked) hoverFader.fadeIn()
                 lockedHoverFader.fadeIn()
             }
             onHoverExitFunctions.add {
@@ -107,10 +107,10 @@ internal object AutofitSelector {
                 lockedSprite.alphaMult = Misc.interpolate(lockAlpha, 0f, lockedHoverFader.brightness)
                 val scaleFactor = lockSize * selectorPanel.width / max(lockedSprite.width, lockedSprite.height)
                 if (scaleFactor < 1)
-                    lockedSprite.setSize(scaleFactor*lockedSprite.width, scaleFactor*lockedSprite.height)
-                lockedSprite.renderAtCenter(selectorPanel.centerX, selectorPanel.top - selectorPanel.width/2)
+                    lockedSprite.setSize(scaleFactor * lockedSprite.width, scaleFactor * lockedSprite.height)
+                lockedSprite.renderAtCenter(selectorPanel.centerX, selectorPanel.top - selectorPanel.width / 2)
             }
-            if(hasMissing) {
+            if (hasMissing) {
                 val lockedAlpha = Misc.interpolate(lockedColor.alphaf, 0f, lockedHoverFader.brightness) * alphaMult
                 GL11.glColor4f(lockedColor.redf, lockedColor.greenf, lockedColor.bluef, lockedAlpha)
                 GL11.glRectf(selectorPanel.left, selectorPanel.bottom, selectorPanel.right, selectorPanel.top)
@@ -120,13 +120,13 @@ internal object AutofitSelector {
                 lockedSprite.color = Color.RED
                 val scaleFactor = lockSize * selectorPanel.width / max(lockedSprite.width, lockedSprite.height)
                 if (scaleFactor < 1)
-                    lockedSprite.setSize(scaleFactor*lockedSprite.width, scaleFactor*lockedSprite.height)
-                lockedSprite.renderAtCenter(selectorPanel.centerX, selectorPanel.top - selectorPanel.width/2)
+                    lockedSprite.setSize(scaleFactor * lockedSprite.width, scaleFactor * lockedSprite.height)
+                lockedSprite.renderAtCenter(selectorPanel.centerX, selectorPanel.top - selectorPanel.width / 2)
             }
             GL11.glPopMatrix()
         }
 
-        private fun drawBorder(x1: Float, y1: Float, x2: Float, y2: Float){
+        private fun drawBorder(x1: Float, y1: Float, x2: Float, y2: Float) {
             GL11.glRectf(x1, y1, x2 + 1, y1 - 1)
             GL11.glRectf(x2, y1, x2 + 1, y2 + 1)
             GL11.glRectf(x1, y2, x1 - 1, y1 - 1)
@@ -146,7 +146,7 @@ internal object AutofitSelector {
                         hasClicked = true
                         onClickFunctions.forEach { it(event) }
                     }
-                    if (event.isMouseUpEvent && hasClicked){
+                    if (event.isMouseUpEvent && hasClicked) {
                         hasClicked = false
                         onClickReleaseFunctions.forEach { it(event) }
                     }
@@ -156,19 +156,36 @@ internal object AutofitSelector {
                     if (event.isMouseDownEvent) {
                         onClickOutsideFunctions.forEach { it(event) }
                     }
-                    if (event.isMouseUpEvent){
+                    if (event.isMouseUpEvent) {
                         hasClicked = false
                     }
                 }
             }
         }
 
-        fun onClick(function: (InputEventAPI) -> Unit) { onClickFunctions.add(function) }
-        fun onClickRelease(function: (InputEventAPI) -> Unit) { onClickReleaseFunctions.add(function) }
-        fun onClickOutside(function: (InputEventAPI) -> Unit) { onClickOutsideFunctions.add(function) }
-        fun onHover(function: (InputEventAPI) -> Unit) { onHoverFunctions.add(function) }
-        fun onHoverEnter(function: (InputEventAPI) -> Unit) { onHoverEnterFunctions.add(function) }
-        fun onHoverExit(function: (InputEventAPI) -> Unit) { onHoverExitFunctions.add(function) }
+        fun onClick(function: (InputEventAPI) -> Unit) {
+            onClickFunctions.add(function)
+        }
+
+        fun onClickRelease(function: (InputEventAPI) -> Unit) {
+            onClickReleaseFunctions.add(function)
+        }
+
+        fun onClickOutside(function: (InputEventAPI) -> Unit) {
+            onClickOutsideFunctions.add(function)
+        }
+
+        fun onHover(function: (InputEventAPI) -> Unit) {
+            onHoverFunctions.add(function)
+        }
+
+        fun onHoverEnter(function: (InputEventAPI) -> Unit) {
+            onHoverEnterFunctions.add(function)
+        }
+
+        fun onHoverExit(function: (InputEventAPI) -> Unit) {
+            onHoverExitFunctions.add(function)
+        }
 
         override fun advance(amount: Float) {
             highlightFader.advance(amount)
@@ -176,17 +193,21 @@ internal object AutofitSelector {
             lockedHoverFader.advance(amount)
             clickFader.advance(amount)
 
-            if(isSelected) highlightFader.fadeIn()
+            if (isSelected) highlightFader.fadeIn()
             else highlightFader.fadeOut()
         }
     }
 
     val descriptionHeight = 44f
 
-    internal fun createAutofitSelector(hullVariantSpec: HullVariantSpec, paintjobSpec: AutofitSpec?, width: Float): CustomPanelAPI {
+    internal fun createAutofitSelector(
+        hullVariantSpec: HullVariantSpec,
+        paintjobSpec: AutofitSpec?,
+        width: Float
+    ): CustomPanelAPI {
 
         val plugin = MagicPaintjobSelectorPlugin(paintjobSpec)
-        val selectorPanel = Global.getSettings().createCustom(width, width+descriptionHeight, plugin)
+        val selectorPanel = Global.getSettings().createCustom(width, width + descriptionHeight, plugin)
         plugin.selectorPanel = selectorPanel
 
         return createAutofitSelectorChildren(hullVariantSpec, paintjobSpec, width, selectorPanel)
@@ -250,8 +271,10 @@ internal object AutofitSelector {
         return selectorPanel
     }
 
-    private fun createShipPreview(hullVariantSpec: HullVariantSpec, basePaintjobSpec: AutofitSpec?,
-                                  width: Float, height: Float): UIPanelAPI {
+    private fun createShipPreview(
+        hullVariantSpec: HullVariantSpec, basePaintjobSpec: AutofitSpec?,
+        width: Float, height: Float
+    ): UIPanelAPI {
 
         val clonedVariant = hullVariantSpec.clone()
         /*MagicPaintjobManager.removePaintjobFromShip(clonedVariant)
@@ -259,7 +282,7 @@ internal object AutofitSelector {
             MagicPaintjobManager.removePaintjobFromShip(moduleVariant as ShipVariantAPI)
         }*/
 
-        val shipPreview = ReflectionUtils.instantiate(AutofitCombatRefitAdder.SHIP_PREVIEW_CLASS!!)!!
+        val shipPreview = ReflectionUtils.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!!
         ReflectionUtils.invoke("setVariant", shipPreview, clonedVariant)
         ReflectionUtils.invoke("overrideVariant", shipPreview, clonedVariant)
         ReflectionUtils.invoke("setShowBorder", shipPreview, false)

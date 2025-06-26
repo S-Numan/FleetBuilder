@@ -7,11 +7,12 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.plugins.AutofitPlugin
 
-class MLAvailableWeapon(private val id: String,
-                        private val weaponspec: WeaponSpecAPI,
-                        private val source: CargoAPI,
-                        private val submarket: SubmarketAPI?
-                    ): AutofitPlugin.AvailableWeapon {
+class MLAvailableWeapon(
+    private val id: String,
+    private val weaponspec: WeaponSpecAPI,
+    private val source: CargoAPI,
+    private val submarket: SubmarketAPI?
+) : AutofitPlugin.AvailableWeapon {
 
 
     override fun getId(): String {
@@ -27,9 +28,9 @@ class MLAvailableWeapon(private val id: String,
     }
 
     override fun setQuantity(x: Int) {
-        if(x > quantity) {
+        if (x > quantity) {
             source.addWeapons(id, x - quantity)
-        } else if(x < quantity) {
+        } else if (x < quantity) {
             source.removeWeapons(id, quantity - x)
         } else {
             return
@@ -49,8 +50,9 @@ class MLAvailableWeapon(private val id: String,
     override fun getSubmarket(): SubmarketAPI? {
         return submarket
     }
+
     override fun getPrice(): Float {
-        if(submarket != null) {
+        if (submarket != null) {
             return weaponspec.baseValue * (1 + submarket.tariff)
         } else {
             return weaponspec.baseValue
