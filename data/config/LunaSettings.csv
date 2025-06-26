@@ -2,9 +2,27 @@ fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValu
 ,,,,,,,,
 autofitMenuEnabled,Autofit Menu,Boolean,true,,"If the autofit menu provided by this mod is enabled.
 See the Autofit Menu tab for more settings.",,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
+devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When dev mode is enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
+Hold Shift or Alt to multiply the added value by 10
+Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,
+fleetClipboardHotkeyHandler,Fleet Clipboard Hotkey Handler,Boolean,true,,If hotkeys for copying and pasting fleet or variant data are enabled.,,,
+copyText,Copy Text Field,Text,"Hotkeys:
+
+CTRL Click
+Fleet member: Copies clicked member
+Officer portrait: Copies clicked officer
+
+CTRL + C in
+Fleet screen: Copies own fleet
+Interaction screen: Copies fleet encounter (hold alt to avoid copying supporting fleets)
+Refit screen: Copies variant
+Codex: Copies variant/member
+
+CTRL + V in
+Refit Screen: Add variant in clipboard to the corresponding ship hull’s autofit menu.
+
+
+See the Dev tab for fun things you can do.",,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
@@ -32,24 +50,8 @@ saveDMods,Save Dmods,Boolean,false,,Whether DMods are saved to variants,,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave lastSave” in the console to load it. (case sensitive)",,,Misc
-fleetClipboardHotkeyHandler,Fleet Clipboard Hotkey Handler,Boolean,true,,If hotkeys for copying and pasting fleet or variant data are enabled.,,,
-copyText,Copy Text Field,Text,"Hotkeys:
-
-CTRL Click
-Fleet member: Copies clicked member
-Officer portrait: Copies clicked officer
-
-CTRL + C in
-Fleet screen: Copies own fleet
-Interaction screen: Copies fleet encounter (hold alt to avoid copying supporting fleets)
-Refit screen: Copies variant
-Codex: Copies variant/member
-
-CTRL + V in
-Refit Screen: Add variant in clipboard to the corresponding ship hull’s autofit menu.
-
-
-See the Dev tab for fun things you can do.",,,,,
+,,,,,,,,
+,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,

@@ -10,11 +10,43 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.config.ModSettings
+import fleetBuilder.integration.campaign.CampaignAutofitAdder
+import fleetBuilder.integration.campaign.CampaignClipboardHotkeyHandler
+import fleetBuilder.integration.campaign.CampaignCodexButton
 import fleetBuilder.integration.save.MakeSaveRemovable
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
 
 class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedListener {
+
+    companion object {
+        fun setListeners() {
+            val sector = Global.getSector() ?: return
+
+            val listeners = sector.listenerManager
+
+            fun <T : Any> manageListener(clazz: Class<T>, enabled: Boolean, creator: () -> T) {
+                if (enabled) {
+                    if (!listeners.hasListenerOfClass(clazz))
+                        listeners.addListener(creator(), true)
+                } else {
+                    listeners.removeListenerOfClass(clazz)
+                }
+            }
+
+            manageListener(CampaignAutofitAdder::class.java, ModSettings.autofitMenuEnabled) { CampaignAutofitAdder() }
+            manageListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
+
+
+            val codexClass = CampaignCodexButton::class.java
+            if (ModSettings.devModeCodexButtonEnabled) {
+                if (!sector.hasTransientScript(codexClass))
+                    sector.addTransientScript(CampaignCodexButton())
+            } else {
+                sector.removeTransientScriptsOfClass(codexClass)
+            }
+        }
+    }
 
     fun onApplicationLoad() {
         VariantLib.onApplicationLoad()
@@ -25,6 +57,10 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     private val officerTracker = ShipOfficerChangeTracker()
 
     fun onGameLoad(newGame: Boolean) {
+
+        setListeners()
+
+
         ShipOfficerChangeEvents.clearAll()
 
         MakeSaveRemovable.onGameLoad()

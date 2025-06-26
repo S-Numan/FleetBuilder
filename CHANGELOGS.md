@@ -4,9 +4,11 @@ Version 1.4.0
 - Fix getEffectiveHullId(). This resolves the issue of the wrong variant type appearing in the autofit UI sometimes.
 - JSON variant saving is now custom: hullmods like S-mods are stored only once, under sMods, not duplicated in hullMods or permaMods.
 - The state of AI cores being built in is now saved.
+- Enable/disable the codex button now in the LunaSettings
 Technical
 - Added OfficerAssignmentListener
 - Changed ship directory formatting. The pre 1.4.0 format will automatically convert to the new format to preserve your loadouts.
+- The scripts/listeners of the autofit menu, hotkey handler, and codex button now are no longer added as a script/listener if disabled.
 - An additional, notable amount of backend changes, though less impactful
 
 Version 1.3.5

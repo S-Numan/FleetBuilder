@@ -27,14 +27,6 @@ class FleetBuilderPlugin : BaseModPlugin() {
 
         val listeners = sector.listenerManager
 
-        val campaignAutofitAdder = CampaignAutofitAdder()
-        listeners.addListener(campaignAutofitAdder, true)
-
-        val hotkeyHandler = CampaignClipboardHotkeyHandler()
-        listeners.addListener(hotkeyHandler, true)
-
-        sector.addTransientScript(CampaignCodexButton())
-
         listeners.addListener(reporter, true)
         sector.addTransientScript(reporter)
 
