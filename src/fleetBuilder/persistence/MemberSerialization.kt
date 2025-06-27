@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
-import fleetBuilder.persistence.OfficerSerialization.getOfficerFromJson
-import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
+import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
+import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
@@ -72,7 +72,7 @@ object MemberSerialization {
     fun setMemberOfficerFromJson(json: JSONObject, member: FleetMemberAPI) {
         val officerJson = json.optJSONObject("officer")
         if (officerJson != null) {
-            member.captain = getOfficerFromJson(officerJson)
+            member.captain = getPersonFromJson(officerJson)
         }
     }
 
@@ -99,7 +99,7 @@ object MemberSerialization {
 
         if (includeOfficer) {
             if (member.captain != null && !member.captain.isDefault) {
-                val officerJson = saveOfficerToJson(member.captain, storeLevelingStats = includeOfficerLevelingStats)
+                val officerJson = savePersonToJson(member.captain, storeLevelingStats = includeOfficerLevelingStats)
                 memberJson.put("officer", officerJson)
             }
         }

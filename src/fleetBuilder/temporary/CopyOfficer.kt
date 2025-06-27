@@ -5,7 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
+import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.MISC
 import fleetBuilder.util.getActualCurrentTab
@@ -43,7 +43,7 @@ class CopyOfficer : BaseCommand {
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
 
-        val json = saveOfficerToJson(officer)
+        val json = savePersonToJson(officer)
 
         setClipboardText(json.toString(4))
 

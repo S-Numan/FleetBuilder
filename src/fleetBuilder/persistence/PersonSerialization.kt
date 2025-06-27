@@ -7,14 +7,12 @@ import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import org.json.JSONArray
 import org.json.JSONObject
-import org.magiclib.kotlin.isMentored
-import org.magiclib.kotlin.isMercenary
 import org.magiclib.kotlin.setMentored
 import org.magiclib.kotlin.setMercenary
 
-object OfficerSerialization {
+object PersonSerialization {
 
-    fun getOfficerFromJson(json: JSONObject): PersonAPI {
+    fun getPersonFromJson(json: JSONObject): PersonAPI {
         val person = Global.getFactory().createPerson()
         val aiCoreId = json.optString("aicoreid", "")
 
@@ -55,18 +53,6 @@ object OfficerSerialization {
         val personLevel = json.optInt("level", 0)//0 if unset
         person.stats.level = personLevel.coerceIn(1, 20)
 
-        if (json.optBoolean("mentored", false)) {
-            person.setMentored(true)
-        }
-
-        if (json.optBoolean("mercenary", false)) {
-            person.setMercenary(true)
-        }
-
-        if (json.optBoolean("unremovable", false)) {
-            person.memory.set("\$captain_unremovable", true)
-        }
-
         // Handle skills safely
         val skillsObject = json.optJSONObject("skills")
         if (skillsObject != null) {
@@ -91,11 +77,32 @@ object OfficerSerialization {
         if (json.has("wasplayer"))
             person.addTag("wasplayer")
 
+        if (json.has("trueMemKeys")) {
+            val memKeysArray = json.optJSONArray("trueMemKeys")
+            for (i in 0 until (memKeysArray?.length() ?: 0)) {
+                person.memory.set(memKeysArray?.optString(i) ?: continue, true)
+            }
+        }
+
+        loadLegacyMentorMercenaryUnremovable(person, json)
+
         return person
     }
 
+    private fun loadLegacyMentorMercenaryUnremovable(person: PersonAPI, json: JSONObject) {
+        if (json.optBoolean("mentored", false)) {
+            person.setMentored(true)
+        }
+        if (json.optBoolean("mercenary", false)) {
+            person.setMercenary(true)
+        }
+        if (json.optBoolean("unremovable", false)) {
+            person.memory.set("\$captain_unremovable", true)
+        }
+    }
+
     @JvmOverloads
-    fun saveOfficerToJson(person: PersonAPI, storeLevelingStats: Boolean = true): JSONObject {
+    fun savePersonToJson(person: PersonAPI, storeLevelingStats: Boolean = true): JSONObject {
         val json = JSONObject()
 
         if (person.isAICore)
@@ -115,9 +122,6 @@ object OfficerSerialization {
         if (storeLevelingStats) {
             json.put("level", person.stats.level)
 
-            if (person.isMentored()) {
-                json.put("mentored", person.isMentored())
-            }
             if (person.stats.xp != 0L) {
                 json.put("xp", person.stats.xp)
             }
@@ -128,22 +132,29 @@ object OfficerSerialization {
                 json.put("points", person.stats.points)
             }
         }
-        if (person.isMercenary()) {
-            json.put("mercenary", person.isMercenary())
-        }
         if (person.isPlayer) {
             json.put("wasplayer", person.isPlayer)
         }
-        if (person.memoryWithoutUpdate.getBoolean("\$captain_unremovable")) {
-            json.put("unremovable", true)
+
+        val boolMemKeysJSON = JSONArray()
+
+        person.memoryWithoutUpdate.keys.forEach { key ->
+            val value = person.memoryWithoutUpdate.get(key)
+            if (value is Boolean) {
+                boolMemKeysJSON.put(key)
+            }
         }
+        if (boolMemKeysJSON.length() > 0)
+            json.put("trueMemKeys", boolMemKeysJSON)
 
         val skillsObject = JSONObject()
         for (skill in person.stats.skillsCopy) {
             if (skill.skill.isAptitudeEffect || skill.level <= 0f) continue
             skillsObject.put(skill.skill.id, skill.level.toInt())
         }
-        json.put("skills", skillsObject)
+        if (skillsObject.length() > 0)
+            json.put("skills", skillsObject)
+
 
         return json
     }

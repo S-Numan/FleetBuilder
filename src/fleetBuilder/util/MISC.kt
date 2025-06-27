@@ -33,8 +33,8 @@ import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
 import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
 import fleetBuilder.persistence.MemberSerialization.getMemberFromJsonWithMissing
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.OfficerSerialization.getOfficerFromJson
-import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
+import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
+import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.variants.MissingElements
 import org.apache.log4j.Level
@@ -593,7 +593,7 @@ object MISC {
     }
 
     fun addOfficerToFleet(json: JSONObject, fleet: FleetDataAPI, randomPastedCosmetics: Boolean = false) {
-        val officer = getOfficerFromJson(json)
+        val officer = getPersonFromJson(json)
 
         if (randomPastedCosmetics && !officer.isDefault && !officer.isAICore) {
             val randomPerson = fleet.fleet.faction.createRandomPerson()
@@ -640,7 +640,7 @@ object MISC {
         }
 
         if (handlePlayer) {
-            val playerJson = saveOfficerToJson(sector.playerPerson)
+            val playerJson = savePersonToJson(sector.playerPerson)
             playerJson.put("storyPoints", sector.playerStats.storyPoints)
             json.put("player", playerJson)
         }
@@ -713,7 +713,7 @@ object MISC {
         if (handlePlayer && json.has("player")) {
             try {
                 val playerJson = json.getJSONObject("player")
-                val loadedPlayer = getOfficerFromJson(playerJson)
+                val loadedPlayer = getPersonFromJson(playerJson)
                 val currentPlayer = sector.playerPerson
 
                 currentPlayer.stats = loadedPlayer.stats

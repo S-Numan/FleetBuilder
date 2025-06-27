@@ -20,7 +20,7 @@ import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.MemberSerialization
-import fleetBuilder.persistence.OfficerSerialization
+import fleetBuilder.persistence.PersonSerialization
 import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.util.ClipboardFunctions
 import fleetBuilder.util.ClipboardUtil
@@ -208,8 +208,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 } else null
             } ?: return
 
-            val json = OfficerSerialization.saveOfficerToJson(hoverOfficer)
-            ClipboardUtil.setClipboardText(json.toString())
+            val json = PersonSerialization.savePersonToJson(hoverOfficer)
+            ClipboardUtil.setClipboardText(json.toString(4))
             MISC.showMessage("Officer copied to clipboard")
             event.consume()
         } catch (e: Exception) {
@@ -257,7 +257,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
             if (event.isCtrlDown && event.isLMBDownEvent) {
                 if (isPortraitHoveredOver) {
-                    val json = OfficerSerialization.saveOfficerToJson(mouseOverMember.captain)
+                    val json = PersonSerialization.savePersonToJson(mouseOverMember.captain)
                     ClipboardUtil.setClipboardText(json.toString(4))
                     MISC.showMessage("Officer copied to clipboard")
                 } else {
@@ -326,8 +326,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             if (!(fader.isFadingIn || fader.brightness == 1f)) return
 
             val member = thing.invoke("getMember") as? FleetMemberAPI ?: return
-            val json = OfficerSerialization.saveOfficerToJson(member.captain)
-            ClipboardUtil.setClipboardText(json.toString())
+            val json = PersonSerialization.savePersonToJson(member.captain)
+            ClipboardUtil.setClipboardText(json.toString(4))
             MISC.showMessage("Officer copied to clipboard")
             event.consume()
         } catch (e: Exception) {
