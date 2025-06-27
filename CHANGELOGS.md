@@ -1,3 +1,9 @@
+Version 1.4.1
+- Forgot to change the mod version. It is now changed.
+Technical
+- Rename OfficerSerialization to PersonSerialization
+- Store custom data when saving person/officer to JSON instead of the previous manual behavior.
+
 Version 1.4.0
 - Unscuffed the combat(titlescreen mission) autofit adder.
 - The loadout importer now supports importing from a pasted fleet member by extracting the member's variant data.

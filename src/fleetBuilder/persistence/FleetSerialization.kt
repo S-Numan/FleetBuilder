@@ -10,8 +10,8 @@ import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.MemberSerialization.setMemberOfficerFromJson
 import fleetBuilder.persistence.MemberSerialization.setMemberValuesFromJson
-import fleetBuilder.persistence.OfficerSerialization.getOfficerFromJson
-import fleetBuilder.persistence.OfficerSerialization.saveOfficerToJson
+import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
+import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
 import fleetBuilder.util.MISC.createErrorVariant
@@ -62,7 +62,7 @@ object FleetSerialization {
         }
 
         json.optJSONObject("commander")?.let { commanderJson ->
-            val commander = getOfficerFromJson(commanderJson)
+            val commander = getPersonFromJson(commanderJson)
             if (includeCommander)
                 campFleet.commander = commander
 
@@ -149,7 +149,7 @@ object FleetSerialization {
                 for (i in 0 until officers.length()) {
                     officers.optJSONObject(i)?.let { officerJson ->
                         try {
-                            val officer = getOfficerFromJson(officerJson)
+                            val officer = getPersonFromJson(officerJson)
                             fleet.addOfficer(officer)
                         } catch (e: Exception) {
                             showError("Error parsing idle officer at index $i", e)
@@ -246,7 +246,7 @@ object FleetSerialization {
             memberJson.put("variantId", uniqueVariantId)
 
             if (isCommander && includeCommander && includeCommanderAsOfficer) {
-                commanderJson = saveOfficerToJson(fleet.commander, storeLevelingStats = includeOfficerLevelingStats)
+                commanderJson = savePersonToJson(fleet.commander, storeLevelingStats = includeOfficerLevelingStats)
                 if (!member.variant.hasHullMod(commandShuttleId))
                     commanderJson.put("member", memberJson)
 
@@ -256,7 +256,7 @@ object FleetSerialization {
         }
         if (includeCommander) {
             if (commanderJson == null) {
-                commanderJson = saveOfficerToJson(fleet.commander, storeLevelingStats = includeOfficerLevelingStats)
+                commanderJson = savePersonToJson(fleet.commander, storeLevelingStats = includeOfficerLevelingStats)
             }
 
             fleetJson.put("commander", commanderJson)
@@ -271,7 +271,7 @@ object FleetSerialization {
             val idleOfficers = fleet.officersCopy.mapNotNull { officerData ->
                 val person = officerData.person
                 if (!person.isDefault && person.id != fleet.commander.id && fleet.getMemberWithCaptain(person) == null) {
-                    saveOfficerToJson(person)
+                    savePersonToJson(person)
                 } else null
             }
             fleetJson.put("idleOfficers", JSONArray(idleOfficers))
