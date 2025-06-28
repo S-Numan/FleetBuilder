@@ -493,8 +493,12 @@ internal object AutofitPanel {
                     continue
                 }
 
-                if (mod.isHiddenEverywhere || variant.suppressedMods.contains(mod.id)) {
+                if (mod.isHiddenEverywhere) {
                     hiddenMods += "$name (Hidden)"
+                    continue
+                }
+                if (variant.suppressedMods.contains(mod.id)) {
+                    hiddenMods += "$name (Suppressed)"
                     continue
                 }
 
