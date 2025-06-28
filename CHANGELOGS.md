@@ -1,4 +1,4 @@
-1.4.2
+1.5.0
 - Hidden hullmods are now handled.
 - /saves/common/FleetBuilder/HullModsToNeverSave.data is now a file that exists. Put a hullmod id in the list, and it'll never be saved.
 Technical
