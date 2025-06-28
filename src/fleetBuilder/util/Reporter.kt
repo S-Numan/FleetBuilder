@@ -7,13 +7,13 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import fleetBuilder.util.listeners.ShipOfficerChangeEvents
-import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.config.ModSettings
 import fleetBuilder.integration.campaign.CampaignAutofitAdder
 import fleetBuilder.integration.campaign.CampaignClipboardHotkeyHandler
 import fleetBuilder.integration.campaign.CampaignCodexButton
 import fleetBuilder.integration.save.MakeSaveRemovable
+import fleetBuilder.util.listeners.ShipOfficerChangeEvents
+import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
 
@@ -49,6 +49,8 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     }
 
     fun onApplicationLoad() {
+        ModSettings.onApplicationLoad()
+
         VariantLib.onApplicationLoad()
 
         LoadoutManager.loadAllDirectories()

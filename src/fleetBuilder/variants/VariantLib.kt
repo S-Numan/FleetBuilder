@@ -13,6 +13,7 @@ import fleetBuilder.variants.LoadoutManager.getAnyVariantsForHullspec
 object VariantLib {
 
     private lateinit var allDMods: Set<String>
+    private lateinit var allHiddenEverywhereMods: Set<String>
     private lateinit var variantMap: MutableMap<String, MutableList<ShipVariantAPI>>
 
     fun onApplicationLoad() {
@@ -22,6 +23,11 @@ object VariantLib {
             .map { it.id }
             .toSet()
 
+        allHiddenEverywhereMods = Global.getSettings().allHullModSpecs
+            .asSequence()
+            .filter { it.isHiddenEverywhere }
+            .map { it.id }
+            .toSet()
 
         //val variantIdMap = Global.getSettings().hullIdToVariantListMap//Does not contain every variant
         variantMap = mutableMapOf()
@@ -50,6 +56,7 @@ object VariantLib {
     }
 
     fun getAllDMods(): Set<String> = allDMods
+    fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
 
     fun getCoreVariantsForEffectiveHullspec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         return variantMap[hullSpec.getEffectiveHullId()].orEmpty()
@@ -99,11 +106,12 @@ object VariantLib {
         compareWeapons: Boolean = true,
         compareWings: Boolean = true,
         compareHullMods: Boolean = true,
+        compareHiddenHullMods: Boolean = true,
+        compareDMods: Boolean = true,
         compareModules: Boolean = true,
         compareTags: Boolean = false,
         useEffectiveHull: Boolean = false
-    )
-            : Boolean {
+    ): Boolean {
         if (useEffectiveHull && variant1.hullSpec.getEffectiveHullId() != variant2.hullSpec.getEffectiveHullId())
             return false
         else if (variant1.hullSpec.hullId != variant2.hullSpec.hullId)
@@ -129,32 +137,25 @@ object VariantLib {
             }
         }
         if (compareHullMods) {
-            if (variant1.hullMods.size != variant2.hullMods.size) return false
-            for (hullMod in variant1.hullMods) {
-                if (!variant2.hullMods.contains(hullMod))
-                    return false
-            }
-            if (variant1.sMods.size != variant2.sMods.size) return false
-            for (hullMod in variant1.sMods) {
-                if (!variant2.sMods.contains(hullMod))
-                    return false
-            }
-            if (variant1.permaMods.size != variant2.permaMods.size) return false
-            for (hullMod in variant1.permaMods) {
-                if (!variant2.permaMods.contains(hullMod))
-                    return false
-            }
-            if (variant1.sModdedBuiltIns.size != variant2.sModdedBuiltIns.size) return false
-            for (hullMod in variant1.sModdedBuiltIns) {
-                if (!variant2.sModdedBuiltIns.contains(hullMod))
-                    return false
-            }
-            if (variant1.suppressedMods.size != variant2.suppressedMods.size) return false
-            for (hullMod in variant1.suppressedMods) {
-                if (!variant2.suppressedMods.contains(hullMod))
-                    return false
+            fun hullModSetsEqual(
+                set1: Set<String>,
+                set2: Set<String>,
+            ): Boolean {
+                fun filterMods(mods: Set<String>) = mods.filterNot { modId ->
+                    (!compareHiddenHullMods && modId in allHiddenEverywhereMods) ||
+                            (!compareDMods && modId in allDMods)
+                }.toSet()
+
+                return filterMods(set1) == filterMods(set2)
             }
 
+            val variantModsEqual = hullModSetsEqual(variant1.hullMods.toSet(), variant2.hullMods.toSet()) &&
+                    hullModSetsEqual(variant1.sMods, variant2.sMods) &&
+                    hullModSetsEqual(variant1.permaMods, variant2.permaMods) &&
+                    hullModSetsEqual(variant1.sModdedBuiltIns, variant2.sModdedBuiltIns) &&
+                    hullModSetsEqual(variant1.suppressedMods, variant2.suppressedMods)
+
+            if (!variantModsEqual) return false
         }
         if (compareTags) {
             if (variant1.tags.size != variant2.tags.size) return false

@@ -29,6 +29,7 @@ import fleetBuilder.util.MISC.campaignPaste
 import fleetBuilder.util.MISC.fleetPaste
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.variants.LoadoutManager
+import fleetBuilder.variants.VariantLib
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
@@ -123,7 +124,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
 
         fleet?.let { fleetToCopy ->
-            val json = FleetSerialization.saveFleetToJson(fleetToCopy, includeOfficerLevelingStats = false)
+            val json = FleetSerialization.saveFleetToJson(
+                fleetToCopy,
+                FleetSerialization.FleetSettings().apply {
+                    memberSettings.personSettings.storeLevelingStats = false
+                }
+            )
+
             ClipboardUtil.setClipboardText(json.toString(4))
             MISC.showMessage(
                 if (!event.isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1) {
@@ -144,10 +151,25 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleRefitCopy(event: InputEventAPI) {
-        if (ClipboardFunctions.refitScreenVariantToClipboard()) {
-            MISC.showMessage("Variant copied to clipboard")
-            event.consume()
-        }
+
+        val baseVariant = MISC.getBaseVariantFromRefitTab() ?: return
+
+        val variantToSave = baseVariant.clone()
+        variantToSave.hullVariantId = VariantLib.makeVariantID(baseVariant)
+
+        val json = VariantSerialization.saveVariantToJson(
+            variantToSave,
+            VariantSerialization.VariantSettings().apply {
+                applySMods = ModSettings.saveSMods
+                includeDMods = ModSettings.saveDMods
+                includeHiddenMods = ModSettings.saveHiddenMods
+            }
+        )
+
+        ClipboardUtil.setClipboardText(json.toString(4))
+
+        MISC.showMessage("Variant copied to clipboard")
+        event.consume()
     }
 
     private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {

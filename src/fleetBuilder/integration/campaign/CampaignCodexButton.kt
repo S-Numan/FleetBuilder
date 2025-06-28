@@ -1,12 +1,6 @@
 package fleetBuilder.integration.campaign
 
-import MagicLib.Font
-import MagicLib.addButton
-import MagicLib.height
-import MagicLib.onClick
-import MagicLib.width
-import MagicLib.xAlignOffset
-import MagicLib.yAlignOffset
+import MagicLib.*
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.SpecialItemSpecAPI
@@ -103,6 +97,7 @@ class CampaignCodexButton : EveryFrameScript {
 
             val shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)
             val alt = Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)
+            val ctrl = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
 
             val count = when {
                 shift && alt -> 100
@@ -110,7 +105,6 @@ class CampaignCodexButton : EveryFrameScript {
                 else -> 1
             }
 
-            val ctrl = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
 
             val entry: String
 

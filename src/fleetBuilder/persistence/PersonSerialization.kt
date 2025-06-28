@@ -101,8 +101,12 @@ object PersonSerialization {
         }
     }
 
+    data class PersonSettings(
+        var storeLevelingStats: Boolean = true
+    )
+
     @JvmOverloads
-    fun savePersonToJson(person: PersonAPI, storeLevelingStats: Boolean = true): JSONObject {
+    fun savePersonToJson(person: PersonAPI, settings: PersonSettings = PersonSettings()): JSONObject {
         val json = JSONObject()
 
         if (person.isAICore)
@@ -119,7 +123,7 @@ object PersonSerialization {
             json.put("post", person.postId)
         json.put("personality", person.personalityAPI.id)
 
-        if (storeLevelingStats) {
+        if (settings.storeLevelingStats) {
             json.put("level", person.stats.level)
 
             if (person.stats.xp != 0L) {

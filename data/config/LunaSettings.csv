@@ -44,16 +44,20 @@ This is true by default in missions, as there is no real cargo to source ship eq
 dontForceClearDMods,Dont Force Clear D-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove D-Mods on autofit",,,Autofit Menu
 dontForceClearSMods,Dont Force Clear S-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove S-Mods on autofit",,,Autofit Menu
 ,,,,,,,,
+variantHeader,Variant Header,Header,Variant Saving Settings,,,,,Misc
+variantTextField,Variant Text Field,Text,"The settings below apply when saving/copying a variant alone.
+They do not apply when saving/copying anything else that may contain a variant, such as a fleet member or an entire fleet.",,,,,Misc
+saveSMods,Save Smods,Boolean,true,,"If false: SMods will still be included when saving, but as regular hullmods rather than being SMods.",,,Misc
+saveDMods,Save Dmods,Boolean,false,,If false: DMods will be excluded when saving.,,,Misc
+saveHiddenMods,Save Hidden Mods,Boolean,false,,"If false: hullmods that do not show up in the hullmods list will be excluded when saving.
+Enable the setting ‘Show Hidden HullMods’ in the Dev tab and hover over a ship in the autofit menu to see it’s hidden hullmods, provided it has them.",,,Misc
 ,,,,,,,,
-saveSMods,Save Smods,Boolean,true,,Whether SMods are saved to variants,,,Misc
-saveDMods,Save Dmods,Boolean,false,,Whether DMods are saved to variants,,,Misc
+memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
+fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
+extraHeader,Extra Header,Header,Extra,,,,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave lastSave” in the console to load it. (case sensitive)",,,Misc
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
 ,,,,,,,,
 devHeader,Developer Header,Header,Developer Options,,,,,Dev
 devTextField,Dev Text Field,Text,"Requires dev mode to be true.
@@ -68,8 +72,6 @@ randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, autom
 
 This avoids pasted members looking like a clone army, and makes them look like a bunch of ships/officers that happen to have the same loadout instead",,,Dev
 unassignPlayer,Unassign Player,Boolean,false,,Remove your player officer with a right click: (places them in a command shuttle that can't fight or be copied. (Commander bonus still applies),,,Dev
-,,,,,,,,
-,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,

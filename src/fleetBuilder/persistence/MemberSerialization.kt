@@ -76,19 +76,25 @@ object MemberSerialization {
         }
     }
 
+    data class MemberSettings(
+        var includeOfficer: Boolean = true,
+        var includeCR: Boolean = true,
+        var personSettings: PersonSerialization.PersonSettings = PersonSerialization.PersonSettings(),
+        var variantSettings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings()
+    )
+
+
     @JvmOverloads
     fun saveMemberToJson(
         member: FleetMemberAPI,
-        includeOfficer: Boolean = true,
-        includeOfficerLevelingStats: Boolean = true,
-        includeCR: Boolean = true,
-        includeModInfo: Boolean = true
+        settings: MemberSettings = MemberSettings(),
+        includeModInfo: Boolean = true,
     ): JSONObject {
         val memberJson = JSONObject()
-        val variantJson = saveVariantToJson(member.variant, includeModInfo = false)
+        val variantJson = saveVariantToJson(member.variant, settings.variantSettings, includeModInfo = false)
         memberJson.put("variant", variantJson)
         //memberJson.put("id", member.id)
-        if (includeCR) {
+        if (settings.includeCR) {
             memberJson.put("cr", member.repairTracker.cr)
         }
 
@@ -97,15 +103,15 @@ object MemberSerialization {
             memberJson.put("ismothballed", true)
 
 
-        if (includeOfficer) {
+        if (settings.includeOfficer) {
             if (member.captain != null && !member.captain.isDefault) {
-                val officerJson = savePersonToJson(member.captain, storeLevelingStats = includeOfficerLevelingStats)
+                val officerJson = savePersonToJson(member.captain, settings.personSettings)
                 memberJson.put("officer", officerJson)
             }
         }
 
         if (includeModInfo)
-            addVariantSourceModsToJson(member.variant, memberJson)
+            addVariantSourceModsToJson(member.variant, memberJson, settings.variantSettings)
 
         return memberJson
     }

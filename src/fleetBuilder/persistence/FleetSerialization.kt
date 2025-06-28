@@ -165,17 +165,20 @@ object FleetSerialization {
     }
 
 
+    data class FleetSettings(
+        var includeCommander: Boolean = true, // If a PersonAPI is set as a commander of the fleet.
+        var includeCommanderAsOfficer: Boolean = true, // If a PersonAPI is set as an officer in the fleet.
+        var includeIdleOfficers: Boolean = false,
+        var memberSettings: MemberSerialization.MemberSettings = MemberSerialization.MemberSettings(),
+    )
+
     @JvmOverloads
     fun saveFleetToJson(
         campFleet: CampaignFleetAPI,
-        includeOfficers: Boolean = true,
-        includeCommander: Boolean = true,//If a PersonAPI is set as a commander of the fleet.
-        includeCommanderAsOfficer: Boolean = true,//If a PersonAPI is set as an officer in the fleet.
-        includeOfficerLevelingStats: Boolean = true,
-        includeIdleOfficers: Boolean = false,
-        includeCR: Boolean = true,
+        settings: FleetSettings = FleetSettings(),
         includeModInfo: Boolean = true,
     ): JSONObject {
+
         val fleetJson = JSONObject()
 
         val fleet = campFleet.fleetData
@@ -193,21 +196,19 @@ object FleetSerialization {
 
         for (member in fleet.membersListCopy) {
             if (includeModInfo)
-                addVariantSourceModsToJson(member.variant, fleetJson)
+                addVariantSourceModsToJson(member.variant, fleetJson, settings.memberSettings.variantSettings)
 
             val isCommander = member.captain?.id == fleet.commander?.id
 
-            val shouldIncludeOfficer = if (isCommander) {
-                includeCommanderAsOfficer && includeOfficers
-            } else {
-                includeOfficers
+            val includeOfficer = when {
+                !settings.memberSettings.includeOfficer -> false
+                isCommander && !settings.includeCommanderAsOfficer -> false//Don't include officer if the officer is the commander and we aren't including the commander as an officer
+                else -> true
             }
 
             val memberJson = saveMemberToJson(
                 member,
-                includeOfficer = shouldIncludeOfficer,
-                includeOfficerLevelingStats = includeOfficerLevelingStats,
-                includeCR = includeCR,
+                settings.memberSettings.copy().apply { this.includeOfficer = includeOfficer },
                 includeModInfo = false
             )
 
@@ -245,8 +246,12 @@ object FleetSerialization {
             memberJson.remove("variant")
             memberJson.put("variantId", uniqueVariantId)
 
-            if (isCommander && includeCommander && includeCommanderAsOfficer) {
-                commanderJson = savePersonToJson(fleet.commander, storeLevelingStats = includeOfficerLevelingStats)
+            if (isCommander && settings.includeCommander && settings.includeCommanderAsOfficer) {
+                commanderJson = savePersonToJson(
+                    fleet.commander,
+                    settings.memberSettings.personSettings
+                )
+
                 if (!member.variant.hasHullMod(commandShuttleId))
                     commanderJson.put("member", memberJson)
 
@@ -254,9 +259,12 @@ object FleetSerialization {
                 membersJson.put(memberJson)
             }
         }
-        if (includeCommander) {
+        if (settings.includeCommander) {
             if (commanderJson == null) {
-                commanderJson = savePersonToJson(fleet.commander, storeLevelingStats = includeOfficerLevelingStats)
+                commanderJson = savePersonToJson(
+                    fleet.commander,
+                    settings.memberSettings.personSettings
+                )
             }
 
             fleetJson.put("commander", commanderJson)
@@ -267,11 +275,11 @@ object FleetSerialization {
         fleetJson.put("variants", variantsJson)
         fleetJson.put("aggression_doctrine", campFleet.faction.doctrine.aggression)
 
-        if (includeIdleOfficers) {
+        if (settings.includeIdleOfficers) {
             val idleOfficers = fleet.officersCopy.mapNotNull { officerData ->
                 val person = officerData.person
                 if (!person.isDefault && person.id != fleet.commander.id && fleet.getMemberWithCaptain(person) == null) {
-                    savePersonToJson(person)
+                    savePersonToJson(person, settings.memberSettings.personSettings)
                 } else null
             }
             fleetJson.put("idleOfficers", JSONArray(idleOfficers))

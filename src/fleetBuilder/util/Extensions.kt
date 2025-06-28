@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import org.json.JSONArray
@@ -32,6 +33,12 @@ fun ShipHullSpecAPI.getCompatibleDLessHullId(): String {
     return if (isCompatibleWithBase && !dParentHullId.isNullOrEmpty())
         dParentHullId
     else hullId
+}
+
+fun ShipVariantAPI.completelyRemoveMod(modId: String) {
+    removeMod(modId)
+    removePermaMod(modId)
+    removeSuppressedMod(modId)
 }
 
 fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
