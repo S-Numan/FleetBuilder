@@ -34,16 +34,12 @@ class FBPlayerAutofitDelegate(
 
     private val fighters: MutableList<FighterPickerDialog.o> = ArrayList()
     private val weapons: MutableList<WeaponPickerDialog.o> = ArrayList()
-    private val hullmods: MutableList<String>
-
-    init {
-        hullmods = if (Global.getSettings().isInCampaignState) {
-            faction.knownHullMods.toMutableList()
-        } else {
-            Global.getSettings().allHullModSpecs
-                .map { it.id }
-                .toMutableList()
-        }
+    private val hullmods: MutableList<String> = if (Global.getSettings().isInCampaignState) {
+        faction.knownHullMods.toMutableList()
+    } else {
+        Global.getSettings().allHullModSpecs
+            .map { it.id }
+            .toMutableList()
     }
 
     //When null, source is assumed to be from player cargo
@@ -81,8 +77,7 @@ class FBPlayerAutofitDelegate(
 
         val oFighter = fighters.find { it.id == fighter.id }
         shipDisplay.invoke(
-            "insertInFighterSlot",
-            index//Fighter bay slot
+            "insertInFighterSlot", index//Fighter bay slot
             , oFighter, false//Boolean: Clear Slot
             , variant as HullVariantSpec
         )
@@ -121,8 +116,9 @@ class FBPlayerAutofitDelegate(
         variant.setWingId(index, null)
         */
 
-        ReflectionUtils.invoke(
-            shipDisplay, "clearFighterSlot", index//Fighter slot
+
+        shipDisplay.invoke(
+            "clearFighterSlot", index//Fighter slot
             , variant as HullVariantSpec
         )
     }
@@ -140,8 +136,8 @@ class FBPlayerAutofitDelegate(
         variant.addWeapon(slot.id, weapon.id)*/
 
         val oWeapon = weapons.find { it.id == weapon.id }
-        ReflectionUtils.invoke(
-            shipDisplay, "insertInSlot", slot//Weapon bay slot
+        shipDisplay.invoke(
+            "insertInSlot", slot//Weapon bay slot
             , oWeapon, false//Clear slot
             , variant as HullVariantSpec
         )
@@ -189,8 +185,8 @@ class FBPlayerAutofitDelegate(
             }
         }*/
 
-        ReflectionUtils.invoke(
-            shipDisplay, "clearSlot", slot//Weapon slot
+        shipDisplay.invoke(
+            "clearSlot", slot//Weapon slot
             , variant as HullVariantSpec
         )
 
