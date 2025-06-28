@@ -3,6 +3,7 @@ package fleetBuilder.variants
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJson
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.MISC
@@ -97,14 +98,12 @@ class ShipDirectory(
     fun addShip(
         variant: ShipVariantAPI,
         missingFromVariant: MissingElements = MissingElements(),
-        applySMods: Boolean = true,
-        includeDMods: Boolean = true,
-        includeTags: Boolean = true
+        settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
     ): String {
         val variantToSave = variant.clone()
         variantToSave.hullVariantId = makeVariantID(variant)
 
-        val json = saveVariantToJson(variantToSave, applySMods, includeDMods, includeTags)
+        val json = saveVariantToJson(variantToSave, settings)
 
         //Ensures the JSON is readable, and uses the saved version of the variant to guarantee consistency across game restarts.
         val savedVariant = getVariantFromJson(json)

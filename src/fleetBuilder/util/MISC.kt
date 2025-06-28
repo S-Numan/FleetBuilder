@@ -23,12 +23,12 @@ import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
-import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.hullMods.CommanderShuttleListener
 import fleetBuilder.persistence.CargoSerialization.getCargoFromJson
 import fleetBuilder.persistence.CargoSerialization.saveCargoToJson
+import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
 import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
 import fleetBuilder.persistence.MemberSerialization.getMemberFromJsonWithMissing
@@ -36,6 +36,7 @@ import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.variants.MissingElements
 import org.apache.log4j.Level
 import org.json.JSONArray
@@ -229,6 +230,13 @@ object MISC {
         val borderContainer = getBorderContainer() ?: return null
 
         return borderContainer.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
+    }
+
+    fun getBaseVariantFromRefitTab(): ShipVariantAPI? {
+        val refitTab = getRefitTab() ?: return null
+        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return null
+        val shipDisplay = refitPanel.invoke("getShipDisplay") as? UIPanelAPI ?: return null
+        return shipDisplay.invoke("getCurrentVariant") as? ShipVariantAPI
     }
 
     fun getFleetTab(): UIPanelAPI? {
@@ -648,10 +656,13 @@ object MISC {
         if (handleFleet) {
             val fleetJson = saveFleetToJson(
                 sector.playerFleet,
-                includeCommander = false,
-                includeCommanderAsOfficer = false,
-                includeOfficers = handleOfficers,
-                includeIdleOfficers = handleOfficers
+                FleetSerialization.FleetSettings().apply {
+                    includeCommander = false
+                    includeCommanderAsOfficer = false
+                    memberSettings.includeOfficer = handleOfficers
+                    includeIdleOfficers = handleOfficers
+                }
+
             )
             json.put("fleet", fleetJson)
         }

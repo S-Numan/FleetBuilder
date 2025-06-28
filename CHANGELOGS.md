@@ -1,3 +1,9 @@
+1.4.2
+- Hidden hullmods are now handled.
+- /saves/common/FleetBuilder/HullModsToNeverSave.data is now a file that exists. Put a hullmod id in the list, and it'll never be saved.
+Technical
+- Complete revamp of internal saving settings.
+
 Version 1.4.1
 - Forgot to change the mod version. It is now changed.
 Technical

@@ -12,6 +12,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.MISC
+import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.VariantLib
 import starficz.ReflectionUtils.invoke
 import java.util.*
@@ -195,9 +196,7 @@ object AutofitApplier {
             if (dontForceClearDMods && VariantLib.getAllDMods().contains(mod))
                 return@forEach
 
-            to.removeMod(mod)
-            to.removePermaMod(mod)
-            to.removeSuppressedMod(mod)
+            to.completelyRemoveMod(mod)
         }
 
         if (!dontForceClearSMods) {

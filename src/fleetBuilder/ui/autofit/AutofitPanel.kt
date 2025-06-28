@@ -1,7 +1,6 @@
 package fleetBuilder.ui.autofit
 
 import MagicLib.*
-import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.CoreUIAPI
@@ -14,8 +13,10 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.config.ModSettings
 import fleetBuilder.autofit.AutofitApplier.applyVariantInRefitScreen
+import fleetBuilder.config.ModSettings
+import fleetBuilder.persistence.VariantSerialization
+import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.MISC
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
@@ -34,7 +35,6 @@ import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import java.awt.Color
-import kotlin.collections.iterator
 
 
 /**
@@ -175,6 +175,7 @@ internal object AutofitPanel {
                     variant,
                     baseVariant,
                     compareFlux = false,
+                    compareHiddenHullMods = false,
                     useEffectiveHull = true
                 )
             ) {
@@ -227,7 +228,14 @@ internal object AutofitPanel {
                         if (saveVariant != null) {
                             val variantToSave = saveVariant.clone()
                             variantToSave.hullVariantId = makeVariantID(saveVariant)
-                            val json = saveVariantToJson(variantToSave)
+                            val json = saveVariantToJson(
+                                variantToSave,
+                                VariantSerialization.VariantSettings().apply {
+                                    includeDMods = ModSettings.saveDMods
+                                    applySMods = ModSettings.saveSMods
+                                    includeHiddenMods = ModSettings.saveHiddenMods
+                                }
+                            )
 
                             setClipboardText(json.toString(4))
 
@@ -241,11 +249,14 @@ internal object AutofitPanel {
 
                             val newVariantId = saveLoadoutVariant(
                                 baseVariant,
-                                includeDMods = ModSettings.saveDMods,
-                                applySMods = ModSettings.saveSMods
+                                settings = VariantSerialization.VariantSettings().apply {
+                                    includeDMods = ModSettings.saveDMods
+                                    applySMods = ModSettings.saveSMods
+                                    includeHiddenMods = ModSettings.saveHiddenMods
+                                }
                             )
 
-                            Global.getLogger(this.javaClass).info("Save ship variant with id $newVariantId")
+                            //Global.getLogger(this.javaClass).info("Save ship variant with id $newVariantId")
                             if (newVariantId.isNotEmpty()) {
 
                                 index++
@@ -299,7 +310,7 @@ internal object AutofitPanel {
                                 }*/
                             }
                         } else {
-                            Global.getLogger(this.javaClass).info("Load ship variant")
+                            //Global.getLogger(this.javaClass).info("Load ship variant")
                             var variant: HullVariantSpec? = getAnyVariant(selectorPlugin.paintjobSpec!!.variantId) as? HullVariantSpec
                             if (variant == null) {
                                 variant = Global.getSettings().createEmptyVariant(

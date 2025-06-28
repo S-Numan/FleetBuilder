@@ -1,12 +1,6 @@
 package fleetBuilder.integration.campaign
 
-import MagicLib.Font
-import MagicLib.addButton
-import MagicLib.height
-import MagicLib.onClick
-import MagicLib.width
-import MagicLib.xAlignOffset
-import MagicLib.yAlignOffset
+import MagicLib.*
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.SpecialItemSpecAPI

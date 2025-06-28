@@ -1,5 +1,6 @@
 package fleetBuilder.config
 
+import com.fs.starfarer.api.Global
 import fleetBuilder.config.ModSettings.autofitMenuEnabled
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.config.ModSettings.backupSave
@@ -13,6 +14,7 @@ import fleetBuilder.config.ModSettings.importPrefix
 import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.config.ModSettings.saveDMods
+import fleetBuilder.config.ModSettings.saveHiddenMods
 import fleetBuilder.config.ModSettings.saveSMods
 import fleetBuilder.config.ModSettings.selectorsPerRow
 import fleetBuilder.config.ModSettings.showCoreGoalVariants
@@ -21,12 +23,16 @@ import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
 import fleetBuilder.config.ModSettings.unassignPlayer
 import fleetBuilder.util.Reporter
+import fleetBuilder.util.containsString
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.generatePrefixes
+import lunalib.lunaSettings.LunaSettings
 import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
 import lunalib.lunaSettings.LunaSettings.getString
 import lunalib.lunaSettings.LunaSettingsListener
+import org.json.JSONArray
+import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 
 
@@ -57,6 +63,7 @@ internal class ModSettingsListener : LunaSettingsListener {
         showDebug = getBoolean(modID, "showDebug")!!
         saveDMods = getBoolean(modID, "saveDMods")!!
         saveSMods = getBoolean(modID, "saveSMods")!!
+        saveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
         unassignPlayer = getBoolean(modID, "unassignPlayer")!!
         forceAutofit = getBoolean(modID, "forceAutofit")!!
         dontForceClearDMods = getBoolean(modID, "dontForceClearDMods")!!
@@ -79,6 +86,48 @@ internal class ModSettingsListener : LunaSettingsListener {
 }
 
 object ModSettings {
+    fun onApplicationLoad() {
+        if (Global.getSettings().modManager.isModEnabled("lunalib"))
+            LunaSettings.addSettingsListener(ModSettingsListener())
+
+
+        val neverHullModsPath = "${PRIMARYDIR}HullModsToNeverSave"
+        val neverHullModsJson = try {
+            if (Global.getSettings().fileExistsInCommon(neverHullModsPath)) {
+                Global.getSettings().readJSONFromCommon(neverHullModsPath, false)
+            } else {
+                JSONObject()
+            }
+        } catch (_: Exception) {
+            JSONObject()
+        }
+
+        val hullModsToNeverSaveJSONArray = neverHullModsJson.optJSONArray("HullModsToNeverSave") ?: JSONArray()
+
+        listOf("rat_controller", "rat_artifact_controller").forEach { mod ->
+            if (!hullModsToNeverSaveJSONArray.containsString(mod)) {
+                hullModsToNeverSaveJSONArray.put(mod)
+            }
+        }
+
+        neverHullModsJson.put("HullModsToNeverSave", hullModsToNeverSaveJSONArray)
+
+        Global.getSettings().writeJSONToCommon(neverHullModsPath, neverHullModsJson, false)
+
+
+        hullModsToNeverSave = (0 until hullModsToNeverSaveJSONArray.length())
+            .asSequence()
+            .map { hullModsToNeverSaveJSONArray.getString(it) }
+            .toSet()
+    }
+
+    const val PRIMARYDIR = "FleetBuilder/"
+    const val PACKDIR = (PRIMARYDIR + "LoadoutPacks/")
+    const val FLEETDIR = (PRIMARYDIR + "Fleets/")
+    const val DIRECTORYCONFIGNAME = "directory"
+
+    var hullModsToNeverSave = setOf<String>()
+
     val modID = "SN_FleetBuilder"
 
     var selectorsPerRow = 4
@@ -94,6 +143,8 @@ object ModSettings {
     var saveDMods = false
 
     var saveSMods = true
+
+    var saveHiddenMods = false
 
     var autofitMenuEnabled = true
 

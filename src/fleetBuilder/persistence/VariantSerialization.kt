@@ -5,12 +5,14 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.config.ModSettings.hullModsToNeverSave
 import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.getMissingFromModInfo
+import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.containsString
 import fleetBuilder.util.toBinary
 import fleetBuilder.variants.MissingElements
-import fleetBuilder.variants.VariantLib.getAllDMods
+import fleetBuilder.variants.VariantLib
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -237,20 +239,25 @@ object VariantSerialization {
     }
 
 
+    data class VariantSettings(
+        var applySMods: Boolean = true,//If false, SMods will be treated like normal mods.
+        var includeDMods: Boolean = true,
+        var includeHiddenMods: Boolean = true,
+        var includeTags: Boolean = true,
+    )
+
     @JvmOverloads
     fun saveVariantToJson(
         variant: ShipVariantAPI,
-        applySMods: Boolean = true,//If false, SMods will be treated like normal mods.
-        includeDMods: Boolean = true,
-        includeTags: Boolean = true,
-        includeModInfo: Boolean = true,
+        settings: VariantSettings = VariantSettings(),
+        includeModInfo: Boolean = true
     ): JSONObject {
-        val jsonVariant = saveModuleVariantToJson(variant, applySMods, includeDMods, includeTags)
+        val jsonVariant = saveModuleVariantToJson(variant, settings)
 
         val jsonModules = JSONObject()
         for (moduleSlot in variant.moduleSlots) {
             val module = variant.getModuleVariant(moduleSlot)
-            val jsonModuleVariant = saveModuleVariantToJson(module, applySMods, includeDMods, includeTags)
+            val jsonModuleVariant = saveModuleVariantToJson(module, settings)
 
             jsonModules.put(moduleSlot, jsonModuleVariant)
         }
@@ -258,7 +265,7 @@ object VariantSerialization {
             jsonVariant.put("moduleVariants", jsonModules)
 
         if (includeModInfo)
-            addVariantSourceModsToJson(variant, jsonVariant)
+            addVariantSourceModsToJson(variant, jsonVariant, settings)
 
 
         return jsonVariant
@@ -266,9 +273,7 @@ object VariantSerialization {
 
     private fun saveModuleVariantToJson(
         insertVariant: ShipVariantAPI,
-        applySMods: Boolean,
-        includeDMods: Boolean,
-        includeTags: Boolean,
+        settings: VariantSettings
     ): JSONObject {
         val variant = insertVariant.clone()
 
@@ -307,8 +312,27 @@ object VariantSerialization {
         }
         json.put("weaponGroups", weaponGroupsJson)
 
+        hullModsToNeverSave.forEach { modId ->
+            variant.completelyRemoveMod(modId)
+        }
 
-        if (applySMods && variant.sModdedBuiltIns.isNotEmpty()) {
+        if (!settings.includeHiddenMods) {
+            val allModIds = buildSet {
+                addAll(variant.hullMods)
+                addAll(variant.sMods)
+                addAll(variant.suppressedMods)
+                addAll(variant.permaMods)
+            }
+
+            allModIds.forEach { modId ->
+                val mod = Global.getSettings().getHullModSpec(modId)
+                if (mod.isHiddenEverywhere) {
+                    variant.completelyRemoveMod(modId)
+                }
+            }
+        }
+
+        if (settings.applySMods && variant.sModdedBuiltIns.isNotEmpty()) {
             val sModdedbuiltins = JSONArray()
             variant.sModdedBuiltIns.forEach { mod ->
                 sModdedbuiltins.put(mod)
@@ -316,13 +340,13 @@ object VariantSerialization {
             json.put("sModdedbuiltins", sModdedbuiltins)
         }
 
-        val allDmods = getAllDMods()
+        val allDmods = VariantLib.getAllDMods()
 
         val hullMods = JSONArray()
         val sMods = JSONArray()
         val permaMods = JSONArray()
 
-        if (applySMods) {
+        if (settings.applySMods) {
             variant.sMods.forEach { mod ->
                 if (!variant.sModdedBuiltIns.contains(mod))
                     sMods.put(mod)
@@ -335,7 +359,7 @@ object VariantSerialization {
 
         variant.permaMods.forEach { mod ->
             if (!sMods.containsString(mod) && !hullMods.containsString(mod) && !variant.hullSpec.builtInMods.contains(mod)) {
-                if (!includeDMods && allDmods.contains(mod))
+                if (!settings.includeDMods && allDmods.contains(mod))
                     return@forEach
                 permaMods.put(mod)
             }
@@ -350,7 +374,7 @@ object VariantSerialization {
         json.put("permaMods", permaMods)
         json.put("sMods", sMods)
 
-        if (includeTags) {
+        if (settings.includeTags) {
             val tags = JSONArray()
             variant.tags.forEach { tag ->
                 tags.put(tag)
@@ -364,10 +388,11 @@ object VariantSerialization {
 
     fun addVariantSourceModsToJson(
         variant: ShipVariantAPI,
-        json: JSONObject
+        json: JSONObject,
+        settings: VariantSettings
     ) {
         val addedModIds = mutableSetOf<Triple<String, String, String>>()
-        getSourceModsFromVariant(addedModIds, variant)
+        getSourceModsFromVariant(addedModIds, variant, settings)
 
         if (addedModIds.isNotEmpty()) {
             val existingMods = mutableSetOf<Triple<String, String, String>>()
@@ -401,11 +426,12 @@ object VariantSerialization {
 
     fun getSourceModsFromVariant(
         addedModIds: MutableSet<Triple<String, String, String>>,
-        variant: ShipVariantAPI
+        variant: ShipVariantAPI,
+        settings: VariantSettings
     ) {
         for (moduleSlot in variant.moduleSlots) {
             val module = variant.getModuleVariant(moduleSlot)
-            getSourceModsFromVariant(addedModIds, module)
+            getSourceModsFromVariant(addedModIds, module, settings)
         }
 
         fun addSourceMod(modId: String, modName: String, modVersion: String) {
@@ -421,7 +447,14 @@ object VariantSerialization {
 
         // HullMods
         for (mod in variant.hullMods) {
+            if ((!settings.includeDMods && VariantLib.getAllDMods().contains(mod))
+                || (!settings.includeHiddenMods && VariantLib.getAllHiddenEverywhereMods().contains(mod))
+                || hullModsToNeverSave.contains(mod)
+            )
+                continue
+
             Global.getSettings().getHullModSpec(mod).sourceMod?.let { sm ->
+
                 addSourceMod(sm.id, sm.name, sm.version)
             }
         }
@@ -450,9 +483,7 @@ object VariantSerialization {
     @JvmOverloads
     fun saveVariantToCompString(
         variant: ShipVariantAPI,
-        applySMods: Boolean = true,//If false, SMods will be treated like normal mods.
-        includeDMods: Boolean = true,
-        includeTags: Boolean = true,
+        settings: VariantSettings = VariantSettings(),
         includePrepend: Boolean = true,
         includeModInfo: Boolean = true
     ): String {
@@ -464,12 +495,12 @@ object VariantSerialization {
 
 
         var compressedVariant = ""
-        compressedVariant += saveModuleVariantToCompString(variant, applySMods, includeDMods, includeTags)
+        compressedVariant += saveModuleVariantToCompString(variant, settings)
 
         for (moduleSlot in variant.moduleSlots) {
             val module = variant.getModuleVariant(moduleSlot)
 
-            val compressedModuleVariant = saveModuleVariantToCompString(module, applySMods, includeDMods, includeTags)
+            val compressedModuleVariant = saveModuleVariantToCompString(module, settings)
 
             compressedVariant += ":$compressedModuleVariant"
         }
@@ -479,7 +510,7 @@ object VariantSerialization {
 
         if (includeModInfo) {
             val addedModIds = mutableSetOf<Triple<String, String, String>>()
-            getSourceModsFromVariant(addedModIds, variant)
+            getSourceModsFromVariant(addedModIds, variant, settings)
 
             if (addedModIds.isNotEmpty()) {
 
@@ -508,9 +539,7 @@ object VariantSerialization {
 
     private fun saveModuleVariantToCompString(
         insertVariant: ShipVariantAPI,
-        applySMods: Boolean,
-        includeDMods: Boolean,
-        includeTags: Boolean,
+        settings: VariantSettings = VariantSettings(),
     ): String {
         val variant = insertVariant.clone()
 
@@ -548,12 +577,12 @@ object VariantSerialization {
         allHullMods.removeAll(suppressedMods)
 
         // Remove D-mods if requested
-        if (!includeDMods) {
-            allHullMods.removeAll(getAllDMods())
+        if (!settings.includeDMods) {
+            allHullMods.removeAll(VariantLib.getAllDMods())
         }
 
         // sMods logic
-        val sMods = if (applySMods) {
+        val sMods = if (settings.applySMods) {
             sModsOriginal
         } else {
             // Move sMods into hullMods if not applying
@@ -574,7 +603,7 @@ object VariantSerialization {
         parts += sMods.joinToString(sep)
         parts += permaMods.joinToString(sep)
         parts += suppressedMods.joinToString(sep)
-        parts += if (includeTags) variant.tags.joinToString(sep) else ""
+        parts += if (settings.includeTags) variant.tags.joinToString(sep) else ""
 
 
 

@@ -4,8 +4,12 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.config.ModSettings
+import fleetBuilder.config.ModSettings.DIRECTORYCONFIGNAME
+import fleetBuilder.config.ModSettings.FLEETDIR
+import fleetBuilder.config.ModSettings.PACKDIR
 import fleetBuilder.config.ModSettings.defaultPrefix
 import fleetBuilder.config.ModSettings.importPrefix
+import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.variants.VariantLib.compareVariantContents
@@ -13,15 +17,9 @@ import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 object LoadoutManager {
-
-    const val primaryDir = "FleetBuilder/"
-    const val packDir = (primaryDir + "LoadoutPacks/")
-    const val fleetDir = (primaryDir + "Fleets/")
-    const val directoryConfigName = "directory"
 
     val shipDirectories: MutableList<ShipDirectory> = mutableListOf()
 
@@ -36,20 +34,20 @@ object LoadoutManager {
     fun loadAllDirectories() {
 
         //Make directories
-        Global.getSettings().writeTextFileToCommon("$fleetDir/deleteme", ".")
-        Global.getSettings().deleteTextFileFromCommon("$fleetDir/deleteme")
+        Global.getSettings().writeTextFileToCommon("$FLEETDIR/deleteme", ".")
+        Global.getSettings().deleteTextFileFromCommon("$FLEETDIR/deleteme")
 
         // Ensure import exists
-        if (!Global.getSettings().fileExistsInCommon("$packDir$importPrefix/$directoryConfigName")) {
+        if (!Global.getSettings().fileExistsInCommon("$PACKDIR$importPrefix/$DIRECTORYCONFIGNAME")) {
             val json = JSONObject()
             json.put("description", "Imported Loadout")
-            Global.getSettings().writeJSONToCommon("$packDir$importPrefix/$directoryConfigName", json, false)
+            Global.getSettings().writeJSONToCommon("$PACKDIR$importPrefix/$DIRECTORYCONFIGNAME", json, false)
         }
         // Ensure default exists
-        if (!Global.getSettings().fileExistsInCommon("$packDir$defaultPrefix/$directoryConfigName")) {
+        if (!Global.getSettings().fileExistsInCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME")) {
             val json = JSONObject()
             json.put("description", "Default Loadout")
-            Global.getSettings().writeJSONToCommon("$packDir$defaultPrefix/$directoryConfigName", json, false)
+            Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", json, false)
         }
 
 
@@ -57,13 +55,13 @@ object LoadoutManager {
 
         // Load all prefixed ship directories
         generatePrefixes().forEach { prefix ->
-            loadShipDirectory(packDir, prefix)?.let { shipDirectories.add(it) }
+            loadShipDirectory(PACKDIR, prefix)?.let { shipDirectories.add(it) }
         }
     }
 
     fun loadShipDirectory(dirPath: String, prefix: String): ShipDirectory? {
 
-        val configFilePath = "$dirPath$prefix/$directoryConfigName"
+        val configFilePath = "$dirPath$prefix/$DIRECTORYCONFIGNAME"
         return try {
             val directory: JSONObject
             if (Global.getSettings().fileExistsInCommon(configFilePath)) {
@@ -299,17 +297,13 @@ object LoadoutManager {
         variant: ShipVariantAPI,
         prefix: String = "DF",
         missingFromVariant: MissingElements = MissingElements(),
-        applySMods: Boolean = true,
-        includeDMods: Boolean = true,
-        includeTags: Boolean = true
-    ): String {//TODO, implement "includeHiddenHullmods"
+        settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
+    ): String {
         return getShipDirectoryWithPrefix(prefix)?.addShip(
             variant,
             missingFromVariant,
-            applySMods,
-            includeDMods,
-            includeTags,
-        ) ?: return ""
+            settings
+        ) ?: ""
     }
 
     fun deleteLoadoutVariant(variantId: String) {
@@ -340,5 +334,4 @@ object LoadoutManager {
 
         return loadoutExists
     }
-
 }
