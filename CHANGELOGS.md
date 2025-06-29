@@ -1,3 +1,6 @@
+1.5.2
+- Fix AI cores turning into fleet officers when pasting a ship captained by one.
+
 1.5.1
 - Fix fighter wings, they are now saved.
 
