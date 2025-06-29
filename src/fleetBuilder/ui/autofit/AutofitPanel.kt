@@ -19,6 +19,9 @@ import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.MISC
+import fleetBuilder.util.MISC.createErrorVariant
+import fleetBuilder.util.allDMods
+import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.getAllAutofitSpecsForShip
 import fleetBuilder.variants.LoadoutManager.getAnyVariant
@@ -26,8 +29,10 @@ import fleetBuilder.variants.LoadoutManager.getLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.saveLoadoutVariant
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib.compareVariantContents
+import fleetBuilder.variants.VariantLib.compareVariantHullMods
 import fleetBuilder.variants.VariantLib.getAllDMods
 import fleetBuilder.variants.VariantLib.makeVariantID
+import fleetBuilder.variants.VariantLib.processSModsForComparison
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
@@ -153,7 +158,7 @@ internal object AutofitPanel {
 
             var variant: HullVariantSpec
             if (paintjobSpec != null) {
-                variant = (getAnyVariant(paintjobSpec.variantId) as? HullVariantSpec
+                variant = (getAnyVariant(paintjobSpec.variant.hullVariantId) as? HullVariantSpec
                     ?: Global.getSettings()
                         .createEmptyVariant(baseVariant.hullSpec.hullId, baseVariant.hullSpec)) as HullVariantSpec
             } else {
@@ -171,18 +176,8 @@ internal object AutofitPanel {
             }
 
 
-            if (paintjobSpec != null && compareVariantContents(
-                    variant,
-                    baseVariant,
-                    compareFlux = false,
-                    compareHiddenHullMods = false,
-                    compareDMods = false,
-                    convertSModsToRegular = true,
-                    useEffectiveHull = true
-                )
-            ) {
-                selectorPlugin.isSelected = true
-                selectorPlugin.highlightFader.forceIn()
+            if (paintjobSpec != null) {
+                highlightBasedOnVariant(variant, baseVariant, selectorPlugin)
             }
 
             // add panel and position them into the grid
@@ -204,7 +199,7 @@ internal object AutofitPanel {
             }
 
             if (paintjobSpec != null
-                && getLoadoutVariant(paintjobSpec.variantId) != null
+                && getLoadoutVariant(paintjobSpec.variant.hullVariantId) != null
             ) {//A loadout from this mod?
                 removeSelectorPanelButton(selectorPanel, variant, paintjobSpec)
             }
@@ -224,7 +219,7 @@ internal object AutofitPanel {
                         if (selectorPlugin.paintjobSpec == null) {
                             saveVariant = baseVariant
                         } else {
-                            saveVariant = getAnyVariant(selectorPlugin.paintjobSpec!!.variantId)
+                            saveVariant = getAnyVariant(selectorPlugin.paintjobSpec!!.variant.hullVariantId)
                         }
 
                         if (saveVariant != null) {
@@ -245,7 +240,6 @@ internal object AutofitPanel {
                         }
                     } else {//Save and load variant
                         selectorPlugins.forEach { it.isSelected = false }
-                        selectorPlugin.isSelected = true
 
                         if (selectorPlugin.paintjobSpec == null) {
 
@@ -259,14 +253,14 @@ internal object AutofitPanel {
                             )
 
                             //Global.getLogger(this.javaClass).info("Save ship variant with id $newVariantId")
-                            if (newVariantId.isNotEmpty()) {
+                            if (newVariantId.isNotEmpty()) {//Save variant
 
                                 index++
                                 //selectorPlugins.remove(selectorPlugin)
                                 //selectorPlugin.selectorPanel.opacity = 0f
 
                                 val newSpec = AutofitSpec(
-                                    newVariantId,
+                                    getLoadoutVariant(newVariantId) ?: createErrorVariant(),
                                     baseVariant.displayName,
                                     "Loadout Variant",
                                     (baseVariant as ShipVariantAPI).hullSpec.spriteName
@@ -311,9 +305,9 @@ internal object AutofitPanel {
                                     prev = selectorPanel // Update previous to current
                                 }*/
                             }
-                        } else {
+                        } else {//Load variant
                             //Global.getLogger(this.javaClass).info("Load ship variant")
-                            var variant: HullVariantSpec? = getAnyVariant(selectorPlugin.paintjobSpec!!.variantId) as? HullVariantSpec
+                            var variant: HullVariantSpec? = getAnyVariant(selectorPlugin.paintjobSpec!!.variant.hullVariantId) as? HullVariantSpec
                             if (variant == null) {
                                 variant = Global.getSettings().createEmptyVariant(
                                     (baseVariant as ShipVariantAPI).hullSpec.hullId,
@@ -348,7 +342,13 @@ internal object AutofitPanel {
                                 }*/
                             }
                             //}
+
+                            selectorPlugins.forEach {
+                                if (it.paintjobSpec != null) highlightBasedOnVariant(it.paintjobSpec?.variant as HullVariantSpec, baseVariant, it)
+                            }
                         }
+
+                        selectorPlugin.isSelected = true
                     }
                 }
             }
@@ -360,6 +360,94 @@ internal object AutofitPanel {
         scrollerTooltip.heightSoFar = endPad * 2 + prev!!.height * rows + midPad * (rows - 1)
         autofitPanel.addUIElement(scrollerTooltip)
         return autofitPanel
+    }
+
+    private fun highlightBasedOnVariant(
+        variant: HullVariantSpec,
+        baseVariant: HullVariantSpec,
+        selectorPlugin: AutofitSelector.MagicPaintjobSelectorPlugin
+    ) {
+        val equalDefault = compareVariantContents(
+            variant,
+            baseVariant,
+            compareWeaponGroups = false,
+            compareBuiltInHullMods = false,
+            compareFlux = false,
+            compareDMods = false,
+            convertSModsToRegular = true,
+            compareHiddenHullMods = false,
+            useEffectiveHull = true
+        )
+
+        if (equalDefault) {
+            selectorPlugin.isSelected = true
+            selectorPlugin.highlightFader.forceIn()
+        }
+
+        outlinePanelBasedOnVariant(baseVariant, variant, selectorPlugin)
+    }
+
+    private fun outlinePanelBasedOnVariant(
+        baseVariant: HullVariantSpec,
+        variant: HullVariantSpec,
+        selectorPlugin: AutofitSelector.MagicPaintjobSelectorPlugin
+    ) {
+        val compareBaseVariant = baseVariant.clone()
+        val compareVariant = variant.clone()
+
+        //Treat built in DMods like regular PermaMods.
+        compareBaseVariant.allDMods().forEach { compareBaseVariant.addPermaMod(it) }
+        compareVariant.allDMods().forEach { compareVariant.addPermaMod(it) }
+
+        //Treat SModdedBuiltIns like SMods.
+        compareBaseVariant.sModdedBuiltIns.forEach { compareBaseVariant.addPermaMod(it, true) }
+        compareVariant.sModdedBuiltIns.forEach { compareVariant.addPermaMod(it, true) }
+
+        var equalSMods = false
+        var unequalSMods = false
+        if (compareBaseVariant.sMods.isNotEmpty()) {
+            val compareBaseVariantTemp = compareBaseVariant.clone()
+            processSModsForComparison(compareBaseVariantTemp, true)
+            equalSMods =
+                compareVariantHullMods(
+                    compareVariant,
+                    compareBaseVariantTemp,
+                    compareBuiltInHullMods = false,
+                    compareHiddenHullMods = false,
+                )
+        }
+        if (compareVariant.sMods.isNotEmpty()) {
+            val compareVariantTemp = compareVariant.clone()
+            processSModsForComparison(compareVariantTemp, true)
+            unequalSMods =
+                compareVariantHullMods(
+                    compareVariantTemp,
+                    compareBaseVariant,
+                    compareBuiltInHullMods = false,
+                    compareHiddenHullMods = false,
+                )
+        }
+
+        var equalDMod = false
+        if (compareBaseVariant.allDMods().isNotEmpty()) {
+            compareBaseVariant.allDMods().forEach { compareBaseVariant.completelyRemoveMod(it) }
+            equalDMod =
+                compareVariantHullMods(
+                    compareVariant,
+                    compareBaseVariant,
+                    compareBuiltInHullMods = false,
+                    compareHiddenHullMods = false,
+                )
+        }
+
+        selectorPlugin.isBetter = false
+        selectorPlugin.isWorse = false
+
+        if (equalSMods) {
+            selectorPlugin.isBetter = true
+        } else if (equalDMod || unequalSMods) {
+            selectorPlugin.isWorse = true
+        }
     }
 
     private fun removeSelectorPanelButton(
@@ -380,7 +468,7 @@ internal object AutofitPanel {
         removeVariantButton.xAlignOffset = selectorPanel.right - removeVariantButton.right
         removeVariantButton.yAlignOffset = selectorPanel.top - removeVariantButton.top
         removeVariantButton.onClick {
-            deleteLoadoutVariant(newSpec.variantId)
+            deleteLoadoutVariant(newSpec.variant.hullVariantId)
             //selectorPanel.parent?.removeComponent(selectorPanel)//Causes an error if removing a panel with one in front of it when closing the autofitPanel
             selectorPanel.opacity = 0f//Somehow removes the panel? Including preventing input to it???
         }

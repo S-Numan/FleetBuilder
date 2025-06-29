@@ -201,7 +201,7 @@ object LoadoutManager {
             if (variant.isGoalVariant && ModSettings.showCoreGoalVariants)
                 variantSpecs.add(
                     AutofitSpec(
-                        variant.hullVariantId,
+                        variant,
                         variant.displayName,
                         "Core Autofit Variant",
                         variant.hullSpec.spriteName
@@ -210,7 +210,7 @@ object LoadoutManager {
             else if (!variant.isGoalVariant && ModSettings.showCoreNonGoalVariants)
                 variantSpecs.add(
                     AutofitSpec(
-                        variant.hullVariantId,
+                        variant,
                         variant.displayName,
                         "Core Variant",
                         variant.hullSpec.spriteName
@@ -227,7 +227,7 @@ object LoadoutManager {
         for ((i, variant) in loadouts.withIndex()) {
             variantSpecs.add(
                 AutofitSpec(
-                    variant.hullVariantId,
+                    variant,
                     variant.displayName,
                     source[i].getDescription(),
                     variant.hullSpec.spriteName,

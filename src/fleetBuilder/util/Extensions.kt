@@ -7,6 +7,7 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.variants.VariantLib.getAllDMods
 import org.json.JSONArray
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
@@ -39,6 +40,16 @@ fun ShipVariantAPI.completelyRemoveMod(modId: String) {
     removeMod(modId)
     removePermaMod(modId)
     removeSuppressedMod(modId)
+}
+
+fun ShipVariantAPI.allDMods(): List<String> {
+    val allDMods = getAllDMods()
+    val dMods = mutableListOf<String>()
+    for (mod in hullMods) {
+        if (mod in allDMods)
+            dMods.add(mod)
+    }
+    return dMods
 }
 
 fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {

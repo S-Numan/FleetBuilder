@@ -10,6 +10,9 @@ import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
+import org.lazywizard.console.commands.AddCrew
+import org.lazywizard.console.commands.AddFuel
+import org.lazywizard.console.commands.AddSupplies
 
 class ReplaceFleet : BaseCommand {
 
@@ -56,6 +59,14 @@ class ReplaceFleet : BaseCommand {
         Console.showMessage("Aggression doctrine set")
 
         updateFleetPanelContents()
+
+        playerFleet.cargo.removeCrew(playerFleet.cargo.crew)
+        playerFleet.cargo.removeSupplies(playerFleet.cargo.supplies)
+        playerFleet.cargo.removeFuel(playerFleet.cargo.fuel)
+
+        AddCrew().runCommand("", context)
+        AddSupplies().runCommand("", context)
+        AddFuel().runCommand("", context)
 
         return BaseCommand.CommandResult.SUCCESS
     }
