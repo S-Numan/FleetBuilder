@@ -415,7 +415,7 @@ object MISC {
                     return false
                 }
 
-                if (!member.captain.isDefault) {
+                if (!member.captain.isDefault && !member.captain.isAICore) {
                     sector.playerFleet.fleetData.addOfficer(member.captain)
                 }
 
