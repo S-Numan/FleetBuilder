@@ -176,6 +176,8 @@ internal object AutofitPanel {
                     baseVariant,
                     compareFlux = false,
                     compareHiddenHullMods = false,
+                    compareDMods = false,
+                    convertSModsToRegular = true,
                     useEffectiveHull = true
                 )
             ) {

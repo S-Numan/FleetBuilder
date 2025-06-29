@@ -6,6 +6,7 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.VariantSource
+import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.variants.LoadoutManager.getAnyVariantsForHullspec
@@ -100,18 +101,22 @@ object VariantLib {
 
     @JvmOverloads
     fun compareVariantContents(
-        variant1: ShipVariantAPI,
-        variant2: ShipVariantAPI,
+        insertVariant1: ShipVariantAPI,
+        insertVariant2: ShipVariantAPI,
         compareFlux: Boolean = true,
         compareWeapons: Boolean = true,
         compareWings: Boolean = true,
         compareHullMods: Boolean = true,
         compareHiddenHullMods: Boolean = true,
         compareDMods: Boolean = true,
+        convertSModsToRegular: Boolean = true,
         compareModules: Boolean = true,
         compareTags: Boolean = false,
         useEffectiveHull: Boolean = false
     ): Boolean {
+        val variant1 = insertVariant1.clone()
+        val variant2 = insertVariant2.clone()
+
         if (useEffectiveHull && variant1.hullSpec.getEffectiveHullId() != variant2.hullSpec.getEffectiveHullId())
             return false
         else if (variant1.hullSpec.hullId != variant2.hullSpec.hullId)
@@ -149,6 +154,21 @@ object VariantLib {
                 return filterMods(set1) == filterMods(set2)
             }
 
+            if (convertSModsToRegular) {
+                variant1.sModdedBuiltIns.clear()
+                variant2.sModdedBuiltIns.clear()
+                val var1SMods = variant1.sMods.toSet()
+                var1SMods.forEach { sMod ->
+                    variant1.completelyRemoveMod(sMod)
+                    variant1.addMod(sMod)
+                }
+                val var2SMods = variant2.sMods.toSet()
+                var2SMods.forEach { sMod ->
+                    variant2.completelyRemoveMod(sMod)
+                    variant2.addMod(sMod)
+                }
+            }
+
             val variantModsEqual = hullModSetsEqual(variant1.hullMods.toSet(), variant2.hullMods.toSet()) &&
                     hullModSetsEqual(variant1.sMods, variant2.sMods) &&
                     hullModSetsEqual(variant1.permaMods, variant2.permaMods) &&
@@ -167,7 +187,21 @@ object VariantLib {
 
         if (compareModules) {
             variant1.moduleSlots.forEach { slot ->
-                if (!compareVariantContents(variant1.getModuleVariant(slot), variant2.getModuleVariant(slot))) {
+                if (!compareVariantContents(
+                        variant1.getModuleVariant(slot),
+                        variant2.getModuleVariant(slot),
+                        compareFlux = compareFlux,
+                        compareWeapons = compareWeapons,
+                        compareWings = compareWings,
+                        compareHullMods = compareHullMods,
+                        compareHiddenHullMods = compareHiddenHullMods,
+                        compareDMods = compareDMods,
+                        convertSModsToRegular = convertSModsToRegular,
+                        compareModules = true,
+                        compareTags = compareTags,
+                        useEffectiveHull = useEffectiveHull
+                    )
+                ) {
                     return false
                 }
             }

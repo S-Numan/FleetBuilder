@@ -1,3 +1,6 @@
+1.6.0
+- Improve variant comparing logic. Now the autofit UI when deciding what to highlight ignores DMods and treats SMods as regular mods.
+
 1.5.2
 - Fix AI cores turning into fleet officers when pasting a ship captained by one.
 - Fix DMod saving
