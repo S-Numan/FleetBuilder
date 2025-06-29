@@ -1,5 +1,6 @@
 1.5.2
 - Fix AI cores turning into fleet officers when pasting a ship captained by one.
+- Fix DMod saving
 
 1.5.1
 - Fighter wings did not save when saving a variant. They are now saved.

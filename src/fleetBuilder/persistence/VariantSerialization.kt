@@ -319,45 +319,49 @@ object VariantSerialization {
         }
         json.put("weaponGroups", weaponGroupsJson)
 
+
         hullModsToNeverSave.forEach { modId ->
             variant.completelyRemoveMod(modId)
         }
 
-        if (!settings.includeHiddenMods) {
-            val allModIds = buildSet {
-                addAll(variant.hullMods)
-                addAll(variant.sMods)
-                addAll(variant.suppressedMods)
-                addAll(variant.permaMods)
-            }
+        val allModIds = buildSet {
+            addAll(variant.hullMods)
+            addAll(variant.sMods)
+            addAll(variant.suppressedMods)
+            addAll(variant.permaMods)
+        }
 
-            allModIds.forEach { modId ->
-                val mod = Global.getSettings().getHullModSpec(modId)
-                if (mod.isHiddenEverywhere) {
-                    variant.completelyRemoveMod(modId)
-                }
+        val allDMods = VariantLib.getAllDMods()
+
+        allModIds.forEach { modId ->
+            if (!settings.includeDMods && allDMods.contains(modId)) {
+                variant.completelyRemoveMod(modId)
+                return@forEach
+            }
+            val mod = Global.getSettings().getHullModSpec(modId)
+            if (!settings.includeHiddenMods && mod.isHiddenEverywhere) {
+                variant.completelyRemoveMod(modId)
+                return@forEach
             }
         }
 
-        if (settings.applySMods && variant.sModdedBuiltIns.isNotEmpty()) {
-            val sModdedbuiltins = JSONArray()
-            variant.sModdedBuiltIns.forEach { mod ->
-                sModdedbuiltins.put(mod)
-            }
-            json.put("sModdedbuiltins", sModdedbuiltins)
-        }
-
-        val allDmods = VariantLib.getAllDMods()
 
         val hullMods = JSONArray()
         val sMods = JSONArray()
+        val sModdedbuiltins = JSONArray()
         val permaMods = JSONArray()
 
         if (settings.applySMods) {
+
+            variant.sModdedBuiltIns.forEach { mod ->
+                sModdedbuiltins.put(mod)
+            }
+
             variant.sMods.forEach { mod ->
                 if (!variant.sModdedBuiltIns.contains(mod))
                     sMods.put(mod)
             }
+
         } else {
             variant.sMods.forEach { mod ->
                 hullMods.put(mod)
@@ -366,8 +370,6 @@ object VariantSerialization {
 
         variant.permaMods.forEach { mod ->
             if (!sMods.containsString(mod) && !hullMods.containsString(mod) && !variant.hullSpec.builtInMods.contains(mod)) {
-                if (!settings.includeDMods && allDmods.contains(mod))
-                    return@forEach
                 permaMods.put(mod)
             }
         }
@@ -380,6 +382,9 @@ object VariantSerialization {
         json.put("hullMods", hullMods)
         json.put("permaMods", permaMods)
         json.put("sMods", sMods)
+        if (sModdedbuiltins.length() > 0)
+            json.put("sModdedbuiltins", sModdedbuiltins)
+
 
         if (settings.includeTags) {
             val tags = JSONArray()
