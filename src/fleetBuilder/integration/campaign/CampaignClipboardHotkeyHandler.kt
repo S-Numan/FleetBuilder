@@ -18,6 +18,7 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.config.ModSettings
+import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.MemberSerialization
 import fleetBuilder.persistence.PersonSerialization
@@ -304,11 +305,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                             if (sector.playerFleet.fleetSizeCount == 1)
                                 MISC.showMessage("Cannot remove last ship in fleet", Color.YELLOW)
                             else
-                                MISC.removePlayerShuttle()
+                                CommanderShuttle.removePlayerShuttle()
                         }
 
                         ModSettings.unassignPlayer -> {
-                            MISC.addPlayerShuttle()
+                            CommanderShuttle.addPlayerShuttle()
                         }
 
                         else -> {

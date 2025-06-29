@@ -90,6 +90,7 @@ object PersonSerialization {
     }
 
     private fun loadLegacyMentorMercenaryUnremovable(person: PersonAPI, json: JSONObject) {
+        //Load JSON details saved from before version 1.4.1
         if (json.optBoolean("mentored", false)) {
             person.setMentored(true)
         }

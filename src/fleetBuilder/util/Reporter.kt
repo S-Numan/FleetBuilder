@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.config.ModSettings
+import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.integration.campaign.CampaignAutofitAdder
 import fleetBuilder.integration.campaign.CampaignClipboardHotkeyHandler
 import fleetBuilder.integration.campaign.CampaignCodexButton
@@ -69,11 +70,11 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
 
         officerTracker.reset()
 
-        MISC.onGameLoad(newGame)
+        CommanderShuttle.onGameLoad(newGame)
     }
 
     fun beforeGameSave() {
-        MISC.beforeGameSave()
+        CommanderShuttle.beforeGameSave()
 
         MakeSaveRemovable.beforeGameSave()
     }
@@ -81,7 +82,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     fun afterGameSave() {
         MakeSaveRemovable.afterGameSave()
 
-        MISC.afterGameSave()
+        CommanderShuttle.afterGameSave()
 
         if (ModSettings.backupSave) {
             val json = MISC.createPlayerSaveJson()
@@ -90,7 +91,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     }
 
     override fun reportCurrentLocationChanged(prev: LocationAPI, curr: LocationAPI) {
-        MISC.reportCurrentLocationChanged(prev, curr)
+        CommanderShuttle.reportCurrentLocationChanged(prev, curr)
     }
 
     override fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
