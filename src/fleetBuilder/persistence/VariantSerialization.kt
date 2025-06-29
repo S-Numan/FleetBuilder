@@ -290,6 +290,13 @@ object VariantSerialization {
         json.put("fluxCapacitors", variant.numFluxCapacitors)
         json.put("fluxVents", variant.numFluxVents)
 
+        val wingsJson = JSONArray()
+        for (wing in variant.nonBuiltInWings) {
+            wingsJson.put(wing)
+        }
+        if (wingsJson.length() != 0)
+            json.put("wings", wingsJson)
+
         val weaponGroupsJson = JSONArray()
         for (wg in variant.weaponGroups) {
             val groupJson = JSONObject()

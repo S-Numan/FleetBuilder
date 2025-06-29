@@ -1,3 +1,6 @@
+1.5.1
+- Fix fighter wings, they are now saved.
+
 1.5.0
 - Hidden hullmods are now handled.
 - /saves/common/FleetBuilder/HullModsToNeverSave.data is now a file that exists. Put a hullmod id in the list, and it'll never be saved.
