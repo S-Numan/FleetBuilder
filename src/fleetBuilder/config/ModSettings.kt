@@ -9,6 +9,7 @@ import fleetBuilder.config.ModSettings.devModeCodexButtonEnabled
 import fleetBuilder.config.ModSettings.dontForceClearDMods
 import fleetBuilder.config.ModSettings.dontForceClearSMods
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
+import fleetBuilder.config.ModSettings.fleetScreenFilter
 import fleetBuilder.config.ModSettings.forceAutofit
 import fleetBuilder.config.ModSettings.importPrefix
 import fleetBuilder.config.ModSettings.modID
@@ -72,6 +73,7 @@ internal class ModSettingsListener : LunaSettingsListener {
         backupSave = getBoolean(modID, "backupSave")!!
         fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
         devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
+        fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
 
         autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
 
@@ -168,6 +170,8 @@ object ModSettings {
     var fleetClipboardHotkeyHandler = true
 
     var devModeCodexButtonEnabled = true
+
+    var fleetScreenFilter = false
 
     val commandShuttleId = "FB_commandershuttle"
 }

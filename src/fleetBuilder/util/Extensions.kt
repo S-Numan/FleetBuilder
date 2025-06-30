@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.variants.VariantLib.getAllDMods
@@ -50,6 +51,30 @@ fun ShipVariantAPI.allDMods(): List<String> {
             dMods.add(mod)
     }
     return dMods
+}
+
+fun FleetMemberAPI.getShipNameWithoutPrefix(): String {
+    val fullName = shipName ?: return ""
+    val knownPrefixes = buildSet {
+        add("ISS") // Default
+
+        // Add from current fleetData (if any)
+        fleetData?.fleet?.faction?.shipNamePrefix?.let { if (it.isNotBlank()) add(it) }
+        fleetData?.fleet?.faction?.shipNamePrefixOverride?.let { if (it.isNotBlank()) add(it) }
+
+        // Loop through all known factions
+        Global.getSector().allFactions.forEach { faction ->
+            faction?.shipNamePrefix?.let { if (it.isNotBlank()) add(it) }
+            faction?.shipNamePrefixOverride?.let { if (it.isNotBlank()) add(it) }
+        }
+    }.toSet()
+
+    val parts = fullName.trim().split("\\s+".toRegex())
+    return if (parts.size > 1 && knownPrefixes.contains(parts[0])) {
+        parts.drop(1).joinToString(" ")
+    } else {
+        fullName
+    }
 }
 
 fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {

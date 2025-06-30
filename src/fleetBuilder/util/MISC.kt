@@ -16,6 +16,7 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.CampaignState
+import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.codex2.CodexDetailPanel
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
@@ -40,6 +41,7 @@ import org.lazywizard.console.Console
 import org.lazywizard.lazylib.ext.json.optFloat
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.get
+import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
@@ -216,15 +218,11 @@ object MISC {
     }
 
     fun getBorderContainer(): UIPanelAPI? {
-        val newCoreUI = getCoreUI() ?: return null
-
-        return newCoreUI.findChildWithMethod("setBorderInsetLeft") as? UIPanelAPI
+        return getCoreUI()?.findChildWithMethod("setBorderInsetLeft") as? UIPanelAPI
     }
 
     fun getRefitTab(): UIPanelAPI? {
-        val borderContainer = getBorderContainer() ?: return null
-
-        return borderContainer.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
+        return getBorderContainer()?.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
     }
 
     fun getBaseVariantFromRefitTab(): ShipVariantAPI? {
@@ -235,9 +233,16 @@ object MISC {
     }
 
     fun getFleetTab(): UIPanelAPI? {
-        val borderContainer = getBorderContainer() ?: return null
+        return getBorderContainer()?.findChildWithMethod("getFleetPanel") as? UIPanelAPI
+    }
 
-        return borderContainer.findChildWithMethod("getFleetPanel") as? UIPanelAPI
+    fun getFleetPanel(): UIPanelAPI? {
+        return getFleetTab()?.findChildWithMethod("getOther") as? UIPanelAPI
+    }
+
+    fun getFleetSidePanel(): UIPanelAPI? {
+        val children = getFleetTab()?.getChildrenCopy()
+        return children?.find { it.getFieldsMatching(type = UITable::class.java).isNotEmpty() } as? UIPanelAPI
     }
 
     fun getCodexDialog(): CodexDialog? {

@@ -12,6 +12,7 @@ import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.integration.campaign.CampaignAutofitAdder
 import fleetBuilder.integration.campaign.CampaignClipboardHotkeyHandler
 import fleetBuilder.integration.campaign.CampaignCodexButton
+import fleetBuilder.integration.campaign.CampaignFleetScreenFilter
 import fleetBuilder.integration.save.MakeSaveRemovable
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
@@ -45,6 +46,13 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
                     sector.addTransientScript(CampaignCodexButton())
             } else {
                 sector.removeTransientScriptsOfClass(codexClass)
+            }
+            val fleetScreenClass = CampaignFleetScreenFilter::class.java
+            if (ModSettings.fleetScreenFilter) {
+                if (!sector.hasTransientScript(fleetScreenClass))
+                    sector.addTransientScript(CampaignFleetScreenFilter())
+            } else {
+                sector.removeTransientScriptsOfClass(fleetScreenClass)
             }
         }
     }
