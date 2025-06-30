@@ -418,7 +418,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     if (variant != null) {
                         if (variant.hullSpec.builtInMods.contains(hullModID.id)) {
                             if (variant.sModdedBuiltIns.contains(hullModID.id)) {
-                                variant.sModdedBuiltIns.remove(hullModID.id)
                                 variant.completelyRemoveMod(hullModID.id)
                                 refitPanel.invoke("syncWithCurrentVariant")
 
