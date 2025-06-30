@@ -40,15 +40,11 @@ class FleetFilterPanel(
     private var initTick = false
 
     init {
-        val lowestChild = fleetSidePanel.findChildWithMethod("createStoryPointsLabel")
-        val wideChild = fleetSidePanel.getChildrenCopy().minByOrNull { it.x }
 
-        val width = wideChild?.width ?: 32f
+        val width = fleetSidePanel.getChildrenCopy().minByOrNull { it.x }?.width ?: 32f
 
         mainPanel = Global.getSettings().createCustom(width, height, this)
-        if (lowestChild != null)
-            mainPanel.position.belowLeft(lowestChild, yPad)
-        mainPanel.position.setXAlignOffset(xOffset)
+        mainPanel.opacity = 0f
 
         val tooltip = mainPanel.createUIElement(width, height, false)
         textField = tooltip.addTextField(width, height, Fonts.DEFAULT_SMALL, 0f)
@@ -69,7 +65,7 @@ class FleetFilterPanel(
                 mainPanel.position.belowLeft(lowestChild, yPad)
             if (wideChild != null)
                 mainPanel.position.setXAlignOffset(xOffset)
-
+            mainPanel.opacity = 1f
         }
 
         if (textField.hasFocus()) {

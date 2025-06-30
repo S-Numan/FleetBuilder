@@ -44,11 +44,12 @@ class CampaignFleetScreenFilter : EveryFrameScript {
             return
         }
 
-        val fleetSidePanel = MISC.getFleetSidePanel() ?: return
         val fleetPanel = MISC.getFleetPanel() ?: return
 
         //On fleet panel change
         if (prevFleetPanel !== fleetPanel) {
+
+            val fleetSidePanel = MISC.getFleetSidePanel() ?: return
 
             //If FilterPanel exists, remove it
             val currentFilterPanel = fleetSidePanel.getChildrenCopy().find { (it as? CustomPanelAPI)?.plugin as? FleetFilterPanel != null }

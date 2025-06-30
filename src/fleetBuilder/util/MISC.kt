@@ -225,15 +225,21 @@ object MISC {
         return getBorderContainer()?.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
     }
 
-    fun getBaseVariantFromRefitTab(): ShipVariantAPI? {
-        val refitTab = getRefitTab() ?: return null
-        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return null
-        val shipDisplay = refitPanel.invoke("getShipDisplay") as? UIPanelAPI ?: return null
+    fun getRefitPanel(): UIPanelAPI? {
+        return getRefitTab()?.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
+    }
+
+    fun getCurrentVariantInRefitTab(): ShipVariantAPI? {
+        val shipDisplay = getRefitPanel()?.invoke("getShipDisplay") as? UIPanelAPI ?: return null
         return shipDisplay.invoke("getCurrentVariant") as? ShipVariantAPI
     }
 
     fun getFleetTab(): UIPanelAPI? {
-        return getBorderContainer()?.findChildWithMethod("getFleetPanel") as? UIPanelAPI
+        val campaignState = Global.getSector().campaignUI
+        if (campaignState?.getActualCurrentTab() != CoreUITabId.FLEET)
+            return null
+        else
+            return getCoreUI()?.invoke("getCurrentTab") as? UIPanelAPI
     }
 
     fun getFleetPanel(): UIPanelAPI? {

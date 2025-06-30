@@ -34,7 +34,10 @@ Fleet screen: Add the copied variant/member/officer to your fleet
 Campaign map: Spawn fleet in the clipboard into the campaign
 
 CTRL + D in
-Codex: Adds the codex entry you’re looking at to your fleet.",,,
+Codex: Adds the codex entry you’re looking at to your fleet.
+
+Right Click:
+HullMod in refit screen: Removes the hullmod. Even if it’s an SMod, or a built in SMod.",,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,

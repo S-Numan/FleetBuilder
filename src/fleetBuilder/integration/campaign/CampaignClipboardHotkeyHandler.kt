@@ -1,5 +1,7 @@
 package fleetBuilder.integration.campaign
 
+import MagicLib.height
+import MagicLib.width
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
@@ -12,11 +14,14 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
+import com.fs.starfarer.api.loading.HullModSpecAPI
+import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
+import com.fs.starfarer.coreui.refit.ModWidget
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.FleetSerialization
@@ -28,11 +33,18 @@ import fleetBuilder.util.ClipboardUtil
 import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.campaignPaste
 import fleetBuilder.util.MISC.fleetPaste
+import fleetBuilder.util.MISC.showMessage
+import fleetBuilder.util.completelyRemoveMod
+import fleetBuilder.util.findChildWithMethod
 import fleetBuilder.util.getActualCurrentTab
+import fleetBuilder.util.getChildrenCopy
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
+import org.lwjgl.input.Mouse
+import org.lwjgl.util.vector.Vector2f
+import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
@@ -77,6 +89,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         } else if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             if (event.isCtrlDown && event.isLMBDownEvent)
                 handleRefitMouseEvents(event)
+            else if (event.isRMBDownEvent)
+                handleRefitRemoveHullMod(event)
         } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
             handleFleetMouseEvents(event, sector)
         }
@@ -153,7 +167,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleRefitCopy(event: InputEventAPI) {
 
-        val baseVariant = MISC.getBaseVariantFromRefitTab() ?: return
+        val baseVariant = MISC.getCurrentVariantInRefitTab() ?: return
 
         val variantToSave = baseVariant.clone()
         variantToSave.hullVariantId = VariantLib.makeVariantID(baseVariant)
@@ -353,6 +367,78 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             ClipboardUtil.setClipboardText(json.toString(4))
             MISC.showMessage("Officer copied to clipboard")
             event.consume()
+        } catch (e: Exception) {
+            MISC.showError("FleetBuilder hotkey failed", e)
+        }
+    }
+
+    private fun handleRefitRemoveHullMod(event: InputEventAPI) {
+        try {
+            val refitTab = MISC.getRefitTab() ?: return
+            //val refitTabChildren = refitTab.invoke("getChildrenCopy") as? MutableList<*> ?: return
+            val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
+            val children = refitPanel?.getChildrenCopy() ?: return
+            var desiredChild: UIPanelAPI? = null
+            children.forEach { child ->
+                var yup = false
+
+                val panel = child as? UIPanelAPI
+                val childsChildren = panel?.getChildrenCopy()
+                childsChildren?.forEach { childChildChild ->
+                    if (childChildChild.getMethodsMatching("removeNotApplicableMods").isNotEmpty()) {
+                        yup = true
+                        return@forEach
+                    }
+                }
+                if (yup) {
+                    desiredChild = child as? UIPanelAPI
+                    return@forEach
+                }
+            }
+
+            val modWidget = desiredChild?.findChildWithMethod("removeNotApplicableMods") as? ModWidget ?: return
+            val modWidgetModIcons = modWidget.findChildWithMethod("getColumns")
+
+            @Suppress("UNCHECKED_CAST")
+            val items = modWidgetModIcons?.invoke("getItems") as? MutableList<UIPanelAPI?> ?: return
+
+            items.forEach { item ->
+                if (item == null) return@forEach
+                val modIcon = item.findChildWithMethod("getFader") as? ButtonAPI ?: return@forEach
+
+                val modIconVec = Vector2f(modIcon.position.x, modIcon.position.y)
+                if (Mouse.getX() >= modIconVec.x && Mouse.getX() <= modIconVec.x + modIcon.width &&
+                    Mouse.getY() >= modIconVec.y && Mouse.getY() <= modIconVec.y + modIcon.height
+                ) {
+                    val hullModField = item.getFieldsMatching(fieldAssignableTo = HullModSpecAPI::class.java).firstOrNull()
+                        ?: return@forEach
+                    val hullModID = item.get(hullModField.name) as? HullModSpecAPI ?: return@forEach
+
+                    val variant = MISC.getCurrentVariantInRefitTab()
+                    if (variant != null) {
+                        if (variant.hullSpec.builtInMods.contains(hullModID.id)) {
+                            if (variant.sModdedBuiltIns.contains(hullModID.id)) {
+                                variant.sModdedBuiltIns.remove(hullModID.id)
+                                variant.completelyRemoveMod(hullModID.id)
+                                refitPanel.invoke("syncWithCurrentVariant")
+
+                                showMessage("Removed sModdedBuiltIn in with ID '$hullModID'")
+                            } else {
+                                showMessage("The hullmod '${hullModID.id}' is built into the hullspec, it cannot be removed from the variant $hullModID")
+                            }
+                        } else {
+                            variant.completelyRemoveMod(hullModID.id)
+                            refitPanel.invoke("syncWithCurrentVariant")
+
+                            showMessage("Removed hullmod with ID '$hullModID'")
+                        }
+
+                        event.consume()
+                        return
+                    }
+                }
+            }
+
         } catch (e: Exception) {
             MISC.showError("FleetBuilder hotkey failed", e)
         }
