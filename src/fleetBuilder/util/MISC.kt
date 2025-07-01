@@ -252,6 +252,9 @@ object MISC {
     }
 
     fun getCodexDialog(): CodexDialog? {
+        //if (!Global.getSettings().isShowingCodex) // This does NOT work as of 0.98
+        //    return null
+
         var codex: CodexDialog?
 
         val gameState = Global.getCurrentState()
