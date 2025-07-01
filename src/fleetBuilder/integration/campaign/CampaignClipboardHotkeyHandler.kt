@@ -89,7 +89,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         } else if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             if (event.isCtrlDown && event.isLMBDownEvent)
                 handleRefitMouseEvents(event)
-            else if (event.isRMBDownEvent)
+            else if (event.isRMBDownEvent && Global.getSettings().isDevMode)
                 handleRefitRemoveHullMod(event)
         } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
             handleFleetMouseEvents(event, sector)
@@ -308,7 +308,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                 val isShuttle = mouseOverMember.variant.hasHullMod(ModSettings.commandShuttleId)
 
-                if (event.isLMBDownEvent && isShuttle) {
+                if (event.isLMBDownEvent && isShuttle) { // Eat attempt to open captain picker dialog for shuttle. The shuttle is player only
                     event.consume()
                     return
                 }

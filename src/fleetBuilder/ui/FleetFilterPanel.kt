@@ -107,14 +107,15 @@ class FleetFilterPanel(
             fleetGrid.invoke("collapseEmptySlots")
         }
 
-
         prevString = textField.text
     }
 
     private fun FleetMemberAPI.matchesDescription(desc: String): Boolean {
         return when {
-            hullSpec.getCompatibleDLessHullId().lowercase().contains(desc) -> true
+            //hullSpec.getCompatibleDLessHullId().lowercase().contains(desc) -> true
+            hullSpec.hullName.lowercase().contains(desc) -> true
             getShipNameWithoutPrefix().lowercase().startsWith(desc) -> true
+            hullSpec.manufacturer.lowercase().startsWith(desc) -> true
             isCivilian && "civilian".startsWith(desc) -> true
             isCarrier && "carrier".startsWith(desc) -> true
             isPhaseShip && "phase".startsWith(desc) -> true
