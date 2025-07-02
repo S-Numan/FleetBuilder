@@ -203,6 +203,9 @@ object FleetSerialization {
         var commanderJson: JSONObject? = null
 
         for (member in fleet.membersListCopy) {
+            if (member.variant.hasHullMod(commandShuttleId))
+                continue
+
             if (includeModInfo)
                 addVariantSourceModsToJson(member.variant, fleetJson, settings.memberSettings.variantSettings)
 
@@ -254,15 +257,17 @@ object FleetSerialization {
             memberJson.remove("variant")
             memberJson.put("variantId", uniqueVariantId)
 
-            if (isCommander && settings.includeCommander && settings.includeCommanderAsOfficer) {
-                commanderJson = savePersonToJson(
-                    fleet.commander,
-                    settings.memberSettings.personSettings
-                )
+            if (isCommander) {
+                if (!settings.includeCommander && settings.includeCommanderAsOfficer) {
+                    membersJson.put(memberJson)
+                } else if (settings.includeCommander && settings.includeCommanderAsOfficer) {
+                    commanderJson = savePersonToJson(
+                        fleet.commander,
+                        settings.memberSettings.personSettings
+                    )
 
-                if (!member.variant.hasHullMod(commandShuttleId))
                     commanderJson.put("member", memberJson)
-
+                }
             } else {
                 membersJson.put(memberJson)
             }
