@@ -502,10 +502,14 @@ internal object AutofitPanel {
             var weaponsWithSize = mutableMapOf<String, Pair<Int, WeaponAPI.WeaponSize>>()
             for (slot in (variant as ShipVariantAPI).hullSpec.builtInWeapons) {
                 val spec = Global.getSettings().getWeaponSpec(slot.value)
-
                 if (spec.type == WeaponAPI.WeaponType.DECORATIVE) continue
 
-                weaponsWithSize.merge(spec.weaponName, 1 to spec.size) { old, _ ->
+                val weaponName = if (ModSettings.showDebug)
+                    "${spec.weaponName} (${spec.weaponId} $slot)"
+                else
+                    spec.weaponName
+
+                weaponsWithSize.merge(weaponName, 1 to spec.size) { old, _ ->
                     old.copy(first = old.first + 1)
                 }
             }
@@ -517,11 +521,11 @@ internal object AutofitPanel {
             weaponsWithSize = mutableMapOf()
             for (slot in variant.nonBuiltInWeaponSlots) {
                 val spec = variant.getWeaponSpec(slot)
-                val weaponName = if (ModSettings.showDebug) {
-                    "${spec.weaponName} '${spec.weaponId}' '$slot'"
-                } else {
+
+                val weaponName = if (ModSettings.showDebug)
+                    "${spec.weaponName} (${spec.weaponId} $slot)"
+                else
                     spec.weaponName
-                }
 
                 weaponsWithSize.merge(weaponName, 1 to spec.size) { old, _ ->
                     old.copy(first = old.first + 1)
@@ -536,18 +540,26 @@ internal object AutofitPanel {
 
             (variant as ShipVariantAPI).hullSpec.builtInWings.forEachIndexed { index, wingId ->
                 val spec = (variant as ShipVariantAPI).getWing(index)
-                val wingName = if (ModSettings.showDebug) {
-                    "${spec.wingName} '${spec.id}' '$index'"
-                } else {
+
+                val wingName = if (ModSettings.showDebug)
+                    "${spec.wingName} (${spec.id})"
+                else
                     spec.wingName
-                }
+
                 if (spec != null) {
                     _builtinwings.merge(wingName, 1, Int::plus)
                 }
             }
             var _wings: MutableMap<String, Int> = mutableMapOf()
             for (wing in variant.nonBuiltInWings) {
-                _wings.merge(Global.getSettings().getFighterWingSpec(wing).wingName, 1, Int::plus)
+                val spec = Global.getSettings().getFighterWingSpec(wing)
+
+                val wingName = if (ModSettings.showDebug)
+                    "${spec.wingName} (${spec.id})"
+                else
+                    spec.wingName
+
+                _wings.merge(wingName, 1, Int::plus)
             }
 
             tooltip.addPara("Armaments:", 10f)
@@ -759,7 +771,7 @@ internal object AutofitPanel {
             if (ModSettings.showDebug) {
                 tooltip.addPara("\n\nDEBUG: VariantId = ${variant.hullVariantId}", 2f)
                 tooltip.addPara("\nDEBUG: Tags = ${variant.tags}", 2f)
-                tooltip.addPara("\n\nDEBUG: WeaponGroups: ", 2f)
+                /*tooltip.addPara("\n\nDEBUG: WeaponGroups: ", 2f)
                 for (weaponGroup in variant.weaponGroups.withIndex()) {
                     tooltip.addPara(
                         "\nWeaponGroup[${weaponGroup.index}] mode:${weaponGroup.value.type}     autofire:${weaponGroup.value.isAutofireOnByDefault}",
@@ -772,8 +784,7 @@ internal object AutofitPanel {
                         else
                             tooltip.addPara("Weapon on slot null", 0f)
                     }
-
-                }
+                }*/
             }
         }
     }
