@@ -183,6 +183,7 @@ object MISC {
             printIfNotEmpty("Missing weapons", missingElements.weaponIds)
             printIfNotEmpty("Missing wings", missingElements.wingIds)
             printIfNotEmpty("Missing hullmods", missingElements.hullModIds)
+            printIfNotEmpty("Missing skills", missingElements.skillIds)
 
             val fullMessage = missingMessages.joinToString(separator = "\n")
             showError(defaultShortMessage, fullMessage)
