@@ -98,7 +98,10 @@ class FleetFilterPanel(
             val itemsToRemove = mutableListOf<UIPanelAPI?>()
             items.forEach { item ->
                 val member = item?.invoke("getMember") as? FleetMemberAPI ?: return@forEach
-                if (!member.matchesDescription(desc))
+                if (desc.startsWith("-")) {
+                    if (member.matchesDescription(desc.removePrefix("-")))
+                        itemsToRemove.add(item)
+                } else if (!member.matchesDescription(desc))
                     itemsToRemove.add(item)
             }
 
