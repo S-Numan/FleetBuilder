@@ -56,6 +56,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
         val sector = Global.getSector() ?: return
+        if (!sector.isPaused) return
         val ui = sector.campaignUI ?: return
 
         events.forEach { event ->
@@ -406,9 +407,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 if (item == null) return@forEach
                 val modIcon = item.findChildWithMethod("getFader") as? ButtonAPI ?: return@forEach
 
+                val mouseX = Global.getSettings().mouseX
+                val mouseY = Global.getSettings().mouseY
                 val modIconVec = Vector2f(modIcon.position.x, modIcon.position.y)
-                if (Mouse.getX() >= modIconVec.x && Mouse.getX() <= modIconVec.x + modIcon.width &&
-                    Mouse.getY() >= modIconVec.y && Mouse.getY() <= modIconVec.y + modIcon.height
+                if (mouseX >= modIconVec.x && mouseX <= modIconVec.x + modIcon.width &&
+                    mouseY >= modIconVec.y && mouseY <= modIconVec.y + modIcon.height
                 ) {
                     val hullModField = item.getFieldsMatching(fieldAssignableTo = HullModSpecAPI::class.java).firstOrNull()
                         ?: return@forEach
@@ -454,7 +457,7 @@ fun handleHotkeyModePaste(
     json: JSONObject
 ): Boolean {
     if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-        return fleetPaste(sector, json)
+        fleetPaste(sector, json)
     }
 
     // Handle campaign map paste (no dialog/menu showing)
@@ -462,7 +465,7 @@ fun handleHotkeyModePaste(
         !ui.isShowingDialog &&
         !ui.isShowingMenu
     ) {
-        return campaignPaste(sector, json)
+        campaignPaste(sector, json)
     }
 
     return false

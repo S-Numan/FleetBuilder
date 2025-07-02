@@ -5,6 +5,7 @@ import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
+import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
 import org.magiclib.kotlin.setMentored
@@ -13,7 +14,13 @@ import org.magiclib.kotlin.setMercenary
 object PersonSerialization {
 
     fun getPersonFromJson(json: JSONObject): PersonAPI {
-        val person = Global.getFactory().createPerson()
+        return getPersonFromJsonWithMissing(json).first
+    }
+
+    fun getPersonFromJsonWithMissing(json: JSONObject): Pair<PersonAPI, MissingElements> {
+        val missing = MissingElements()
+
+        val person = Global.getSettings().createPerson()
         val aiCoreId = json.optString("aicoreid", "")
 
         if (aiCoreId.isNotEmpty())
@@ -31,9 +38,9 @@ object PersonSerialization {
         // Validate and set portrait if it exists
         val portrait = json.optString("portrait", "")
         try {
-            if (portrait.isNotEmpty() && Global.getSettings().getSprite(portrait) != null) {
+            if (portrait.isNotEmpty() && Global.getSettings().getSprite(portrait) != null)
                 person.portraitSprite = portrait
-            }
+
         } catch (_: Exception) {
             // Silently skip invalid portrait
         }
@@ -60,8 +67,12 @@ object PersonSerialization {
             while (keys.hasNext()) {
                 val skillId = keys.next().toString()
                 val level = skillsObject.optInt(skillId, 0).coerceIn(0, 2)
-                if (level > 0 && Global.getSettings().skillIds.contains(skillId)) {
-                    person.stats.setSkillLevel(skillId, level.toFloat())
+                if (level > 0) {
+                    if (Global.getSettings().skillIds.contains(skillId)) {
+                        person.stats.setSkillLevel(skillId, level.toFloat())
+                    } else {
+                        missing.skillIds.add(skillId)
+                    }
                 }
             }
         }
@@ -86,7 +97,7 @@ object PersonSerialization {
 
         loadLegacyMentorMercenaryUnremovable(person, json)
 
-        return person
+        return Pair(person, missing)
     }
 
     private fun loadLegacyMentorMercenaryUnremovable(person: PersonAPI, json: JSONObject) {

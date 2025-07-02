@@ -6,11 +6,12 @@ data class MissingElements(
     val wingIds: MutableSet<String> = mutableSetOf(),
     val hullModIds: MutableSet<String> = mutableSetOf(),
     val hullIds: MutableSet<String> = mutableSetOf(),
+    val skillIds: MutableSet<String> = mutableSetOf(),
     val gameMods: MutableSet<Triple<String, String, String>> = mutableSetOf()//ID, name, version
 ) {
     // Function to check if anything was missing from the variant.
     fun hasMissing(): Boolean {
-        return weaponIds.isNotEmpty() || wingIds.isNotEmpty() || hullModIds.isNotEmpty() || hullIds.isNotEmpty()
+        return weaponIds.isNotEmpty() || wingIds.isNotEmpty() || hullModIds.isNotEmpty() || hullIds.isNotEmpty() || skillIds.isNotEmpty()
     }
 
     fun add(other: MissingElements) {
@@ -19,5 +20,6 @@ data class MissingElements(
         hullModIds.addAll(other.hullModIds)
         hullIds.addAll(other.hullIds)
         gameMods.addAll(other.gameMods)
+        skillIds.addAll(other.skillIds)
     }
 }

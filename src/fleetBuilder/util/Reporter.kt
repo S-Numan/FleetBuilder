@@ -47,6 +47,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
             } else {
                 sector.removeTransientScriptsOfClass(codexClass)
             }
+
             val fleetScreenClass = CampaignFleetScreenFilter::class.java
             if (ModSettings.fleetScreenFilter) {
                 if (!sector.hasTransientScript(fleetScreenClass))

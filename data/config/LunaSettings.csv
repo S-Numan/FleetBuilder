@@ -26,6 +26,10 @@ Codex: Copies variant/member
 
 CTRL + V in
 Refit Screen: Add variant in clipboard to the corresponding ship hull’s autofit menu.
+Simulator: Add the copied fleet/member/variant to the simulator reserves.
+
+CTRL + D in
+Simulator: Add the player’s fleet into simulator reserves. To fight a variant from your own fleet.
 
 THE BELOW REQUIRES DEV MODE TO BE ON
 

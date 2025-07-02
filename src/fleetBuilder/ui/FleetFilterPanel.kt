@@ -74,7 +74,7 @@ class FleetFilterPanel(
                 prevString = ""
             } else {
                 //Unfocus textField if mouse is inside fleetPanel
-                if (Mouse.getX() > fleetPanel.x) {
+                if (Global.getSettings().mouseX > fleetPanel.x) {
                     textField.invoke("releaseFocus", null)
                 }
             }

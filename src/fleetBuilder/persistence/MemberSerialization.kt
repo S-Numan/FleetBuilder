@@ -5,6 +5,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
+import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
@@ -47,7 +48,7 @@ object MemberSerialization {
 
         // Handle officer if included and present
         if (includeOfficer) {
-            setMemberOfficerFromJson(json, member)
+            setMemberOfficerFromJson(json, member, missingElements)
         }
 
         return Pair(member, missingElements)
@@ -69,10 +70,13 @@ object MemberSerialization {
             member.repairTracker.isMothballed = true
     }
 
-    fun setMemberOfficerFromJson(json: JSONObject, member: FleetMemberAPI) {
+    fun setMemberOfficerFromJson(json: JSONObject, member: FleetMemberAPI, missingElements: MissingElements) {
         val officerJson = json.optJSONObject("officer")
         if (officerJson != null) {
-            member.captain = getPersonFromJson(officerJson)
+            val (officer, personMissing) = getPersonFromJsonWithMissing(officerJson)
+            missingElements.add(personMissing)
+
+            member.captain = officer
         }
     }
 

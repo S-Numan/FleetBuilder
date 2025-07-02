@@ -17,6 +17,7 @@ internal class CampaignAutofitAdder : CampaignInputListener {
 
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
         val sector = Global.getSector() ?: return
+        if (!sector.isPaused) return
 
         //if (!sector.isPaused) return //Return if not paused
         val ui = sector.campaignUI ?: return
