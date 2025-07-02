@@ -489,7 +489,13 @@ internal object AutofitPanel {
         )
         val spaces = "                    "
 
-        scrollerTooltip.addTooltip(selectorPanel, TooltipMakerAPI.TooltipLocation.BELOW, 350f) { tooltip ->
+        val width = if (ModSettings.showDebug) {
+            400f
+        } else {
+            350f
+        }
+
+        scrollerTooltip.addTooltip(selectorPanel, TooltipMakerAPI.TooltipLocation.BELOW, width) { tooltip ->
             tooltip.addTitle(variant.displayName + " Variant")
 
 
@@ -511,7 +517,13 @@ internal object AutofitPanel {
             weaponsWithSize = mutableMapOf()
             for (slot in variant.nonBuiltInWeaponSlots) {
                 val spec = variant.getWeaponSpec(slot)
-                weaponsWithSize.merge(spec.weaponName, 1 to spec.size) { old, _ ->
+                val weaponName = if (ModSettings.showDebug) {
+                    "${spec.weaponName} '${spec.weaponId}' '$slot'"
+                } else {
+                    spec.weaponName
+                }
+
+                weaponsWithSize.merge(weaponName, 1 to spec.size) { old, _ ->
                     old.copy(first = old.first + 1)
                 }
             }
@@ -523,9 +535,14 @@ internal object AutofitPanel {
             var _builtinwings: MutableMap<String, Int> = mutableMapOf()
 
             (variant as ShipVariantAPI).hullSpec.builtInWings.forEachIndexed { index, wingId ->
-                val wing = (variant as ShipVariantAPI).getWing(index)
-                if (wing != null) {
-                    _builtinwings.merge(wing.wingName, 1, Int::plus)
+                val spec = (variant as ShipVariantAPI).getWing(index)
+                val wingName = if (ModSettings.showDebug) {
+                    "${spec.wingName} '${spec.id}' '$index'"
+                } else {
+                    spec.wingName
+                }
+                if (spec != null) {
+                    _builtinwings.merge(wingName, 1, Int::plus)
                 }
             }
             var _wings: MutableMap<String, Int> = mutableMapOf()
@@ -576,7 +593,11 @@ internal object AutofitPanel {
             val hiddenMods = mutableListOf<String>()
 
             for (mod in allMods) {
-                val name = mod.displayName
+                val name = if (ModSettings.showDebug) {
+                    mod.displayName + " '${mod.id}'"
+                } else {
+                    mod.displayName
+                }
 
                 if ((variant as ShipVariantAPI).hullSpec.builtInMods.contains(mod.id)) {
                     if (allDMods.contains(mod.id) && !variant.permaMods.contains(mod.id)) {//DMod that the hull has, but the variant doesn't, means it's a DMOD built into the hull
