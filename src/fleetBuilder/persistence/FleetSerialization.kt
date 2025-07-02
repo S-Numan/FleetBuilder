@@ -5,12 +5,10 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.MemberSerialization.setMemberOfficerFromJson
 import fleetBuilder.persistence.MemberSerialization.setMemberValuesFromJson
-import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
@@ -21,7 +19,7 @@ import fleetBuilder.util.MISC.showError
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Random
+import java.util.*
 
 
 object FleetSerialization {

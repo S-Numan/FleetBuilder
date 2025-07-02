@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.LocationAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.config.ModSettings.commandShuttleId
-import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.updateFleetPanelContents
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 

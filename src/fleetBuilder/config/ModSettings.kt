@@ -12,7 +12,6 @@ import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.config.ModSettings.fleetScreenFilter
 import fleetBuilder.config.ModSettings.forceAutofit
 import fleetBuilder.config.ModSettings.importPrefix
-import fleetBuilder.config.ModSettings.isConsoleModEnabled
 import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.config.ModSettings.saveDMods
