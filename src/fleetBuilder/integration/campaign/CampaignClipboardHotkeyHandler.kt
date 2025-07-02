@@ -56,7 +56,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
         val sector = Global.getSector() ?: return
-        if (!sector.isPaused) return
         val ui = sector.campaignUI ?: return
 
         events.forEach { event ->
