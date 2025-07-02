@@ -9,8 +9,10 @@ import fleetBuilder.config.ModSettings.devModeCodexButtonEnabled
 import fleetBuilder.config.ModSettings.dontForceClearDMods
 import fleetBuilder.config.ModSettings.dontForceClearSMods
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
+import fleetBuilder.config.ModSettings.fleetScreenFilter
 import fleetBuilder.config.ModSettings.forceAutofit
 import fleetBuilder.config.ModSettings.importPrefix
+import fleetBuilder.config.ModSettings.isConsoleModEnabled
 import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.config.ModSettings.saveDMods
@@ -72,6 +74,7 @@ internal class ModSettingsListener : LunaSettingsListener {
         backupSave = getBoolean(modID, "backupSave")!!
         fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
         devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
+        fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
 
         autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
 
@@ -90,7 +93,12 @@ object ModSettings {
         if (Global.getSettings().modManager.isModEnabled("lunalib"))
             LunaSettings.addSettingsListener(ModSettingsListener())
 
+        isConsoleModEnabled = Global.getSettings().modManager.isModEnabled("lw_console")
 
+        setNeverSaveHullmods()
+    }
+
+    private fun setNeverSaveHullmods() {
         val neverHullModsPath = "${PRIMARYDIR}HullModsToNeverSave"
         val neverHullModsJson = try {
             if (Global.getSettings().fileExistsInCommon(neverHullModsPath)) {
@@ -169,5 +177,9 @@ object ModSettings {
 
     var devModeCodexButtonEnabled = true
 
+    var fleetScreenFilter = false
+
     val commandShuttleId = "FB_commandershuttle"
+
+    var isConsoleModEnabled = false
 }

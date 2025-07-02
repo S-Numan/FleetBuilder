@@ -1,12 +1,20 @@
 fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
 ,,,,,,,,
-autofitMenuEnabled,Autofit Menu,Boolean,true,,"If the autofit menu provided by this mod is enabled.
-See the Autofit Menu tab for more settings.",,,
+autofitMenuEnabled,Autofit Menu,Boolean,true,,"A custom autofit menu for the refit screen with unlimited variant slots that stay between saves.
+WIP
+See the Autofit Menu tab for more.",,,
 devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When dev mode is enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
 Hold Shift or Alt to multiply the added value by 10
 Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,
-fleetClipboardHotkeyHandler,Fleet Clipboard Hotkey Handler,Boolean,true,,If hotkeys for copying and pasting fleet or variant data are enabled.,,,
-copyText,Copy Text Field,Text,"Hotkeys:
+fleetScreenFilter,Fleet Screen Filter,Boolean,false,,"A clickable filter in the fleet screen that lets you type in keywords to filter ships.
+Aside entering hull names such as “sunder”, you can enter keywords such as “phase” “carrier” “destroyer” “civilian” “automated”
+It will hide any ships that do not match the entered filters.
+Prepend your entry with a dash (-) to hide ships that DO match the entry
+
+Unlike other storage-related mods, this does not modify your fleet in any way; it is entirely UI-based.",,,
+fleetClipboardHotkeyHandler,Fleet Clipboard Hotkey Handler,Boolean,true,,"Adds a bunch of useful hotkeys in many places.
+
+Hotkeys:
 
 CTRL Click
 Fleet member: Copies clicked member
@@ -20,9 +28,22 @@ Codex: Copies variant/member
 
 CTRL + V in
 Refit Screen: Add variant in clipboard to the corresponding ship hull’s autofit menu.
+Simulator: Add the copied fleet/member/variant to the simulator reserves.
 
+CTRL + D in
+Simulator: Add the player’s fleet into simulator reserves. To fight a variant from your own fleet.
 
-See the Dev tab for fun things you can do.",,,,,
+THE BELOW REQUIRES DEV MODE TO BE ON
+
+CTRL + V in
+Fleet screen: Add the copied variant/member/officer to your fleet
+Campaign map: Spawn fleet in the clipboard into the campaign
+
+CTRL + D in
+Codex: Adds the codex entry you’re looking at to your fleet.
+
+Right Click:
+HullMod in refit screen: Removes the hullmod. Even if it’s an SMod, or a built in SMod.",,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
@@ -60,14 +81,7 @@ This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave lastSave” in the console to load it. (case sensitive)",,,Misc
 ,,,,,,,,
 devHeader,Developer Header,Header,Developer Options,,,,,Dev
-devTextField,Dev Text Field,Text,"Requires dev mode to be true.
-
-CTRL + V in
-Fleet screen: Add the copied variant/member/officer to your fleet
-Campaign map: Spawn fleet in the clipboard into the campaign
-
-CTRL + D in
-Codex: Adds the codex entry you’re looking at to your fleet.",,,,,Dev
+,,,,,,,,
 randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, automatically randomizes the ship name and officer name/portrait if present when pasting an element with them.
 
 This avoids pasted members looking like a clone army, and makes them look like a bunch of ships/officers that happen to have the same loadout instead",,,Dev

@@ -11,6 +11,7 @@ import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.MemberSerialization.setMemberOfficerFromJson
 import fleetBuilder.persistence.MemberSerialization.setMemberValuesFromJson
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
+import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
@@ -20,6 +21,7 @@ import fleetBuilder.util.MISC.showError
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Random
 
 
 object FleetSerialization {
@@ -62,7 +64,9 @@ object FleetSerialization {
         }
 
         json.optJSONObject("commander")?.let { commanderJson ->
-            val commander = getPersonFromJson(commanderJson)
+            val (commander, personMissing) = getPersonFromJsonWithMissing(commanderJson)
+            missingElements.add(personMissing)
+
             if (includeCommander)
                 campFleet.commander = commander
 
@@ -118,17 +122,19 @@ object FleetSerialization {
                     fleet.addFleetMember(member)
 
                     if (includeOfficers)
-                        setMemberOfficerFromJson(memberJson, member)
+                        setMemberOfficerFromJson(memberJson, member, missingElements)
 
                     member.captain?.let {
                         if (!it.isAICore) {
                             if (it.isDefault) {
-                                if (includeNoOfficerPersonality) {//Assign doctrinal aggression to non officered ships
+                                if (includeNoOfficerPersonality//Assign doctrinal aggression to non officered ships
+                                    && Global.getSector().playerFleet !== fleet.fleet//Don't do this to the player's fleet. The player faction's aggresion doctrine should be used instead.
+                                ) {
                                     val personality = when (aggressionDoctrine) {
                                         1 -> Personalities.CAUTIOUS
                                         2 -> Personalities.STEADY
                                         3 -> Personalities.AGGRESSIVE
-                                        4 -> if (Misc.random.nextBoolean()) Personalities.AGGRESSIVE else Personalities.RECKLESS
+                                        4 -> if (Random().nextBoolean()) Personalities.AGGRESSIVE else Personalities.RECKLESS
                                         5 -> Personalities.RECKLESS
                                         else -> Personalities.STEADY // fallback/default
                                     }
@@ -149,7 +155,9 @@ object FleetSerialization {
                 for (i in 0 until officers.length()) {
                     officers.optJSONObject(i)?.let { officerJson ->
                         try {
-                            val officer = getPersonFromJson(officerJson)
+                            val (officer, personMissing) = getPersonFromJsonWithMissing(officerJson)
+                            missingElements.add(personMissing)
+
                             fleet.addOfficer(officer)
                         } catch (e: Exception) {
                             showError("Error parsing idle officer at index $i", e)
@@ -195,6 +203,9 @@ object FleetSerialization {
         var commanderJson: JSONObject? = null
 
         for (member in fleet.membersListCopy) {
+            if (member.variant.hasHullMod(commandShuttleId))
+                continue
+
             if (includeModInfo)
                 addVariantSourceModsToJson(member.variant, fleetJson, settings.memberSettings.variantSettings)
 
@@ -246,15 +257,17 @@ object FleetSerialization {
             memberJson.remove("variant")
             memberJson.put("variantId", uniqueVariantId)
 
-            if (isCommander && settings.includeCommander && settings.includeCommanderAsOfficer) {
-                commanderJson = savePersonToJson(
-                    fleet.commander,
-                    settings.memberSettings.personSettings
-                )
+            if (isCommander) {
+                if (!settings.includeCommander && settings.includeCommanderAsOfficer) {
+                    membersJson.put(memberJson)
+                } else if (settings.includeCommander && settings.includeCommanderAsOfficer) {
+                    commanderJson = savePersonToJson(
+                        fleet.commander,
+                        settings.memberSettings.personSettings
+                    )
 
-                if (!member.variant.hasHullMod(commandShuttleId))
                     commanderJson.put("member", memberJson)
-
+                }
             } else {
                 membersJson.put(memberJson)
             }

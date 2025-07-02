@@ -1,4 +1,4 @@
-package fleetBuilder.hullMods
+package fleetBuilder.features
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
@@ -9,13 +9,12 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
-import fleetBuilder.config.ModSettings.commandShuttleId
+import fleetBuilder.config.ModSettings
+import fleetBuilder.features.CommanderShuttle.playerShuttleExists
 import fleetBuilder.util.MISC
 import java.awt.Color
 
-
 class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
-
     override fun isDone(): Boolean {
         return false
     }
@@ -28,7 +27,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
 
     fun reportCurrentLocationChanged(prev: LocationAPI, curr: LocationAPI) {
 
-        if (MISC.playerShuttleExists() && !prev.isHyperspace && curr.isHyperspace) {
+        if (playerShuttleExists() && !prev.isHyperspace && curr.isHyperspace) {
             prevLocationSetter = prev
         }
 
@@ -53,7 +52,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
         }
 
         for (member in Global.getSector().playerFleet.fleetData.membersListCopy) {
-            if (member.repairTracker.isMothballed && member.variant.hasHullMod(commandShuttleId)) {
+            if (member.repairTracker.isMothballed && member.variant.hasHullMod(ModSettings.commandShuttleId)) {
                 member.repairTracker.isMothballed = false
                 member.repairTracker.cr = member.repairTracker.maxCR
                 member.stats.fuelUseMod.flatBonus = 0f
@@ -67,7 +66,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
         val playerFleet = Global.getSector().playerFleet
 
         if (playerFleet.fleetData.membersListCopy.size == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(
-                commandShuttleId
+                ModSettings.commandShuttleId
             )
         ) {
             //No getting around jumping with only the command shuttle
@@ -94,7 +93,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
         }
 
         for (member in playerFleet.fleetData.membersListCopy) {
-            if (member.variant.hasHullMod(commandShuttleId)) {
+            if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
                 member.repairTracker.isMothballed = true
             }
         }
@@ -118,7 +117,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
     override fun reportPlayerMarketTransaction(transaction: PlayerMarketTransaction) {
         if (transaction.shipsSold.isNotEmpty()) {
             val member = transaction.shipsSold.first().member
-            if (member.variant.hasHullMod(commandShuttleId)) {
+            if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
                 transaction.submarket.cargo.mothballedShips.removeFleetMember(member)
 
                 var message = "You cannot transfer your command shuttle."

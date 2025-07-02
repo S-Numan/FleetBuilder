@@ -4,6 +4,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
+import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -11,32 +12,35 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
-import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.CampaignState
+import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.codex2.CodexDetailPanel
 import com.fs.starfarer.codex2.CodexDialog
+import com.fs.starfarer.combat.CombatState
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
-import fleetBuilder.config.ModSettings.commandShuttleId
+import fleetBuilder.config.ModSettings.isConsoleModEnabled
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
-import fleetBuilder.hullMods.CommanderShuttleListener
 import fleetBuilder.persistence.CargoSerialization.getCargoFromJson
 import fleetBuilder.persistence.CargoSerialization.saveCargoToJson
 import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
 import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
+import fleetBuilder.persistence.MemberSerialization
 import fleetBuilder.persistence.MemberSerialization.getMemberFromJsonWithMissing
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
+import fleetBuilder.persistence.PersonSerialization
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
+import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
+import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
-import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.variants.MissingElements
 import org.apache.log4j.Level
 import org.json.JSONArray
@@ -45,6 +49,7 @@ import org.lazywizard.console.Console
 import org.lazywizard.lazylib.ext.json.optFloat
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.get
+import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
@@ -56,7 +61,7 @@ object MISC {
 
         showMessage(short, Color.RED)
 
-        if (Global.getSettings().modManager.isModEnabled("lw_console")) {
+        if (isConsoleModEnabled) {
             if (e != null) {
                 Console.showException(full, e)
             } else {
@@ -145,26 +150,6 @@ object MISC {
     ): CampaignFleetAPI {
         val fleet = Global.getFactory().createEmptyFleet(faction, FleetTypes.TASK_FORCE, true)
 
-        getFleetFromJsonComplainIfMissing(
-            json,
-            fleet,
-            includeOfficers,
-            includeCommander,
-            includeNoOfficerPersonality,
-            setFlagship
-        )
-
-        return fleet
-    }
-
-    fun getFleetFromJsonComplainIfMissing(
-        json: JSONObject,
-        fleet: CampaignFleetAPI,
-        includeOfficers: Boolean = true,
-        includeCommander: Boolean = true,
-        includeNoOfficerPersonality: Boolean = true,
-        setFlagship: Boolean = true
-    ) {
         val missingElements = getFleetFromJson(
             json,
             fleet,
@@ -174,12 +159,22 @@ object MISC {
             setFlagship = setFlagship
         )
 
+        reportMissingElements(missingElements)
+
+        return fleet
+    }
+
+    fun reportMissingElements(
+        missingElements: MissingElements,
+        defaultShortMessage: String = "HAD MISSING ELEMENTS: see console for more details"
+    ) {
         if (missingElements.hasMissing()) {
-            showError("FLEET HAD MISSING ELEMENTS")
+            val missingMessages = mutableListOf<String>()
 
             fun printIfNotEmpty(label: String, items: Collection<*>) {
                 if (items.isNotEmpty()) {
-                    Console.showMessage("$label: ${items.joinToString()}")
+                    val message = "$label: ${items.joinToString()}"
+                    missingMessages.add(message)
                 }
             }
 
@@ -188,6 +183,10 @@ object MISC {
             printIfNotEmpty("Missing weapons", missingElements.weaponIds)
             printIfNotEmpty("Missing wings", missingElements.wingIds)
             printIfNotEmpty("Missing hullmods", missingElements.hullModIds)
+            printIfNotEmpty("Missing skills", missingElements.skillIds)
+
+            val fullMessage = missingMessages.joinToString(separator = "\n")
+            showError(defaultShortMessage, fullMessage)
         }
     }
 
@@ -214,38 +213,50 @@ object MISC {
             return (state.invoke("getEncounterDialog")?.let { dialog ->
                 dialog.invoke("getCoreUI") as? UIPanelAPI
             } ?: state.invoke("getCore") as? UIPanelAPI)
-        } else if (state is TitleScreenState) {
+        } else if (state is TitleScreenState || state is CombatState) {
             return state.invoke("getScreenPanel") as? UIPanelAPI
         }
         return null
     }
 
     fun getBorderContainer(): UIPanelAPI? {
-        val newCoreUI = getCoreUI() ?: return null
-
-        return newCoreUI.findChildWithMethod("setBorderInsetLeft") as? UIPanelAPI
+        return getCoreUI()?.findChildWithMethod("setBorderInsetLeft") as? UIPanelAPI
     }
 
     fun getRefitTab(): UIPanelAPI? {
-        val borderContainer = getBorderContainer() ?: return null
-
-        return borderContainer.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
+        return getBorderContainer()?.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
     }
 
-    fun getBaseVariantFromRefitTab(): ShipVariantAPI? {
-        val refitTab = getRefitTab() ?: return null
-        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return null
-        val shipDisplay = refitPanel.invoke("getShipDisplay") as? UIPanelAPI ?: return null
+    fun getRefitPanel(): UIPanelAPI? {
+        return getRefitTab()?.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
+    }
+
+    fun getCurrentVariantInRefitTab(): ShipVariantAPI? {
+        val shipDisplay = getRefitPanel()?.invoke("getShipDisplay") as? UIPanelAPI ?: return null
         return shipDisplay.invoke("getCurrentVariant") as? ShipVariantAPI
     }
 
     fun getFleetTab(): UIPanelAPI? {
-        val borderContainer = getBorderContainer() ?: return null
+        val campaignState = Global.getSector().campaignUI
+        if (campaignState?.getActualCurrentTab() != CoreUITabId.FLEET)
+            return null
+        else
+            return getCoreUI()?.invoke("getCurrentTab") as? UIPanelAPI
+    }
 
-        return borderContainer.findChildWithMethod("getFleetPanel") as? UIPanelAPI
+    fun getFleetPanel(): UIPanelAPI? {
+        return getFleetTab()?.findChildWithMethod("getOther") as? UIPanelAPI
+    }
+
+    fun getFleetSidePanel(): UIPanelAPI? {
+        val children = getFleetTab()?.getChildrenCopy()
+        return children?.find { it.getFieldsMatching(type = UITable::class.java).isNotEmpty() } as? UIPanelAPI
     }
 
     fun getCodexDialog(): CodexDialog? {
+        //if (!Global.getSettings().isShowingCodex) // This does NOT work as of 0.98
+        //    return null
+
         var codex: CodexDialog?
 
         val gameState = Global.getCurrentState()
@@ -382,9 +393,12 @@ object MISC {
         sector: SectorAPI,
         json: JSONObject
     ): Boolean {
-        val fleet = MISC.createFleetFromJson(json, faction = Factions.PIRATES)
+        val fleet = Global.getFactory().createEmptyFleet(Factions.PIRATES, FleetTypes.TASK_FORCE, true)
+        val missingElements = getFleetFromJson(json, fleet)
+
+        reportMissingElements(missingElements)
         if (fleet.fleetSizeCount == 0) {
-            showMessage("Failed to create fleet from clipboard", Color.YELLOW)
+            //showMessage("Failed to create fleet from clipboard", Color.YELLOW)
             return false
         }
 
@@ -395,59 +409,110 @@ object MISC {
         return true
     }
 
-    fun fleetPaste(
-        sector: SectorAPI,
-        json: JSONObject
-    ): Boolean {
+    fun getAnyFromJson(json: JSONObject): Pair<Any?, MissingElements> {
         return when {
             json.has("skills") -> {
                 // Officer
-                addOfficerToFleet(json, sector.playerFleet.fleetData, randomPastedCosmetics)
-                showMessage("Added officer to fleet")
-                true
+                val (person, missing) = PersonSerialization.getPersonFromJsonWithMissing(json)
+                return Pair(person, missing)
             }
 
             json.has("variant") || json.has("officer") -> {
                 // Fleet member
-                val (member, missing) = addMemberToFleet(json, sector.playerFleet.fleetData, randomPastedCosmetics)
-                if (missing.hullIds.isNotEmpty()) {
-                    showMessage("Failed to create member from clipboard", Color.YELLOW)
-                    return false
-                }
-
-                if (!member.captain.isDefault && !member.captain.isAICore) {
-                    sector.playerFleet.fleetData.addOfficer(member.captain)
-                }
-
-                val shipName = member.hullSpec.hullName
-                val message = buildString {
-                    append("Added '${shipName}' to fleet")
-                    if (!member.captain.isDefault) append(", with an officer")
-                }
-
-                showMessage(message, shipName, Misc.getHighlightColor())
-                true
+                return MemberSerialization.getMemberFromJsonWithMissing(json)
             }
 
             json.has("hullId") -> {
-                val wrappedJson = JSONObject().put("variant", json)
-                val (member, missing) = addMemberToFleet(wrappedJson, sector.playerFleet.fleetData, randomPastedCosmetics)
+                // Variant
+                return VariantSerialization.getVariantFromJsonWithMissing(json)
+            }
 
-                if (missing.hullIds.isNotEmpty()) {
-                    showMessage("Failed to create hull '${json.optString("hullId")}' from clipboard", Color.YELLOW)
-                    return false
+            json.has("members") -> {
+                // Fleet
+                val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, true)
+                val missing = FleetSerialization.getFleetFromJson(json, fleet)
+                return Pair(fleet, missing)
+            }
+
+            else -> {
+                Pair(null, MissingElements())
+            }
+        }
+    }
+
+    fun fleetPaste(
+        sector: SectorAPI,
+        json: JSONObject
+    ) {
+        val playerFleet = sector.playerFleet.fleetData
+        val (element, missing) = getAnyFromJson(json)
+
+        when (element) {
+            is PersonAPI -> {
+                if (randomPastedCosmetics) {
+                    randomizePersonCosmetics(element, playerFleet.fleet.faction)
+                }
+                playerFleet.addOfficer(element)
+                showMessage("Added officer to fleet")
+            }
+
+            is ShipVariantAPI -> {
+                if (missing.hullIds.size > 1) {
+                    reportMissingElements(missing, "Could not find hullId when pasting variant")
+                    return
                 }
 
-                val shipName = member.hullSpec.hullName
-                showMessage("Added '$shipName' to fleet", shipName, Misc.getHighlightColor())
-                true
+                val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, element)
+
+                if (randomPastedCosmetics)
+                    randomizeMemberCosmetics(member, playerFleet)
+
+                playerFleet.addFleetMember(member)
+
+                showMessage("Added variant of hull '${element.hullSpec.hullName}' to fleet", element.hullSpec.hullName, Misc.getHighlightColor())
+
+                updateFleetPanelContents()
+            }
+
+            is FleetMemberAPI -> {
+                if (missing.hullIds.size > 1) {
+                    reportMissingElements(missing, "Could not find hullId when pasting member")
+                    return
+                }
+
+                if (randomPastedCosmetics)
+                    randomizeMemberCosmetics(element, playerFleet)
+
+                playerFleet.addFleetMember(element)
+                if (!element.captain.isDefault && !element.captain.isAICore)
+                    sector.playerFleet.fleetData.addOfficer(element.captain)
+
+                val shipName = element.hullSpec.hullName
+                val message = buildString {
+                    append("Added '${shipName}' to fleet")
+                    if (!element.captain.isDefault) append(", with an officer")
+                }
+
+                showMessage(message, shipName, Misc.getHighlightColor())
+
+                updateFleetPanelContents()
+            }
+
+            is CampaignFleetAPI -> {
+                //if () {
+                //    reportMissingElements(missing, "Fleet was empty when pasting")
+                //    return
+                //}
+
+                showMessage("Pasting a fleet into yours is currently Unimplemented. Try the ConsoleCommand \'replacefleet\'", Color.YELLOW)
             }
 
             else -> {
                 showMessage("No valid data found in clipboard", Color.YELLOW)
-                false
             }
         }
+
+        reportMissingElements(missing)
     }
 
     fun updateFleetPanelContents() {
@@ -463,153 +528,23 @@ object MISC {
         fleetPanel?.invoke("updateListContents")
     }
 
-    fun onGameLoad(newGame: Boolean) {
-        val sector = Global.getSector()
-
-        if (Global.getSector().memoryWithoutUpdate.getBoolean("\$FB_hadCommandShuttle")) {
-            addPlayerShuttle()
-
-            sector.addTransientScript(commanderShuttleListener)
-            sector.addTransientListener(commanderShuttleListener)
-        }
-
-        ShipOfficerChangeEvents.addTransientListener { change ->
-            //Remove commandShuttle if was piloted by player and is no longer
-            if (change.member.variant.hasHullMod(commandShuttleId)
-                && change.previous != null && change.previous.isPlayer
-            ) {
-                Global.getSector().playerFleet.fleetData.removeFleetMember(change.member)
-                updateFleetPanelContents()
-            }
-        }
-
-        //ShipOfficerChangeEvents.addListener { change ->
-        //    showMessage("Officer changed on ${change.member.shipName}: Previously captained by: ${change.previous?.name?.fullName} Currently: ${change.current?.name?.fullName}")
-        //}
+    fun randomizeMemberCosmetics(
+        member: FleetMemberAPI,
+        fleet: FleetDataAPI
+    ) {
+        member.shipName = fleet.pickShipName(member, Random())
+        randomizePersonCosmetics(member.captain, fleet.fleet.faction)
     }
 
-
-    fun beforeGameSave() {
-        if (playerShuttleExists()) {
-            removePlayerShuttle()
-            Global.getSector().memoryWithoutUpdate["\$FB_hadCommandShuttle"] = true
-        } else {
-            Global.getSector().memoryWithoutUpdate["\$FB_hadCommandShuttle"] = false
-        }
-    }
-
-    fun afterGameSave() {
-        if (Global.getSector().memoryWithoutUpdate.getBoolean("\$FB_hadCommandShuttle")) {
-            addPlayerShuttle()
-        }
-    }
-
-    fun reportCurrentLocationChanged(prev: LocationAPI, curr: LocationAPI) {
-        commanderShuttleListener.reportCurrentLocationChanged(prev, curr)
-    }
-
-    var commanderShuttleListener = CommanderShuttleListener()//Should not be present as a script if the shuttle is not in the player's fleet
-
-    fun removePlayerShuttle() {
-        val sector = Global.getSector()
-
-        var hadShuttle = false
-        for (member in Global.getSector().playerFleet.fleetData.membersListCopy) {
-            if (member.variant.hasHullMod(commandShuttleId)) {
-                member.variant.removeMod(commandShuttleId)
-                Global.getSector().playerFleet.fleetData.removeFleetMember(member)
-                hadShuttle = true
-            }
-        }
-        if (hadShuttle) {
-            sector.removeTransientScript(commanderShuttleListener)
-            sector.removeListener(commanderShuttleListener)
-        }
-
-        updateFleetPanelContents()
-    }
-
-    fun addPlayerShuttle() {
-        if (playerShuttleExists()) return
-
-        val sector = Global.getSector()
-
-        sector.addTransientScript(commanderShuttleListener)
-        sector.addTransientListener(commanderShuttleListener)
-
-        val shuttleMember = Global.getSettings().createFleetMember(FleetMemberType.SHIP, "shuttlepod_Hull")
-
-        shuttleMember.shipName = "Command Shuttle"
-        shuttleMember.variant.addMod(commandShuttleId)
-        shuttleMember.variant.addTag(Tags.NO_SELL)
-        shuttleMember.variant.addTag(Tags.RESTRICTED)
-        shuttleMember.variant.addTag(Tags.NO_SIM)
-        shuttleMember.variant.addTag(Tags.NO_BATTLE_SALVAGE)
-        shuttleMember.variant.addTag(Tags.HULLMOD_NO_DROP_SALVAGE)
-        shuttleMember.variant.addTag(Tags.UNRECOVERABLE)
-        shuttleMember.variant.addTag(Tags.HIDE_IN_CODEX)
-        shuttleMember.variant.addTag(Tags.SHIP_CAN_NOT_SCUTTLE)
-
-        sector.playerFleet.fleetData.addFleetMember(shuttleMember)
-        sector.playerFleet.fleetData.setFlagship(shuttleMember)
-        shuttleMember.repairTracker.cr = shuttleMember.repairTracker.maxCR
-
-        updateFleetPanelContents()
-    }
-
-    fun togglePlayerShuttle() {
-        if (playerShuttleExists()) {
-            removePlayerShuttle()
-        } else {
-            addPlayerShuttle()
-        }
-    }
-
-    fun playerShuttleExists(): Boolean {
-        for (member in Global.getSector().playerFleet.fleetData.membersListCopy) {
-            if (member.variant.hasHullMod(commandShuttleId)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    fun addMemberToFleet(
-        json: JSONObject,
-        fleet: FleetDataAPI,
-        randomPastedCosmetics: Boolean = false
-    ): Pair<FleetMemberAPI, MissingElements> {
-        val (member, missing) = getMemberFromJsonWithMissing(json)
-        if (missing.hullIds.isNotEmpty()) {
-            return Pair(member, missing)
-        }
-
-        if (randomPastedCosmetics) {
-            member.shipName = fleet.pickShipName(member, Random())
-            if (!member.captain.isDefault && !member.captain.isAICore) {
-                val randomPerson = fleet.fleet.faction.createRandomPerson()
-                member.captain.name = randomPerson.name
-                member.captain.portraitSprite = randomPerson.portraitSprite
-            }
-        }
-
-        fleet.addFleetMember(member)
-
-        updateFleetPanelContents()
-
-        return Pair(member, missing)
-    }
-
-    fun addOfficerToFleet(json: JSONObject, fleet: FleetDataAPI, randomPastedCosmetics: Boolean = false) {
-        val officer = getPersonFromJson(json)
-
-        if (randomPastedCosmetics && !officer.isDefault && !officer.isAICore) {
-            val randomPerson = fleet.fleet.faction.createRandomPerson()
+    fun randomizePersonCosmetics(
+        officer: PersonAPI,
+        faction: FactionAPI
+    ) {
+        if (!officer.isDefault && !officer.isAICore) {
+            val randomPerson = faction.createRandomPerson()
             officer.name = randomPerson.name
             officer.portraitSprite = randomPerson.portraitSprite
         }
-
-        fleet.addOfficer(officer) // Note, it doesn't seem possible to add AI cores as officers
     }
 
     //TODO, an option that enables grabbing things from your markets. Items in storage, ships in storage, items in industries. Then putting it all in an abandoned station somewhere in the new sector on load.
@@ -724,7 +659,9 @@ object MISC {
         if (handlePlayer && json.has("player")) {
             try {
                 val playerJson = json.getJSONObject("player")
-                val loadedPlayer = getPersonFromJson(playerJson)
+                val (loadedPlayer, personMissing) = getPersonFromJsonWithMissing(playerJson)
+                missing.add(personMissing)
+
                 val currentPlayer = sector.playerPerson
 
                 currentPlayer.stats = loadedPlayer.stats

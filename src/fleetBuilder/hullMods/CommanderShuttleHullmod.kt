@@ -10,7 +10,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.loading.HullModSpecAPI
 
 
-class CommanderShuttle : BaseHullMod() {
+class CommanderShuttleHullmod : BaseHullMod() {
     override fun init(spec: HullModSpecAPI?) {
         super.init(spec)
     }
