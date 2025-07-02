@@ -1,27 +1,14 @@
 package fleetBuilder.integration.campaign
 
-import MagicLib.*
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
-import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
-import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.PositionAPI
-import com.fs.starfarer.api.ui.TextFieldAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import com.fs.starfarer.campaign.fleet.FleetData
 import fleetBuilder.ui.FleetFilterPanel
 import fleetBuilder.util.MISC
-import fleetBuilder.util.findChildWithMethod
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.getChildrenCopy
-import fleetBuilder.util.getCompatibleDLessHullId
-import fleetBuilder.util.getShipNameWithoutPrefix
-import org.lwjgl.input.Mouse
-import starficz.ReflectionUtils.invoke
 
 class CampaignFleetScreenFilter : EveryFrameScript {
     override fun isDone(): Boolean {

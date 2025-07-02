@@ -7,19 +7,9 @@ import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.fleet.FleetMemberType
-import com.fs.starfarer.api.impl.SimulatorPluginImpl
-import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
-import com.fs.starfarer.api.ui.UIPanelAPI
-import com.fs.starfarer.api.util.Misc
-import com.fs.starfarer.campaign.fleet.FleetMember
-import com.fs.starfarer.combat.CombatFleetManager
-import com.fs.starfarer.loading.SpecStore
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import com.fs.starfarer.rpg.Person
-import com.fs.starfarer.ui.`return`
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.util.ClipboardFunctions.codexEntryToClipboard
@@ -30,15 +20,9 @@ import fleetBuilder.util.MISC.showError
 import fleetBuilder.util.MISC.showMessage
 import fleetBuilder.util.ModifyInternalVariants
 import fleetBuilder.util.findChildWithMethod
-import fleetBuilder.util.getChildrenCopy
 import fleetBuilder.variants.MissingElements
 import org.lwjgl.input.Keyboard
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils
-import starficz.ReflectionUtils.get
-import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
-import starficz.ReflectionUtils.set
 import java.awt.Color
 
 internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {

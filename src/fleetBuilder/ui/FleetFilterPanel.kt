@@ -2,24 +2,16 @@ package fleetBuilder.ui
 
 import MagicLib.width
 import MagicLib.x
-import MagicLib.xAlignOffset
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.PositionAPI
-import com.fs.starfarer.api.ui.TextFieldAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
+import com.fs.starfarer.api.ui.*
 import fleetBuilder.util.MISC
 import fleetBuilder.util.findChildWithMethod
 import fleetBuilder.util.getChildrenCopy
-import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getShipNameWithoutPrefix
-import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.invoke
-import kotlin.collections.forEach
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
 
