@@ -1,5 +1,5 @@
 1.6.0
-- Improve variant comparing logic. The autofit UI now when ignores DMods and treats SMods as regular mods when deciding what to highlight.
+- Improve variant comparing logic. The autofit UI now ignores DMods and treats SMods as regular mods when deciding what to highlight.
 - Autofit UI additionally outlines your loadout with red or green if it is better or worse. Got a DMod? It'll be outlined red. Got An SMod? It'll be outlined green. Loadout has SMod but yours does not? It'll be outlined red. ETC
 - Added the fleet screen filter. Enter text into it and those that do not satisfy the criteria will be filtered out, UI only.
 - New hotkey: In dev mode, you can now right click a hullmod to get rid of it even if it doesn't give you the option to. Be gone, SMods.
