@@ -201,7 +201,12 @@ object MISC {
 
         tempVariant = tempVariant.clone()
 
-        tempVariant.setVariantDisplayName("ERROR:$displayName")
+        if (displayName.isNotEmpty())
+            tempVariant.setVariantDisplayName("ERR:$displayName")
+        else
+            tempVariant.setVariantDisplayName("ERROR")
+
+        tempVariant.addTag("ERROR")
 
         return tempVariant
     }
@@ -697,21 +702,17 @@ object MISC {
         }
 
         if (handleKnownHullmods && json.has("knownHullMods")) {
-            try {
-                val hullMods = json.getJSONArray("knownHullMods")
-                for (i in 0 until hullMods.length()) {
-                    val modId = hullMods.optString(i, null) ?: continue
-                    val spec = Global.getSettings().getHullModSpec(modId)
-                    if (spec == null) {
-                        //missing.hullModIds.add(modId)
-                        continue
-                    }
-                    if (!spec.isAlwaysUnlocked && !spec.isHidden && !spec.isHiddenEverywhere) {
-                        sector.characterData.addHullMod(modId)
-                    }
+            val hullMods = json.getJSONArray("knownHullMods")
+            for (i in 0 until hullMods.length()) {
+                val modId = hullMods.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getHullModSpec(modId) }.getOrNull()
+                if (spec == null) {
+                    missing.hullModIds.add(modId)
+                    continue
                 }
-            } catch (e: Exception) {
-                showError("Failed to load known hullmods", e)
+                if (!spec.isAlwaysUnlocked && !spec.isHidden && !spec.isHiddenEverywhere) {
+                    sector.characterData.addHullMod(modId)
+                }
             }
         }
 
@@ -720,39 +721,38 @@ object MISC {
             json.has("fighterBlueprints") &&
             json.has("weaponBlueprints")
         ) {
-            try {
-                val shipBlueprints = json.getJSONArray("shipBlueprints")
-                val fighterBlueprints = json.getJSONArray("fighterBlueprints")
-                val weaponBlueprints = json.getJSONArray("weaponBlueprints")
+            val shipBlueprints = json.getJSONArray("shipBlueprints")
+            val fighterBlueprints = json.getJSONArray("fighterBlueprints")
+            val weaponBlueprints = json.getJSONArray("weaponBlueprints")
 
-                for (i in 0 until shipBlueprints.length()) {
-                    val id = shipBlueprints.optString(i, null) ?: continue
-                    if (Global.getSettings().getHullSpec(id) != null) {
-                        faction.addKnownShip(id, true)
-                    }// else {
-                    //    missing.hullIds.add(id)
-                    //}
+            for (i in 0 until shipBlueprints.length()) {
+                val id = shipBlueprints.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getHullSpec(id) }.getOrNull()
+                if (spec != null) {
+                    faction.addKnownShip(id, true)
+                } else {
+                    missing.hullIds.add(id)
                 }
+            }
 
-                for (i in 0 until fighterBlueprints.length()) {
-                    val id = fighterBlueprints.optString(i, null) ?: continue
-                    if (Global.getSettings().getFighterWingSpec(id) != null) {
-                        faction.addKnownFighter(id, true)
-                    }// else {
-                    //    missing.wingIds.add(id)
-                    //}
+            for (i in 0 until fighterBlueprints.length()) {
+                val id = fighterBlueprints.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getFighterWingSpec(id) }.getOrNull()
+                if (spec != null) {
+                    faction.addKnownFighter(id, true)
+                } else {
+                    missing.wingIds.add(id)
                 }
+            }
 
-                for (i in 0 until weaponBlueprints.length()) {
-                    val id = weaponBlueprints.optString(i, null) ?: continue
-                    if (Global.getSettings().getWeaponSpec(id) != null) {
-                        faction.addKnownWeapon(id, true)
-                    }// else {
-                    //    missing.weaponIds.add(id)
-                    //}
+            for (i in 0 until weaponBlueprints.length()) {
+                val id = weaponBlueprints.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getWeaponSpec(id) }.getOrNull()
+                if (spec != null) {
+                    faction.addKnownWeapon(id, true)
+                } else {
+                    missing.weaponIds.add(id)
                 }
-            } catch (e: Exception) {
-                showError("Failed to load blueprints", e)
             }
         }
 

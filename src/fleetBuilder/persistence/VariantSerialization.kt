@@ -22,20 +22,22 @@ object VariantSerialization {
         val missingElements = MissingElements()
         getMissingFromModInfo(json, missingElements)
 
+        var variantId = json.optString("variantId")
+
         val hullId = json.optString("hullId")
-        if (hullId.isEmpty()) {
+        if (hullId.isEmpty() || !Global.getSettings().allShipHullSpecs.any { it.hullId == hullId }) {
             missingElements.hullIds.add("")
-            return Pair(MISC.createErrorVariant("MISSINGHULL"), missingElements)
+            val errorVariant = MISC.createErrorVariant("NOHUL:$hullId")
+            if (!variantId.isNullOrEmpty()) {
+                errorVariant.hullVariantId = variantId
+            }
+            return Pair(errorVariant, missingElements)
         }
-        if (!Global.getSettings().allShipHullSpecs.any { it.hullId == hullId }) {
-            missingElements.hullIds.add(hullId)
-            return Pair(MISC.createErrorVariant("MISSINGHULL_$hullId"), missingElements)
-        }
+
         val hullSpec = Global.getSettings().getHullSpec(hullId)
 
         val loadout = Global.getSettings().createEmptyVariant(hullSpec.hullId, hullSpec)
 
-        var variantId = json.optString("variantId")
         if (variantId.isNullOrEmpty()) {
             variantId = "MissingVariantID_" + Misc.genUID()
             Global.getLogger(this.javaClass)

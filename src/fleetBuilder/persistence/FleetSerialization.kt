@@ -3,6 +3,7 @@ package fleetBuilder.persistence
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.config.ModSettings.commandShuttleId
@@ -61,6 +62,27 @@ object FleetSerialization {
             }
         }
 
+        fun getMember(memberJson: JSONObject): FleetMemberAPI {
+            val variantId = memberJson.optString("variantId", "")
+
+            val matchingVariant = fleetVariants.firstOrNull { it.hullVariantId == variantId } ?:
+            //  if (Global.getSettings().doesVariantExist(variantId)) {
+            //     Global.getSettings().getVariant(variantId)
+            run {
+                showError("Failed to find variant id of $variantId")
+                createErrorVariant("VariantIDNotFound")
+            }
+
+            val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, matchingVariant.clone())
+            setMemberValuesFromJson(memberJson, member)
+
+            if (matchingVariant.hasTag("ERROR"))
+                member.shipName = matchingVariant.displayName
+
+            fleet.addFleetMember(member)
+            return member
+        }
+
         json.optJSONObject("commander")?.let { commanderJson ->
             val (commander, personMissing) = getPersonFromJsonWithMissing(commanderJson)
             missingElements.add(personMissing)
@@ -70,20 +92,7 @@ object FleetSerialization {
 
             // Flagship/Commander's ship
             commanderJson.optJSONObject("member")?.let { memberJson ->
-                val commanderVariantId = memberJson.optString("variantId", "")
-
-                val matchingVariant = fleetVariants.firstOrNull { it.hullVariantId == commanderVariantId }
-                    ?: if (Global.getSettings().doesVariantExist(commanderVariantId)) {
-                        Global.getSettings().getVariant(commanderVariantId)
-                    } else {
-                        showError("Failed to find variant id of $commanderVariantId")
-                        createErrorVariant("VariantIDNotFound")
-                    }
-
-                val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, matchingVariant.clone())
-                setMemberValuesFromJson(memberJson, member)
-
-                fleet.addFleetMember(member)
+                val member = getMember(memberJson)
 
                 if (includeOfficers) {
                     fleet.addOfficer(commander)
@@ -99,25 +108,10 @@ object FleetSerialization {
             }
         }
 
-
-        // Other fleet members
         json.optJSONArray("members")?.let { members ->
             for (i in 0 until members.length()) {
                 members.optJSONObject(i)?.let { memberJson ->
-                    val variantId = memberJson.optString("variantId", "")
-
-                    val matchingVariant = fleetVariants.firstOrNull { it.hullVariantId == variantId }
-                        ?: if (Global.getSettings().doesVariantExist(variantId)) {
-                            Global.getSettings().getVariant(variantId)
-                        } else {
-                            showError("Failed to find variant id of $variantId")
-                            createErrorVariant("VariantIDNotFound")
-                        }
-
-                    val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, matchingVariant.clone())
-                    setMemberValuesFromJson(memberJson, member)
-
-                    fleet.addFleetMember(member)
+                    val member = getMember(memberJson)
 
                     if (includeOfficers)
                         setMemberOfficerFromJson(memberJson, member, missingElements)
