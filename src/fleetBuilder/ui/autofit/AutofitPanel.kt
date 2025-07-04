@@ -21,6 +21,7 @@ import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.createErrorVariant
 import fleetBuilder.util.allDMods
+import fleetBuilder.util.allSMods
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.getAllAutofitSpecsForShip
@@ -428,16 +429,27 @@ internal object AutofitPanel {
                 )
         }
 
-        var equalDMod = false
+        var unequalDMod = false
         if (compareBaseVariant.allDMods().isNotEmpty()) {
             compareBaseVariant.allDMods().forEach { compareBaseVariant.completelyRemoveMod(it) }
-            equalDMod =
-                compareVariantHullMods(
-                    compareVariant,
-                    compareBaseVariant,
-                    compareBuiltInHullMods = false,
-                    compareHiddenHullMods = false,
-                )
+            if (compareBaseVariant.sMods.isNotEmpty()) {
+                unequalDMod =
+                    compareVariantHullMods(
+                        compareVariant,
+                        compareBaseVariant,
+                        compareBuiltInHullMods = false,
+                        compareHiddenHullMods = false,
+                    )
+            } else {
+                unequalDMod =
+                    compareVariantHullMods(
+                        compareVariant,
+                        compareBaseVariant,
+                        compareBuiltInHullMods = false,
+                        compareHiddenHullMods = false,
+                        convertSModsToRegular = true
+                    )
+            }
         }
 
         selectorPlugin.isBetter = false
@@ -445,7 +457,7 @@ internal object AutofitPanel {
 
         if (equalSMods) {
             selectorPlugin.isBetter = true
-        } else if (equalDMod || unequalSMods) {
+        } else if (unequalDMod || unequalSMods) {
             selectorPlugin.isWorse = true
         }
     }
