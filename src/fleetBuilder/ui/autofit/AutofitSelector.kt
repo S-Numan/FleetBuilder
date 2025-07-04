@@ -48,6 +48,7 @@ internal object AutofitSelector {
         var hasMissing = false
         var isBetter = false
         var isWorse = false
+        var isEqual = false
 
         var isHovering = false
             private set
@@ -86,7 +87,9 @@ internal object AutofitSelector {
             GL11.glColor4f(panelColor.redf, panelColor.greenf, panelColor.bluef, panelAlpha)
             GL11.glRectf(selectorPanel.left, selectorPanel.bottom, selectorPanel.right, selectorPanel.top)
 
-            val darkerBorderColor = if (isBetter)
+            val darkerBorderColor = if (isEqual)
+                Misc.getGrayColor()
+            else if (isBetter)
                 Misc.getPositiveHighlightColor().darker().darker()
             else if (isWorse)
                 Misc.getNegativeHighlightColor().darker().darker()

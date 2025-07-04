@@ -404,58 +404,64 @@ internal object AutofitPanel {
         compareBaseVariant.sModdedBuiltIns.forEach { compareBaseVariant.addPermaMod(it, true) }
         compareVariant.sModdedBuiltIns.forEach { compareVariant.addPermaMod(it, true) }
 
+        val equal = compareVariantHullMods(
+            compareVariant,
+            compareBaseVariant,
+            compareBuiltInHullMods = false,
+            compareHiddenHullMods = false,
+        )
+
         var equalSMods = false
         var unequalSMods = false
         if (compareBaseVariant.sMods.isNotEmpty()) {
             val compareBaseVariantTemp = compareBaseVariant.clone()
             processSModsForComparison(compareBaseVariantTemp, true)
-            equalSMods =
-                compareVariantHullMods(
-                    compareVariant,
-                    compareBaseVariantTemp,
-                    compareBuiltInHullMods = false,
-                    compareHiddenHullMods = false,
-                )
+            equalSMods = compareVariantHullMods(
+                compareVariant,
+                compareBaseVariantTemp,
+                compareBuiltInHullMods = false,
+                compareHiddenHullMods = false,
+            )
         }
         if (compareVariant.sMods.isNotEmpty()) {
             val compareVariantTemp = compareVariant.clone()
             processSModsForComparison(compareVariantTemp, true)
-            unequalSMods =
-                compareVariantHullMods(
-                    compareVariantTemp,
-                    compareBaseVariant,
-                    compareBuiltInHullMods = false,
-                    compareHiddenHullMods = false,
-                )
+            unequalSMods = compareVariantHullMods(
+                compareVariantTemp,
+                compareBaseVariant,
+                compareBuiltInHullMods = false,
+                compareHiddenHullMods = false,
+            )
         }
 
         var unequalDMod = false
         if (compareBaseVariant.allDMods().isNotEmpty()) {
             compareBaseVariant.allDMods().forEach { compareBaseVariant.completelyRemoveMod(it) }
             if (compareBaseVariant.sMods.isNotEmpty()) {
-                unequalDMod =
-                    compareVariantHullMods(
-                        compareVariant,
-                        compareBaseVariant,
-                        compareBuiltInHullMods = false,
-                        compareHiddenHullMods = false,
-                    )
+                unequalDMod = compareVariantHullMods(
+                    compareVariant,
+                    compareBaseVariant,
+                    compareBuiltInHullMods = false,
+                    compareHiddenHullMods = false,
+                )
             } else {
-                unequalDMod =
-                    compareVariantHullMods(
-                        compareVariant,
-                        compareBaseVariant,
-                        compareBuiltInHullMods = false,
-                        compareHiddenHullMods = false,
-                        convertSModsToRegular = true
-                    )
+                unequalDMod = compareVariantHullMods(
+                    compareVariant,
+                    compareBaseVariant,
+                    compareBuiltInHullMods = false,
+                    compareHiddenHullMods = false,
+                    convertSModsToRegular = true
+                )
             }
         }
 
+        selectorPlugin.isEqual = false
         selectorPlugin.isBetter = false
         selectorPlugin.isWorse = false
 
-        if (equalSMods) {
+        if (equal) {
+            selectorPlugin.isEqual = true
+        } else if (equalSMods) {
             selectorPlugin.isBetter = true
         } else if (unequalDMod || unequalSMods) {
             selectorPlugin.isWorse = true
