@@ -1,6 +1,6 @@
 1.6.1
 - Improved fleet filtering functionality. More options and aliases have been added.
-- Improved autofit outlining.
+- More accurate autofit outlining.
 
 1.6.0
 - Improve variant comparing logic. The autofit UI now ignores DMods and treats SMods as regular mods when deciding what to highlight.
