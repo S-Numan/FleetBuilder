@@ -1,3 +1,10 @@
+1.6.1
+- Improved fleet filtering functionality. More options and aliases have been added.
+- More accurate autofit outlining.
+- CopySave and LoadSave now copy and load to the clipboard instead of a file.
+- CopySave and LoadSave arguments are now exposed. You can now specify things such as -no-rep to not load reputation. -no-player to not load the player's skills/levels. -no-fleet to not load the player's fleet. ETC
+- Cargo serialization now handles missing elements as well.
+
 1.6.0
 - Improve variant comparing logic. The autofit UI now ignores DMods and treats SMods as regular mods when deciding what to highlight.
 - Autofit UI additionally outlines your loadout with red or green if it is better or worse. Got a DMod? It'll be outlined red. Got An SMod? It'll be outlined green. Loadout has SMod but yours does not? It'll be outlined red. ETC

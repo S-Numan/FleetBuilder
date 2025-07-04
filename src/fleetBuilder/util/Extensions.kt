@@ -44,14 +44,25 @@ fun ShipVariantAPI.completelyRemoveMod(modId: String) {
     removeSuppressedMod(modId)
 }
 
-fun ShipVariantAPI.allDMods(): List<String> {
+fun ShipVariantAPI.allDMods(): Set<String> {
     val allDMods = getAllDMods()
-    val dMods = mutableListOf<String>()
+    val dMods = mutableSetOf<String>()
     for (mod in hullMods) {
         if (mod in allDMods)
             dMods.add(mod)
     }
     return dMods
+}
+
+fun ShipVariantAPI.allSMods(): Set<String> {
+    val sMods = mutableSetOf<String>()
+    for (mod in sMods) {
+        sMods.add(mod)
+    }
+    for (mod in sModdedBuiltIns) {
+        sMods.add(mod)
+    }
+    return sMods
 }
 
 fun FleetMemberAPI.getShipNameWithoutPrefix(): String {

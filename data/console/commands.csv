@@ -1,6 +1,22 @@
 command,class,tags,syntax,help
-CopySave,fleetBuilder.consoleCommands.saveTransfer.CopySave,"cheat,campaign,fleetbuilder",copysave,
-LoadSave,fleetBuilder.consoleCommands.saveTransfer.LoadSave,"cheat,campaign,fleetbuilder",loadsave,
+CopySave,fleetBuilder.consoleCommands.saveTransfer.CopySave,"cheat,campaign,fleetbuilder",copysave,"Put a space between each flag. The list of flags are:
+-no-rep
+-no-fleet
+-no-cargo
+-no-hullmods
+-no-blueprints
+-no-officers
+-no-player
+-no-credits"
+LoadSave,fleetBuilder.consoleCommands.saveTransfer.LoadSave,"cheat,campaign,fleetbuilder",loadsave FLAGS,"Put a space between each flag. The list of flags are:
+-no-rep
+-no-fleet
+-no-cargo
+-no-hullmods
+-no-blueprints
+-no-officers
+-no-player
+-no-credits"
 ,,,,
 ,,,,
 ReplaceFleet,fleetBuilder.consoleCommands.ReplaceFleet,"cheat,campaign,fleetbuilder",replacefleet,Replaces player fleet with fleet in clipboard

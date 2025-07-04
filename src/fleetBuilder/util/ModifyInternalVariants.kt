@@ -6,7 +6,7 @@ import starficz.ReflectionUtils.getFieldsMatching
 
 object ModifyInternalVariants {
 
-    const val safteyPrefix = "FBT_"//FBT = Fleet Builder Temp
+    const val safteyPrefix = "FBV_"//FBV = Fleet Builder Variant
     private fun getInternalVariantsMap(): HashMap<String, HullVariantSpec> {
         val eep = Class.forName("com.fs.starfarer.loading.new")
         val erp = eep.getFieldsMatching(fieldAccepts = Map::class.java).firstOrNull() ?: return hashMapOf()

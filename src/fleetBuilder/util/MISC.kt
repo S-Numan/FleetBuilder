@@ -181,6 +181,7 @@ object MISC {
             printIfNotEmpty("Missing weapons", missingElements.weaponIds)
             printIfNotEmpty("Missing wings", missingElements.wingIds)
             printIfNotEmpty("Missing hullmods", missingElements.hullModIds)
+            printIfNotEmpty("Missing items", missingElements.itemIds)
             printIfNotEmpty("Missing skills", missingElements.skillIds)
 
             val fullMessage = missingMessages.joinToString(separator = "\n")
@@ -635,7 +636,7 @@ object MISC {
 
         if (handleCargo && json.has("cargo")) {
             try {
-                getCargoFromJson(json.getJSONArray("cargo"), cargo)
+                missing.add(getCargoFromJson(json.getJSONArray("cargo"), cargo))
             } catch (e: Exception) {
                 showError("Failed to load cargo", e)
             }

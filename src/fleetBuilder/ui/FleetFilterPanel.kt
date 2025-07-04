@@ -4,10 +4,13 @@ import MagicLib.width
 import MagicLib.x
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
+import com.fs.starfarer.api.combat.ShieldAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import fleetBuilder.util.MISC
+import fleetBuilder.util.allDMods
+import fleetBuilder.util.allSMods
 import fleetBuilder.util.findChildWithMethod
 import fleetBuilder.util.getChildrenCopy
 import fleetBuilder.util.getShipNameWithoutPrefix
@@ -41,6 +44,7 @@ class FleetFilterPanel(
         val tooltip = mainPanel.createUIElement(width, height, false)
         textField = tooltip.addTextField(width, height, Fonts.DEFAULT_SMALL, 0f)
         textField.text = defaultText
+        textField.isLimitByStringWidth = false
 
         mainPanel.addUIElement(tooltip).inTL(0f, 0f)
         fleetSidePanel.addComponent(mainPanel)//.inBR(xPad, yPad)
@@ -93,33 +97,53 @@ class FleetFilterPanel(
                 if (desc.startsWith("-")) {
                     if (member.matchesDescription(desc.removePrefix("-")))
                         itemsToRemove.add(item)
-                } else if (!member.matchesDescription(desc))
+                } else if (!member.matchesDescription(desc)) {
                     itemsToRemove.add(item)
+                }
             }
 
             itemsToRemove.forEach { fleetGrid.invoke("removeItem", it) }
-
-            fleetGrid.invoke("collapseEmptySlots")
         }
+
+        fleetGrid.invoke("collapseEmptySlots")
 
         prevString = textField.text
     }
 
     private fun FleetMemberAPI.matchesDescription(desc: String): Boolean {
         return when {
+            //Names
             //hullSpec.getCompatibleDLessHullId().lowercase().contains(desc) -> true
             hullSpec.hullName.lowercase().contains(desc) -> true
             getShipNameWithoutPrefix().lowercase().startsWith(desc) -> true
             hullSpec.manufacturer.lowercase().startsWith(desc) -> true
-            isCivilian && "civilian".startsWith(desc) -> true
+
+            //Types
+            //this.isCivilian && "civilian".startsWith(desc) -> true
+            //variant.isCivilian && "civilian".startsWith(desc) -> true
+            //!variant.isCombat && "civilian".startsWith(desc) -> true
+            //hullSpec.isCivilianNonCarrier && "civilian".startsWith(desc) -> true//Can't find civilian check that works properly
             isCarrier && "carrier".startsWith(desc) -> true
             isPhaseShip && "phase".startsWith(desc) -> true
+            !isPhaseShip && (hullSpec.shieldType == ShieldAPI.ShieldType.OMNI || hullSpec.shieldType == ShieldAPI.ShieldType.FRONT) && !variant.hasHullMod("shield_shunt") && "shields".startsWith(desc) -> true
             isFrigate && "frigate".startsWith(desc) -> true
             isDestroyer && "destroyer".startsWith(desc) -> true
             isCruiser && "cruiser".startsWith(desc) -> true
             isCapital && "capital".startsWith(desc) -> true
             variant.hasHullMod("automated") && "automated".startsWith(desc) -> true
+            variant.isTransport && ("transport".startsWith(desc) || "marines".startsWith(desc)) -> true
+            variant.isTanker && ("tanker".startsWith(desc) || "fuel".startsWith(desc)) -> true
+            variant.isLiner && ("liner".startsWith(desc) || "crew".startsWith(desc)) -> true
+            variant.isFreighter && ("freighter".startsWith(desc) || "cargo".startsWith(desc)) -> true
+            isStation && "station".startsWith(desc) -> true
 
+            //
+            variant.allSMods().isNotEmpty() && "smodded".startsWith(desc) -> true
+            variant.allDMods().isNotEmpty() && "dmodded".startsWith(desc) -> true
+
+            //
+            hullSpec.shipSystemId.startsWith(desc) -> true
+            hullSpec.shipDefenseId.isNotEmpty() && hullSpec.shipDefenseId != "phasecloak" && hullSpec.shipDefenseId.startsWith(desc) -> true
             else -> false
         }
     }

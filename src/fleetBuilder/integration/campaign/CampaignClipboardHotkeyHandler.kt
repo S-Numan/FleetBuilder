@@ -418,7 +418,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                                 showMessage("Removed sModdedBuiltIn in with ID '$hullModID'")
                             } else {
-                                showMessage("The hullmod '${hullModID.id}' is built into the hullspec, it cannot be removed from the variant $hullModID")
+                                showMessage("The hullmod '${hullModID.id}' is built into the hullspec, it cannot be removed from the variant")
                             }
                         } else {
                             variant.completelyRemoveMod(hullModID.id)
