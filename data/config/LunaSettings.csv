@@ -78,7 +78,7 @@ fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
 extraHeader,Extra Header,Header,Extra,,,,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
-Put “loadsave lastSave” in the console to load it. (case sensitive)",,,Misc
+Put “loadsave -backup” in the console to load it.",,,Misc
 ,,,,,,,,
 devHeader,Developer Header,Header,Developer Options,,,,,Dev
 ,,,,,,,,

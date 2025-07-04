@@ -1,6 +1,7 @@
 package fleetBuilder.consoleCommands.saveTransfer
 
 import com.fs.starfarer.api.Global
+import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.MISC
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
@@ -9,14 +10,14 @@ import org.lazywizard.console.Console
 
 class CopySave : BaseCommand {
 
-    val handleCargo = true
-    val handleRelations = false
-    val handleFleet = true
-    val handleOfficers = true//handleFleet must be true
-    val handleKnownBlueprints = true
-    val handleKnownHullmods = true
-    val handlePlayer = true
-    val handleCredits = true
+    private val NO_REP = "-no-rep"
+    private val NO_FLEET = "-no-fleet"
+    private val NO_CARGO = "-no-cargo"
+    private val NO_HULLMODS = "-no-hullmods"
+    private val NO_BLUEPRINTS = "-no-blueprints"
+    private val NO_OFFICERS = "-no-officers"
+    private val NO_PLAYER = "-no-player"
+    private val NO_CREDITS = "-no-credits"
 
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
         if (!context.isInCampaign) {
@@ -24,21 +25,21 @@ class CopySave : BaseCommand {
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
 
-
+        val argList = args.lowercase().split(" ")
         val json = MISC.createPlayerSaveJson(
-            handleCargo = handleCargo,
-            handleRelations = handleRelations,
-            handleKnownBlueprints = handleKnownBlueprints,
-            handlePlayer = handlePlayer,
-            handleFleet = handleFleet,
-            handleCredits = handleCredits,
-            handleKnownHullmods = handleKnownHullmods,
-            handleOfficers = handleOfficers
+            handleCargo = !argList.contains(NO_CARGO),
+            handleRelations = !argList.contains(NO_REP),
+            handleKnownBlueprints = !argList.contains(NO_BLUEPRINTS),
+            handlePlayer = !argList.contains(NO_PLAYER),
+            handleFleet = !argList.contains(NO_FLEET),
+            handleCredits = !argList.contains(NO_CREDITS),
+            handleKnownHullmods = !argList.contains(NO_HULLMODS),
+            handleOfficers = !argList.contains(NO_OFFICERS)
         )
 
-        Global.getSettings().writeJSONToCommon("SaveTransfer/CopySave", json, false)
-        //Global.getSector().
-        Console.showMessage("Save Complete")
+        setClipboardText(json.toString(4))
+
+        Console.showMessage("Save copied to clipboard")
         return BaseCommand.CommandResult.SUCCESS
     }
 }
