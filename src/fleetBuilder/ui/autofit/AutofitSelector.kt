@@ -89,7 +89,7 @@ internal object AutofitSelector {
 
             val darkerBorderColor =
                 if (isEqual)
-                    Misc.getGrayColor()
+                    Misc.getGrayColor().darker()
                 else if (isBetter)
                     Misc.getPositiveHighlightColor().darker().darker()
                 else if (isWorse)
