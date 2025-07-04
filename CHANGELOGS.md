@@ -1,7 +1,7 @@
 1.6.1
 - Improved fleet filtering functionality. More options and aliases have been added.
 - More accurate autofit outlining.
-- CopySave and LoadSave now copy and load to the clipboard instead of a file.
+- CopySave and LoadSave now copy and load from the clipboard instead of a file.
 - CopySave and LoadSave arguments are now exposed. You can now specify things such as -no-rep to not load reputation. -no-player to not load the player's skills/levels. -no-fleet to not load the player's fleet. ETC
 - Cargo serialization now handles missing elements as well.
 
