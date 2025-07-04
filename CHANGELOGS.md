@@ -3,6 +3,7 @@
 - More accurate autofit outlining.
 - CopySave and LoadSave now copy and load to the clipboard instead of a file.
 - CopySave and LoadSave arguments are now exposed. You can now specify things such as -no-rep to not load reputation. -no-player to not load the player's skills/levels. -no-fleet to not load the player's fleet. ETC
+- Cargo serialization now handles missing elements as well.
 
 1.6.0
 - Improve variant comparing logic. The autofit UI now ignores DMods and treats SMods as regular mods when deciding what to highlight.

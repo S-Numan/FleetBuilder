@@ -30,7 +30,7 @@ class LoadSave : BaseCommand {
         val json: JSONObject?
 
         val argList = args.lowercase().split(" ")
-        
+
         if (argList.contains("-backup")) {
             val configPath = "SaveTransfer/lastSave"
 
@@ -87,6 +87,10 @@ class LoadSave : BaseCommand {
 
             if (missing.skillIds.isNotEmpty()) {
                 Console.showMessage("Missing Skills:\n" + missing.skillIds.joinToString("\n"), Level.ERROR)
+            }
+
+            if (missing.itemIds.isNotEmpty()) {
+                Console.showMessage("Missing Items:\n" + missing.itemIds.joinToString("\n"), Level.ERROR)
             }
 
             if (missing.gameMods.isNotEmpty()) {
