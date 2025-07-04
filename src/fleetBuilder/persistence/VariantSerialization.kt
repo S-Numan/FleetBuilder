@@ -28,9 +28,9 @@ object VariantSerialization {
         if (hullId.isEmpty() || !Global.getSettings().allShipHullSpecs.any { it.hullId == hullId }) {
             missingElements.hullIds.add("")
             val errorVariant = MISC.createErrorVariant("NOHUL:$hullId")
-            if (!variantId.isNullOrEmpty()) {
+            if (!variantId.isNullOrEmpty())
                 errorVariant.hullVariantId = variantId
-            }
+            
             return Pair(errorVariant, missingElements)
         }
 
