@@ -87,14 +87,15 @@ internal object AutofitSelector {
             GL11.glColor4f(panelColor.redf, panelColor.greenf, panelColor.bluef, panelAlpha)
             GL11.glRectf(selectorPanel.left, selectorPanel.bottom, selectorPanel.right, selectorPanel.top)
 
-            val darkerBorderColor = if (isEqual)
-                Misc.getGrayColor()
-            else if (isBetter)
-                Misc.getPositiveHighlightColor().darker().darker()
-            else if (isWorse)
-                Misc.getNegativeHighlightColor().darker().darker()
-            else
-                Misc.getDarkPlayerColor().darker()
+            val darkerBorderColor =
+                if (isEqual)
+                    Misc.getGrayColor()
+                else if (isBetter)
+                    Misc.getPositiveHighlightColor().darker().darker()
+                else if (isWorse)
+                    Misc.getNegativeHighlightColor().darker().darker()
+                else
+                    Misc.getDarkPlayerColor().darker()
 
             val darkerBorderAlpha = darkerBorderColor.alphaf * alphaMult
 

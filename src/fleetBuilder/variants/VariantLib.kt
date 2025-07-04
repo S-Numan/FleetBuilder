@@ -197,14 +197,17 @@ object VariantLib {
     }
 
     fun compareVariantHullMods(
-        variant1: ShipVariantAPI,
-        variant2: ShipVariantAPI,
+        insertVariant1: ShipVariantAPI,
+        insertVariant2: ShipVariantAPI,
         compareHiddenHullMods: Boolean = true,
         compareDMods: Boolean = true,
         compareSMods: Boolean = true,
         convertSModsToRegular: Boolean = false,
         compareBuiltInHullMods: Boolean = true
     ): Boolean {
+        val variant1 = insertVariant1.clone()
+        val variant2 = insertVariant2.clone()
+
         fun hullModSetsEqual(
             set1: Set<String>,
             set2: Set<String>,

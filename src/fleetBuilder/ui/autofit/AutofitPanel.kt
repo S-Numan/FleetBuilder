@@ -404,7 +404,7 @@ internal object AutofitPanel {
         compareBaseVariant.sModdedBuiltIns.forEach { compareBaseVariant.addPermaMod(it, true) }
         compareVariant.sModdedBuiltIns.forEach { compareVariant.addPermaMod(it, true) }
 
-        val equal = compareVariantHullMods(
+        val equalMods = compareVariantHullMods(
             compareVariant,
             compareBaseVariant,
             compareBuiltInHullMods = false,
@@ -459,13 +459,14 @@ internal object AutofitPanel {
         selectorPlugin.isBetter = false
         selectorPlugin.isWorse = false
 
-        if (equal) {
+        if (equalMods) {
             selectorPlugin.isEqual = true
-        } else if (equalSMods) {
-            selectorPlugin.isBetter = true
-        } else if (unequalDMod || unequalSMods) {
-            selectorPlugin.isWorse = true
-        }
+        } else
+            if (equalSMods) {
+                selectorPlugin.isBetter = true
+            } else if (unequalDMod || unequalSMods) {
+                selectorPlugin.isWorse = true
+            }
     }
 
     private fun removeSelectorPanelButton(
