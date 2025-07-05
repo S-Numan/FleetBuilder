@@ -11,6 +11,7 @@ import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
+import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.MISC.getSelectedSubmarketInFleetTab
 import fleetBuilder.util.MISC.getViewedFleetInSubmarket
@@ -99,30 +100,34 @@ class StoreOfficersInCargo : EveryFrameScript, CampaignInputListener {
             } else if (event.isLMBDownEvent) {
                 val memberUI = getMemberUIHoveredInFleetTabLowerPanel() ?: return@forEach
 
-                val parent = (memberUI.invoke("getParent") as? UIPanelAPI) ?: return@forEach
-                val firstChild = parent.getChildrenCopy().find { it.getFieldsMatching(name = "buyButton").isNotEmpty() } as? UIPanelAPI
-                    ?: return@forEach
+                try {
+                    val parent = (memberUI.invoke("getParent") as? UIPanelAPI) ?: return@forEach
+                    val firstChild = parent.getChildrenCopy().find { it.getFieldsMatching(name = "buyButton").isNotEmpty() } as? UIPanelAPI
+                        ?: return@forEach
 
-                val desiredButton = firstChild.getChildrenCopy().find { buttonChild ->
-                    val tooltip = buttonChild.invoke("getTooltip")
-                    tooltip?.getFieldsMatching(fieldAssignableTo = String::class.java)?.find {
-                        val tooltipName = it.get(tooltip)
-                        tooltipName == "Store"
-                    } != null
-                } ?: return@forEach
+                    val desiredButton = firstChild.getChildrenCopy().find { buttonChild ->
+                        val tooltip = buttonChild.invoke("getTooltip")
+                        tooltip?.getFieldsMatching(fieldAssignableTo = String::class.java)?.find {
+                            val tooltipName = it.get(tooltip)
+                            tooltipName == "Store"
+                        } != null
+                    } ?: return@forEach
 
-                val mouseX = Global.getSettings().mouseX
-                val mouseY = Global.getSettings().mouseY
+                    val mouseX = Global.getSettings().mouseX
+                    val mouseY = Global.getSettings().mouseY
 
-                val x = desiredButton.position.x
-                val y = desiredButton.position.y
-                val width = desiredButton.position.width
-                val height = desiredButton.position.height
+                    val x = desiredButton.position.x
+                    val y = desiredButton.position.y
+                    val width = desiredButton.position.width
+                    val height = desiredButton.position.height
 
-                if (mouseX >= x && mouseX <= x + width &&
-                    mouseY >= y && mouseY <= y + height
-                ) {
-                    storeOfficer(memberUI)
+                    if (mouseX >= x && mouseX <= x + width &&
+                        mouseY >= y && mouseY <= y + height
+                    ) {
+                        storeOfficer(memberUI)
+                    }
+                } catch (e: Exception) {
+                    MISC.showError("Storing the officer in cargo failed", e)
                 }
             }
 
