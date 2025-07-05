@@ -8,12 +8,8 @@ import com.fs.starfarer.api.combat.ShieldAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
-import fleetBuilder.util.MISC
-import fleetBuilder.util.allDMods
-import fleetBuilder.util.allSMods
-import fleetBuilder.util.findChildWithMethod
-import fleetBuilder.util.getChildrenCopy
-import fleetBuilder.util.getShipNameWithoutPrefix
+import com.fs.starfarer.api.util.Misc
+import fleetBuilder.util.*
 import starficz.ReflectionUtils.invoke
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
@@ -119,10 +115,7 @@ class FleetFilterPanel(
             hullSpec.manufacturer.lowercase().startsWith(desc) -> true
 
             //Types
-            //this.isCivilian && "civilian".startsWith(desc) -> true
-            //variant.isCivilian && "civilian".startsWith(desc) -> true
-            //!variant.isCombat && "civilian".startsWith(desc) -> true
-            //hullSpec.isCivilianNonCarrier && "civilian".startsWith(desc) -> true//Can't find civilian check that works properly
+            (hullSpec.isCivilianNonCarrier || variant.hasHullMod("civgrade")) && !variant.hasHullMod("militarized_subsystems") && "civilian".startsWith(desc) -> true
             isCarrier && "carrier".startsWith(desc) -> true
             isPhaseShip && "phase".startsWith(desc) -> true
             !isPhaseShip && (hullSpec.shieldType == ShieldAPI.ShieldType.OMNI || hullSpec.shieldType == ShieldAPI.ShieldType.FRONT) && !variant.hasHullMod("shield_shunt") && "shields".startsWith(desc) -> true
@@ -130,7 +123,7 @@ class FleetFilterPanel(
             isDestroyer && "destroyer".startsWith(desc) -> true
             isCruiser && "cruiser".startsWith(desc) -> true
             isCapital && "capital".startsWith(desc) -> true
-            variant.hasHullMod("automated") && "automated".startsWith(desc) -> true
+            Misc.isAutomated(this) && "automated".startsWith(desc) -> true
             variant.isTransport && ("transport".startsWith(desc) || "marines".startsWith(desc)) -> true
             variant.isTanker && ("tanker".startsWith(desc) || "fuel".startsWith(desc)) -> true
             variant.isLiner && ("liner".startsWith(desc) || "crew".startsWith(desc)) -> true
@@ -140,6 +133,7 @@ class FleetFilterPanel(
             //
             variant.allSMods().isNotEmpty() && "smodded".startsWith(desc) -> true
             variant.allDMods().isNotEmpty() && "dmodded".startsWith(desc) -> true
+            !captain.isDefault && ("officered".startsWith(desc) || "captained".startsWith(desc)) -> true
 
             //
             hullSpec.shipSystemId.startsWith(desc) -> true

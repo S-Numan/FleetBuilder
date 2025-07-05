@@ -1,6 +1,5 @@
 package fleetBuilder.consoleCommands.saveTransfer
 
-import com.fs.starfarer.api.Global
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.MISC
 import org.lazywizard.console.BaseCommand

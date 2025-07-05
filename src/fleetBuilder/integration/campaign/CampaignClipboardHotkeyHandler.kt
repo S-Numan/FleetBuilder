@@ -31,6 +31,7 @@ import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.util.*
 import fleetBuilder.util.MISC.campaignPaste
 import fleetBuilder.util.MISC.fleetPaste
+import fleetBuilder.util.MISC.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.MISC.showMessage
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
@@ -249,37 +250,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleFleetMouseEvents(event: InputEventAPI, sector: SectorAPI) {
         try {
-            val fleetTab = MISC.getFleetTab() ?: return
-            val mouseOverMember = fleetTab.invoke("getMousedOverFleetMember") as? FleetMemberAPI ?: return
+            val memberUI = getMemberUIHoveredInFleetTabLowerPanel() ?: return
 
-            val fleetPanel = fleetTab.invoke("getFleetPanel") as? UIPanelAPI ?: return
-            val list = fleetPanel.invoke("getList") ?: return
-            val items = list.invoke("getItems") as? List<Any?>
-                ?: return//Core UI box that contains everything related to the fleet member, including the ship, officer, cr, etc. There is one for each member in your fleet.
-
-            // Find UI element of which the mouse is hovering over
-            val memberUI = items.firstNotNullOfOrNull { item ->
-                if (item == null) return@firstNotNullOfOrNull null
-
-                //Get all children for this item
-                val children = item.invoke("getChildrenCopy") as? List<Any?> ?: return@firstNotNullOfOrNull null
-
-                //Find the UI child with a portrait button
-                val foundUI = children.firstOrNull { child ->
-                    child != null && child.getMethodsMatching(name = "getPortraitButton").isNotEmpty()
-                } ?: return@firstNotNullOfOrNull null
-
-                //Get FleetMember
-                val fields = foundUI.getFieldsMatching(type = FleetMember::class.java)
-                if (fields.isEmpty()) return@firstNotNullOfOrNull null
-
-                //Return if this item's fleet member is not the one we are hovering over
-                val member = fields[0].get(foundUI) as? FleetMemberAPI
-                if (member?.id != mouseOverMember.id) return@firstNotNullOfOrNull null
-
-                //If we've got here, this is the UI item the mouse is hovering over.
-                foundUI
-            } ?: return
+            val mouseOverMember = memberUI.getFieldsMatching(type = FleetMember::class.java).getOrNull(0)?.get(memberUI) as? FleetMemberAPI
+                ?: return
 
             val portraitPanel = memberUI.invoke("getPortraitButton") ?: return
             val fader = portraitPanel.invoke("getMouseoverHighlightFader") as? Fader ?: return

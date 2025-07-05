@@ -1,3 +1,13 @@
+1.7.0
+- 'Store Officers In Cargo' setting now exists. When this is toggled to true in the settings: Officers will stay in their ship when moving their ship to storage, thus removing them from your fleet. You can later get that ship from storage, along with the officer.
+- Enabled the Fleet Screen Filter by default
+- Added "civilian" keyword to the filter
+- Added "officered"/"captained" keyword to the filter, to filter for ships that have captains.
+- More robust save loading. Loading blueprints and hullmods now handles missing elements. Loading members now shows what ship was missing in the ship name.
+- Fix improper outlining (again)
+- CTRL V to paste now pastes in the viewed submarket, if the user is currently viewing a submarket rather than their own fleet.
+- Proper creation of AI Core officers on paste
+
 1.6.1
 - Improved fleet filtering functionality. More options and aliases have been added.
 - More accurate autofit outlining.

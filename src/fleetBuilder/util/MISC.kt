@@ -4,6 +4,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -18,6 +19,8 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.CampaignState
+import com.fs.starfarer.campaign.econ.Submarket
+import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.codex2.CodexDetailPanel
 import com.fs.starfarer.codex2.CodexDialog
@@ -201,7 +204,12 @@ object MISC {
 
         tempVariant = tempVariant.clone()
 
-        tempVariant.setVariantDisplayName("ERROR:$displayName")
+        if (displayName.isNotEmpty())
+            tempVariant.setVariantDisplayName("ERR:$displayName")
+        else
+            tempVariant.setVariantDisplayName("ERROR")
+
+        tempVariant.addTag("ERROR")
 
         return tempVariant
     }
@@ -250,6 +258,42 @@ object MISC {
     fun getFleetSidePanel(): UIPanelAPI? {
         val children = getFleetTab()?.getChildrenCopy()
         return children?.find { it.getFieldsMatching(type = UITable::class.java).isNotEmpty() } as? UIPanelAPI
+    }
+
+    fun getMemberUIHoveredInFleetTabLowerPanel(): UIPanelAPI? {
+        val fleetTab = MISC.getFleetTab() ?: return null
+        val mouseOverMember = fleetTab.invoke("getMousedOverFleetMember") as? FleetMemberAPI ?: return null
+
+        val fleetPanel = MISC.getFleetPanel() ?: return null
+        val list = fleetPanel.invoke("getList") ?: return null
+        val items = list.invoke("getItems") as? List<Any?>
+            ?: return null//Core UI box that contains everything related to the fleet member, including the ship, officer, cr, etc. There is one for each member in your fleet.
+
+        // Find UI element of which the mouse is hovering over
+        items.forEach { item ->
+            if (item == null) return@forEach
+
+            //Get all children for this item
+            val children = item.invoke("getChildrenCopy") as? List<Any?> ?: return@forEach
+
+            //Find the UI child with a portrait button
+            val foundUI = children.firstOrNull { child ->
+                child != null && child.getMethodsMatching(name = "getPortraitButton").isNotEmpty()
+            } ?: return@forEach
+
+            //Get FleetMember
+            val fields = foundUI.getFieldsMatching(type = FleetMember::class.java)
+            if (fields.isEmpty()) return@forEach
+
+            //Return if this item's fleet member is not the one we are hovering over
+            val member = fields[0].get(foundUI) as? FleetMemberAPI
+            if (member?.id != mouseOverMember.id) return@forEach
+
+            //If we've got here, this is the UI item the mouse is hovering over.
+            return foundUI as UIPanelAPI?
+        }
+
+        return null
     }
 
     fun getCodexDialog(): CodexDialog? {
@@ -444,6 +488,13 @@ object MISC {
         json: JSONObject
     ) {
         val playerFleet = sector.playerFleet.fleetData
+
+        var uiShowsSubmarketFleet = false
+
+        val fleetToAddTo = getViewedFleetInSubmarket() ?: playerFleet
+        if (fleetToAddTo !== playerFleet)
+            uiShowsSubmarketFleet = true
+
         val (element, missing) = getAnyFromJson(json)
 
         when (element) {
@@ -464,11 +515,11 @@ object MISC {
                 val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, element)
 
                 if (randomPastedCosmetics)
-                    randomizeMemberCosmetics(member, playerFleet)
+                    randomizeMemberCosmetics(member, fleetToAddTo)
 
-                playerFleet.addFleetMember(member)
+                fleetToAddTo.addFleetMember(member)
 
-                showMessage("Added variant of hull '${element.hullSpec.hullName}' to fleet", element.hullSpec.hullName, Misc.getHighlightColor())
+                showMessage("Added variant of hull '${element.hullSpec.hullName}' to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}", element.hullSpec.hullName, Misc.getHighlightColor())
 
                 updateFleetPanelContents()
             }
@@ -480,15 +531,15 @@ object MISC {
                 }
 
                 if (randomPastedCosmetics)
-                    randomizeMemberCosmetics(element, playerFleet)
+                    randomizeMemberCosmetics(element, fleetToAddTo)
 
-                playerFleet.addFleetMember(element)
-                if (!element.captain.isDefault && !element.captain.isAICore)
-                    sector.playerFleet.fleetData.addOfficer(element.captain)
+                fleetToAddTo.addFleetMember(element)
+                if (!element.captain.isDefault && !element.captain.isAICore && !uiShowsSubmarketFleet)
+                    fleetToAddTo.addOfficer(element.captain)
 
                 val shipName = element.hullSpec.hullName
                 val message = buildString {
-                    append("Added '${shipName}' to fleet")
+                    append("Added '${shipName}' to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}")
                     if (!element.captain.isDefault) append(", with an officer")
                 }
 
@@ -514,6 +565,39 @@ object MISC {
         reportMissingElements(missing)
     }
 
+    fun getViewedFleetInSubmarket(
+    ): FleetDataAPI? {
+        val campaignUI = Global.getSector().campaignUI
+
+        if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET && campaignUI.isShowingDialog) {
+            val dialog = campaignUI.currentInteractionDialog ?: return null
+            dialog.interactionTarget?.market ?: return null
+
+            val fleetPanel = getFleetPanel() ?: return null
+
+            return fleetPanel.invoke("getFleetData") as? FleetDataAPI
+        }
+        return null
+    }
+
+    fun getSelectedSubmarketInFleetTab(
+    ): SubmarketAPI? {
+        val campaignUI = Global.getSector().campaignUI
+
+        if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET && campaignUI.isShowingDialog) {
+            val dialog = campaignUI.currentInteractionDialog ?: return null
+            dialog.interactionTarget?.market ?: return null
+
+            val fleetTab = getFleetTab() ?: return null
+
+            return fleetTab
+                .getFieldsMatching(fieldAssignableTo = Submarket::class.java)
+                .getOrNull(0)
+                ?.get(fleetTab) as? SubmarketAPI
+        }
+        return null
+    }
+
     fun updateFleetPanelContents() {
         if (Global.getSector().campaignUI.getActualCurrentTab() != CoreUITabId.FLEET) return
 
@@ -532,17 +616,29 @@ object MISC {
         fleet: FleetDataAPI
     ) {
         member.shipName = fleet.pickShipName(member, Random())
-        randomizePersonCosmetics(member.captain, fleet.fleet.faction)
+        randomizePersonCosmetics(member.captain, fleet.fleet?.faction)
     }
 
     fun randomizePersonCosmetics(
         officer: PersonAPI,
-        faction: FactionAPI
+        faction: FactionAPI?
     ) {
         if (!officer.isDefault && !officer.isAICore) {
-            val randomPerson = faction.createRandomPerson()
-            officer.name = randomPerson.name
-            officer.portraitSprite = randomPerson.portraitSprite
+            val randomPerson = faction?.createRandomPerson()
+            if (randomPerson != null) {
+                officer.name = randomPerson.name
+                officer.portraitSprite = randomPerson.portraitSprite
+            } else {
+                val faction = Global.getSettings().getFactionSpec(Factions.PLAYER)
+                val portrait = if (Math.random() < 0.5)
+                    faction.malePortraits.pick()
+                else
+                    faction.femalePortraits.pick()
+
+                officer.portraitSprite = portrait
+                officer.name.first = "Unknown"
+                officer.name.last = "Officer"
+            }
         }
     }
 
@@ -697,21 +793,17 @@ object MISC {
         }
 
         if (handleKnownHullmods && json.has("knownHullMods")) {
-            try {
-                val hullMods = json.getJSONArray("knownHullMods")
-                for (i in 0 until hullMods.length()) {
-                    val modId = hullMods.optString(i, null) ?: continue
-                    val spec = Global.getSettings().getHullModSpec(modId)
-                    if (spec == null) {
-                        //missing.hullModIds.add(modId)
-                        continue
-                    }
-                    if (!spec.isAlwaysUnlocked && !spec.isHidden && !spec.isHiddenEverywhere) {
-                        sector.characterData.addHullMod(modId)
-                    }
+            val hullMods = json.getJSONArray("knownHullMods")
+            for (i in 0 until hullMods.length()) {
+                val modId = hullMods.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getHullModSpec(modId) }.getOrNull()
+                if (spec == null) {
+                    missing.hullModIds.add(modId)
+                    continue
                 }
-            } catch (e: Exception) {
-                showError("Failed to load known hullmods", e)
+                if (!spec.isAlwaysUnlocked && !spec.isHidden && !spec.isHiddenEverywhere) {
+                    sector.characterData.addHullMod(modId)
+                }
             }
         }
 
@@ -720,39 +812,38 @@ object MISC {
             json.has("fighterBlueprints") &&
             json.has("weaponBlueprints")
         ) {
-            try {
-                val shipBlueprints = json.getJSONArray("shipBlueprints")
-                val fighterBlueprints = json.getJSONArray("fighterBlueprints")
-                val weaponBlueprints = json.getJSONArray("weaponBlueprints")
+            val shipBlueprints = json.getJSONArray("shipBlueprints")
+            val fighterBlueprints = json.getJSONArray("fighterBlueprints")
+            val weaponBlueprints = json.getJSONArray("weaponBlueprints")
 
-                for (i in 0 until shipBlueprints.length()) {
-                    val id = shipBlueprints.optString(i, null) ?: continue
-                    if (Global.getSettings().getHullSpec(id) != null) {
-                        faction.addKnownShip(id, true)
-                    }// else {
-                    //    missing.hullIds.add(id)
-                    //}
+            for (i in 0 until shipBlueprints.length()) {
+                val id = shipBlueprints.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getHullSpec(id) }.getOrNull()
+                if (spec != null) {
+                    faction.addKnownShip(id, true)
+                } else {
+                    missing.hullIds.add(id)
                 }
+            }
 
-                for (i in 0 until fighterBlueprints.length()) {
-                    val id = fighterBlueprints.optString(i, null) ?: continue
-                    if (Global.getSettings().getFighterWingSpec(id) != null) {
-                        faction.addKnownFighter(id, true)
-                    }// else {
-                    //    missing.wingIds.add(id)
-                    //}
+            for (i in 0 until fighterBlueprints.length()) {
+                val id = fighterBlueprints.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getFighterWingSpec(id) }.getOrNull()
+                if (spec != null) {
+                    faction.addKnownFighter(id, true)
+                } else {
+                    missing.wingIds.add(id)
                 }
+            }
 
-                for (i in 0 until weaponBlueprints.length()) {
-                    val id = weaponBlueprints.optString(i, null) ?: continue
-                    if (Global.getSettings().getWeaponSpec(id) != null) {
-                        faction.addKnownWeapon(id, true)
-                    }// else {
-                    //    missing.weaponIds.add(id)
-                    //}
+            for (i in 0 until weaponBlueprints.length()) {
+                val id = weaponBlueprints.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getWeaponSpec(id) }.getOrNull()
+                if (spec != null) {
+                    faction.addKnownWeapon(id, true)
+                } else {
+                    missing.weaponIds.add(id)
                 }
-            } catch (e: Exception) {
-                showError("Failed to load blueprints", e)
             }
         }
 
