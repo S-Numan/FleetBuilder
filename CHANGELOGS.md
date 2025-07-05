@@ -1,5 +1,7 @@
 1.6.2
 - More robust save loading. Loading blueprints and hullmods now handles missing elements. Loading members now shows what ship was missing in the ship name.
+- Added "civilian" filter to fleet filtering
+- 
 
 1.6.1
 - Improved fleet filtering functionality. More options and aliases have been added.
