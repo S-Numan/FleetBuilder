@@ -55,7 +55,6 @@ import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import java.util.*
-import kotlin.jvm.java
 
 object MISC {
     //Short is displayed to the user, full is put in the log/console.

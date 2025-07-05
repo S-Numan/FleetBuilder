@@ -21,7 +21,6 @@ import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.createErrorVariant
 import fleetBuilder.util.allDMods
-import fleetBuilder.util.allSMods
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.getAllAutofitSpecsForShip
@@ -371,7 +370,7 @@ internal object AutofitPanel {
         selectorPlugin.isEqual = false
         selectorPlugin.isBetter = false
         selectorPlugin.isWorse = false
-        
+
         val equalDefault = compareVariantContents(
             variant,
             baseVariant,

@@ -9,17 +9,12 @@ import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
-import fleetBuilder.integration.campaign.CampaignAutofitAdder
-import fleetBuilder.integration.campaign.CampaignClipboardHotkeyHandler
-import fleetBuilder.integration.campaign.CampaignCodexButton
-import fleetBuilder.integration.campaign.CampaignFleetScreenFilter
-import fleetBuilder.integration.campaign.StoreOfficersInCargo
+import fleetBuilder.integration.campaign.*
 import fleetBuilder.integration.save.MakeSaveRemovable
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
-import kotlin.jvm.java
 
 class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedListener {
 

@@ -1,4 +1,4 @@
-1.6.2
+1.7.0
 - 'Store Officers In Cargo' setting now exists. When this is toggled to true in the settings: Officers will stay in their ship when moving their ship to storage, thus removing them from your fleet. You can later get that ship from storage, along with the officer.
 - Enabled the Fleet Screen Filter by default
 - Added "civilian" keyword to the filter
