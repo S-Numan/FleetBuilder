@@ -8,6 +8,7 @@ import com.fs.starfarer.api.combat.ShieldAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
+import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.MISC
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.allSMods
@@ -130,7 +131,7 @@ class FleetFilterPanel(
             isDestroyer && "destroyer".startsWith(desc) -> true
             isCruiser && "cruiser".startsWith(desc) -> true
             isCapital && "capital".startsWith(desc) -> true
-            variant.hasHullMod("automated") && "automated".startsWith(desc) -> true
+            Misc.isAutomated(this) && "automated".startsWith(desc) -> true
             variant.isTransport && ("transport".startsWith(desc) || "marines".startsWith(desc)) -> true
             variant.isTanker && ("tanker".startsWith(desc) || "fuel".startsWith(desc)) -> true
             variant.isLiner && ("liner".startsWith(desc) || "crew".startsWith(desc)) -> true
