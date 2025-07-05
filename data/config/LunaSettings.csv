@@ -6,7 +6,7 @@ See the Autofit Menu tab for more.",,,
 devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When dev mode is enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
 Hold Shift or Alt to multiply the added value by 10
 Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,
-fleetScreenFilter,Fleet Screen Filter,Boolean,false,,"A clickable filter in the fleet screen that lets you type in keywords to filter ships.
+fleetScreenFilter,Fleet Screen Filter,Boolean,true,,"A clickable filter in the fleet screen that lets you type in keywords to filter ships.
 Aside entering hull names such as “sunder”, you can enter keywords such as “phase” “carrier” “destroyer” “civilian” “automated”
 It will hide any ships that do not match the entered filters.
 Prepend your entry with a dash (-) to hide ships that DO match the entry

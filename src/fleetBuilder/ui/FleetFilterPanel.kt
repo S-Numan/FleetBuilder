@@ -138,6 +138,7 @@ class FleetFilterPanel(
             //
             variant.allSMods().isNotEmpty() && "smodded".startsWith(desc) -> true
             variant.allDMods().isNotEmpty() && "dmodded".startsWith(desc) -> true
+            !captain.isDefault && ("officered".startsWith(desc) || "captained".startsWith(desc)) -> true
 
             //
             hullSpec.shipSystemId.startsWith(desc) -> true
