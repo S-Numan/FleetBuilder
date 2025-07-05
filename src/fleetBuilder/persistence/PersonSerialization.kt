@@ -167,7 +167,7 @@ object PersonSerialization {
 
         person.memoryWithoutUpdate.keys.forEach { key ->
             val value = person.memoryWithoutUpdate.get(key)
-            if (value is Boolean) {
+            if (value is Boolean && value) {
                 boolMemKeysJSON.put(key)
             }
         }
