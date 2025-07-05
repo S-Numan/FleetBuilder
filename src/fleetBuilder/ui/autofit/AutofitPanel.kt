@@ -368,6 +368,10 @@ internal object AutofitPanel {
         baseVariant: HullVariantSpec,
         selectorPlugin: AutofitSelector.MagicPaintjobSelectorPlugin
     ) {
+        selectorPlugin.isEqual = false
+        selectorPlugin.isBetter = false
+        selectorPlugin.isWorse = false
+        
         val equalDefault = compareVariantContents(
             variant,
             baseVariant,
@@ -383,9 +387,9 @@ internal object AutofitPanel {
         if (equalDefault) {
             selectorPlugin.isSelected = true
             selectorPlugin.highlightFader.forceIn()
-        }
 
-        outlinePanelBasedOnVariant(baseVariant, variant, selectorPlugin)
+            outlinePanelBasedOnVariant(baseVariant, variant, selectorPlugin)
+        }
     }
 
     private fun outlinePanelBasedOnVariant(
@@ -455,18 +459,13 @@ internal object AutofitPanel {
             }
         }
 
-        selectorPlugin.isEqual = false
-        selectorPlugin.isBetter = false
-        selectorPlugin.isWorse = false
-
         if (equalMods) {
             selectorPlugin.isEqual = true
-        } else
-            if (equalSMods) {
-                selectorPlugin.isBetter = true
-            } else if (unequalDMod || unequalSMods) {
-                selectorPlugin.isWorse = true
-            }
+        } else if (equalSMods) {
+            selectorPlugin.isBetter = true
+        } else if (unequalDMod || unequalSMods) {
+            selectorPlugin.isWorse = true
+        }
     }
 
     private fun removeSelectorPanelButton(
