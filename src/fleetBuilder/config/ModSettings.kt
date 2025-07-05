@@ -22,6 +22,7 @@ import fleetBuilder.config.ModSettings.showCoreGoalVariants
 import fleetBuilder.config.ModSettings.showCoreNonGoalVariants
 import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
+import fleetBuilder.config.ModSettings.storeOfficersInCargo
 import fleetBuilder.config.ModSettings.unassignPlayer
 import fleetBuilder.util.Reporter
 import fleetBuilder.util.containsString
@@ -74,6 +75,7 @@ internal class ModSettingsListener : LunaSettingsListener {
         fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
         devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
         fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
+        storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
 
         autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
 
@@ -181,4 +183,6 @@ object ModSettings {
     val commandShuttleId = "FB_commandershuttle"
 
     var isConsoleModEnabled = false
+
+    var storeOfficersInCargo = false
 }

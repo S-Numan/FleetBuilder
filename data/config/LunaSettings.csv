@@ -76,9 +76,14 @@ Enable the setting ‘Show Hidden HullMods’ in the Dev tab and hover over a sh
 memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
 fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
 extraHeader,Extra Header,Header,Extra,,,,,Misc
+storeOfficersInCargo,Store Officers In Cargo,Boolean,false,,"On putting a ship captained by your officer into cargo, the officer is attached to the ship and leaves your fleet.
+On taking a ship from cargo with your officer attached to it, the officer is added to your fleet again.",,,Misc
+,,,,,,,,
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave -backup” in the console to load it.",,,Misc
+,,,,,,,,
+,,,,,,,,
 ,,,,,,,,
 devHeader,Developer Header,Header,Developer Options,,,,,Dev
 ,,,,,,,,

@@ -20,6 +20,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.CampaignState
 import com.fs.starfarer.campaign.econ.Submarket
+import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.codex2.CodexDetailPanel
 import com.fs.starfarer.codex2.CodexDialog
@@ -258,6 +259,42 @@ object MISC {
     fun getFleetSidePanel(): UIPanelAPI? {
         val children = getFleetTab()?.getChildrenCopy()
         return children?.find { it.getFieldsMatching(type = UITable::class.java).isNotEmpty() } as? UIPanelAPI
+    }
+
+    fun getMemberUIHoveredInFleetTabLowerPanel(): UIPanelAPI? {
+        val fleetTab = MISC.getFleetTab() ?: return null
+        val mouseOverMember = fleetTab.invoke("getMousedOverFleetMember") as? FleetMemberAPI ?: return null
+
+        val fleetPanel = MISC.getFleetPanel() ?: return null
+        val list = fleetPanel.invoke("getList") ?: return null
+        val items = list.invoke("getItems") as? List<Any?>
+            ?: return null//Core UI box that contains everything related to the fleet member, including the ship, officer, cr, etc. There is one for each member in your fleet.
+
+        // Find UI element of which the mouse is hovering over
+        items.forEach { item ->
+            if (item == null) return@forEach
+
+            //Get all children for this item
+            val children = item.invoke("getChildrenCopy") as? List<Any?> ?: return@forEach
+
+            //Find the UI child with a portrait button
+            val foundUI = children.firstOrNull { child ->
+                child != null && child.getMethodsMatching(name = "getPortraitButton").isNotEmpty()
+            } ?: return@forEach
+
+            //Get FleetMember
+            val fields = foundUI.getFieldsMatching(type = FleetMember::class.java)
+            if (fields.isEmpty()) return@forEach
+
+            //Return if this item's fleet member is not the one we are hovering over
+            val member = fields[0].get(foundUI) as? FleetMemberAPI
+            if (member?.id != mouseOverMember.id) return@forEach
+
+            //If we've got here, this is the UI item the mouse is hovering over.
+            return foundUI as UIPanelAPI?
+        }
+
+        return null
     }
 
     fun getCodexDialog(): CodexDialog? {

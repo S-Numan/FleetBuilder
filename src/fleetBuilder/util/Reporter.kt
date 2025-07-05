@@ -13,11 +13,13 @@ import fleetBuilder.integration.campaign.CampaignAutofitAdder
 import fleetBuilder.integration.campaign.CampaignClipboardHotkeyHandler
 import fleetBuilder.integration.campaign.CampaignCodexButton
 import fleetBuilder.integration.campaign.CampaignFleetScreenFilter
+import fleetBuilder.integration.campaign.StoreOfficersInCargo
 import fleetBuilder.integration.save.MakeSaveRemovable
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
+import kotlin.jvm.java
 
 class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedListener {
 
@@ -38,7 +40,8 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
 
             manageListener(CampaignAutofitAdder::class.java, ModSettings.autofitMenuEnabled) { CampaignAutofitAdder() }
             manageListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
-
+            val storeOfficersInCargo = StoreOfficersInCargo()
+            manageListener(StoreOfficersInCargo::class.java, ModSettings.storeOfficersInCargo) { storeOfficersInCargo }
 
             val codexClass = CampaignCodexButton::class.java
             if (ModSettings.devModeCodexButtonEnabled) {
@@ -55,6 +58,10 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
             } else {
                 sector.removeTransientScriptsOfClass(fleetScreenClass)
             }
+
+            //DO NOT REMOVE THIS BASED ON MOD SETTINGS
+            if (!sector.hasTransientScript(StoreOfficersInCargo::class.java))
+                sector.addTransientScript(storeOfficersInCargo)
         }
     }
 
