@@ -3,6 +3,7 @@ package fleetBuilder.persistence
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
+import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import fleetBuilder.variants.MissingElements
@@ -31,8 +32,11 @@ object PersonSerialization {
         person.name.last = json.optString("last", "Officer")
         person.gender = try {
             FullName.Gender.valueOf(json.optString("gender", "MALE"))
-        } catch (e: Exception) {
-            FullName.Gender.MALE // fallback
+        } catch (_: Exception) {
+            if (Math.random() < 0.5)
+                FullName.Gender.MALE
+            else
+                FullName.Gender.FEMALE
         }
 
         // Validate and set portrait if it exists
@@ -42,7 +46,14 @@ object PersonSerialization {
                 person.portraitSprite = portrait
 
         } catch (_: Exception) {
-            // Silently skip invalid portrait
+            val faction = Global.getSettings().getFactionSpec(Factions.PLAYER)
+            val randomPortrait =
+                if (person.gender == FullName.Gender.MALE)
+                    faction.malePortraits.pick()
+                else
+                    faction.femalePortraits.pick()
+
+            person.portraitSprite = randomPortrait
         }
 
         // Add tags if array exists

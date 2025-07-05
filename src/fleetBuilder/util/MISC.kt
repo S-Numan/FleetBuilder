@@ -588,9 +588,21 @@ object MISC {
         faction: FactionAPI?
     ) {
         if (!officer.isDefault && !officer.isAICore) {
-            val randomPerson = faction?.createRandomPerson() ?: Global.getSettings().createPerson()
-            officer.name = randomPerson.name
-            officer.portraitSprite = randomPerson.portraitSprite
+            val randomPerson = faction?.createRandomPerson()
+            if (randomPerson != null) {
+                officer.name = randomPerson.name
+                officer.portraitSprite = randomPerson.portraitSprite
+            } else {
+                val faction = Global.getSettings().getFactionSpec(Factions.PLAYER)
+                val portrait = if (Math.random() < 0.5)
+                    faction.malePortraits.pick()
+                else
+                    faction.femalePortraits.pick()
+
+                officer.portraitSprite = portrait
+                officer.name.first = "Unknown"
+                officer.name.last = "Officer"
+            }
         }
     }
 
