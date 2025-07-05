@@ -464,10 +464,10 @@ object MISC {
         when (element) {
             is PersonAPI -> {
                 if (randomPastedCosmetics) {
-                    randomizePersonCosmetics(element, fleetToAddTo.fleet.faction)
+                    randomizePersonCosmetics(element, playerFleet.fleet.faction)
                 }
-                fleetToAddTo.addOfficer(element)
-                showMessage("Added officer to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}")
+                playerFleet.addOfficer(element)
+                showMessage("Added officer to fleet")
             }
 
             is ShipVariantAPI -> {
@@ -498,7 +498,7 @@ object MISC {
                     randomizeMemberCosmetics(element, fleetToAddTo)
 
                 fleetToAddTo.addFleetMember(element)
-                if (!element.captain.isDefault && !element.captain.isAICore)
+                if (!element.captain.isDefault && !element.captain.isAICore && !uiShowsSubmarketFleet)
                     fleetToAddTo.addOfficer(element.captain)
 
                 val shipName = element.hullSpec.hullName
