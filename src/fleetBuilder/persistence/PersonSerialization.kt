@@ -6,11 +6,14 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
+import com.fs.starfarer.api.util.Misc
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
 import org.magiclib.kotlin.setMentored
 import org.magiclib.kotlin.setMercenary
+import org.magiclib.kotlin.setUnremovable
+import java.util.*
 
 object PersonSerialization {
 
@@ -21,11 +24,19 @@ object PersonSerialization {
     fun getPersonFromJsonWithMissing(json: JSONObject): Pair<PersonAPI, MissingElements> {
         val missing = MissingElements()
 
-        val person = Global.getSettings().createPerson()
-        val aiCoreId = json.optString("aicoreid", "")
+        var person: PersonAPI? = null
 
-        if (aiCoreId.isNotEmpty())
-            person.aiCoreId = aiCoreId
+        val aiCoreId = json.optString("aicoreid", "")
+        if (aiCoreId.isNotEmpty()) {
+            try {
+                person = Misc.getAICoreOfficerPlugin(aiCoreId).createPerson(aiCoreId, Factions.PLAYER, Random())
+            } catch (_: Exception) {
+            }
+        }
+
+        if (person == null) {
+            person = Global.getSettings().createPerson()
+        }
 
         // Safely handle name and gender
         person.name.first = json.optString("first", "Unknown")
@@ -102,7 +113,7 @@ object PersonSerialization {
         if (json.has("trueMemKeys")) {
             val memKeysArray = json.optJSONArray("trueMemKeys")
             for (i in 0 until (memKeysArray?.length() ?: 0)) {
-                person.memory.set(memKeysArray?.optString(i) ?: continue, true)
+                person.memoryWithoutUpdate.set(memKeysArray?.optString(i) ?: continue, true)
             }
         }
 
@@ -120,7 +131,7 @@ object PersonSerialization {
             person.setMercenary(true)
         }
         if (json.optBoolean("unremovable", false)) {
-            person.memory.set("\$captain_unremovable", true)
+            person.setUnremovable(true)
         }
     }
 
@@ -163,16 +174,16 @@ object PersonSerialization {
             json.put("wasplayer", person.isPlayer)
         }
 
-        val boolMemKeysJSON = JSONArray()
+        val trueMemKeysJSON = JSONArray()
 
         person.memoryWithoutUpdate.keys.forEach { key ->
             val value = person.memoryWithoutUpdate.get(key)
             if (value is Boolean && value) {
-                boolMemKeysJSON.put(key)
+                trueMemKeysJSON.put(key)
             }
         }
-        if (boolMemKeysJSON.length() > 0)
-            json.put("trueMemKeys", boolMemKeysJSON)
+        if (trueMemKeysJSON.length() > 0)
+            json.put("trueMemKeys", trueMemKeysJSON)
 
         val skillsObject = JSONObject()
         for (skill in person.stats.skillsCopy) {
