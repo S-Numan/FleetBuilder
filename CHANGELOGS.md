@@ -2,6 +2,7 @@
 - More robust save loading. Loading blueprints and hullmods now handles missing elements. Loading members now shows what ship was missing in the ship name.
 - Added "civilian" filter to fleet filtering
 - Fix improper outlining (again)
+- CTRL V to paste now pastes in the selecated submarket, if the user is currently viewing a submarket rather than their own fleet.
 
 1.6.1
 - Improved fleet filtering functionality. More options and aliases have been added.

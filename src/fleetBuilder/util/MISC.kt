@@ -4,6 +4,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -18,6 +19,7 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.CampaignState
+import com.fs.starfarer.campaign.econ.Submarket
 import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.codex2.CodexDetailPanel
 import com.fs.starfarer.codex2.CodexDialog
@@ -52,6 +54,7 @@ import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import java.util.*
+import kotlin.jvm.java
 
 object MISC {
     //Short is displayed to the user, full is put in the log/console.
@@ -449,15 +452,22 @@ object MISC {
         json: JSONObject
     ) {
         val playerFleet = sector.playerFleet.fleetData
+
+        var uiShowsSubmarketFleet = false
+
+        val fleetToAddTo = getViewedFleetInSubmarket() ?: playerFleet
+        if (fleetToAddTo !== playerFleet)
+            uiShowsSubmarketFleet = true
+
         val (element, missing) = getAnyFromJson(json)
 
         when (element) {
             is PersonAPI -> {
                 if (randomPastedCosmetics) {
-                    randomizePersonCosmetics(element, playerFleet.fleet.faction)
+                    randomizePersonCosmetics(element, fleetToAddTo.fleet.faction)
                 }
-                playerFleet.addOfficer(element)
-                showMessage("Added officer to fleet")
+                fleetToAddTo.addOfficer(element)
+                showMessage("Added officer to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}")
             }
 
             is ShipVariantAPI -> {
@@ -469,11 +479,11 @@ object MISC {
                 val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, element)
 
                 if (randomPastedCosmetics)
-                    randomizeMemberCosmetics(member, playerFleet)
+                    randomizeMemberCosmetics(member, fleetToAddTo)
 
-                playerFleet.addFleetMember(member)
+                fleetToAddTo.addFleetMember(member)
 
-                showMessage("Added variant of hull '${element.hullSpec.hullName}' to fleet", element.hullSpec.hullName, Misc.getHighlightColor())
+                showMessage("Added variant of hull '${element.hullSpec.hullName}' to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}", element.hullSpec.hullName, Misc.getHighlightColor())
 
                 updateFleetPanelContents()
             }
@@ -485,15 +495,15 @@ object MISC {
                 }
 
                 if (randomPastedCosmetics)
-                    randomizeMemberCosmetics(element, playerFleet)
+                    randomizeMemberCosmetics(element, fleetToAddTo)
 
-                playerFleet.addFleetMember(element)
+                fleetToAddTo.addFleetMember(element)
                 if (!element.captain.isDefault && !element.captain.isAICore)
-                    sector.playerFleet.fleetData.addOfficer(element.captain)
+                    fleetToAddTo.addOfficer(element.captain)
 
                 val shipName = element.hullSpec.hullName
                 val message = buildString {
-                    append("Added '${shipName}' to fleet")
+                    append("Added '${shipName}' to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}")
                     if (!element.captain.isDefault) append(", with an officer")
                 }
 
@@ -519,6 +529,39 @@ object MISC {
         reportMissingElements(missing)
     }
 
+    fun getViewedFleetInSubmarket(
+    ): FleetDataAPI? {
+        val campaignUI = Global.getSector().campaignUI
+
+        if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET && campaignUI.isShowingDialog) {
+            val dialog = campaignUI.currentInteractionDialog ?: return null
+            dialog.interactionTarget?.market ?: return null
+
+            val fleetPanel = getFleetPanel() ?: return null
+
+            return fleetPanel.invoke("getFleetData") as? FleetDataAPI
+        }
+        return null
+    }
+
+    fun getSelectedSubmarketInFleetTab(
+    ): SubmarketAPI? {
+        val campaignUI = Global.getSector().campaignUI
+
+        if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET && campaignUI.isShowingDialog) {
+            val dialog = campaignUI.currentInteractionDialog ?: return null
+            dialog.interactionTarget?.market ?: return null
+
+            val fleetTab = getFleetTab() ?: return null
+
+            return fleetTab
+                .getFieldsMatching(fieldAssignableTo = Submarket::class.java)
+                .getOrNull(0)
+                ?.get(fleetTab) as? SubmarketAPI
+        }
+        return null
+    }
+
     fun updateFleetPanelContents() {
         if (Global.getSector().campaignUI.getActualCurrentTab() != CoreUITabId.FLEET) return
 
@@ -537,15 +580,15 @@ object MISC {
         fleet: FleetDataAPI
     ) {
         member.shipName = fleet.pickShipName(member, Random())
-        randomizePersonCosmetics(member.captain, fleet.fleet.faction)
+        randomizePersonCosmetics(member.captain, fleet.fleet?.faction)
     }
 
     fun randomizePersonCosmetics(
         officer: PersonAPI,
-        faction: FactionAPI
+        faction: FactionAPI?
     ) {
         if (!officer.isDefault && !officer.isAICore) {
-            val randomPerson = faction.createRandomPerson()
+            val randomPerson = faction?.createRandomPerson() ?: Global.getSettings().createPerson()
             officer.name = randomPerson.name
             officer.portraitSprite = randomPerson.portraitSprite
         }
