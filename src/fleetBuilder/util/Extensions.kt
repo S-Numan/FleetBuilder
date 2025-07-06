@@ -10,6 +10,7 @@ import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.json.JSONArray
+import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 
@@ -109,6 +110,10 @@ internal fun UIPanelAPI.getChildrenCopy(): List<UIComponentAPI> {
 
 internal fun UIPanelAPI.findChildWithMethod(methodName: String): UIComponentAPI? {
     return getChildrenCopy().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
+}
+
+internal fun UIPanelAPI.findChildWithField(fieldName: String): UIComponentAPI? {
+    return getChildrenCopy().find { it.getFieldsMatching(name = fieldName).isNotEmpty() }
 }
 /*
 fun PersonAPI.isGenericOfficer(): Boolean {
