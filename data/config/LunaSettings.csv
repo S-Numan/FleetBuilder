@@ -6,7 +6,7 @@ See the Autofit Menu tab for more.",,,
 devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When dev mode is enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
 Hold Shift or Alt to multiply the added value by 10
 Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,
-fleetScreenFilter,Fleet Screen Filter,Boolean,true,,"A clickable filter in the fleet screen that lets you type in keywords to filter ships.
+fleetScreenFilter,Fleet Screen Filter,Boolean,false,,"A clickable filter in the fleet screen that lets you type in keywords to filter ships.
 Aside entering hull names such as “sunder”, you can enter keywords such as “phase” “carrier” “destroyer” “civilian” “automated”
 It will hide any ships that do not match the entered filters.
 Prepend your entry with a dash (-) to hide ships that DO match the entry
@@ -71,7 +71,7 @@ They do not apply when saving/copying anything else that may contain a variant, 
 saveSMods,Save Smods,Boolean,true,,"If false: SMods will still be included when saving, but as regular hullmods rather than being SMods.",,,Misc
 saveDMods,Save Dmods,Boolean,false,,If false: DMods will be excluded when saving.,,,Misc
 saveHiddenMods,Save Hidden Mods,Boolean,false,,"If false: hullmods that do not show up in the hullmods list will be excluded when saving.
-Enable the setting ‘Show Hidden HullMods’ in the Dev tab and hover over a ship in the autofit menu to see it’s hidden hullmods, provided it has them.",,,Misc
+Enable the setting ‘Show Hidden HullMods’ in the Dev tab and hover over a ship in the autofit menu to see its hidden hullmods, provided it has them.",,,Misc
 ,,,,,,,,
 memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
 fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc

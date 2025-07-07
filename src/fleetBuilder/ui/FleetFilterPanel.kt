@@ -16,21 +16,40 @@ import starficz.ReflectionUtils.invoke
 
 class FleetFilterPanel(
     height: Float,
-    private val fleetPanel: UIPanelAPI,
-    private val fleetSidePanel: UIPanelAPI
+    private var fleetSidePanel: UIPanelAPI
 ) : CustomUIPanelPlugin {
 
     private val defaultText = "Search for a ship"
     private var mainPanel: CustomPanelAPI
+
     private var textField: TextFieldAPI
-    private var prevString: String = defaultText
+    private lateinit var prevString: String
+
+    fun resetText() {
+        textField.text = defaultText
+        prevString = defaultText
+    }
+
 
     private val yPad = 5f
     private val xOffset = -10f
 
-    private var initTick = false
+    private var advanceInit = false
+
+    companion object {
+        var fleetPanelFilterCallback: (() -> Unit)? = null
+        fun removePreviousIfAny() {
+            fleetPanelFilterCallback?.let { MISC.removePostUpdateFleetPanelCallback(it) }
+        }
+    }
 
     init {
+        // Remove the previous one, if any
+        removePreviousIfAny()
+        // Create the new one
+        fleetPanelFilterCallback = { filterFleetGrid() }
+        // Register the new one
+        MISC.addPostUpdateFleetPanelCallback(fleetPanelFilterCallback!!)
 
         val width = fleetSidePanel.getChildrenCopy().minByOrNull { it.x }?.width ?: 32f
 
@@ -39,16 +58,16 @@ class FleetFilterPanel(
 
         val tooltip = mainPanel.createUIElement(width, height, false)
         textField = tooltip.addTextField(width, height, Fonts.DEFAULT_SMALL, 0f)
-        textField.text = defaultText
         textField.isLimitByStringWidth = false
+        resetText()
 
         mainPanel.addUIElement(tooltip).inTL(0f, 0f)
         fleetSidePanel.addComponent(mainPanel)//.inBR(xPad, yPad)
     }
 
     override fun advance(amount: Float) {
-        if (!initTick) {
-            initTick = true
+        if (!advanceInit) {
+            advanceInit = true
 
             //Reposition again in case other mods mess with the UI
             val lowestChild = fleetSidePanel.findChildWithMethod("createStoryPointsLabel")
@@ -61,16 +80,19 @@ class FleetFilterPanel(
         }
 
         if (textField.hasFocus()) {
-            if (textField.text == defaultText) {
+            if (textField.text == defaultText) {//On focus
                 textField.text = ""
                 prevString = ""
             } else {
+                val fleetPanel = MISC.getFleetPanel() ?: return
                 //Unfocus textField if mouse is inside fleetPanel
                 if (Global.getSettings().mouseX > fleetPanel.x) {
                     textField.invoke("releaseFocus", null)
                 }
             }
-
+        } else if (textField.text == "") {//Left focus with no input?
+            resetText()
+            return
         }
 
         if (textField.text == prevString) {
@@ -78,6 +100,14 @@ class FleetFilterPanel(
         }
 
         MISC.updateFleetPanelContents()
+
+        prevString = textField.text
+    }
+
+    private fun filterFleetGrid() {
+        val fleetPanel = MISC.getFleetPanel() ?: return
+
+        if (textField.text.isNullOrEmpty() || textField.text == defaultText) return
 
         val fleetGrid = fleetPanel.findChildWithMethod("removeItem") ?: return
 
@@ -102,8 +132,6 @@ class FleetFilterPanel(
         }
 
         fleetGrid.invoke("collapseEmptySlots")
-
-        prevString = textField.text
     }
 
     private fun FleetMemberAPI.matchesDescription(desc: String): Boolean {

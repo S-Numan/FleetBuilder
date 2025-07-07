@@ -598,6 +598,17 @@ object MISC {
         return null
     }
 
+    private var postUpdateFleetPanelCallbacks = mutableListOf<() -> Unit>()
+    fun addPostUpdateFleetPanelCallback(callback: () -> Unit) {
+        if (postUpdateFleetPanelCallbacks.contains(callback)) return
+
+        postUpdateFleetPanelCallbacks.add(callback)
+    }
+
+    fun removePostUpdateFleetPanelCallback(callback: () -> Unit) {
+        postUpdateFleetPanelCallbacks.remove(callback)
+    }
+
     fun updateFleetPanelContents() {
         if (Global.getSector().campaignUI.getActualCurrentTab() != CoreUITabId.FLEET) return
 
@@ -609,6 +620,8 @@ object MISC {
         } catch (_: Exception) {
         }
         fleetPanel?.invoke("updateListContents")
+
+        postUpdateFleetPanelCallbacks.forEach { it.invoke() }
     }
 
     fun randomizeMemberCosmetics(
