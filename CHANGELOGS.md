@@ -1,3 +1,10 @@
+1.7.2
+- CTRL + C in the fleet screen now copies only the visible fleet members. If you copy your fleet with a Fleet Filter on, it'll only copy those applicable to the filter. Additionally, it copies fleets in the submarkets for sale.
+Technical
+- Moderately refactored the saveFleetToJson and loadFleetFromJson functions.
+- Uses 'isFlagship' to denote a commander instead of a seperate commander entry. If valid.
+- Settings for getting a fleet from a JSON now follow the same Settings paramters as all the other serialization functions.
+
 1.7.1
 - Disabled the Fleet Screen Filter by default. To avoid adding undesired UI without the user wanting it.
 - The Fleet Filter now stays when the fleet panel updates, such as when pasting a new ship into the fleet.
