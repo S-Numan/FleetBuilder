@@ -80,7 +80,7 @@ class FleetFilterPanel(
         }
 
         if (textField.hasFocus()) {
-            if (textField.text == defaultText) {
+            if (textField.text == defaultText) {//On focus
                 textField.text = ""
                 prevString = ""
             } else {
@@ -90,7 +90,9 @@ class FleetFilterPanel(
                     textField.invoke("releaseFocus", null)
                 }
             }
-
+        } else if (textField.text == "") {//Left focus with no input?
+            resetText()
+            return
         }
 
         if (textField.text == prevString) {
