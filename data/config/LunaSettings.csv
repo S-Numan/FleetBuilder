@@ -65,6 +65,14 @@ This is true by default in missions, as there is no real cargo to source ship eq
 dontForceClearDMods,Dont Force Clear D-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove D-Mods on autofit",,,Autofit Menu
 dontForceClearSMods,Dont Force Clear S-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove S-Mods on autofit",,,Autofit Menu
 ,,,,,,,,
+extraHeader,Extra Header,Header,Extra,,,,,Misc
+storeOfficersInCargo,Store Officers In Cargo,Boolean,false,,"Officers stay with their ships when putting a ship in storage, thus removing them from your fleet.
+Upon retrieving the ship from storage, the officer returns to your fleet as its pilot.",,,Misc
+,,,,,,,,
+backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
+This might be useful if your save game gets bricked and you can’t load it.
+Put “loadsave -backup” in the console to load it.",,,Misc
+,,,,,,,,
 variantHeader,Variant Header,Header,Variant Saving Settings,,,,,Misc
 variantTextField,Variant Text Field,Text,"The settings below apply when saving/copying a variant alone.
 They do not apply when saving/copying anything else that may contain a variant, such as a fleet member or an entire fleet.",,,,,Misc
@@ -73,15 +81,16 @@ saveDMods,Save Dmods,Boolean,false,,If false: DMods will be excluded when saving
 saveHiddenMods,Save Hidden Mods,Boolean,false,,"If false: hullmods that do not show up in the hullmods list will be excluded when saving.
 Enable the setting ‘Show Hidden HullMods’ in the Dev tab and hover over a ship in the autofit menu to see its hidden hullmods, provided it has them.",,,Misc
 ,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
 memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
 fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
-extraHeader,Extra Header,Header,Extra,,,,,Misc
-storeOfficersInCargo,Store Officers In Cargo,Boolean,false,,"On putting a ship captained by your officer into cargo, the officer is attached to the ship and leaves your fleet.
-On taking a ship from cargo with your officer attached to it, the officer is added to your fleet again.",,,Misc
 ,,,,,,,,
-backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
-This might be useful if your save game gets bricked and you can’t load it.
-Put “loadsave -backup” in the console to load it.",,,Misc
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
