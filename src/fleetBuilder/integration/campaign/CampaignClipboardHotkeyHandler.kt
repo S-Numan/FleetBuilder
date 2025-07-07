@@ -118,7 +118,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleCodexCopy(event: InputEventAPI, codex: CodexDialog) {
-        ClipboardFunctions.codexEntryToClipboard(codex)
+        MISC.codexEntryToClipboard(codex)
         event.consume()
     }
 

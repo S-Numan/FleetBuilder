@@ -42,6 +42,7 @@ import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.variants.MissingElements
 import org.apache.log4j.Level
 import org.json.JSONArray
@@ -622,6 +623,26 @@ object MISC {
         fleetPanel?.invoke("updateListContents")
 
         postUpdateFleetPanelCallbacks.forEach { it.invoke() }
+    }
+
+    fun codexEntryToClipboard(codex: CodexDialog) {
+        val param = MISC.getCodexEntryParam(codex)
+        if (param == null) return
+
+        when (param) {
+            is ShipHullSpecAPI -> {
+                val emptyVariant = Global.getSettings().createEmptyVariant(param.hullId, param)
+                val json = saveVariantToJson(emptyVariant)
+                setClipboardText(json.toString(4))
+                MISC.showMessage("Copied codex variant to clipboard")
+            }
+
+            is FleetMemberAPI -> {
+                val json = saveMemberToJson(param)
+                setClipboardText(json.toString(4))
+                MISC.showMessage("Copied codex member to clipboard")
+            }
+        }
     }
 
     fun randomizeMemberCosmetics(
