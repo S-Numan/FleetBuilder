@@ -71,7 +71,7 @@ They do not apply when saving/copying anything else that may contain a variant, 
 saveSMods,Save Smods,Boolean,true,,"If false: SMods will still be included when saving, but as regular hullmods rather than being SMods.",,,Misc
 saveDMods,Save Dmods,Boolean,false,,If false: DMods will be excluded when saving.,,,Misc
 saveHiddenMods,Save Hidden Mods,Boolean,false,,"If false: hullmods that do not show up in the hullmods list will be excluded when saving.
-Enable the setting ‘Show Hidden HullMods’ in the Dev tab and hover over a ship in the autofit menu to see it’s hidden hullmods, provided it has them.",,,Misc
+Enable the setting ‘Show Hidden HullMods’ in the Dev tab and hover over a ship in the autofit menu to see its hidden hullmods, provided it has them.",,,Misc
 ,,,,,,,,
 memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
 fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
