@@ -1,3 +1,6 @@
+1.7.1
+- The Fleet Filter now stays when the fleet panel updates, such as when pasting a new ship into the fleet.
+
 1.7.0
 - 'Store Officers In Cargo' setting now exists. When this is toggled to true in the settings: Officers will stay in their ship when moving their ship to storage, thus removing them from your fleet. You can later get that ship from storage, along with the officer.
 - Enabled the Fleet Screen Filter by default
