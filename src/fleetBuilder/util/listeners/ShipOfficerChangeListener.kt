@@ -19,6 +19,10 @@ object ShipOfficerChangeEvents {
         listeners -= listener
     }
 
+    fun removeTransientListenerWithClass(clazz: Class<out ShipOfficerChangeListener>) {
+        listeners.removeAll { it::class.java == clazz }
+    }
+
     fun clearAll() {
         listeners.clear()
     }
