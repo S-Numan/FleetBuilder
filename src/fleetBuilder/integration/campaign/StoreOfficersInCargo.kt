@@ -47,8 +47,8 @@ class StoreOfficersInCargo : EveryFrameScript, CampaignInputListener {
         if (ui.currentInteractionDialog == null || ui.currentInteractionDialog.interactionTarget == null || ui.currentInteractionDialog.interactionTarget.market == null) return
         val playerFleet = sector.playerFleet ?: return
         //Can only get here if in the fleet tab of a market
-        
-        if (Mouse.isButtonDown(0)) return // Don't do anything if the mouse is down. This is a hack as isLMBUpEvent does not work properly.
+
+        if (Mouse.isButtonDown(0)) return // Don't do anything if the mouse is down. This is a hack as isLMBUpEvent does not work properly for the use-case I want to use it for
         playerFleet.fleetData.membersListCopy.forEach { member ->
             if (member != null && member.captain != null && member.captain.memoryWithoutUpdate.contains("\$FB_stored_officer")) {
                 member.captain.memoryWithoutUpdate.unset("\$FB_stored_officer")
