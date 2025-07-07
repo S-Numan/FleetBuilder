@@ -43,8 +43,8 @@ class StoreOfficersInCargo : EveryFrameScript, CampaignInputListener {
 
 
         val ui = sector.campaignUI ?: return
-        if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return
         if (ui.currentInteractionDialog == null || ui.currentInteractionDialog.interactionTarget == null || ui.currentInteractionDialog.interactionTarget.market == null) return
+        if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return
         val playerFleet = sector.playerFleet ?: return
         //Can only get here if in the fleet tab of a market
 
