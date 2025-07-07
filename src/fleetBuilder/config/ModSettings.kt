@@ -178,7 +178,7 @@ object ModSettings {
 
     var devModeCodexButtonEnabled = true
 
-    var fleetScreenFilter = true
+    var fleetScreenFilter = false
 
     val commandShuttleId = "FB_commandershuttle"
 

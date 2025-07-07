@@ -1,4 +1,5 @@
 1.7.1
+- Disabled the Fleet Screen Filter by default. To avoid adding undesired UI without the user wanting it.
 - The Fleet Filter now stays when the fleet panel updates, such as when pasting a new ship into the fleet.
 
 1.7.0
