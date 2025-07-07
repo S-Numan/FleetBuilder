@@ -2,6 +2,8 @@ package fleetBuilder.persistence
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
+import com.fs.starfarer.api.campaign.FleetDataAPI
+import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
@@ -25,27 +27,46 @@ import java.util.*
 
 object FleetSerialization {
 
-    //Adds the fleet to the inputted fleet
     @JvmOverloads
     fun getFleetFromJson(
         json: JSONObject,
-        campFleet: CampaignFleetAPI,
-        includeOfficers: Boolean = true,
-        includeCommander: Boolean = true,
-        includeNoOfficerPersonality: Boolean = true,
-        includeIdleOfficers: Boolean = false,
-        setFlagship: Boolean = true,
+        inputCampaignFleet: CampaignFleetAPI,
+        settings: FleetSettings = FleetSettings(),
     ): MissingElements {
+        return getFleetFromJson(
+            json,
+            inputCampaignFleet.fleetData, inputCampaignFleet,
+            settings
+        )
+    }
+
+    @JvmOverloads
+    fun getFleetFromJson(
+        json: JSONObject,
+        inputFleetData: FleetDataAPI,
+        settings: FleetSettings = FleetSettings(),
+    ): MissingElements {
+        return getFleetFromJson(
+            json,
+            inputFleetData, inputFleetData.fleet,
+            settings
+        )
+    }
+
+    private fun getFleetFromJson(
+        json: JSONObject,
+        fleet: FleetDataAPI,
+        inputCampaignFleet: CampaignFleetAPI? = null,
+        settings: FleetSettings = FleetSettings(),
+    ): MissingElements {
+        var campFleet = inputCampaignFleet
+        if (campFleet == null)
+            campFleet = fleet.fleet
+
         val missingElements = MissingElements()
         getMissingFromModInfo(json, missingElements)
 
-        val fleet = campFleet.fleetData
-        if (fleet == null) {
-            showError("A campaign fleet's fleetData was null when getting a fleet from json.")
-            return missingElements
-        }
-
-        campFleet.name = json.optString("fleetName", "Nameless fleet")
+        campFleet?.name = json.optString("fleetName", "Nameless fleet")
 
         val aggressionDoctrine = json.optInt("aggression_doctrine", 2)
 
@@ -83,66 +104,86 @@ object FleetSerialization {
             return member
         }
 
+        fun legacyCommanderAssignment(
+            commanderJson: JSONObject,
+            commander: PersonAPI
+        ): Unit? = commanderJson.optJSONObject("member")?.let { memberJson ->
+            val member = getMember(memberJson)
+
+            if (settings.includeCommanderAsOfficer) {
+                fleet.addOfficer(commander)
+                member.captain = commander
+            }
+            //Ensure only one flagship. Also sets the flagship, because .setFlagship(true) does not work for some reason
+            if (settings.includeCommanderSetFlagship) {
+                fleet.membersListWithFightersCopy.forEach {
+                    it.isFlagship = false
+                }
+                member.isFlagship = true
+            }
+
+        }
+
         json.optJSONObject("commander")?.let { commanderJson ->
             val (commander, personMissing) = getPersonFromJsonWithMissing(commanderJson)
             missingElements.add(personMissing)
 
-            if (includeCommander)
-                campFleet.commander = commander
+            if (settings.includeCommanderSetFlagship)
+                campFleet?.commander = commander
 
             // Flagship/Commander's ship
-            commanderJson.optJSONObject("member")?.let { memberJson ->
-                val member = getMember(memberJson)
-
-                if (includeOfficers) {
-                    fleet.addOfficer(commander)
-                    member.captain = commander
-                }
-                //Ensure only one flagship. Also sets the flagship, because .setFlagship(true) does not work for some reason
-                if (setFlagship) {
-                    fleet.membersListWithFightersCopy.forEach {
-                        it.isFlagship = (it.captain === member.captain)
-                    }
-                }
-
-            }
+            legacyCommanderAssignment(commanderJson, commander)
         }
 
         json.optJSONArray("members")?.let { members ->
             for (i in 0 until members.length()) {
-                members.optJSONObject(i)?.let { memberJson ->
-                    val member = getMember(memberJson)
+                val memberJson = members.optJSONObject(i) ?: continue
+                val member = getMember(memberJson)
 
-                    if (includeOfficers)
-                        setMemberOfficerFromJson(memberJson, member, missingElements)
+                var isFlagship = memberJson.optBoolean("isFlagship", false)
 
-                    member.captain?.let {
-                        if (!it.isAICore) {
-                            if (it.isDefault) {
-                                if (includeNoOfficerPersonality//Assign doctrinal aggression to non officered ships
-                                    && Global.getSector().playerFleet !== fleet.fleet//Don't do this to the player's fleet. The player faction's aggresion doctrine should be used instead.
-                                ) {
-                                    val personality = when (aggressionDoctrine) {
-                                        1 -> Personalities.CAUTIOUS
-                                        2 -> Personalities.STEADY
-                                        3 -> Personalities.AGGRESSIVE
-                                        4 -> if (Random().nextBoolean()) Personalities.AGGRESSIVE else Personalities.RECKLESS
-                                        5 -> Personalities.RECKLESS
-                                        else -> Personalities.STEADY // fallback/default
-                                    }
-                                    it.setPersonality(personality)
-                                }
-                            } else if (includeOfficers) {
-                                fleet.addOfficer(it)
+                val officerJson = memberJson.optJSONObject("officer")
+                val officer: PersonAPI? = officerJson?.let {
+                    val (tempOfficer, personMissing) = getPersonFromJsonWithMissing(it)
+                    missingElements.add(personMissing)
+                    tempOfficer
+                }
+
+                if (officer != null) {
+                    if (officer.isDefault && !officer.isAICore) {
+                        if (settings.includeAggresion//Assign doctrinal aggression to non officered ships
+                            && Global.getSector().playerFleet !== fleet.fleet//Don't do this to the player's fleet. The player faction's aggression doctrine should be used instead.
+                        ) {
+                            val personality = when (aggressionDoctrine) {
+                                1 -> Personalities.CAUTIOUS
+                                2 -> Personalities.STEADY
+                                3 -> Personalities.AGGRESSIVE
+                                4 -> if (Random().nextBoolean()) Personalities.AGGRESSIVE else Personalities.RECKLESS
+                                5 -> Personalities.RECKLESS
+                                else -> Personalities.STEADY // fallback/default
                             }
+                            officer.setPersonality(personality)
                         }
+                    } else if (settings.memberSettings.includeOfficer && (!isFlagship || settings.includeCommanderAsOfficer)) {
+                        member.captain = officer
+                        if (!officer.isAICore)
+                            fleet.addOfficer(officer)
+                    }
+                }
+
+                if (isFlagship && settings.includeCommanderSetFlagship) {
+                    if (officer != null) {
+                        campFleet?.commander = officer
+
+                        fleet.membersListWithFightersCopy.forEach { it.isFlagship = false }
+                        member.isFlagship = true
                     }
                 }
             }
         }
 
         // Idle officers
-        if (includeIdleOfficers) {
+        if (settings.includeIdleOfficers) {
             json.optJSONArray("idleOfficers")?.let { officers ->
                 for (i in 0 until officers.length()) {
                     officers.optJSONObject(i)?.let { officerJson ->
@@ -166,36 +207,54 @@ object FleetSerialization {
 
 
     data class FleetSettings(
-        var includeCommander: Boolean = true, // If a PersonAPI is set as a commander of the fleet.
-        var includeCommanderAsOfficer: Boolean = true, // If a PersonAPI is set as an officer in the fleet.
+        var includeCommanderSetFlagship: Boolean = true, // If the PersonAPI commander is set as a commander of the fleet.
+        var includeCommanderAsOfficer: Boolean = true, // If the PersonAPI commander is set as an officer in the fleet.
         var includeIdleOfficers: Boolean = false,
+        var includeAggresion: Boolean = true,
         var memberSettings: MemberSerialization.MemberSettings = MemberSerialization.MemberSettings(),
+        var excludeMembersWithID: MutableSet<String> = mutableSetOf(),
     )
 
     @JvmOverloads
     fun saveFleetToJson(
-        campFleet: CampaignFleetAPI,
+        fleet: FleetDataAPI,
         settings: FleetSettings = FleetSettings(),
         includeModInfo: Boolean = true,
     ): JSONObject {
+        return saveFleetToJson(fleet, null, settings, includeModInfo)
+    }
+
+    @JvmOverloads
+    fun saveFleetToJson(
+        campaignFleet: CampaignFleetAPI,
+        settings: FleetSettings = FleetSettings(),
+        includeModInfo: Boolean = true,
+    ): JSONObject {
+        return saveFleetToJson(campaignFleet.fleetData, campaignFleet, settings, includeModInfo)
+    }
+
+    private fun saveFleetToJson(
+        fleet: FleetDataAPI,
+        inputCampaignFleet: CampaignFleetAPI? = null,
+        settings: FleetSettings = FleetSettings(),
+        includeModInfo: Boolean = true,
+    ): JSONObject {
+        var campFleet = inputCampaignFleet
+        if (campFleet == null)
+            campFleet = fleet.fleet
+
 
         val fleetJson = JSONObject()
-
-        val fleet = campFleet.fleetData
-        if (fleet == null) {
-            showError("A campaign fleet's fleetData was null when saving a fleet from json.")
-            return fleetJson
-        }
 
         val membersJson = JSONArray()
         val variantsJson = JSONArray()
         val usedVariantIds = mutableSetOf<String>()
         val variantIdMap = mutableMapOf<String, String>() // variant JSON string -> unique variantId
 
-        var commanderJson: JSONObject? = null
+        var flagshipSet = false
 
         for (member in fleet.membersListCopy) {
-            if (member.variant.hasHullMod(commandShuttleId))
+            if (settings.excludeMembersWithID.contains(member.id) || member.variant.hasHullMod(commandShuttleId))
                 continue
 
             if (includeModInfo)
@@ -249,36 +308,29 @@ object FleetSerialization {
             memberJson.remove("variant")
             memberJson.put("variantId", uniqueVariantId)
 
-            if (isCommander) {
-                if (!settings.includeCommander && settings.includeCommanderAsOfficer) {
-                    membersJson.put(memberJson)
-                } else if (settings.includeCommander && settings.includeCommanderAsOfficer) {
-                    commanderJson = savePersonToJson(
-                        fleet.commander,
-                        settings.memberSettings.personSettings
-                    )
-
-                    commanderJson.put("member", memberJson)
-                }
-            } else {
-                membersJson.put(memberJson)
+            if (settings.includeCommanderAsOfficer && settings.includeCommanderSetFlagship && isCommander) {
+                memberJson.put("isFlagship", true)
+                flagshipSet = true
             }
+
+            membersJson.put(memberJson)
+
         }
-        if (settings.includeCommander) {
-            if (commanderJson == null) {
-                commanderJson = savePersonToJson(
+
+        if (settings.includeCommanderSetFlagship && !flagshipSet && !fleet.commander.isDefault) {
+            fleetJson.put(
+                "commander", savePersonToJson(
                     fleet.commander,
                     settings.memberSettings.personSettings
                 )
-            }
-
-            fleetJson.put("commander", commanderJson)
+            )
         }
 
 
         fleetJson.put("members", membersJson)
         fleetJson.put("variants", variantsJson)
-        fleetJson.put("aggression_doctrine", campFleet.faction.doctrine.aggression)
+        if (settings.includeAggresion && campFleet != null && campFleet.faction != null)
+            fleetJson.put("aggression_doctrine", campFleet.faction.doctrine.aggression)
 
         if (settings.includeIdleOfficers) {
             val idleOfficers = fleet.officersCopy.mapNotNull { officerData ->
@@ -290,7 +342,8 @@ object FleetSerialization {
             fleetJson.put("idleOfficers", JSONArray(idleOfficers))
         }
 
-        fleetJson.put("fleetName", campFleet.name)
+        if (campFleet != null)
+            fleetJson.put("fleetName", campFleet.name)
 
         return fleetJson
     }

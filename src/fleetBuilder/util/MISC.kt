@@ -36,6 +36,7 @@ import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
 import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
 import fleetBuilder.persistence.MemberSerialization
+import fleetBuilder.persistence.MemberSerialization.MemberSettings
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.PersonSerialization
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
@@ -144,10 +145,7 @@ object MISC {
 
     fun createFleetFromJson(
         json: JSONObject,
-        includeOfficers: Boolean = true,
-        includeCommander: Boolean = true,
-        includeNoOfficerPersonality: Boolean = true,
-        setFlagship: Boolean = true,
+        settings: FleetSerialization.FleetSettings = FleetSerialization.FleetSettings(),
         faction: String = Factions.INDEPENDENT
     ): CampaignFleetAPI {
         val fleet = Global.getFactory().createEmptyFleet(faction, FleetTypes.TASK_FORCE, true)
@@ -155,10 +153,7 @@ object MISC {
         val missingElements = getFleetFromJson(
             json,
             fleet,
-            includeOfficers = includeOfficers,
-            includeCommander = includeCommander,
-            includeNoOfficerPersonality = includeNoOfficerPersonality,
-            setFlagship = setFlagship
+            settings
         )
 
         reportMissingElements(missingElements)
@@ -492,7 +487,7 @@ object MISC {
 
         var uiShowsSubmarketFleet = false
 
-        val fleetToAddTo = getViewedFleetInSubmarket() ?: playerFleet
+        val fleetToAddTo = getViewedFleetInFleetPanel() ?: playerFleet
         if (fleetToAddTo !== playerFleet)
             uiShowsSubmarketFleet = true
 
@@ -566,14 +561,11 @@ object MISC {
         reportMissingElements(missing)
     }
 
-    fun getViewedFleetInSubmarket(
+    fun getViewedFleetInFleetPanel(
     ): FleetDataAPI? {
         val campaignUI = Global.getSector().campaignUI
 
-        if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET && campaignUI.isShowingDialog) {
-            val dialog = campaignUI.currentInteractionDialog ?: return null
-            dialog.interactionTarget?.market ?: return null
-
+        if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
             val fleetPanel = getFleetPanel() ?: return null
 
             return fleetPanel.invoke("getFleetData") as? FleetDataAPI
@@ -721,7 +713,7 @@ object MISC {
             val fleetJson = saveFleetToJson(
                 sector.playerFleet,
                 FleetSerialization.FleetSettings().apply {
-                    includeCommander = false
+                    includeCommanderSetFlagship = false
                     includeCommanderAsOfficer = false
                     memberSettings.includeOfficer = handleOfficers
                     includeIdleOfficers = handleOfficers
@@ -808,9 +800,11 @@ object MISC {
                     getFleetFromJson(
                         json.getJSONObject("fleet"),
                         playerFleet,
-                        includeOfficers = handleOfficers,
-                        includeIdleOfficers = handleOfficers,
-                        includeCommander = false
+                        FleetSerialization.FleetSettings().apply {
+                            memberSettings.includeOfficer = handleOfficers
+                            includeIdleOfficers = includeIdleOfficers
+                            includeCommanderSetFlagship = false
+                        }
                     )
                 )
             } catch (e: Exception) {

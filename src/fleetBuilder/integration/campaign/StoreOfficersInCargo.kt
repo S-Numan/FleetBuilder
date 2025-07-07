@@ -14,7 +14,7 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.MISC.getSelectedSubmarketInFleetTab
-import fleetBuilder.util.MISC.getViewedFleetInSubmarket
+import fleetBuilder.util.MISC.getViewedFleetInFleetPanel
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.getChildrenCopy
 import org.lwjgl.input.Keyboard
@@ -78,7 +78,7 @@ class StoreOfficersInCargo : EveryFrameScript, CampaignInputListener {
 
         val submarket = getSelectedSubmarketInFleetTab() ?: return
         if (submarket.specId != Submarkets.SUBMARKET_STORAGE || submarket.faction != sector.playerFaction || !submarket.plugin.isFreeTransfer) return //Don't sell officers to other factions
-        val viewedFleet = getViewedFleetInSubmarket()
+        val viewedFleet = getViewedFleetInFleetPanel()
         if (viewedFleet !== sector.playerFleet.fleetData)//If we aren't looking at the user's fleet, don't continue
             return
 
