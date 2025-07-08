@@ -4,7 +4,7 @@
 - Autofit now properly highlights the Mad Roider hullmod (roider_midas)
 Technical
 - Moderately refactored the saveFleetToJson and loadFleetFromJson functions.
-- Uses 'isFlagship' to denote a commander instead of a seperate commander entry. If valid.
+- Uses 'isFlagship' to denote a commander instead of a seperate commander entry. If possible.
 - Settings for getting a fleet from a JSON now follow the same Settings paramters as all the other serialization functions.
 
 1.7.1
