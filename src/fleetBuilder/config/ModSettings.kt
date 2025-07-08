@@ -135,7 +135,9 @@ object ModSettings {
     const val FLEETDIR = (PRIMARYDIR + "Fleets/")
     const val DIRECTORYCONFIGNAME = "directory"
 
-    var hullModsToNeverSave = setOf<String>()
+    private var hullModsToNeverSave = setOf<String>()
+
+    fun getHullModsToNeverSave(): Set<String> = hullModsToNeverSave
 
     val modID = "SN_FleetBuilder"
 

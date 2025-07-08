@@ -11,7 +11,6 @@ import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.fleet.FleetAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.input.InputEventAPI
@@ -139,7 +138,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val json = FleetSerialization.saveFleetToJson(
                 fleetToCopy,
                 FleetSerialization.FleetSettings().apply {
-                    memberSettings.personSettings.storeLevelingStats = false
+                    memberSettings.personSettings.handleXpAndPoints = false
                 }
             )
 

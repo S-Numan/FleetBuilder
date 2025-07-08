@@ -15,7 +15,7 @@ object VariantLib {
 
     private lateinit var allDMods: Set<String>
     private lateinit var allHiddenEverywhereMods: Set<String>
-    private lateinit var variantMap: MutableMap<String, MutableList<ShipVariantAPI>>
+    private lateinit var variantMap: Map<String, List<ShipVariantAPI>>
 
     fun onApplicationLoad() {
         allDMods = Global.getSettings().allHullModSpecs
@@ -31,7 +31,7 @@ object VariantLib {
             .toSet()
 
         //val variantIdMap = Global.getSettings().hullIdToVariantListMap//Does not contain every variant
-        variantMap = mutableMapOf()
+        val tempVariantMap: MutableMap<String, MutableList<ShipVariantAPI>> = mutableMapOf()
         for (variantId in Global.getSettings().allVariantIds) {
             val variant = Global.getSettings().getVariant(variantId) ?: continue
             if (variant.source != VariantSource.STOCK) continue
@@ -48,12 +48,13 @@ object VariantLib {
             }*/
 
             //getOrPut
-            //Checks if variantMap contains the key hullId.
+            //Checks if tempVariantMap contains the key hullId.
             //    If yes: returns the existing list.
             //    If no: creates a new mutableListOf() and puts it into the map under hullId
-            val variantsForHull = variantMap.getOrPut(hullId) { mutableListOf() }
-            variantsForHull.add(variant)
+            tempVariantMap.getOrPut(hullId) { mutableListOf() }.add(variant)
         }
+
+        variantMap = tempVariantMap.mapValues { it.value.toList() }
     }
 
     fun getAllDMods(): Set<String> = allDMods

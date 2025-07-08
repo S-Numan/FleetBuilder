@@ -10,7 +10,6 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.MemberSerialization.setMemberOfficerFromJson
 import fleetBuilder.persistence.MemberSerialization.setMemberValuesFromJson
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
@@ -26,6 +25,39 @@ import java.util.*
 
 
 object FleetSerialization {
+
+    /**
+     * Settings for [saveFleetToJson] and [getFleetFromJson].
+     * @param includeCommanderSetFlagship whether to set the PersonAPI commander as the fleet's commander.
+     *
+     * If the commander is assigned as a captain of a ship in the fleet, that ship will also be set as the flagship.
+     * @param includeCommanderAsOfficer whether to include the PersonAPI commander as an officer of the fleet, provided they are one.
+     * @param includeIdleOfficers whether to include officers that are not assigned to a ship in the fleet.
+     * @param includeAggression whether to include the aggression of the fleet in the JSON.
+     *
+     * On save: store the fleet aggression doctrine as "aggression_doctrine" in the JSON
+     *
+     * On load:
+     * Provided the fleet is **not** the player's fleet, every default officer will have their personality assigned to the corresponding aggression based on the input "aggression_doctrine" like in the campaign.
+     *
+     * If this is the player's fleet, nothing happens. If you want something to happen, please set the aggression doctrine of the player's faction yourself.
+     *
+     * @param excludeMembersWithMissingHullSpec whether to exclude fleet members with missing hull specs from the fleet.
+     * If true, no "error variants" will be added to the fleet.
+     * @param excludeMembersWithID a set of fleet member IDs to exclude from the fleet. If a FleetMemberAPI.id is equal to this, it will be excluded.
+     * @param excludeMembersWithHullID a set of hull IDs to exclude from the fleet. If a member has a hull with this ID, it will be excluded.
+     * @param memberSettings a set of settings for loading the members of the fleet.
+     */
+    data class FleetSettings(
+        var includeCommanderSetFlagship: Boolean = true,
+        var includeCommanderAsOfficer: Boolean = true,
+        var includeIdleOfficers: Boolean = false,
+        var includeAggression: Boolean = true,
+        var excludeMembersWithMissingHullSpec: Boolean = false,
+        var excludeMembersWithID: MutableSet<String> = mutableSetOf(),
+        var excludeMembersWithHullID: MutableSet<String> = mutableSetOf(),
+        var memberSettings: MemberSerialization.MemberSettings = MemberSerialization.MemberSettings(),
+    )
 
     @JvmOverloads
     fun getFleetFromJson(
@@ -83,7 +115,7 @@ object FleetSerialization {
             }
         }
 
-        fun getMember(memberJson: JSONObject): FleetMemberAPI {
+        fun getMember(memberJson: JSONObject): FleetMemberAPI? {
             val variantId = memberJson.optString("variantId", "")
 
             val matchingVariant = fleetVariants.firstOrNull { it.hullVariantId == variantId } ?:
@@ -93,12 +125,18 @@ object FleetSerialization {
                 showError("Failed to find variant id of $variantId")
                 createErrorVariant("VariantIDNotFound")
             }
+            if (matchingVariant.hullSpec.hullId in settings.excludeMembersWithHullID)
+                return null
 
             val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, matchingVariant.clone())
             setMemberValuesFromJson(memberJson, member)
 
-            if (matchingVariant.hasTag("ERROR"))
+            if (matchingVariant.hasTag("ERROR")) {
+                if (settings.excludeMembersWithMissingHullSpec)
+                    return null
+
                 member.shipName = matchingVariant.displayName
+            }
 
             fleet.addFleetMember(member)
             return member
@@ -107,21 +145,27 @@ object FleetSerialization {
         fun legacyCommanderAssignment(
             commanderJson: JSONObject,
             commander: PersonAPI
-        ): Unit? = commanderJson.optJSONObject("member")?.let { memberJson ->
-            val member = getMember(memberJson)
+        ) {
+            commanderJson.optJSONObject("member")?.let { memberJson ->
+                val member = getMember(memberJson)
 
-            if (settings.includeCommanderAsOfficer) {
-                fleet.addOfficer(commander)
-                member.captain = commander
-            }
-            //Ensure only one flagship. Also sets the flagship, because .setFlagship(true) does not work for some reason
-            if (settings.includeCommanderSetFlagship) {
-                fleet.membersListWithFightersCopy.forEach {
-                    it.isFlagship = false
+                if (settings.includeCommanderAsOfficer) {
+                    fleet.addOfficer(commander)
+                    member?.captain = commander
                 }
-                member.isFlagship = true
-            }
 
+                if (member == null)
+                    return@let
+
+                //Ensure only one flagship. Also sets the flagship, because .setFlagship(true) does not work for some reason
+                if (settings.includeCommanderSetFlagship) {
+                    fleet.membersListWithFightersCopy.forEach {
+                        it.isFlagship = false
+                    }
+                    member.isFlagship = true
+                }
+
+            }
         }
 
         json.optJSONObject("commander")?.let { commanderJson ->
@@ -151,7 +195,7 @@ object FleetSerialization {
 
                 if (officer != null) {
                     if (officer.isDefault && !officer.isAICore) {
-                        if (settings.includeAggresion//Assign doctrinal aggression to non officered ships
+                        if (settings.includeAggression//Assign doctrinal aggression to non officered ships
                             && Global.getSector().playerFleet !== fleet.fleet//Don't do this to the player's fleet. The player faction's aggression doctrine should be used instead.
                         ) {
                             val personality = when (aggressionDoctrine) {
@@ -165,20 +209,22 @@ object FleetSerialization {
                             officer.setPersonality(personality)
                         }
                     } else if (settings.memberSettings.includeOfficer && (!isFlagship || settings.includeCommanderAsOfficer)) {
-                        member.captain = officer
+                        member?.captain = officer
                         if (!officer.isAICore)
                             fleet.addOfficer(officer)
                     }
-                }
 
-                if (isFlagship && settings.includeCommanderSetFlagship) {
-                    if (officer != null) {
+                    if (isFlagship && settings.includeCommanderSetFlagship) {
                         campFleet?.commander = officer
 
-                        fleet.membersListWithFightersCopy.forEach { it.isFlagship = false }
-                        member.isFlagship = true
+                        if (member != null) {
+                            fleet.membersListWithFightersCopy.forEach { it.isFlagship = false }
+                            member.isFlagship = true
+                        }
                     }
                 }
+
+
             }
         }
 
@@ -204,16 +250,6 @@ object FleetSerialization {
 
         return missingElements
     }
-
-
-    data class FleetSettings(
-        var includeCommanderSetFlagship: Boolean = true, // If the PersonAPI commander is set as a commander of the fleet.
-        var includeCommanderAsOfficer: Boolean = true, // If the PersonAPI commander is set as an officer in the fleet.
-        var includeIdleOfficers: Boolean = false,
-        var includeAggresion: Boolean = true,
-        var memberSettings: MemberSerialization.MemberSettings = MemberSerialization.MemberSettings(),
-        var excludeMembersWithID: MutableSet<String> = mutableSetOf(),
-    )
 
     @JvmOverloads
     fun saveFleetToJson(
@@ -254,7 +290,7 @@ object FleetSerialization {
         var flagshipSet = false
 
         for (member in fleet.membersListCopy) {
-            if (settings.excludeMembersWithID.contains(member.id) || member.variant.hasHullMod(commandShuttleId))
+            if (settings.excludeMembersWithID.contains(member.id) || member.variant.hasHullMod(commandShuttleId) || member.hullId in settings.excludeMembersWithHullID)
                 continue
 
             if (includeModInfo)
@@ -329,7 +365,7 @@ object FleetSerialization {
 
         fleetJson.put("members", membersJson)
         fleetJson.put("variants", variantsJson)
-        if (settings.includeAggresion && campFleet != null && campFleet.faction != null)
+        if (settings.includeAggression && campFleet != null && campFleet.faction != null)
             fleetJson.put("aggression_doctrine", campFleet.faction.doctrine.aggression)
 
         if (settings.includeIdleOfficers) {
