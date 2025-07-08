@@ -21,7 +21,7 @@ import java.util.*
 
 object LoadoutManager {
 
-    val shipDirectories: MutableList<ShipDirectory> = mutableListOf()
+    private val shipDirectories: MutableList<ShipDirectory> = mutableListOf()
 
     fun generatePrefixes(): List<String> {
         val letters = ('A'..'Z') + ('a'..'z')

@@ -16,8 +16,12 @@ object VariantLib {
     private lateinit var allDMods: Set<String>
     private lateinit var allHiddenEverywhereMods: Set<String>
     private lateinit var variantMap: Map<String, List<ShipVariantAPI>>
+    private var init = false
+    fun Loaded() = init
 
     fun onApplicationLoad() {
+        init = true
+
         allDMods = Global.getSettings().allHullModSpecs
             .asSequence()
             .filter { it.hasTag("dmod") }
