@@ -24,39 +24,36 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
 
             val listeners = sector.listenerManager
 
+            // Generic helper for managing listeners
             fun <T : Any> manageListener(clazz: Class<T>, enabled: Boolean, creator: () -> T) {
                 if (enabled) {
-                    if (!listeners.hasListenerOfClass(clazz))
+                    if (!listeners.hasListenerOfClass(clazz)) {
                         listeners.addListener(creator(), true)
+                    }
                 } else {
                     listeners.removeListenerOfClass(clazz)
                 }
             }
 
+            // Generic helper for managing transient scripts
+            fun <T : EveryFrameScript> manageTransientScript(clazz: Class<T>, enabled: Boolean, creator: () -> T) {
+                if (enabled) {
+                    if (!sector.hasTransientScript(clazz)) {
+                        sector.addTransientScript(creator())
+                    }
+                } else {
+                    sector.removeTransientScriptsOfClass(clazz)
+                }
+            }
+
+
             manageListener(CampaignAutofitAdder::class.java, ModSettings.autofitMenuEnabled) { CampaignAutofitAdder() }
             manageListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
-            val storeOfficersInCargo = StoreOfficersInCargo()
-            manageListener(StoreOfficersInCargo::class.java, ModSettings.storeOfficersInCargo) { storeOfficersInCargo }
+            manageListener(StoreOfficersInCargo::class.java, ModSettings.storeOfficersInCargo) { StoreOfficersInCargo() }
 
-            val codexClass = CampaignCodexButton::class.java
-            if (ModSettings.devModeCodexButtonEnabled) {
-                if (!sector.hasTransientScript(codexClass))
-                    sector.addTransientScript(CampaignCodexButton())
-            } else {
-                sector.removeTransientScriptsOfClass(codexClass)
-            }
-
-            val fleetScreenClass = CampaignFleetScreenFilter::class.java
-            if (ModSettings.fleetScreenFilter) {
-                if (!sector.hasTransientScript(fleetScreenClass))
-                    sector.addTransientScript(CampaignFleetScreenFilter())
-            } else {
-                sector.removeTransientScriptsOfClass(fleetScreenClass)
-            }
-
-            //DO NOT REMOVE THIS BASED ON MOD SETTINGS
-            if (!sector.hasTransientScript(StoreOfficersInCargo::class.java))
-                sector.addTransientScript(storeOfficersInCargo)
+            manageTransientScript(CampaignCodexButton::class.java, ModSettings.devModeCodexButtonEnabled) { CampaignCodexButton() }
+            manageTransientScript(CampaignFleetScreenFilter::class.java, ModSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }
+            manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
         }
     }
 
