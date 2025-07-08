@@ -136,9 +136,10 @@ object VariantSerialization {
             repeat(sMods.length()) { i ->
                 val modId = sMods.optString(i)
                 if (Global.getSettings().allHullModSpecs.any { it.id == modId }) {
-                    loadout.addPermaMod(modId, true)
                     if (loadout.hullSpec.builtInMods.contains(modId))
                         loadout.sModdedBuiltIns.add(modId)
+                    else
+                        loadout.addPermaMod(modId, true)
                 } else if (modId !in missingElements.hullModIds) {
                     missingElements.hullModIds.add(modId)
                 }
