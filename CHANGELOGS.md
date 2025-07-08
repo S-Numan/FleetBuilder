@@ -1,5 +1,7 @@
 1.7.2
 - CTRL + C in the fleet screen now copies only the visible fleet members. If you copy your fleet with a Fleet Filter on, it'll only copy those applicable to the filter. Additionally, it copies fleets in the submarkets for sale.
+- Fix SModded fleet filter keyword.
+- Autofit now properly highlights the Mad Roider hullmod (roider_midas)
 Technical
 - Moderately refactored the saveFleetToJson and loadFleetFromJson functions.
 - Uses 'isFlagship' to denote a commander instead of a seperate commander entry. If valid.

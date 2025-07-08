@@ -56,14 +56,14 @@ fun ShipVariantAPI.allDMods(): Set<String> {
 }
 
 fun ShipVariantAPI.allSMods(): Set<String> {
-    val sMods = mutableSetOf<String>()
+    val outputSMods = mutableSetOf<String>()
     for (mod in sMods) {
-        sMods.add(mod)
+        outputSMods.add(mod)
     }
     for (mod in sModdedBuiltIns) {
-        sMods.add(mod)
+        outputSMods.add(mod)
     }
-    return sMods
+    return outputSMods
 }
 
 fun FleetMemberAPI.getShipNameWithoutPrefix(): String {
