@@ -242,7 +242,7 @@ object VariantSerialization {
 
 
     data class VariantSettings(
-        var applySMods: Boolean = true,//If false, SMods will be treated like normal mods.
+        var applySMods: Boolean = true,//If false, SMods will be converted to normal hullmods.
         var includeDMods: Boolean = true,
         var includeHiddenMods: Boolean = true,
         var includeTags: Boolean = true,
