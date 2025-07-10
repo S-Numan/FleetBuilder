@@ -5,7 +5,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.config.ModSettings.hullModsToNeverSave
+import fleetBuilder.config.ModSettings.getHullModsToNeverSave
 import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.getMissingFromModInfo
 import fleetBuilder.util.completelyRemoveMod
@@ -18,7 +18,32 @@ import org.json.JSONObject
 
 object VariantSerialization {
 
-    fun getVariantFromJsonWithMissing(json: JSONObject): Pair<ShipVariantAPI, MissingElements> {
+    /**
+     * Holds settings for [saveVariantToJson] and [loadVariantFromJson].
+     * @param applySMods If false, SMods will be converted to normal hullmods.
+     * @param includeDMods If false, DMods will be excluded from the variant's hullmods.
+     * @param includeHiddenMods If false, hidden mods will be excluded from the variant's hullmods.
+     * @param includeTags If false, the variant's tags will not be saved.
+     * @param excludeWeaponsWithID A set of weapon IDs to exclude from the variant's weapons.
+     * @param excludeWingsWithID A set of wing IDs to exclude from the variant's wings.
+     * @param excludeHullModsWithID A set of hullmod IDs to exclude from the variant's hullmods.
+     */
+    data class VariantSettings(
+        var applySMods: Boolean = true,
+        var includeDMods: Boolean = true,
+        var includeHiddenMods: Boolean = true,
+        var includeTags: Boolean = true,
+        var excludeWeaponsWithID: MutableSet<String> = mutableSetOf(),
+        var excludeWingsWithID: MutableSet<String> = mutableSetOf(),
+        var excludeHullModsWithID: MutableSet<String> = mutableSetOf(),
+    )
+
+    //TODO, when converting from JSON to variant, to JSON to string lists to variant to allow for different formats of data to variant (such as compressed data). With settings.excludeIDs, remove the IDs right at the start.
+    @JvmOverloads
+    fun getVariantFromJsonWithMissing(
+        json: JSONObject,
+        settings: VariantSettings = VariantSettings()
+    ): Pair<ShipVariantAPI, MissingElements> {
         val missingElements = MissingElements()
         getMissingFromModInfo(json, missingElements)
 
@@ -30,7 +55,7 @@ object VariantSerialization {
             val errorVariant = MISC.createErrorVariant("NOHUL:$hullId")
             if (!variantId.isNullOrEmpty())
                 errorVariant.hullVariantId = variantId
-            
+
             return Pair(errorVariant, missingElements)
         }
 
@@ -79,8 +104,10 @@ object VariantSerialization {
                         }
                     }*/
         //Same function
-        json.optJSONArray("tags")?.let {
-            repeat(it.length()) { i -> loadout.addTag(it.getString(i)) }
+        if (settings.includeTags) {
+            json.optJSONArray("tags")?.let {
+                repeat(it.length()) { i -> loadout.addTag(it.getString(i)) }
+            }
         }
 
         json.optJSONArray("hullMods")?.let { hullMods ->
@@ -109,23 +136,55 @@ object VariantSerialization {
             repeat(sMods.length()) { i ->
                 val modId = sMods.optString(i)
                 if (Global.getSettings().allHullModSpecs.any { it.id == modId }) {
-                    loadout.addPermaMod(modId, true)
                     if (loadout.hullSpec.builtInMods.contains(modId))
                         loadout.sModdedBuiltIns.add(modId)
+                    else
+                        loadout.addPermaMod(modId, true)
                 } else if (modId !in missingElements.hullModIds) {
                     missingElements.hullModIds.add(modId)
                 }
             }
         }
 
+
         json.optJSONArray("sModdedbuiltins")?.let { sModBuiltIns ->
             repeat(sModBuiltIns.length()) { i ->
                 val modId = sModBuiltIns.optString(i)
                 if (Global.getSettings().allHullModSpecs.any { it.id == modId }) {
-                    loadout.addPermaMod(modId, true)
                     loadout.sModdedBuiltIns.add(modId)
                 } else if (modId !in missingElements.hullModIds) {
                     missingElements.hullModIds.add(modId)
+                }
+            }
+        }
+
+        val allDMods = VariantLib.getAllDMods()
+        val allHiddenEverywhereMods = VariantLib.getAllHiddenEverywhereMods()
+
+        val modsToProcess = loadout.hullMods.toList()
+
+        modsToProcess.forEach { modId ->
+            when {
+                getHullModsToNeverSave().contains(modId) || settings.excludeHullModsWithID.contains(modId) -> {
+                    loadout.completelyRemoveMod(modId)
+                }
+
+                !settings.includeDMods && allDMods.contains(modId) -> {
+                    loadout.completelyRemoveMod(modId)
+                }
+
+                !settings.includeHiddenMods && allHiddenEverywhereMods.contains(modId) -> {
+                    loadout.completelyRemoveMod(modId)
+                }
+
+                !settings.applySMods && (modId in loadout.sMods || modId in loadout.sModdedBuiltIns) -> {
+                    if (modId in loadout.sMods) {
+                        loadout.removePermaMod(modId)
+                        loadout.addMod(modId)
+                    }
+                    if (modId in loadout.sModdedBuiltIns) {
+                        loadout.sModdedBuiltIns.remove(modId)
+                    }
                 }
             }
         }
@@ -135,7 +194,8 @@ object VariantSerialization {
             repeat(wings.length()) { i ->
                 val wingId = wings.optString(i)
                 if (Global.getSettings().allFighterWingSpecs.any { it.id == wingId }) {
-                    loadout.setWingId(i, wingId)
+                    if (!settings.excludeWingsWithID.contains(wingId))
+                        loadout.setWingId(i, wingId)
                 } else {
                     missingElements.wingIds.add(wingId)
                 }
@@ -167,8 +227,10 @@ object VariantSerialization {
                     if (loadout.hullSpec.isBuiltIn(slotId)) { // If slot is built in, no need to add the weapon the variant, it's already there.
                         wgs.addSlot(slotId)
                     } else if (Global.getSettings().actuallyAllWeaponSpecs.any { it.weaponId == weaponId }) {
-                        loadout.addWeapon(slotId, weaponId)
-                        wgs.addSlot(slotId)
+                        if (!settings.excludeWeaponsWithID.contains(weaponId)) {
+                            loadout.addWeapon(slotId, weaponId)
+                            wgs.addSlot(slotId)
+                        }
                     } else {
                         missingElements.weaponIds.add(weaponId)
                     }
@@ -199,7 +261,7 @@ object VariantSerialization {
 
                 val (moduleVariant, moduleMissing) = getVariantFromJsonWithMissing(jsonModuleVariant)
 
-                if (moduleMissing.hullIds.size != 0) {
+                if (moduleMissing.hullIds.isNotEmpty()) {
                     Global.getLogger(this::class.java)
                         .error("Could not get hullId for module in variant '$variantId' with slotId '$slotId'")
                     continue
@@ -236,17 +298,10 @@ object VariantSerialization {
         return Pair(loadout, missingElements)
     }
 
-    fun getVariantFromJson(json: JSONObject): ShipVariantAPI {
+    @JvmOverloads
+    fun getVariantFromJson(json: JSONObject, settings: VariantSettings = VariantSettings()): ShipVariantAPI {
         return getVariantFromJsonWithMissing(json).first
     }
-
-
-    data class VariantSettings(
-        var applySMods: Boolean = true,//If false, SMods will be treated like normal mods.
-        var includeDMods: Boolean = true,
-        var includeHiddenMods: Boolean = true,
-        var includeTags: Boolean = true,
-    )
 
     @JvmOverloads
     fun saveVariantToJson(
@@ -294,6 +349,9 @@ object VariantSerialization {
 
         val wingsJson = JSONArray()
         for (wing in variant.nonBuiltInWings) {
+            if (wing in settings.excludeWingsWithID)
+                continue
+
             wingsJson.put(wing)
         }
         if (wingsJson.length() != 0)
@@ -311,7 +369,7 @@ object VariantSerialization {
             val weaponsJson = JSONObject()
             for (slotId in wg.slots) {
                 val weaponId = variant.getWeaponId(slotId)
-                if (weaponId != null) {
+                if (weaponId != null && weaponId !in settings.excludeWeaponsWithID) {
                     weaponsJson.put(slotId, weaponId)
                 }
             }
@@ -321,10 +379,8 @@ object VariantSerialization {
         }
         json.put("weaponGroups", weaponGroupsJson)
 
-
-        hullModsToNeverSave.forEach { modId ->
-            variant.completelyRemoveMod(modId)
-        }
+        val allDMods = VariantLib.getAllDMods()
+        val allHiddenEverywhereMods = VariantLib.getAllHiddenEverywhereMods()
 
         val allModIds = buildSet {
             addAll(variant.hullMods)
@@ -333,20 +389,22 @@ object VariantSerialization {
             addAll(variant.permaMods)
         }
 
-        val allDMods = VariantLib.getAllDMods()
-
         allModIds.forEach { modId ->
-            if (!settings.includeDMods && allDMods.contains(modId)) {
-                variant.completelyRemoveMod(modId)
-                return@forEach
-            }
-            val mod = Global.getSettings().getHullModSpec(modId)
-            if (!settings.includeHiddenMods && mod.isHiddenEverywhere) {
-                variant.completelyRemoveMod(modId)
-                return@forEach
-            }
-        }
+            when {
+                getHullModsToNeverSave().contains(modId) || settings.excludeHullModsWithID.contains(modId) -> {
+                    variant.completelyRemoveMod(modId)
+                }
 
+                !settings.includeDMods && allDMods.contains(modId) -> {
+                    variant.completelyRemoveMod(modId)
+                }
+
+                !settings.includeHiddenMods && allHiddenEverywhereMods.contains(modId) -> {
+                    variant.completelyRemoveMod(modId)
+                }
+            }
+
+        }
 
         val hullMods = JSONArray()
         val sMods = JSONArray()
@@ -354,7 +412,6 @@ object VariantSerialization {
         val permaMods = JSONArray()
 
         if (settings.applySMods) {
-
             variant.sModdedBuiltIns.forEach { mod ->
                 sModdedbuiltins.put(mod)
             }
@@ -463,7 +520,7 @@ object VariantSerialization {
         for (mod in variant.hullMods) {
             if ((!settings.includeDMods && VariantLib.getAllDMods().contains(mod))
                 || (!settings.includeHiddenMods && VariantLib.getAllHiddenEverywhereMods().contains(mod))
-                || hullModsToNeverSave.contains(mod)
+                || getHullModsToNeverSave().contains(mod)
             )
                 continue
 

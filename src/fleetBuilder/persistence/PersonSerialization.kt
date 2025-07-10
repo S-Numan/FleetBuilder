@@ -7,6 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
@@ -17,11 +18,29 @@ import java.util.*
 
 object PersonSerialization {
 
-    fun getPersonFromJson(json: JSONObject): PersonAPI {
-        return getPersonFromJsonWithMissing(json).first
+    /* <<<<<<<<<<<<<<  ✨ Windsurf Command 🌟 >>>>>>>>>>>>>>>> */
+    /**
+     * Holds settings for [savePersonToJson] and [getPersonFromJson].
+     * @param handleXpAndPoints whether to save and load XP and skill points from the JSON. If false, these will be ignored.
+     * @param excludeSkillsWithID a set of skill IDs to exclude when loading skills from the JSON. If a skill is in
+     * this set, it will not be loaded.
+     */
+    data class PersonSettings(
+        var handleXpAndPoints: Boolean = true,
+        var excludeSkillsWithID: MutableSet<String> = mutableSetOf(),
+    )
+    /* <<<<<<<<<<  205ea2c6-66d2-4bef-a545-6f1936c458b9  >>>>>>>>>>> */
+
+    @JvmOverloads
+    fun getPersonFromJson(json: JSONObject, settings: PersonSettings = PersonSettings()): PersonAPI {
+        return getPersonFromJsonWithMissing(json, settings).first
     }
 
-    fun getPersonFromJsonWithMissing(json: JSONObject): Pair<PersonAPI, MissingElements> {
+    @JvmOverloads
+    fun getPersonFromJsonWithMissing(
+        json: JSONObject,
+        settings: PersonSettings = PersonSettings()
+    ): Pair<PersonAPI, MissingElements> {
         val missing = MissingElements()
 
         var person: PersonAPI? = null
@@ -30,6 +49,10 @@ object PersonSerialization {
         if (aiCoreId.isNotEmpty()) {
             try {
                 person = Misc.getAICoreOfficerPlugin(aiCoreId).createPerson(aiCoreId, Factions.PLAYER, Random())
+                //AI's come with skills via getAiCoreOfficerPluginthis, we don't want this, so they will be removed.
+                person.stats.skillsCopy.forEach { skill ->
+                    person.stats.setSkillLevel(skill.skill.id, 0f)
+                }
             } catch (_: Exception) {
             }
         }
@@ -88,6 +111,9 @@ object PersonSerialization {
             val keys = skillsObject.keys()
             while (keys.hasNext()) {
                 val skillId = keys.next().toString()
+                if (settings.excludeSkillsWithID.contains(skillId))
+                    continue
+
                 val level = skillsObject.optInt(skillId, 0).coerceIn(0, 2)
                 if (level > 0) {
                     if (Global.getSettings().skillIds.contains(skillId)) {
@@ -100,12 +126,14 @@ object PersonSerialization {
         }
 
         if (personLevel == 0)//Person level was unset?
-            person.stats.level = person.stats.skillsCopy.size//Set it to the amount of skills, it's probably correct.
+            person.stats.level = person.stats.skillsCopy.count { it.skill.isAptitudeEffect.not() && it.level > 0f } //Set it to the amount of skills, it's probably correct.
 
 
-        person.stats.xp = json.optLong("xp", 0)
-        person.stats.bonusXp = json.optLong("bonusxp", 0)
-        person.stats.points = json.optInt("points", 0)
+        if (settings.handleXpAndPoints) {
+            person.stats.xp = json.optLong("xp", 0)
+            person.stats.bonusXp = json.optLong("bonusxp", 0)
+            person.stats.points = json.optInt("points", 0)
+        }
 
         if (json.has("wasplayer"))
             person.addTag("wasplayer")
@@ -135,10 +163,6 @@ object PersonSerialization {
         }
     }
 
-    data class PersonSettings(
-        var storeLevelingStats: Boolean = true
-    )
-
     @JvmOverloads
     fun savePersonToJson(person: PersonAPI, settings: PersonSettings = PersonSettings()): JSONObject {
         val json = JSONObject()
@@ -157,9 +181,9 @@ object PersonSerialization {
             json.put("post", person.postId)
         json.put("personality", person.personalityAPI.id)
 
-        if (settings.storeLevelingStats) {
-            json.put("level", person.stats.level)
+        json.put("level", person.stats.level)
 
+        if (settings.handleXpAndPoints) {
             if (person.stats.xp != 0L) {
                 json.put("xp", person.stats.xp)
             }
@@ -187,7 +211,7 @@ object PersonSerialization {
 
         val skillsObject = JSONObject()
         for (skill in person.stats.skillsCopy) {
-            if (skill.skill.isAptitudeEffect || skill.level <= 0f) continue
+            if (skill.skill.isAptitudeEffect || skill.level <= 0f || settings.excludeSkillsWithID.contains(skill.skill.id)) continue
             skillsObject.put(skill.skill.id, skill.level.toInt())
         }
         if (skillsObject.length() > 0)

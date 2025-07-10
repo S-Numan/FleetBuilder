@@ -3,6 +3,7 @@ package fleetBuilder.consoleCommands
 import com.fs.starfarer.api.Global
 import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
+import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
 import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe
 import fleetBuilder.util.MISC.reportMissingElements
@@ -46,8 +47,9 @@ class ReplaceFleet : BaseCommand {
 
         val missingElements = getFleetFromJson(
             json, playerFleet,
-            includeCommander = false,
-            setFlagship = false//The player is always commanding the flagship. Thus if this isn't false, the player will displace the officer of that ship with themselves.
+            FleetSerialization.FleetSettings().apply {
+                includeCommanderSetFlagship = false//The player is always commanding the flagship. Thus if this isn't false, the player will displace the officer of that ship with themselves.
+            }
         )
 
         reportMissingElements(missingElements)

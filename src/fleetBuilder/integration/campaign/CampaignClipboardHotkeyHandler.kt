@@ -7,6 +7,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
+import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
@@ -32,6 +33,7 @@ import fleetBuilder.util.*
 import fleetBuilder.util.MISC.campaignPaste
 import fleetBuilder.util.MISC.fleetPaste
 import fleetBuilder.util.MISC.getMemberUIHoveredInFleetTabLowerPanel
+import fleetBuilder.util.MISC.getViewedFleetInFleetPanel
 import fleetBuilder.util.MISC.showMessage
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
@@ -118,7 +120,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleCodexCopy(event: InputEventAPI, codex: CodexDialog) {
-        ClipboardFunctions.codexEntryToClipboard(codex)
+        MISC.codexEntryToClipboard(codex)
         event.consume()
     }
 
@@ -136,12 +138,12 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val json = FleetSerialization.saveFleetToJson(
                 fleetToCopy,
                 FleetSerialization.FleetSettings().apply {
-                    memberSettings.personSettings.storeLevelingStats = false
+                    memberSettings.personSettings.handleXpAndPoints = false
                 }
             )
 
             ClipboardUtil.setClipboardText(json.toString(4))
-            MISC.showMessage(
+            showMessage(
                 if (!event.isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1) {
                     "Copied interaction fleet with supporting fleets to clipboard"
                 } else {
@@ -153,9 +155,44 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleFleetCopy(event: InputEventAPI, sector: SectorAPI) {
-        val json = FleetSerialization.saveFleetToJson(sector.playerFleet)
+        val playerFleet = sector.playerFleet.fleetData
+
+        val settings = FleetSerialization.FleetSettings()
+        var fleetToCopy: FleetDataAPI? = null
+        var uiShowsSubmarketFleet = false
+
+        try {
+            fleetToCopy = getViewedFleetInFleetPanel() ?: playerFleet
+            if (fleetToCopy !== playerFleet)
+                uiShowsSubmarketFleet = true
+
+            val fleetGrid = MISC.getFleetPanel()?.findChildWithMethod("removeItem") ?: return
+
+            @Suppress("UNCHECKED_CAST")
+            val items = fleetGrid.invoke("getItems") as? List<UIPanelAPI?> ?: return
+
+            // Collect IDs of visible members from the UI
+            val visibleMemberIds = items.mapNotNull { item ->
+                (item?.invoke("getMember") as? FleetMemberAPI)?.id
+            }.toSet()
+
+            // Exclude any member from the fleet that's not visible in the UI
+            fleetToCopy.membersListCopy.forEach { member ->
+                if (member.id !in visibleMemberIds) {
+                    settings.excludeMembersWithID.add(member.id)
+                }
+            }
+        } catch (e: Exception) {
+            MISC.showError("FleetBuilder hotkey had an error", e)
+        }
+        if (fleetToCopy == null) {
+            MISC.showError("FleetBuilder hotkey failed")
+            return
+        }
+
+        val json = FleetSerialization.saveFleetToJson(fleetToCopy, settings)
         ClipboardUtil.setClipboardText(json.toString(4))
-        MISC.showMessage("Copied entire fleet to clipboard")
+        showMessage("Copied ${if (settings.excludeMembersWithID.isEmpty()) "entire" else "visible"} ${if (uiShowsSubmarketFleet) "submarket fleet" else "fleet"} to clipboard")
         event.consume()
     }
 
@@ -177,7 +214,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         ClipboardUtil.setClipboardText(json.toString(4))
 
-        MISC.showMessage("Variant copied to clipboard")
+        showMessage("Variant copied to clipboard")
         event.consume()
     }
 
@@ -196,7 +233,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         } ?: VariantSerialization.getVariantFromJsonWithMissing(json)//JSON is of a ShipVariantAPI (also fallback)
 
         if (missing.hullIds.isNotEmpty()) {
-            MISC.showMessage(
+            showMessage(
                 "Failed to import loadout. Could not find hullId ${json.optString("hullId", "")}",
                 Color.YELLOW
             )
@@ -205,7 +242,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
 
         val loadoutExists = LoadoutManager.importShipLoadout(variant, missing)
-        MISC.showMessage(
+        showMessage(
             if (!loadoutExists) {
                 "Imported loadout with hull: ${variant.hullSpec.hullId}"
             } else {
@@ -219,7 +256,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleFleetPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         val json = ClipboardUtil.getClipboardJson() ?: run {
-            MISC.showMessage("No valid json in clipboard", Color.YELLOW)
+            showMessage("No valid json in clipboard", Color.YELLOW)
             event.consume()
             return
         }
@@ -241,7 +278,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
             val json = PersonSerialization.savePersonToJson(hoverOfficer)
             ClipboardUtil.setClipboardText(json.toString(4))
-            MISC.showMessage("Officer copied to clipboard")
+            showMessage("Officer copied to clipboard")
             event.consume()
         } catch (e: Exception) {
             MISC.showError("FleetBuilder hotkey failed", e)
@@ -263,11 +300,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 if (isPortraitHoveredOver) {
                     val json = PersonSerialization.savePersonToJson(mouseOverMember.captain)
                     ClipboardUtil.setClipboardText(json.toString(4))
-                    MISC.showMessage("Officer copied to clipboard")
+                    showMessage("Officer copied to clipboard")
                 } else {
                     val json = MemberSerialization.saveMemberToJson(mouseOverMember)
                     ClipboardUtil.setClipboardText(json.toString(4))
-                    MISC.showMessage("Fleet member copied to clipboard")
+                    showMessage("Fleet member copied to clipboard")
                 }
                 event.consume()
             } else if (isPortraitHoveredOver && mouseOverMember.captain.isPlayer) {
@@ -284,7 +321,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     when {
                         isShuttle -> {
                             if (sector.playerFleet.fleetSizeCount == 1)
-                                MISC.showMessage("Cannot remove last ship in fleet", Color.YELLOW)
+                                showMessage("Cannot remove last ship in fleet", Color.YELLOW)
                             else
                                 CommanderShuttle.removePlayerShuttle()
                         }
@@ -294,7 +331,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                         }
 
                         else -> {
-                            MISC.showMessage(
+                            showMessage(
                                 "Unassign Player must be on in the FleetBuilder mod settings to unassign the player",
                                 Color.YELLOW
                             )
@@ -332,7 +369,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val member = thing.invoke("getMember") as? FleetMemberAPI ?: return
             val json = PersonSerialization.savePersonToJson(member.captain)
             ClipboardUtil.setClipboardText(json.toString(4))
-            MISC.showMessage("Officer copied to clipboard")
+            showMessage("Officer copied to clipboard")
             event.consume()
         } catch (e: Exception) {
             MISC.showError("FleetBuilder hotkey failed", e)

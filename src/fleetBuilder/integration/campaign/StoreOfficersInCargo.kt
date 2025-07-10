@@ -14,7 +14,7 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.util.MISC
 import fleetBuilder.util.MISC.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.MISC.getSelectedSubmarketInFleetTab
-import fleetBuilder.util.MISC.getViewedFleetInSubmarket
+import fleetBuilder.util.MISC.getViewedFleetInFleetPanel
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.getChildrenCopy
 import org.lwjgl.input.Keyboard
@@ -22,48 +22,7 @@ import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 
-class StoreOfficersInCargo : EveryFrameScript, CampaignInputListener {
-    var init = false
-
-    override fun advance(amount: Float) {
-        val sector = Global.getSector() ?: return
-        if (!sector.isPaused) return
-
-        if (!init) {
-            init = true
-
-            /*ShipOfficerChangeEvents.addTransientListener { change ->
-                if (change.current != null && change.current.memoryWithoutUpdate.contains("\$FB_stored_officer")) {
-                    change.current.memoryWithoutUpdate.unset("\$FB_stored_officer")
-                    change.current.memoryWithoutUpdate.unset(Misc.CAPTAIN_UNREMOVABLE)
-                    Global.getSector().playerFleet.fleetData.addOfficer(change.current)
-                }
-            }*/
-        }
-
-
-        val ui = sector.campaignUI ?: return
-        if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return
-        val playerFleet = sector.playerFleet ?: return
-        if (Mouse.isButtonDown(0)) return // Don't do anything if the mouse is down. This is a hack as isLMBUpEvent does not work properly.
-        playerFleet.fleetData.membersListCopy.forEach { member ->
-            if (member != null && member.captain != null && member.captain.memoryWithoutUpdate.contains("\$FB_stored_officer")) {
-                member.captain.memoryWithoutUpdate.unset("\$FB_stored_officer")
-                member.captain.memoryWithoutUpdate.unset(Misc.CAPTAIN_UNREMOVABLE)
-
-                playerFleet.fleetData.addOfficer(member.captain)
-            }
-        }
-    }
-
-    override fun isDone(): Boolean {
-        return false
-    }
-
-    override fun runWhilePaused(): Boolean {
-        return true
-    }
-
+class StoreOfficersInCargo : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 10
 
     override fun processCampaignInputPreCore(events: List<InputEventAPI>) {
@@ -74,8 +33,8 @@ class StoreOfficersInCargo : EveryFrameScript, CampaignInputListener {
         if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return
 
         val submarket = getSelectedSubmarketInFleetTab() ?: return
-        if (submarket.specId != Submarkets.SUBMARKET_STORAGE || submarket.faction != sector.playerFaction || !submarket.plugin.isFreeTransfer) return //Don't sell officers to other factions
-        val viewedFleet = getViewedFleetInSubmarket()
+        if (submarket.faction != sector.playerFaction || !submarket.plugin.isFreeTransfer) return //Don't sell officers to other factions
+        val viewedFleet = getViewedFleetInFleetPanel()
         if (viewedFleet !== sector.playerFleet.fleetData)//If we aren't looking at the user's fleet, don't continue
             return
 

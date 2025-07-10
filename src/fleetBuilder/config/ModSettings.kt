@@ -28,6 +28,7 @@ import fleetBuilder.util.Reporter
 import fleetBuilder.util.containsString
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.generatePrefixes
+import fleetBuilder.variants.VariantLib
 import lunalib.lunaSettings.LunaSettings
 import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
@@ -84,7 +85,9 @@ internal class ModSettingsListener : LunaSettingsListener {
             autofitMenuHotkey = _autofitMenuHotkey
         }
 
-        LoadoutManager.loadAllDirectories()//Reload the LoadoutManager
+        if (VariantLib.Loaded())
+            LoadoutManager.loadAllDirectories()//Reload the LoadoutManager
+
         Reporter.setListeners()
     }
 }
@@ -135,7 +138,9 @@ object ModSettings {
     const val FLEETDIR = (PRIMARYDIR + "Fleets/")
     const val DIRECTORYCONFIGNAME = "directory"
 
-    var hullModsToNeverSave = setOf<String>()
+    private var hullModsToNeverSave = setOf<String>()
+
+    fun getHullModsToNeverSave(): Set<String> = hullModsToNeverSave
 
     val modID = "SN_FleetBuilder"
 

@@ -17,6 +17,21 @@ import org.lazywizard.lazylib.ext.json.optFloat
 
 object MemberSerialization {
 
+    /**
+     * Settings for [saveMemberToJson] and [getMemberFromJson].
+     *
+     * @param includeOfficer Whether to include the officer when saving the member to JSON.
+     * @param includeCR Whether to include the CR when saving the member to JSON.
+     * @param personSettings The settings for [PersonSerialization] used when saving the officer.
+     * @param variantSettings The settings for [VariantSerialization] used when saving the variant.
+     */
+    data class MemberSettings(
+        var includeOfficer: Boolean = true,
+        var includeCR: Boolean = true,
+        var personSettings: PersonSerialization.PersonSettings = PersonSerialization.PersonSettings(),
+        var variantSettings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings()
+    )
+
     //You may want to add the officer on the fleet member to the fleet, provided there is an officer. Otherwise the logic may not behave as expected
     @JvmOverloads
     fun getMemberFromJsonWithMissing(
@@ -78,14 +93,6 @@ object MemberSerialization {
             member.captain = officer
         }
     }
-
-    data class MemberSettings(
-        var includeOfficer: Boolean = true,
-        var includeCR: Boolean = true,
-        var personSettings: PersonSerialization.PersonSettings = PersonSerialization.PersonSettings(),
-        var variantSettings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings()
-    )
-
 
     @JvmOverloads
     fun saveMemberToJson(

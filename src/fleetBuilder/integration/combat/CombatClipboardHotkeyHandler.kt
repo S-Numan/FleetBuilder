@@ -12,9 +12,9 @@ import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
-import fleetBuilder.util.ClipboardFunctions.codexEntryToClipboard
 import fleetBuilder.util.ClipboardUtil
 import fleetBuilder.util.MISC
+import fleetBuilder.util.MISC.codexEntryToClipboard
 import fleetBuilder.util.MISC.getCodexDialog
 import fleetBuilder.util.MISC.showError
 import fleetBuilder.util.MISC.showMessage
