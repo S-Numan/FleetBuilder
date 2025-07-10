@@ -6,10 +6,13 @@ import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
+
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.FBMisc
+
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.getChildrenCopy
@@ -67,19 +70,10 @@ class StoreOfficersInCargo : CampaignInputListener {
                         } != null
                     } ?: return@forEach
 
-                    val mouseX = Global.getSettings().mouseX
-                    val mouseY = Global.getSettings().mouseY
-
-                    val x = desiredButton.position.x
-                    val y = desiredButton.position.y
-                    val width = desiredButton.position.width
-                    val height = desiredButton.position.height
-
-                    if (mouseX >= x && mouseX <= x + width &&
-                        mouseY >= y && mouseY <= y + height
-                    ) {
+                    if (FBMisc.isMouseHoveringOverComponent(desiredButton)) {
                         storeOfficer(memberUI)
                     }
+
                 } catch (e: Exception) {
                     DisplayMessage.showError("Storing the officer in cargo failed", e)
                 }

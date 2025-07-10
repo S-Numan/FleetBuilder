@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
+import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
@@ -44,6 +45,24 @@ import java.awt.Color
 import java.util.*
 
 object FBMisc {
+
+    fun isMouseHoveringOverComponent(component: UIComponentAPI): Boolean {
+        val mouseX = Global.getSettings().mouseX
+        val mouseY = Global.getSettings().mouseY
+
+        val x = component.position.x
+        val y = component.position.y
+        val width = component.position.width
+        val height = component.position.height
+
+        if (mouseX >= x && mouseX <= x + width &&
+            mouseY >= y && mouseY <= y + height
+        ) {
+            return true
+        }
+
+        return false
+    }
 
     fun createFleetFromJson(
         json: JSONObject,
