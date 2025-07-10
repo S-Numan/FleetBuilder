@@ -1,3 +1,8 @@
+## 1.9.0
+-
+### Technical
+- A sweeping refactor
+
 ## 1.8.0
 - CTRL + C in the fleet screen now copies only the visible fleet members. If you copy your fleet with a Fleet Filter on, it'll only copy those applicable to the filter. Additionally, it copies fleets in the submarkets for sale.
 - Fix SModded fleet filter keyword.

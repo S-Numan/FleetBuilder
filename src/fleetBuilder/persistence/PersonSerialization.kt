@@ -7,7 +7,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
+import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject

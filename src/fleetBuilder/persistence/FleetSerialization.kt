@@ -9,16 +9,18 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.config.ModSettings.commandShuttleId
+import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
+import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.MemberSerialization.setMemberValuesFromJson
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
-import fleetBuilder.util.MISC.createErrorVariant
-import fleetBuilder.util.MISC.getMissingFromModInfo
-import fleetBuilder.util.MISC.showError
+import fleetBuilder.util.FBMisc
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.VariantLib
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
@@ -81,7 +83,7 @@ object FleetSerialization {
         val campFleet: CampaignFleetAPI? = fleet.fleet
 
         val missingElements = MissingElements()
-        getMissingFromModInfo(json, missingElements)
+        FBMisc.getMissingFromModInfo(json, missingElements)
 
         campFleet?.name = json.optString("fleetName", "Nameless fleet")
 
@@ -107,8 +109,8 @@ object FleetSerialization {
             //  if (Global.getSettings().doesVariantExist(variantId)) {
             //     Global.getSettings().getVariant(variantId)
             run {
-                showError("Failed to find variant id of $variantId")
-                createErrorVariant("VariantIDNotFound")
+                DisplayMessage.showError("Failed to find variant id of $variantId")
+                VariantLib.createErrorVariant("VariantIDNotFound")
             }
             if (matchingVariant.hullSpec.hullId in settings.excludeMembersWithHullID)
                 return null
@@ -224,7 +226,7 @@ object FleetSerialization {
 
                             fleet.addOfficer(officer)
                         } catch (e: Exception) {
-                            showError("Error parsing idle officer at index $i", e)
+                            DisplayMessage.showError("Error parsing idle officer at index $i", e)
                         }
                     }
                 }

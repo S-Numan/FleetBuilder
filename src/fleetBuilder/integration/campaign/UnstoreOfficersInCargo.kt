@@ -5,7 +5,6 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import org.lwjgl.input.Mouse
 
 class UnstoreOfficersInCargo : EveryFrameScript {

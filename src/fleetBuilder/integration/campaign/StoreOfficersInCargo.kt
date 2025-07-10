@@ -1,24 +1,19 @@
 package fleetBuilder.integration.campaign
 
-import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
-import fleetBuilder.util.MISC
-import fleetBuilder.util.MISC.getMemberUIHoveredInFleetTabLowerPanel
-import fleetBuilder.util.MISC.getSelectedSubmarketInFleetTab
-import fleetBuilder.util.MISC.getViewedFleetInFleetPanel
+import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.getChildrenCopy
 import org.lwjgl.input.Keyboard
-import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 
@@ -32,9 +27,9 @@ class StoreOfficersInCargo : CampaignInputListener {
         if (ui.currentInteractionDialog == null || ui.currentInteractionDialog.interactionTarget == null || ui.currentInteractionDialog.interactionTarget.market == null) return
         if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return
 
-        val submarket = getSelectedSubmarketInFleetTab() ?: return
+        val submarket = ReflectionMisc.getSelectedSubmarketInFleetTab() ?: return
         if (submarket.faction != sector.playerFaction || !submarket.plugin.isFreeTransfer) return //Don't sell officers to other factions
-        val viewedFleet = getViewedFleetInFleetPanel()
+        val viewedFleet = ReflectionMisc.getViewedFleetInFleetPanel()
         if (viewedFleet !== sector.playerFleet.fleetData)//If we aren't looking at the user's fleet, don't continue
             return
 
@@ -54,10 +49,10 @@ class StoreOfficersInCargo : CampaignInputListener {
             if (event.isConsumed) return@forEach
 
             if (event.eventType == InputEventType.KEY_DOWN && event.eventValue == Keyboard.KEY_S) {
-                val memberUI = getMemberUIHoveredInFleetTabLowerPanel() ?: return@forEach
+                val memberUI = ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel() ?: return@forEach
                 storeOfficer(memberUI)
             } else if (event.isLMBDownEvent) {
-                val memberUI = getMemberUIHoveredInFleetTabLowerPanel() ?: return@forEach
+                val memberUI = ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel() ?: return@forEach
 
                 try {
                     val parent = (memberUI.invoke("getParent") as? UIPanelAPI) ?: return@forEach
@@ -86,7 +81,7 @@ class StoreOfficersInCargo : CampaignInputListener {
                         storeOfficer(memberUI)
                     }
                 } catch (e: Exception) {
-                    MISC.showError("Storing the officer in cargo failed", e)
+                    DisplayMessage.showError("Storing the officer in cargo failed", e)
                 }
             }
 

@@ -7,7 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
-import fleetBuilder.util.MISC
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
@@ -29,7 +29,7 @@ class CopyOfficer : BaseCommand {
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
 
-        val refitTab = MISC.getRefitTab() ?: return BaseCommand.CommandResult.ERROR
+        val refitTab = ReflectionMisc.getRefitTab() ?: return BaseCommand.CommandResult.ERROR
 
         val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
             ?: return BaseCommand.CommandResult.ERROR

@@ -18,8 +18,7 @@ import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
-import fleetBuilder.util.MISC
-import fleetBuilder.util.MISC.createErrorVariant
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
@@ -28,6 +27,7 @@ import fleetBuilder.variants.LoadoutManager.getAnyVariant
 import fleetBuilder.variants.LoadoutManager.getLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.saveLoadoutVariant
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.compareVariantHullMods
 import fleetBuilder.variants.VariantLib.getAllDMods
@@ -236,7 +236,7 @@ internal object AutofitPanel {
 
                             setClipboardText(json.toString(4))
 
-                            MISC.showMessage("Variant copied to clipboard")
+                            DisplayMessage.showMessage("Variant copied to clipboard")
                         }
                     } else {//Save and load variant
                         selectorPlugins.forEach { it.isSelected = false }
@@ -260,7 +260,7 @@ internal object AutofitPanel {
                                 //selectorPlugin.selectorPanel.opacity = 0f
 
                                 val newSpec = AutofitSpec(
-                                    getLoadoutVariant(newVariantId) ?: createErrorVariant(),
+                                    getLoadoutVariant(newVariantId) ?: VariantLib.createErrorVariant(),
                                     baseVariant.displayName,
                                     "Loadout Variant",
                                     (baseVariant as ShipVariantAPI).hullSpec.spriteName

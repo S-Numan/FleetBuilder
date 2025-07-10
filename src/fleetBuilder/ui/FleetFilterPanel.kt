@@ -39,7 +39,7 @@ class FleetFilterPanel(
     companion object {
         var fleetPanelFilterCallback: (() -> Unit)? = null
         fun removePreviousIfAny() {
-            fleetPanelFilterCallback?.let { MISC.removePostUpdateFleetPanelCallback(it) }
+            fleetPanelFilterCallback?.let { ReflectionMisc.removePostUpdateFleetPanelCallback(it) }
         }
     }
 
@@ -49,7 +49,7 @@ class FleetFilterPanel(
         // Create the new one
         fleetPanelFilterCallback = { filterFleetGrid() }
         // Register the new one
-        MISC.addPostUpdateFleetPanelCallback(fleetPanelFilterCallback!!)
+        ReflectionMisc.addPostUpdateFleetPanelCallback(fleetPanelFilterCallback!!)
 
         val width = fleetSidePanel.getChildrenCopy().minByOrNull { it.x }?.width ?: 32f
 
@@ -84,7 +84,7 @@ class FleetFilterPanel(
                 textField.text = ""
                 prevString = ""
             } else {
-                val fleetPanel = MISC.getFleetPanel() ?: return
+                val fleetPanel = ReflectionMisc.getFleetPanel() ?: return
                 //Unfocus textField if mouse is inside fleetPanel
                 if (Global.getSettings().mouseX > fleetPanel.x) {
                     textField.invoke("releaseFocus", null)
@@ -99,13 +99,13 @@ class FleetFilterPanel(
             return
         }
 
-        MISC.updateFleetPanelContents()
+        ReflectionMisc.updateFleetPanelContents()
 
         prevString = textField.text
     }
 
     private fun filterFleetGrid() {
-        val fleetPanel = MISC.getFleetPanel() ?: return
+        val fleetPanel = ReflectionMisc.getFleetPanel() ?: return
 
         if (textField.text.isNullOrEmpty() || textField.text == defaultText) return
 

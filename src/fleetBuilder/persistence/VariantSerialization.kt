@@ -6,8 +6,8 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings.getHullModsToNeverSave
-import fleetBuilder.util.MISC
-import fleetBuilder.util.MISC.getMissingFromModInfo
+import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.util.FBMisc
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.containsString
 import fleetBuilder.util.toBinary
@@ -45,14 +45,14 @@ object VariantSerialization {
         settings: VariantSettings = VariantSettings()
     ): Pair<ShipVariantAPI, MissingElements> {
         val missingElements = MissingElements()
-        getMissingFromModInfo(json, missingElements)
+        FBMisc.getMissingFromModInfo(json, missingElements)
 
         var variantId = json.optString("variantId")
 
         val hullId = json.optString("hullId")
         if (hullId.isEmpty() || !Global.getSettings().allShipHullSpecs.any { it.hullId == hullId }) {
             missingElements.hullIds.add("")
-            val errorVariant = MISC.createErrorVariant("NOHUL:$hullId")
+            val errorVariant = VariantLib.createErrorVariant("NOHUL:$hullId")
             if (!variantId.isNullOrEmpty())
                 errorVariant.hullVariantId = variantId
 

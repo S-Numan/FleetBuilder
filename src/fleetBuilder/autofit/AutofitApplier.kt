@@ -11,7 +11,7 @@ import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
-import fleetBuilder.util.MISC
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.VariantLib
 import starficz.ReflectionUtils.invoke
@@ -154,7 +154,7 @@ object AutofitApplier {
                     }
 
                     if (auto.creditCost > 0) {
-                        MISC.showMessage(
+                        DisplayMessage.showMessage(
                             "Autofit confirmed, purchased ${Misc.getDGSCredits(auto.creditCost.toFloat())} worth of ordnance",
                             Misc.getDGSCredits(auto.creditCost.toFloat()), Misc.getHighlightColor()
                         )
@@ -163,7 +163,7 @@ object AutofitApplier {
 
             }
         } catch (e: Exception) {
-            MISC.showError("ERROR: Failed to apply ship variant", e)
+            DisplayMessage.showError("ERROR: Failed to apply ship variant", e)
             //e.printStackTrace()
         }
 

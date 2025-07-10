@@ -93,7 +93,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
         CommanderShuttle.afterGameSave()
 
         if (ModSettings.backupSave) {
-            val json = MISC.createPlayerSaveJson()
+            val json = FBMisc.createPlayerSaveJson()
             Global.getSettings().writeJSONToCommon("SaveTransfer/lastSave", json, false)
         }
     }

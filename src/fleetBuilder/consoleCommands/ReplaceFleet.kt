@@ -6,8 +6,8 @@ import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
 import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
 import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe
-import fleetBuilder.util.MISC.reportMissingElements
-import fleetBuilder.util.MISC.updateFleetPanelContents
+import fleetBuilder.util.FBMisc.reportMissingElements
+import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings

@@ -2,7 +2,7 @@ package fleetBuilder.consoleCommands.saveTransfer
 
 import com.fs.starfarer.api.Global
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
-import fleetBuilder.util.MISC
+import fleetBuilder.util.FBMisc
 import org.apache.log4j.Level
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
@@ -53,7 +53,7 @@ class LoadSave : BaseCommand {
             return BaseCommand.CommandResult.ERROR
         }
 
-        val missing = MISC.loadPlayerSaveJson(
+        val missing = FBMisc.loadPlayerSaveJson(
             json,
             handleCargo = !argList.contains(NO_CARGO),
             handleRelations = !argList.contains(NO_REP),

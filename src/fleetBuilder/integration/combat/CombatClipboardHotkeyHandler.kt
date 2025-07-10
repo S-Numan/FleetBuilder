@@ -12,14 +12,10 @@ import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
-import fleetBuilder.util.ClipboardUtil
-import fleetBuilder.util.MISC
-import fleetBuilder.util.MISC.codexEntryToClipboard
-import fleetBuilder.util.MISC.getCodexDialog
-import fleetBuilder.util.MISC.showError
-import fleetBuilder.util.MISC.showMessage
-import fleetBuilder.util.ModifyInternalVariants
-import fleetBuilder.util.findChildWithMethod
+import fleetBuilder.util.*
+import fleetBuilder.util.FBMisc.codexEntryToClipboard
+import fleetBuilder.util.ReflectionMisc.getCodexDialog
+import fleetBuilder.util.ReflectionMisc.getCoreUI
 import fleetBuilder.variants.MissingElements
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.invoke
@@ -47,11 +43,11 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 event.consume(); continue
                             }
                         } catch (e: Exception) {
-                            showError("FleetBuilder hotkey failed", e)
+                            DisplayMessage.showError("FleetBuilder hotkey failed", e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
                         if (Global.getCombatEngine().isSimulation) {
-                            val core = MISC.getCoreUI() ?: return
+                            val core = getCoreUI() ?: return
                             val simulatorUI = core.findChildWithMethod("enableAdvanced") ?: return
 
                             val variantIdList = mutableListOf<String>()
@@ -64,12 +60,12 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             if (event.eventValue == Keyboard.KEY_V) {
                                 val json = ClipboardUtil.getClipboardJson()
                                 if (json == null) {
-                                    MISC.showMessage("No valid json in clipboard", Color.YELLOW)
+                                    DisplayMessage.showMessage("No valid json in clipboard", Color.YELLOW)
                                     event.consume()
                                     continue
                                 }
 
-                                val (tempElement, tempMissing) = MISC.getAnyFromJson(json)
+                                val (tempElement, tempMissing) = FBMisc.getAnyFromJson(json)
                                 element = tempElement
                                 missing.add(tempMissing)
                             } else if (event.eventValue == Keyboard.KEY_D) {
@@ -98,7 +94,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 }
 
                                 else -> {
-                                    MISC.showMessage("Could not put element into simulator reserves", Color.YELLOW)
+                                    DisplayMessage.showMessage("Could not put element into simulator reserves", Color.YELLOW)
                                     event.consume()
                                     continue
                                 }
@@ -125,7 +121,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             //plugin.addCustomOpponents(variantIdList)
 
 
-                            showMessage("Replaced simulator reserves")
+                            DisplayMessage.showMessage("Replaced simulator reserves")
                             event.consume()
                         }
                     }

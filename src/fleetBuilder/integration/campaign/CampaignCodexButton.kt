@@ -15,7 +15,10 @@ import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CutStyle
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.MISC
+import fleetBuilder.util.FBMisc
+import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.ReflectionMisc.getCodexDialog
+import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import org.lwjgl.input.Keyboard
 
 class CampaignCodexButton : EveryFrameScript {
@@ -34,7 +37,7 @@ class CampaignCodexButton : EveryFrameScript {
         if (!Global.getSector().isPaused) return
         if (!Global.getSettings().isDevMode) return
 
-        val codex = MISC.getCodexDialog()
+        val codex = getCodexDialog()
         if (codex == null) {
             if (addToFleetButton != null)
                 addToFleetButton = null
@@ -47,7 +50,7 @@ class CampaignCodexButton : EveryFrameScript {
         (tempArray[2] as TextFieldAPI)//Text input field for searching
         val navContainer = (tempArray[3] as UIPanelAPI)//Bottom left: Left, Right, Up, Random, icons UI container.*/
 
-        val newParam = MISC.getCodexEntryParam(codex)
+        val newParam = getCodexEntryParam(codex)
         if (param !== newParam) {
             param = newParam
 
@@ -86,12 +89,12 @@ class CampaignCodexButton : EveryFrameScript {
                 ) as ButtonAPI?
 
                 addToFleetButton!!.onClick { ->
-                    MISC.addParamEntryToFleet(Global.getSector(), param!!)
+                    FBMisc.addCodexParamEntryToFleet(Global.getSector(), param!!)
                 }
             }
 
             if (addToFleetButton == null) {
-                MISC.showError("addToFleetButton was null, when it shouldn't be.")
+                DisplayMessage.showError("addToFleetButton was null, when it shouldn't be.")
                 return
             }
 
