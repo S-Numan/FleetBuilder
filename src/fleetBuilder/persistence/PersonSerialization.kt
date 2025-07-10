@@ -49,6 +49,10 @@ object PersonSerialization {
         if (aiCoreId.isNotEmpty()) {
             try {
                 person = Misc.getAICoreOfficerPlugin(aiCoreId).createPerson(aiCoreId, Factions.PLAYER, Random())
+                //AI's come with skills via getAiCoreOfficerPluginthis, we don't want this, so they will be removed.
+                person.stats.skillsCopy.forEach { skill ->
+                    person.stats.setSkillLevel(skill.skill.id, 0f)
+                }
             } catch (_: Exception) {
             }
         }
@@ -122,7 +126,8 @@ object PersonSerialization {
         }
 
         if (personLevel == 0)//Person level was unset?
-            person.stats.level = person.stats.skillsCopy.size//Set it to the amount of skills, it's probably correct.
+            person.stats.level = person.stats.skillsCopy.count { it.skill.isAptitudeEffect.not() && it.level > 0f } //Set it to the amount of skills, it's probably correct.
+
 
         if (settings.handleXpAndPoints) {
             person.stats.xp = json.optLong("xp", 0)
@@ -176,9 +181,9 @@ object PersonSerialization {
             json.put("post", person.postId)
         json.put("personality", person.personalityAPI.id)
 
-        if (settings.handleXpAndPoints) {
-            json.put("level", person.stats.level)
+        json.put("level", person.stats.level)
 
+        if (settings.handleXpAndPoints) {
             if (person.stats.xp != 0L) {
                 json.put("xp", person.stats.xp)
             }
