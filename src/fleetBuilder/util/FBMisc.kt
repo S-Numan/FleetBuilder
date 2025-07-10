@@ -77,12 +77,12 @@ object FBMisc {
             settings
         )
 
-        reportMissingElements(missingElements)
+        reportMissingElementsIfAny(missingElements)
 
         return fleet
     }
 
-    fun reportMissingElements(
+    fun reportMissingElementsIfAny(
         missingElements: MissingElements,
         defaultShortMessage: String = "HAD MISSING ELEMENTS: see console for more details"
     ) {
@@ -232,7 +232,7 @@ object FBMisc {
         val fleet = Global.getFactory().createEmptyFleet(Factions.PIRATES, FleetTypes.TASK_FORCE, true)
         val missingElements = getFleetFromJson(json, fleet)
 
-        reportMissingElements(missingElements)
+        reportMissingElementsIfAny(missingElements)
         if (fleet.fleetSizeCount == 0) {
             //showMessage("Failed to create fleet from clipboard", Color.YELLOW)
             return false
@@ -301,7 +301,7 @@ object FBMisc {
 
             is ShipVariantAPI -> {
                 if (missing.hullIds.size > 1) {
-                    reportMissingElements(missing, "Could not find hullId when pasting variant")
+                    reportMissingElementsIfAny(missing, "Could not find hullId when pasting variant")
                     return
                 }
 
@@ -319,7 +319,7 @@ object FBMisc {
 
             is FleetMemberAPI -> {
                 if (missing.hullIds.size > 1) {
-                    reportMissingElements(missing, "Could not find hullId when pasting member")
+                    reportMissingElementsIfAny(missing, "Could not find hullId when pasting member")
                     return
                 }
 
@@ -355,7 +355,7 @@ object FBMisc {
             }
         }
 
-        reportMissingElements(missing)
+        reportMissingElementsIfAny(missing)
     }
 
     fun randomizeMemberCosmetics(
