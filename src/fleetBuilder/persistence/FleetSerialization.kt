@@ -67,7 +67,7 @@ object FleetSerialization {
     ): MissingElements {
         return getFleetFromJson(
             json,
-            inputCampaignFleet.fleetData, inputCampaignFleet,
+            inputCampaignFleet.fleetData,
             settings
         )
     }
@@ -75,25 +75,10 @@ object FleetSerialization {
     @JvmOverloads
     fun getFleetFromJson(
         json: JSONObject,
-        inputFleetData: FleetDataAPI,
-        settings: FleetSettings = FleetSettings(),
-    ): MissingElements {
-        return getFleetFromJson(
-            json,
-            inputFleetData, inputFleetData.fleet,
-            settings
-        )
-    }
-
-    private fun getFleetFromJson(
-        json: JSONObject,
         fleet: FleetDataAPI,
-        inputCampaignFleet: CampaignFleetAPI? = null,
         settings: FleetSettings = FleetSettings(),
     ): MissingElements {
-        var campFleet = inputCampaignFleet
-        if (campFleet == null)
-            campFleet = fleet.fleet
+        val campFleet: CampaignFleetAPI? = fleet.fleet
 
         val missingElements = MissingElements()
         getMissingFromModInfo(json, missingElements)
@@ -253,32 +238,20 @@ object FleetSerialization {
 
     @JvmOverloads
     fun saveFleetToJson(
-        fleet: FleetDataAPI,
-        settings: FleetSettings = FleetSettings(),
-        includeModInfo: Boolean = true,
-    ): JSONObject {
-        return saveFleetToJson(fleet, null, settings, includeModInfo)
-    }
-
-    @JvmOverloads
-    fun saveFleetToJson(
         campaignFleet: CampaignFleetAPI,
         settings: FleetSettings = FleetSettings(),
         includeModInfo: Boolean = true,
     ): JSONObject {
-        return saveFleetToJson(campaignFleet.fleetData, campaignFleet, settings, includeModInfo)
+        return saveFleetToJson(campaignFleet.fleetData, settings, includeModInfo)
     }
 
-    private fun saveFleetToJson(
+    @JvmOverloads
+    fun saveFleetToJson(
         fleet: FleetDataAPI,
-        inputCampaignFleet: CampaignFleetAPI? = null,
         settings: FleetSettings = FleetSettings(),
         includeModInfo: Boolean = true,
     ): JSONObject {
-        var campFleet = inputCampaignFleet
-        if (campFleet == null)
-            campFleet = fleet.fleet
-
+        val campFleet: CampaignFleetAPI? = fleet.fleet
 
         val fleetJson = JSONObject()
 
