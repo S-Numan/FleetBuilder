@@ -30,7 +30,7 @@ object FleetSerialization {
      * Settings for [saveFleetToJson] and [getFleetFromJson].
      * @param includeCommanderSetFlagship whether to set the PersonAPI commander as the fleet's commander.
      *
-     * If the commander is assigned as a captain of a ship in the fleet, that ship will also be set as the flagship.
+     * If the commander is assigned as a captain of a ship in the fleet, that ship will be set as the flagship.
      * @param includeCommanderAsOfficer whether to include the PersonAPI commander as an officer of the fleet, provided they are one.
      * @param includeIdleOfficers whether to include officers that are not assigned to a ship in the fleet.
      * @param includeAggression whether to include the aggression of the fleet in the JSON.
