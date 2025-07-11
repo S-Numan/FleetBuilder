@@ -62,7 +62,7 @@ object VariantSerialization {
         val slotToWeaponId: Map<String, String>
     )
 
-    private fun extractVariantDataFromJson(json: JSONObject): ParsedVariantData {
+    fun extractVariantDataFromJson(json: JSONObject): ParsedVariantData {
 
         val variantId = json.optString("variantId", "")
         val hullId = json.optString("hullId", "")
@@ -170,7 +170,7 @@ object VariantSerialization {
         )
     }
 
-    private fun filterParsedVariantData(
+    fun filterParsedVariantData(
         data: ParsedVariantData,
         settings: VariantSettings
     ): ParsedVariantData {
