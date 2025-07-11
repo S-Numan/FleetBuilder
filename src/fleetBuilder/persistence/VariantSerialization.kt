@@ -24,7 +24,7 @@ object VariantSerialization {
      * @param applySMods If false, SMods will be converted to normal hullmods.
      * @param includeDMods If false, DMods will be excluded from the variant's hullmods.
      * @param includeHiddenMods If false, hidden mods will be excluded from the variant's hullmods.
-     * @param includeTags If false, the variant's tags will not be saved.
+     * @param includeTags If false, the variant's tags will not be included.
      * @param excludeWeaponsWithID A set of weapon IDs to exclude from the variant's weapons.
      * @param excludeWingsWithID A set of wing IDs to exclude from the variant's wings.
      * @param excludeHullModsWithID A set of hullmod IDs to exclude from the variant's hullmods.
