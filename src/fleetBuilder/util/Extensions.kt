@@ -10,6 +10,7 @@ import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.json.JSONArray
+import org.json.JSONObject
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
@@ -19,6 +20,20 @@ fun JSONArray.containsString(value: String): Boolean {
         if (this.optString(i) == value) return true
     }
     return false
+}
+
+fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
+    val array = optJSONArray(fieldName) ?: return emptyList()
+    val list = mutableListOf<String>()
+    for (i in 0 until array.length()) {
+        val value = array.optString(i, null)
+        if (value != null) {
+            list.add(value)
+        } else {
+            Global.getLogger(this.javaClass).warn("Invalid string at index $i in '$fieldName'")
+        }
+    }
+    return list
 }
 
 // Extension to get the effective hull ID

@@ -10,6 +10,7 @@ import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.containsString
+import fleetBuilder.util.optJSONArrayToStringList
 import fleetBuilder.util.toBinary
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
@@ -19,7 +20,7 @@ import org.json.JSONObject
 object VariantSerialization {
 
     /**
-     * Holds settings for [saveVariantToJson] and [loadVariantFromJson].
+     * Holds settings for [saveVariantToJson] and [getVariantFromJson].
      * @param applySMods If false, SMods will be converted to normal hullmods.
      * @param includeDMods If false, DMods will be excluded from the variant's hullmods.
      * @param includeHiddenMods If false, hidden mods will be excluded from the variant's hullmods.
@@ -38,270 +39,326 @@ object VariantSerialization {
         var excludeHullModsWithID: MutableSet<String> = mutableSetOf(),
     )
 
-    //TODO, when converting from JSON to variant, to JSON to string lists to variant to allow for different formats of data to variant (such as compressed data). With settings.excludeIDs, remove the IDs right at the start.
-    @JvmOverloads
-    fun getVariantFromJsonWithMissing(
-        json: JSONObject,
-        settings: VariantSettings = VariantSettings()
-    ): Pair<ShipVariantAPI, MissingElements> {
-        val missingElements = MissingElements()
-        FBMisc.getMissingFromModInfo(json, missingElements)
+    data class ParsedVariantData(
+        val variantId: String,
+        val hullId: String,
+        val displayName: String,
+        val fluxCapacitors: Int,
+        val fluxVents: Int,
+        val tags: List<String>,
+        val hullMods: List<String>,
+        val permaMods: List<String>,
+        val sMods: List<String>,
+        val sModdedBuiltIns: List<String>,
+        val wings: List<String>,
+        val weaponGroups: List<ParsedWeaponGroup>,
+        val moduleVariants: Map<String, ParsedVariantData>,
+        val isGoalVariant: Boolean
+    )
 
-        var variantId = json.optString("variantId")
+    data class ParsedWeaponGroup(
+        val isAutofireOnByDefault: Boolean,
+        val type: WeaponGroupType,
+        val slotToWeaponId: Map<String, String>
+    )
 
-        val hullId = json.optString("hullId")
-        if (hullId.isEmpty() || !Global.getSettings().allShipHullSpecs.any { it.hullId == hullId }) {
-            missingElements.hullIds.add("")
-            val errorVariant = VariantLib.createErrorVariant("NOHUL:$hullId")
-            if (!variantId.isNullOrEmpty())
-                errorVariant.hullVariantId = variantId
+    private fun extractVariantDataFromJson(json: JSONObject): ParsedVariantData {
 
-            return Pair(errorVariant, missingElements)
-        }
+        val variantId = json.optString("variantId", "")
+        val hullId = json.optString("hullId", "")
+        val displayName = json.optString("displayName", "")
 
-        val hullSpec = Global.getSettings().getHullSpec(hullId)
+        val fluxCapacitors = json.optInt("fluxCapacitors", 0)
+        val fluxVents = json.optInt("fluxVents", 0)
+        val isGoalVariant = json.optBoolean("goalVariant", false)
 
-        val loadout = Global.getSettings().createEmptyVariant(hullSpec.hullId, hullSpec)
+        val tags = json.optJSONArrayToStringList("tags")
+        val hullMods = json.optJSONArrayToStringList("hullMods")
+        val permaMods = json.optJSONArrayToStringList("permaMods")
+        val sMods = json.optJSONArrayToStringList("sMods")
+        val sModdedBuiltIns = json.optJSONArrayToStringList("sModdedbuiltins")
+        val wings = json.optJSONArrayToStringList("wings")
 
-        if (variantId.isNullOrEmpty()) {
-            variantId = "MissingVariantID_" + Misc.genUID()
-            Global.getLogger(this.javaClass)
-                .warn("When loading JSONObject variant with hullId $hullId, failed to find variantID. Setting a random UID in it's place")
-        }
-        loadout.hullVariantId = variantId
-
-        val displayName = json.optString("displayName")
-        if (displayName.isNullOrEmpty())
-            Global.getLogger(this.javaClass)
-                .warn("When loading JSONObject variant with hullId $hullId and variantId $variantId, failed to find displayName")
-        loadout.setVariantDisplayName(displayName ?: "Missing Name")
-
-        loadout.isGoalVariant = json.optBoolean("goalVariant")
-
-
-        val fluxCaps = if (json.has("fluxCapacitors")) {
-            json.optInt("fluxCapacitors", 0)
-        } else {
-            Global.getLogger(this.javaClass)
-                .warn("When loading JSONObject variant with hullId $hullId and variantId $variantId, failed to find fluxCapacitors")
-            0
-        }
-        loadout.numFluxCapacitors = fluxCaps
-
-        val fluxVents = if (json.has("fluxVents")) {
-            json.optInt("fluxVents", 0)
-        } else {
-            Global.getLogger(this.javaClass)
-                .warn("When loading JSONObject variant with hullId $hullId and variantId $variantId, failed to find fluxVents")
-            0
-        }
-        loadout.numFluxVents = fluxVents
-
-        /*var jsonArray = json.optJSONArray("tags")
-                    if (jsonArray != null) {
-                        for (i in 0..<jsonArray.length()) {
-                            loadout.addTag(jsonArray.getString(i))
-                        }
-                    }*/
-        //Same function
-        if (settings.includeTags) {
-            json.optJSONArray("tags")?.let {
-                repeat(it.length()) { i -> loadout.addTag(it.getString(i)) }
-            }
-        }
-
-        json.optJSONArray("hullMods")?.let { hullMods ->
-            repeat(hullMods.length()) { i ->
-                val modId = hullMods.optString(i)
-                if (Global.getSettings().allHullModSpecs.any { it.id == modId }) {
-                    loadout.addMod(modId)
-                } else if (modId !in missingElements.hullModIds) {
-                    missingElements.hullModIds.add(modId)
-                }
-            }
-        }
-
-        json.optJSONArray("permaMods")?.let { permaMods ->
-            repeat(permaMods.length()) { i ->
-                val modId = permaMods.optString(i)
-                if (Global.getSettings().allHullModSpecs.any { it.id == modId }) {
-                    loadout.addPermaMod(modId, false)
-                } else if (modId !in missingElements.hullModIds) {
-                    missingElements.hullModIds.add(modId)
-                }
-            }
-        }
-
-        json.optJSONArray("sMods")?.let { sMods ->
-            repeat(sMods.length()) { i ->
-                val modId = sMods.optString(i)
-                if (Global.getSettings().allHullModSpecs.any { it.id == modId }) {
-                    if (loadout.hullSpec.builtInMods.contains(modId))
-                        loadout.sModdedBuiltIns.add(modId)
-                    else
-                        loadout.addPermaMod(modId, true)
-                } else if (modId !in missingElements.hullModIds) {
-                    missingElements.hullModIds.add(modId)
-                }
-            }
-        }
-
-
-        json.optJSONArray("sModdedbuiltins")?.let { sModBuiltIns ->
-            repeat(sModBuiltIns.length()) { i ->
-                val modId = sModBuiltIns.optString(i)
-                if (Global.getSettings().allHullModSpecs.any { it.id == modId }) {
-                    loadout.sModdedBuiltIns.add(modId)
-                } else if (modId !in missingElements.hullModIds) {
-                    missingElements.hullModIds.add(modId)
-                }
-            }
-        }
-
-        val allDMods = VariantLib.getAllDMods()
-        val allHiddenEverywhereMods = VariantLib.getAllHiddenEverywhereMods()
-
-        val modsToProcess = loadout.hullMods.toList()
-
-        modsToProcess.forEach { modId ->
-            when {
-                getHullModsToNeverSave().contains(modId) || settings.excludeHullModsWithID.contains(modId) -> {
-                    loadout.completelyRemoveMod(modId)
-                }
-
-                !settings.includeDMods && allDMods.contains(modId) -> {
-                    loadout.completelyRemoveMod(modId)
-                }
-
-                !settings.includeHiddenMods && allHiddenEverywhereMods.contains(modId) -> {
-                    loadout.completelyRemoveMod(modId)
-                }
-
-                !settings.applySMods && (modId in loadout.sMods || modId in loadout.sModdedBuiltIns) -> {
-                    if (modId in loadout.sMods) {
-                        loadout.removePermaMod(modId)
-                        loadout.addMod(modId)
-                    }
-                    if (modId in loadout.sModdedBuiltIns) {
-                        loadout.sModdedBuiltIns.remove(modId)
-                    }
-                }
-            }
-        }
-
-
-        json.optJSONArray("wings")?.let { wings ->
-            repeat(wings.length()) { i ->
-                val wingId = wings.optString(i)
-                if (Global.getSettings().allFighterWingSpecs.any { it.id == wingId }) {
-                    if (!settings.excludeWingsWithID.contains(wingId))
-                        loadout.setWingId(i, wingId)
-                } else {
-                    missingElements.wingIds.add(wingId)
-                }
-            }
-        }
-
+        val weaponGroups = mutableListOf<ParsedWeaponGroup>()
 
         json.optJSONArray("weaponGroups")?.let { groups ->
             for (i in 0 until groups.length()) {
                 val weaponGroup = groups.optJSONObject(i)
                 if (weaponGroup == null) {
                     Global.getLogger(this.javaClass)
-                        .error("When loading JSONObject variant with hullSpec$hullId and variant$variantId, failed to load a weaponGroup JSONObject of element '$i' in weaponGroups")
+                        .error("Failed to parse weaponGroup at index $i: not a valid JSONObject. hullSpec=$hullId, variant=$variantId")
                     continue
                 }
-
-                val wgs = WeaponGroupSpec()
 
                 val weapons = weaponGroup.optJSONObject("weapons")
                 if (weapons == null) {
                     Global.getLogger(this.javaClass)
-                        .error("When loading JSONObject variant with hullSpec$hullId and variant$variantId, failed to find weapons in a weaponGroup")
+                        .error("Missing 'weapons' object in weaponGroup at index $i. hullSpec=$hullId, variant=$variantId")
                     continue
                 }
+
+                val slotToWeaponId = mutableMapOf<String, String>()
                 val slots = weapons.keys()
                 while (slots.hasNext()) {
-                    val slotId = slots.next().toString()
-                    val weaponId = weapons.optString(slotId)
-                    if (loadout.hullSpec.isBuiltIn(slotId)) { // If slot is built in, no need to add the weapon the variant, it's already there.
-                        wgs.addSlot(slotId)
-                    } else if (Global.getSettings().actuallyAllWeaponSpecs.any { it.weaponId == weaponId }) {
-                        if (!settings.excludeWeaponsWithID.contains(weaponId)) {
-                            loadout.addWeapon(slotId, weaponId)
-                            wgs.addSlot(slotId)
-                        }
-                    } else {
-                        missingElements.weaponIds.add(weaponId)
-                    }
-                }
+                    val rawSlotId = slots.next()
+                    val slotId = rawSlotId?.toString()?.trim()
+                    val weaponId = weapons.optString(slotId, "").trim()
 
-                wgs.isAutofireOnByDefault = weaponGroup.optBoolean("autofire", false)
-
-                wgs.type = WeaponGroupType.valueOf(weaponGroup.optString("mode", WeaponGroupType.LINKED.name))
-
-                loadout.addWeaponGroup(wgs)
-
-            }
-        }
-
-        //Custom module loading functionality
-        json.optJSONObject("moduleVariants")?.let { jsonModules ->
-            val moduleSlots = jsonModules.keys()
-
-            while (moduleSlots.hasNext()) {
-                val slotId = moduleSlots.next().toString()
-
-                val jsonModuleVariant = jsonModules.optJSONObject(slotId)
-                if (jsonModuleVariant == null) {
-                    Global.getLogger(this::class.java)
-                        .warn("Missing or invalid JSON for module slot '$slotId' of variantId '$variantId'")
-                    continue
-                }
-
-                val (moduleVariant, moduleMissing) = getVariantFromJsonWithMissing(jsonModuleVariant)
-
-                if (moduleMissing.hullIds.isNotEmpty()) {
-                    Global.getLogger(this::class.java)
-                        .error("Could not get hullId for module in variant '$variantId' with slotId '$slotId'")
-                    continue
-                }
-
-                loadout.setModuleVariant(slotId, moduleVariant)
-                missingElements.add(moduleMissing)
-            }
-        }
-
-        //Vanilla module loading functionality, added to maintain vanilla variant loading functionality.
-        json.optJSONArray("modules")?.let { modulesArray ->
-            for (i in 0 until modulesArray.length()) {
-                val module = modulesArray.optJSONObject(i) ?: continue
-                val slotId = module.names()?.optString(0) ?: continue
-
-                if (!loadout.getModuleVariant(slotId).isEmptyHullVariant) {
-                    Global.getLogger(this.javaClass)
-                        .warn("Variant '$variantId' has both moduleVariants (custom) and modules (vanilla) in their json file. There should only be one or the other. Skipping vanilla module setup")
-                } else {
-                    val moduleVariantId = module.optString(slotId, null) ?: continue
-
-                    val variant = Global.getSettings().getVariant(moduleVariantId)
-                    if (variant != null) {
-                        loadout.setModuleVariant(slotId, variant.clone())
+                    if (!slotId.isNullOrBlank() && weaponId.isNotBlank()) {
+                        slotToWeaponId[slotId] = weaponId
                     } else {
                         Global.getLogger(this.javaClass)
-                            .error("Variant '$moduleVariantId' not found for slot '$slotId'")
+                            .warn("Invalid slot or weapon ID in weaponGroup at index $i: slot='$slotId', weapon='$weaponId'. hullSpec=$hullId, variant=$variantId")
+                    }
+                }
+
+                val isAutofire = weaponGroup.optBoolean("autofire", false)
+
+                val type = try {
+                    WeaponGroupType.valueOf(weaponGroup.optString("mode", WeaponGroupType.LINKED.name))
+                } catch (_: Exception) {
+                    Global.getLogger(this.javaClass)
+                        .warn("Invalid weapon group mode '${weaponGroup.optString("mode")}' at index $i. Defaulting to LINKED. hullSpec=$hullId, variant=$variantId")
+                    WeaponGroupType.LINKED
+                }
+
+                weaponGroups.add(ParsedWeaponGroup(isAutofire, type, slotToWeaponId))
+            }
+        }
+
+        val moduleVariants = mutableMapOf<String, ParsedVariantData>()
+
+        //Vanilla method for storing ship modules, Module variants are stored in a separate file
+        json.optJSONArray("modules")?.let { arr ->
+            repeat(arr.length()) { i ->
+                arr.optJSONObject(i)?.names()?.optString(0)?.let { key ->
+                    arr.optJSONObject(i)?.optString(key)?.let { value ->
+                        val module: ShipVariantAPI
+                        try {
+                            module = Global.getSettings().getVariant(variantId)
+                        } catch (e: Exception) {
+                            Global.getLogger(this::class.java).error("Failed to get variant '$variantId' for slot '$key'", e)
+                            return@let
+                        }
+
+                        val newModule = extractVariantDataFromJson(saveVariantToJson(module))
+
+                        moduleVariants[key] = newModule
                     }
                 }
             }
         }
 
-        return Pair(loadout, missingElements)
+        //FleetBuilder method for storing module variants. Module variants are stored in the same JSON
+        json.optJSONObject("moduleVariants")?.let { obj ->
+            val keys = obj.keys()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                if (key is String) {
+                    obj.optJSONObject(key)?.let {
+                        val newModule = extractVariantDataFromJson(it)
+                        moduleVariants[key] = newModule
+                    }
+                }
+            }
+        }
+
+        return ParsedVariantData(
+            variantId, hullId, displayName, fluxCapacitors, fluxVents,
+            tags, hullMods, permaMods, sMods, sModdedBuiltIns, wings,
+            weaponGroups, moduleVariants, isGoalVariant
+        )
+    }
+
+    private fun filterParsedVariantData(
+        data: ParsedVariantData,
+        settings: VariantSettings
+    ): ParsedVariantData {
+
+        fun shouldKeepMod(modId: String): Boolean {
+            if (getHullModsToNeverSave().contains(modId)) return false
+            if (modId in settings.excludeHullModsWithID) return false
+            if (!settings.includeDMods && VariantLib.getAllDMods().contains(modId)) return false
+            if (!settings.includeHiddenMods && VariantLib.getAllHiddenEverywhereMods().contains(modId)) return false
+            return true
+        }
+
+        fun shouldKeepWeapon(weaponId: String): Boolean {
+            return weaponId !in settings.excludeWeaponsWithID
+        }
+
+        fun shouldKeepWing(wingId: String): Boolean {
+            return wingId !in settings.excludeWingsWithID
+        }
+
+        // Filter hull mods
+        val filteredHullMods = data.hullMods.filter(::shouldKeepMod).toMutableList()
+        val filteredPermaMods = data.permaMods.filter(::shouldKeepMod)
+        val filteredSMods = if (settings.applySMods) {
+            data.sMods.filter(::shouldKeepMod)
+        } else {
+            filteredHullMods.addAll(data.sMods.filter { it !in filteredHullMods })
+            emptyList()
+        }
+
+        val filteredSModdedBuiltIns = if (settings.applySMods) {
+            data.sModdedBuiltIns.filter(::shouldKeepMod)
+        } else emptyList()
+
+        val filteredWings = data.wings.filter(::shouldKeepWing)
+
+        val filteredWeaponGroups = data.weaponGroups.map { group ->
+            val filteredSlots = group.slotToWeaponId.filterValues(::shouldKeepWeapon)
+            group.copy(slotToWeaponId = filteredSlots)
+        }
+
+        val filteredTags = if (settings.includeTags) {
+            data.tags
+        } else emptyList()
+
+        return data.copy(
+            hullMods = filteredHullMods,
+            permaMods = filteredPermaMods,
+            sMods = filteredSMods,
+            sModdedBuiltIns = filteredSModdedBuiltIns,
+            wings = filteredWings,
+            weaponGroups = filteredWeaponGroups,
+            tags = filteredTags
+        )
+    }
+
+    fun buildVariantFromParsed(
+        data: ParsedVariantData
+    ): Pair<ShipVariantAPI, MissingElements> {
+        val missing = MissingElements()
+
+        if (data.hullId.isBlank() || Global.getSettings().allShipHullSpecs.none { it.hullId == data.hullId }) {
+            missing.hullIds.add("")
+            val errorVariant = VariantLib.createErrorVariant("NOHUL:${data.hullId}")
+            if (data.variantId.isNotBlank())
+                errorVariant.hullVariantId = data.variantId
+            return errorVariant to missing
+        }
+
+        val hullSpec = Global.getSettings().getHullSpec(data.hullId)
+        val loadout = Global.getSettings().createEmptyVariant(hullSpec.hullId, hullSpec)
+
+        val variantId = data.variantId.ifEmpty { "MissingVariantID_" + Misc.genUID() }
+        loadout.hullVariantId = variantId
+        loadout.setVariantDisplayName(data.displayName.ifEmpty { "No Name" })
+        loadout.isGoalVariant = data.isGoalVariant
+        loadout.numFluxCapacitors = data.fluxCapacitors
+        loadout.numFluxVents = data.fluxVents
+
+        data.tags.forEach { loadout.addTag(it) }
+
+        // --- HullMods ---
+        val allHullMods = Global.getSettings().allHullModSpecs.map { it.id }.toSet()
+
+        fun addIfValid(modId: String, add: () -> Unit) {
+            if (modId in allHullMods) {
+                add()
+            } else if (modId !in missing.hullModIds) {
+                missing.hullModIds.add(modId)
+            }
+        }
+
+        data.hullMods.forEach { modId ->
+            addIfValid(modId) { loadout.addMod(modId) }
+        }
+
+        data.permaMods.forEach { modId ->
+            addIfValid(modId) { loadout.addPermaMod(modId, false) }
+        }
+
+        data.sMods.forEach { modId ->
+            addIfValid(modId) {
+                if (hullSpec.builtInMods.contains(modId))
+                    loadout.sModdedBuiltIns.add(modId)
+                else
+                    loadout.addPermaMod(modId, true)
+            }
+        }
+
+        data.sModdedBuiltIns.forEach { modId ->
+            addIfValid(modId) {
+                loadout.sModdedBuiltIns.add(modId)
+            }
+        }
+
+        // --- Wings ---
+        val allWingIds = Global.getSettings().allFighterWingSpecs.map { it.id }.toSet()
+        data.wings.forEachIndexed { i, wingId ->
+            if (wingId in allWingIds) {
+                loadout.setWingId(i, wingId)
+            } else if (wingId.isNotBlank()) {
+                missing.wingIds.add(wingId)
+            }
+        }
+
+        // --- Weapon Groups ---
+        val allWeapons = Global.getSettings().actuallyAllWeaponSpecs.map { it.weaponId }.toSet()
+
+        data.weaponGroups.forEach { wgData ->
+            val wg = WeaponGroupSpec()
+
+            wgData.slotToWeaponId.forEach { (slotId, weaponId) ->
+                if (hullSpec.isBuiltIn(slotId)) {
+                    wg.addSlot(slotId)
+                } else if (weaponId in allWeapons) {
+                    loadout.addWeapon(slotId, weaponId)
+                    wg.addSlot(slotId)
+                } else {
+                    missing.weaponIds.add(weaponId)
+                }
+            }
+
+            wg.isAutofireOnByDefault = wgData.isAutofireOnByDefault
+            wg.type = wgData.type
+            loadout.addWeaponGroup(wg)
+        }
+
+        // --- Module Variants ---
+        data.moduleVariants.forEach { (slotId, moduleData) ->
+            val (variant, subMissing) = buildVariantFromParsed(moduleData)
+            if (subMissing.hullIds.isEmpty()) {
+                loadout.setModuleVariant(slotId, variant)
+            }
+            missing.add(subMissing)
+        }
+
+        return loadout to missing
+    }
+
+    fun buildVariantFromParsed(
+        data: ParsedVariantData,
+        settings: VariantSettings
+    ): Pair<ShipVariantAPI, MissingElements> {
+        val filteredData = filterParsedVariantData(data, settings)
+        return buildVariantFromParsed(filteredData)
+    }
+
+    @JvmOverloads
+    fun getVariantFromJsonWithMissing(
+        json: JSONObject,
+        settings: VariantSettings = VariantSettings()
+    ): Pair<ShipVariantAPI, MissingElements> {
+        val missing = MissingElements()
+        FBMisc.getMissingFromModInfo(json, missing)
+
+        val parsed = extractVariantDataFromJson(json)
+
+        val (variant, newMissing) = buildVariantFromParsed(parsed, settings)
+        missing.add(newMissing)
+
+        return variant to missing
     }
 
     @JvmOverloads
     fun getVariantFromJson(json: JSONObject, settings: VariantSettings = VariantSettings()): ShipVariantAPI {
-        return getVariantFromJsonWithMissing(json).first
+        return getVariantFromJsonWithMissing(json, settings).first
     }
+
 
     @JvmOverloads
     fun saveVariantToJson(
@@ -546,10 +603,10 @@ object VariantSerialization {
     }
 
 
-    val sep = ","
-    val fieldSep = "%"//Only two ascii characters that cannot be in a variant display name
-    val metaSep = "$"//Only two ascii characters that cannot be in a variant display name
-    val weaponGroupSep = ">"
+    const val sep = ","
+    const val fieldSep = "%"//Only two ascii characters that cannot be in a variant display name
+    const val metaSep = "$"//Only two ascii characters that cannot be in a variant display name
+    const val weaponGroupSep = ">"
 
     @JvmOverloads
     fun saveVariantToCompString(
@@ -791,7 +848,7 @@ object VariantSerialization {
         var variantId = json.optString("variantId")
         if (variantId.isNullOrEmpty()) {
             variantId = "MissingVariantID_" + Misc.genUID()
-            Global.getLogger(this.javaClass).warn("When loading JSONObject variant with hullId $hullId, failed to find variantID. Setting a random UID in it's place")
+            Global.getLogger(this.javaClass).warn("When loading JSONObject variant with hullId $hullId, failed to find variantID. Setting a random UID in its place")
         }
         loadout.hullVariantId = variantId
 
