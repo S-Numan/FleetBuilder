@@ -1,7 +1,7 @@
 package fleetBuilder.util
 
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.util.MISC.showError
+import fleetBuilder.util.DisplayMessage.showError
 import starficz.ReflectionUtils.getFieldsMatching
 
 object ModifyInternalVariants {
@@ -32,7 +32,7 @@ object ModifyInternalVariants {
             return variant
 
         } catch (e: Exception) {
-            showError("Failed to get modified internal variant", e)
+            DisplayMessage.showError("Failed to get modified internal variant", e)
             return null
         }
     }

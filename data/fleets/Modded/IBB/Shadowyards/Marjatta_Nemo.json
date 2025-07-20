@@ -1,0 +1,960 @@
+{
+    "aggression_doctrine": 2,
+    "fleetName": "Marjatta Nemo (IBB)",
+    "members": [
+        {
+            "cr": 0.84999996,
+            "isFlagship": true,
+            "name": "Poseidon",
+            "officer": {
+                "first": "Marjatta",
+                "gender": "FEMALE",
+                "last": "Nemo",
+                "level": 9,
+                "personality": "steady",
+                "portrait": "graphics/portraits/ms_portrait_001.png",
+                "post": "fleetCommander",
+                "rank": "spaceAdmiral",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "fighter_uplink": 1,
+                    "flux_regulation": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": [],
+                "trueMemKeys": ["$isPerson"]
+            },
+            "variantId": "ms_boss_charybdis_boss"
+        },
+        {
+            "cr": 0.84999996,
+            "name": "SYS Reiffic",
+            "officer": {
+                "first": "Estere",
+                "gender": "FEMALE",
+                "last": "Angelis",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/ms_portrait_005.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "1e42e1_0"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Mirror Darkly",
+            "officer": {
+                "first": "Gana",
+                "gender": "FEMALE",
+                "last": "Chaturvedi",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/ms_portrait_005.png",
+                "skills": {
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "1e42e1_1"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Piltdown",
+            "officer": {
+                "first": "Ruhin",
+                "gender": "FEMALE",
+                "last": "Rana",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/ms_portrait_002.png",
+                "skills": {
+                    "field_modulation": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                },
+                "tags": []
+            },
+            "variantId": "1e42e1_2"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Kemwer",
+            "variantId": "1e42e1_3"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Dahman",
+            "officer": {
+                "first": "Tymoteusz",
+                "gender": "MALE",
+                "last": "Voon",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/ms_portrait_008.png",
+                "skills": {
+                    "damage_control": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "polarized_armor": 2,
+                    "systems_expertise": 2
+                },
+                "tags": []
+            },
+            "variantId": "1e42e1_4"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Hara Berezaiti",
+            "variantId": "1e42e1_5"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Harakhti",
+            "officer": {
+                "first": "Taryn",
+                "gender": "FEMALE",
+                "last": "Sapad",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/ms_portrait_003.png",
+                "skills": {
+                    "gunnery_implants": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "1e42e1_6"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Ghul",
+            "variantId": "1e42e1_7"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Sleeping on Jupiter",
+            "officer": {
+                "first": "Nickolas",
+                "gender": "MALE",
+                "last": "Johar",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/ms_portrait_008.png",
+                "skills": {
+                    "damage_control": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "systems_expertise": 1
+                },
+                "tags": []
+            },
+            "variantId": "1e42e1_8"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Marriage License",
+            "officer": {
+                "first": "Kiran",
+                "gender": "MALE",
+                "last": "Kriezis",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/ms_portrait_008.png",
+                "skills": {
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                },
+                "tags": []
+            },
+            "variantId": "1e42e1_9"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Ra",
+            "variantId": "1e42e1_10"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Phat Beat Machine",
+            "variantId": "1e42e1_11"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Candor",
+            "variantId": "1e42e1_12"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS The Fifth Head of Cerberus",
+            "officer": {
+                "first": "Whitney",
+                "gender": "FEMALE",
+                "last": "Khatri",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/ms_portrait_002.png",
+                "skills": {
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "1e42e1_13"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Treasure Trove in Time",
+            "variantId": "1e42e1_14"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS The Unwatched Door",
+            "variantId": "1e42e1_15"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Motherless Brooklyn",
+            "variantId": "1e42e1_16"
+        },
+        {
+            "cr": 0.7,
+            "name": "SYS Spacemen in the Dark",
+            "variantId": "1e42e1_17"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "shadow_ships",
+        "mod_name": "Shadowyards (Wisp)",
+        "mod_version": "0.9.6-rc1-Wisp-007"
+    }],
+    "variants": [
+        {
+            "displayName": "Boss",
+            "fluxCapacitors": 28,
+            "fluxVents": 30,
+            "hullId": "ms_boss_charybdis",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": [
+                "targetingunit",
+                "hardenedshieldemitter",
+                "stabilizedshieldemitter",
+                "insulatedengine"
+            ],
+            "tags": [
+                "variant_allow_excess_op_etc",
+                "consistent_weapon_drops",
+                "always_recoverable"
+            ],
+            "variantId": "ms_boss_charybdis_boss",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0008": "ms_slowbeamH"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {"WS0001": "ms_tusk_pod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0009": "ms_splinter_launcher",
+                        "WS0010": "ms_splinter_launcher",
+                        "WS0028": "ms_splinter_launcher",
+                        "WS0029": "ms_splinter_launcher"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "ms_cepc",
+                        "WS0006": "ms_mcepc",
+                        "WS0007": "ms_mcepc"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "ms_spreadbeam",
+                        "WS0004": "ms_spreadbeam",
+                        "WS0005": "ms_spreadbeam"
+                    }
+                }
+            ],
+            "wings": [
+                "ms_skinwalker_wing",
+                "ms_skinwalker_wing",
+                "ms_neriad_wing"
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 12,
+            "hullId": "ms_tartarus",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "insulatedengine"
+            ],
+            "permaMods": [],
+            "sMods": [],
+            "variantId": "1e42e1_0",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "ms_particleLance"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_slowbeamM",
+                        "WS0002": "ms_slowbeamM"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0004": "pulselaser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "ms_spreadbeam",
+                        "WS0006": "ms_spreadbeam",
+                        "WS0007": "ms_spreadbeam",
+                        "WS0008": "ms_spreadbeam",
+                        "WS0009": "ms_spreadbeam",
+                        "WS0010": "ms_spreadbeam",
+                        "WS0011": "ms_spreadbeam"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 2,
+            "fluxVents": 23,
+            "hullId": "ms_kabaloi",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": ["insulatedengine"],
+            "variantId": "1e42e1_1",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_lempGun",
+                        "WS0002": "ms_lempGun",
+                        "WS0003": "ms_lempGun",
+                        "WS0004": "ms_lempGun",
+                        "WS0005": "ms_lempGun",
+                        "WS0007": "ms_lempGun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "ms_tusk_pod"}
+                }
+            ],
+            "wings": [
+                "ms_shikome_wing",
+                "ms_wraith_wing",
+                "ms_wraith_wing"
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 9,
+            "hullId": "ms_kabaloi",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": ["insulatedengine"],
+            "variantId": "1e42e1_2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "ms_mcepc"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "ms_slowbeamM"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "irpulse"}
+                }
+            ],
+            "wings": [
+                "ms_raksasha_wing",
+                "ms_raksasha_wing",
+                "ms_raksasha_wing"
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 24,
+            "hullId": "ms_kabaloi",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": [
+                "expanded_deck_crew",
+                "insulatedengine"
+            ],
+            "variantId": "1e42e1_3",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "ms_cepc"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "ms_shrike_pod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "ms_chaingang"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_lempGun",
+                        "WS0003": "ms_lempGun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "mininglaser",
+                        "WS0005": "mininglaser"
+                    }
+                }
+            ],
+            "wings": [
+                "ms_kobold_wing",
+                "ms_kobold_wing",
+                "ms_kobold_wing"
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 17,
+            "hullId": "ms_kabaloi",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": ["insulatedengine"],
+            "variantId": "1e42e1_4",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "ms_chaingang"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "ms_tusk_pod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_lempGun",
+                        "WS0002": "ms_lempGun",
+                        "WS0003": "ms_lempGun",
+                        "WS0004": "ms_lempGun",
+                        "WS0005": "ms_lempGun"
+                    }
+                }
+            ],
+            "wings": [
+                "ms_shikome_wing",
+                "ms_neriad_wing",
+                "ms_neriad_wing"
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 19,
+            "hullId": "ms_kabaloi",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": ["insulatedengine"],
+            "variantId": "1e42e1_5",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "ms_chaingang"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "ms_tusk_pod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_lempGun",
+                        "WS0002": "ms_lempGun",
+                        "WS0003": "ms_lempGun",
+                        "WS0004": "ms_lempGun",
+                        "WS0005": "ms_pdcepc"
+                    }
+                }
+            ],
+            "wings": [
+                "ms_shikome_wing",
+                "ms_neriad_wing",
+                "ms_neriad_wing"
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 0,
+            "fluxVents": 6,
+            "hullId": "ms_kabaloi",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": [],
+            "variantId": "1e42e1_6",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "gravitonbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "gravitonbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_trishula",
+                        "WS0002": "ms_trishula"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "ms_spreadbeam",
+                        "WS0004": "ms_spreadbeam",
+                        "WS0005": "ms_spreadbeam"
+                    }
+                }
+            ],
+            "wings": [
+                "ms_raksasha_wing",
+                "ms_raksasha_wing",
+                "ms_neriad_wing"
+            ]
+        },
+        {
+            "displayName": "Ranged Support",
+            "fluxCapacitors": 3,
+            "fluxVents": 21,
+            "hullId": "ms_sargasso",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": ["eccm"],
+            "variantId": "1e42e1_7",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_lempGun",
+                        "WS0002": "ms_lempGun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "ms_barrago"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0016": "ms_spreadbeam"}
+                }
+            ],
+            "wings": [
+                "ms_neriad_wing",
+                "ms_raksasha_wing"
+            ]
+        },
+        {
+            "displayName": "Balanced",
+            "fluxCapacitors": 2,
+            "fluxVents": 7,
+            "hullId": "ms_sargasso",
+            "hullMods": [
+                "extendedshieldemitter",
+                "hardenedshieldemitter"
+            ],
+            "permaMods": [],
+            "sMods": [],
+            "variantId": "1e42e1_8",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "ms_stormBlaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_lempGun",
+                        "WS0002": "ms_lempGun",
+                        "WS0016": "ms_pdcepc"
+                    }
+                }
+            ],
+            "wings": [
+                "ms_wraith_wing",
+                "ms_shikome_wing"
+            ]
+        },
+        {
+            "displayName": "Balanced",
+            "fluxCapacitors": 4,
+            "fluxVents": 23,
+            "hullId": "ms_sargasso",
+            "hullMods": ["extendedshieldemitter"],
+            "permaMods": [],
+            "sMods": ["hardenedshieldemitter"],
+            "variantId": "1e42e1_9",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "ms_stormBlaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_lempGun",
+                        "WS0002": "ms_lempGun",
+                        "WS0016": "ms_lempGun"
+                    }
+                }
+            ],
+            "wings": [
+                "ms_wraith_wing",
+                "ms_skinwalker_wing"
+            ]
+        },
+        {
+            "displayName": "Ranged Support",
+            "fluxCapacitors": 3,
+            "fluxVents": 23,
+            "hullId": "ms_sargasso",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": ["eccm"],
+            "variantId": "1e42e1_10",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_lempGun",
+                        "WS0002": "ms_lempGun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "ms_barrago"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0016": "ms_spreadbeam"}
+                }
+            ],
+            "wings": [
+                "ms_wraith_wing",
+                "ms_raksasha_wing"
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 20,
+            "fluxVents": 20,
+            "hullId": "ms_morningstar",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": ["insulatedengine"],
+            "variantId": "1e42e1_11",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_particleDart",
+                        "WS0002": "ms_particleDart"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0007": "ms_tusk_rack",
+                        "WS0008": "ms_tusk_rack"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "ms_cepc"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "ms_lempGun",
+                        "WS0004": "ms_lempGun",
+                        "WS0005": "ms_lempGun"
+                    }
+                }
+            ],
+            "wings": ["ms_wraith_wing"]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 13,
+            "fluxVents": 15,
+            "hullId": "ms_inanna",
+            "hullMods": ["fluxdistributor"],
+            "permaMods": [],
+            "sMods": ["augmentedengines"],
+            "variantId": "1e42e1_12",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "ms_cepc"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "ms_stormBlaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "ms_lempGun",
+                        "WS0005": "ms_lempGun"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 15,
+            "fluxVents": 15,
+            "hullId": "ms_inanna",
+            "hullMods": ["fluxcoil"],
+            "permaMods": [],
+            "sMods": ["fluxdistributor"],
+            "variantId": "1e42e1_13",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_cepc",
+                        "WS0003": "ms_cepc"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "ms_lempGun",
+                        "WS0005": "ms_lempGun"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 5,
+            "fluxVents": 15,
+            "hullId": "ms_inanna",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": ["fluxdistributor"],
+            "variantId": "1e42e1_14",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "ms_mcepc",
+                        "WS0003": "ms_mcepc"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "ms_lempGun",
+                        "WS0005": "ms_lempGun"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Point Defense",
+            "fluxCapacitors": 3,
+            "fluxVents": 8,
+            "hullId": "ms_belet-seri",
+            "hullMods": ["targetingunit"],
+            "permaMods": [],
+            "sMods": ["hardened_subsystems"],
+            "variantId": "1e42e1_15",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "ms_spreadbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "ms_lempGun",
+                        "WS0003": "ms_lempGun"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 0,
+            "fluxVents": 11,
+            "hullId": "ms_seski",
+            "hullMods": ["stabilizedshieldemitter"],
+            "permaMods": [],
+            "sMods": ["extendedshieldemitter"],
+            "variantId": "1e42e1_16",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "ms_scattercepc"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "ms_tusk_rack"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "ms_spreadbeam"}
+                }
+            ]
+        },
+        {
+            "displayName": "Blockade Runner",
+            "fluxCapacitors": 2,
+            "fluxVents": 14,
+            "hullId": "ms_seski",
+            "hullMods": [],
+            "permaMods": [],
+            "sMods": [
+                "unstable_injector",
+                "armoredweapons"
+            ],
+            "variantId": "1e42e1_17",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "ms_mcepc"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "ms_blackcap_6x"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "ms_lempGun"}
+                }
+            ]
+        }
+    ]
+}

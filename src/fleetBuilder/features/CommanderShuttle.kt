@@ -5,7 +5,8 @@ import com.fs.starfarer.api.campaign.LocationAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.config.ModSettings.commandShuttleId
-import fleetBuilder.util.MISC.updateFleetPanelContents
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 
 object CommanderShuttle {
@@ -101,7 +102,7 @@ object CommanderShuttle {
         sector.playerFleet.fleetData.setFlagship(shuttleMember)
         shuttleMember.repairTracker.cr = shuttleMember.repairTracker.maxCR
 
-        updateFleetPanelContents()
+        ReflectionMisc.updateFleetPanelContents()
     }
 
     fun togglePlayerShuttle() {

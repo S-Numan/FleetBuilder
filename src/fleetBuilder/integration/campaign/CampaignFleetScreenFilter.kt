@@ -4,11 +4,10 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.ui.FleetFilterPanel
 import fleetBuilder.ui.FleetFilterPanel.Companion.removePreviousIfAny
-import fleetBuilder.util.MISC
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.getChildrenCopy
 
@@ -38,11 +37,11 @@ class CampaignFleetScreenFilter : EveryFrameScript {
             return
         }
 
-        val fleetPanel = MISC.getFleetPanel() ?: return
+        val fleetPanel = ReflectionMisc.getFleetPanel() ?: return
 
         //On fleet panel appearing
         if (filterPanel == null) {
-            val fleetSidePanel = MISC.getFleetSidePanel() ?: return
+            val fleetSidePanel = ReflectionMisc.getFleetSidePanel() ?: return
 
             filterPanel = FleetFilterPanel(20f, fleetSidePanel)
         }
@@ -52,7 +51,7 @@ class CampaignFleetScreenFilter : EveryFrameScript {
             if (filterPanel == null) return
             filterPanel!!.resetText()
 
-            val fleetSidePanel = MISC.getFleetSidePanel() ?: return
+            val fleetSidePanel = ReflectionMisc.getFleetSidePanel() ?: return
             //If the FilterPanel is not in fleetSidePanel
             val currentFilterPanel = fleetSidePanel.getChildrenCopy().find { (it as? CustomPanelAPI)?.plugin as? FleetFilterPanel != null }
             if (currentFilterPanel == null) {

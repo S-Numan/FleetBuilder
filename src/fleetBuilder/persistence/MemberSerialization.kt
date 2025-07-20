@@ -4,14 +4,16 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
+import fleetBuilder.persistence.MemberSerialization.getMemberFromJson
+import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
-import fleetBuilder.util.MISC.createErrorVariant
-import fleetBuilder.util.MISC.getMissingFromModInfo
+import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.VariantLib.createErrorVariant
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
 
@@ -53,7 +55,7 @@ object MemberSerialization {
             missingElements.hullIds.add("")
         }
 
-        getMissingFromModInfo(json, missingElements)
+        FBMisc.getMissingFromModInfo(json, missingElements)
 
         // Create the FleetMemberAPI object
         val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)

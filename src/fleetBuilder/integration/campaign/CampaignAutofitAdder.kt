@@ -7,7 +7,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import fleetBuilder.config.ModSettings
 import fleetBuilder.ui.autofit.AutofitPanelCreator
-import fleetBuilder.util.MISC
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 
 internal class CampaignAutofitAdder : CampaignInputListener {
@@ -28,7 +28,7 @@ internal class CampaignAutofitAdder : CampaignInputListener {
 
                 //Open autofit menu in refit screen
 
-                val refitTab = MISC.getRefitTab() ?: continue
+                val refitTab = ReflectionMisc.getRefitTab() ?: continue
 
                 AutofitPanelCreator.toggleAutofitButton(refitTab, true)
 

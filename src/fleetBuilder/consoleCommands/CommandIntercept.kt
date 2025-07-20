@@ -1,6 +1,6 @@
 package fleetBuilder.consoleCommands
 
-import fleetBuilder.util.MISC
+import fleetBuilder.util.ReflectionMisc
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.CommandListener
@@ -30,7 +30,7 @@ class CommandIntercept : CommandListener {
         if (result != CommandResult.SUCCESS) return
 
         if (command.lowercase() == "addship") {
-            MISC.updateFleetPanelContents()
+            ReflectionMisc.updateFleetPanelContents()
         }
     }
 }

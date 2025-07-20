@@ -1,3 +1,9 @@
+## 1.9.0
+- Fix handling the somewhat badly implemented Emergent Threats mod's variants.
+### Technical
+- A sweeping refactor
+- On Emergent Threat: their threat ships have one more built in wing than actual, and add/remove hullmods in applyEffectsBeforeShipCreation causing a concurrent modification exception. Best I can do is add a try catch to prevent a crash.
+
 ## 1.8.0
 - CTRL + C in the fleet screen now copies only the visible fleet members. If you copy your fleet with a Fleet Filter on, it'll only copy those applicable to the filter. Additionally, it copies fleets in the submarkets for sale.
 - Fix SModded fleet filter keyword.

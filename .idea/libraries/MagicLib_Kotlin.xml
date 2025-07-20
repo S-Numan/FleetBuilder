@@ -6,6 +6,7 @@
     <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/../MagicLib/jars/MagicLib-Kotlin.jar!/" />
+      <root url="file://$PROJECT_DIR$/../MagicLib/MagicLib-Kotlin" />
     </SOURCES>
   </library>
 </component>

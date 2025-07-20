@@ -9,16 +9,18 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.config.ModSettings.commandShuttleId
+import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
+import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.MemberSerialization.setMemberValuesFromJson
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
-import fleetBuilder.util.MISC.createErrorVariant
-import fleetBuilder.util.MISC.getMissingFromModInfo
-import fleetBuilder.util.MISC.showError
+import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.VariantLib
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
@@ -30,7 +32,7 @@ object FleetSerialization {
      * Settings for [saveFleetToJson] and [getFleetFromJson].
      * @param includeCommanderSetFlagship whether to set the PersonAPI commander as the fleet's commander.
      *
-     * If the commander is assigned as a captain of a ship in the fleet, that ship will also be set as the flagship.
+     * If the commander is assigned as a captain of a ship in the fleet, that ship will be set as the flagship.
      * @param includeCommanderAsOfficer whether to include the PersonAPI commander as an officer of the fleet, provided they are one.
      * @param includeIdleOfficers whether to include officers that are not assigned to a ship in the fleet.
      * @param includeAggression whether to include the aggression of the fleet in the JSON.
@@ -81,7 +83,7 @@ object FleetSerialization {
         val campFleet: CampaignFleetAPI? = fleet.fleet
 
         val missingElements = MissingElements()
-        getMissingFromModInfo(json, missingElements)
+        FBMisc.getMissingFromModInfo(json, missingElements)
 
         campFleet?.name = json.optString("fleetName", "Nameless fleet")
 
@@ -107,8 +109,8 @@ object FleetSerialization {
             //  if (Global.getSettings().doesVariantExist(variantId)) {
             //     Global.getSettings().getVariant(variantId)
             run {
-                showError("Failed to find variant id of $variantId")
-                createErrorVariant("VariantIDNotFound")
+                DisplayMessage.showError("Failed to find variant id of $variantId")
+                VariantLib.createErrorVariant("VariantIDNotFound")
             }
             if (matchingVariant.hullSpec.hullId in settings.excludeMembersWithHullID)
                 return null
@@ -224,7 +226,7 @@ object FleetSerialization {
 
                             fleet.addOfficer(officer)
                         } catch (e: Exception) {
-                            showError("Error parsing idle officer at index $i", e)
+                            DisplayMessage.showError("Error parsing idle officer at index $i", e)
                         }
                     }
                 }

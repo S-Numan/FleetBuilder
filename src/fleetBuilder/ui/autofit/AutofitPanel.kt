@@ -18,8 +18,7 @@ import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
-import fleetBuilder.util.MISC
-import fleetBuilder.util.MISC.createErrorVariant
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
@@ -28,6 +27,7 @@ import fleetBuilder.variants.LoadoutManager.getAnyVariant
 import fleetBuilder.variants.LoadoutManager.getLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.saveLoadoutVariant
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.compareVariantHullMods
 import fleetBuilder.variants.VariantLib.getAllDMods
@@ -39,6 +39,7 @@ import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
+import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
 
@@ -236,7 +237,7 @@ internal object AutofitPanel {
 
                             setClipboardText(json.toString(4))
 
-                            MISC.showMessage("Variant copied to clipboard")
+                            DisplayMessage.showMessage("Variant copied to clipboard")
                         }
                     } else {//Save and load variant
                         selectorPlugins.forEach { it.isSelected = false }
@@ -260,7 +261,7 @@ internal object AutofitPanel {
                                 //selectorPlugin.selectorPanel.opacity = 0f
 
                                 val newSpec = AutofitSpec(
-                                    getLoadoutVariant(newVariantId) ?: createErrorVariant(),
+                                    getLoadoutVariant(newVariantId) ?: VariantLib.createErrorVariant(),
                                     baseVariant.displayName,
                                     "Loadout Variant",
                                     (baseVariant as ShipVariantAPI).hullSpec.spriteName
@@ -323,10 +324,13 @@ internal object AutofitPanel {
                             if (ship != null) {
                                 applyVariantInRefitScreen(baseVariant, variant, fleetMember, ship, coreUI, shipDisplay)
 
-                                ReflectionUtils.invoke("syncWithCurrentVariant", refitPanel)
-                                ReflectionUtils.invoke("updateModules", shipDisplay)
-                                ReflectionUtils.invoke("updateButtonPositionsToZoomLevel", shipDisplay)
-
+                                try {
+                                    refitPanel.invoke("syncWithCurrentVariant")
+                                    shipDisplay.invoke("updateModules")
+                                    shipDisplay.invoke("updateButtonPositionsToZoomLevel")
+                                } catch (e: Exception) {
+                                    DisplayMessage.showError("Failed to apply variant in refit screen", e)
+                                }
                                 /*
                                 if(selectorPlugins.last().selectorPanel === prev) {
                                     selectorPlugins.last().selectorPanel.clearChildren()
@@ -556,20 +560,18 @@ internal object AutofitPanel {
             var _builtinwings: MutableMap<String, Int> = mutableMapOf()
 
             (variant as ShipVariantAPI).hullSpec.builtInWings.forEachIndexed { index, wingId ->
-                val spec = (variant as ShipVariantAPI).getWing(index)
+                val spec = (variant as ShipVariantAPI).getWing(index) ?: return@forEachIndexed
 
                 val wingName = if (ModSettings.showDebug)
                     "${spec.wingName} (${spec.id})"
                 else
                     spec.wingName
 
-                if (spec != null) {
-                    _builtinwings.merge(wingName, 1, Int::plus)
-                }
+                _builtinwings.merge(wingName, 1, Int::plus)
             }
             var _wings: MutableMap<String, Int> = mutableMapOf()
             for (wing in variant.nonBuiltInWings) {
-                val spec = Global.getSettings().getFighterWingSpec(wing)
+                val spec = Global.getSettings().getFighterWingSpec(wing) ?: continue
 
                 val wingName = if (ModSettings.showDebug)
                     "${spec.wingName} (${spec.id})"

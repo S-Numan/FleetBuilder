@@ -93,7 +93,7 @@ Hold Shift or Alt to multiply the added value by 10
 Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,Misc
 storeOfficersInCargo,Store Officers In Cargo,Boolean,false,,"Officers stay with their ships when putting a ship in storage, thus removing them from your fleet.
 Upon retrieving the ship from storage, the officer returns to your fleet as its pilot.",,,Misc
-unassignPlayer,Unassign Player,Boolean,false,,Remove your player officer with a right click: (places them in a command shuttle that can't fight or be copied. (Commander bonus still applies),,,Misc
+unassignPlayer,Unassign Player,Boolean,false,,Remove your player officer with a right click: (places them in a command shuttle that can't fight or be copied) (Commander bonus still applies),,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave -backup” in the console to load it.",,,Misc

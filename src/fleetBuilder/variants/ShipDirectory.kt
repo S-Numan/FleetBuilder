@@ -6,7 +6,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJson
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
-import fleetBuilder.util.MISC
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.getEffectiveHullId
 import org.json.JSONArray
 import org.json.JSONObject
@@ -78,7 +78,7 @@ class ShipDirectory(
         if (shipPath != null)
             containsAndRemoveShipName(shipPathsJson, shipPath)
         else
-            MISC.showError("shipPath was null when attempting to remove it")
+            DisplayMessage.showError("shipPath was null when attempting to remove it")
 
         shipDirJson.put("shipPaths", shipPathsJson)
 
@@ -111,7 +111,7 @@ class ShipDirectory(
         val shipPath = "${variant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"
 
         if (containsShip(savedVariant.hullVariantId)) {
-            MISC.showError("The variantID of ${savedVariant.hullVariantId} already exists in the directory of prefix $prefix . Replacing existing variant.")
+            DisplayMessage.showError("The variantID of ${savedVariant.hullVariantId} already exists in the directory of prefix $prefix . Replacing existing variant.")
         }
 
         // Read the ship directory JSON
@@ -120,7 +120,7 @@ class ShipDirectory(
 
         // Add the new ship path
         if (containsAndRemoveShipName(shipPathsJson, shipPath)) {
-            MISC.showError("$shipPath already exists in JSONArray when adding ship. The old file with be overwritten.")
+            DisplayMessage.showError("$shipPath already exists in JSONArray when adding ship. The old file with be overwritten.")
         }
 
         val shipPathJson = JSONObject()

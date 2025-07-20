@@ -11,8 +11,9 @@ import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
-import fleetBuilder.util.MISC
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.completelyRemoveMod
+import fleetBuilder.util.getRegularHullMods
 import fleetBuilder.variants.VariantLib
 import starficz.ReflectionUtils.invoke
 import java.util.*
@@ -154,7 +155,7 @@ object AutofitApplier {
                     }
 
                     if (auto.creditCost > 0) {
-                        MISC.showMessage(
+                        DisplayMessage.showMessage(
                             "Autofit confirmed, purchased ${Misc.getDGSCredits(auto.creditCost.toFloat())} worth of ordnance",
                             Misc.getDGSCredits(auto.creditCost.toFloat()), Misc.getHighlightColor()
                         )
@@ -163,7 +164,7 @@ object AutofitApplier {
 
             }
         } catch (e: Exception) {
-            MISC.showError("ERROR: Failed to apply ship variant", e)
+            DisplayMessage.showError("ERROR: Failed to apply ship variant", e)
             //e.printStackTrace()
         }
 
@@ -189,8 +190,8 @@ object AutofitApplier {
         //to.sModdedBuiltIns.clear()
         //to.suppressedMods.clear()
         to.hullMods.toList().forEach { mod ->
-            //if (to.hullSpec.builtInMods.contains(mod))
-            //    return@forEach
+            if (to.hullSpec.builtInMods.contains(mod))
+                return@forEach
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
             if (dontForceClearDMods && VariantLib.getAllDMods().contains(mod))
@@ -214,7 +215,7 @@ object AutofitApplier {
         }
 
         // Copy hullmod data
-        for (mod in from.nonBuiltInHullmods) {
+        for (mod in from.getRegularHullMods()) {
             to.addMod(mod)
         }
 

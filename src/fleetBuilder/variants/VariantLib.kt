@@ -283,4 +283,26 @@ object VariantLib {
 
         return "${hullId}_$cleanName"
     }
+
+    fun createErrorVariant(displayName: String = ""): ShipVariantAPI {
+        var tempVariant: ShipVariantAPI? = null
+        try {
+            tempVariant = Global.getSettings().getVariant(Global.getSettings().getString("errorShipVariant"))
+        } catch (_: Exception) {
+        }
+        if (tempVariant == null)
+            tempVariant = Global.getSettings().getVariant(Global.getSettings().allVariantIds.first())
+        if (tempVariant == null) throw Exception("No variants anywhere? How?")
+
+        tempVariant = tempVariant.clone()
+
+        if (displayName.isNotEmpty())
+            tempVariant.setVariantDisplayName("ERR:$displayName")
+        else
+            tempVariant.setVariantDisplayName("ERROR")
+
+        tempVariant.addTag("ERROR")
+
+        return tempVariant
+    }
 }
