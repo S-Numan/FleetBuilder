@@ -81,6 +81,12 @@ fun ShipVariantAPI.allSMods(): Set<String> {
     return outputSMods
 }
 
+fun ShipVariantAPI.getRegularHullMods(): Set<String> {
+    return hullMods
+        .filter { !sModdedBuiltIns.contains(it) && !sMods.contains(it) && !permaMods.contains(it) && !suppressedMods.contains(it) && !hullSpec.builtInMods.contains(it) }
+        .toSet()
+}
+
 fun FleetMemberAPI.getShipNameWithoutPrefix(): String {
     val fullName = shipName ?: return ""
     val knownPrefixes = buildSet {

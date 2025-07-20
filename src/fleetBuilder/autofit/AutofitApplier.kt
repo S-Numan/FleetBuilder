@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.completelyRemoveMod
+import fleetBuilder.util.getRegularHullMods
 import fleetBuilder.variants.VariantLib
 import starficz.ReflectionUtils.invoke
 import java.util.*
@@ -189,8 +190,8 @@ object AutofitApplier {
         //to.sModdedBuiltIns.clear()
         //to.suppressedMods.clear()
         to.hullMods.toList().forEach { mod ->
-            //if (to.hullSpec.builtInMods.contains(mod))
-            //    return@forEach
+            if (to.hullSpec.builtInMods.contains(mod))
+                return@forEach
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
             if (dontForceClearDMods && VariantLib.getAllDMods().contains(mod))
@@ -214,7 +215,7 @@ object AutofitApplier {
         }
 
         // Copy hullmod data
-        for (mod in from.nonBuiltInHullmods) {
+        for (mod in from.getRegularHullMods()) {
             to.addMod(mod)
         }
 

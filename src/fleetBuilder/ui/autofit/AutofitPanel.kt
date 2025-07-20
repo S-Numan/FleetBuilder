@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.autofit.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.config.ModSettings
+import fleetBuilder.config.ModSettings.selectorsPerRow
 import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
@@ -39,6 +40,7 @@ import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
+import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
 
@@ -323,10 +325,13 @@ internal object AutofitPanel {
                             if (ship != null) {
                                 applyVariantInRefitScreen(baseVariant, variant, fleetMember, ship, coreUI, shipDisplay)
 
-                                ReflectionUtils.invoke("syncWithCurrentVariant", refitPanel)
-                                ReflectionUtils.invoke("updateModules", shipDisplay)
-                                ReflectionUtils.invoke("updateButtonPositionsToZoomLevel", shipDisplay)
-
+                                try {
+                                    refitPanel.invoke("syncWithCurrentVariant")
+                                    shipDisplay.invoke("updateModules")
+                                    shipDisplay.invoke("updateButtonPositionsToZoomLevel")
+                                } catch (e: Exception) {
+                                    DisplayMessage.showError("Failed to apply variant in refit screen", e)
+                                }
                                 /*
                                 if(selectorPlugins.last().selectorPanel === prev) {
                                     selectorPlugins.last().selectorPanel.clearChildren()
@@ -556,20 +561,18 @@ internal object AutofitPanel {
             var _builtinwings: MutableMap<String, Int> = mutableMapOf()
 
             (variant as ShipVariantAPI).hullSpec.builtInWings.forEachIndexed { index, wingId ->
-                val spec = (variant as ShipVariantAPI).getWing(index)
+                val spec = (variant as ShipVariantAPI).getWing(index) ?: return@forEachIndexed
 
                 val wingName = if (ModSettings.showDebug)
                     "${spec.wingName} (${spec.id})"
                 else
                     spec.wingName
 
-                if (spec != null) {
-                    _builtinwings.merge(wingName, 1, Int::plus)
-                }
+                _builtinwings.merge(wingName, 1, Int::plus)
             }
             var _wings: MutableMap<String, Int> = mutableMapOf()
             for (wing in variant.nonBuiltInWings) {
-                val spec = Global.getSettings().getFighterWingSpec(wing)
+                val spec = Global.getSettings().getFighterWingSpec(wing) ?: continue
 
                 val wingName = if (ModSettings.showDebug)
                     "${spec.wingName} (${spec.id})"
