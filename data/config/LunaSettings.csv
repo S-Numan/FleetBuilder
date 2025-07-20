@@ -135,7 +135,7 @@ fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
 ,,,,,,,,
 ,,,,,,,,
 showDebug,Show Debug,Boolean,false,,Show debug elements,,,Dev Options
-,,,,,,,,
+removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?",,,Dev Options
 prefixHeader,Prefix Header,Header,Prefixes,,,,,Dev Options
 prefixText,Prefix Text Field,Text,"Prefixes do not accept anything other than one or two characters, A to Z
 Must restart game to apply",,,,,Dev Options

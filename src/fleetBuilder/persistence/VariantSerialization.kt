@@ -6,6 +6,7 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings.getHullModsToNeverSave
+import fleetBuilder.config.ModSettings.removeDefaultDMods
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJson
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.*
@@ -324,6 +325,13 @@ object VariantSerialization {
         val hullSpec = Global.getSettings().getHullSpec(data.hullId)
         val loadout = Global.getSettings().createEmptyVariant(hullSpec.hullId, hullSpec)
 
+        //Remove default DMods
+        if (removeDefaultDMods) {
+            loadout.allDMods().forEach {
+                loadout.hullMods.remove(it)
+            }
+        }
+
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
@@ -558,6 +566,12 @@ object VariantSerialization {
         variant.hullMods.forEach { mod ->
             if (!sMods.containsString(mod) && !permaMods.containsString(mod) && !hullMods.containsString(mod) && !variant.hullSpec.builtInMods.contains(mod))
                 hullMods.put(mod)
+        }
+
+        variant.allDMods().forEach { mod ->
+            if (mod in variant.hullSpec.builtInMods) { //If this is a built-in DMod (and is hence, removable)
+                hullMods.put(mod)//Put it in as a hullMod to indicate it should be included. Otherwise, default behavior is to remove built in DMods on creating a new variant.
+            }
         }
 
         json.put("hullMods", hullMods)

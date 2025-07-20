@@ -32,6 +32,7 @@ import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
+import fleetBuilder.variants.VariantLib.getAllDMods
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
@@ -417,12 +418,17 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                     val variant = ReflectionMisc.getCurrentVariantInRefitTab()
                     if (variant != null) {
-                        if (variant.hullSpec.builtInMods.contains(hullModID.id)) {
+                        if (variant.hullSpec.builtInMods.contains(hullModID.id)) {//Built in SMod?
                             if (variant.sModdedBuiltIns.contains(hullModID.id)) {
                                 variant.completelyRemoveMod(hullModID.id)
                                 refitPanel.invoke("syncWithCurrentVariant")
 
-                                DisplayMessage.showMessage("Removed sModdedBuiltIn in with ID '$hullModID'")
+                                DisplayMessage.showMessage("Removed sModdedBuiltIn in with ID '${hullModID.id}'")
+                            } else if (VariantLib.getAllDMods().contains(hullModID.id)) {//Built in DMod?
+                                variant.hullMods.remove(hullModID.id)
+                                refitPanel.invoke("syncWithCurrentVariant")
+
+                                DisplayMessage.showMessage("Removed built in DMod with ID '${hullModID.id}'")
                             } else {
                                 DisplayMessage.showMessage("The hullmod '${hullModID.id}' is built into the hullspec, it cannot be removed from the variant")
                             }

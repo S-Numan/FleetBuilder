@@ -1,3 +1,7 @@
+## 1.10.0
+- Properly handle saving built in DMods. Such as the Lion's Guard "Special Modifications"
+### Technical
+
 ## 1.9.0
 - Fix handling the somewhat badly implemented Emergent Threats mod's variants.
 ### Technical
