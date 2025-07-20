@@ -15,8 +15,8 @@ import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CutStyle
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.FBMisc
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import org.lwjgl.input.Keyboard

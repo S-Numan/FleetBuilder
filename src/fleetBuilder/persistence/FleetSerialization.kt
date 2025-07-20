@@ -17,8 +17,8 @@ import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 import org.json.JSONArray

@@ -6,14 +6,9 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings.getHullModsToNeverSave
-import fleetBuilder.persistence.VariantSerialization.extractVariantDataFromJson
-import fleetBuilder.persistence.VariantSerialization.filterParsedVariantData
+import fleetBuilder.persistence.VariantSerialization.getVariantFromJson
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
-import fleetBuilder.util.FBMisc
-import fleetBuilder.util.completelyRemoveMod
-import fleetBuilder.util.containsString
-import fleetBuilder.util.optJSONArrayToStringList
-import fleetBuilder.util.toBinary
+import fleetBuilder.util.*
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 import org.json.JSONArray
