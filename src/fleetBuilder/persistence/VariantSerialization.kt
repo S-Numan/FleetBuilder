@@ -6,6 +6,8 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings.getHullModsToNeverSave
+import fleetBuilder.persistence.VariantSerialization.extractVariantDataFromJson
+import fleetBuilder.persistence.VariantSerialization.filterParsedVariantData
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.completelyRemoveMod
@@ -227,77 +229,139 @@ object VariantSerialization {
         )
     }
 
-    fun buildVariantFromParsed(
+    fun validateAndCleanVariantData(
         data: ParsedVariantData
-    ): Pair<ShipVariantAPI, MissingElements> {
+    ): Pair<ParsedVariantData, MissingElements> {
         val missing = MissingElements()
 
-        if (data.hullId.isBlank() || Global.getSettings().allShipHullSpecs.none { it.hullId == data.hullId }) {
-            missing.hullIds.add("")
-            val errorVariant = VariantLib.createErrorVariant("NOHUL:${data.hullId}")
-            if (data.variantId.isNotBlank())
-                errorVariant.hullVariantId = data.variantId
-            return errorVariant to missing
+        // --- Hull ID ---
+        val validHullId = data.hullId.takeIf { it.isNotBlank() && Global.getSettings().allShipHullSpecs.any { spec -> spec.hullId == it } }
+        if (validHullId == null) missing.hullIds.add(data.hullId)
+
+        // --- Variant ID ---
+        val fixedVariantId = data.variantId.ifBlank {
+            "MissingVariantID_" + Misc.genUID()
         }
 
+        // --- Display Name ---
+        val fixedDisplayName = data.displayName.ifBlank {
+            "No Name"
+        }
+
+        // --- HullMods ---
+        val allHullMods = Global.getSettings().allHullModSpecs.map { it.id }.toSet()
+
+        val cleanHullMods = data.hullMods.filter { modId ->
+            if (modId !in allHullMods) {
+                missing.hullModIds.add(modId)
+                false
+            } else true
+        }
+
+        val cleanPermaMods = data.permaMods.filter { modId ->
+            if (modId !in allHullMods) {
+                missing.hullModIds.add(modId)
+                false
+            } else true
+        }
+
+        val cleanSMods = data.sMods.filter { modId ->
+            if (modId !in allHullMods) {
+                missing.hullModIds.add(modId)
+                false
+            } else true
+        }
+
+        val cleanSModdedBuiltIns = data.sModdedBuiltIns.filter { modId ->
+            if (modId !in allHullMods) {
+                missing.hullModIds.add(modId)
+                false
+            } else true
+        }
+
+        // --- Wings ---
+        val allWingIds = Global.getSettings().allFighterWingSpecs.map { it.id }.toSet()
+        val cleanWings = data.wings.mapIndexed { _, wingId ->
+            if (wingId !in allWingIds && wingId.isNotBlank()) {
+                missing.wingIds.add(wingId)
+                ""
+            } else wingId
+        }
+
+        // --- Weapon Groups ---
+        val allWeapons = Global.getSettings().actuallyAllWeaponSpecs.map { it.weaponId }.toSet()
+        val cleanWeaponGroups = data.weaponGroups.map { wg ->
+            val cleanedSlots = wg.slotToWeaponId.filter { (_, weaponId) ->
+                val valid = weaponId in allWeapons
+                if (!valid) missing.weaponIds.add(weaponId)
+                valid
+            }
+            wg.copy(slotToWeaponId = cleanedSlots)
+        }
+
+        // --- Module Variants ---
+        val cleanedModuleVariants = mutableMapOf<String, ParsedVariantData>()
+        data.moduleVariants.forEach { (slotId, moduleData) ->
+            val (cleanedModule, subMissing) = validateAndCleanVariantData(moduleData)
+            missing.add(subMissing)
+            cleanedModuleVariants[slotId] = cleanedModule
+        }
+
+        val cleanedData = data.copy(
+            hullId = validHullId ?: data.hullId,
+            variantId = fixedVariantId,
+            displayName = fixedDisplayName,
+            hullMods = cleanHullMods,
+            permaMods = cleanPermaMods,
+            sMods = cleanSMods,
+            sModdedBuiltIns = cleanSModdedBuiltIns,
+            wings = cleanWings,
+            weaponGroups = cleanWeaponGroups,
+            moduleVariants = cleanedModuleVariants
+        )
+
+        return cleanedData to missing
+    }
+
+    fun buildVariant(
+        data: ParsedVariantData
+    ): ShipVariantAPI {
         val hullSpec = Global.getSettings().getHullSpec(data.hullId)
         val loadout = Global.getSettings().createEmptyVariant(hullSpec.hullId, hullSpec)
 
-        val variantId = data.variantId.ifEmpty { "MissingVariantID_" + Misc.genUID() }
-        loadout.hullVariantId = variantId
-        loadout.setVariantDisplayName(data.displayName.ifEmpty { "No Name" })
+        loadout.hullVariantId = data.variantId
+        loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
         loadout.numFluxCapacitors = data.fluxCapacitors
         loadout.numFluxVents = data.fluxVents
 
         data.tags.forEach { loadout.addTag(it) }
 
-        // --- HullMods ---
-        val allHullMods = Global.getSettings().allHullModSpecs.map { it.id }.toSet()
-
-        fun addIfValid(modId: String, add: () -> Unit) {
-            if (modId in allHullMods) {
-                add()
-            } else if (modId !in missing.hullModIds) {
-                missing.hullModIds.add(modId)
-            }
-        }
-
         data.hullMods.forEach { modId ->
-            addIfValid(modId) { loadout.addMod(modId) }
+            loadout.addMod(modId)
         }
 
         data.permaMods.forEach { modId ->
-            addIfValid(modId) { loadout.addPermaMod(modId, false) }
+            loadout.addPermaMod(modId, false)
         }
 
         data.sMods.forEach { modId ->
-            addIfValid(modId) {
-                if (hullSpec.builtInMods.contains(modId))
-                    loadout.sModdedBuiltIns.add(modId)
-                else
-                    loadout.addPermaMod(modId, true)
-            }
+            if (hullSpec.builtInMods.contains(modId))
+                loadout.sModdedBuiltIns.add(modId)
+            else
+                loadout.addPermaMod(modId, true)
         }
 
         data.sModdedBuiltIns.forEach { modId ->
-            addIfValid(modId) {
-                loadout.sModdedBuiltIns.add(modId)
-            }
+            loadout.sModdedBuiltIns.add(modId)
         }
 
-        // --- Wings ---
-        val allWingIds = Global.getSettings().allFighterWingSpecs.map { it.id }.toSet()
+
         data.wings.forEachIndexed { i, wingId ->
-            if (wingId in allWingIds) {
+            if (wingId.isNotEmpty()) {
                 loadout.setWingId(i, wingId)
-            } else if (wingId.isNotBlank()) {
-                missing.wingIds.add(wingId)
             }
         }
-
-        // --- Weapon Groups ---
-        val allWeapons = Global.getSettings().actuallyAllWeaponSpecs.map { it.weaponId }.toSet()
 
         data.weaponGroups.forEach { wgData ->
             val wg = WeaponGroupSpec()
@@ -305,11 +369,9 @@ object VariantSerialization {
             wgData.slotToWeaponId.forEach { (slotId, weaponId) ->
                 if (hullSpec.isBuiltIn(slotId)) {
                     wg.addSlot(slotId)
-                } else if (weaponId in allWeapons) {
+                } else {
                     loadout.addWeapon(slotId, weaponId)
                     wg.addSlot(slotId)
-                } else {
-                    missing.weaponIds.add(weaponId)
                 }
             }
 
@@ -318,16 +380,13 @@ object VariantSerialization {
             loadout.addWeaponGroup(wg)
         }
 
-        // --- Module Variants ---
+
         data.moduleVariants.forEach { (slotId, moduleData) ->
-            val (variant, subMissing) = buildVariantFromParsed(moduleData)
-            if (subMissing.hullIds.isEmpty()) {
-                loadout.setModuleVariant(slotId, variant)
-            }
-            missing.add(subMissing)
+            val variant = buildVariant(moduleData)
+            loadout.setModuleVariant(slotId, variant)
         }
 
-        return loadout to missing
+        return loadout
     }
 
     fun buildVariantFromParsed(
@@ -335,7 +394,18 @@ object VariantSerialization {
         settings: VariantSettings
     ): Pair<ShipVariantAPI, MissingElements> {
         val filteredData = filterParsedVariantData(data, settings)
-        return buildVariantFromParsed(filteredData)
+        val (cleanedData, missing) = validateAndCleanVariantData(filteredData)
+
+        val variant = if (missing.hullIds.isNotEmpty()) {
+            val errorVariant = VariantLib.createErrorVariant("NOHUL:${missing.hullIds.first()}")
+            if (data.variantId.isNotBlank())
+                errorVariant.hullVariantId = data.variantId
+            errorVariant
+        } else {
+            buildVariant(cleanedData)
+        }
+
+        return variant to missing
     }
 
     @JvmOverloads
