@@ -160,7 +160,7 @@ object ModSettings {
 
     var saveSMods = true
 
-    var saveHiddenMods = false
+    var saveHiddenMods = true
 
     var autofitMenuEnabled = true
 
