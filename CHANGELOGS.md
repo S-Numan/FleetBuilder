@@ -1,5 +1,6 @@
 ## 1.10.0
 - Properly handle saving built in DMods. Such as the Lion's Guard "Special Modifications"
+- Hidden hullMods are now saved by default, compared to the previous behavior of not doing that. This makes magiclib paintjobs work.
 ### Technical
 
 ## 1.9.0
