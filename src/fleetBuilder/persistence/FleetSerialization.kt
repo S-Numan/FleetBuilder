@@ -103,13 +103,6 @@ object FleetSerialization {
             )
         }
 
-        json.optJSONArray("members")?.let { membersArray ->
-            for (i in 0 until membersArray.length()) {
-                val memberJson = membersArray.optJSONObject(i) ?: continue
-                getMember(memberJson)
-            }
-        }
-
         val commander = json.optJSONObject("commander")?.let {
             //LEGACY BEHAVIOR
             if (it.has("member")) {
@@ -121,6 +114,13 @@ object FleetSerialization {
                 null
             } else {
                 extractPersonDataFromJson(it)
+            }
+        }
+
+        json.optJSONArray("members")?.let { membersArray ->
+            for (i in 0 until membersArray.length()) {
+                val memberJson = membersArray.optJSONObject(i) ?: continue
+                getMember(memberJson)
             }
         }
 
