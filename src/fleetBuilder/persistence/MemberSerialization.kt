@@ -4,13 +4,20 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
-import fleetBuilder.persistence.MemberSerialization.getMemberFromJson
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
+import fleetBuilder.persistence.PersonSerialization.buildPerson
+import fleetBuilder.persistence.PersonSerialization.extractPersonDataFromJson
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
+import fleetBuilder.persistence.PersonSerialization.validateAndCleanPersonData
 import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
+import fleetBuilder.persistence.VariantSerialization.buildVariant
+import fleetBuilder.persistence.VariantSerialization.buildVariantFromParsed
+import fleetBuilder.persistence.VariantSerialization.extractVariantDataFromJson
+import fleetBuilder.persistence.VariantSerialization.filterParsedVariantData
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.persistence.VariantSerialization.validateAndCleanVariantData
 import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib.createErrorVariant
@@ -34,45 +41,113 @@ object MemberSerialization {
         var variantSettings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings()
     )
 
-    //You may want to add the officer on the fleet member to the fleet, provided there is an officer. Otherwise the logic may not behave as expected
-    @JvmOverloads
-    fun getMemberFromJsonWithMissing(
-        json: JSONObject,
-        includeOfficer: Boolean = true
-    ): Pair<FleetMemberAPI, MissingElements> {
-        // Extract and validate "variant" JSON
-        val variantJson = json.optJSONObject("variant")
+    data class ParsedMemberData(
+        val variantData: VariantSerialization.ParsedVariantData?,
+        val personData: PersonSerialization.ParsedPersonData?,
+        val shipName: String,
+        val cr: Float,
+        val isMothballed: Boolean,
+        val isFlagship: Boolean = false
+    )
 
-        val variant: ShipVariantAPI
-        var missingElements: MissingElements
-        if (variantJson != null) {
-            val (deserializedVariant, _missing) = getVariantFromJsonWithMissing(variantJson)
-            variant = deserializedVariant
-            missingElements = _missing
-        } else { //Handle when no variantJson exists. This makes a temp variant to avoid losing the officer.
-            variant = createErrorVariant()
-            missingElements = MissingElements()
-            missingElements.hullIds.add("")
+    fun extractMemberDataFromJson(json: JSONObject): ParsedMemberData {
+        var variantJson = json.optJSONObject("variant")
+
+
+        val variantData = if (variantJson != null)
+            extractVariantDataFromJson(variantJson)
+        else
+            null
+
+        val officerJson = json.optJSONObject("officer")
+        val personData = if (officerJson != null)
+            extractPersonDataFromJson(officerJson)
+        else
+            null
+
+        return ParsedMemberData(
+            variantData = variantData,
+            personData = personData,
+            shipName = json.optString("name", ""),
+            cr = json.optFloat("cr", 0.7f),
+            isMothballed = json.optBoolean("ismothballed")
+        )
+    }
+
+    fun filterParsedMemberData(data: ParsedMemberData, settings: MemberSettings): ParsedMemberData {
+        val personData = if (settings.includeOfficer) data.personData else null
+        val variantData = if (data.variantData != null) filterParsedVariantData(data.variantData, settings.variantSettings) else null
+
+        val cr = if (settings.includeCR) data.cr else 0.7f
+
+        return data.copy(
+            personData = personData,
+            variantData = variantData,
+            cr = cr
+        )
+    }
+
+    fun validateAndCleanMemberData(data: ParsedMemberData, missing: MissingElements): ParsedMemberData {
+        val personData = if (data.personData != null) validateAndCleanPersonData(data.personData, missing) else null
+
+        val variantData = if (data.variantData != null)
+            validateAndCleanVariantData(data.variantData, missing)
+        else null
+
+        return data.copy(
+            personData = personData,
+            variantData = variantData,
+            cr = data.cr.coerceIn(0f, 1f)
+        )
+    }
+
+    fun buildMember(data: ParsedMemberData): Pair<FleetMemberAPI, MissingElements> {
+        val missing = MissingElements()
+
+        val variant = if (data.variantData != null)
+            buildVariant(data.variantData)
+        else {
+            missing.hullIds.add("")
+            createErrorVariant()
         }
 
-        FBMisc.getMissingFromModInfo(json, missingElements)
-
-        // Create the FleetMemberAPI object
         val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)
 
-        setMemberValuesFromJson(json, member)
+        // Set name and CR
+        member.shipName = data.shipName
+        member.repairTracker.cr = data.cr
+        member.repairTracker.isMothballed = data.isMothballed
 
-        // Handle officer if included and present
-        if (includeOfficer) {
-            setMemberOfficerFromJson(json, member, missingElements)
-        }
+        // Officer (optional)
+        if (data.personData != null)
+            member.captain = buildPerson(data.personData)
 
-        return Pair(member, missingElements)
+        return member to missing
+    }
+
+    fun buildMemberFromParsed(
+        extracted: ParsedMemberData,
+        settings: MemberSettings
+    ): Pair<FleetMemberAPI, MissingElements> {
+        val filtered = filterParsedMemberData(extracted, settings)
+        val cleaned = validateAndCleanMemberData(filtered, MissingElements())
+        return buildMember(cleaned)
     }
 
     @JvmOverloads
-    fun getMemberFromJson(json: JSONObject, includeOfficer: Boolean = true): FleetMemberAPI {
-        return getMemberFromJsonWithMissing(json, includeOfficer).first
+    fun getMemberFromJsonWithMissing(
+        json: JSONObject,
+        settings: MemberSettings = MemberSettings()
+    ): Pair<FleetMemberAPI, MissingElements> {
+        val missing = MissingElements()
+        FBMisc.getMissingFromModInfo(json, missing)
+
+        val parsed = extractMemberDataFromJson(json)
+
+        val (member, newMissing) = buildMemberFromParsed(parsed, settings)
+        missing.add(newMissing)
+
+        return member to missing
     }
 
     fun setMemberValuesFromJson(json: JSONObject, member: FleetMemberAPI) {
@@ -84,16 +159,6 @@ object MemberSerialization {
         }
         if (json.optBoolean("ismothballed"))
             member.repairTracker.isMothballed = true
-    }
-
-    fun setMemberOfficerFromJson(json: JSONObject, member: FleetMemberAPI, missingElements: MissingElements) {
-        val officerJson = json.optJSONObject("officer")
-        if (officerJson != null) {
-            val (officer, personMissing) = getPersonFromJsonWithMissing(officerJson)
-            missingElements.add(personMissing)
-
-            member.captain = officer
-        }
     }
 
     @JvmOverloads

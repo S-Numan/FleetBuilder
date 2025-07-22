@@ -7,8 +7,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
+import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
@@ -30,11 +30,184 @@ object PersonSerialization {
         var handleXpAndPoints: Boolean = true,
         var excludeSkillsWithID: MutableSet<String> = mutableSetOf(),
     )
-    /* <<<<<<<<<<  205ea2c6-66d2-4bef-a545-6f1936c458b9  >>>>>>>>>>> */
 
-    @JvmOverloads
-    fun getPersonFromJson(json: JSONObject, settings: PersonSettings = PersonSettings()): PersonAPI {
-        return getPersonFromJsonWithMissing(json, settings).first
+    data class ParsedPersonData(
+        val aiCoreId: String = "",
+        val first: String = "Unknown",
+        val last: String = "Officer",
+        val gender: FullName.Gender = FullName.Gender.MALE,
+        val portrait: String? = null,
+        val tags: List<String> = emptyList(),
+        val rank: String = Ranks.SPACE_LIEUTENANT,
+        val post: String = Ranks.POST_OFFICER,
+        val personality: String = Personalities.STEADY,
+        val level: Int = 0,
+        val skills: Map<String, Int> = emptyMap(),
+        val xp: Long = 0,
+        val bonusXp: Long = 0,
+        val points: Int = 0,
+        val trueMemKeys: List<String> = emptyList(),
+    )
+
+    fun extractPersonDataFromJson(json: JSONObject): ParsedPersonData {
+        val skills = mutableMapOf<String, Int>()
+        json.optJSONObject("skills")?.let { skillsJson ->
+            val keys = skillsJson.keys()
+            while (keys.hasNext()) {
+                val key = keys.next() as? String ?: continue
+                skills[key] = skillsJson.optInt(key, 0).coerceIn(0, 2)
+            }
+        }
+
+        val tags = buildList {
+            json.optJSONArray("tags")?.let { arr ->
+                for (i in 0 until arr.length()) {
+                    add(arr.optString(i))
+                }
+            }
+
+            //LEGACY
+            if (json.has("wasplayer"))
+                add("wasplayer")
+        }
+
+        val memKeys = buildList {
+            json.optJSONArray("trueMemKeys")?.let { arr ->
+                for (i in 0 until arr.length()) {
+                    add(arr.optString(i))
+                }
+            }
+            // LEGACY behavior
+            if (json.optBoolean("mentored", false)) add(Misc.MENTORED)
+            if (json.optBoolean("mercenary", false)) add(Misc.IS_MERCENARY)
+            if (json.optBoolean("unremovable", false)) add(Misc.CAPTAIN_UNREMOVABLE)
+        }
+
+        val gender = try {
+            FullName.Gender.valueOf(json.optString("gender", "MALE"))
+        } catch (_: Exception) {
+            if (Math.random() < 0.5) FullName.Gender.MALE else FullName.Gender.FEMALE
+        }
+
+        return ParsedPersonData(
+            aiCoreId = json.optString("aicoreid", ""),
+            first = json.optString("first", "Unknown"),
+            last = json.optString("last", "Officer"),
+            gender = gender,
+            portrait = json.optString("portrait", null),
+            tags = tags,
+            rank = json.optString("rank", Ranks.SPACE_LIEUTENANT),
+            post = json.optString("post", Ranks.POST_OFFICER),
+            personality = json.optString("personality", Personalities.STEADY),
+            level = json.optInt("level", 0),
+            skills = skills,
+            xp = json.optLong("xp", 0),
+            bonusXp = json.optLong("bonusxp", 0),
+            points = json.optInt("points", 0),
+            trueMemKeys = memKeys
+        )
+    }
+
+    fun filterParsedPersonData(data: ParsedPersonData, settings: PersonSettings): ParsedPersonData {
+        return data.copy(
+            skills = data.skills.filterKeys { it !in settings.excludeSkillsWithID },
+            xp = if (settings.handleXpAndPoints) data.xp else 0,
+            bonusXp = if (settings.handleXpAndPoints) data.bonusXp else 0,
+            points = if (settings.handleXpAndPoints) data.points else 0
+        )
+    }
+
+    fun validateAndCleanPersonData(data: ParsedPersonData, missing: MissingElements): ParsedPersonData {
+        val validSkills = data.skills.filterKeys {
+            val exists = Global.getSettings().skillIds.contains(it)
+            if (!exists) missing.skillIds.add(it)
+            exists
+        }
+
+        val validPortrait = try {
+            if (data.portrait == null) {
+                getRandomPortrait(data.gender)
+            } else if (data.portrait.isNotEmpty()) {
+                val sprite = Global.getSettings().getSprite(data.portrait)
+                if (sprite == null || sprite.width == 0f) throw Exception()
+
+                data.portrait
+            } else data.portrait
+        } catch (_: Exception) {
+            getRandomPortrait(data.gender)
+        }
+
+        return data.copy(
+            skills = validSkills,
+            portrait = validPortrait
+        )
+    }
+
+    fun buildPerson(data: ParsedPersonData): PersonAPI {
+        val person = if (data.aiCoreId.isNotEmpty()) {
+            try {
+                Misc.getAICoreOfficerPlugin(data.aiCoreId).createPerson(data.aiCoreId, Factions.PLAYER, Random()).apply {
+                    stats.skillsCopy.forEach { stats.setSkillLevel(it.skill.id, 0f) }
+                }
+            } catch (_: Exception) {
+                Global.getSettings().createPerson()
+            }
+        } else {
+            Global.getSettings().createPerson()
+        }
+
+        person.name.first = data.first
+        person.name.last = data.last
+        person.gender = data.gender
+        person.rankId = data.rank
+        person.postId = data.post
+        person.setPersonality(data.personality)
+
+        if (data.portrait == null) {
+            person.portraitSprite = getRandomPortrait(data.gender)
+        } else if (data.portrait.isNotEmpty()) {
+            person.portraitSprite = data.portrait
+        }
+
+        data.tags.forEach { person.addTag(it) }
+        data.skills.forEach { (id, level) -> person.stats.setSkillLevel(id, level.toFloat()) }
+
+        val level = if (data.level > 0) data.level else data.skills.count()
+        person.stats.level = level
+
+        person.stats.xp = data.xp
+        person.stats.bonusXp = data.bonusXp
+        person.stats.points = data.points
+
+        data.trueMemKeys.forEach { person.memoryWithoutUpdate.set(it, true) }
+
+        return person
+    }
+
+    private fun getRandomPortrait(gender: FullName.Gender): String {
+        val faction = Global.getSettings().getFactionSpec(Factions.PLAYER)
+        return if (gender == FullName.Gender.MALE)
+            faction.malePortraits.pick()
+        else
+            faction.femalePortraits.pick()
+    }
+
+    fun buildPersonFromParsed(
+        rawData: ParsedPersonData,
+        settings: PersonSettings
+    ): Pair<PersonAPI, MissingElements> {
+        val missing = MissingElements()
+
+        // Filter data based on settings (e.g., exclude certain skills)
+        val filteredData = filterParsedPersonData(rawData, settings)
+
+        // Validate data (e.g., skills/portraits exist)
+        val validatedData = validateAndCleanPersonData(filteredData, missing)
+
+        // Build actual PersonAPI object
+        val person = buildPerson(validatedData)
+
+        return person to missing
     }
 
     @JvmOverloads
@@ -43,126 +216,25 @@ object PersonSerialization {
         settings: PersonSettings = PersonSettings()
     ): Pair<PersonAPI, MissingElements> {
         val missing = MissingElements()
+        FBMisc.getMissingFromModInfo(json, missing)
 
-        var person: PersonAPI? = null
+        // Extract raw data from JSON
+        val rawData = extractPersonDataFromJson(json)
 
-        val aiCoreId = json.optString("aicoreid", "")
-        if (aiCoreId.isNotEmpty()) {
-            try {
-                person = Misc.getAICoreOfficerPlugin(aiCoreId).createPerson(aiCoreId, Factions.PLAYER, Random())
-                //AI's come with skills via getAiCoreOfficerPluginthis, we don't want this, so they will be removed.
-                person.stats.skillsCopy.forEach { skill ->
-                    person.stats.setSkillLevel(skill.skill.id, 0f)
-                }
-            } catch (_: Exception) {
-            }
-        }
+        val (person, subMissing) = buildPersonFromParsed(rawData, settings)
+        missing.add(subMissing)
 
-        if (person == null) {
-            person = Global.getSettings().createPerson()
-        }
-
-        // Safely handle name and gender
-        person.name.first = json.optString("first", "Unknown")
-        person.name.last = json.optString("last", "Officer")
-        person.gender = try {
-            FullName.Gender.valueOf(json.optString("gender", "MALE"))
-        } catch (_: Exception) {
-            if (Math.random() < 0.5)
-                FullName.Gender.MALE
-            else
-                FullName.Gender.FEMALE
-        }
-
-        // Validate and set portrait if it exists
-        val portrait = json.optString("portrait", "")
-        try {
-            if (portrait.isNotEmpty() && Global.getSettings().getSprite(portrait) != null)
-                person.portraitSprite = portrait
-
-        } catch (_: Exception) {
-            val faction = Global.getSettings().getFactionSpec(Factions.PLAYER)
-            val randomPortrait =
-                if (person.gender == FullName.Gender.MALE)
-                    faction.malePortraits.pick()
-                else
-                    faction.femalePortraits.pick()
-
-            person.portraitSprite = randomPortrait
-        }
-
-        // Add tags if array exists
-        if (json.has("tags")) {
-            val tagsArray = json.optJSONArray("tags")
-            for (i in 0 until (tagsArray?.length() ?: 0)) {
-                person.addTag(tagsArray?.optString(i) ?: continue)
-            }
-        }
-
-        person.rankId = json.optString("rank", Ranks.SPACE_LIEUTENANT)
-        person.postId = json.optString("post", Ranks.POST_OFFICER)
-        person.setPersonality(json.optString("personality", Personalities.STEADY))
-
-        val personLevel = json.optInt("level", 0)//0 if unset
-        person.stats.level = personLevel.coerceIn(1, 20)
-
-        // Handle skills safely
-        val skillsObject = json.optJSONObject("skills")
-        if (skillsObject != null) {
-            val keys = skillsObject.keys()
-            while (keys.hasNext()) {
-                val skillId = keys.next().toString()
-                if (settings.excludeSkillsWithID.contains(skillId))
-                    continue
-
-                val level = skillsObject.optInt(skillId, 0).coerceIn(0, 2)
-                if (level > 0) {
-                    if (Global.getSettings().skillIds.contains(skillId)) {
-                        person.stats.setSkillLevel(skillId, level.toFloat())
-                    } else {
-                        missing.skillIds.add(skillId)
-                    }
-                }
-            }
-        }
-
-        if (personLevel == 0)//Person level was unset?
-            person.stats.level = person.stats.skillsCopy.count { it.skill.isAptitudeEffect.not() && it.level > 0f } //Set it to the amount of skills, it's probably correct.
-
-
-        if (settings.handleXpAndPoints) {
-            person.stats.xp = json.optLong("xp", 0)
-            person.stats.bonusXp = json.optLong("bonusxp", 0)
-            person.stats.points = json.optInt("points", 0)
-        }
-
-        if (json.has("wasplayer"))
-            person.addTag("wasplayer")
-
-        if (json.has("trueMemKeys")) {
-            val memKeysArray = json.optJSONArray("trueMemKeys")
-            for (i in 0 until (memKeysArray?.length() ?: 0)) {
-                person.memoryWithoutUpdate.set(memKeysArray?.optString(i) ?: continue, true)
-            }
-        }
-
-        loadLegacyMentorMercenaryUnremovable(person, json)
-
-        return Pair(person, missing)
+        return person to missing
     }
 
-    private fun loadLegacyMentorMercenaryUnremovable(person: PersonAPI, json: JSONObject) {
-        //Load JSON details saved from before version 1.4.1
-        if (json.optBoolean("mentored", false)) {
-            person.setMentored(true)
-        }
-        if (json.optBoolean("mercenary", false)) {
-            person.setMercenary(true)
-        }
-        if (json.optBoolean("unremovable", false)) {
-            person.setUnremovable(true)
-        }
+    @JvmOverloads
+    fun getPersonFromJson(
+        json: JSONObject,
+        settings: PersonSettings = PersonSettings()
+    ): PersonAPI {
+        return getPersonFromJsonWithMissing(json, settings).first
     }
+
 
     @JvmOverloads
     fun savePersonToJson(person: PersonAPI, settings: PersonSettings = PersonSettings()): JSONObject {
@@ -175,7 +247,7 @@ object PersonSerialization {
         json.put("last", person.name.last)
         json.put("gender", person.gender.name)
         json.put("portrait", person.portraitSprite)
-        json.put("tags", JSONArray(person.tags))
+
         if (person.rankId != Ranks.SPACE_LIEUTENANT)
             json.put("rank", person.rankId)
         if (person.postId != Ranks.POST_OFFICER)
@@ -195,9 +267,16 @@ object PersonSerialization {
                 json.put("points", person.stats.points)
             }
         }
-        if (person.isPlayer) {
-            json.put("wasplayer", person.isPlayer)
+        val personTags = buildList {
+            person.tags.forEach { tag ->
+                add(tag)
+            }
+            if (person.isPlayer) {
+                add("wasplayer")
+            }
         }
+        json.put("tags", JSONArray(personTags))
+
 
         val trueMemKeysJSON = JSONArray()
 

@@ -8,6 +8,7 @@
 	"graphics":{
 		"FleetBuilder":{
 			"mission_indicator":"graphics/icons/mission_marker.png",
+			"white_square":"graphics/fx/white_square.png",
 		}
 	}
 }

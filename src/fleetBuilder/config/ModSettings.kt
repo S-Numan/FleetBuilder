@@ -14,6 +14,7 @@ import fleetBuilder.config.ModSettings.forceAutofit
 import fleetBuilder.config.ModSettings.importPrefix
 import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
+import fleetBuilder.config.ModSettings.removeDefaultDMods
 import fleetBuilder.config.ModSettings.saveDMods
 import fleetBuilder.config.ModSettings.saveHiddenMods
 import fleetBuilder.config.ModSettings.saveSMods
@@ -77,6 +78,7 @@ internal class ModSettingsListener : LunaSettingsListener {
         devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
         fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
         storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
+        removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
 
         autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
 
@@ -158,7 +160,7 @@ object ModSettings {
 
     var saveSMods = true
 
-    var saveHiddenMods = false
+    var saveHiddenMods = true
 
     var autofitMenuEnabled = true
 
@@ -190,4 +192,6 @@ object ModSettings {
     var isConsoleModEnabled = false
 
     var storeOfficersInCargo = false
+
+    var removeDefaultDMods = true
 }

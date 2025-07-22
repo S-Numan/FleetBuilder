@@ -1,3 +1,11 @@
+## 1.10.0
+- Configurable UI pop ups on using CTRL V to paste a fleet into the campaign or fleet screen.
+- Properly handle saving built in DMods. Such as the Lion's Guard "Special Modifications"
+- Hidden hullMods are now saved by default, compared to the previous behavior of not doing that. This makes magiclib paintjobs work.
+- A few other small bug fixes.
+### Technical
+- Completely refactor all the serialization loading except cargo AGAIN.
+
 ## 1.9.0
 - Fix handling the somewhat badly implemented Emergent Threats mod's variants.
 ### Technical

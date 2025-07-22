@@ -6,6 +6,7 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings.getHullModsToNeverSave
+import fleetBuilder.config.ModSettings.removeDefaultDMods
 import fleetBuilder.persistence.VariantSerialization.getVariantFromJson
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.*
@@ -225,10 +226,9 @@ object VariantSerialization {
     }
 
     fun validateAndCleanVariantData(
-        data: ParsedVariantData
-    ): Pair<ParsedVariantData, MissingElements> {
-        val missing = MissingElements()
-
+        data: ParsedVariantData,
+        missing: MissingElements
+    ): ParsedVariantData {
         // --- Hull ID ---
         val validHullId = data.hullId.takeIf { it.isNotBlank() && Global.getSettings().allShipHullSpecs.any { spec -> spec.hullId == it } }
         if (validHullId == null) missing.hullIds.add(data.hullId)
@@ -297,8 +297,7 @@ object VariantSerialization {
         // --- Module Variants ---
         val cleanedModuleVariants = mutableMapOf<String, ParsedVariantData>()
         data.moduleVariants.forEach { (slotId, moduleData) ->
-            val (cleanedModule, subMissing) = validateAndCleanVariantData(moduleData)
-            missing.add(subMissing)
+            val cleanedModule = validateAndCleanVariantData(moduleData, missing)
             cleanedModuleVariants[slotId] = cleanedModule
         }
 
@@ -315,7 +314,7 @@ object VariantSerialization {
             moduleVariants = cleanedModuleVariants
         )
 
-        return cleanedData to missing
+        return cleanedData
     }
 
     fun buildVariant(
@@ -323,6 +322,13 @@ object VariantSerialization {
     ): ShipVariantAPI {
         val hullSpec = Global.getSettings().getHullSpec(data.hullId)
         val loadout = Global.getSettings().createEmptyVariant(hullSpec.hullId, hullSpec)
+
+        //Remove default DMods
+        if (removeDefaultDMods) {
+            loadout.allDMods().forEach {
+                loadout.hullMods.remove(it)
+            }
+        }
 
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
@@ -389,7 +395,9 @@ object VariantSerialization {
         settings: VariantSettings
     ): Pair<ShipVariantAPI, MissingElements> {
         val filteredData = filterParsedVariantData(data, settings)
-        val (cleanedData, missing) = validateAndCleanVariantData(filteredData)
+        val missing = MissingElements()
+
+        val cleanedData = validateAndCleanVariantData(filteredData, missing)
 
         val variant = if (missing.hullIds.isNotEmpty()) {
             val errorVariant = VariantLib.createErrorVariant("NOHUL:${missing.hullIds.first()}")
@@ -558,6 +566,12 @@ object VariantSerialization {
         variant.hullMods.forEach { mod ->
             if (!sMods.containsString(mod) && !permaMods.containsString(mod) && !hullMods.containsString(mod) && !variant.hullSpec.builtInMods.contains(mod))
                 hullMods.put(mod)
+        }
+
+        variant.allDMods().forEach { mod ->
+            if (mod in variant.hullSpec.builtInMods) { //If this is a built-in DMod (and is hence, removable)
+                hullMods.put(mod)//Put it in as a hullMod to indicate it should be included. Otherwise, default behavior is to remove built in DMods on creating a new variant.
+            }
         }
 
         json.put("hullMods", hullMods)
