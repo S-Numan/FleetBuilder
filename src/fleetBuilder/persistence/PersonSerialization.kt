@@ -227,6 +227,14 @@ object PersonSerialization {
         return person to missing
     }
 
+    @JvmOverloads
+    fun getPersonFromJson(
+        json: JSONObject,
+        settings: PersonSettings = PersonSettings()
+    ): PersonAPI {
+        return getPersonFromJsonWithMissing(json, settings).first
+    }
+
 
     @JvmOverloads
     fun savePersonToJson(person: PersonAPI, settings: PersonSettings = PersonSettings()): JSONObject {

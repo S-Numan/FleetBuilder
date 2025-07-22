@@ -84,29 +84,45 @@ object FleetSerialization {
         val variantById = extractedVariants.associateBy { it.variantId }
 
         val members = mutableListOf<MemberSerialization.ParsedMemberData>()
+        fun getMember(memberJson: JSONObject) {
+            val variantId = memberJson.optString("variantId", "")
+            val isFlagship = memberJson.optBoolean("isFlagship", false)
+
+            val variantData = variantById[variantId]?.copy()
+            val personData = memberJson.optJSONObject("officer")?.let { extractPersonDataFromJson(it) }
+
+            members.add(
+                MemberSerialization.ParsedMemberData(
+                    variantData = variantData,
+                    personData = personData,
+                    shipName = memberJson.optString("name", ""),
+                    cr = memberJson.optDouble("cr", 0.7).toFloat(),
+                    isMothballed = memberJson.optBoolean("ismothballed", false),
+                    isFlagship = isFlagship
+                )
+            )
+        }
+
         json.optJSONArray("members")?.let { membersArray ->
             for (i in 0 until membersArray.length()) {
                 val memberJson = membersArray.optJSONObject(i) ?: continue
-                val variantId = memberJson.optString("variantId", "")
-                val isFlagship = memberJson.optBoolean("isFlagship", false)
-
-                val variantData = variantById[variantId]?.copy()
-                val personData = memberJson.optJSONObject("officer")?.let { extractPersonDataFromJson(it) }
-
-                members.add(
-                    MemberSerialization.ParsedMemberData(
-                        variantData = variantData,
-                        personData = personData,
-                        shipName = memberJson.optString("name", ""),
-                        cr = memberJson.optDouble("cr", 0.7).toFloat(),
-                        isMothballed = memberJson.optBoolean("ismothballed", false),
-                        isFlagship = isFlagship
-                    )
-                )
+                getMember(memberJson)
             }
         }
 
-        val commander = json.optJSONObject("commander")?.let { extractPersonDataFromJson(it) }
+        val commander = json.optJSONObject("commander")?.let {
+            //LEGACY BEHAVIOR
+            if (it.has("member")) {
+                it.optJSONObject("member")?.let { memberJson ->
+                    memberJson.put("officer", it)
+                    memberJson.put("isFlagship", true)
+                    getMember(memberJson)
+                }
+                null
+            } else {
+                extractPersonDataFromJson(it)
+            }
+        }
 
         val idleOfficers = mutableListOf<PersonSerialization.ParsedPersonData>()
         json.optJSONArray("idleOfficers")?.let { officersArray ->
@@ -221,7 +237,7 @@ object FleetSerialization {
 
             member.captain?.let { officer ->
                 if (!officer.isAICore) {
-                    
+
                     if (!officer.isDefault)
                         fleet.addOfficer(officer)
 
