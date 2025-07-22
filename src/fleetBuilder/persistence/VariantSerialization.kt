@@ -226,10 +226,9 @@ object VariantSerialization {
     }
 
     fun validateAndCleanVariantData(
-        data: ParsedVariantData
-    ): Pair<ParsedVariantData, MissingElements> {
-        val missing = MissingElements()
-
+        data: ParsedVariantData,
+        missing: MissingElements
+    ): ParsedVariantData {
         // --- Hull ID ---
         val validHullId = data.hullId.takeIf { it.isNotBlank() && Global.getSettings().allShipHullSpecs.any { spec -> spec.hullId == it } }
         if (validHullId == null) missing.hullIds.add(data.hullId)
@@ -298,8 +297,7 @@ object VariantSerialization {
         // --- Module Variants ---
         val cleanedModuleVariants = mutableMapOf<String, ParsedVariantData>()
         data.moduleVariants.forEach { (slotId, moduleData) ->
-            val (cleanedModule, subMissing) = validateAndCleanVariantData(moduleData)
-            missing.add(subMissing)
+            val cleanedModule = validateAndCleanVariantData(moduleData, missing)
             cleanedModuleVariants[slotId] = cleanedModule
         }
 
@@ -316,7 +314,7 @@ object VariantSerialization {
             moduleVariants = cleanedModuleVariants
         )
 
-        return cleanedData to missing
+        return cleanedData
     }
 
     fun buildVariant(
@@ -397,7 +395,9 @@ object VariantSerialization {
         settings: VariantSettings
     ): Pair<ShipVariantAPI, MissingElements> {
         val filteredData = filterParsedVariantData(data, settings)
-        val (cleanedData, missing) = validateAndCleanVariantData(filteredData)
+        val missing = MissingElements()
+
+        val cleanedData = validateAndCleanVariantData(filteredData, missing)
 
         val variant = if (missing.hullIds.isNotEmpty()) {
             val errorVariant = VariantLib.createErrorVariant("NOHUL:${missing.hullIds.first()}")

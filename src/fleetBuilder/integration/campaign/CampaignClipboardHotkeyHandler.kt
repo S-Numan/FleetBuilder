@@ -32,7 +32,6 @@ import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
-import fleetBuilder.variants.VariantLib.getAllDMods
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
@@ -102,6 +101,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
+        if (FBMisc.isPopUpUIOpen())
+            return
+
         try {
             val codex = ReflectionMisc.getCodexDialog()
             when {
@@ -154,6 +156,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         val playerFleet = sector.playerFleet.fleetData
 
         val settings = FleetSerialization.FleetSettings()
+        settings.includeIdleOfficers = false
+        
         var fleetToCopy: FleetDataAPI? = null
         var uiShowsSubmarketFleet = false
 
@@ -215,10 +219,12 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
+        if (ReflectionMisc.getCodexDialog() != null || FBMisc.isPopUpUIOpen()) return
+
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             handleRefitPaste(event)
         } else if (Global.getSettings().isDevMode) {
-            handleFleetPaste(event, sector, ui)
+            handleOtherPaste(event, sector, ui)
         }
     }
 
@@ -250,13 +256,22 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         event.consume()
     }
 
-    private fun handleFleetPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
+    private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         val json = ClipboardUtil.getClipboardJson() ?: run {
             DisplayMessage.showMessage("No valid json in clipboard", Color.YELLOW)
             event.consume()
             return
         }
-        handleHotkeyModePaste(sector, ui, json)
+
+        if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
+            fleetPaste(sector, json)
+        } else if (ui.currentInteractionDialog == null &&// Handle campaign map paste (no dialog/menu showing)
+            !ui.isShowingDialog &&
+            !ui.isShowingMenu
+        ) {
+            campaignPaste(sector, json)
+        }
+
         event.consume()
     }
 
@@ -453,24 +468,4 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     override fun processCampaignInputPreFleetControl(events: MutableList<InputEventAPI>) = Unit
 
     override fun processCampaignInputPostCore(events: MutableList<InputEventAPI>) = Unit
-}
-
-fun handleHotkeyModePaste(
-    sector: SectorAPI,
-    ui: CampaignUIAPI,
-    json: JSONObject
-): Boolean {
-    if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-        fleetPaste(sector, json)
-    }
-
-    // Handle campaign map paste (no dialog/menu showing)
-    if (ui.currentInteractionDialog == null &&
-        !ui.isShowingDialog &&
-        !ui.isShowingMenu
-    ) {
-        campaignPaste(sector, json)
-    }
-
-    return false
 }
