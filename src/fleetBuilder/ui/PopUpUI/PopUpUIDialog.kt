@@ -3,6 +3,7 @@ package fleetBuilder.ui.PopUpUI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import MagicLib.*
 import com.fs.starfarer.api.ui.ButtonAPI
+import com.fs.starfarer.api.ui.TextFieldAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import java.awt.Color
 
@@ -13,9 +14,13 @@ class PopUpUIDialog(
 ) : BasePopUpUI() {
 
     private sealed class Entry
-    private class ToggleEntry(val label: String, val state: MutableState) : Entry()
-    private class ButtonEntry(val label: String, val dismiss: Boolean, val callback: (Map<String, Boolean>) -> Unit) :
-        Entry()
+    private class ToggleEntry(val label: String, val state: MutableValue) : Entry()
+    private class TextEntry(val label: String, val state: MutableValue) : Entry()
+    private class ButtonEntry(
+        val label: String,
+        val dismiss: Boolean,
+        val callback: (Map<String, Any>) -> Unit
+    ) : Entry()
 
     private class PaddingEntry(val amount: Float) : Entry()
     private class CustomEntry(val component: UIComponentAPI) : Entry()
@@ -25,24 +30,31 @@ class PopUpUIDialog(
         val highlightWords: Array<out String>
     ) : Entry()
 
-    private data class MutableState(var value: Boolean)
+    private data class MutableValue(var value: Any)
 
     private val entries = mutableListOf<Entry>()
-    private val toggleStates = mutableMapOf<String, MutableState>()
+    private val fieldStates = mutableMapOf<String, MutableValue>()
 
-    private var confirmCallback: ((Map<String, Boolean>) -> Unit)? = null
+    private var confirmCallback: ((Map<String, Any>) -> Unit)? = null
 
     fun addToggle(label: String, default: Boolean = false): () -> Boolean {
-        val state = MutableState(default)
-        toggleStates[label] = state
+        val state = MutableValue(default)
+        fieldStates[label] = state
         entries.add(ToggleEntry(label, state))
-        return { state.value }
+        return { state.value as Boolean }
+    }
+
+    fun addTextField(label: String, default: String = ""): () -> String {
+        val state = MutableValue(default)
+        fieldStates[label] = state
+        entries.add(TextEntry(label, state))
+        return { state.value as String }
     }
 
     fun addButton(
         label: String,
         dismissOnClick: Boolean = true,
-        onClick: (Map<String, Boolean>) -> Unit
+        onClick: (Map<String, Any>) -> Unit
     ) {
         entries.add(ButtonEntry(label, dismissOnClick, onClick))
     }
@@ -59,8 +71,7 @@ class PopUpUIDialog(
         entries.add(ParagraphEntry(text, highlights, highlightWords))
     }
 
-
-    fun onConfirm(callback: (Map<String, Boolean>) -> Unit) {
+    fun onConfirm(callback: (Map<String, Any>) -> Unit) {
         confirmCallback = callback
     }
 
@@ -75,24 +86,11 @@ class PopUpUIDialog(
                 is ButtonEntry -> {
                     val btn = ui.addButton(entry.label, null, buttonWidth, buttonHeight, 3f)
                     btn.onClick {
-                        entry.callback(getToggleStates())
+                        entry.callback(collectFieldStates())
                         if (entry.dismiss) forceDismiss()
                     }
                 }
 
-                /*is ToggleEntry -> {
-                    val btn = ui.addButton(
-                        "${entry.label}: ${if (entry.state.value) "ON" else "OFF"}",
-                        null,
-                        buttonWidth,
-                        buttonHeight,
-                        3f
-                    )
-                    btn.onClick {
-                        entry.state.value = !entry.state.value
-                        btn.text = "${entry.label}: ${if (entry.state.value) "ON" else "OFF"}"
-                    }
-                }*/
                 is ToggleEntry -> {
                     val checkbox = ui.addCheckbox(
                         buttonWidth,
@@ -102,10 +100,16 @@ class PopUpUIDialog(
                         ButtonAPI.UICheckboxSize.SMALL,
                         0f
                     )
-                    checkbox.isChecked = entry.state.value
+                    checkbox.isChecked = entry.state.value as Boolean
                     checkbox.onClick {
                         entry.state.value = checkbox.isChecked
                     }
+                }
+
+                is TextEntry -> {
+                    val textField = ui.addTextField(buttonWidth, 0f)
+                    textField.isLimitByStringWidth = false
+                    textField.text = entry.state.value as String
                 }
 
                 is PaddingEntry -> {
@@ -137,11 +141,21 @@ class PopUpUIDialog(
         }
     }
 
-    override fun applyConfirmScript() {
-        confirmCallback?.invoke(getToggleStates())
+    override fun advance(amount: Float) {
+        super.advance(amount)
+
     }
 
-    private fun getToggleStates(): Map<String, Boolean> {
-        return toggleStates.mapValues { it.value.value }
+    override fun applyConfirmScript() {
+        confirmCallback?.invoke(collectFieldStates())
+    }
+
+    private fun collectFieldStates(): Map<String, Any> {
+        for (entry in entries) {
+            if (entry is TextEntry) {
+                fieldStates[entry.label]?.value = entry.state.value
+            }
+        }
+        return fieldStates.mapValues { it.value.value }
     }
 }

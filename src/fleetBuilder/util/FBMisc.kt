@@ -446,14 +446,14 @@ object FBMisc {
         dialog.addToggle("Include Commander as Officer", default = true)
         dialog.addToggle("Exclude Ships From Missing Mods", default = false)
 
-        dialog.onConfirm { toggles ->
+        dialog.onConfirm { fields ->
 
             val settings = FleetSerialization.FleetSettings()
-            settings.includeAggression = toggles["Set Aggression Doctrine"] == true
-            settings.memberSettings.includeOfficer = toggles["Include Officers"] == true
-            settings.includeCommanderSetFlagship = toggles["Include Commander as Commander"] == true
-            settings.includeCommanderAsOfficer = toggles["Include Commander as Officer"] == true
-            settings.excludeMembersWithMissingHullSpec = toggles["Exclude Ships From Missing Mods"] == true
+            settings.includeAggression = fields["Set Aggression Doctrine"] as Boolean
+            settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
+            settings.includeCommanderSetFlagship = fields["Include Commander as Commander"] as Boolean
+            settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
+            settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
 
             val fleet = Global.getFactory().createEmptyFleet(Factions.PIRATES, FleetTypes.TASK_FORCE, true)
 
@@ -464,7 +464,7 @@ object FBMisc {
 
             sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
             Global.getSector().campaignUI.showInteractionDialog(fleet)
-            if (toggles["Fight To The Last"] == true)
+            if (fields["Fight To The Last"] as Boolean)
                 fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
 
             showMessage("Fleet from clipboard added to campaign")
@@ -588,14 +588,14 @@ object FBMisc {
 
                 dialog.addPadding(8f)
 
-                dialog.addButton("Append to Player Fleet") { toggles ->
+                dialog.addButton("Append to Player Fleet") { fields ->
                     element.fleetData.membersListCopy.forEach { member ->
-                        if (member.variant.hasTag("ERROR") && toggles["Exclude Ships From Missing Mods"] == true)
+                        if (member.variant.hasTag("ERROR") && fields["Exclude Ships From Missing Mods"] as Boolean)
                             return@forEach
 
                         val isCommander = member.captain === element.commander
-                        val includeOfficers = toggles["Include Officers"] == true
-                        val includeCommanderAsOfficer = toggles["Include Commander as Officer"] == true
+                        val includeOfficers = fields["Include Officers"] as Boolean
+                        val includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
 
                         // Remove officer if excluded
                         if (!includeOfficers || (isCommander && !includeCommanderAsOfficer)) {
@@ -614,14 +614,16 @@ object FBMisc {
                 }
                 dialog.addPadding(24f)
 
-                dialog.addButton("Replace Player Fleet") { toggles ->
+                dialog.addButton("Replace Player Fleet") { fields ->
                     val settings = FleetSerialization.FleetSettings()
-                    settings.memberSettings.includeOfficer = toggles["Include Officers"] == true
-                    settings.excludeMembersWithMissingHullSpec = toggles["Exclude Ships From Missing Mods"] == true
-                    settings.includeCommanderAsOfficer = toggles["Include Commander as Officer"] == true
+                    settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
+                    settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
+                    settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
 
                     val missing = replacePlayerFleetWith(
-                        element, if (toggles["Set Aggression Doctrine"] == true) json.optInt("aggression_doctrine", 2) else -1, (toggles["Replace Player with Commander"] == true && settings.includeCommanderAsOfficer),
+                        element,
+                        if (fields["Set Aggression Doctrine"] as Boolean) json.optInt("aggression_doctrine", 2) else -1,
+                        (fields["Replace Player with Commander"] as Boolean && settings.includeCommanderAsOfficer),
                         settings
                     )
 

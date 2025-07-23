@@ -9,9 +9,12 @@ import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent.SkillPickPreference
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
+import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
@@ -25,14 +28,16 @@ import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.MemberSerialization
 import fleetBuilder.persistence.PersonSerialization
 import fleetBuilder.persistence.VariantSerialization
+import fleetBuilder.ui.PopUpUI.PopUpUIDialog
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.fleetPaste
+import fleetBuilder.util.FBMisc.initPopUpUI
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
-import org.json.JSONObject
+import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
 import starficz.ReflectionUtils.get
@@ -67,7 +72,54 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             Keyboard.KEY_D -> handleDevModeHotkey(event, sector)
             Keyboard.KEY_C -> handleCopyHotkey(event, sector, ui)
             Keyboard.KEY_V -> handlePasteHotkey(event, ui, sector)
+            Keyboard.KEY_O -> handleCreateOfficer(event)
         }
+    }
+
+    private fun handleCreateOfficer(event: InputEventAPI) {
+        if (!Global.getSettings().isDevMode) return
+        if (FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.getCodexDialog() != null) return
+
+        val dialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = false, addConfirmButton = true)
+
+        dialog.addParagraph("Max Level")
+        dialog.addTextField("MaxLevel")
+        dialog.addParagraph("Max Elite Skills")
+        dialog.addTextField("MaxElite")
+        dialog.addParagraph("Personality")
+        dialog.addToggle("Timid")
+
+
+        dialog.onConfirm { fields ->
+            val maxLevel = (fields["MaxLevel"] as String).toInt()
+            val maxElite = (fields["MaxElite"] as String).toInt()
+
+            val playerFleet = Global.getSector().playerFleet.fleetData
+
+
+            val person = OfficerManagerEvent.createOfficer(
+                Global.getSector().playerFaction, 0, SkillPickPreference.ANY,
+                false, null, false, false, -1, MathUtils.getRandom()
+            )
+
+            //person.setPersonality(personality);
+
+            val plugin = Global.getSettings().getPlugin("officerLevelUp") as? OfficerLevelupPlugin
+
+            playerFleet.addOfficer(person);
+            if (plugin != null)
+                playerFleet.getOfficerData(person).addXP(plugin.getXPForLevel(maxLevel));
+
+            person.memoryWithoutUpdate.set("\$officerSkillPicksPerLevel", 10)
+            if (maxLevel > 0)
+                person.memoryWithoutUpdate.set("\$officerMaxLevel", maxLevel)
+            if (maxElite > 0)
+                person.memoryWithoutUpdate.set("\$officerMaxEliteSkills", maxElite)
+        }
+        initPopUpUI(dialog, 500f, 348f)
+
+        event.consume()
     }
 
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
@@ -101,8 +153,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (FBMisc.isPopUpUIOpen())
-            return
+        if (FBMisc.isPopUpUIOpen()) return
 
         try {
             val codex = ReflectionMisc.getCodexDialog()
@@ -157,7 +208,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         val settings = FleetSerialization.FleetSettings()
         settings.includeIdleOfficers = false
-        
+
         var fleetToCopy: FleetDataAPI? = null
         var uiShowsSubmarketFleet = false
 
