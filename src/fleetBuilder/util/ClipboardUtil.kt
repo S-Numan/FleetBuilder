@@ -10,7 +10,7 @@ import java.io.FileReader
 object ClipboardUtil {
     fun getClipboardTextSafe(): String? {
         return try {
-            val contents = Toolkit.getDefaultToolkit().systemClipboard.getContents(null)
+            val contents = Toolkit.getDefaultToolkit().systemClipboard.getContents(null)// systemClipboard.getContents is really slow
             if (contents?.isDataFlavorSupported(DataFlavor.stringFlavor) == true) {
                 contents.getTransferData(DataFlavor.stringFlavor) as? String
             } else {
@@ -21,15 +21,54 @@ object ClipboardUtil {
         }
     }
 
-    fun readFileContentsJavaStyle(filePath: String): String? {
+    const val CHAR_LIMIT = 1_000_000
+    private fun readJSONContentsSafe(filePath: String): String? {
         try {
-            val builder = StringBuilder()
             val reader = BufferedReader(FileReader(filePath))
+            val builder = StringBuilder()
+            var totalCharsRead = 0
+            var firstSignificantCharFound = false
+            var insideComment = false
 
-            var line: String? = reader.readLine()
-            while (line != null) {
-                builder.append(line).append("\n")
-                line = reader.readLine()
+            // This is done char by char instead of line by line to avoid crashing the game from reading excessively large files
+            var intChar = reader.read()
+            while (intChar != -1) {
+                val ch = intChar.toChar()
+
+                // Enforce total character limit
+                totalCharsRead++
+                if (totalCharsRead > CHAR_LIMIT) {
+                    reader.close()
+                    return null
+                }
+
+                // Handle # comments (ignore until newline)
+                if (insideComment) {
+                    if (ch == '\n') {
+                        insideComment = false
+                        builder.append(ch)
+                    }
+                    intChar = reader.read()
+                    continue
+                }
+
+                if (ch == '#') {
+                    insideComment = true
+                    intChar = reader.read()
+                    continue
+                }
+
+                // Validate first significant char
+                if (!firstSignificantCharFound && !ch.isWhitespace() && ch != '\n') {
+                    if (ch != '{') {
+                        reader.close()
+                        return null
+                    }
+                    firstSignificantCharFound = true
+                }
+
+                builder.append(ch)
+                intChar = reader.read()
             }
 
             reader.close()
@@ -38,7 +77,7 @@ object ClipboardUtil {
             return null
         }
     }
-
+    
     fun getClipboardFilePath(): String? {
         val clipboard = Toolkit.getDefaultToolkit().systemClipboard
 
@@ -52,7 +91,7 @@ object ClipboardUtil {
 
     fun getClipboardFileContents(): String? {
         val filePath = getClipboardFilePath()
-        return filePath?.let { readFileContentsJavaStyle(it) }
+        return filePath?.let { readJSONContentsSafe(it) }
     }
 
     fun setClipboardText(text: String) {
@@ -75,7 +114,7 @@ object ClipboardUtil {
         var json: JSONObject? = null
         try {
             json = JSONObject(clipboardText)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             //Global.getLogger(this.javaClass).warn("Failed to convert clipboard to json")
         }
         return json
