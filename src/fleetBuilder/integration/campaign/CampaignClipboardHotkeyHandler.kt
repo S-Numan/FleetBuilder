@@ -122,7 +122,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             addClampedNumericField(dialog, "MaxElite", officerSkillCount)
 
             dialog.addPadding(8f)
-            dialog.addToggle("Give Max XP", default = true)
+            dialog.addToggle("Max XP", default = true)
             dialog.addToggle("Max Skills Pick Per Level", default = true)
 
             dialog.addPadding(8f)
@@ -163,7 +163,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 playerFleet.addOfficer(person);
 
                 val plugin = Global.getSettings().getPlugin("officerLevelUp") as? OfficerLevelupPlugin
-                if (plugin != null && fields["Give Max XP"] as Boolean) {
+                if (plugin != null && fields["Max XP"] as Boolean) {
                     if (maxLevel == null)
                         maxLevel = Misc.MAX_OFFICER_LEVEL.toInt()
                     playerFleet.getOfficerData(person).addXP(plugin.getXPForLevel(maxLevel));
