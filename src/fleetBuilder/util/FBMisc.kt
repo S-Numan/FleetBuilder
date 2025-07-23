@@ -428,7 +428,7 @@ object FBMisc {
             return false
         }
 
-        val dialog = PopUpUIDialog("Spawn Fleet in Campaign", addCancelButton = false)
+        val dialog = PopUpUIDialog("Spawn Fleet in Campaign")
 
         val memberCount = parsedFleet.members.size
         val officerCount = parsedFleet.members.count { it.personData != null && it.personData.aiCoreId.isEmpty() }

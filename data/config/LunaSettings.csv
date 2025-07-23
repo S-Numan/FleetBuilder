@@ -24,10 +24,13 @@ THE BELOW REQUIRES DEV MODE TO BE ON
 
 CTRL + V in
 Fleet screen: Add the copied fleet/member/variant/officer to your fleet
-Campaign map: Spawn fleet in the clipboard into the campaign
+Campaign: Spawn fleet in the clipboard into the campaign
 
 Right Click:
-HullMod in refit screen: Removes the hullmod. Even if it’s an SMod, or a built in SMod.",,,Hotkey Handler
+HullMod in refit screen: Removes the hullmod. Even if it’s an SMod, or a built in SMod.
+
+CTRL + O in
+Fleet Screen: Open officer creator dialog",,,Hotkey Handler
 randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, automatically randomizes the ship name and officer name/portrait if present when pasting an element with them.
 
 This avoids pasted members looking like a clone army, and makes them look like a bunch of ships/officers that happen to have the same loadout instead",,,Hotkey Handler

@@ -11,6 +11,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent.SkillPickPreference
+import com.fs.starfarer.api.impl.campaign.ids.Personalities.STEADY
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
@@ -72,54 +73,104 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             Keyboard.KEY_D -> handleDevModeHotkey(event, sector)
             Keyboard.KEY_C -> handleCopyHotkey(event, sector, ui)
             Keyboard.KEY_V -> handlePasteHotkey(event, ui, sector)
-            Keyboard.KEY_O -> handleCreateOfficer(event)
+            Keyboard.KEY_O -> handleCreateOfficer(event, ui)
         }
     }
 
-    private fun handleCreateOfficer(event: InputEventAPI) {
+    private fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
         if (!Global.getSettings().isDevMode) return
         if (FBMisc.isPopUpUIOpen()) return
         if (ReflectionMisc.getCodexDialog() != null) return
+        if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
 
-        val dialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = false, addConfirmButton = true)
+            var officerSkillCount = 0
 
-        dialog.addParagraph("Max Level")
-        dialog.addTextField("MaxLevel")
-        dialog.addParagraph("Max Elite Skills")
-        dialog.addTextField("MaxElite")
-        dialog.addParagraph("Personality")
-        dialog.addToggle("Timid")
+            Global.getSettings().skillIds.forEach { skill ->
+                val spec = Global.getSettings().getSkillSpec(skill)
+                if (spec.isCombatOfficerSkill && !spec.isAdminSkill && !spec.isAdmiralSkill && !spec.isAptitudeEffect && !spec.isPermanent && !spec.hasTag("npc_only") && !spec.hasTag("deprecated"))
+                    officerSkillCount += 1
+            }
+
+            val dialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = true, addConfirmButton = true)
+
+            fun addClampedNumericField(
+                dialog: PopUpUIDialog,
+                fieldId: String,
+                maxValue: Int
+            ) {
+                dialog.addTextField(fieldId) { fields ->
+                    val rawValue = fields[fieldId] as String
+                    val cleanedValue = rawValue.replace("\\D+".toRegex(), "")
+
+                    if (cleanedValue.isEmpty()) {
+                        dialog.textFieldRefs[fieldId]?.text = ""
+                        return@addTextField
+                    }
+
+                    val numericValue = cleanedValue.toIntOrNull() ?: return@addTextField
+                    val clampedValue = numericValue.coerceAtMost(maxValue)
+
+                    if (clampedValue.toString() != rawValue) {
+                        dialog.textFieldRefs[fieldId]?.text = clampedValue.toString()
+                    }
+                }
+            }
+
+            dialog.addParagraph("Max Level")
+            addClampedNumericField(dialog, "MaxLevel", officerSkillCount)
+            dialog.addParagraph("Max Elite Skills")
+            addClampedNumericField(dialog, "MaxElite", officerSkillCount)
+
+            dialog.addPadding(8f)
+            dialog.addToggle("Give Max XP", default = true)
+            dialog.addPadding(8f)
+            dialog.addParagraph("Personality")
 
 
-        dialog.onConfirm { fields ->
-            val maxLevel = (fields["MaxLevel"] as String).toInt()
-            val maxElite = (fields["MaxElite"] as String).toInt()
+            var personality = "Steady"
+            dialog.addRadioGroup(
+                listOf("Timid", "Cautious", "Steady", "Aggressive", "Reckless"), personality
+            ) { select ->
+                personality = select
+            }
 
-            val playerFleet = Global.getSector().playerFleet.fleetData
+
+            dialog.onConfirm { fields ->
+                var maxLevel = (fields["MaxLevel"] as String).toIntOrNull()
+                val maxElite = (fields["MaxElite"] as String).toIntOrNull()
+
+                val playerFleet = Global.getSector().playerFleet.fleetData
 
 
-            val person = OfficerManagerEvent.createOfficer(
-                Global.getSector().playerFaction, 0, SkillPickPreference.ANY,
-                false, null, false, false, -1, MathUtils.getRandom()
-            )
+                val person = OfficerManagerEvent.createOfficer(
+                    Global.getSector().playerFaction, 1, SkillPickPreference.ANY,
+                    false, null, false, false, -1, MathUtils.getRandom()
+                )
+                person.stats.skillsCopy.forEach { person.stats.setSkillLevel(it.skill.id, 0f) }
+                person.stats.level = 0
 
-            //person.setPersonality(personality);
+                person.setPersonality(personality.lowercase());
 
-            val plugin = Global.getSettings().getPlugin("officerLevelUp") as? OfficerLevelupPlugin
 
-            playerFleet.addOfficer(person);
-            if (plugin != null)
-                playerFleet.getOfficerData(person).addXP(plugin.getXPForLevel(maxLevel));
+                person.memoryWithoutUpdate.set("\$officerSkillPicksPerLevel", officerSkillCount)
+                if (maxLevel != null)
+                    person.memoryWithoutUpdate.set("\$officerMaxLevel", maxLevel)
+                if (maxElite != null)
+                    person.memoryWithoutUpdate.set("\$officerMaxEliteSkills", maxElite)
 
-            person.memoryWithoutUpdate.set("\$officerSkillPicksPerLevel", 10)
-            if (maxLevel > 0)
-                person.memoryWithoutUpdate.set("\$officerMaxLevel", maxLevel)
-            if (maxElite > 0)
-                person.memoryWithoutUpdate.set("\$officerMaxEliteSkills", maxElite)
+                playerFleet.addOfficer(person);
+
+                val plugin = Global.getSettings().getPlugin("officerLevelUp") as? OfficerLevelupPlugin
+                if (plugin != null && fields["Give Max XP"] as Boolean) {
+                    if (maxLevel == null)
+                        maxLevel = Misc.MAX_OFFICER_LEVEL.toInt()
+                    playerFleet.getOfficerData(person).addXP(plugin.getXPForLevel(maxLevel));
+                }
+            }
+            initPopUpUI(dialog, 500f, 348f)
+
+            event.consume()
         }
-        initPopUpUI(dialog, 500f, 348f)
-
-        event.consume()
     }
 
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {

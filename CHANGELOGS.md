@@ -1,6 +1,7 @@
-## 1.10.1
+## 1.11.0
 - Better missing elements reporting
 - Legacy flagship loading now puts the flagship at the start of the fleet on loading a fleet
+- Add officer creator dialog via CTRL + O
 
 ## 1.10.0
 - Configurable UI pop ups on using CTRL V to paste a fleet into the campaign or fleet screen.
