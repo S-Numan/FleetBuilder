@@ -104,8 +104,7 @@ object FleetSerialization {
         }
 
         val commander = json.optJSONObject("commander")?.let {
-            //LEGACY BEHAVIOR
-            if (it.has("member")) {
+            if (it.has("member")) {//LEGACY BEHAVIOR
                 it.optJSONObject("member")?.let { memberJson ->
                     memberJson.put("officer", it)
                     memberJson.put("isFlagship", true)
@@ -193,10 +192,13 @@ object FleetSerialization {
                 validated.copy(extractVariantDataFromJson(saveVariantToJson(createErrorVariant("NOVAR"))))
             } else if (!getHullIDSet().contains(validated.variantData.hullId)) {
                 missing.hullIds.add(validated.variantData.hullId)
-                if (!settings.excludeMembersWithMissingHullSpec)
-                    validated.copy(extractVariantDataFromJson(saveVariantToJson(createErrorVariant("NOHUL:${validated.variantData.hullId}"))))
-                else
-                    null
+                if (!settings.excludeMembersWithMissingHullSpec) {
+                    val name = "NOHUL:${validated.variantData.hullId}"
+                    validated.copy(
+                        extractVariantDataFromJson(saveVariantToJson(createErrorVariant(name))),
+                        shipName = name
+                    )
+                } else null
             } else {
                 validated
             }

@@ -23,11 +23,8 @@ Simulator: Add the player’s fleet into simulator reserves. To fight a variant 
 THE BELOW REQUIRES DEV MODE TO BE ON
 
 CTRL + V in
-Fleet screen: Add the copied variant/member/officer to your fleet
+Fleet screen: Add the copied fleet/member/variant/officer to your fleet
 Campaign map: Spawn fleet in the clipboard into the campaign
-
-CTRL + D in
-Codex: Adds the codex entry you’re looking at to your fleet.
 
 Right Click:
 HullMod in refit screen: Removes the hullmod. Even if it’s an SMod, or a built in SMod.",,,Hotkey Handler

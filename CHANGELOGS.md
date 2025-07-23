@@ -1,3 +1,7 @@
+## 1.10.1
+- Better missing elements reporting
+- Legacy flagship loading now puts the flagship at the start of the fleet on loading a fleet
+
 ## 1.10.0
 - Configurable UI pop ups on using CTRL V to paste a fleet into the campaign or fleet screen.
 - Properly handle saving built in DMods. Such as the Lion's Guard "Special Modifications"
