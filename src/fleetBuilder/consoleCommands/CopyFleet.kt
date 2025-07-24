@@ -28,7 +28,9 @@ class CopyFleet : BaseCommand {
         // Choose fleet manager based on input args
         val mgr = when (args.lowercase().trim()) {
             "player" -> playerMgr
+            "0" -> playerMgr
             "enemy" -> enemyMgr
+            "1" -> enemyMgr
             else -> {
                 Console.showMessage("Invalid argument. Use 'player' or 'enemy'.")
                 return BaseCommand.CommandResult.BAD_SYNTAX

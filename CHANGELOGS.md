@@ -1,4 +1,8 @@
 ## 1.11.0
+- Minor performance optimizations
+- CopyFleet console command, to copy fleets in combat. (Mostly useful for copying mission fleets such as tournament fleets)
+
+## 1.11.0
 - Add officer creator dialog via CTRL + O
 - Loadout importing UI
 - Add Save Transfer dialog via CTRL + I
