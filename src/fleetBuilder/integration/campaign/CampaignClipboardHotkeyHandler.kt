@@ -1,20 +1,16 @@
 package fleetBuilder.integration.campaign
 
-import MagicLib.ReflectionUtils
 import MagicLib.height
-import MagicLib.setSize
 import MagicLib.width
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent.SkillPickPreference
-import com.fs.starfarer.api.impl.campaign.ids.Personalities.STEADY
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
@@ -29,17 +25,13 @@ import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
-import fleetBuilder.integration.combat.CombatAutofitAdder
 import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.MemberSerialization
 import fleetBuilder.persistence.PersonSerialization
 import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.ui.PopUpUI.PopUpUIDialog
 import fleetBuilder.ui.autofit.AutofitPanel
-import fleetBuilder.ui.autofit.AutofitPanel.makeTooltip
 import fleetBuilder.ui.autofit.AutofitSelector
-import fleetBuilder.ui.autofit.AutofitSelector.MagicPaintjobSelectorPlugin
-import fleetBuilder.ui.autofit.AutofitSelector.descriptionHeight
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.campaignPaste
@@ -47,7 +39,6 @@ import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.FBMisc.initPopUpUI
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
-import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.VariantLib
@@ -365,7 +356,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
 
         if (!loadoutExists) {
-            val dialog = PopUpUIDialog("Import loadout of '${variant.hullSpec.hullName}'", addCancelButton = true, addConfirmButton = true)
+            val loadoutBaseHullName = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }?.hullName
+                ?: return
+
+            val dialog = PopUpUIDialog("Import loadout of '$loadoutBaseHullName'", addCancelButton = true, addConfirmButton = true)
 
             //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
 
@@ -392,7 +386,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 importShipLoadout(variant, missing)
 
                 DisplayMessage.showMessage(
-                    " Loadout imported for hull: ${variant.hullSpec.hullId}",
+                    " Loadout imported for hull: $loadoutBaseHullName",
                     variant.hullSpec.hullId,
                     Misc.getHighlightColor()
                 )
