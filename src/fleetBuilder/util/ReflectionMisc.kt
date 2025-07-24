@@ -106,38 +106,47 @@ object ReflectionMisc {
         return null
     }
 
+    fun isCodexOpen(): Boolean {
+        if (Global.getSettings().isShowingCodex) return true
+
+        if (Global.getCurrentState() == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
+            val coreUI = getCoreUI()
+            if (coreUI?.findChildWithMethodReversed("getCurrentSnapshot") is CodexDialog) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun getCodexDialog(): CodexDialog? {
-        //if (!Global.getSettings().isShowingCodex) // This does NOT work as of 0.98
-        //    return null
-
-        var codex: CodexDialog?
-
-        val gameState = Global.getCurrentState()
         val state = AppDriver.getInstance().currentState
 
-        //F2 press, and in some other places
-        val codexOverlayPanel = state.invoke("getOverlayPanelForCodex") as? UIPanelAPI?
-        codex = codexOverlayPanel?.findChildWithMethod("getCurrentSnapshot") as? CodexDialog?
-
-        if (codex == null) {
-            if (gameState == GameState.CAMPAIGN) {
-
-                //Button press in the fleet screen
-                val coreUI = getCoreUI()
-                codex = coreUI?.findChildWithMethod("getCurrentSnapshot") as? CodexDialog?
-
-            } else if (gameState == GameState.COMBAT || gameState == GameState.TITLE) {
-                val state = AppDriver.getInstance().currentState
-
-                //Combat F2 with ship selected
+        if (Global.getSettings().isShowingCodex) { //isShowingCodex does not work in all cases as of 0.98
+            if (Global.getCurrentState() == GameState.COMBAT) {
+                //Combat F2 with ship selected, simulator ship F2.
                 if (state.getMethodsMatching("getRibbon").isNotEmpty()) {
                     val ribbon = state.invoke("getRibbon") as? UIPanelAPI?
                     val temp = ribbon?.invoke("getParent") as? UIPanelAPI?
-                    codex = temp?.findChildWithMethod("getCurrentSnapshot") as? CodexDialog?
+                    val codex = temp?.findChildWithMethod("getCurrentSnapshot") as? CodexDialog?
+                    if (codex != null) return codex
                 }
+                //Note that the codex that opens from clicking the combat "More Info" question mark button appears in the below and not the above
             }
+
+            //F2 press, and in some other places
+            val codexOverlayPanel = state.invoke("getOverlayPanelForCodex") as? UIPanelAPI?
+            return codexOverlayPanel?.findChildWithMethod("getCurrentSnapshot") as? CodexDialog?
         }
-        return codex
+
+        //settingsCodex is false despite codex being open
+        if (Global.getCurrentState() == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
+            //F2 while hovering over ship or ship question mark press in the fleet screen. NOT hover over question mark and press F2, that is handled differently for some reason.
+            val coreUI = getCoreUI()
+            return coreUI?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog?
+
+        }
+
+        return null
     }
 
     fun getCodexEntryParam(codex: CodexDialog): Any? {

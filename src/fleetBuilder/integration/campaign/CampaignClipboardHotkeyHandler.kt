@@ -87,8 +87,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
         //if (!Global.getSettings().isDevMode) return
-        if (FBMisc.isPopUpUIOpen()) return
-        if (ReflectionMisc.getCodexDialog() != null) return
+        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
@@ -276,7 +275,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.getCodexDialog() != null) return//If codex is open, halt.
+        if (ReflectionMisc.isCodexOpen()) return//If codex is open, halt.
 
         val captainPicker = ReflectionMisc.getCaptainPickerDialog()
         if (captainPicker != null) {
@@ -294,8 +293,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
         if (!event.isShiftDown) return
-        if (FBMisc.isPopUpUIOpen()) return
-        if (ReflectionMisc.getCodexDialog() != null) return
+        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
         event.consume()
 
         val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = true)
@@ -425,7 +423,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
-        if (ReflectionMisc.getCodexDialog() != null || FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             handleRefitPaste(event)
