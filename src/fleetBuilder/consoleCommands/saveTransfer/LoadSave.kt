@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
-import org.apache.log4j.Level
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings

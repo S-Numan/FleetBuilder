@@ -1,7 +1,7 @@
 package fleetBuilder.temporary
 
-import fleetBuilder.ui.PopUpUI.BasePopUpUI
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import fleetBuilder.ui.PopUpUI.BasePopUpUI
 
 class ExampleDialog(
     override var headerTitle: String? = null

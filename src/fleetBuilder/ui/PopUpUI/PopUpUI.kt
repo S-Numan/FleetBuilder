@@ -4,9 +4,9 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.ui.*
-import com.fs.starfarer.api.util.IntervalUtil
-import com.fs.starfarer.api.util.Misc
+import com.fs.starfarer.api.ui.CustomPanelAPI
+import com.fs.starfarer.api.ui.PositionAPI
+import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import org.lwjgl.input.Keyboard

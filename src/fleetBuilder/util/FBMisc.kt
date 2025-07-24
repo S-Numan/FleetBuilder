@@ -8,20 +8,30 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
+import com.fs.starfarer.api.fleet.RepairTrackerAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
+import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
+import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
+import fleetBuilder.features.CommanderShuttle.playerShuttleExists
+import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
 import fleetBuilder.persistence.CargoSerialization.getCargoFromJson
 import fleetBuilder.persistence.CargoSerialization.saveCargoToJson
 import fleetBuilder.persistence.FleetSerialization
+import fleetBuilder.persistence.FleetSerialization.buildFleet
+import fleetBuilder.persistence.FleetSerialization.extractFleetDataFromJson
+import fleetBuilder.persistence.FleetSerialization.filterParsedFleetData
 import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
 import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
+import fleetBuilder.persistence.FleetSerialization.validateAndCleanFleetData
 import fleetBuilder.persistence.MemberSerialization
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.PersonSerialization
@@ -31,8 +41,6 @@ import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.ui.PopUpUI.PopUpUI
 import fleetBuilder.ui.PopUpUI.PopUpUIDialog
-import com.fs.starfarer.api.fleet.RepairTrackerAPI
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DisplayMessage.showError
 import fleetBuilder.util.DisplayMessage.showMessage
@@ -46,14 +54,6 @@ import org.lazywizard.lazylib.ext.json.optFloat
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 import java.util.*
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
-import fleetBuilder.features.CommanderShuttle.playerShuttleExists
-import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
-import fleetBuilder.persistence.FleetSerialization.buildFleet
-import fleetBuilder.persistence.FleetSerialization.extractFleetDataFromJson
-import fleetBuilder.persistence.FleetSerialization.filterParsedFleetData
-import fleetBuilder.persistence.FleetSerialization.validateAndCleanFleetData
 import kotlin.math.max
 
 

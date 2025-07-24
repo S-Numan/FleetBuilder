@@ -1,12 +1,10 @@
 package fleetBuilder.temporary
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.mission.MissionDefinitionPlugin
 import com.fs.starfarer.loading.SpecStore
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import starficz.ReflectionUtils
 import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
 
 fun Testing() {
     val testVariant = (Global.getSettings().getVariant("apogee_Balanced") as HullVariantSpec).clone()
