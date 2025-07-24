@@ -1,10 +1,12 @@
 package fleetBuilder.temporary
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.mission.MissionDefinitionPlugin
 import com.fs.starfarer.loading.SpecStore
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import starficz.ReflectionUtils
 import starficz.ReflectionUtils.getMethodsMatching
+import starficz.ReflectionUtils.invoke
 
 fun Testing() {
     val testVariant = (Global.getSettings().getVariant("apogee_Balanced") as HullVariantSpec).clone()
@@ -33,6 +35,7 @@ fun Testing() {
     // ReflectionUtils.invoke(SpecStore::class.java, staticAddToSpecMethod.name, HullVariantSpec::class.java, testVariant.hullVariantId, testVariant)
 
     //val test = SpecStore.Ò00000()//Missions
+
     //val test2 = SpecStore.Ô00000()//Just highres sensors and phase fields?
     //val test3 = SpecStore.ô00000()//Just Phase Field
     //val test4 = SpecStore.Ò00000(HullVariantSpec::class.java)//Self added failed HullVariantSpec
@@ -65,6 +68,7 @@ fun Testing() {
     val fieldS = ReflectionUtils.getFieldsMatching(SpecStore::class.java, fieldAccepts = Map::class.java)
     //val aaa = SpecStore::class.java.get(type = )
     val test35 = fieldS[0].get(SpecStore::class.java)
+    val test36 = fieldS[1].get(SpecStore::class.java)
 
     val curVariant = getFromSpecMethod.invoke(specStore, HullVariantSpec::class.java, "FBT_${testVariant.hullVariantId}", true)//Get from spec store
 
