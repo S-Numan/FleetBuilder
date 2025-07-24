@@ -18,8 +18,6 @@ import java.awt.Color
 open class PopUpUI : CustomUIPanelPlugin {
     var limit: Int = 5
     var totalFrames: Float = 0f
-    var betweenCodex: IntervalUtil? = null
-    var detectedCodex: Boolean = false
     var attemptedExit: Boolean = false
 
     var blackBackground: SpriteAPI = Global.getSettings().getSprite("FleetBuilder", "white_square")
@@ -37,8 +35,6 @@ open class PopUpUI : CustomUIPanelPlugin {
     var frames: Float = 0f
     var panelToInfluence: CustomPanelAPI? = null
     var rendererBorder: UILinesRenderer = UILinesRenderer(0f)
-    var confirmButton: ButtonAPI? = null
-    var cancelButton: ButtonAPI? = null
     var isDialog: Boolean = true
 
     var reachedMaxHeight: Boolean = false
@@ -64,28 +60,7 @@ open class PopUpUI : CustomUIPanelPlugin {
         rendererBorder.setPanel(panelToInfluence)
     }
 
-    fun initForDialog(panelAPI: CustomPanelAPI, x: Float, y: Float, isDialog: Boolean) {
-        panelToInfluence = panelAPI
-        //parent = ProductionUtil.getCoreUIForDialog();
-        parent = getCoreUI()
-        originalSizeX = panelAPI.getPosition().getWidth()
-        originalSizeY = panelAPI.getPosition().getHeight()
-
-        panelToInfluence!!.getPosition().setSize(16f, 16f)
-        this.isDialog = isDialog
-
-        parent!!.addComponent(panelToInfluence).inTL(x, parent!!.getPosition().getHeight() - y)
-        parent!!.bringComponentToTop(panelToInfluence)
-        rendererBorder.setPanel(panelToInfluence)
-    }
-
     open fun createUI() {
-        //Note here is where you create UI : Methods you need to change is advance , createUI, and inputEvents handler
-        //Also remember super.apply()
-    }
-
-    fun createUIMockup(panelAPI: CustomPanelAPI): Float {
-        return 0f
     }
 
     override fun renderBelow(alphaMult: Float) {
@@ -96,9 +71,19 @@ open class PopUpUI : CustomUIPanelPlugin {
                 blackBackground.setColor(Color.black)
                 blackBackground.setAlphaMult(0.6f)
                 blackBackground.renderAtCenter(getCoreUI()!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
-                renderer.renderTiledTexture(panelToInfluence!!.getPosition().getX(), panelToInfluence!!.getPosition().getY(), panelToInfluence!!.getPosition().getWidth(), panelToInfluence!!.getPosition().getHeight(), panelBackground.getTextureWidth(), panelBackground.getTextureHeight(), (frames / limit) * 0.9f, Color.BLACK)
+                renderer.renderTiledTexture(
+                    panelToInfluence!!.getPosition().getX(),
+                    panelToInfluence!!.getPosition().getY(), panelToInfluence!!.getPosition().getWidth(),
+                    panelToInfluence!!.getPosition().getHeight(), panelBackground.getTextureWidth(),
+                    panelBackground.getTextureHeight(), (frames / limit) * 0.9f, Color.BLACK
+                )
             } else {
-                renderer.renderTiledTexture(panelToInfluence!!.getPosition().getX(), panelToInfluence!!.getPosition().getY(), panelToInfluence!!.getPosition().getWidth(), panelToInfluence!!.getPosition().getHeight(), panelBackground.getTextureWidth(), panelBackground.getTextureHeight(), (frames / limit), panelBackground.getColor())
+                renderer.renderTiledTexture(
+                    panelToInfluence!!.getPosition().getX(),
+                    panelToInfluence!!.getPosition().getY(), panelToInfluence!!.getPosition().getWidth(),
+                    panelToInfluence!!.getPosition().getHeight(), panelBackground.getTextureWidth(),
+                    panelBackground.getTextureHeight(), (frames / limit), panelBackground.getColor()
+                )
             }
             if (isDialog) {
                 renderBorders(panelToInfluence!!)
@@ -112,12 +97,6 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     override fun advance(amount: Float) {
-        if (betweenCodex != null) {
-            betweenCodex!!.advance(amount)
-            if (betweenCodex!!.intervalElapsed()) {
-                betweenCodex = null
-            }
-        }
         if (frames <= limit) {
             frames++
             val progress = frames / limit
@@ -132,51 +111,26 @@ open class PopUpUI : CustomUIPanelPlugin {
                 return
             }
         }
-        if (confirmButton != null) {
-            if (confirmButton!!.isChecked()) {
-                confirmButton!!.setChecked(false)
-                applyConfirmScript()
-                parent!!.removeComponent(panelToInfluence)
-                onExit()
-            }
-        }
-        if (cancelButton != null) {
-            if (cancelButton!!.isChecked()) {
-                cancelButton!!.setChecked(false)
-                parent!!.removeComponent(panelToInfluence)
-                onExit()
-            }
-        }
-        if (Global.CODEX_TOOLTIP_MODE) {
-            detectedCodex = true
-        }
-        if (!Global.CODEX_TOOLTIP_MODE && detectedCodex) {
-            detectedCodex = false
-            betweenCodex = IntervalUtil(0.1f, 0.1f)
-        }
     }
 
     open fun applyConfirmScript() {
     }
 
     override fun processInput(events: MutableList<InputEventAPI>) {
-        if (betweenCodex != null) return
         for (event in events) {
             if (frames >= limit - 1 && reachedMaxHeight) {
                 if (event.isMouseDownEvent && !isDialog) {
                     val hovers = FBMisc.isMouseHoveringOverComponent(panelToInfluence!!)
                     if (!hovers) {
-                        parent!!.removeComponent(panelToInfluence)
+                        forceDismiss()
                         event.consume()
-                        onExit()
                     }
                 }
                 if (!event.isConsumed) {
                     if (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
                         if (attemptedExit) {
-                            parent!!.removeComponent(panelToInfluence)
+                            forceDismiss()
                             event.consume()
-                            onExit()
                             break
                         } else {
                             attemptedExit = true
@@ -245,41 +199,6 @@ open class PopUpUI : CustomUIPanelPlugin {
         topRight.renderAtCenter(panelAPI.getPosition().getX() + panelAPI.getPosition().getWidth(), panelAPI.getPosition().getY() + panelAPI.getPosition().getHeight())
         bottomLeft.renderAtCenter(leftX - 16, panelAPI.getPosition().getY())
         bottomRight.renderAtCenter(panelAPI.getPosition().getX() + panelAPI.getPosition().getWidth(), panelAPI.getPosition().getY())
-    }
-
-    fun generateConfirmButton(tooltip: TooltipMakerAPI): ButtonAPI {
-        val button = tooltip.addButton("Confirm", "confirm", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, 160f, 25f, 0f)
-        button.setShortcut(Keyboard.KEY_G, true)
-        confirmButton = button
-        return button
-    }
-
-    fun generateCancelButton(tooltip: TooltipMakerAPI): ButtonAPI {
-        val button = tooltip.addButton("Cancel", "cancel", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, buttonConfirmWidth, 25f, 0f)
-        button.setShortcut(Keyboard.KEY_ESCAPE, true)
-        cancelButton = button
-        return button
-    }
-
-    fun createConfirmAndCancelSection(
-        mainPanel: CustomPanelAPI,
-        addConfirmButton: Boolean = true,
-        addCancelButton: Boolean = true
-    ) {
-        val totalWidth: Float = buttonConfirmWidth * 2 + 10
-        val tooltip = mainPanel.createUIElement(totalWidth, 25f, false)
-        tooltip.setButtonFontOrbitron20()
-        if (addConfirmButton) {
-            generateConfirmButton(tooltip)
-            confirmButton!!.position.inTL(0f, 0f)
-        }
-        if (addCancelButton) {
-            generateCancelButton(tooltip)
-            cancelButton!!.position.inTL(buttonConfirmWidth + 5, 0f)
-        }
-
-        val bottom = originalSizeY
-        mainPanel.addUIElement(tooltip).inTL(mainPanel.position.width - (totalWidth) - 10, bottom - 40)
     }
 
     companion object {

@@ -56,9 +56,22 @@ object CargoSerialization {
 
                     val spec = runCatching { Global.getSettings().getSpecialItemSpec(id) }.getOrNull()
                     if (spec != null) {
-                        cargo.addSpecial(SpecialItemData(id, data), size.toFloat())
+                        try {
+                            if (id == "fighter_bp" && Global.getSettings().allFighterWingSpecs.find { it.id == data } == null)
+                                missingElements.wingIds.add(data)
+                            else if (id == "weapon_bp" && Global.getSettings().allWeaponSpecs.find { it.weaponId == data } == null)
+                                missingElements.weaponIds.add(data)
+                            else if (id == "ship_bp" && Global.getSettings().allShipHullSpecs.find { it.hullId == data } == null)
+                                missingElements.hullIds.add(data)
+                            else if (id == "modspec" && Global.getSettings().allHullModSpecs.find { it.id == data } == null)
+                                missingElements.hullModIds.add(data)
+                            else
+                                cargo.addSpecial(SpecialItemData(id, data), size.toFloat())
+                        } catch (_: Exception) {
+                            missingElements.itemIds.add(data)
+                        }
                     } else {
-                        missingElements.wingIds.add(id)
+                        missingElements.itemIds.add(id)
                     }
                 }
             }

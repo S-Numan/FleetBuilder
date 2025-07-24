@@ -37,7 +37,8 @@ class ReplaceFleet : BaseCommand {
             return BaseCommand.CommandResult.ERROR
         }
 
-        replacePlayerFleetWith(json)
+        val missing = replacePlayerFleetWith(json)
+        reportMissingElementsIfAny(missing)
 
         return BaseCommand.CommandResult.SUCCESS
     }

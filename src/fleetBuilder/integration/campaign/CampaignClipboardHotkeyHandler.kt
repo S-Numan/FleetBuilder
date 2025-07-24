@@ -9,9 +9,12 @@ import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent.SkillPickPreference
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
+import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
@@ -19,20 +22,31 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.coreui.refit.ModWidget
+import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.MemberSerialization
 import fleetBuilder.persistence.PersonSerialization
 import fleetBuilder.persistence.VariantSerialization
+import fleetBuilder.ui.PopUpUI.PopUpUIDialog
+import fleetBuilder.ui.autofit.AutofitPanel
+import fleetBuilder.ui.autofit.AutofitSelector
+import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.util.*
+import fleetBuilder.util.ClipboardUtil.getClipboardJson
+import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.fleetPaste
+import fleetBuilder.util.FBMisc.initPopUpUI
+import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
-import fleetBuilder.variants.LoadoutManager
+import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
+import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.VariantLib
-import org.json.JSONObject
+import org.lazywizard.console.Console
+import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
 import starficz.ReflectionUtils.get
@@ -67,6 +81,198 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             Keyboard.KEY_D -> handleDevModeHotkey(event, sector)
             Keyboard.KEY_C -> handleCopyHotkey(event, sector, ui)
             Keyboard.KEY_V -> handlePasteHotkey(event, ui, sector)
+            Keyboard.KEY_O -> handleCreateOfficer(event, ui)
+            Keyboard.KEY_I -> handleSaveTransfer(event, ui)
+        }
+    }
+
+    private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
+        //if (!Global.getSettings().isDevMode) return
+        if (FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.getCodexDialog() != null) return
+        if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
+            event.consume()
+
+            val initialDialog = PopUpUIDialog("Save Transfer", addCancelButton = false, addConfirmButton = false)
+
+            initialDialog.addButton("Copy Save") { _ ->
+                val dialog = PopUpUIDialog("Copy Save")
+
+                dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
+                    dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
+                }
+                dialog.addPadding(dialog.buttonHeight)
+                dialog.addToggle("Include Blueprints", true)
+                dialog.addToggle("Include Hullmods", true)
+                dialog.addToggle("Include Player", true)
+                dialog.addToggle("Include Fleet", true)
+                dialog.addToggle("Include Officers", true)
+                dialog.addToggle("Include Reputation", true)
+                dialog.addToggle("Include Cargo", true)
+                dialog.addToggle("Include Credits", true)
+
+                dialog.onConfirm { fields ->
+                    val json = FBMisc.createPlayerSaveJson(
+                        handleCargo = fields["Include Cargo"] as Boolean,
+                        handleRelations = fields["Include Reputation"] as Boolean,
+                        handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
+                        handlePlayer = fields["Include Player"] as Boolean,
+                        handleFleet = fields["Include Fleet"] as Boolean,
+                        handleCredits = fields["Include Credits"] as Boolean,
+                        handleKnownHullmods = fields["Include Hullmods"] as Boolean,
+                        handleOfficers = fields["Include Officers"] as Boolean
+                    )
+
+                    setClipboardText(json.toString(4))
+
+                    DisplayMessage.showMessage("Save copied to clipboard")
+                }
+
+                initPopUpUI(dialog, 360f, 375f)
+            }
+
+            initialDialog.addButton("Load Save") { _ ->
+                val dialog = PopUpUIDialog("Load Save")
+
+                dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
+                    dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
+                }
+                dialog.addPadding(dialog.buttonHeight)
+                dialog.addToggle("Include Blueprints", true)
+                dialog.addToggle("Include Hullmods", true)
+                dialog.addToggle("Include Player", true)
+                dialog.addToggle("Include Fleet", true)
+                dialog.addToggle("Include Officers", true)
+                dialog.addToggle("Include Reputation", true)
+                dialog.addToggle("Include Cargo", true)
+                dialog.addToggle("Include Credits", true)
+
+                dialog.onConfirm { fields ->
+                    val json = getClipboardJson()
+
+                    if (json == null) {
+                        DisplayMessage.showMessage("Failed to read json in clipboard\n")
+                        return@onConfirm
+                    }
+
+                    val missing = FBMisc.loadPlayerSaveJson(
+                        json,
+                        handleCargo = fields["Include Cargo"] as Boolean,
+                        handleRelations = fields["Include Reputation"] as Boolean,
+                        handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
+                        handlePlayer = fields["Include Player"] as Boolean,
+                        handleFleet = fields["Include Fleet"] as Boolean,
+                        handleCredits = fields["Include Credits"] as Boolean,
+                        handleKnownHullmods = fields["Include Hullmods"] as Boolean,
+                        handleOfficers = fields["Include Officers"] as Boolean
+                    )
+
+                    DisplayMessage.showMessage("Save loaded from clipboard")
+
+                    reportMissingElementsIfAny(missing)
+                }
+
+                initPopUpUI(dialog, 360f, 375f)
+            }
+
+            initPopUpUI(initialDialog, 300f, 110f)
+        }
+    }
+
+    private fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
+        if (!Global.getSettings().isDevMode) return
+        if (FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.getCodexDialog() != null) return
+        if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
+            event.consume()
+
+            var officerSkillCount = 0
+
+            Global.getSettings().skillIds.forEach { skill ->
+                val spec = Global.getSettings().getSkillSpec(skill)
+                if (spec.isCombatOfficerSkill && !spec.isAdminSkill && !spec.isAdmiralSkill && !spec.isAptitudeEffect && !spec.isPermanent && !spec.hasTag("npc_only") && !spec.hasTag("deprecated"))
+                    officerSkillCount += 1
+            }
+
+            val dialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = true, addConfirmButton = true)
+
+            fun addClampedNumericField(
+                dialog: PopUpUIDialog,
+                fieldId: String,
+                maxValue: Int
+            ) {
+                dialog.addTextField(fieldId) { fields ->
+                    val rawValue = fields[fieldId] as String
+                    val cleanedValue = rawValue.replace("\\D+".toRegex(), "")
+
+                    if (cleanedValue.isEmpty()) {
+                        dialog.textFieldRefs[fieldId]?.text = ""
+                        return@addTextField
+                    }
+
+                    val numericValue = cleanedValue.toIntOrNull() ?: return@addTextField
+                    val clampedValue = numericValue.coerceAtMost(maxValue)
+
+                    if (clampedValue.toString() != rawValue) {
+                        dialog.textFieldRefs[fieldId]?.text = clampedValue.toString()
+                    }
+                }
+            }
+
+            dialog.addParagraph("Max Level")
+            addClampedNumericField(dialog, "MaxLevel", officerSkillCount)
+            dialog.addParagraph("Max Elite Skills")
+            addClampedNumericField(dialog, "MaxElite", officerSkillCount)
+
+            dialog.addPadding(8f)
+            dialog.addToggle("Max XP", default = true)
+            dialog.addToggle("Max Skills Pick Per Level", default = true)
+
+            dialog.addPadding(8f)
+            dialog.addParagraph("Personality")
+
+
+            var personality = "Steady"
+            dialog.addRadioGroup(
+                listOf("Timid", "Cautious", "Steady", "Aggressive", "Reckless"), personality
+            ) { select ->
+                personality = select
+            }
+
+
+            dialog.onConfirm { fields ->
+                var maxLevel = (fields["MaxLevel"] as String).toIntOrNull()
+                val maxElite = (fields["MaxElite"] as String).toIntOrNull()
+
+                val playerFleet = Global.getSector().playerFleet.fleetData
+
+
+                val person = OfficerManagerEvent.createOfficer(
+                    Global.getSector().playerFaction, 1, SkillPickPreference.ANY,
+                    false, null, false, false, -1, MathUtils.getRandom()
+                )
+                person.stats.skillsCopy.forEach { person.stats.setSkillLevel(it.skill.id, 0f) }
+                person.stats.level = 0
+
+                person.setPersonality(personality.lowercase());
+
+                if (fields["Max Skills Pick Per Level"] as Boolean)
+                    person.memoryWithoutUpdate.set("\$officerSkillPicksPerLevel", officerSkillCount)
+                if (maxLevel != null)
+                    person.memoryWithoutUpdate.set("\$officerMaxLevel", maxLevel)
+                if (maxElite != null)
+                    person.memoryWithoutUpdate.set("\$officerMaxEliteSkills", maxElite)
+
+                playerFleet.addOfficer(person);
+
+                val plugin = Global.getSettings().getPlugin("officerLevelUp") as? OfficerLevelupPlugin
+                if (plugin != null && fields["Max XP"] as Boolean) {
+                    if (maxLevel == null)
+                        maxLevel = Misc.MAX_OFFICER_LEVEL.toInt()
+                    playerFleet.getOfficerData(person).addXP(plugin.getXPForLevel(maxLevel));
+                }
+            }
+            initPopUpUI(dialog, 500f, 348f)
         }
     }
 
@@ -88,21 +294,22 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
-        if (!Global.getSettings().isDevMode) return
+        if (!event.isShiftDown) return
+        if (FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.getCodexDialog() != null) return
+        event.consume()
 
-        try {
-            val codex = ReflectionMisc.getCodexDialog()
-            val param = codex?.let { ReflectionMisc.getCodexEntryParam(it) } ?: return
-            FBMisc.addCodexParamEntryToFleet(sector, param, false)
-            event.consume()
-        } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey failed", e)
+        val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = true)
+        dialog.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
+
+        dialog.onConfirm { fields ->
+            Global.getSettings().isDevMode = fields["Toggle Dev Mode"] as Boolean
         }
+        initPopUpUI(dialog, 500f, 200f)
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (FBMisc.isPopUpUIOpen())
-            return
+        if (FBMisc.isPopUpUIOpen()) return
 
         try {
             val codex = ReflectionMisc.getCodexDialog()
@@ -157,7 +364,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         val settings = FleetSerialization.FleetSettings()
         settings.includeIdleOfficers = false
-        
+
         var fleetToCopy: FleetDataAPI? = null
         var uiShowsSubmarketFleet = false
 
@@ -243,17 +450,56 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             return
         }
 
-        val loadoutExists = LoadoutManager.importShipLoadout(variant, missing)
-        DisplayMessage.showMessage(
-            if (!loadoutExists) {
-                "Imported loadout with hull: ${variant.hullSpec.hullId}"
-            } else {
-                "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}\n"
-            },
-            variant.hullSpec.hullId,
-            Misc.getHighlightColor()
-        )
+
+        val loadoutExists = doesLoadoutExist(variant)
+
         event.consume()
+        if (!loadoutExists) {
+            val loadoutBaseHullName = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }?.hullName
+                ?: return
+
+            val dialog = PopUpUIDialog("Import loadout of '$loadoutBaseHullName'", addCancelButton = true, addConfirmButton = true)
+
+            //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
+
+            val shipPreviewWidth = 375f
+            val popUpHeight = 500f
+
+            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth, null)
+            val tempTMAPI = tempPanel.createUIElement(shipPreviewWidth, shipPreviewWidth, false)
+
+            val selectorPanel = AutofitSelector.createAutofitSelector(
+                variant as HullVariantSpec, paintjobSpec = AutofitSpec(variant, name = variant.displayName, description = "", spriteId = variant.hullSpec.spriteName),
+                shipPreviewWidth - (dialog.x * 2)
+            )
+
+            tempTMAPI.addComponent(selectorPanel)
+            AutofitPanel.makeTooltip(tempTMAPI, selectorPanel, variant)
+
+            tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
+
+            dialog.addCustom(tempPanel)
+
+            dialog.onConfirm { fields ->
+
+                importShipLoadout(variant, missing)
+
+                DisplayMessage.showMessage(
+                    " Loadout imported for hull: $loadoutBaseHullName",
+                    variant.hullSpec.hullId,
+                    Misc.getHighlightColor()
+                )
+            }
+
+            initPopUpUI(dialog, shipPreviewWidth, popUpHeight)
+
+        } else {
+            DisplayMessage.showMessage(
+                "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}",
+                variant.hullSpec.hullId,
+                Misc.getHighlightColor()
+            )
+        }
     }
 
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {

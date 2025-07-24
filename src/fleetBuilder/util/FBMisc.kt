@@ -62,21 +62,27 @@ object FBMisc {
     fun replacePlayerFleetWith(
         json: JSONObject, replacePlayer: Boolean = false,
         settings: FleetSerialization.FleetSettings = FleetSerialization.FleetSettings()
-    ) {
+    ): MissingElements {
         val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, true)
-        val missingElements = getFleetFromJson(
+        val missing = getFleetFromJson(
             json, fleet.fleetData
         )
 
-        reportMissingElementsIfAny(missingElements)
-
-        replacePlayerFleetWith(fleet, json.optInt("aggression_doctrine", 2), replacePlayer, settings)
+        missing.add(
+            replacePlayerFleetWith(
+                fleet,
+                if (settings.includeAggression) json.optInt("aggression_doctrine", 2) else -1,
+                replacePlayer, settings
+            )
+        )
+        return missing
     }
 
     fun replacePlayerFleetWith(
         fleet: CampaignFleetAPI, aggression: Int = -1, replacePlayer: Boolean = false,
         settings: FleetSerialization.FleetSettings = FleetSerialization.FleetSettings()
-    ) {
+    ): MissingElements {
+        val missing = MissingElements()
         val playerFleet = Global.getSector().playerFleet
 
         // Clear current fleet members and officers
@@ -93,9 +99,11 @@ object FBMisc {
 
         //Hack to copy the fleet over
         val jsonFleet = saveFleetToJson(fleet)
-        getFleetFromJson(
-            jsonFleet, playerFleet,
-            settings
+        missing.add(
+            getFleetFromJson(
+                jsonFleet, playerFleet,
+                settings
+            )
         )
 
         if (replacePlayer) {
@@ -133,6 +141,8 @@ object FBMisc {
         }
 
         fulfillPlayerFleet()
+
+        return missing
     }
 
     private fun fulfillPlayerFleet() {
@@ -289,34 +299,10 @@ object FBMisc {
         missingElements: MissingElements,
         defaultShortMessage: String = "HAD MISSING ELEMENTS: see console for more details"
     ) {
-        val fullMessage = getMissingElementsString(missingElements)
+        val fullMessage = missingElements.getMissingElementsString()
         if (fullMessage.isNotBlank()) {
             showError(defaultShortMessage, fullMessage)
         }
-    }
-
-    fun getMissingElementsString(missingElements: MissingElements): String {
-        if (missingElements.hasMissing()) {
-            val missingMessages = mutableListOf<String>()
-
-            fun printIfNotEmpty(label: String, items: Collection<*>) {
-                if (items.isNotEmpty()) {
-                    val message = "$label: ${items.joinToString()}"
-                    missingMessages.add(message)
-                }
-            }
-
-            printIfNotEmpty("Required mods", missingElements.gameMods)
-            printIfNotEmpty("Missing hulls", missingElements.hullIds)
-            printIfNotEmpty("Missing weapons", missingElements.weaponIds)
-            printIfNotEmpty("Missing wings", missingElements.wingIds)
-            printIfNotEmpty("Missing hullmods", missingElements.hullModIds)
-            printIfNotEmpty("Missing items", missingElements.itemIds)
-            printIfNotEmpty("Missing skills", missingElements.skillIds)
-
-            return missingMessages.joinToString(separator = "\n")
-        }
-        return ""
     }
 
     fun addCodexParamEntryToFleet(sector: SectorAPI, param: Any, ctrlCreatesBlueprints: Boolean = true) {
@@ -442,7 +428,7 @@ object FBMisc {
             return false
         }
 
-        val dialog = PopUpUIDialog("Spawn Fleet in Campaign", addCancelButton = false)
+        val dialog = PopUpUIDialog("Spawn Fleet in Campaign")
 
         val memberCount = parsedFleet.members.size
         val officerCount = parsedFleet.members.count { it.personData != null && it.personData.aiCoreId.isEmpty() }
@@ -460,14 +446,14 @@ object FBMisc {
         dialog.addToggle("Include Commander as Officer", default = true)
         dialog.addToggle("Exclude Ships From Missing Mods", default = false)
 
-        dialog.onConfirm { toggles ->
+        dialog.onConfirm { fields ->
 
             val settings = FleetSerialization.FleetSettings()
-            settings.includeAggression = toggles["Set Aggression Doctrine"] == true
-            settings.memberSettings.includeOfficer = toggles["Include Officers"] == true
-            settings.includeCommanderSetFlagship = toggles["Include Commander as Commander"] == true
-            settings.includeCommanderAsOfficer = toggles["Include Commander as Officer"] == true
-            settings.excludeMembersWithMissingHullSpec = toggles["Exclude Ships From Missing Mods"] == true
+            settings.includeAggression = fields["Set Aggression Doctrine"] as Boolean
+            settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
+            settings.includeCommanderSetFlagship = fields["Include Commander as Commander"] as Boolean
+            settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
+            settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
 
             val fleet = Global.getFactory().createEmptyFleet(Factions.PIRATES, FleetTypes.TASK_FORCE, true)
 
@@ -478,7 +464,7 @@ object FBMisc {
 
             sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
             Global.getSector().campaignUI.showInteractionDialog(fleet)
-            if (toggles["Fight To The Last"] == true)
+            if (fields["Fight To The Last"] as Boolean)
                 fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
 
             showMessage("Fleet from clipboard added to campaign")
@@ -602,14 +588,14 @@ object FBMisc {
 
                 dialog.addPadding(8f)
 
-                dialog.addButton("Append to Player Fleet") { toggles ->
+                dialog.addButton("Append to Player Fleet") { fields ->
                     element.fleetData.membersListCopy.forEach { member ->
-                        if (member.variant.hasTag("ERROR") && toggles["Exclude Ships From Missing Mods"] == true)
+                        if (member.variant.hasTag("ERROR") && fields["Exclude Ships From Missing Mods"] as Boolean)
                             return@forEach
 
                         val isCommander = member.captain === element.commander
-                        val includeOfficers = toggles["Include Officers"] == true
-                        val includeCommanderAsOfficer = toggles["Include Commander as Officer"] == true
+                        val includeOfficers = fields["Include Officers"] as Boolean
+                        val includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
 
                         // Remove officer if excluded
                         if (!includeOfficers || (isCommander && !includeCommanderAsOfficer)) {
@@ -628,16 +614,20 @@ object FBMisc {
                 }
                 dialog.addPadding(24f)
 
-                dialog.addButton("Replace Player Fleet") { toggles ->
+                dialog.addButton("Replace Player Fleet") { fields ->
                     val settings = FleetSerialization.FleetSettings()
-                    settings.memberSettings.includeOfficer = toggles["Include Officers"] == true
-                    settings.excludeMembersWithMissingHullSpec = toggles["Exclude Ships From Missing Mods"] == true
-                    settings.includeCommanderAsOfficer = toggles["Include Commander as Officer"] == true
+                    settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
+                    settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
+                    settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
 
-                    replacePlayerFleetWith(
-                        element, if (toggles["Set Aggression Doctrine"] == true) json.optInt("aggression_doctrine", 2) else -1, (toggles["Replace Player with Commander"] == true && settings.includeCommanderAsOfficer),
+                    val missing = replacePlayerFleetWith(
+                        element,
+                        if (fields["Set Aggression Doctrine"] as Boolean) json.optInt("aggression_doctrine", 2) else -1,
+                        (fields["Replace Player with Commander"] as Boolean && settings.includeCommanderAsOfficer),
                         settings
                     )
+
+                    reportMissingElementsIfAny(missing)
 
                     fulfillPlayerFleet()
                 }
@@ -822,15 +812,14 @@ object FBMisc {
         if (handleFleet && json.has("fleet")) {
             try {
                 missing.add(
-                    getFleetFromJson(
-                        json.getJSONObject("fleet"),
-                        playerFleet,
+                    replacePlayerFleetWith(
+                        json.getJSONObject("fleet"), replacePlayer = false,
                         FleetSerialization.FleetSettings().apply {
                             memberSettings.includeOfficer = handleOfficers
                             includeIdleOfficers = handleOfficers
                             includeCommanderSetFlagship = false
-                        }
-                    )
+                            includeCommanderAsOfficer = false
+                        })
                 )
             } catch (e: Exception) {
                 showError("Failed to load fleet", e)

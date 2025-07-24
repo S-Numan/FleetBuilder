@@ -295,7 +295,7 @@ object LoadoutManager {
 
     fun saveLoadoutVariant(
         variant: ShipVariantAPI,
-        prefix: String = "DF",
+        prefix: String = ModSettings.defaultPrefix,
         missingFromVariant: MissingElements = MissingElements(),
         settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
     ): String {
@@ -315,6 +315,15 @@ object LoadoutManager {
     fun importShipLoadout(variant: ShipVariantAPI, missing: MissingElements): Boolean {
         //variantToSave.hullVariantId = makeVariantID(saveVariant)
 
+        var loadoutExists = doesLoadoutExist(variant)
+
+        if (!loadoutExists)
+            saveLoadoutVariant(variant, importPrefix, missing)
+
+        return loadoutExists
+    }
+
+    fun doesLoadoutExist(variant: ShipVariantAPI): Boolean {
         var loadoutExists = false
         val hullspecVariants = getLoadoutVariantsForHullspec(variant.hullSpec)
         for (hullspecVariant in hullspecVariants) {
@@ -328,10 +337,6 @@ object LoadoutManager {
                 break
             }
         }
-
-        if (!loadoutExists)
-            saveLoadoutVariant(variant, importPrefix, missing)
-
         return loadoutExists
     }
 }

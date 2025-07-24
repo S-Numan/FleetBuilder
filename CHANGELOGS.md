@@ -1,3 +1,11 @@
+## 1.11.0
+- Add officer creator dialog via CTRL + O
+- Loadout importing UI
+- Add Save Transfer dialog via CTRL + I
+- Add Developer Mode dialog via CTRL + SHIFT + D
+- Better missing elements reporting
+- Legacy flagship loading now puts the flagship at the start of the fleet on loading a fleet
+
 ## 1.10.0
 - Configurable UI pop ups on using CTRL V to paste a fleet into the campaign or fleet screen.
 - Properly handle saving built in DMods. Such as the Lion's Guard "Special Modifications"

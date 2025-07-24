@@ -3,6 +3,7 @@ package fleetBuilder.consoleCommands.saveTransfer
 import com.fs.starfarer.api.Global
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
 import org.apache.log4j.Level
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
@@ -69,40 +70,11 @@ class LoadSave : BaseCommand {
         if (!missing.hasMissing()) {
             Console.showMessage("No missing elements.")
         } else {
-            if (missing.weaponIds.isNotEmpty()) {
-                Console.showMessage("Missing Weapons:\n" + missing.weaponIds.joinToString("\n"), Level.ERROR)
-            }
-
-            if (missing.wingIds.isNotEmpty()) {
-                Console.showMessage("Missing Wings:\n" + missing.wingIds.joinToString("\n"), Level.ERROR)
-            }
-
-            if (missing.hullModIds.isNotEmpty()) {
-                Console.showMessage("Missing Hull Mods:\n" + missing.hullModIds.joinToString("\n"), Level.ERROR)
-            }
-
-            if (missing.hullIds.isNotEmpty()) {
-                Console.showMessage("Missing Hulls:\n" + missing.hullIds.joinToString("\n"), Level.ERROR)
-            }
-
-            if (missing.skillIds.isNotEmpty()) {
-                Console.showMessage("Missing Skills:\n" + missing.skillIds.joinToString("\n"), Level.ERROR)
-            }
-
-            if (missing.itemIds.isNotEmpty()) {
-                Console.showMessage("Missing Items:\n" + missing.itemIds.joinToString("\n"), Level.ERROR)
-            }
-
-            if (missing.gameMods.isNotEmpty()) {
-                val formattedMods = missing.gameMods.joinToString("\n") { (id, name, version) ->
-                    "Mod ID: $id, Name: $name, Version: $version"
-                }
-                Console.showMessage("Missing Game Mods:\n$formattedMods", Level.ERROR)
-            }
+            reportMissingElementsIfAny(missing)
         }
 
 
-        Console.showMessage("Load Complete")
+        Console.showMessage("\nLoad Complete")
         return BaseCommand.CommandResult.SUCCESS
 
     }
