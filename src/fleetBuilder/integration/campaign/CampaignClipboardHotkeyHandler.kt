@@ -365,7 +365,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
 
         if (!loadoutExists) {
-            val dialog = PopUpUIDialog("Add Loadout of Hull: '${variant.hullSpec.hullName}'", addCancelButton = true, addConfirmButton = true)
+            val dialog = PopUpUIDialog("Import loadout of '${variant.hullSpec.hullName}'", addCancelButton = true, addConfirmButton = true)
 
             //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
 
@@ -392,7 +392,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 importShipLoadout(variant, missing)
 
                 DisplayMessage.showMessage(
-                    "Import loadout with hull: ${variant.hullSpec.hullId}",
+                    " Loadout imported for hull: ${variant.hullSpec.hullId}",
                     variant.hullSpec.hullId,
                     Misc.getHighlightColor()
                 )
