@@ -235,7 +235,7 @@ internal object AutofitSelector {
         val descriptionYOffset = 2f
         val topPad = 5f
 
-        val shipPreview = createShipPreview(hullVariantSpec, paintjobSpec, width, width)
+        val shipPreview = createShipPreview(hullVariantSpec, width, width)
         selectorPanel.addComponent(shipPreview).inTL(0f, topPad)
 
         var flipSide = false
@@ -257,7 +257,7 @@ internal object AutofitSelector {
                 continue
 
             } else {
-                fighterPreview = createShipPreview((wingSpec.variant as HullVariantSpec), null, 64f, 64f)
+                fighterPreview = createShipPreview((wingSpec.variant as HullVariantSpec), 64f, 64f)
             }
 
             val posAPI = selectorPanel.addComponent(fighterPreview)
@@ -284,8 +284,8 @@ internal object AutofitSelector {
         return selectorPanel
     }
 
-    private fun createShipPreview(
-        hullVariantSpec: HullVariantSpec, basePaintjobSpec: AutofitSpec?,
+    fun createShipPreview(
+        hullVariantSpec: HullVariantSpec,
         width: Float, height: Float
     ): UIPanelAPI {
 

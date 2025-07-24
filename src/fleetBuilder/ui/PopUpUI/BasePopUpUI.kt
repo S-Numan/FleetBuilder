@@ -115,12 +115,12 @@ open class BasePopUpUI() : PopUpUI() {
         val auxYPad = 10f
 
         if (headerTitle != null) {
-            headerTooltip = panelAPI.createUIElement(panelAPI.position.width - 30, 20f, false)
+            headerTooltip = panelAPI.createUIElement(panelAPI.position.width - (x * 2), 20f, false)
             headerTooltip!!.setParaFont(Fonts.ORBITRON_20AABOLD)
             val label = headerTooltip!!.addPara(headerTitle, Misc.getTooltipTitleAndLightHighlightColor(), 5f)
             panelAPI.addUIElement(headerTooltip).inTL(x, auxYPad)
-            val width = label.computeTextWidth(label.text)
-            label.position.setLocation(0f, 0f).inTL((panelAPI.position.width / 2) - (width / 2), 3f)
+            val textWidth = label.computeTextWidth(label.text)
+            label.position.setLocation(0f, 0f).inTL(((panelAPI.position.width - (x * 2)) - textWidth) / 2f, 3f)
         } else {
             y = auxYPad
         }

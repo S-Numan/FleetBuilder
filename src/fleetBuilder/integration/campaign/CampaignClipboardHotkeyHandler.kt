@@ -1,12 +1,15 @@
 package fleetBuilder.integration.campaign
 
+import MagicLib.ReflectionUtils
 import MagicLib.height
+import MagicLib.setSize
 import MagicLib.width
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
@@ -23,13 +26,21 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.coreui.refit.ModWidget
+import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
+import fleetBuilder.integration.combat.CombatAutofitAdder
 import fleetBuilder.persistence.FleetSerialization
 import fleetBuilder.persistence.MemberSerialization
 import fleetBuilder.persistence.PersonSerialization
 import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.ui.PopUpUI.PopUpUIDialog
+import fleetBuilder.ui.autofit.AutofitPanel
+import fleetBuilder.ui.autofit.AutofitPanel.makeTooltip
+import fleetBuilder.ui.autofit.AutofitSelector
+import fleetBuilder.ui.autofit.AutofitSelector.MagicPaintjobSelectorPlugin
+import fleetBuilder.ui.autofit.AutofitSelector.descriptionHeight
+import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.fleetPaste
@@ -37,6 +48,8 @@ import fleetBuilder.util.FBMisc.initPopUpUI
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager
+import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
+import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.VariantLib
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
@@ -347,16 +360,54 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             return
         }
 
-        val loadoutExists = LoadoutManager.importShipLoadout(variant, missing)
-        DisplayMessage.showMessage(
-            if (!loadoutExists) {
-                "Imported loadout with hull: ${variant.hullSpec.hullId}"
-            } else {
-                "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}\n"
-            },
-            variant.hullSpec.hullId,
-            Misc.getHighlightColor()
-        )
+
+        val loadoutExists = doesLoadoutExist(variant)
+
+
+        if (!loadoutExists) {
+            val dialog = PopUpUIDialog("Add Loadout of Hull: '${variant.hullSpec.hullName}'", addCancelButton = true, addConfirmButton = true)
+
+            //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
+
+            val shipPreviewWidth = 375f
+            val popUpHeight = 500f
+
+            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth, null)
+            val tempTMAPI = tempPanel.createUIElement(shipPreviewWidth, shipPreviewWidth, false)
+
+            val selectorPanel = AutofitSelector.createAutofitSelector(
+                variant as HullVariantSpec, paintjobSpec = AutofitSpec(variant, name = variant.displayName, description = "", spriteId = variant.hullSpec.spriteName),
+                shipPreviewWidth - (dialog.x * 2)
+            )
+
+            tempTMAPI.addComponent(selectorPanel)
+            AutofitPanel.makeTooltip(tempTMAPI, selectorPanel, variant)
+
+            tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
+
+            dialog.addCustom(tempPanel)
+
+            dialog.onConfirm { fields ->
+
+                importShipLoadout(variant, missing)
+
+                DisplayMessage.showMessage(
+                    "Import loadout with hull: ${variant.hullSpec.hullId}",
+                    variant.hullSpec.hullId,
+                    Misc.getHighlightColor()
+                )
+            }
+
+            initPopUpUI(dialog, shipPreviewWidth, popUpHeight)
+
+        } else {
+            DisplayMessage.showMessage(
+                "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}",
+                variant.hullSpec.hullId,
+                Misc.getHighlightColor()
+            )
+        }
+
         event.consume()
     }
 

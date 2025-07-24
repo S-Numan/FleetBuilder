@@ -166,7 +166,6 @@ internal object AutofitPanel {
                 variant = baseVariant
             }
 
-            variant
             val selectorPanel = AutofitSelector.createAutofitSelector(variant, paintjobSpec, selectorWidth)
 
             val selectorPlugin = selectorPanel.plugin as AutofitSelector.MagicPaintjobSelectorPlugin
@@ -496,7 +495,7 @@ internal object AutofitPanel {
     }
 
 
-    private fun makeTooltip(
+    fun makeTooltip(
         scrollerTooltip: TooltipMakerAPI,
         selectorPanel: CustomPanelAPI,
         variant: HullVariantSpec,

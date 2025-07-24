@@ -2,9 +2,11 @@ package fleetBuilder.ui.PopUpUI
 
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import MagicLib.*
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.TextFieldAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
+import com.fs.starfarer.api.util.Misc
 import java.awt.Color
 
 class PopUpUIDialog(
@@ -121,11 +123,14 @@ class PopUpUIDialog(
         confirmCallback = callback
     }
 
+    val buttonHeight = 24f
+
     override fun createContentForDialog(panelAPI: CustomPanelAPI) {
-        val buttonWidth = panelAPI.position.width - (x * 2) - 8f
-        val buttonHeight = 24f
+        val buttonWidth = panelAPI.position.width - (x * 2)
+
 
         val ui = panelAPI.createUIElement(buttonWidth, panelAPI.position.height, false)
+        ui.addSpacer(0f).position.inTL(0f, 0f)
 
         for (entry in entries) {
             when (entry) {
@@ -138,14 +143,16 @@ class PopUpUIDialog(
                 }
 
                 is ToggleEntry -> {
+
                     val checkbox = ui.addCheckbox(
-                        buttonWidth,
+                        ui.computeStringWidth(entry.label) + 28f,
                         buttonHeight,
                         entry.label,
                         null,
                         ButtonAPI.UICheckboxSize.SMALL,
-                        0f
+                        0f,
                     )
+
                     checkbox.isChecked = entry.state.value as Boolean
 
                     if (!entry.clickable)
@@ -170,7 +177,7 @@ class PopUpUIDialog(
                 }
 
                 is PaddingEntry -> ui.addSpacer(entry.amount)
-                is CustomEntry -> ui.addComponent(entry.component)
+                is CustomEntry -> ui.addComponent(entry.component).inTL(0f, 5f)
                 is ParagraphEntry -> {
                     if (entry.highlights.isNotEmpty() && entry.highlightWords.isNotEmpty()) {
                         ui.addPara(entry.text, 0f, entry.highlights, *entry.highlightWords)
