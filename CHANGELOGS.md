@@ -1,6 +1,8 @@
 ## 1.11.0
 - Add officer creator dialog via CTRL + O
 - Loadout importing UI
+- Add Save Transfer dialog via CTRL + I
+- Add Developer Mode dialog via CTRL + SHIFT + D
 - Better missing elements reporting
 - Legacy flagship loading now puts the flagship at the start of the fleet on loading a fleet
 
