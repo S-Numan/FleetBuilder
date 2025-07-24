@@ -52,6 +52,7 @@ class PopUpUIDialog(
     private val previousTextValues = mutableMapOf<String, String>()
 
     private var confirmCallback: ((Map<String, Any>) -> Unit)? = null
+    private var exitCallback: ((Map<String, Any>) -> Unit)? = null
 
     fun addToggle(
         label: String,
@@ -121,6 +122,16 @@ class PopUpUIDialog(
 
     fun onConfirm(callback: (Map<String, Any>) -> Unit) {
         confirmCallback = callback
+    }
+
+    fun onExit(callback: (Map<String, Any>) -> Unit) {
+        exitCallback = callback
+    }
+
+    override fun onExit() {
+        super.onExit()
+
+        exitCallback?.invoke(collectFieldStates())
     }
 
     val buttonHeight = 24f

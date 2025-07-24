@@ -147,7 +147,7 @@ open class PopUpUI : CustomUIPanelPlugin {
         onExit()
     }
 
-    fun onExit() {
+    open fun onExit() {
     }
 
     override fun buttonPressed(buttonId: Any) {
