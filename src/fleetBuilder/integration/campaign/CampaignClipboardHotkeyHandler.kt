@@ -34,14 +34,18 @@ import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.util.*
+import fleetBuilder.util.ClipboardUtil.getClipboardJson
+import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.FBMisc.initPopUpUI
+import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.VariantLib
+import org.lazywizard.console.Console
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
@@ -78,6 +82,100 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             Keyboard.KEY_C -> handleCopyHotkey(event, sector, ui)
             Keyboard.KEY_V -> handlePasteHotkey(event, ui, sector)
             Keyboard.KEY_O -> handleCreateOfficer(event, ui)
+            Keyboard.KEY_I -> handleSaveTransfer(event, ui)
+        }
+    }
+
+    private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
+        //if (!Global.getSettings().isDevMode) return
+        if (FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.getCodexDialog() != null) return
+        if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
+            event.consume()
+
+            val initialDialog = PopUpUIDialog("Save Transfer", addCancelButton = false, addConfirmButton = false)
+
+            initialDialog.addButton("Copy Save") { _ ->
+                val dialog = PopUpUIDialog("Copy Save")
+
+                dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
+                    dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
+                }
+                dialog.addPadding(dialog.buttonHeight)
+                dialog.addToggle("Include Blueprints", true)
+                dialog.addToggle("Include Hullmods", true)
+                dialog.addToggle("Include Player", true)
+                dialog.addToggle("Include Fleet", true)
+                dialog.addToggle("Include Officers", true)
+                dialog.addToggle("Include Reputation", true)
+                dialog.addToggle("Include Cargo", true)
+                dialog.addToggle("Include Credits", true)
+
+                dialog.onConfirm { fields ->
+                    val json = FBMisc.createPlayerSaveJson(
+                        handleCargo = fields["Include Cargo"] as Boolean,
+                        handleRelations = fields["Include Reputation"] as Boolean,
+                        handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
+                        handlePlayer = fields["Include Player"] as Boolean,
+                        handleFleet = fields["Include Fleet"] as Boolean,
+                        handleCredits = fields["Include Credits"] as Boolean,
+                        handleKnownHullmods = fields["Include Hullmods"] as Boolean,
+                        handleOfficers = fields["Include Officers"] as Boolean
+                    )
+
+                    setClipboardText(json.toString(4))
+
+                    DisplayMessage.showMessage("Save copied to clipboard")
+                }
+
+                initPopUpUI(dialog, 360f, 375f)
+            }
+
+            initialDialog.addButton("Load Save") { _ ->
+                val dialog = PopUpUIDialog("Load Save")
+
+                dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
+                    dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
+                }
+                dialog.addPadding(dialog.buttonHeight)
+                dialog.addToggle("Include Blueprints", true)
+                dialog.addToggle("Include Hullmods", true)
+                dialog.addToggle("Include Player", true)
+                dialog.addToggle("Include Fleet", true)
+                dialog.addToggle("Include Officers", true)
+                dialog.addToggle("Include Reputation", true)
+                dialog.addToggle("Include Cargo", true)
+                dialog.addToggle("Include Credits", true)
+
+                dialog.onConfirm { fields ->
+                    val json = getClipboardJson()
+
+                    if (json == null) {
+                        DisplayMessage.showMessage("Failed to read json in clipboard\n")
+                        return@onConfirm
+                    }
+
+                    val missing = FBMisc.loadPlayerSaveJson(
+                        json,
+                        handleCargo = fields["Include Cargo"] as Boolean,
+                        handleRelations = fields["Include Reputation"] as Boolean,
+                        handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
+                        handlePlayer = fields["Include Player"] as Boolean,
+                        handleFleet = fields["Include Fleet"] as Boolean,
+                        handleCredits = fields["Include Credits"] as Boolean,
+                        handleKnownHullmods = fields["Include Hullmods"] as Boolean,
+                        handleOfficers = fields["Include Officers"] as Boolean
+                    )
+
+                    DisplayMessage.showMessage("Save loaded from clipboard")
+
+                    reportMissingElementsIfAny(missing)
+                }
+
+                initPopUpUI(dialog, 360f, 375f)
+            }
+
+            initPopUpUI(initialDialog, 300f, 110f)
         }
     }
 
@@ -86,6 +184,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         if (FBMisc.isPopUpUIOpen()) return
         if (ReflectionMisc.getCodexDialog() != null) return
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
+            event.consume()
 
             var officerSkillCount = 0
 
@@ -174,8 +273,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 }
             }
             initPopUpUI(dialog, 500f, 348f)
-
-            event.consume()
         }
     }
 
@@ -197,16 +294,18 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
-        if (!Global.getSettings().isDevMode) return
+        if (!event.isShiftDown) return
+        if (FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.getCodexDialog() != null) return
+        event.consume()
 
-        try {
-            val codex = ReflectionMisc.getCodexDialog()
-            val param = codex?.let { ReflectionMisc.getCodexEntryParam(it) } ?: return
-            FBMisc.addCodexParamEntryToFleet(sector, param, false)
-            event.consume()
-        } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey failed", e)
+        val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = true)
+        dialog.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
+
+        dialog.onConfirm { fields ->
+            Global.getSettings().isDevMode = fields["Toggle Dev Mode"] as Boolean
         }
+        initPopUpUI(dialog, 500f, 200f)
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
@@ -354,7 +453,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         val loadoutExists = doesLoadoutExist(variant)
 
-
+        event.consume()
         if (!loadoutExists) {
             val loadoutBaseHullName = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }?.hullName
                 ?: return
@@ -401,8 +500,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 Misc.getHighlightColor()
             )
         }
-
-        event.consume()
     }
 
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {

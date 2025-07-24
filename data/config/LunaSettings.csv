@@ -20,6 +20,9 @@ Simulator: Add the copied fleet/member/variant to the simulator reserves.
 CTRL + D in
 Simulator: Add the player’s fleet into simulator reserves. To fight a variant from your own fleet.
 
+CTRL + SHIFT + D
+Anywhere: Open developer options. You can toggle dev mode here.
+
 THE BELOW REQUIRES DEV MODE TO BE ON
 
 CTRL + V in
@@ -30,7 +33,10 @@ Right Click:
 HullMod in refit screen: Removes the hullmod. Even if it’s an SMod, or a built in SMod.
 
 CTRL + O in
-Fleet Screen: Open officer creator dialog",,,Hotkey Handler
+Fleet Screen: Open officer creator dialog
+
+CTRL + I
+Campaign: Open Save Transfer dialog",,,Hotkey Handler
 randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, automatically randomizes the ship name and officer name/portrait if present when pasting an element with them.
 
 This avoids pasted members looking like a clone army, and makes them look like a bunch of ships/officers that happen to have the same loadout instead",,,Hotkey Handler
