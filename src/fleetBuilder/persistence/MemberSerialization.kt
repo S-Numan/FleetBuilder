@@ -150,6 +150,14 @@ object MemberSerialization {
         return member to missing
     }
 
+    @JvmOverloads
+    fun getMemberFromJson(
+        json: JSONObject,
+        settings: MemberSettings = MemberSettings()
+    ): FleetMemberAPI {
+        return getMemberFromJsonWithMissing(json, settings).first
+    }
+
     fun setMemberValuesFromJson(json: JSONObject, member: FleetMemberAPI) {
         val cr = json.optFloat("cr", 0.7f)
         val shipName = json.optString("name", "")
