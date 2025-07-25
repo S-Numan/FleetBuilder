@@ -1,9 +1,10 @@
 ## 1.11.0
-- Minor performance optimizations
-- CopyFleet console command, to copy fleets in combat. (Mostly useful for copying mission fleets such as tournament fleets)
 - Fix the CommandShuttle being unable to jump even with other members present.
+- Minor performance optimizations
 - Small dialog improvements across the board.
+- CopyFleet console command, to copy fleets in combat. (Mostly useful for copying mission fleets such as tournament fleets)
 - Added fleet filter keyword: "combat", and changed functionality of the "civilian" keyword. "combat" applies to ships that count towards combat ship FP.
+- Made compatible with officers from the tahlan Lostech ships. (that is to say, disabled officer storage if they are of that type, as tahlan does it it's own way)
 
 ## 1.11.0
 - Add officer creator dialog via CTRL + O
