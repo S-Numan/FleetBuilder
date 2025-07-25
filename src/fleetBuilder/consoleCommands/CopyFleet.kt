@@ -32,7 +32,6 @@ class CopyFleet : BaseCommand {
             "enemy" -> enemyMgr
             "1" -> enemyMgr
             else -> {
-                Console.showMessage("Invalid argument. Use 'player' or 'enemy'.")
                 return BaseCommand.CommandResult.BAD_SYNTAX
             }
         }
