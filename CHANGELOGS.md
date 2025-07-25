@@ -1,6 +1,7 @@
 ## 1.11.0
 - Minor performance optimizations
 - CopyFleet console command, to copy fleets in combat. (Mostly useful for copying mission fleets such as tournament fleets)
+- Fix the CommandShuttle being unable to jump even with other members present.
 
 ## 1.11.0
 - Add officer creator dialog via CTRL + O
