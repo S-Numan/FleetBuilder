@@ -246,8 +246,17 @@ object FBMisc {
             panelAPI,
             coreUI.position.centerX - panelAPI.position.width / 2,
             coreUI.position.centerY + panelAPI.position.height / 2,
-            true
         )
+
+
+        /*  //Top Left
+            dialog.init(
+                panelAPI,
+                0f,
+                coreUI.position.height,
+            )
+            dialog.isDialog = false
+        */
     }
 
     fun isPopUpUIOpen(): Boolean {
@@ -260,21 +269,20 @@ object FBMisc {
     }
 
     fun isMouseHoveringOverComponent(component: UIComponentAPI): Boolean {
-        val mouseX = Global.getSettings().mouseX
-        val mouseY = Global.getSettings().mouseY
-
         val x = component.position.x
         val y = component.position.y
         val width = component.position.width
         val height = component.position.height
 
-        if (mouseX >= x && mouseX <= x + width &&
-            mouseY >= y && mouseY <= y + height
-        ) {
-            return true
-        }
+        return isMouseWithinBounds(x, y, width, height)
+    }
 
-        return false
+    fun isMouseWithinBounds(x: Float, y: Float, width: Float, height: Float): Boolean {
+        val mouseX = Global.getSettings().mouseX
+        val mouseY = Global.getSettings().mouseY
+
+        return mouseX >= x && mouseX <= x + width &&
+                mouseY >= y && mouseY <= y + height
     }
 
     fun createFleetFromJson(

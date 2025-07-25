@@ -1,5 +1,9 @@
 package fleetBuilder.ui.PopUpUI
 
+import MagicLib.height
+import MagicLib.width
+import MagicLib.x
+import MagicLib.y
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.graphics.SpriteAPI
@@ -7,7 +11,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.util.FBMisc
+import fleetBuilder.util.FBMisc.isMouseWithinBounds
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
@@ -36,6 +40,7 @@ open class PopUpUI : CustomUIPanelPlugin {
     var panelToInfluence: CustomPanelAPI? = null
     var rendererBorder: UILinesRenderer = UILinesRenderer(0f)
     var isDialog: Boolean = true
+    var quitWithEscKey: Boolean = true
 
     var reachedMaxHeight: Boolean = false
     var originalSizeX: Float = 0f
@@ -46,18 +51,25 @@ open class PopUpUI : CustomUIPanelPlugin {
     override fun positionChanged(position: PositionAPI?) {
     }
 
-    fun init(panelAPI: CustomPanelAPI, x: Float, y: Float, isDialog: Boolean) {
-        panelToInfluence = panelAPI
-        parent = getCoreUI()
-        originalSizeX = panelAPI.getPosition().getWidth()
-        originalSizeY = panelAPI.getPosition().getHeight()
-
-        panelToInfluence!!.getPosition().setSize(16f, 16f)
+    fun init(panelAPI: CustomPanelAPI, x: Float, y: Float, isDialog: Boolean = true) {
         this.isDialog = isDialog
 
-        parent!!.addComponent(panelToInfluence).inTL(x, parent!!.getPosition().getHeight() - y)
+        panelToInfluence = panelAPI
+        parent = getCoreUI()
+        originalSizeX = panelAPI.position.width
+        originalSizeY = panelAPI.position.height
+
+        panelToInfluence!!.position.setSize(16f, 16f)
+
+
+        parent!!.addComponent(panelToInfluence).inTL(x, parent!!.position.height - y)
         parent!!.bringComponentToTop(panelToInfluence)
         rendererBorder.setPanel(panelToInfluence)
+
+        if (!isDialog) {
+            quitWithEscKey = false
+            setMaxSize()
+        }
     }
 
     open fun createUI() {
@@ -101,16 +113,20 @@ open class PopUpUI : CustomUIPanelPlugin {
             frames++
             val progress = frames / limit
             if (frames < limit && !reachedMaxHeight) {
-                panelToInfluence!!.getPosition().setSize(originalSizeX, originalSizeY * progress)
+                panelToInfluence!!.position.setSize(originalSizeX, originalSizeY * progress)
                 return
             }
             if (frames >= limit && !reachedMaxHeight) {
-                reachedMaxHeight = true
-                panelToInfluence!!.getPosition().setSize(originalSizeX, originalSizeY)
-                createUI()
+                setMaxSize()
                 return
             }
         }
+    }
+
+    fun setMaxSize() {
+        reachedMaxHeight = true
+        panelToInfluence!!.position.setSize(originalSizeX, originalSizeY)
+        createUI()
     }
 
     open fun applyConfirmScript() {
@@ -119,15 +135,15 @@ open class PopUpUI : CustomUIPanelPlugin {
     override fun processInput(events: MutableList<InputEventAPI>) {
         for (event in events) {
             if (frames >= limit - 1 && reachedMaxHeight) {
-                if (event.isMouseDownEvent && !isDialog) {
+                /*if (event.isMouseDownEvent && !isDialog) {
                     val hovers = FBMisc.isMouseHoveringOverComponent(panelToInfluence!!)
                     if (!hovers) {
                         forceDismiss()
                         event.consume()
                     }
-                }
+                }*/
                 if (!event.isConsumed) {
-                    if (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
+                    if (quitWithEscKey && event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
                         if (attemptedExit) {
                             forceDismiss()
                             event.consume()
@@ -138,7 +154,8 @@ open class PopUpUI : CustomUIPanelPlugin {
                     }
                 }
             }
-            event.consume()
+            if (isDialog || (panelToInfluence != null && isMouseWithinBounds(panelToInfluence!!.x, panelToInfluence!!.y, panelToInfluence!!.width, panelToInfluence!!.height)))
+                event.consume()
         }
     }
 
