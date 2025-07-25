@@ -51,19 +51,27 @@ open class PopUpUI : CustomUIPanelPlugin {
     override fun positionChanged(position: PositionAPI?) {
     }
 
-    fun init(panelAPI: CustomPanelAPI, x: Float, y: Float, isDialog: Boolean = true) {
+    fun init(
+        panelAPI: CustomPanelAPI,
+        x: Float,
+        y: Float,
+        parent: UIPanelAPI? = getCoreUI(),
+        isDialog: Boolean = true
+    ) {
         this.isDialog = isDialog
 
         panelToInfluence = panelAPI
-        parent = getCoreUI()
+
+        this.parent = parent
+
         originalSizeX = panelAPI.position.width
         originalSizeY = panelAPI.position.height
 
         panelToInfluence!!.position.setSize(16f, 16f)
 
+        parent!!.addComponent(panelToInfluence).inTL(x, parent.position.height - y)
+        parent.bringComponentToTop(panelToInfluence)
 
-        parent!!.addComponent(panelToInfluence).inTL(x, parent!!.position.height - y)
-        parent!!.bringComponentToTop(panelToInfluence)
         rendererBorder.setPanel(panelToInfluence)
 
         if (!isDialog) {
@@ -127,9 +135,6 @@ open class PopUpUI : CustomUIPanelPlugin {
         reachedMaxHeight = true
         panelToInfluence!!.position.setSize(originalSizeX, originalSizeY)
         createUI()
-    }
-
-    open fun applyConfirmScript() {
     }
 
     override fun processInput(events: MutableList<InputEventAPI>) {
