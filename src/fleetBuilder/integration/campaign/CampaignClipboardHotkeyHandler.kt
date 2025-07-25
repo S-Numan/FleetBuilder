@@ -7,6 +7,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
+import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
@@ -15,7 +16,9 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
+import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
+import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
@@ -438,44 +441,55 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             VariantSerialization.getVariantFromJsonWithMissing(variantJson)//JSON is of a FleetMemberAPI
         } ?: VariantSerialization.getVariantFromJsonWithMissing(json)//JSON is of a ShipVariantAPI (also fallback)
 
+        event.consume()
         if (missing.hullIds.isNotEmpty()) {
             DisplayMessage.showMessage(
                 "Failed to import loadout. Could not find hullId ${json.optString("hullId", "")}",
                 Color.YELLOW
             )
-            event.consume()
             return
         }
 
 
         val loadoutExists = doesLoadoutExist(variant)
 
-        event.consume()
+
         if (!loadoutExists) {
-            val loadoutBaseHullName = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }?.hullName
+            val baseHullSpec = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }
+                ?: return
+            val loadoutBaseHullName = baseHullSpec.hullName
                 ?: return
 
-            val dialog = PopUpUIDialog("Import loadout of '$loadoutBaseHullName'", addCancelButton = true, addConfirmButton = true)
+            val dialog = PopUpUIDialog("Import loadout", addCancelButton = true, addConfirmButton = true)
 
             //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
 
             val shipPreviewWidth = 375f
-            val popUpHeight = 500f
+            val popUpHeight = 520f
 
-            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth, null)
-            val tempTMAPI = tempPanel.createUIElement(shipPreviewWidth, shipPreviewWidth, false)
+            dialog.addParagraph(
+                loadoutBaseHullName,
+                alignment = Alignment.MID,
+                font = Fonts.ORBITRON_24AABOLD,
+                highlights = arrayOf(Color.YELLOW),
+                highlightWords = arrayOf(loadoutBaseHullName)
+            )
+
+
+            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth - (dialog.x * 2) + AutofitSelector.descriptionHeight, null)
+            val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
 
             val selectorPanel = AutofitSelector.createAutofitSelector(
                 variant as HullVariantSpec, paintjobSpec = AutofitSpec(variant, name = variant.displayName, description = "", spriteId = variant.hullSpec.spriteName),
                 shipPreviewWidth - (dialog.x * 2)
             )
-
             tempTMAPI.addComponent(selectorPanel)
             AutofitPanel.makeTooltip(tempTMAPI, selectorPanel, variant)
 
             tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
 
             dialog.addCustom(tempPanel)
+
 
             dialog.onConfirm { fields ->
 
