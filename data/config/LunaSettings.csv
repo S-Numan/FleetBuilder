@@ -58,10 +58,11 @@ smodded (Has SMods)
 dmodded (Has DMods)
 officer (Has Officer)
 
+combat (If a ship adds to the combat ship deployment point cost)
 civilian
 carrier
 phase
-Shields
+shields
 frigate
 destroyer
 cruiser
