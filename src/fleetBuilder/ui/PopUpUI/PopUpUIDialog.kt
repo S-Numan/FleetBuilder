@@ -1,18 +1,14 @@
 package fleetBuilder.ui.PopUpUI
 
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import MagicLib.*
-import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.TextFieldAPI
-import com.fs.starfarer.api.ui.UIComponentAPI
-import com.fs.starfarer.api.util.Misc
+import MagicLib.onClick
+import com.fs.starfarer.api.ui.*
 import java.awt.Color
 
 class PopUpUIDialog(
     override var headerTitle: String? = null,
-    val addConfirmButton: Boolean = true,
-    val addCancelButton: Boolean = true,
+    val addConfirmButton: Boolean = false,
+    val addCancelButton: Boolean = false,
+    val addCloseButton: Boolean = false,
 ) : BasePopUpUI() {
 
     private sealed class Entry
@@ -39,6 +35,8 @@ class PopUpUIDialog(
     private class CustomEntry(val component: UIComponentAPI) : Entry()
     private class ParagraphEntry(
         val text: String,
+        val alignment: Alignment,
+        val font: String,
         val highlights: Array<Color>,
         val highlightWords: Array<out String>
     ) : Entry()
@@ -52,6 +50,7 @@ class PopUpUIDialog(
     private val previousTextValues = mutableMapOf<String, String>()
 
     private var confirmCallback: ((Map<String, Any>) -> Unit)? = null
+    private var exitCallback: ((Map<String, Any>) -> Unit)? = null
 
     fun addToggle(
         label: String,
@@ -107,7 +106,7 @@ class PopUpUIDialog(
         entries.add(ButtonEntry(label, dismissOnClick, onClick))
     }
 
-    fun addPadding(amount: Float = 10f) {
+    fun addPadding(amount: Float = buttonHeight) {
         entries.add(PaddingEntry(amount))
     }
 
@@ -115,12 +114,28 @@ class PopUpUIDialog(
         entries.add(CustomEntry(component))
     }
 
-    fun addParagraph(text: String, highlights: Array<Color> = emptyArray(), vararg highlightWords: String) {
-        entries.add(ParagraphEntry(text, highlights, highlightWords))
+    fun addParagraph(
+        text: String,
+        alignment: Alignment = Alignment.TL,
+        font: String = Fonts.DEFAULT_SMALL,
+        highlights: Array<Color> = emptyArray(),
+        highlightWords: Array<String> = emptyArray()
+    ) {
+        entries.add(ParagraphEntry(text, alignment, font, highlights, highlightWords))
     }
 
     fun onConfirm(callback: (Map<String, Any>) -> Unit) {
         confirmCallback = callback
+    }
+
+    fun onExit(callback: (Map<String, Any>) -> Unit) {
+        exitCallback = callback
+    }
+
+    override fun onExit() {
+        super.onExit()
+
+        exitCallback?.invoke(collectFieldStates())
     }
 
     val buttonHeight = 24f
@@ -177,10 +192,15 @@ class PopUpUIDialog(
                 }
 
                 is PaddingEntry -> ui.addSpacer(entry.amount)
-                is CustomEntry -> ui.addComponent(entry.component).inTL(0f, 5f)
+                is CustomEntry -> {
+                    ui.addCustom(entry.component, 0f)
+                }
+
                 is ParagraphEntry -> {
+                    ui.setParaFont(entry.font)
+
                     if (entry.highlights.isNotEmpty() && entry.highlightWords.isNotEmpty()) {
-                        ui.addPara(entry.text, 0f, entry.highlights, *entry.highlightWords)
+                        ui.addPara(entry.text, 0f, entry.highlights, *entry.highlightWords).setAlignment(entry.alignment)
                     } else {
                         ui.addPara(entry.text, 0f)
                     }
@@ -197,6 +217,8 @@ class PopUpUIDialog(
                 addConfirmButton = addConfirmButton
             )
         }
+        if (addCloseButton)
+            addCloseButton(panelAPI)
     }
 
     override fun advance(amount: Float) {

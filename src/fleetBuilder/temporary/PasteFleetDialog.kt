@@ -1,11 +1,11 @@
 package fleetBuilder.temporary
 
-import fleetBuilder.ui.PopUpUI.BasePopUpUI
+import MagicLib.onClick
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import fleetBuilder.ui.PopUpUI.BasePopUpUI
 import fleetBuilder.util.DisplayMessage
-import MagicLib.*
 
 class PasteFleetDialog(
     override var headerTitle: String? = null

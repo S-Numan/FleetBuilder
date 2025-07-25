@@ -8,20 +8,30 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
+import com.fs.starfarer.api.fleet.RepairTrackerAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
+import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
+import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
+import fleetBuilder.features.CommanderShuttle.playerShuttleExists
+import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
 import fleetBuilder.persistence.CargoSerialization.getCargoFromJson
 import fleetBuilder.persistence.CargoSerialization.saveCargoToJson
 import fleetBuilder.persistence.FleetSerialization
+import fleetBuilder.persistence.FleetSerialization.buildFleet
+import fleetBuilder.persistence.FleetSerialization.extractFleetDataFromJson
+import fleetBuilder.persistence.FleetSerialization.filterParsedFleetData
 import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
 import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
+import fleetBuilder.persistence.FleetSerialization.validateAndCleanFleetData
 import fleetBuilder.persistence.MemberSerialization
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.PersonSerialization
@@ -31,8 +41,6 @@ import fleetBuilder.persistence.VariantSerialization
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.ui.PopUpUI.PopUpUI
 import fleetBuilder.ui.PopUpUI.PopUpUIDialog
-import com.fs.starfarer.api.fleet.RepairTrackerAPI
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DisplayMessage.showError
 import fleetBuilder.util.DisplayMessage.showMessage
@@ -46,18 +54,20 @@ import org.lazywizard.lazylib.ext.json.optFloat
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 import java.util.*
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
-import fleetBuilder.features.CommanderShuttle.playerShuttleExists
-import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
-import fleetBuilder.persistence.FleetSerialization.buildFleet
-import fleetBuilder.persistence.FleetSerialization.extractFleetDataFromJson
-import fleetBuilder.persistence.FleetSerialization.filterParsedFleetData
-import fleetBuilder.persistence.FleetSerialization.validateAndCleanFleetData
 import kotlin.math.max
 
 
 object FBMisc {
+
+    fun createDevModeDialog() {
+        val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
+        dialog.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
+
+        dialog.onConfirm { fields ->
+            Global.getSettings().isDevMode = fields["Toggle Dev Mode"] as Boolean
+        }
+        initPopUpUI(dialog, 500f, 200f)
+    }
 
     fun replacePlayerFleetWith(
         json: JSONObject, replacePlayer: Boolean = false,
@@ -241,13 +251,25 @@ object FBMisc {
         if (!Global.getSector().isPaused)
             Global.getSector().isPaused = true
 
+        if (Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
+            Global.getCombatEngine().isPaused = true
+
         val panelAPI = Global.getSettings().createCustom(width, height, dialog)
         dialog.init(
             panelAPI,
             coreUI.position.centerX - panelAPI.position.width / 2,
             coreUI.position.centerY + panelAPI.position.height / 2,
-            true
         )
+
+
+        /*  //Top Left
+            dialog.init(
+                panelAPI,
+                0f,
+                coreUI.position.height,
+            )
+            dialog.isDialog = false
+        */
     }
 
     fun isPopUpUIOpen(): Boolean {
@@ -260,21 +282,20 @@ object FBMisc {
     }
 
     fun isMouseHoveringOverComponent(component: UIComponentAPI): Boolean {
-        val mouseX = Global.getSettings().mouseX
-        val mouseY = Global.getSettings().mouseY
-
         val x = component.position.x
         val y = component.position.y
         val width = component.position.width
         val height = component.position.height
 
-        if (mouseX >= x && mouseX <= x + width &&
-            mouseY >= y && mouseY <= y + height
-        ) {
-            return true
-        }
+        return isMouseWithinBounds(x, y, width, height)
+    }
 
-        return false
+    fun isMouseWithinBounds(x: Float, y: Float, width: Float, height: Float): Boolean {
+        val mouseX = Global.getSettings().mouseX
+        val mouseY = Global.getSettings().mouseY
+
+        return mouseX >= x && mouseX <= x + width &&
+                mouseY >= y && mouseY <= y + height
     }
 
     fun createFleetFromJson(
@@ -428,7 +449,8 @@ object FBMisc {
             return false
         }
 
-        val dialog = PopUpUIDialog("Spawn Fleet in Campaign")
+        val dialog = PopUpUIDialog("Spawn Fleet in Campaign", addConfirmButton = true, addCancelButton = true)
+        dialog.confirmButtonName = "Spawn Fleet"
 
         val memberCount = parsedFleet.members.size
         val officerCount = parsedFleet.members.count { it.personData != null && it.personData.aiCoreId.isEmpty() }
@@ -577,7 +599,7 @@ object FBMisc {
                     return
                 }
 
-                val dialog = PopUpUIDialog("Paste Fleet into Player Fleet", addCancelButton = false, addConfirmButton = false)
+                val dialog = PopUpUIDialog("Paste Fleet into Player Fleet", addCloseButton = true)
 
                 val memberCount = element.fleetData.membersListCopy.size
                 val officerCount = element.fleetData.officersCopy.size

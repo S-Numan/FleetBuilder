@@ -1,8 +1,6 @@
 package fleetBuilder.integration.combat
 
 import MagicLib.ReflectionUtils
-import MagicLib.findChildWithMethod
-import MagicLib.getChildrenCopy
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -12,6 +10,8 @@ import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.ui.autofit.AutofitPanelCreator
+import fleetBuilder.util.findChildWithMethod
+import fleetBuilder.util.getChildrenCopy
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
@@ -98,6 +98,7 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
         val missionDetail = holographicBG.invoke("getCurr") as? UIPanelAPI ?: return
 
         val missionShipPreview = missionDetail.getChildrenCopy().find {
+            //it.javaClass.getConstructorsMatching(numOfParams = 1, parameterTypes = arrayOf(missionDetail.javaClass)).firstOrNull() != null// File access/reflection error
             ReflectionUtils.hasConstructorOfParameters(it, missionDetail.javaClass)
         } as? UIPanelAPI ?: return
 

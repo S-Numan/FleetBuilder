@@ -35,7 +35,9 @@ class StoreOfficersInCargo : CampaignInputListener {
             val mouseOverMember = memberUI.getFieldsMatching(type = FleetMember::class.java).getOrNull(0)?.get(memberUI) as? FleetMemberAPI
                 ?: return
             val captain = mouseOverMember.captain
-            if (!captain.isDefault && !captain.isPlayer && !captain.memoryWithoutUpdate.contains(Misc.CAPTAIN_UNREMOVABLE)) {
+            if (!captain.isDefault && !captain.isPlayer && !captain.memoryWithoutUpdate.contains(Misc.CAPTAIN_UNREMOVABLE)
+                && captain.faction.id != "tahlan_allmother" // Mod specific support to avoid issues. Storing the Rigveda and other Lostech ships like it with the non AI, non built in yet non-removable captain causes issues.
+            ) {
                 captain.memoryWithoutUpdate.set("\$FB_stored_officer", true)
                 captain.memoryWithoutUpdate.set(Misc.CAPTAIN_UNREMOVABLE, true)
                 sector.playerFleet.fleetData.removeOfficer(captain)

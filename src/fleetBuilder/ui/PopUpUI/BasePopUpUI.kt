@@ -1,12 +1,8 @@
 package fleetBuilder.ui.PopUpUI
 
+import MagicLib.onClick
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.CutStyle
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
@@ -20,6 +16,14 @@ open class BasePopUpUI() : PopUpUI() {
 
     var confirmButton: ButtonAPI? = null
     var cancelButton: ButtonAPI? = null
+    var closeButton: ButtonAPI? = null
+
+    var confirmButtonName: String = "Confirm"
+    var cancelButtonName: String = "Cancel"
+
+    var doesConfirmForceDismiss: Boolean = true
+    var doesCancelForceDismiss: Boolean = true
+    var confirmAndCancelAlignment: Alignment = Alignment.RMID
 
     override fun createUI() {
         createHeader(panelToInfluence!!)
@@ -39,26 +43,31 @@ open class BasePopUpUI() : PopUpUI() {
             if (confirmButton!!.isChecked) {
                 confirmButton!!.isChecked = false
                 applyConfirmScript()
-                forceDismiss()
+                if (doesConfirmForceDismiss)
+                    forceDismiss()
             }
         }
         if (cancelButton != null) {
             if (cancelButton!!.isChecked) {
                 cancelButton!!.isChecked = false
-                forceDismiss()
+                if (doesCancelForceDismiss)
+                    forceDismiss()
             }
         }
     }
 
+    open fun applyConfirmScript() {
+    }
+
     fun generateConfirmButton(tooltip: TooltipMakerAPI): ButtonAPI {
-        val button = tooltip.addButton("Confirm", "confirm", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, 160f, 25f, 0f)
+        val button = tooltip.addButton(confirmButtonName, "confirm", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, 160f, 25f, 0f)
         button.setShortcut(Keyboard.KEY_G, true)
         confirmButton = button
         return button
     }
 
     fun generateCancelButton(tooltip: TooltipMakerAPI): ButtonAPI {
-        val button = tooltip.addButton("Cancel", "cancel", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, buttonConfirmWidth, 25f, 0f)
+        val button = tooltip.addButton(cancelButtonName, "cancel", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, buttonConfirmWidth, 25f, 0f)
         button.setShortcut(Keyboard.KEY_ESCAPE, true)
         cancelButton = button
         return button
@@ -67,22 +76,66 @@ open class BasePopUpUI() : PopUpUI() {
     fun createConfirmAndCancelSection(
         mainPanel: CustomPanelAPI,
         addConfirmButton: Boolean = true,
-        addCancelButton: Boolean = true
+        addCancelButton: Boolean = true,
     ) {
-        val totalWidth: Float = buttonConfirmWidth * 2 + 10
+        val totalWidth = panelToInfluence!!.position.width
         val tooltip = mainPanel.createUIElement(totalWidth, 25f, false)
         tooltip.setButtonFontOrbitron20()
+
+        val spacing = 10f
+        val totalButtonWidth = (if (addConfirmButton) buttonConfirmWidth else 0f) +
+                (if (addCancelButton) buttonConfirmWidth else 0f) +
+                (if (addConfirmButton && addCancelButton) spacing else 0f)
+
+        val startX = when (confirmAndCancelAlignment) {
+            Alignment.LMID -> 0f
+            Alignment.MID -> (totalWidth - totalButtonWidth) / 2f
+            Alignment.RMID -> totalWidth - totalButtonWidth
+            else -> 0f
+        }
+
+        var xPos = startX
         if (addConfirmButton) {
             generateConfirmButton(tooltip)
-            confirmButton!!.position.inTL(0f, 0f)
+            confirmButton!!.position.inTL(xPos, 0f)
+            xPos += buttonConfirmWidth + spacing
         }
         if (addCancelButton) {
             generateCancelButton(tooltip)
-            cancelButton!!.position.inTL(buttonConfirmWidth + 5, 0f)
+            cancelButton!!.position.inTL(xPos, 0f)
         }
 
         val bottom = originalSizeY
-        mainPanel.addUIElement(tooltip).inTL(mainPanel.position.width - (totalWidth) - 10, bottom - 40)
+        val alignX = when (confirmAndCancelAlignment) {
+            Alignment.LMID -> x
+            Alignment.MID -> 0f
+            Alignment.RMID -> -x
+            else -> 0f
+        }
+        mainPanel.addUIElement(tooltip).inTL(alignX, bottom - 40)
+    }
+
+    fun addCloseButton(panel: CustomPanelAPI) {
+        val buttonSize = 32f
+        val ui = panel.createUIElement(buttonSize, buttonSize, false)
+
+        ui.setButtonFontOrbitron20Bold()
+        closeButton = ui.addButton(
+            "X",
+            "close_button",
+            Color.WHITE,
+            Color.RED.darker().darker(),
+            Alignment.MID,
+            CutStyle.TL_BR,
+            buttonSize,
+            buttonSize,
+            0f
+        )
+
+        // Position in top-right
+        panel.addUIElement(ui).inTR(x / 2, x / 2 - 4f)
+
+        closeButton?.onClick { forceDismiss() }
     }
 
     open fun createContentForDialog(panelAPI: CustomPanelAPI) {
@@ -110,9 +163,9 @@ open class BasePopUpUI() : PopUpUI() {
         GL11.glPopMatrix()
     }
 
+    val auxYPad = 10f
     var headerTooltip: TooltipMakerAPI? = null
     fun createHeader(panelAPI: CustomPanelAPI) {
-        val auxYPad = 10f
 
         if (headerTitle != null) {
             headerTooltip = panelAPI.createUIElement(panelAPI.position.width - (x * 2), 20f, false)

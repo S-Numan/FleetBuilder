@@ -121,8 +121,8 @@ class CampaignCodexButton : EveryFrameScript {
             } else
                 entry = "Add $count to fleet"
 
-            val width = Global.getSettings().computeStringWidth(entry, Font.ORBITRON_20.name)
-            addToFleetButton!!.width = width + 52f
+            //val width = Global.getSettings().computeStringWidth(entry, Fonts.ORBITRON_20AA) // Perhaps it's better that the button's width itself does not change, rather only the text within
+            addToFleetButton!!.width = 154f
             addToFleetButton!!.text = entry
             addToFleetButton!!.xAlignOffset = codex.width - addToFleetButton!!.width - pad
             addToFleetButton!!.yAlignOffset = -codex.height + addToFleetButton!!.height + pad

@@ -15,7 +15,9 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
+import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
+import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
@@ -37,6 +39,7 @@ import fleetBuilder.util.*
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.FBMisc.campaignPaste
+import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.FBMisc.initPopUpUI
 import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
@@ -45,7 +48,6 @@ import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.VariantLib
-import org.lazywizard.console.Console
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
@@ -88,15 +90,16 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
         //if (!Global.getSettings().isDevMode) return
-        if (FBMisc.isPopUpUIOpen()) return
-        if (ReflectionMisc.getCodexDialog() != null) return
+        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
-            val initialDialog = PopUpUIDialog("Save Transfer", addCancelButton = false, addConfirmButton = false)
+            val initialDialog = PopUpUIDialog("Save Transfer", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
 
             initialDialog.addButton("Copy Save") { _ ->
-                val dialog = PopUpUIDialog("Copy Save")
+                val dialog = PopUpUIDialog("Copy Save", addConfirmButton = true, addCancelButton = true)
+                dialog.confirmButtonName = "Copy"
+                dialog.confirmAndCancelAlignment = Alignment.MID
 
                 dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
                     dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
@@ -132,7 +135,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             }
 
             initialDialog.addButton("Load Save") { _ ->
-                val dialog = PopUpUIDialog("Load Save")
+                val dialog = PopUpUIDialog("Load Save", addConfirmButton = true, addCancelButton = true)
+                dialog.confirmButtonName = "Load"
+                dialog.confirmAndCancelAlignment = Alignment.MID
 
                 dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
                     dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
@@ -195,6 +200,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             }
 
             val dialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = true, addConfirmButton = true)
+            dialog.confirmButtonName = "Create"
 
             fun addClampedNumericField(
                 dialog: PopUpUIDialog,
@@ -277,7 +283,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.getCodexDialog() != null) return//If codex is open, halt.
+        if (ReflectionMisc.isCodexOpen()) return//If codex is open, halt.
 
         val captainPicker = ReflectionMisc.getCaptainPickerDialog()
         if (captainPicker != null) {
@@ -295,17 +301,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
         if (!event.isShiftDown) return
-        if (FBMisc.isPopUpUIOpen()) return
-        if (ReflectionMisc.getCodexDialog() != null) return
+        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
         event.consume()
 
-        val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = true)
-        dialog.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
-
-        dialog.onConfirm { fields ->
-            Global.getSettings().isDevMode = fields["Toggle Dev Mode"] as Boolean
-        }
-        initPopUpUI(dialog, 500f, 200f)
+        createDevModeDialog()
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
@@ -426,7 +425,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
-        if (ReflectionMisc.getCodexDialog() != null || FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             handleRefitPaste(event)
@@ -441,44 +440,57 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             VariantSerialization.getVariantFromJsonWithMissing(variantJson)//JSON is of a FleetMemberAPI
         } ?: VariantSerialization.getVariantFromJsonWithMissing(json)//JSON is of a ShipVariantAPI (also fallback)
 
+        event.consume()
         if (missing.hullIds.isNotEmpty()) {
             DisplayMessage.showMessage(
                 "Failed to import loadout. Could not find hullId ${json.optString("hullId", "")}",
                 Color.YELLOW
             )
-            event.consume()
             return
         }
 
 
         val loadoutExists = doesLoadoutExist(variant)
 
-        event.consume()
+
         if (!loadoutExists) {
-            val loadoutBaseHullName = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }?.hullName
+            val baseHullSpec = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }
+                ?: return
+            val loadoutBaseHullName = baseHullSpec.hullName
                 ?: return
 
-            val dialog = PopUpUIDialog("Import loadout of '$loadoutBaseHullName'", addCancelButton = true, addConfirmButton = true)
+            val dialog = PopUpUIDialog("Import loadout", addCancelButton = true, addConfirmButton = true)
+            dialog.confirmButtonName = "Import"
+            dialog.confirmAndCancelAlignment = Alignment.MID
 
             //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
 
             val shipPreviewWidth = 375f
-            val popUpHeight = 500f
+            val popUpHeight = 520f
 
-            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth, null)
-            val tempTMAPI = tempPanel.createUIElement(shipPreviewWidth, shipPreviewWidth, false)
+            dialog.addParagraph(
+                loadoutBaseHullName,
+                alignment = Alignment.MID,
+                font = Fonts.ORBITRON_24AABOLD,
+                highlights = arrayOf(Color.YELLOW),
+                highlightWords = arrayOf(loadoutBaseHullName)
+            )
+
+
+            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth - (dialog.x * 2) + AutofitSelector.descriptionHeight, null)
+            val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
 
             val selectorPanel = AutofitSelector.createAutofitSelector(
                 variant as HullVariantSpec, paintjobSpec = AutofitSpec(variant, name = variant.displayName, description = "", spriteId = variant.hullSpec.spriteName),
                 shipPreviewWidth - (dialog.x * 2)
             )
-
             tempTMAPI.addComponent(selectorPanel)
             AutofitPanel.makeTooltip(tempTMAPI, selectorPanel, variant)
 
             tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
 
             dialog.addCustom(tempPanel)
+
 
             dialog.onConfirm { fields ->
 

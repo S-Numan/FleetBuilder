@@ -143,7 +143,8 @@ class FleetFilterPanel(
             hullSpec.manufacturer.lowercase().startsWith(desc) -> true
 
             //Types
-            (hullSpec.isCivilianNonCarrier || variant.hasHullMod("civgrade")) && !variant.hasHullMod("militarized_subsystems") && "civilian".startsWith(desc) -> true
+            !(hullSpec.isCivilianNonCarrier || variant.hasHullMod("civgrade")) && !variant.hasHullMod("militarized_subsystems") && "combat".startsWith(desc) -> true
+            hullSpec.isCivilianNonCarrier && !variant.hasHullMod("militarized_subsystems") && "civilian".startsWith(desc) -> true
             isCarrier && "carrier".startsWith(desc) -> true
             isPhaseShip && "phase".startsWith(desc) -> true
             !isPhaseShip && (hullSpec.shieldType == ShieldAPI.ShieldType.OMNI || hullSpec.shieldType == ShieldAPI.ShieldType.FRONT) && !variant.hasHullMod("shield_shunt") && "shields".startsWith(desc) -> true

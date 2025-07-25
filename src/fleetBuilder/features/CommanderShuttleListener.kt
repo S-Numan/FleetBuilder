@@ -38,7 +38,9 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
 
         if (Global.getSector().campaignUI.currentInteractionDialog != null) return
 
-        if (prevLocationSetter != null) {
+        val playerFleet = Global.getSector().playerFleet
+
+        if (prevLocationSetter != null && playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(ModSettings.commandShuttleId)) {
             val playerFleet = Global.getSector().playerFleet
             playerFleet.containingLocation.removeEntity(playerFleet)
             prevLocationSetter!!.addEntity(playerFleet)
@@ -65,7 +67,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
     override fun reportShownInteractionDialog(dialog: InteractionDialogAPI) {
         val playerFleet = Global.getSector().playerFleet
 
-        if (playerFleet.fleetData.membersListCopy.size == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(
+        if (playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(
                 ModSettings.commandShuttleId
             )
         ) {

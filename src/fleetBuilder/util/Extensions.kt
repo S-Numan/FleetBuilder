@@ -133,6 +133,11 @@ internal fun UIPanelAPI.findChildWithMethod(methodName: String): UIComponentAPI?
     return getChildrenCopy().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
 }
 
+//For optimization purposes
+internal fun UIPanelAPI.findChildWithMethodReversed(methodName: String): UIComponentAPI? {
+    return getChildrenCopy().asReversed().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
+}
+
 internal fun UIPanelAPI.findChildWithField(fieldName: String): UIComponentAPI? {
     return getChildrenCopy().find { it.getFieldsMatching(name = fieldName).isNotEmpty() }
 }
