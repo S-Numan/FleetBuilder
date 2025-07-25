@@ -15,7 +15,6 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
-import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
@@ -59,6 +58,16 @@ import kotlin.math.max
 
 
 object FBMisc {
+
+    fun createDevModeDialog() {
+        val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
+        dialog.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
+
+        dialog.onConfirm { fields ->
+            Global.getSettings().isDevMode = fields["Toggle Dev Mode"] as Boolean
+        }
+        initPopUpUI(dialog, 500f, 200f)
+    }
 
     fun replacePlayerFleetWith(
         json: JSONObject, replacePlayer: Boolean = false,
@@ -241,6 +250,9 @@ object FBMisc {
 
         if (!Global.getSector().isPaused)
             Global.getSector().isPaused = true
+
+        if (Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
+            Global.getCombatEngine().isPaused = true
 
         val panelAPI = Global.getSettings().createCustom(width, height, dialog)
         dialog.init(

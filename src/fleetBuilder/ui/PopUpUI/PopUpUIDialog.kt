@@ -1,12 +1,7 @@
 package fleetBuilder.ui.PopUpUI
 
 import MagicLib.onClick
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.TextFieldAPI
-import com.fs.starfarer.api.ui.UIComponentAPI
+import com.fs.starfarer.api.ui.*
 import java.awt.Color
 
 class PopUpUIDialog(

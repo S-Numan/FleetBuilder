@@ -77,7 +77,7 @@ object ClipboardUtil {
             return null
         }
     }
-    
+
     fun getClipboardFilePath(): String? {
         val clipboard = Toolkit.getDefaultToolkit().systemClipboard
 

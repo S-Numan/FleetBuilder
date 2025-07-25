@@ -14,6 +14,7 @@ import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.codexEntryToClipboard
+import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import fleetBuilder.variants.MissingElements
@@ -46,6 +47,11 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             DisplayMessage.showError("FleetBuilder hotkey failed", e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
+                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !FBMisc.isPopUpUIOpen() && !ReflectionMisc.isCodexOpen()) {
+                            createDevModeDialog()
+                            event.consume()
+                            continue
+                        }
                         if (Global.getCombatEngine().isSimulation) {
                             val core = getCoreUI() ?: return
                             val simulatorUI = core.findChildWithMethod("enableAdvanced") ?: return

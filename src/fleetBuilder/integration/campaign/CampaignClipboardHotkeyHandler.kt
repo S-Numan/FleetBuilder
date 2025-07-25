@@ -7,7 +7,6 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
@@ -40,6 +39,7 @@ import fleetBuilder.util.*
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.FBMisc.campaignPaste
+import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.FBMisc.initPopUpUI
 import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
@@ -304,13 +304,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
         event.consume()
 
-        val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
-        dialog.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
-
-        dialog.onConfirm { fields ->
-            Global.getSettings().isDevMode = fields["Toggle Dev Mode"] as Boolean
-        }
-        initPopUpUI(dialog, 500f, 200f)
+        createDevModeDialog()
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
