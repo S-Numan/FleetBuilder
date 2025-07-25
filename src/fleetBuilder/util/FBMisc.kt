@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
+import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
@@ -436,7 +437,8 @@ object FBMisc {
             return false
         }
 
-        val dialog = PopUpUIDialog("Spawn Fleet in Campaign")
+        val dialog = PopUpUIDialog("Spawn Fleet in Campaign", addConfirmButton = true, addCancelButton = true)
+        dialog.confirmButtonName = "Spawn Fleet"
 
         val memberCount = parsedFleet.members.size
         val officerCount = parsedFleet.members.count { it.personData != null && it.personData.aiCoreId.isEmpty() }
@@ -585,7 +587,7 @@ object FBMisc {
                     return
                 }
 
-                val dialog = PopUpUIDialog("Paste Fleet into Player Fleet", addCancelButton = false, addConfirmButton = false)
+                val dialog = PopUpUIDialog("Paste Fleet into Player Fleet", addCloseButton = true)
 
                 val memberCount = element.fleetData.membersListCopy.size
                 val officerCount = element.fleetData.officersCopy.size

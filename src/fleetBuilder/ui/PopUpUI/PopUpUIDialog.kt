@@ -11,8 +11,9 @@ import java.awt.Color
 
 class PopUpUIDialog(
     override var headerTitle: String? = null,
-    val addConfirmButton: Boolean = true,
-    val addCancelButton: Boolean = true,
+    val addConfirmButton: Boolean = false,
+    val addCancelButton: Boolean = false,
+    val addCloseButton: Boolean = false,
 ) : BasePopUpUI() {
 
     private sealed class Entry
@@ -221,6 +222,8 @@ class PopUpUIDialog(
                 addConfirmButton = addConfirmButton
             )
         }
+        if (addCloseButton)
+            addCloseButton(panelAPI)
     }
 
     override fun advance(amount: Float) {

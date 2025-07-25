@@ -1,5 +1,6 @@
 package fleetBuilder.ui.PopUpUI
 
+import MagicLib.onClick
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
@@ -15,6 +16,7 @@ open class BasePopUpUI() : PopUpUI() {
 
     var confirmButton: ButtonAPI? = null
     var cancelButton: ButtonAPI? = null
+    var closeButton: ButtonAPI? = null
 
     var confirmButtonName: String = "Confirm"
     var cancelButtonName: String = "Cancel"
@@ -113,6 +115,29 @@ open class BasePopUpUI() : PopUpUI() {
         mainPanel.addUIElement(tooltip).inTL(alignX, bottom - 40)
     }
 
+    fun addCloseButton(panel: CustomPanelAPI) {
+        val buttonSize = 32f
+        val ui = panel.createUIElement(buttonSize, buttonSize, false)
+
+        ui.setButtonFontOrbitron20Bold()
+        closeButton = ui.addButton(
+            "X",
+            "close_button",
+            Color.WHITE,
+            Color.RED.darker().darker(),
+            Alignment.MID,
+            CutStyle.TL_BR,
+            buttonSize,
+            buttonSize,
+            0f
+        )
+
+        // Position in top-right
+        panel.addUIElement(ui).inTR(x / 2, x / 2 - 4f)
+
+        closeButton?.onClick { forceDismiss() }
+    }
+
     open fun createContentForDialog(panelAPI: CustomPanelAPI) {
 
     }
@@ -138,9 +163,9 @@ open class BasePopUpUI() : PopUpUI() {
         GL11.glPopMatrix()
     }
 
+    val auxYPad = 10f
     var headerTooltip: TooltipMakerAPI? = null
     fun createHeader(panelAPI: CustomPanelAPI) {
-        val auxYPad = 10f
 
         if (headerTitle != null) {
             headerTooltip = panelAPI.createUIElement(panelAPI.position.width - (x * 2), 20f, false)

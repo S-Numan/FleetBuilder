@@ -2,6 +2,8 @@
 - Minor performance optimizations
 - CopyFleet console command, to copy fleets in combat. (Mostly useful for copying mission fleets such as tournament fleets)
 - Fix the CommandShuttle being unable to jump even with other members present.
+- Small dialog improvements across the board.
+- Added fleet filter keyword: "combat", and changed functionality of the "civilian" keyword. "combat" applies to ships that count towards combat ship FP.
 
 ## 1.11.0
 - Add officer creator dialog via CTRL + O

@@ -94,10 +94,12 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
-            val initialDialog = PopUpUIDialog("Save Transfer", addCancelButton = false, addConfirmButton = false)
+            val initialDialog = PopUpUIDialog("Save Transfer", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
 
             initialDialog.addButton("Copy Save") { _ ->
-                val dialog = PopUpUIDialog("Copy Save")
+                val dialog = PopUpUIDialog("Copy Save", addConfirmButton = true, addCancelButton = true)
+                dialog.confirmButtonName = "Copy"
+                dialog.confirmAndCancelAlignment = Alignment.MID
 
                 dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
                     dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
@@ -133,7 +135,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             }
 
             initialDialog.addButton("Load Save") { _ ->
-                val dialog = PopUpUIDialog("Load Save")
+                val dialog = PopUpUIDialog("Load Save", addConfirmButton = true, addCancelButton = true)
+                dialog.confirmButtonName = "Load"
+                dialog.confirmAndCancelAlignment = Alignment.MID
 
                 dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
                     dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
@@ -196,6 +200,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             }
 
             val dialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = true, addConfirmButton = true)
+            dialog.confirmButtonName = "Create"
 
             fun addClampedNumericField(
                 dialog: PopUpUIDialog,
@@ -299,7 +304,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
         event.consume()
 
-        val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = true)
+        val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
         dialog.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
 
         dialog.onConfirm { fields ->
@@ -461,6 +466,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 ?: return
 
             val dialog = PopUpUIDialog("Import loadout", addCancelButton = true, addConfirmButton = true)
+            dialog.confirmButtonName = "Import"
+            dialog.confirmAndCancelAlignment = Alignment.MID
 
             //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
 
