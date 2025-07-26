@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
-import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.fleet.RepairTrackerAPI
@@ -26,15 +25,13 @@ import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
 import fleetBuilder.persistence.CargoSerialization.getCargoFromJson
 import fleetBuilder.persistence.CargoSerialization.saveCargoToJson
 import fleetBuilder.persistence.FleetSerialization
-import fleetBuilder.persistence.FleetSerialization.buildFleet
+import fleetBuilder.persistence.FleetSerialization.buildFleetFull
 import fleetBuilder.persistence.FleetSerialization.extractFleetDataFromJson
-import fleetBuilder.persistence.FleetSerialization.filterParsedFleetData
 import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
 import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
 import fleetBuilder.persistence.FleetSerialization.validateAndCleanFleetData
 import fleetBuilder.persistence.MemberSerialization
 import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.PersonSerialization
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.VariantSerialization
@@ -47,8 +44,8 @@ import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
-import fleetBuilder.variants.MissingElementsExtended
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.MissingElementsExtended
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
@@ -121,6 +118,7 @@ object FBMisc {
             val playerPerson = Global.getSector().playerPerson
             val newCommander = fleet.commander
             copyOfficerData(newCommander, playerPerson)
+            Global.getSector().characterData.setName(newCommander.name.fullName, newCommander.gender)
 
             // Look for a fleet member commanded by an officer matching the new commander
             val matchingMember = playerFleet.membersWithFightersCopy.find { member ->
@@ -158,16 +156,38 @@ object FBMisc {
         val playerFleet = Global.getSector().playerFleet
 
         // Crew
-        val neededCrew = getMaxHoldableCrew(playerFleet)
-        playerFleet.cargo.addCrew(neededCrew)
+        val neededCrew = playerFleet.cargo.maxPersonnel - playerFleet.cargo.crew
+        playerFleet.cargo.addCrew(neededCrew.toInt())
 
         // Supplies
-        val total = getFractionHoldableSupplies(playerFleet, 0.5f)
-        playerFleet.cargo.addSupplies(total.toFloat())
+        val maxCargoFraction = 0.5f
+
+        val maxSupplies = playerFleet.cargo.maxCapacity - playerFleet.cargo.supplies
+        val suppliesToAdd = getFractionHoldableSupplies(playerFleet, maxCargoFraction).coerceAtMost(maxSupplies.toInt())
+        playerFleet.cargo.addSupplies(suppliesToAdd.toFloat())
 
         // Fuel
-        playerFleet.cargo.addFuel(playerFleet.cargo.freeFuelSpace.toFloat())
+        val fuelToAdd = playerFleet.cargo.freeFuelSpace
+        playerFleet.cargo.addFuel(fuelToAdd.toFloat())
 
+        // Remove excess supplies
+        if (playerFleet.cargo.supplies > playerFleet.cargo.maxCapacity * maxCargoFraction) {
+            val overflow = playerFleet.cargo.supplies - playerFleet.cargo.maxCapacity * maxCargoFraction
+
+            playerFleet.cargo.removeSupplies(overflow)
+        }
+
+        // Remove excess fuel
+        if (playerFleet.cargo.fuel > playerFleet.cargo.maxFuel) {
+            playerFleet.cargo.removeFuel(playerFleet.cargo.fuel - playerFleet.cargo.maxFuel)
+        }
+
+        // Remove excess crew
+        if (playerFleet.cargo.totalPersonnel > playerFleet.cargo.maxPersonnel) {
+            val overflow = playerFleet.cargo.crew - playerFleet.cargo.maxPersonnel
+
+            playerFleet.cargo.removeCrew((overflow).coerceAtLeast(playerFleet.fleetData.minCrew).toInt())
+        }
         // Repair
         fullFleetRepair(playerFleet)
 
@@ -197,16 +217,6 @@ object FBMisc {
                 toStats.setSkillLevel(skill.skill.id, skill.level)
             }
         }
-    }
-
-    // Taken from ConsoleCommands
-    fun getMaxHoldableCrew(fleet: CampaignFleetAPI): Int {
-        var total = 0
-        fleet.fleetData.membersListCopy.forEach { member ->
-            if (!member.isMothballed)
-                total += member.maxCrew.toInt()
-        }
-        return total - fleet.cargo.crew;
     }
 
     fun getFractionHoldableSupplies(fleet: CampaignFleetAPI, maxCargoFraction: Float = 1f): Int {
@@ -438,13 +448,17 @@ object FBMisc {
         sector: SectorAPI,
         json: JSONObject
     ): Boolean {
-        val missing = MissingElements()
-        FBMisc.getMissingFromModInfo(json, missing)
+        if (!json.has("members")) return false
 
-        val parsedFleet = validateAndCleanFleetData(extractFleetDataFromJson(json), missing, settings = FleetSerialization.FleetSettings().apply { excludeMembersWithMissingHullSpec = true })
+        val missing = MissingElements()
+        getMissingFromModInfo(json, missing)
+
+        val extractedFleet = extractFleetDataFromJson(json)
+        val subMissing = MissingElements()
+        val parsedFleet = validateAndCleanFleetData(extractedFleet, MissingElements(), settings = FleetSerialization.FleetSettings())
 
         if (parsedFleet.members.isEmpty()) {
-            //showMessage("Failed to create fleet from clipboard", Color.YELLOW)
+            reportMissingElementsIfAny(subMissing, "Fleet was empty when pasting")
             return false
         }
 
@@ -452,11 +466,17 @@ object FBMisc {
         dialog.confirmButtonName = "Spawn Fleet"
 
         val memberCount = parsedFleet.members.size
-        val officerCount = parsedFleet.members.count { it.personData != null && it.personData.aiCoreId.isEmpty() }
+        val officerCount = parsedFleet.members.count { it.personData != null }
         dialog.addParagraph(
             "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
                     if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else ""
         )
+
+        val missingHullCount = parsedFleet.members.count { it.variantData == null || it.variantData.tags.contains("ERROR") }
+        if (missingHullCount > 0)
+            dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
+
+
 
         dialog.addPadding(8f)
 
@@ -465,7 +485,7 @@ object FBMisc {
         dialog.addToggle("Include Officers", default = true)
         dialog.addToggle("Include Commander as Commander", default = true)
         dialog.addToggle("Include Commander as Officer", default = true)
-        dialog.addToggle("Exclude Ships From Missing Mods", default = false)
+        dialog.addToggle("Exclude Ships From Missing Mods", default = true)
 
         dialog.onConfirm { fields ->
 
@@ -478,8 +498,7 @@ object FBMisc {
 
             val fleet = Global.getFactory().createEmptyFleet(Factions.PIRATES, FleetTypes.TASK_FORCE, true)
 
-            val filteredFleet = filterParsedFleetData(parsedFleet, settings)
-            missing.add(buildFleet(filteredFleet, fleet.fleetData, settings))
+            missing.add(buildFleetFull(extractedFleet, fleet.fleetData, settings))
 
             reportMissingElementsIfAny(missing)
 
@@ -500,7 +519,7 @@ object FBMisc {
         return when {
             json.has("skills") -> {
                 // Officer
-                val (person, missing) = PersonSerialization.getPersonFromJsonWithMissing(json)
+                val (person, missing) = getPersonFromJsonWithMissing(json)
                 return Pair(person, missing)
             }
 
@@ -517,7 +536,7 @@ object FBMisc {
             json.has("members") -> {
                 // Fleet
                 val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, true)
-                val missing = FleetSerialization.getFleetFromJson(json, fleet.fleetData)
+                val missing = getFleetFromJson(json, fleet.fleetData)
                 return Pair(fleet, missing)
             }
 
@@ -539,52 +558,64 @@ object FBMisc {
         if (fleetToAddTo !== playerFleet)
             uiShowsSubmarketFleet = true
 
-        val (element, missing) = getAnyFromJson(json)
+        val missing = MissingElements()
 
-        when (element) {
-            is PersonAPI -> {
+        when {
+            json.has("skills") -> {
+                // Officer
+                val (person, subMissing) = getPersonFromJsonWithMissing(json)
+                missing.add(subMissing)
+
                 if (randomPastedCosmetics) {
-                    randomizePersonCosmetics(element, playerFleet.fleet.faction)
+                    randomizePersonCosmetics(person, playerFleet.fleet.faction)
                 }
-                playerFleet.addOfficer(element)
+                playerFleet.addOfficer(person)
                 showMessage("Added officer to fleet")
             }
 
-            is ShipVariantAPI -> {
-                if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, "Could not find hullId when pasting variant")
+            json.has("hullId") -> {
+                // Variant
+                val (variant, subMissing) = VariantSerialization.getVariantFromJsonWithMissing(json)
+                missing.add(subMissing)
+
+                if (subMissing.hullIds.size > 1) {
+                    reportMissingElementsIfAny(subMissing, "Could not find hullId when pasting variant")
                     return
                 }
 
-                val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, element)
+                val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)
 
                 if (randomPastedCosmetics)
                     randomizeMemberCosmetics(member, fleetToAddTo)
 
                 fleetToAddTo.addFleetMember(member)
 
-                showMessage("Added variant of hull '${element.hullSpec.hullName}' to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}", element.hullSpec.hullName, Misc.getHighlightColor())
+                showMessage("Added variant of hull '${variant.hullSpec.hullName}' to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}", variant.hullSpec.hullName, Misc.getHighlightColor())
 
                 updateFleetPanelContents()
             }
 
-            is FleetMemberAPI -> {
-                if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, "Could not find hullId when pasting member")
+            json.has("variant") || json.has("officer") -> {
+                // Fleet member
+                val (member, subMissing) = MemberSerialization.getMemberFromJsonWithMissing(json)
+                missing.add(subMissing)
+
+                if (subMissing.hullIds.size > 1) {
+                    reportMissingElementsIfAny(subMissing, "Could not find hullId when pasting member")
                     return
                 }
 
                 if (randomPastedCosmetics)
-                    randomizeMemberCosmetics(element, fleetToAddTo)
+                    randomizeMemberCosmetics(member, fleetToAddTo)
 
-                fleetToAddTo.addFleetMember(element)
-                if (!element.captain.isDefault && !element.captain.isAICore && !uiShowsSubmarketFleet)
-                    fleetToAddTo.addOfficer(element.captain)
+                fleetToAddTo.addFleetMember(member)
+                if (!member.captain.isDefault && !member.captain.isAICore && !uiShowsSubmarketFleet)
+                    fleetToAddTo.addOfficer(member.captain)
 
-                val shipName = element.hullSpec.hullName
+                val shipName = member.hullSpec.hullName
                 val message = buildString {
                     append("Added '${shipName}' to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}")
-                    if (!element.captain.isDefault) append(", with an officer")
+                    if (!member.captain.isDefault) append(", with an officer")
                 }
 
                 showMessage(message, shipName, Misc.getHighlightColor())
@@ -592,46 +623,58 @@ object FBMisc {
                 updateFleetPanelContents()
             }
 
-            is CampaignFleetAPI -> {
-                if (element.fleetData.membersListCopy.isEmpty()) {
-                    reportMissingElementsIfAny(missing, "Fleet was empty when pasting")
+            json.has("members") -> {
+                // Fleet
+
+                val extractedFleet = extractFleetDataFromJson(json)
+                val subMissing = MissingElements()
+                val parsedFleet = validateAndCleanFleetData(extractedFleet, subMissing, settings = FleetSerialization.FleetSettings())
+
+                if (parsedFleet.members.isEmpty()) {
+                    reportMissingElementsIfAny(subMissing, "Fleet was empty when pasting")
                     return
                 }
 
                 val dialog = PopUpUIDialog("Paste Fleet into Player Fleet", addCloseButton = true)
 
-                val memberCount = element.fleetData.membersListCopy.size
-                val officerCount = element.fleetData.officersCopy.size
+                val memberCount = parsedFleet.members.size
+                val officerCount = parsedFleet.members.count { it.personData != null }
                 dialog.addParagraph(
                     "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
                             if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else ""
                 )
 
+                val missingHullCount = parsedFleet.members.count { it.variantData == null || it.variantData.tags.contains("ERROR") }
+                if (missingHullCount > 0)
+                    dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
+
                 dialog.addPadding(8f)
 
                 dialog.addButton("Append to Player Fleet") { fields ->
-                    element.fleetData.membersListCopy.forEach { member ->
-                        if (member.variant.hasTag("ERROR") && fields["Exclude Ships From Missing Mods"] as Boolean)
-                            return@forEach
 
-                        val isCommander = member.captain === element.commander
-                        val includeOfficers = fields["Include Officers"] as Boolean
-                        val includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
-
-                        // Remove officer if excluded
-                        if (!includeOfficers || (isCommander && !includeCommanderAsOfficer)) {
-                            member.captain = Global.getSettings().createPerson()
+                    val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
+                    val addMissing = buildFleetFull(
+                        extractedFleet, fleet.fleetData,
+                        settings = FleetSerialization.FleetSettings().apply {
+                            excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
+                            memberSettings.includeOfficer = fields["Include Officers"] as Boolean
+                            includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
                         }
+                    )
 
+                    fleet.fleetData.membersListCopy.forEach { member ->
                         playerFleet.addFleetMember(member)
 
                         val captain = member.captain
-                        if (!captain.isDefault && !captain.isAICore && (!isCommander || includeCommanderAsOfficer)) {
+                        if (!captain.isDefault && !captain.isAICore) {
                             playerFleet.addOfficer(captain)
                         }
                     }
 
-                    fulfillPlayerFleet()
+                    reportMissingElementsIfAny(addMissing)
+
+                    if (fields["Fulfill cargo, fuel, crew, and repair for fleet"] as Boolean)
+                        fulfillPlayerFleet()
                 }
                 dialog.addPadding(24f)
 
@@ -640,17 +683,18 @@ object FBMisc {
                     settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
                     settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
                     settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
+                    settings.includeAggression = fields["Set Aggression Doctrine"] as Boolean
 
-                    val missing = replacePlayerFleetWith(
-                        element,
-                        if (fields["Set Aggression Doctrine"] as Boolean) json.optInt("aggression_doctrine", 2) else -1,
+                    val replaceMissing = replacePlayerFleetWith(
+                        json,
                         (fields["Replace Player with Commander"] as Boolean && settings.includeCommanderAsOfficer),
                         settings
                     )
 
-                    reportMissingElementsIfAny(missing)
+                    reportMissingElementsIfAny(replaceMissing)
 
-                    fulfillPlayerFleet()
+                    if (fields["Fulfill cargo, fuel, crew, and repair for fleet"] as Boolean)
+                        fulfillPlayerFleet()
                 }
                 dialog.addToggle("Set Aggression Doctrine", default = true)
                 dialog.addToggle("Replace Player with Commander", default = false)
@@ -660,9 +704,10 @@ object FBMisc {
                 dialog.addToggle("Include Officers", default = true)
                 dialog.addToggle("Include Commander as Officer", default = true)
                 dialog.addToggle("Exclude Ships From Missing Mods", default = false)
+                dialog.addToggle("Fulfill cargo, fuel, crew, and repair for fleet", default = true)
 
 
-                initPopUpUI(dialog, 500f, 348f)
+                initPopUpUI(dialog, 500f, 380f)
             }
 
             else -> {

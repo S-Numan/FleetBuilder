@@ -390,7 +390,7 @@ object VariantSerialization {
         return loadout
     }
 
-    fun buildVariantFromParsed(
+    fun buildVariantFull(
         data: ParsedVariantData,
         settings: VariantSettings
     ): Pair<ShipVariantAPI, MissingElements> {
@@ -421,7 +421,7 @@ object VariantSerialization {
 
         val parsed = extractVariantDataFromJson(json)
 
-        val (variant, newMissing) = buildVariantFromParsed(parsed, settings)
+        val (variant, newMissing) = buildVariantFull(parsed, settings)
         missing.add(newMissing)
 
         return variant to missing

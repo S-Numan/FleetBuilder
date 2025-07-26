@@ -190,7 +190,7 @@ object PersonSerialization {
             faction.femalePortraits.pick()
     }
 
-    fun buildPersonFromParsed(
+    fun buildPersonFull(
         rawData: ParsedPersonData,
         settings: PersonSettings
     ): Pair<PersonAPI, MissingElements> {
@@ -219,7 +219,7 @@ object PersonSerialization {
         // Extract raw data from JSON
         val rawData = extractPersonDataFromJson(json)
 
-        val (person, subMissing) = buildPersonFromParsed(rawData, settings)
+        val (person, subMissing) = buildPersonFull(rawData, settings)
         missing.add(subMissing)
 
         return person to missing

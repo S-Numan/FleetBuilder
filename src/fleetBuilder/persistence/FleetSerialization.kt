@@ -191,7 +191,7 @@ object FleetSerialization {
             val validated = validateAndCleanMemberData(member, missing)
             if (validated.variantData == null) {
                 validated.copy(extractVariantDataFromJson(saveVariantToJson(createErrorVariant("NOVAR"))))
-            } else if (!getHullIDSet().contains(validated.variantData.hullId)) {
+            } else if (!getHullIDSet().contains(validated.variantData.hullId)) {//Hull ID does not exist
                 missing.hullIds.add(validated.variantData.hullId)
                 if (!settings.excludeMembersWithMissingHullSpec) {
                     val name = "NOHUL:${validated.variantData.hullId}"
@@ -200,6 +200,12 @@ object FleetSerialization {
                         shipName = name
                     )
                 } else null
+            } else if (validated.variantData.tags.contains("ERROR")) {//Tagged with ERROR. (likely a missing hull variant that was saved, then loaded again)
+                if (settings.excludeMembersWithMissingHullSpec)
+                    null
+                else
+                    validated
+
             } else {
                 validated
             }
@@ -274,7 +280,7 @@ object FleetSerialization {
         fleet.syncIfNeeded()
     }
 
-    fun buildFleetFromParsed(
+    fun buildFleetFull(
         parsed: ParsedFleetData,
         fleet: FleetDataAPI,
         settings: FleetSettings
@@ -299,7 +305,7 @@ object FleetSerialization {
         FBMisc.getMissingFromModInfo(json, missing)
 
         val extracted = extractFleetDataFromJson(json)
-        missing.add(buildFleetFromParsed(extracted, fleet, settings))
+        missing.add(buildFleetFull(extracted, fleet, settings))
 
         return missing
     }

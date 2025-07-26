@@ -1,6 +1,8 @@
 ## 1.13.0
 - Fixed partially broken missing element reporter
 - Properly report missing cargo and blueprints now.
+- Better handling for loading ships from missing mods.
+- Added "Fulfill cargo, fuel, crew, and repair for fleet" toggle when pasting a fleet into yours.
 
 
 ## 1.12.0

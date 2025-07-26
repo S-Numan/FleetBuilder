@@ -121,7 +121,7 @@ object MemberSerialization {
         return member
     }
 
-    fun buildMemberFromParsed(
+    fun buildMemberFull(
         extracted: ParsedMemberData,
         settings: MemberSettings
     ): Pair<FleetMemberAPI, MissingElements> {
@@ -144,7 +144,7 @@ object MemberSerialization {
 
         val parsed = extractMemberDataFromJson(json)
 
-        val (member, newMissing) = buildMemberFromParsed(parsed, settings)
+        val (member, newMissing) = buildMemberFull(parsed, settings)
         missing.add(newMissing)
 
         return member to missing
