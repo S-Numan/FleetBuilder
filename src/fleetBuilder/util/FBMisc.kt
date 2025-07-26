@@ -184,9 +184,9 @@ object FBMisc {
 
         // Remove excess crew
         if (playerFleet.cargo.totalPersonnel > playerFleet.cargo.maxPersonnel) {
-            val overflow = playerFleet.cargo.crew - playerFleet.cargo.maxPersonnel
+            val overflow = (playerFleet.cargo.totalPersonnel - playerFleet.cargo.maxPersonnel)
 
-            playerFleet.cargo.removeCrew((overflow).coerceAtLeast(playerFleet.fleetData.minCrew).toInt())
+            playerFleet.cargo.removeCrew(overflow.coerceAtMost(playerFleet.fleetData.minCrew).toInt())
         }
         // Repair
         fullFleetRepair(playerFleet)
