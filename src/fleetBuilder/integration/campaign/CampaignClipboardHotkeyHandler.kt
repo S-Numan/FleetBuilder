@@ -48,6 +48,7 @@ import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.VariantLib
+import org.json.JSONObject
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
@@ -135,9 +136,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             }
 
             initialDialog.addButton("Load Save") { _ ->
+                //val clipboardContents = getClipboardJson()
+
                 val dialog = PopUpUIDialog("Load Save", addConfirmButton = true, addCancelButton = true)
                 dialog.confirmButtonName = "Load"
                 dialog.confirmAndCancelAlignment = Alignment.MID
+
+                //dialog.addParagraph("Clipboard contains: ")
 
                 dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
                     dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }

@@ -1,3 +1,8 @@
+## 1.13.0
+- Fixed partially broken missing element reporter
+- Properly report missing cargo and blueprints now.
+
+
 ## 1.12.0
 - Fix the CommandShuttle being unable to jump even with other members present.
 - Minor performance optimizations

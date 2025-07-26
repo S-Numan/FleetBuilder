@@ -5,15 +5,15 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
-import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.MissingElementsExtended
 import org.json.JSONArray
 import org.json.JSONObject
 
 object CargoSerialization {
 
     //Adds cargo to fleet
-    fun getCargoFromJson(json: JSONArray, cargo: CargoAPI): MissingElements {
-        val missingElements = MissingElements()
+    fun getCargoFromJson(json: JSONArray, cargo: CargoAPI): MissingElementsExtended {
+        val missingElements = MissingElementsExtended()
         for (i in 0 until json.length()) {
             val cargoThing = json.optJSONObject(i) ?: continue
             val type = cargoThing.optString("type", null) ?: continue
@@ -36,7 +36,7 @@ object CargoSerialization {
                     if (spec != null) {
                         cargo.addWeapons(id, size)
                     } else {
-                        missingElements.weaponIds.add(id)
+                        missingElements.cargoWeaponIds.add(id)
                     }
                 }
 
@@ -45,7 +45,7 @@ object CargoSerialization {
                     if (spec != null) {
                         cargo.addFighters(id, size)
                     } else {
-                        missingElements.wingIds.add(id)
+                        missingElements.cargoWingIds.add(id)
                     }
                 }
 
@@ -58,17 +58,17 @@ object CargoSerialization {
                     if (spec != null) {
                         try {
                             if (id == "fighter_bp" && Global.getSettings().allFighterWingSpecs.find { it.id == data } == null)
-                                missingElements.wingIds.add(data)
+                                missingElements.blueprintWingIds.add(data)
                             else if (id == "weapon_bp" && Global.getSettings().allWeaponSpecs.find { it.weaponId == data } == null)
-                                missingElements.weaponIds.add(data)
+                                missingElements.blueprintWeaponIds.add(data)
                             else if (id == "ship_bp" && Global.getSettings().allShipHullSpecs.find { it.hullId == data } == null)
-                                missingElements.hullIds.add(data)
+                                missingElements.blueprintHullIds.add(data)
                             else if (id == "modspec" && Global.getSettings().allHullModSpecs.find { it.id == data } == null)
-                                missingElements.hullModIds.add(data)
+                                missingElements.hullModIdsKnown.add(data)
                             else
                                 cargo.addSpecial(SpecialItemData(id, data), size.toFloat())
                         } catch (_: Exception) {
-                            missingElements.itemIds.add(data)
+                            missingElements.itemIds.add("$id:$data")
                         }
                     } else {
                         missingElements.itemIds.add(id)

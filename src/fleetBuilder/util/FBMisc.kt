@@ -47,6 +47,7 @@ import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
+import fleetBuilder.variants.MissingElementsExtended
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
@@ -150,12 +151,10 @@ object FBMisc {
             Global.getSector().playerFaction.doctrine.aggression = aggression
         }
 
-        fulfillPlayerFleet()
-
         return missing
     }
 
-    private fun fulfillPlayerFleet() {
+    fun fulfillPlayerFleet() {
         val playerFleet = Global.getSector().playerFleet
 
         // Crew
@@ -773,6 +772,232 @@ object FBMisc {
         return json
     }
 
+    data class CompiledSaved(
+        var fleet: CampaignFleetAPI? = null,
+        var aggressionDoctrine: Int = -1,
+        var player: PersonAPI? = null,
+        var cargo: CargoAPI? = null,
+        var relations: Map<String, Float>? = null,
+        var shipBlueprints: List<String> = listOf(),
+        var fighterBlueprints: List<String> = listOf(),
+        var weaponBlueprints: List<String> = listOf(),
+        var hullMods: List<String>? = null
+    )
+
+    fun compilePlayerSaveJson(
+        json: JSONObject
+    ): Pair<CompiledSaved, MissingElementsExtended> {
+        val missing = MissingElementsExtended()
+        val compiled = CompiledSaved()
+
+        val sector = Global.getSector() ?: return compiled to missing
+
+        val cargo = Global.getFactory().createCargo(true)
+
+        if (json.has("cargo")) {
+            try {
+                missing.add(getCargoFromJson(json.getJSONArray("cargo"), cargo))
+
+                compiled.cargo = cargo
+            } catch (e: Exception) {
+                showError("Failed to load cargo", e)
+            }
+        }
+
+        if (json.has("credits")) {
+            try {
+                cargo.credits.add(json.optDouble("credits", 0.0).toFloat())
+            } catch (e: Exception) {
+                showError("Failed to load credits", e)
+            }
+        }
+
+        if (json.has("relations")) {
+            try {
+                val relationsMap: MutableMap<String, Float> = mutableMapOf()
+
+                val relations = json.getJSONObject("relations")
+                for (factionItem in sector.allFactions) {
+                    if (relations.has(factionItem.id)) {
+                        relationsMap[factionItem.id] = relations.optFloat(factionItem.id, 0f)
+                    }
+                }
+                compiled.relations = relationsMap
+            } catch (e: Exception) {
+                showError("Failed to load relations", e)
+            }
+        }
+
+        if (json.has("player")) {
+            try {
+                val playerJson = json.getJSONObject("player")
+                val (loadedPlayer, personMissing) = getPersonFromJsonWithMissing(playerJson)
+                missing.add(personMissing)
+
+                compiled.player = loadedPlayer
+            } catch (e: Exception) {
+                showError("Failed to load player", e)
+            }
+        }
+
+        if (json.has("fleet")) {
+            try {
+                val fleet = Global.getFactory().createEmptyFleet(Factions.PLAYER, FleetTypes.TASK_FORCE, false)
+                val fleetJson = json.getJSONObject("fleet")
+                val fleetMissing = getFleetFromJson(
+                    fleetJson,
+                    fleet,
+                    FleetSerialization.FleetSettings().apply {
+                        includeCommanderSetFlagship = false
+                        includeCommanderAsOfficer = false
+                        includeAggression = false
+                    })
+                missing.add(fleetMissing)
+                compiled.aggressionDoctrine = fleetJson.optInt("aggression_doctrine", 2)
+
+                compiled.fleet = fleet
+            } catch (e: Exception) {
+                showError("Failed to load fleet", e)
+            }
+        }
+
+        if (json.has("knownHullMods")) {
+            val hullModsJson = json.optJSONArray("knownHullMods") ?: JSONArray()
+            val hullMods = mutableListOf<String>()
+            for (i in 0 until hullModsJson.length()) {
+                val modId = hullModsJson.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getHullModSpec(modId) }.getOrNull()
+                if (spec == null) {
+                    missing.hullModIdsKnown.add(modId)
+                    continue
+                }
+                if (!spec.isAlwaysUnlocked && !spec.isHidden && !spec.isHiddenEverywhere) {
+                    hullMods.add(modId)
+                }
+            }
+
+            compiled.hullMods = hullMods
+        }
+
+        if (json.has("shipBlueprints") ||
+            json.has("fighterBlueprints") ||
+            json.has("weaponBlueprints")
+        ) {
+            val shipBlueprintsJson = json.optJSONArray("shipBlueprints") ?: JSONArray()
+            val shipBlueprints = mutableListOf<String>()
+            val fighterBlueprintsJson = json.optJSONArray("fighterBlueprints") ?: JSONArray()
+            val fighterBlueprints = mutableListOf<String>()
+            val weaponBlueprintsJson = json.optJSONArray("weaponBlueprints") ?: JSONArray()
+            val weaponBlueprints = mutableListOf<String>()
+
+            for (i in 0 until shipBlueprintsJson.length()) {
+                val id = shipBlueprintsJson.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getHullSpec(id) }.getOrNull()
+                if (spec != null) {
+                    shipBlueprints.add(id)
+                } else {
+                    missing.blueprintHullIds.add(id)
+                }
+            }
+
+            for (i in 0 until fighterBlueprintsJson.length()) {
+                val id = fighterBlueprintsJson.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getFighterWingSpec(id) }.getOrNull()
+                if (spec != null) {
+                    fighterBlueprints.add(id)
+                } else {
+                    missing.blueprintWingIds.add(id)
+                }
+            }
+
+            for (i in 0 until weaponBlueprintsJson.length()) {
+                val id = weaponBlueprintsJson.optString(i, null) ?: continue
+                val spec = runCatching { Global.getSettings().getWeaponSpec(id) }.getOrNull()
+                if (spec != null) {
+                    weaponBlueprints.add(id)
+                } else {
+                    missing.blueprintWeaponIds.add(id)
+                }
+            }
+
+            compiled.shipBlueprints = shipBlueprints
+            compiled.fighterBlueprints = fighterBlueprints
+            compiled.weaponBlueprints = weaponBlueprints
+        }
+
+        return compiled to missing
+    }
+
+    fun loadPlayerCompiledSave(
+        compiled: CompiledSaved,
+        handleCargo: Boolean = true,
+        handleRelations: Boolean = true,
+        handleKnownBlueprints: Boolean = true,
+        handlePlayer: Boolean = true,
+        handleFleet: Boolean = true,
+        handleCredits: Boolean = true,
+        handleKnownHullmods: Boolean = true,
+        handleOfficers: Boolean = true
+    ) {
+        val sector = Global.getSector()
+
+        val cargo = sector.playerFleet.cargo
+
+        if (handleRelations && compiled.relations != null) {
+            for ((factionId, relation) in compiled.relations) {
+                val faction = sector.allFactions.find { it.id == factionId } ?: continue
+                faction.relToPlayer.rel = relation
+            }
+        }
+
+        if (handlePlayer && compiled.player != null) {
+            val currentPlayer = sector.playerPerson
+
+            currentPlayer.stats = compiled.player!!.stats
+            currentPlayer.name = compiled.player!!.name
+            currentPlayer.portraitSprite = compiled.player!!.portraitSprite
+        }
+
+        if (handleCargo && compiled.cargo != null) {
+            cargo.addAll(compiled.cargo)
+        }
+
+        if (handleCredits && compiled.cargo != null) {
+            cargo.credits.add(compiled.cargo!!.credits.get())
+        }
+
+        if (handleFleet && compiled.fleet != null) {
+            replacePlayerFleetWith(
+                compiled.fleet!!, replacePlayer = false, aggression = compiled.aggressionDoctrine,
+                settings = FleetSerialization.FleetSettings().apply {
+                    memberSettings.includeOfficer = handleOfficers
+                    includeIdleOfficers = handleOfficers
+                    includeCommanderSetFlagship = false
+                    includeCommanderAsOfficer = false
+                    includeAggression = false
+                })
+        }
+
+        if (handleKnownHullmods && compiled.hullMods != null) {
+            val sector = Global.getSector()
+            for (modId in compiled.hullMods!!) {
+                sector.playerFaction.addKnownHullMod(modId)
+                sector.characterData.addHullMod(modId)
+            }
+        }
+
+        if (handleKnownBlueprints) {
+            for (id in compiled.shipBlueprints) {
+                sector.playerFaction.addKnownShip(id, true)
+            }
+            for (id in compiled.fighterBlueprints) {
+                sector.playerFaction.addKnownFighter(id, true)
+            }
+            for (id in compiled.weaponBlueprints) {
+                sector.playerFaction.addKnownWeapon(id, true)
+            }
+        }
+    }
 
     fun loadPlayerSaveJson(
         json: JSONObject,
@@ -785,130 +1010,22 @@ object FBMisc {
         handleKnownHullmods: Boolean = true,
         handleOfficers: Boolean = true
     ): MissingElements {
-        val missing = MissingElements()
+        val (compiled, missing) = compilePlayerSaveJson(json)
 
-        val sector = Global.getSector() ?: return missing
+        loadPlayerCompiledSave(
+            compiled,
+            handleCargo,
+            handleRelations,
+            handleKnownBlueprints,
+            handlePlayer,
+            handleFleet,
+            handleCredits,
+            handleKnownHullmods,
+            handleOfficers
+        )
 
-        val playerFleet = sector.playerFleet ?: return missing
-        val cargo = playerFleet.cargo
-        val faction = sector.playerFaction ?: return missing
+        if (handleCargo) {
 
-        if (handleCargo && json.has("cargo")) {
-            try {
-                missing.add(getCargoFromJson(json.getJSONArray("cargo"), cargo))
-            } catch (e: Exception) {
-                showError("Failed to load cargo", e)
-            }
-        }
-
-        if (handleRelations && json.has("relations")) {
-            try {
-                val relations = json.getJSONObject("relations")
-                for (factionItem in sector.allFactions) {
-                    if (relations.has(factionItem.id)) {
-                        factionItem.relToPlayer.rel = relations.optFloat(factionItem.id, factionItem.relToPlayer.rel)
-                    }
-                }
-            } catch (e: Exception) {
-                showError("Failed to load relations", e)
-            }
-        }
-
-        if (handlePlayer && json.has("player")) {
-            try {
-                val playerJson = json.getJSONObject("player")
-                val (loadedPlayer, personMissing) = getPersonFromJsonWithMissing(playerJson)
-                missing.add(personMissing)
-
-                val currentPlayer = sector.playerPerson
-
-                currentPlayer.stats = loadedPlayer.stats
-                currentPlayer.stats.storyPoints = playerJson.optInt("storyPoints", currentPlayer.stats.storyPoints)
-                currentPlayer.name = loadedPlayer.name
-                currentPlayer.portraitSprite = loadedPlayer.portraitSprite
-            } catch (e: Exception) {
-                showError("Failed to load player", e)
-            }
-        }
-
-        if (handleFleet && json.has("fleet")) {
-            try {
-                missing.add(
-                    replacePlayerFleetWith(
-                        json.getJSONObject("fleet"), replacePlayer = false,
-                        FleetSerialization.FleetSettings().apply {
-                            memberSettings.includeOfficer = handleOfficers
-                            includeIdleOfficers = handleOfficers
-                            includeCommanderSetFlagship = false
-                            includeCommanderAsOfficer = false
-                        })
-                )
-            } catch (e: Exception) {
-                showError("Failed to load fleet", e)
-            }
-        }
-
-        if (handleCredits && json.has("credits")) {
-            try {
-                cargo.credits.add(json.optDouble("credits", 0.0).toFloat())
-            } catch (e: Exception) {
-                showError("Failed to load credits", e)
-            }
-        }
-
-        if (handleKnownHullmods && json.has("knownHullMods")) {
-            val hullMods = json.getJSONArray("knownHullMods")
-            for (i in 0 until hullMods.length()) {
-                val modId = hullMods.optString(i, null) ?: continue
-                val spec = runCatching { Global.getSettings().getHullModSpec(modId) }.getOrNull()
-                if (spec == null) {
-                    missing.hullModIds.add(modId)
-                    continue
-                }
-                if (!spec.isAlwaysUnlocked && !spec.isHidden && !spec.isHiddenEverywhere) {
-                    sector.characterData.addHullMod(modId)
-                }
-            }
-        }
-
-        if (handleKnownBlueprints &&
-            json.has("shipBlueprints") &&
-            json.has("fighterBlueprints") &&
-            json.has("weaponBlueprints")
-        ) {
-            val shipBlueprints = json.getJSONArray("shipBlueprints")
-            val fighterBlueprints = json.getJSONArray("fighterBlueprints")
-            val weaponBlueprints = json.getJSONArray("weaponBlueprints")
-
-            for (i in 0 until shipBlueprints.length()) {
-                val id = shipBlueprints.optString(i, null) ?: continue
-                val spec = runCatching { Global.getSettings().getHullSpec(id) }.getOrNull()
-                if (spec != null) {
-                    faction.addKnownShip(id, true)
-                } else {
-                    missing.hullIds.add(id)
-                }
-            }
-
-            for (i in 0 until fighterBlueprints.length()) {
-                val id = fighterBlueprints.optString(i, null) ?: continue
-                val spec = runCatching { Global.getSettings().getFighterWingSpec(id) }.getOrNull()
-                if (spec != null) {
-                    faction.addKnownFighter(id, true)
-                } else {
-                    missing.wingIds.add(id)
-                }
-            }
-
-            for (i in 0 until weaponBlueprints.length()) {
-                val id = weaponBlueprints.optString(i, null) ?: continue
-                val spec = runCatching { Global.getSettings().getWeaponSpec(id) }.getOrNull()
-                if (spec != null) {
-                    faction.addKnownWeapon(id, true)
-                } else {
-                    missing.weaponIds.add(id)
-                }
-            }
         }
 
         return missing

@@ -282,9 +282,12 @@ object FleetSerialization {
         fleet: FleetDataAPI,
         settings: FleetSettings
     ): MissingElements {
+        val missing = MissingElements()
         val filtered = filterParsedFleetData(parsed, settings)
-        val validated = validateAndCleanFleetData(filtered, MissingElements(), settings)
-        return buildFleet(validated, fleet, settings)
+        val validated = validateAndCleanFleetData(filtered, missing, settings)
+        missing.add(buildFleet(validated, fleet, settings))
+
+        return missing
     }
 
     @JvmOverloads

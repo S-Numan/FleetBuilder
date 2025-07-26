@@ -1,6 +1,7 @@
 package fleetBuilder.consoleCommands
 
 import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe
+import fleetBuilder.util.FBMisc.fulfillPlayerFleet
 import fleetBuilder.util.FBMisc.replacePlayerFleetWith
 import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
 import org.json.JSONObject
@@ -28,6 +29,8 @@ class ReplaceFleet : BaseCommand {
 
         val missing = replacePlayerFleetWith(json)
         reportMissingElementsIfAny(missing)
+
+        fulfillPlayerFleet()
 
         return BaseCommand.CommandResult.SUCCESS
     }
