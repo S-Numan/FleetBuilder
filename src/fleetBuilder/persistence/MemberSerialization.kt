@@ -87,9 +87,12 @@ object MemberSerialization {
     fun validateAndCleanMemberData(data: ParsedMemberData, missing: MissingElements): ParsedMemberData {
         val personData = if (data.personData != null) validateAndCleanPersonData(data.personData, missing) else null
 
-        val variantData = if (data.variantData != null)
+        val variantData = if (data.variantData != null) {
             validateAndCleanVariantData(data.variantData, missing)
-        else null
+        } else {
+            missing.hullIds.add("")
+            null
+        }
 
         return data.copy(
             personData = personData,
@@ -98,15 +101,11 @@ object MemberSerialization {
         )
     }
 
-    fun buildMember(data: ParsedMemberData): Pair<FleetMemberAPI, MissingElements> {
-        val missing = MissingElements()
-
+    fun buildMember(data: ParsedMemberData): FleetMemberAPI {
         val variant = if (data.variantData != null)
             buildVariant(data.variantData)
-        else {
-            missing.hullIds.add("")
+        else
             createErrorVariant()
-        }
 
         val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)
 
@@ -119,16 +118,20 @@ object MemberSerialization {
         if (data.personData != null)
             member.captain = buildPerson(data.personData)
 
-        return member to missing
+        return member
     }
 
     fun buildMemberFromParsed(
         extracted: ParsedMemberData,
         settings: MemberSettings
     ): Pair<FleetMemberAPI, MissingElements> {
+        val missing = MissingElements()
+
         val filtered = filterParsedMemberData(extracted, settings)
-        val cleaned = validateAndCleanMemberData(filtered, MissingElements())
-        return buildMember(cleaned)
+        val cleaned = validateAndCleanMemberData(filtered, missing)
+        val member = buildMember(cleaned)
+
+        return member to missing
     }
 
     @JvmOverloads

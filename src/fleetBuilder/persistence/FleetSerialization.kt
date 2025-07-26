@@ -220,14 +220,13 @@ object FleetSerialization {
         )
     }
 
-    fun buildFleet(data: ParsedFleetData, fleet: FleetDataAPI, settings: FleetSettings): MissingElements {
-        val missing = MissingElements()
+    fun buildFleet(data: ParsedFleetData, fleet: FleetDataAPI, settings: FleetSettings) {
         val campFleet = fleet.fleet
         campFleet?.name = data.fleetName
 
         data.members.forEach { parsed ->
-            val (member, subMissing) = buildMember(parsed)
-            missing.add(subMissing)
+            val member = buildMember(parsed)
+
             fleet.addFleetMember(member)
 
             if (parsed.isFlagship) {
@@ -273,8 +272,6 @@ object FleetSerialization {
         }
 
         fleet.syncIfNeeded()
-
-        return missing
     }
 
     fun buildFleetFromParsed(
@@ -283,9 +280,11 @@ object FleetSerialization {
         settings: FleetSettings
     ): MissingElements {
         val missing = MissingElements()
+
         val filtered = filterParsedFleetData(parsed, settings)
         val validated = validateAndCleanFleetData(filtered, missing, settings)
-        missing.add(buildFleet(validated, fleet, settings))
+
+        buildFleet(validated, fleet, settings)
 
         return missing
     }
