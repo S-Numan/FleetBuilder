@@ -7,6 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
 import fleetBuilder.persistence.PersonSerialization.savePersonToJson
 import fleetBuilder.util.FBMisc
@@ -278,7 +279,11 @@ object PersonSerialization {
 
         val trueMemKeysJSON = JSONArray()
 
+        val storedOfficer = person.memoryWithoutUpdate.keys.contains(ModSettings.storedOfficerTag)
+
         person.memoryWithoutUpdate.keys.forEach { key ->
+            if (storedOfficer && key == Misc.CAPTAIN_UNREMOVABLE) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
+
             val value = person.memoryWithoutUpdate.get(key)
             if (value is Boolean && value) {
                 trueMemKeysJSON.put(key)

@@ -9,6 +9,7 @@ import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
+import fleetBuilder.config.ModSettings
 import fleetBuilder.util.*
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
@@ -25,7 +26,7 @@ class StoreOfficersInCargo : CampaignInputListener {
         if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return
 
         val submarket = ReflectionMisc.getSelectedSubmarketInFleetTab() ?: return
-        if (submarket.faction != sector.playerFaction || !submarket.plugin.isFreeTransfer) return //Don't sell officers to other factions
+        if (!submarket.plugin.isFreeTransfer) return //Don't sell officers
         val viewedFleet = ReflectionMisc.getViewedFleetInFleetPanel()
         if (viewedFleet !== sector.playerFleet.fleetData)//If we aren't looking at the user's fleet, don't continue
             return
@@ -38,7 +39,7 @@ class StoreOfficersInCargo : CampaignInputListener {
             if (!captain.isDefault && !captain.isPlayer && !captain.memoryWithoutUpdate.contains(Misc.CAPTAIN_UNREMOVABLE)
                 && captain.faction.id != "tahlan_allmother" // Mod specific support to avoid issues. Storing the Rigveda and other Lostech ships like it with the non AI, non built in yet non-removable captain causes issues.
             ) {
-                captain.memoryWithoutUpdate.set("\$FB_stored_officer", true)
+                captain.memoryWithoutUpdate.set(ModSettings.storedOfficerTag, true)
                 captain.memoryWithoutUpdate.set(Misc.CAPTAIN_UNREMOVABLE, true)
                 sector.playerFleet.fleetData.removeOfficer(captain)
             }

@@ -4,6 +4,7 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.config.ModSettings
 import fleetBuilder.util.getActualCurrentTab
 import org.lwjgl.input.Mouse
 
@@ -17,8 +18,8 @@ class UnstoreOfficersInCargo : EveryFrameScript {
         /*if (!init) {
             init = true
             ShipOfficerChangeEvents.addTransientListener { change ->
-                if (change.current != null && change.current.memoryWithoutUpdate.contains("\$FB_stored_officer")) {
-                    change.current.memoryWithoutUpdate.unset("\$FB_stored_officer")
+                if (change.current != null && change.current.memoryWithoutUpdate.contains(ModSettings.storedOfficerTag)) {
+                    change.current.memoryWithoutUpdate.unset(ModSettings.storedOfficerTag)
                     change.current.memoryWithoutUpdate.unset(Misc.CAPTAIN_UNREMOVABLE)
                     Global.getSector().playerFleet.fleetData.addOfficer(change.current)
                 }
@@ -33,8 +34,8 @@ class UnstoreOfficersInCargo : EveryFrameScript {
 
         if (Mouse.isButtonDown(0)) return // Don't do anything if the mouse is down. This is a hack as isLMBUpEvent does not work properly for the use-case I want to use it for
         playerFleet.fleetData.membersListCopy.forEach { member ->
-            if (member != null && member.captain != null && member.captain.memoryWithoutUpdate.contains("\$FB_stored_officer")) {
-                member.captain.memoryWithoutUpdate.unset("\$FB_stored_officer")
+            if (member != null && member.captain != null && member.captain.memoryWithoutUpdate.contains(ModSettings.storedOfficerTag)) {
+                member.captain.memoryWithoutUpdate.unset(ModSettings.storedOfficerTag)
                 member.captain.memoryWithoutUpdate.unset(Misc.CAPTAIN_UNREMOVABLE)
 
                 playerFleet.fleetData.addOfficer(member.captain)

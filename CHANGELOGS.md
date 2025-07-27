@@ -3,6 +3,8 @@
 - Properly report missing cargo and blueprints now.
 - Better handling for loading ships from missing mods.
 - Added "Fulfill cargo, fuel, crew, and repair for fleet" toggle when pasting a fleet into yours.
+- Store officers now works with IndEvo Repair Docks.
+- Autofit now properly prevents you from removing hullmods which require a dock
 
 
 ## 1.12.0

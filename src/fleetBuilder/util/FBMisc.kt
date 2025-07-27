@@ -26,6 +26,7 @@ import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
 import fleetBuilder.persistence.CargoSerialization.getCargoFromJson
 import fleetBuilder.persistence.CargoSerialization.saveCargoToJson
 import fleetBuilder.persistence.FleetSerialization
+import fleetBuilder.persistence.FleetSerialization.buildFleet
 import fleetBuilder.persistence.FleetSerialization.buildFleetFull
 import fleetBuilder.persistence.FleetSerialization.extractFleetDataFromJson
 import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
@@ -63,7 +64,7 @@ object FBMisc {
         val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
         dialog.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
 
-        dialog.onConfirm { fields ->
+        dialog.onExit { fields ->
             Global.getSettings().isDevMode = fields["Toggle Dev Mode"] as Boolean
         }
         initPopUpUI(dialog, 500f, 200f)
@@ -649,7 +650,7 @@ object FBMisc {
                 val missingHullCount = parsedFleet.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
                 if (missingHullCount > 0)
                     dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
-
+                
                 dialog.addPadding(8f)
 
                 dialog.addButton("Append to Player Fleet") { fields ->

@@ -263,12 +263,12 @@ class FBPlayerAutofitDelegate(
     override fun isAllowSlightRandomization(): Boolean = false
     override fun isPlayerCampaignRefit(): Boolean = true//If in campaign, true. If not, false?
     override fun canAddRemoveHullmodInPlayerCampaignRefit(modId: String): Boolean {//If this mod can be removed at this time.
-        if (market != null) {
-            return true
-        } else {
-            val mod = Global.getSettings().getHullModSpec(modId) ?: return false
-            return mod.effect.canBeAddedOrRemovedNow(ship, market, CampaignUIAPI.CoreUITradeMode.NONE)
-        }
+        //if (market != null) {
+        //     return true
+        // } else {
+        val mod = Global.getSettings().getHullModSpec(modId) ?: return false
+        return mod.effect.canBeAddedOrRemovedNow(ship, market, CampaignUIAPI.CoreUITradeMode.OPEN)
+        //}
     }
 
     override fun getMarket(): MarketAPI? {

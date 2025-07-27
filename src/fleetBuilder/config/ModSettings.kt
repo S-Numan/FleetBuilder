@@ -188,6 +188,7 @@ object ModSettings {
     var fleetScreenFilter = false
 
     val commandShuttleId = "FB_commandershuttle"
+    val storedOfficerTag = "\$FB_stored_officer"
 
     var isConsoleModEnabled = false
 
