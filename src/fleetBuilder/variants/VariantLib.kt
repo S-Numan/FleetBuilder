@@ -288,6 +288,8 @@ object VariantLib {
         return "${hullId}_$cleanName"
     }
 
+    val errorTag = "FB_ERR"
+
     fun createErrorVariant(displayName: String = ""): ShipVariantAPI {
         var tempVariant: ShipVariantAPI? = null
         try {
@@ -305,7 +307,7 @@ object VariantLib {
         else
             tempVariant.setVariantDisplayName("ERROR")
 
-        tempVariant.addTag("ERROR")
+        tempVariant.addTag(errorTag)
 
         return tempVariant
     }

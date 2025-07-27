@@ -21,6 +21,7 @@ import fleetBuilder.persistence.VariantSerialization.extractVariantDataFromJson
 import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.createErrorVariant
 import fleetBuilder.variants.VariantLib.getHullIDSet
 import org.json.JSONArray
@@ -200,7 +201,7 @@ object FleetSerialization {
                         shipName = name
                     )
                 } else null
-            } else if (validated.variantData.tags.contains("ERROR")) {//Tagged with ERROR. (likely a missing hull variant that was saved, then loaded again)
+            } else if (validated.variantData.tags.contains(VariantLib.errorTag)) {//Tagged with VariantLib.errorTag. (this means it was likely a missing hull variant that was saved, then loaded in again here)
                 if (settings.excludeMembersWithMissingHullSpec)
                     null
                 else
@@ -356,7 +357,7 @@ object FleetSerialization {
                 setMemberValuesFromJson(memberJson, member)
                 fleet.addFleetMember(member)
 
-                if (matchingVariant.hasTag("ERROR"))
+                if (matchingVariant.hasTag(VariantLib.errorTag))
                     member.shipName = matchingVariant.displayName
 
                 if (includeOfficer) {
@@ -430,7 +431,7 @@ object FleetSerialization {
             val toRemove = fleet.membersListCopy.filter { member ->
                 member.id in settings.excludeMembersWithID ||
                         member.hullSpec?.hullId in settings.excludeMembersWithHullID ||
-                        (settings.excludeMembersWithMissingHullSpec && member.variant.hasTag("ERROR"))
+                        (settings.excludeMembersWithMissingHullSpec && member.variant.hasTag(VariantLib.errorTag))
             }
             toRemove.forEach { fleet.removeFleetMember(it) }
 

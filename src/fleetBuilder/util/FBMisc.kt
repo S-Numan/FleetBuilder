@@ -47,6 +47,7 @@ import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.MissingElementsExtended
+import fleetBuilder.variants.VariantLib
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
@@ -473,7 +474,7 @@ object FBMisc {
                     if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else ""
         )
 
-        val missingHullCount = parsedFleet.members.count { it.variantData == null || it.variantData.tags.contains("ERROR") }
+        val missingHullCount = parsedFleet.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
         if (missingHullCount > 0)
             dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
 
@@ -645,7 +646,7 @@ object FBMisc {
                             if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else ""
                 )
 
-                val missingHullCount = parsedFleet.members.count { it.variantData == null || it.variantData.tags.contains("ERROR") }
+                val missingHullCount = parsedFleet.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
                 if (missingHullCount > 0)
                     dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
 
