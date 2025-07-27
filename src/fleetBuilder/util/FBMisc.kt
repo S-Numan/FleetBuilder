@@ -1,5 +1,6 @@
 package fleetBuilder.util
 
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
@@ -260,7 +261,7 @@ object FBMisc {
         if (!Global.getSector().isPaused)
             Global.getSector().isPaused = true
 
-        if (Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
+        if (Global.getCurrentState() != GameState.TITLE && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
             Global.getCombatEngine().isPaused = true
 
         val panelAPI = Global.getSettings().createCustom(width, height, dialog)
