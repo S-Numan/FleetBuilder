@@ -26,9 +26,9 @@ open class BasePopUpUI() : PopUpUI() {
     var confirmAndCancelAlignment: Alignment = Alignment.RMID
 
     override fun createUI() {
-        createHeader(panelToInfluence!!)
+        createHeader()
 
-        createContentForDialog(panelToInfluence!!)
+        createContentForDialog()
     }
 
     override fun renderBelow(alphaMult: Float) {
@@ -74,12 +74,11 @@ open class BasePopUpUI() : PopUpUI() {
     }
 
     fun createConfirmAndCancelSection(
-        mainPanel: CustomPanelAPI,
         addConfirmButton: Boolean = true,
         addCancelButton: Boolean = true,
     ) {
-        val totalWidth = panelToInfluence!!.position.width
-        val tooltip = mainPanel.createUIElement(totalWidth, 25f, false)
+        val totalWidth = this@BasePopUpUI.panel.position.width
+        val tooltip = panel.createUIElement(totalWidth, 25f, false)
         tooltip.setButtonFontOrbitron20()
 
         val spacing = 10f
@@ -112,10 +111,10 @@ open class BasePopUpUI() : PopUpUI() {
             Alignment.RMID -> -x
             else -> 0f
         }
-        mainPanel.addUIElement(tooltip).inTL(alignX, bottom - 40)
+        panel.addUIElement(tooltip).inTL(alignX, bottom - 40)
     }
 
-    fun addCloseButton(panel: CustomPanelAPI) {
+    fun addCloseButton() {
         val buttonSize = 32f
         val ui = panel.createUIElement(buttonSize, buttonSize, false)
 
@@ -138,7 +137,7 @@ open class BasePopUpUI() : PopUpUI() {
         closeButton?.onClick { forceDismiss() }
     }
 
-    open fun createContentForDialog(panelAPI: CustomPanelAPI) {
+    open fun createContentForDialog() {
 
     }
 
@@ -165,15 +164,15 @@ open class BasePopUpUI() : PopUpUI() {
 
     val auxYPad = 10f
     var headerTooltip: TooltipMakerAPI? = null
-    fun createHeader(panelAPI: CustomPanelAPI) {
+    fun createHeader() {
 
         if (headerTitle != null) {
-            headerTooltip = panelAPI.createUIElement(panelAPI.position.width - (x * 2), 20f, false)
+            headerTooltip = panel.createUIElement(panel.position.width - (x * 2), 20f, false)
             headerTooltip!!.setParaFont(Fonts.ORBITRON_20AABOLD)
             val label = headerTooltip!!.addPara(headerTitle, Misc.getTooltipTitleAndLightHighlightColor(), 5f)
-            panelAPI.addUIElement(headerTooltip).inTL(x, auxYPad)
+            panel.addUIElement(headerTooltip).inTL(x, auxYPad)
             val textWidth = label.computeTextWidth(label.text)
-            label.position.setLocation(0f, 0f).inTL(((panelAPI.position.width - (x * 2)) - textWidth) / 2f, 3f)
+            label.position.setLocation(0f, 0f).inTL(((panel.position.width - (x * 2)) - textWidth) / 2f, 3f)
         } else {
             y = auxYPad
         }

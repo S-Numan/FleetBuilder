@@ -1,5 +1,5 @@
 package fleetBuilder.temporary
-
+/*
 import MagicLib.onClick
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
@@ -16,13 +16,13 @@ class ToggleDialog(
     private lateinit var toggleOneButton: ButtonAPI
     private lateinit var toggleTwoButton: ButtonAPI
 
-    override fun createContentForDialog(panelAPI: CustomPanelAPI) {
+    override fun createContentForDialog() {
         val buttonWidth = 200f
         val buttonHeight = 24f
         val padding = 10f
 
         // Create panel for buttons
-        val buttonPanel = panelAPI.createCustomPanel(420f, buttonHeight * 2 + padding, null)
+        val buttonPanel = panel.createCustomPanel(420f, buttonHeight * 2 + padding, null)
 
         // Toggle One
         val ui1 = buttonPanel.createUIElement(buttonWidth, buttonHeight, false)
@@ -42,9 +42,9 @@ class ToggleDialog(
         }
         buttonPanel.addUIElement(ui2).belowLeft(ui1, 5f)
 
-        panelAPI.addComponent(buttonPanel).inTL(x, y)
+        panel.addComponent(buttonPanel).inTL(x, y)
 
-        createConfirmAndCancelSection(panelAPI, addCancelButton = false)
+        createConfirmAndCancelSection(addCancelButton = false)
     }
 
     override fun applyConfirmScript() {
@@ -56,3 +56,5 @@ class ToggleDialog(
         }
     }
 }
+
+ */
