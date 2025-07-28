@@ -202,7 +202,7 @@ class PopUpUIDialog(
                     if (entry.highlights.isNotEmpty() && entry.highlightWords.isNotEmpty()) {
                         ui.addPara(entry.text, 0f, entry.highlights, *entry.highlightWords).setAlignment(entry.alignment)
                     } else {
-                        ui.addPara(entry.text, 0f)
+                        ui.addPara(entry.text, 0f).setAlignment(entry.alignment)
                     }
                 }
             }
