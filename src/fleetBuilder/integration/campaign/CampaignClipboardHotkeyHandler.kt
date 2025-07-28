@@ -39,9 +39,11 @@ import fleetBuilder.util.*
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.FBMisc.campaignPaste
+import fleetBuilder.util.FBMisc.compilePlayerSaveJson
 import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.FBMisc.initPopUpUI
+import fleetBuilder.util.FBMisc.loadPlayerCompiledSave
 import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
@@ -164,8 +166,16 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                         return@onConfirm
                     }
 
-                    val missing = FBMisc.loadPlayerSaveJson(
-                        json,
+                    val (compiled, missing) = compilePlayerSaveJson(json)
+
+                    if (compiled.isEmpty()) {
+                        reportMissingElementsIfAny(missing)
+                        DisplayMessage.showMessage("Could not find contents of save in clipboard. Are you sure you copied a valid save?", Color.RED)
+                        return@onConfirm
+                    }
+
+                    loadPlayerCompiledSave(
+                        compiled,
                         handleCargo = fields["Include Cargo"] as Boolean,
                         handleRelations = fields["Include Reputation"] as Boolean,
                         handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
