@@ -267,7 +267,7 @@ class FBPlayerAutofitDelegate(
         //     return true
         // } else {
         val mod = Global.getSettings().getHullModSpec(modId) ?: return false
-        return mod.effect.canBeAddedOrRemovedNow(ship, market, CampaignUIAPI.CoreUITradeMode.OPEN)
+        return mod.effect.canBeAddedOrRemovedNow(ship, market, coreUI.tradeMode)
         //}
     }
 
