@@ -59,6 +59,7 @@ object AutofitApplier {
                     for (submarket in market.submarketsCopy) {
                         if (submarket.plugin.isHidden) continue
                         if (!submarket.plugin.isEnabled(coreUI)) continue
+                        if (!submarket.plugin.showInCargoScreen()) continue
 
                         for (weapon in submarket.cargo.weapons) {
                             delegate.addAvailableWeapon(
