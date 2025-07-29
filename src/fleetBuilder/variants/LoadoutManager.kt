@@ -9,8 +9,8 @@ import fleetBuilder.config.ModSettings.FLEETDIR
 import fleetBuilder.config.ModSettings.PACKDIR
 import fleetBuilder.config.ModSettings.defaultPrefix
 import fleetBuilder.config.ModSettings.importPrefix
-import fleetBuilder.persistence.VariantSerialization
-import fleetBuilder.persistence.VariantSerialization.getVariantFromJsonWithMissing
+import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.variant.VariantSerialization.getVariantFromJsonWithMissing
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec

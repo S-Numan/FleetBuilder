@@ -27,10 +27,10 @@ import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
-import fleetBuilder.persistence.FleetSerialization
-import fleetBuilder.persistence.MemberSerialization
-import fleetBuilder.persistence.PersonSerialization
-import fleetBuilder.persistence.VariantSerialization
+import fleetBuilder.persistence.fleet.FleetSerialization
+import fleetBuilder.persistence.member.MemberSerialization
+import fleetBuilder.persistence.person.PersonSerialization
+import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.ui.PopUpUI.PopUpUIDialog
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
@@ -39,9 +39,11 @@ import fleetBuilder.util.*
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.FBMisc.campaignPaste
+import fleetBuilder.util.FBMisc.compilePlayerSaveJson
 import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.FBMisc.initPopUpUI
+import fleetBuilder.util.FBMisc.loadPlayerCompiledSave
 import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
@@ -135,9 +137,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             }
 
             initialDialog.addButton("Load Save") { _ ->
+                //val clipboardContents = getClipboardJson()
+
                 val dialog = PopUpUIDialog("Load Save", addConfirmButton = true, addCancelButton = true)
                 dialog.confirmButtonName = "Load"
                 dialog.confirmAndCancelAlignment = Alignment.MID
+
+                //dialog.addParagraph("Clipboard contains: ")
 
                 dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
                     dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
@@ -160,8 +166,16 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                         return@onConfirm
                     }
 
-                    val missing = FBMisc.loadPlayerSaveJson(
-                        json,
+                    val (compiled, missing) = compilePlayerSaveJson(json)
+
+                    if (compiled.isEmpty()) {
+                        reportMissingElementsIfAny(missing)
+                        DisplayMessage.showMessage("Could not find contents of save in clipboard. Are you sure you copied a valid save?", Color.RED)
+                        return@onConfirm
+                    }
+
+                    loadPlayerCompiledSave(
+                        compiled,
                         handleCargo = fields["Include Cargo"] as Boolean,
                         handleRelations = fields["Include Reputation"] as Boolean,
                         handleKnownBlueprints = fields["Include Blueprints"] as Boolean,

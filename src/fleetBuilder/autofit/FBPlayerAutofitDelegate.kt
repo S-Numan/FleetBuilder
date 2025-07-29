@@ -1,7 +1,6 @@
 package fleetBuilder.autofit
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.campaign.FactionAPI
@@ -263,12 +262,12 @@ class FBPlayerAutofitDelegate(
     override fun isAllowSlightRandomization(): Boolean = false
     override fun isPlayerCampaignRefit(): Boolean = true//If in campaign, true. If not, false?
     override fun canAddRemoveHullmodInPlayerCampaignRefit(modId: String): Boolean {//If this mod can be removed at this time.
-        if (market != null) {
-            return true
-        } else {
-            val mod = Global.getSettings().getHullModSpec(modId) ?: return false
-            return mod.effect.canBeAddedOrRemovedNow(ship, market, CampaignUIAPI.CoreUITradeMode.NONE)
-        }
+        //if (market != null) {
+        //     return true
+        // } else {
+        val mod = Global.getSettings().getHullModSpec(modId) ?: return false
+        return mod.effect.canBeAddedOrRemovedNow(ship, market, coreUI.tradeMode)
+        //}
     }
 
     override fun getMarket(): MarketAPI? {

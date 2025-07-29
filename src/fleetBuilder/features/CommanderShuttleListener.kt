@@ -161,9 +161,9 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
     }
 
     override fun reportFleetJumped(
-        fleet: CampaignFleetAPI,
-        from: SectorEntityToken,
-        to: JumpPointAPI.JumpDestination
+        fleet: CampaignFleetAPI?,
+        from: SectorEntityToken?,
+        to: JumpPointAPI.JumpDestination?
     ) {
 
     }

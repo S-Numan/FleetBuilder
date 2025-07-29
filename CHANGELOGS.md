@@ -1,3 +1,13 @@
+## 1.13.0
+- Now supports the Second-in-Command mod when saving/loading fleets (including save transfers) due to request. May need testing.
+- Fixed partially broken missing element reporter
+- Properly report missing cargo and blueprints now.
+- Better handling for loading ships from missing mods.
+- Added "Fulfill cargo, fuel, crew, and repair for fleet" toggle when pasting a fleet into yours.
+- Store officers now works with IndEvo Repair Docks.
+- Autofit now properly prevents you from removing hullmods which require a dock
+
+
 ## 1.12.0
 - Fix the CommandShuttle being unable to jump even with other members present.
 - Minor performance optimizations

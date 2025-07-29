@@ -5,9 +5,9 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import fleetBuilder.persistence.FleetSerialization
-import fleetBuilder.persistence.MemberSerialization
-import fleetBuilder.persistence.PersonSerialization
+import fleetBuilder.persistence.fleet.FleetSerialization
+import fleetBuilder.persistence.member.MemberSerialization
+import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.util.ClipboardUtil
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings

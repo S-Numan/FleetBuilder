@@ -1,14 +1,13 @@
-package fleetBuilder.persistence
+package fleetBuilder.persistence.variant
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.config.ModSettings.getHullModsToNeverSave
-import fleetBuilder.config.ModSettings.removeDefaultDMods
-import fleetBuilder.persistence.VariantSerialization.getVariantFromJson
-import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.config.ModSettings
+import fleetBuilder.persistence.variant.VariantSerialization.getVariantFromJson
+import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.*
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
@@ -174,7 +173,7 @@ object VariantSerialization {
     ): ParsedVariantData {
 
         fun shouldKeepMod(modId: String): Boolean {
-            if (getHullModsToNeverSave().contains(modId)) return false
+            if (ModSettings.getHullModsToNeverSave().contains(modId)) return false
             if (modId in settings.excludeHullModsWithID) return false
             if (!settings.includeDMods && VariantLib.getAllDMods().contains(modId)) return false
             if (!settings.includeHiddenMods && VariantLib.getAllHiddenEverywhereMods().contains(modId)) return false
@@ -324,7 +323,7 @@ object VariantSerialization {
         val loadout = Global.getSettings().createEmptyVariant(hullSpec.hullId, hullSpec)
 
         //Remove default DMods
-        if (removeDefaultDMods) {
+        if (ModSettings.removeDefaultDMods) {
             loadout.allDMods().forEach {
                 loadout.hullMods.remove(it)
             }
@@ -390,7 +389,7 @@ object VariantSerialization {
         return loadout
     }
 
-    fun buildVariantFromParsed(
+    fun buildVariantFull(
         data: ParsedVariantData,
         settings: VariantSettings
     ): Pair<ShipVariantAPI, MissingElements> {
@@ -421,7 +420,7 @@ object VariantSerialization {
 
         val parsed = extractVariantDataFromJson(json)
 
-        val (variant, newMissing) = buildVariantFromParsed(parsed, settings)
+        val (variant, newMissing) = buildVariantFull(parsed, settings)
         missing.add(newMissing)
 
         return variant to missing
@@ -521,7 +520,7 @@ object VariantSerialization {
 
         allModIds.forEach { modId ->
             when {
-                getHullModsToNeverSave().contains(modId) || settings.excludeHullModsWithID.contains(modId) -> {
+                ModSettings.getHullModsToNeverSave().contains(modId) || settings.excludeHullModsWithID.contains(modId) -> {
                     variant.completelyRemoveMod(modId)
                 }
 
@@ -656,7 +655,7 @@ object VariantSerialization {
         for (mod in variant.hullMods) {
             if ((!settings.includeDMods && VariantLib.getAllDMods().contains(mod))
                 || (!settings.includeHiddenMods && VariantLib.getAllHiddenEverywhereMods().contains(mod))
-                || getHullModsToNeverSave().contains(mod)
+                || ModSettings.getHullModsToNeverSave().contains(mod)
             )
                 continue
 

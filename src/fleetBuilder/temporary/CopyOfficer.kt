@@ -5,7 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.persistence.PersonSerialization.savePersonToJson
+import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab

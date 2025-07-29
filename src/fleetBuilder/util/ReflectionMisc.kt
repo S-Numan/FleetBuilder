@@ -24,12 +24,19 @@ import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 
 object ReflectionMisc {
-    fun getCoreUI(): UIPanelAPI? {
+    fun getCoreUI(topDialog: Boolean = true): UIPanelAPI? {
         val state = AppDriver.getInstance().currentState
         if (state is CampaignState) {
+
             return (state.invoke("getEncounterDialog")?.let { dialog ->
-                dialog.invoke("getCoreUI") as? UIPanelAPI
+                if (topDialog && Global.getSector().campaignUI.getActualCurrentTab() == null) {//In encounter dialog, but not looking at any tab.
+                    //If you add a dialog to CoreUI and move it to the top, it will usually show in the top. Excluding this situation. Thus, in this situation we just get the screen panel instead. This can be disabled via the topDialog boolean.
+                    state.invoke("getScreenPanel") as? UIPanelAPI
+                } else {
+                    dialog.invoke("getCoreUI") as? UIPanelAPI
+                }
             } ?: state.invoke("getCore") as? UIPanelAPI)
+
         } else if (state is TitleScreenState || state is CombatState) {
             return state.invoke("getScreenPanel") as? UIPanelAPI
         }

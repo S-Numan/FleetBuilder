@@ -37,7 +37,7 @@ open class PopUpUI : CustomUIPanelPlugin {
     var bottomRight: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot_right")
     var parent: UIPanelAPI? = null
     var frames: Float = 0f
-    var panelToInfluence: CustomPanelAPI? = null
+    lateinit var panel: CustomPanelAPI
     var rendererBorder: UILinesRenderer = UILinesRenderer(0f)
     var isDialog: Boolean = true
     var quitWithEscKey: Boolean = true
@@ -52,7 +52,7 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     fun init(
-        panelAPI: CustomPanelAPI,
+        insertPanel: CustomPanelAPI,
         x: Float,
         y: Float,
         parent: UIPanelAPI? = getCoreUI(),
@@ -60,19 +60,19 @@ open class PopUpUI : CustomUIPanelPlugin {
     ) {
         this.isDialog = isDialog
 
-        panelToInfluence = panelAPI
+        panel = insertPanel
 
         this.parent = parent
 
-        originalSizeX = panelAPI.position.width
-        originalSizeY = panelAPI.position.height
+        originalSizeX = panel.position.width
+        originalSizeY = panel.position.height
 
-        panelToInfluence!!.position.setSize(16f, 16f)
+        panel.position.setSize(16f, 16f)
 
-        parent!!.addComponent(panelToInfluence).inTL(x, parent.position.height - y)
-        parent.bringComponentToTop(panelToInfluence)
+        parent!!.addComponent(insertPanel).inTL(x, parent.position.height - y)
+        parent.bringComponentToTop(insertPanel)
 
-        rendererBorder.setPanel(panelToInfluence)
+        rendererBorder.setPanel(insertPanel)
 
         if (!isDialog) {
             quitWithEscKey = false
@@ -84,33 +84,32 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     override fun renderBelow(alphaMult: Float) {
-        if (panelToInfluence != null) {
-            val renderer = TiledTextureRenderer(panelBackground.getTextureId())
-            if (isDialog) {
-                blackBackground.setSize(getCoreUI()!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
-                blackBackground.setColor(Color.black)
-                blackBackground.setAlphaMult(0.6f)
-                blackBackground.renderAtCenter(getCoreUI()!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
-                renderer.renderTiledTexture(
-                    panelToInfluence!!.getPosition().getX(),
-                    panelToInfluence!!.getPosition().getY(), panelToInfluence!!.getPosition().getWidth(),
-                    panelToInfluence!!.getPosition().getHeight(), panelBackground.getTextureWidth(),
-                    panelBackground.getTextureHeight(), (frames / limit) * 0.9f, Color.BLACK
-                )
-            } else {
-                renderer.renderTiledTexture(
-                    panelToInfluence!!.getPosition().getX(),
-                    panelToInfluence!!.getPosition().getY(), panelToInfluence!!.getPosition().getWidth(),
-                    panelToInfluence!!.getPosition().getHeight(), panelBackground.getTextureWidth(),
-                    panelBackground.getTextureHeight(), (frames / limit), panelBackground.getColor()
-                )
-            }
-            if (isDialog) {
-                renderBorders(panelToInfluence!!)
-            } else {
-                rendererBorder.render(alphaMult)
-            }
+        val renderer = TiledTextureRenderer(panelBackground.getTextureId())
+        if (isDialog) {
+            blackBackground.setSize(getCoreUI()!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
+            blackBackground.setColor(Color.black)
+            blackBackground.setAlphaMult(0.6f)
+            blackBackground.renderAtCenter(getCoreUI()!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
+            renderer.renderTiledTexture(
+                panel.getPosition().getX(),
+                panel.getPosition().getY(), panel.getPosition().getWidth(),
+                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
+                panelBackground.getTextureHeight(), (frames / limit) * 0.9f, Color.BLACK
+            )
+        } else {
+            renderer.renderTiledTexture(
+                panel.getPosition().getX(),
+                panel.getPosition().getY(), panel.getPosition().getWidth(),
+                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
+                panelBackground.getTextureHeight(), (frames / limit), panelBackground.getColor()
+            )
         }
+        if (isDialog) {
+            renderBorders()
+        } else {
+            rendererBorder.render(alphaMult)
+        }
+
     }
 
     override fun render(alphaMult: Float) {
@@ -121,7 +120,7 @@ open class PopUpUI : CustomUIPanelPlugin {
             frames++
             val progress = frames / limit
             if (frames < limit && !reachedMaxHeight) {
-                panelToInfluence!!.position.setSize(originalSizeX, originalSizeY * progress)
+                panel.position.setSize(originalSizeX, originalSizeY * progress)
                 return
             }
             if (frames >= limit && !reachedMaxHeight) {
@@ -133,7 +132,7 @@ open class PopUpUI : CustomUIPanelPlugin {
 
     fun setMaxSize() {
         reachedMaxHeight = true
-        panelToInfluence!!.position.setSize(originalSizeX, originalSizeY)
+        panel.position.setSize(originalSizeX, originalSizeY)
         createUI()
     }
 
@@ -159,13 +158,13 @@ open class PopUpUI : CustomUIPanelPlugin {
                     }
                 }
             }
-            if (isDialog || (panelToInfluence != null && isMouseWithinBounds(panelToInfluence!!.x, panelToInfluence!!.y, panelToInfluence!!.width, panelToInfluence!!.height)))
+            if (isDialog || (isMouseWithinBounds(panel.x, panel.y, panel.width, panel.height)))
                 event.consume()
         }
     }
 
     fun forceDismiss() {
-        parent!!.removeComponent(panelToInfluence)
+        parent!!.removeComponent(panel)
         onExit()
     }
 
@@ -175,8 +174,8 @@ open class PopUpUI : CustomUIPanelPlugin {
     override fun buttonPressed(buttonId: Any) {
     }
 
-    fun renderBorders(panelAPI: CustomPanelAPI) {
-        val leftX = panelAPI.getPosition().getX() + 16
+    fun renderBorders() {
+        val leftX = panel.position.x + 16
         var currAlpha = frames / limit
         if (currAlpha >= 1) currAlpha = 1f
         top.setSize(16f, 16f)
@@ -197,30 +196,30 @@ open class PopUpUI : CustomUIPanelPlugin {
         left.setAlphaMult(currAlpha)
         right.setAlphaMult(currAlpha)
 
-        val rightX = panelAPI.getPosition().getX() + panelAPI.getPosition().getWidth() - 16
-        val botX = panelAPI.getPosition().getY() + 16
-        startStencilWithXPad(panelAPI, 8f)
+        val rightX = panel.getPosition().getX() + panel.getPosition().getWidth() - 16
+        val botX = panel.getPosition().getY() + 16
+        startStencilWithXPad(panel, 8f)
         run {
             var i = leftX
-            while (i <= panelAPI.getPosition().getX() + panelAPI.getPosition().getWidth()) {
-                top.renderAtCenter(i, panelAPI.getPosition().getY() + panelAPI.getPosition().getHeight())
-                bot.renderAtCenter(i, panelAPI.getPosition().getY())
+            while (i <= panel.getPosition().getX() + panel.getPosition().getWidth()) {
+                top.renderAtCenter(i, panel.getPosition().getY() + panel.getPosition().getHeight())
+                bot.renderAtCenter(i, panel.getPosition().getY())
                 i += top.getWidth()
             }
         }
         endStencil()
-        startStencilWithYPad(panelAPI, 8f)
+        startStencilWithYPad(panel, 8f)
         var i = botX
-        while (i <= panelAPI.getPosition().getY() + panelAPI.getPosition().getHeight()) {
-            left.renderAtCenter(panelAPI.getPosition().getX(), i)
-            right.renderAtCenter(panelAPI.getPosition().getX() + panelAPI.getPosition().getWidth(), i)
+        while (i <= panel.getPosition().getY() + panel.getPosition().getHeight()) {
+            left.renderAtCenter(panel.getPosition().getX(), i)
+            right.renderAtCenter(panel.getPosition().getX() + panel.getPosition().getWidth(), i)
             i += top.getWidth()
         }
         endStencil()
-        topLeft.renderAtCenter(leftX - 16, panelAPI.getPosition().getY() + panelAPI.getPosition().getHeight())
-        topRight.renderAtCenter(panelAPI.getPosition().getX() + panelAPI.getPosition().getWidth(), panelAPI.getPosition().getY() + panelAPI.getPosition().getHeight())
-        bottomLeft.renderAtCenter(leftX - 16, panelAPI.getPosition().getY())
-        bottomRight.renderAtCenter(panelAPI.getPosition().getX() + panelAPI.getPosition().getWidth(), panelAPI.getPosition().getY())
+        topLeft.renderAtCenter(leftX - 16, panel.getPosition().getY() + panel.getPosition().getHeight())
+        topRight.renderAtCenter(panel.getPosition().getX() + panel.getPosition().getWidth(), panel.getPosition().getY() + panel.getPosition().getHeight())
+        bottomLeft.renderAtCenter(leftX - 16, panel.getPosition().getY())
+        bottomRight.renderAtCenter(panel.getPosition().getX() + panel.getPosition().getWidth(), panel.getPosition().getY())
     }
 
     companion object {

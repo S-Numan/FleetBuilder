@@ -1,8 +1,17 @@
 package starficz
 
+import java.lang.Byte
+import java.lang.Double
+import java.lang.Float
+import java.lang.Long
+import java.lang.Short
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
+import java.util.concurrent.ConcurrentHashMap
+
+// Copyright Starficz, Licensed under LGPL-3.0-only
+// Credits to Lukas04 for his ReflectionUtils, Lyravega, Float, and Andylizi for the original idea.
 
 /**
  * An internal reflection utility designed specifically for Starsector modding.
@@ -36,7 +45,6 @@ import java.lang.invoke.MethodType
  * @see ReflectedMethod
  * @see ReflectedConstructor
  */
-
 internal object ReflectionUtils {
     private val fieldClass =
         Class.forName("java.lang.reflect.Field", false, Class::class.java.classLoader)
@@ -77,6 +85,125 @@ internal object ReflectionUtils {
     private fun Class<*>.getHandle(name: String, returnType: Class<*>, vararg paramTypes: Class<*>?): MethodHandle {
         return MethodHandles.lookup().findVirtual(this, name, MethodType.methodType(returnType, paramTypes))
     }
+
+    private data class ReflectedFieldCacheKey(
+        val targetClass: Class<*>,
+        val fieldName: String?,
+        val fieldType: Class<*>?,
+        val fieldAssignableTo: Class<*>?,
+        val fieldAccepts: Class<*>?,
+        val searchSuperclass: Boolean
+    )
+
+    private val reflectedMethodsCache = ConcurrentHashMap<ReflectedMethodCacheKey, List<ReflectedMethod>>()
+
+    private data class ReflectedMethodCacheKey(
+        val targetClass: Class<*>,
+        val fieldName: String?,
+        val returnType: Class<*>?,
+        val numOfParams: Int?,
+        val parameterTypes: Array<Class<*>?>?
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ReflectedMethodCacheKey
+
+            if (numOfParams != other.numOfParams) return false
+            if (targetClass != other.targetClass) return false
+            if (fieldName != other.fieldName) return false
+            if (returnType != other.returnType) return false
+            if (parameterTypes != null) {
+                if (other.parameterTypes == null) return false
+                if (!parameterTypes.contentEquals(other.parameterTypes)) return false
+            } else if (other.parameterTypes != null) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = numOfParams ?: 0
+            result = 31 * result + targetClass.hashCode()
+            result = 31 * result + (fieldName?.hashCode() ?: 0)
+            result = 31 * result + (returnType?.hashCode() ?: 0)
+            result = 31 * result + (parameterTypes?.contentHashCode() ?: 0)
+            return result
+        }
+    }
+
+    private val reflectedFieldsCache = ConcurrentHashMap<ReflectedFieldCacheKey, List<ReflectedField>>()
+
+    private data class ReflectedFieldWithMethodCacheKey(
+        val targetClass: Class<*>,
+        val methodName: String?,
+        val methodReturnType: Class<*>?,
+        val numOfMethodParams: Int?,
+        val methodParameterTypes: Array<Class<*>?>?,
+        val searchSuperclass: Boolean
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ReflectedFieldWithMethodCacheKey
+
+            if (numOfMethodParams != other.numOfMethodParams) return false
+            if (searchSuperclass != other.searchSuperclass) return false
+            if (targetClass != other.targetClass) return false
+            if (methodName != other.methodName) return false
+            if (methodReturnType != other.methodReturnType) return false
+            if (methodParameterTypes != null) {
+                if (other.methodParameterTypes == null) return false
+                if (!methodParameterTypes.contentEquals(other.methodParameterTypes)) return false
+            } else if (other.methodParameterTypes != null) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = numOfMethodParams ?: 0
+            result = 31 * result + searchSuperclass.hashCode()
+            result = 31 * result + targetClass.hashCode()
+            result = 31 * result + (methodName?.hashCode() ?: 0)
+            result = 31 * result + (methodReturnType?.hashCode() ?: 0)
+            result = 31 * result + (methodParameterTypes?.contentHashCode() ?: 0)
+            return result
+        }
+    }
+
+    private val reflectedFieldsWithMethodCache = ConcurrentHashMap<ReflectedFieldWithMethodCacheKey, List<ReflectedField>>()
+
+    private data class ReflectedConstructorsCacheKey(
+        val targetClass: Class<*>,
+        val numOfParams: Int?,
+        val parameterTypes: Array<Class<*>?>?
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ReflectedConstructorsCacheKey
+
+            if (numOfParams != other.numOfParams) return false
+            if (targetClass != other.targetClass) return false
+            if (parameterTypes != null) {
+                if (other.parameterTypes == null) return false
+                if (!parameterTypes.contentEquals(other.parameterTypes)) return false
+            } else if (other.parameterTypes != null) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = numOfParams ?: 0
+            result = 31 * result + targetClass.hashCode()
+            result = 31 * result + (parameterTypes?.contentHashCode() ?: 0)
+            return result
+        }
+    }
+
+    private val ReflectedConstructorsCache = ConcurrentHashMap<ReflectedConstructorsCacheKey, List<ReflectedConstructor>>()
 
     /**
      * Finds a unique field matching the name and/or type on the provided `instance`'s class (or optionally, superclass's) and returns its value.
@@ -123,15 +250,20 @@ internal object ReflectionUtils {
      */
     @JvmSynthetic
     @JvmName("ExtensionGet")
-    fun Any.get(name: String? = null, type: Class<*>? = null, searchSuperclass: Boolean = false): Any?{
-        val reflectedFields = this.getFieldsMatching(name, fieldAssignableTo=type, searchSuperclass=searchSuperclass)
+    fun Any.get(name: String? = null, type: Class<*>? = null, searchSuperclass: Boolean = false): Any? {
+        val target = this
+        val reflectedFields = target.getFieldsMatching(name, fieldAssignableTo = type, searchSuperclass = searchSuperclass)
         if (reflectedFields.isEmpty())
-            throw IllegalArgumentException("No field found for name: '${name ?: "<any>"}' on class: ${this::class.java.name} " +
-                    "that is assignable to type: '${type?.name ?: "<any>"}'.")
+            throw IllegalArgumentException(
+                "No field found for name: '${name ?: "<any>"}' on class: ${target::class.java.name} " +
+                        "that is assignable to type: '${type?.name ?: "<any>"}'."
+            )
         else if (reflectedFields.size > 1)
-            throw IllegalArgumentException("Ambiguous fields with name: '${name ?: "<any>"}' on class ${this::class.java.name} " +
-                    "assignable to type: '${type?.name ?: "<any>"}'. Multiple fields match.")
-        else return reflectedFields[0].get(this)
+            throw IllegalArgumentException(
+                "Ambiguous fields with name: '${name ?: "<any>"}' on class ${target::class.java.name} " +
+                        "assignable to type: '${type?.name ?: "<any>"}'. Multiple fields match."
+            )
+        else return reflectedFields[0].get(target)
     }
 
     /**
@@ -177,21 +309,26 @@ internal object ReflectionUtils {
     @JvmSynthetic
     @JvmName("ExtensionSet")
     fun Any.set(name: String? = null, value: Any?, searchSuperclass: Boolean = false) {
-        val valueType = value?.let{ it::class.javaPrimitiveType ?: it::class.java }
-        val reflectedFields = this.getFieldsMatching(name, fieldAccepts=valueType, searchSuperclass=searchSuperclass)
+        val target = this
+        val valueType = value?.let { it::class.javaPrimitiveType ?: it::class.java }
+        val reflectedFields = target.getFieldsMatching(name, fieldAccepts = valueType, searchSuperclass = searchSuperclass)
         if (reflectedFields.isEmpty())
-            throw IllegalArgumentException("No field found for name: '${name ?: "<any>"}' on class: ${this::class.java.name} " +
-                    "that accepts type: '${valueType?.name ?: "null"}'.")
+            throw IllegalArgumentException(
+                "No field found for name: '${name ?: "<any>"}' on class: ${target::class.java.name} " +
+                        "that accepts type: '${valueType?.name ?: "null"}'."
+            )
         else if (reflectedFields.size > 1)
-            throw IllegalArgumentException("Ambiguous fields with name: '${name ?: "<any>"}' on class: ${this::class.java.name} " +
-                    "accepting type: '${valueType?.name ?: "null"}'. Multiple fields match.")
-        else return reflectedFields[0].set(this, value)
+            throw IllegalArgumentException(
+                "Ambiguous fields with name: '${name ?: "<any>"}' on class: ${target::class.java.name} " +
+                        "accepting type: '${valueType?.name ?: "null"}'. Multiple fields match."
+            )
+        else return reflectedFields[0].set(target, value)
     }
 
     private fun getAllFields(clazz: Class<*>): Set<Any> {
         var currentClazz: Class<*>? = clazz
         val fields = mutableSetOf<Any>()
-        while (currentClazz != Object::class.java && currentClazz != null){
+        while (currentClazz != Object::class.java && currentClazz != null) {
             fields.addAll(currentClazz.declaredFields)
             currentClazz = currentClazz.superclass
         }
@@ -235,7 +372,9 @@ internal object ReflectionUtils {
         fieldAssignableTo: Class<*>? = null,
         fieldAccepts: Class<*>? = null,
         searchSuperclass: Boolean = false
-    ): List<ReflectedField> { return clazz.getFieldsMatching(name, type, fieldAssignableTo, fieldAccepts, searchSuperclass) }
+    ): List<ReflectedField> {
+        return clazz.getFieldsMatching(name, type, fieldAssignableTo, fieldAccepts, searchSuperclass)
+    }
 
     /**
      * Finds fields within this class (and optionally, its superclass hierarchy) that match the specified criteria.
@@ -274,35 +413,46 @@ internal object ReflectionUtils {
         fieldAccepts: Class<*>? = null,
         searchSuperclass: Boolean = false
     ): List<ReflectedField> {
-        return (if (searchSuperclass) getAllFields(this) else this.declaredFields.toSet()).filter { field ->
-            // 1. Check Name
-            // Use handle to get name and compare if a specific name is requested.
-            if (name != null && name != getFieldNameHandle.invoke(field)) return@filter false
+        val cacheKey = ReflectedFieldCacheKey(
+            targetClass = this,
+            fieldName = name,
+            fieldType = type,
+            fieldAssignableTo = fieldAssignableTo,
+            fieldAccepts = fieldAccepts,
+            searchSuperclass = searchSuperclass
+        )
+        return reflectedFieldsCache.getOrPut(cacheKey) {
+            (if (searchSuperclass) getAllFields(this) else this.declaredFields.toSet()).filter { field ->
+                // 1. Check Name
+                // Use handle to get name and compare if a specific name is requested.
+                if (name != null && name != getFieldNameHandle.invoke(field)) return@filter false
 
-            // --- Field Checks ---
-            // Fetch actual field types using the handle *only if needed*.
-            if (type != null || fieldAccepts != null || fieldAssignableTo != null) {
-                val fieldType = getFieldTypeHandle.invoke(field) as Class<*>
-                // 2. Check the exact type
-                if (type != null && type != fieldType) return@filter false
+                // --- Field Checks ---
+                // Fetch actual field types using the handle *only if needed*.
+                if (type != null || fieldAccepts != null || fieldAssignableTo != null) {
+                    val fieldType = getFieldTypeHandle.invoke(field) as Class<*>
+                    // 2. Check the exact type
+                    if (type != null && type != fieldType) return@filter false
 
-                // 3. Check if we can (set with) / (get a) provided type
-                if (fieldAccepts != null && !isParameterCompatible(fieldType, fieldAccepts)) return@filter false
-                if (fieldAssignableTo != null && !fieldAssignableTo.isAssignableFrom(fieldType)) return@filter false
+                    // 3. Check if we can (set with) / (get a) provided type
+                    if (fieldAccepts != null && !isParameterCompatible(fieldType, fieldAccepts)) return@filter false
+                    if (fieldAssignableTo != null && !fieldAssignableTo.isAssignableFrom(fieldType)) return@filter false
 
-                // filter out object fields that arnt specifically matched for
-                if (fieldType == Object::class.java && // if the found field is object
-                    name == null && // and the name wasn't specified
-                    // and the user isn't trying to find an object
-                    type != Object::class.java &&
-                    fieldAssignableTo != Object::class.java &&
-                    fieldAccepts != Object::class.java)
-                // filter out the field
-                    return@filter false
-            }
-            // If all checks passed up to this point, keep the field
-            return@filter true
-        }.map { ReflectedField(it) }
+                    // filter out object fields that arnt specifically matched for
+                    if (fieldType == Object::class.java && // if the found field is object
+                        name == null && // and the name wasn't specified
+                        // and the user isn't trying to find an object
+                        type != Object::class.java &&
+                        fieldAssignableTo != Object::class.java &&
+                        fieldAccepts != Object::class.java
+                    )
+                    // filter out the field
+                        return@filter false
+                }
+                // If all checks passed up to this point, keep the field
+                return@filter true
+            }.map { ReflectedField(it) }
+        }
     }
 
 
@@ -328,7 +478,9 @@ internal object ReflectionUtils {
         fieldAssignableTo: Class<*>? = null,
         fieldAccepts: Class<*>? = null,
         searchSuperclass: Boolean = false
-    ): List<ReflectedField> { return instance::class.java.getFieldsMatching(name, type, fieldAssignableTo, fieldAccepts, searchSuperclass) }
+    ): List<ReflectedField> {
+        return instance::class.java.getFieldsMatching(name, type, fieldAssignableTo, fieldAccepts, searchSuperclass)
+    }
 
     /**
      * Finds fields within this object's class and its superclass hierarchy that match the specified criteria.
@@ -351,7 +503,9 @@ internal object ReflectionUtils {
         fieldAssignableTo: Class<*>? = null,
         fieldAccepts: Class<*>? = null,
         searchSuperclass: Boolean = false
-    ): List<ReflectedField> { return this::class.java.getFieldsMatching(name, type, fieldAssignableTo, fieldAccepts, searchSuperclass) }
+    ): List<ReflectedField> {
+        return this::class.java.getFieldsMatching(name, type, fieldAssignableTo, fieldAccepts, searchSuperclass)
+    }
 
     /**
      * Finds fields within `clazz`'s class hierarchy whose declared type match the specified criteria.
@@ -427,10 +581,21 @@ internal object ReflectionUtils {
         methodParameterTypes: Array<Class<*>?>? = null,
         searchSuperclass: Boolean = false
     ): List<ReflectedField> {
-        return (if (searchSuperclass) getAllFields(this) else this.declaredFields.toSet()).filter { fieldInstance ->
-            val fieldType = getFieldTypeHandle.invoke(fieldInstance) as Class<*>?
-            fieldType?.getMethodsMatching(methodName, methodReturnType, numOfMethodParams, methodParameterTypes)?.isNotEmpty() == true
-        }.map { ReflectedField(it) }
+        val cacheKey = ReflectedFieldWithMethodCacheKey(
+            targetClass = this,
+            methodName = methodName,
+            methodReturnType = methodReturnType,
+            numOfMethodParams = numOfMethodParams,
+            methodParameterTypes = methodParameterTypes,
+            searchSuperclass = searchSuperclass
+        )
+
+        return reflectedFieldsWithMethodCache.getOrPut(cacheKey) {
+            (if (searchSuperclass) getAllFields(this) else this.declaredFields.toSet()).filter { fieldInstance ->
+                val fieldType = getFieldTypeHandle.invoke(fieldInstance) as Class<*>?
+                fieldType?.getMethodsMatching(methodName, methodReturnType, numOfMethodParams, methodParameterTypes)?.isNotEmpty() == true
+            }.map { ReflectedField(it) }
+        }
     }
 
     /**
@@ -504,7 +669,9 @@ internal object ReflectionUtils {
      */
     @JvmStatic
     @JvmOverloads
-    fun invoke(instance: Any, name: String? = null, vararg args: Any?): Any? { return instance.invoke(name, *args) }
+    fun invoke(instance: Any, name: String? = null, vararg args: Any?): Any? {
+        return instance.invoke(name, *args)
+    }
 
     /**
      * Invokes a method on this object using reflection, simplifying calls by automatically matching argument types.
@@ -526,15 +693,20 @@ internal object ReflectionUtils {
     @JvmSynthetic
     @JvmName("ExtensionInvoke")
     fun Any.invoke(name: String? = null, vararg args: Any?): Any? {
-        val paramTypes = args.map { arg -> arg?.let{ it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
-        val reflectedMethods = this.getMethodsMatching(name, parameterTypes=paramTypes)
+        val target = this
+        val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
+        val reflectedMethods = target.getMethodsMatching(name, parameterTypes = paramTypes)
         if (reflectedMethods.isEmpty())
-            throw IllegalArgumentException("No method found for name: '$name' on class: ${this::class.java.name} " +
-                    "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}")
+            throw IllegalArgumentException(
+                "No method found for name: '$name' on class: ${target::class.java.name} " +
+                        "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}"
+            )
         else if (reflectedMethods.size > 1)
-            throw IllegalArgumentException("Ambiguous method call for name: '$name' on class: ${this::class.java.name}. " +
-                    "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}")
-        else return reflectedMethods[0].invoke(this, *args)
+            throw IllegalArgumentException(
+                "Ambiguous method call for name: '$name' on class: ${target::class.java.name}. " +
+                        "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
+            )
+        else return reflectedMethods[0].invoke(target, *args)
     }
 
     /**
@@ -556,7 +728,9 @@ internal object ReflectionUtils {
      */
     @JvmStatic
     @JvmOverloads
-    fun invoke(clazz: Class<*>, name: String? = null, vararg args: Any?): Any? { return clazz.invoke(name, *args) }
+    fun invoke(clazz: Class<*>, name: String? = null, vararg args: Any?): Any? {
+        return clazz.invoke(name, *args)
+    }
 
     /**
      * Invokes a static method on this class using reflection, simplifying calls by automatically matching argument types.
@@ -578,28 +752,32 @@ internal object ReflectionUtils {
     @JvmSynthetic
     @JvmName("ExtensionInvoke")
     fun Class<*>.invoke(name: String? = null, vararg args: Any?): Any? {
-        val paramTypes = args.map { arg -> arg?.let{ it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
-        val reflectedMethods = this.getMethodsMatching(name, parameterTypes=paramTypes)
+        val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
+        val reflectedMethods = this.getMethodsMatching(name, parameterTypes = paramTypes)
         if (reflectedMethods.isEmpty())
-            throw IllegalArgumentException("No method found for name '$name' on class ${this::class.java.name} " +
-                    "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}")
+            throw IllegalArgumentException(
+                "No method found for name '$name' on class ${this::class.java.name} " +
+                        "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}"
+            )
         else if (reflectedMethods.size > 1)
-            throw IllegalArgumentException("Ambiguous method call for name '$name' on class ${this::class.java.name}. " +
-                    "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}")
+            throw IllegalArgumentException(
+                "Ambiguous method call for name '$name' on class ${this::class.java.name}. " +
+                        "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
+            )
         else return reflectedMethods[0].invoke(null, *args)
     }
 
     // Map primitives to their corresponding wrapper types
     private val primitiveToWrapper = mapOf<Class<*>, Class<*>>(
         java.lang.Boolean.TYPE to java.lang.Boolean::class.java,
-        java.lang.Byte.TYPE to java.lang.Byte::class.java,
-        java.lang.Character.TYPE to java.lang.Character::class.java,
-        java.lang.Short.TYPE to java.lang.Short::class.java,
-        java.lang.Integer.TYPE to java.lang.Integer::class.java,
-        java.lang.Long.TYPE to java.lang.Long::class.java,
-        java.lang.Float.TYPE to java.lang.Float::class.java,
-        java.lang.Double.TYPE to java.lang.Double::class.java,
-        java.lang.Void.TYPE to java.lang.Void::class.java
+        Byte.TYPE to Byte::class.java,
+        Character.TYPE to Character::class.java,
+        Short.TYPE to Short::class.java,
+        Integer.TYPE to Integer::class.java,
+        Long.TYPE to Long::class.java,
+        Float.TYPE to Float::class.java,
+        Double.TYPE to Double::class.java,
+        Void.TYPE to Void::class.java
     )
 
     // Map wrapper types back to their primitives
@@ -609,13 +787,13 @@ internal object ReflectionUtils {
     // (Key: method parameter type, Value: Set of types that can be passed as arguments)
     private val primitiveWidensFrom = mapOf<Class<*>, Set<Class<*>>>(
         // Primitive Widening the integer types
-        java.lang.Short.TYPE to setOf(java.lang.Byte.TYPE),
-        java.lang.Integer.TYPE to setOf(java.lang.Byte.TYPE, java.lang.Short.TYPE, java.lang.Character.TYPE),
-        java.lang.Long.TYPE to setOf(java.lang.Byte.TYPE, java.lang.Short.TYPE, java.lang.Character.TYPE, java.lang.Integer.TYPE),
+        Short.TYPE to setOf(Byte.TYPE),
+        Integer.TYPE to setOf(Byte.TYPE, Short.TYPE, Character.TYPE),
+        Long.TYPE to setOf(Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE),
 
         // Primitive Widening the float types
-        java.lang.Float.TYPE to setOf(java.lang.Byte.TYPE, java.lang.Short.TYPE, java.lang.Character.TYPE, java.lang.Integer.TYPE, java.lang.Long.TYPE),
-        java.lang.Double.TYPE to setOf(java.lang.Byte.TYPE, java.lang.Short.TYPE, java.lang.Character.TYPE, java.lang.Integer.TYPE, java.lang.Long.TYPE, java.lang.Float.TYPE)
+        Float.TYPE to setOf(Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE),
+        Double.TYPE to setOf(Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE)
     )
 
     /**
@@ -657,7 +835,8 @@ internal object ReflectionUtils {
             !callerArgType.isPrimitive && methodParamType.isPrimitive -> {
                 val unboxedCallerType = wrapperToPrimitive[callerArgType]
                 if (unboxedCallerType != null)
-                    unboxedCallerType == methodParamType || (primitiveWidensFrom[methodParamType]?.contains(unboxedCallerType) ?: false)
+                    unboxedCallerType == methodParamType || (primitiveWidensFrom[methodParamType]?.contains(unboxedCallerType)
+                        ?: false)
                 else false
             }
 
@@ -702,7 +881,9 @@ internal object ReflectionUtils {
         returnType: Class<*>? = null, // Caller expects return assignable *to* this type
         numOfParams: Int? = null,
         parameterTypes: Array<Class<*>?>? = null // Types caller *intends to pass* (null element means passing null)
-    ): List<ReflectedMethod> { return clazz.getMethodsMatching(name, returnType, numOfParams, parameterTypes)}
+    ): List<ReflectedMethod> {
+        return clazz.getMethodsMatching(name, returnType, numOfParams, parameterTypes)
+    }
 
     /**
      * Finds methods within this class and its hierarchy that match the specified criteria.
@@ -741,45 +922,55 @@ internal object ReflectionUtils {
         numOfParams: Int? = null,
         parameterTypes: Array<Class<*>?>? = null // Types caller *intends to pass* (null element means passing null)
     ): List<ReflectedMethod> {
-        val accessibleMethods: Set<Any> = (this.declaredMethods + this.methods).toSet()
+        val cacheKey = ReflectedMethodCacheKey(
+            targetClass = this,
+            fieldName = name,
+            returnType = returnType,
+            numOfParams = numOfParams,
+            parameterTypes = parameterTypes
+        )
 
-        return accessibleMethods.filter { method ->
-            // 1. Check Name
-            // Use handle to get name and compare if a specific name is requested.
-            if (name != null && name != getMethodNameHandle.invoke(method)) return@filter false
+        return reflectedMethodsCache.getOrPut(cacheKey) {
+            val accessibleMethods: Set<Any> = (this.declaredMethods + this.methods).toSet()
 
-            // 2. Check Return Type
-            if (returnType != null) {
-                val actualReturnType = getMethodReturnHandle.invoke(method) as Class<*>
-                // Check: Can the method's actual return type be assigned to what the caller expects?
-                // (e.g., caller expects Number, method returns Integer -> OK)
-                if (!returnType.isAssignableFrom(actualReturnType)) return@filter false
-            }
+            accessibleMethods.filter { method ->
+                // 1. Check Name
+                // Use handle to get name and compare if a specific name is requested.
+                if (name != null && name != getMethodNameHandle.invoke(method)) return@filter false
 
-            // --- Parameter Checks ---
-            // Fetch actual parameter types using the handle *only if needed*.
-            if (numOfParams != null || parameterTypes != null){
-                @Suppress("UNCHECKED_CAST")
-                val actualParamTypes = getMethodParametersHandle.invoke(method) as Array<Class<*>>
+                // 2. Check Return Type
+                if (returnType != null) {
+                    val actualReturnType = getMethodReturnHandle.invoke(method) as Class<*>
+                    // Check: Can the method's actual return type be assigned to what the caller expects?
+                    // (e.g., caller expects Number, method returns Integer -> OK)
+                    if (!returnType.isAssignableFrom(actualReturnType)) return@filter false
+                }
 
-                // 3. Check Number of Parameters
-                if (numOfParams != null && numOfParams != actualParamTypes.size) return@filter false
+                // --- Parameter Checks ---
+                // Fetch actual parameter types using the handle *only if needed*.
+                if (numOfParams != null || parameterTypes != null) {
+                    @Suppress("UNCHECKED_CAST")
+                    val actualParamTypes = getMethodParametersHandle.invoke(method) as Array<Class<*>>
 
-                // 4. Check Specific Parameter Types (using invoke compatibility rules via helper)
-                if (parameterTypes != null) {
-                    // First make sure that the number of params matches
-                    if (parameterTypes.size != actualParamTypes.size) return@filter false
+                    // 3. Check Number of Parameters
+                    if (numOfParams != null && numOfParams != actualParamTypes.size) return@filter false
 
-                    // Check each parameter pair for compatibility using the external helper function.
-                    parameterTypes.forEachIndexed { index, callerArgType ->
-                        if (!isParameterCompatible(actualParamTypes[index], callerArgType)) return@filter false
+                    // 4. Check Specific Parameter Types (using invoke compatibility rules via helper)
+                    if (parameterTypes != null) {
+                        // First make sure that the number of params matches
+                        if (parameterTypes.size != actualParamTypes.size) return@filter false
+
+                        // Check each parameter pair for compatibility using the external helper function.
+                        parameterTypes.forEachIndexed { index, callerArgType ->
+                            if (!isParameterCompatible(actualParamTypes[index], callerArgType)) return@filter false
+                        }
                     }
                 }
-            }
 
-            // If all checks passed up to this point, keep the method
-            return@filter true
-        }.map { method -> ReflectedMethod(method) } // Wrap the matching method objects
+                // If all checks passed up to this point, keep the method
+                return@filter true
+            }.map { method -> ReflectedMethod(method) } // Wrap the matching method objects
+        }
     }
 
     /**
@@ -804,7 +995,9 @@ internal object ReflectionUtils {
         returnType: Class<*>? = null, // Caller expects return assignable *to* this type
         numOfParams: Int? = null,
         parameterTypes: Array<Class<*>?>? = null // Types caller *intends to pass* (null element means passing null)
-    ): List<ReflectedMethod> { return instance::class.java.getMethodsMatching(name, returnType, numOfParams, parameterTypes)}
+    ): List<ReflectedMethod> {
+        return instance::class.java.getMethodsMatching(name, returnType, numOfParams, parameterTypes)
+    }
 
     /**
      * Finds methods within this object's class and its hierarchy that match the specified criteria.
@@ -827,7 +1020,9 @@ internal object ReflectionUtils {
         returnType: Class<*>? = null,
         numOfParams: Int? = null,
         parameterTypes: Array<Class<*>?>? = null
-    ): List<ReflectedMethod> { return this::class.java.getMethodsMatching(name, returnType, numOfParams, parameterTypes) }
+    ): List<ReflectedMethod> {
+        return this::class.java.getMethodsMatching(name, returnType, numOfParams, parameterTypes)
+    }
 
     /**
      * Finds constructors within `clazz`'s class that match the specified criteria.
@@ -859,7 +1054,9 @@ internal object ReflectionUtils {
         clazz: Class<*>,
         numOfParams: Int? = null,
         parameterTypes: Array<Class<*>?>? = null
-    ): List<ReflectedConstructor> { return clazz.getConstructorsMatching(numOfParams, parameterTypes)}
+    ): List<ReflectedConstructor> {
+        return clazz.getConstructorsMatching(numOfParams, parameterTypes)
+    }
 
 
     /**
@@ -892,26 +1089,34 @@ internal object ReflectionUtils {
         numOfParams: Int? = null,
         parameterTypes: Array<Class<*>?>? = null
     ): List<ReflectedConstructor> {
-        return this.declaredConstructors.filter { constructor ->
-            // Get actual parameters
-            @Suppress("UNCHECKED_CAST")
-            val actualParamTypes = getConstructorParametersHandle.invoke(constructor) as Array<Class<*>>
+        val cacheKey = ReflectedConstructorsCacheKey(
+            targetClass = this,
+            numOfParams = numOfParams,
+            parameterTypes = parameterTypes
+        )
 
-            // Check num of params
-            if (numOfParams != null && numOfParams != actualParamTypes.size) return@filter false
+        return ReflectedConstructorsCache.getOrPut(cacheKey) {
+            this.declaredConstructors.filter { constructor ->
+                // Get actual parameters
+                @Suppress("UNCHECKED_CAST")
+                val actualParamTypes = getConstructorParametersHandle.invoke(constructor) as Array<Class<*>> // Example handle
 
-            // Check specific parameter types using isParameterCompatible
-            if (parameterTypes != null) {
-                // First make sure that the number of params matches
-                if (parameterTypes.size != actualParamTypes.size) return@filter false
+                // Check num of params
+                if (numOfParams != null && numOfParams != actualParamTypes.size) return@filter false
 
-                // Check each parameter pair for compatibility using the external helper function.
-                parameterTypes.forEachIndexed { index, callerArgType ->
-                    if (!isParameterCompatible(actualParamTypes[index], callerArgType)) return@filter false
+                // Check specific parameter types using isParameterCompatible
+                if (parameterTypes != null) {
+                    // First make sure that the number of params matches
+                    if (parameterTypes.size != actualParamTypes.size) return@filter false
+
+                    // Check each parameter pair for compatibility using the external helper function.
+                    parameterTypes.forEachIndexed { index, callerArgType ->
+                        if (!isParameterCompatible(actualParamTypes[index], callerArgType)) return@filter false
+                    }
                 }
-            }
-            return@filter true
-        }.map { ReflectedConstructor(it) }
+                return@filter true
+            }.map { ReflectedConstructor(it) }
+        }
     }
 
 
@@ -927,6 +1132,7 @@ internal object ReflectionUtils {
     class ReflectedField(private val field: Any) {
         val type: Class<*> = getFieldTypeHandle.invoke(field) as Class<*>
         val name: String = getFieldNameHandle.invoke(field) as String
+
         /**
          * Gets the value of the wrapped field from the given object instance.
          * Automatically makes the field accessible before retrieving the value.
@@ -935,8 +1141,9 @@ internal object ReflectionUtils {
          * @return The value of the field. Primitive types will be boxed. Returns `null` if the field value is `null`.
          */
         fun get(instance: Any?): Any? {
+            val target = instance
             setFieldAccessibleHandle.invoke(field, true)
-            return getFieldHandle.invoke(field, instance)
+            return getFieldHandle.invoke(field, target)
         }
 
         /**
@@ -947,8 +1154,9 @@ internal object ReflectionUtils {
          * @param value The new value to assign to the field.
          */
         fun set(instance: Any?, value: Any?) {
+            val target = instance
             setFieldAccessibleHandle.invoke(field, true)
-            setFieldHandle.invoke(field, instance, value)
+            setFieldHandle.invoke(field, target, value)
         }
     }
 
@@ -967,6 +1175,7 @@ internal object ReflectionUtils {
         val parameterTypes: Array<Class<*>> = getMethodParametersHandle.invoke(method) as Array<Class<*>>
         val returnType: Class<*>? = getMethodReturnHandle.invoke(method) as Class<*>?
         val name: String = getMethodNameHandle.invoke(method) as String
+
         /**
          * Invokes the wrapped method on the given object instance with the specified arguments.
          * Automatically makes the method accessible before invocation.
@@ -977,8 +1186,9 @@ internal object ReflectionUtils {
          *         has a `void` return type or explicitly returns `null`.
          */
         fun invoke(instance: Any?, vararg arguments: Any?): Any? {
+            val target = instance
             setMethodAccessibleHandle.invoke(method, true)
-            return invokeMethodHandle.invoke(method, instance, arguments)
+            return invokeMethodHandle.invoke(method, target, arguments)
         }
     }
 
@@ -993,6 +1203,7 @@ internal object ReflectionUtils {
     class ReflectedConstructor(private val constructor: Any) {
         @Suppress("UNCHECKED_CAST")
         val parameterTypes: Array<Class<*>> = getConstructorParametersHandle.invoke(constructor) as Array<Class<*>>
+
         /**
          * Creates a new instance by invoking the wrapped constructor with the specified arguments.
          * Automatically makes the constructor accessible before invocation.

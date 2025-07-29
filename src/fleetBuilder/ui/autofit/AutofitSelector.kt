@@ -3,7 +3,6 @@ package fleetBuilder.ui.autofit
 import MagicLib.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
-import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -13,6 +12,7 @@ import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.integration.combat.CombatAutofitAdder
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
+import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import kotlin.math.max
 
@@ -235,42 +235,8 @@ internal object AutofitSelector {
         val descriptionYOffset = 2f
         val topPad = 5f
 
-        val shipPreview = createShipPreview(hullVariantSpec, width, width)
+        val shipPreview = createShipPreview(hullVariantSpec, width, width, showFighters = true)
         selectorPanel.addComponent(shipPreview).inTL(0f, topPad)
-
-        var flipSide = false
-        var pushDown = 0f
-
-        var fighterBayCount = 0//hullVariantSpec.launchBaysSlotIds.size)//This does not seem to work?
-        if ((hullVariantSpec as ShipVariantAPI).hullSpec.fighterBays > fighterBayCount)
-            fighterBayCount = (hullVariantSpec as ShipVariantAPI).hullSpec.fighterBays
-        if (hullVariantSpec.wings.size > fighterBayCount)
-            fighterBayCount = hullVariantSpec.wings.size
-
-        for (i in 0 until fighterBayCount) {
-            val wingSpec = hullVariantSpec.getWing(i)
-
-            val fighterPreview: UIPanelAPI
-
-            if (wingSpec == null) {
-                //TODO, display 'fighter_blank' when no fighter is in this slot
-                continue
-
-            } else {
-                fighterPreview = createShipPreview((wingSpec.variant as HullVariantSpec), 64f, 64f)
-            }
-
-            val posAPI = selectorPanel.addComponent(fighterPreview)
-            if (topPad + pushDown > width - descriptionHeight && !flipSide) {
-                pushDown = 0f
-                flipSide = true
-            }
-            if (!flipSide)
-                posAPI.inTL(-16f, topPad + pushDown)
-            else
-                posAPI.inTR(-16f, topPad + pushDown)
-            pushDown += 32f
-        }
 
         val textElement = selectorPanel.createUIElement(width, descriptionHeight - topPad, false)
         selectorPanel.addUIElement(textElement)
@@ -286,22 +252,31 @@ internal object AutofitSelector {
 
     fun createShipPreview(
         hullVariantSpec: HullVariantSpec,
-        width: Float, height: Float
+        width: Float, height: Float,
+        scaleDownSmallerShips: Boolean = false,
+        showFighters: Boolean = false,
+        setSchematicMode: Boolean = false
     ): UIPanelAPI {
 
         val clonedVariant = hullVariantSpec.clone()
-        /*MagicPaintjobManager.removePaintjobFromShip(clonedVariant)
-        clonedVariant.moduleVariants?.values?.forEach { moduleVariant ->
-            MagicPaintjobManager.removePaintjobFromShip(moduleVariant as ShipVariantAPI)
-        }*/
 
         val shipPreview = ReflectionUtils.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!!
         ReflectionUtils.invoke("setVariant", shipPreview, clonedVariant)
         ReflectionUtils.invoke("overrideVariant", shipPreview, clonedVariant)
         ReflectionUtils.invoke("setShowBorder", shipPreview, false)
-        ReflectionUtils.invoke("setScaleDownSmallerShipsMagnitude", shipPreview, 1f)
+
+        if (!scaleDownSmallerShips)
+            ReflectionUtils.invoke("setScaleDownSmallerShipsMagnitude", shipPreview, 1f)
+
         ReflectionUtils.invoke("adjustOverlay", shipPreview, 0f, 0f)
+
         (shipPreview as UIPanelAPI).setSize(width, height)
+
+        if (showFighters)
+            shipPreview.invoke("setShowFighters", true)
+
+        if (setSchematicMode)
+            shipPreview.invoke("setSchematicMode", true)
 
         /*for(slot in (clonedVariant as ShipVariantAPI).fittedWeaponSlots){
             val weapon = clonedVariant.getWeaponSpec(slot)
@@ -311,16 +286,6 @@ internal object AutofitSelector {
 
         // make the ship list so the ships exist when we try and get them
         ReflectionUtils.invoke("prepareShip", shipPreview)
-
-        // if the paintjob exists, replace the sprites
-        /*
-        basePaintjobSpec?.let { paintjob ->
-            for(ship in ReflectionUtils.get(MagicPaintjobCombatRefitAdder.SHIPS_FIELD!!, shipPreview) as Array<ShipAPI>){
-                MagicPaintjobManager.getPaintjobsForHull(ship.hullSpec).firstOrNull {
-                    it.paintjobFamily?.equals(paintjob.paintjobFamily) == true || it.id == paintjob.id
-                }?.let { MagicPaintjobManager.applyPaintjob(ship, it) }
-            }
-        }*/
 
         return shipPreview
     }

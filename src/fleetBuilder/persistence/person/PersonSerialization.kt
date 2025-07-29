@@ -1,4 +1,4 @@
-package fleetBuilder.persistence
+package fleetBuilder.persistence.person
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
@@ -7,8 +7,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
-import fleetBuilder.persistence.PersonSerialization.savePersonToJson
+import fleetBuilder.config.ModSettings
+import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJson
+import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
 import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
@@ -190,7 +191,7 @@ object PersonSerialization {
             faction.femalePortraits.pick()
     }
 
-    fun buildPersonFromParsed(
+    fun buildPersonFull(
         rawData: ParsedPersonData,
         settings: PersonSettings
     ): Pair<PersonAPI, MissingElements> {
@@ -219,7 +220,7 @@ object PersonSerialization {
         // Extract raw data from JSON
         val rawData = extractPersonDataFromJson(json)
 
-        val (person, subMissing) = buildPersonFromParsed(rawData, settings)
+        val (person, subMissing) = buildPersonFull(rawData, settings)
         missing.add(subMissing)
 
         return person to missing
@@ -278,7 +279,11 @@ object PersonSerialization {
 
         val trueMemKeysJSON = JSONArray()
 
+        val storedOfficer = person.memoryWithoutUpdate.keys.contains(ModSettings.storedOfficerTag)
+
         person.memoryWithoutUpdate.keys.forEach { key ->
+            if (storedOfficer && key == Misc.CAPTAIN_UNREMOVABLE) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
+
             val value = person.memoryWithoutUpdate.get(key)
             if (value is Boolean && value) {
                 trueMemKeysJSON.put(key)

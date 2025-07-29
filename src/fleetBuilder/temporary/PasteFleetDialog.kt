@@ -1,5 +1,5 @@
 package fleetBuilder.temporary
-
+/*
 import MagicLib.onClick
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.ButtonAPI
@@ -15,13 +15,13 @@ class PasteFleetDialog(
     private lateinit var button2: ButtonAPI
     private lateinit var button3: ButtonAPI
 
-    override fun createContentForDialog(panelAPI: CustomPanelAPI) {
+    override fun createContentForDialog() {
         val buttonWidth = 200f
         val buttonHeight = 24f
         val spacing = 10f
 
         val totalHeight = buttonHeight * 3 + spacing * 2
-        val ui = panelAPI.createUIElement(buttonWidth, totalHeight, false)
+        val ui = panel.createUIElement(buttonWidth, totalHeight, false)
 
         button1 = ui.addButton("Add to fleet", null, buttonWidth, buttonHeight, 3f)
         button1.onClick {
@@ -45,10 +45,12 @@ class PasteFleetDialog(
             forceDismiss()
         }
 
-        panelAPI.addUIElement(ui).inTL(x, y)
+        panel.addUIElement(ui).inTL(x, y)
     }
 
     override fun processInput(events: MutableList<InputEventAPI>) {
         super.processInput(events)
     }
 }
+
+ */

@@ -140,11 +140,11 @@ class PopUpUIDialog(
 
     val buttonHeight = 24f
 
-    override fun createContentForDialog(panelAPI: CustomPanelAPI) {
-        val buttonWidth = panelAPI.position.width - (x * 2)
+    override fun createContentForDialog() {
+        val buttonWidth = panel.position.width - (x * 2)
 
 
-        val ui = panelAPI.createUIElement(buttonWidth, panelAPI.position.height, false)
+        val ui = panel.createUIElement(buttonWidth, panel.position.height, false)
         ui.addSpacer(0f).position.inTL(0f, 0f)
 
         for (entry in entries) {
@@ -202,23 +202,22 @@ class PopUpUIDialog(
                     if (entry.highlights.isNotEmpty() && entry.highlightWords.isNotEmpty()) {
                         ui.addPara(entry.text, 0f, entry.highlights, *entry.highlightWords).setAlignment(entry.alignment)
                     } else {
-                        ui.addPara(entry.text, 0f)
+                        ui.addPara(entry.text, 0f).setAlignment(entry.alignment)
                     }
                 }
             }
         }
 
-        panelAPI.addUIElement(ui).inTL(x, y)
+        panel.addUIElement(ui).inTL(x, y)
 
         if (addConfirmButton || addCancelButton) {
             createConfirmAndCancelSection(
-                panelAPI,
                 addCancelButton = addCancelButton,
                 addConfirmButton = addConfirmButton
             )
         }
         if (addCloseButton)
-            addCloseButton(panelAPI)
+            addCloseButton()
     }
 
     override fun advance(amount: Float) {
