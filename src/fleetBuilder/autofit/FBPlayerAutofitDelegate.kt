@@ -1,7 +1,6 @@
 package fleetBuilder.autofit
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.campaign.FactionAPI

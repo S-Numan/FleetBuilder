@@ -1,8 +1,7 @@
-package fleetBuilder.persistence
+package fleetBuilder.persistence.cargo
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
-import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import fleetBuilder.variants.MissingElementsExtended
@@ -90,21 +89,21 @@ object CargoSerialization {
             }
 
             when (stack.type) {
-                CargoItemType.RESOURCES -> {
+                CargoAPI.CargoItemType.RESOURCES -> {
                     obj.put("id", stack.commodityId)
                 }
 
-                CargoItemType.WEAPONS -> {
+                CargoAPI.CargoItemType.WEAPONS -> {
                     val spec = stack.weaponSpecIfWeapon ?: continue
                     obj.put("id", spec.weaponId)
                 }
 
-                CargoItemType.FIGHTER_CHIP -> {
+                CargoAPI.CargoItemType.FIGHTER_CHIP -> {
                     val spec = stack.fighterWingSpecIfWing ?: continue
                     obj.put("id", spec.id)
                 }
 
-                CargoItemType.SPECIAL -> {
+                CargoAPI.CargoItemType.SPECIAL -> {
                     val special = stack.specialDataIfSpecial ?: continue
                     obj.put("id", special.id)
                     obj.put("data", special.data)

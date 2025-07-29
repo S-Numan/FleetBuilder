@@ -1,23 +1,15 @@
-package fleetBuilder.persistence
+package fleetBuilder.persistence.member
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
-import fleetBuilder.persistence.MemberSerialization.getMemberFromJson
-import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.PersonSerialization.buildPerson
-import fleetBuilder.persistence.PersonSerialization.extractPersonDataFromJson
-import fleetBuilder.persistence.PersonSerialization.savePersonToJson
-import fleetBuilder.persistence.PersonSerialization.validateAndCleanPersonData
-import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
-import fleetBuilder.persistence.VariantSerialization.buildVariant
-import fleetBuilder.persistence.VariantSerialization.extractVariantDataFromJson
-import fleetBuilder.persistence.VariantSerialization.filterParsedVariantData
-import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
-import fleetBuilder.persistence.VariantSerialization.validateAndCleanVariantData
+import fleetBuilder.persistence.member.MemberSerialization.getMemberFromJson
+import fleetBuilder.persistence.member.MemberSerialization.saveMemberToJson
+import fleetBuilder.persistence.person.PersonSerialization
+import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
-import fleetBuilder.variants.VariantLib.createErrorVariant
+import fleetBuilder.variants.VariantLib
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
 
@@ -52,13 +44,13 @@ object MemberSerialization {
 
 
         val variantData = if (variantJson != null)
-            extractVariantDataFromJson(variantJson)
+            VariantSerialization.extractVariantDataFromJson(variantJson)
         else
             null
 
         val officerJson = json.optJSONObject("officer")
         val personData = if (officerJson != null)
-            extractPersonDataFromJson(officerJson)
+            PersonSerialization.extractPersonDataFromJson(officerJson)
         else
             null
 
@@ -73,7 +65,7 @@ object MemberSerialization {
 
     fun filterParsedMemberData(data: ParsedMemberData, settings: MemberSettings): ParsedMemberData {
         val personData = if (settings.includeOfficer) data.personData else null
-        val variantData = if (data.variantData != null) filterParsedVariantData(data.variantData, settings.variantSettings) else null
+        val variantData = if (data.variantData != null) VariantSerialization.filterParsedVariantData(data.variantData, settings.variantSettings) else null
 
         val cr = if (settings.includeCR) data.cr else 0.7f
 
@@ -85,10 +77,10 @@ object MemberSerialization {
     }
 
     fun validateAndCleanMemberData(data: ParsedMemberData, missing: MissingElements): ParsedMemberData {
-        val personData = if (data.personData != null) validateAndCleanPersonData(data.personData, missing) else null
+        val personData = if (data.personData != null) PersonSerialization.validateAndCleanPersonData(data.personData, missing) else null
 
         val variantData = if (data.variantData != null) {
-            validateAndCleanVariantData(data.variantData, missing)
+            VariantSerialization.validateAndCleanVariantData(data.variantData, missing)
         } else {
             missing.hullIds.add("")
             null
@@ -103,9 +95,9 @@ object MemberSerialization {
 
     fun buildMember(data: ParsedMemberData): FleetMemberAPI {
         val variant = if (data.variantData != null)
-            buildVariant(data.variantData)
+            VariantSerialization.buildVariant(data.variantData)
         else
-            createErrorVariant()
+            VariantLib.createErrorVariant()
 
         val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)
 
@@ -116,7 +108,7 @@ object MemberSerialization {
 
         // Officer (optional)
         if (data.personData != null)
-            member.captain = buildPerson(data.personData)
+            member.captain = PersonSerialization.buildPerson(data.personData)
 
         return member
     }
@@ -176,7 +168,7 @@ object MemberSerialization {
         includeModInfo: Boolean = true,
     ): JSONObject {
         val memberJson = JSONObject()
-        val variantJson = saveVariantToJson(member.variant, settings.variantSettings, includeModInfo = false)
+        val variantJson = VariantSerialization.saveVariantToJson(member.variant, settings.variantSettings, includeModInfo = false)
         memberJson.put("variant", variantJson)
         //memberJson.put("id", member.id)
         if (settings.includeCR) {
@@ -190,13 +182,13 @@ object MemberSerialization {
 
         if (settings.includeOfficer) {
             if (member.captain != null && !member.captain.isDefault) {
-                val officerJson = savePersonToJson(member.captain, settings.personSettings)
+                val officerJson = PersonSerialization.savePersonToJson(member.captain, settings.personSettings)
                 memberJson.put("officer", officerJson)
             }
         }
 
         if (includeModInfo)
-            addVariantSourceModsToJson(member.variant, memberJson, settings.variantSettings)
+            VariantSerialization.addVariantSourceModsToJson(member.variant, memberJson, settings.variantSettings)
 
         return memberJson
     }

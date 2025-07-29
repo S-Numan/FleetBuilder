@@ -1,5 +1,6 @@
 package fleetBuilder.util
 
+
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
@@ -23,21 +24,20 @@ import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.CommanderShuttle.playerShuttleExists
 import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
-import fleetBuilder.persistence.CargoSerialization.getCargoFromJson
-import fleetBuilder.persistence.CargoSerialization.saveCargoToJson
-import fleetBuilder.persistence.FleetSerialization
-import fleetBuilder.persistence.FleetSerialization.buildFleet
-import fleetBuilder.persistence.FleetSerialization.buildFleetFull
-import fleetBuilder.persistence.FleetSerialization.extractFleetDataFromJson
-import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
-import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
-import fleetBuilder.persistence.FleetSerialization.validateAndCleanFleetData
-import fleetBuilder.persistence.MemberSerialization
-import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.PersonSerialization.getPersonFromJsonWithMissing
-import fleetBuilder.persistence.PersonSerialization.savePersonToJson
-import fleetBuilder.persistence.VariantSerialization
-import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.persistence.cargo.CargoSerialization.getCargoFromJson
+import fleetBuilder.persistence.cargo.CargoSerialization.saveCargoToJson
+import fleetBuilder.persistence.fleet.FleetSerialization
+import fleetBuilder.persistence.fleet.FleetSerialization.buildFleetFull
+import fleetBuilder.persistence.fleet.FleetSerialization.extractFleetDataFromJson
+import fleetBuilder.persistence.fleet.FleetSerialization.getFleetFromJson
+import fleetBuilder.persistence.fleet.FleetSerialization.saveFleetToJson
+import fleetBuilder.persistence.fleet.FleetSerialization.validateAndCleanFleetData
+import fleetBuilder.persistence.member.MemberSerialization
+import fleetBuilder.persistence.member.MemberSerialization.saveMemberToJson
+import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJsonWithMissing
+import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
+import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
 import fleetBuilder.ui.PopUpUI.PopUpUI
 import fleetBuilder.ui.PopUpUI.PopUpUIDialog
 import fleetBuilder.util.ClipboardUtil.setClipboardText
@@ -631,26 +631,80 @@ object FBMisc {
 
                 val extractedFleet = extractFleetDataFromJson(json)
                 val subMissing = MissingElements()
-                val parsedFleet = validateAndCleanFleetData(extractedFleet, subMissing, settings = FleetSerialization.FleetSettings())
+                val validatedFleet = validateAndCleanFleetData(extractedFleet, subMissing, settings = FleetSerialization.FleetSettings())
 
-                if (parsedFleet.members.isEmpty()) {
+                if (validatedFleet.members.isEmpty()) {
                     reportMissingElementsIfAny(subMissing, "Fleet was empty when pasting")
                     return
                 }
 
                 val dialog = PopUpUIDialog("Paste Fleet into Player Fleet", addCloseButton = true)
 
-                val memberCount = parsedFleet.members.size
-                val officerCount = parsedFleet.members.count { it.personData != null }
+                val memberCount = validatedFleet.members.size
+                val officerCount = validatedFleet.members.count { it.personData != null }
                 dialog.addParagraph(
                     "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
                             if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else ""
                 )
 
-                val missingHullCount = parsedFleet.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
+                val missingHullCount = validatedFleet.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
                 if (missingHullCount > 0)
                     dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
-                
+
+                /*
+                                val tempFleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
+                                buildFleet(validatedFleet, tempFleet.fleetData, settings = FleetSerialization.FleetSettings())
+
+
+                                val fleetGridClass = FleetGrid::class.java
+                                //val fleetGrid = MagicLib.ReflectionUtils.instantiate(fleetGridClass, 2, 2, 32f, 32f, 8f) as? UIComponentAPI
+
+                                val fleetGridConstructor = starficz.ReflectionUtils.getConstructorsMatching(fleetGridClass, numOfParams = 6).getOrNull(0)
+                                val fleetGrid = fleetGridConstructor?.newInstance(2, 2, 32f, 32f, 8f, null) as? UIComponentAPI
+                                if (fleetGrid != null)
+                                    dialog.addCustom(fleetGrid)*/
+
+                /*val custom = Global.getSettings().createCustom(200f, 200f, null)
+                val tooltip = custom.createUIElement(200f, 200f, false)
+                tooltip.addShipList(3, 2, 160f, Misc.getBasePlayerColor(), tempFleet.fleetData.membersListCopy, 0f)
+                val panel = tooltip.invoke("getPanel") as? UIPanelAPI
+                val shipList = panel?.getChildrenCopy()?.getOrNull(0) as? S ?: return
+
+                //shipList.isShowDmods = false
+
+                //tempFleet.fleetData.membersListCopy.forEach { member ->
+                //    shipList.removeIconFor(member as FleetMember?)
+                //}
+                shipList.clear()
+
+                shipList.isShowDmods = true
+                shipList.setUseExpandedTooltip(true)
+                shipList.members.forEach { member ->
+                    //member.
+                }
+                tempFleet.fleetData.membersListCopy.forEach { member ->
+                    shipList.addIconFor(member as FleetMember)
+                    val icon = shipList.invoke("getIconForMember", member)
+                    icon
+
+                }
+
+                //shipList?.invoke("setUseBasicTooltip", true)
+                //val tooltipOptions = shipList?.invoke("getTooltipOptions")
+                //val shipListItems = shipList?.list?.items
+
+                //shipList?
+                //tooltip.isRecreateEveryFrame = true
+
+                custom.addUIElement(tooltip)
+                dialog.addCustom(custom)*/
+
+
+
+
+
+
+
                 dialog.addPadding(8f)
 
                 dialog.addButton("Append to Player Fleet") { fields ->
@@ -830,7 +884,19 @@ object FBMisc {
         var fighterBlueprints: List<String> = listOf(),
         var weaponBlueprints: List<String> = listOf(),
         var hullMods: List<String>? = null
-    )
+    ) {
+        fun isEmpty(): Boolean {
+            return fleet == null &&
+                    aggressionDoctrine == -1 &&
+                    player == null &&
+                    cargo == null &&
+                    (relations == null || relations!!.isEmpty()) &&
+                    shipBlueprints.isEmpty() &&
+                    fighterBlueprints.isEmpty() &&
+                    weaponBlueprints.isEmpty() &&
+                    (hullMods == null || hullMods!!.isEmpty())
+        }
+    }
 
     fun compilePlayerSaveJson(
         json: JSONObject
@@ -845,8 +911,6 @@ object FBMisc {
         if (json.has("cargo")) {
             try {
                 missing.add(getCargoFromJson(json.getJSONArray("cargo"), cargo))
-
-                compiled.cargo = cargo
             } catch (e: Exception) {
                 showError("Failed to load cargo", e)
             }
@@ -859,6 +923,10 @@ object FBMisc {
                 showError("Failed to load credits", e)
             }
         }
+
+        if (cargo.credits.get() > 0 || !cargo.isEmpty)
+            compiled.cargo = cargo
+
 
         if (json.has("relations")) {
             try {
@@ -1071,10 +1139,6 @@ object FBMisc {
             handleKnownHullmods,
             handleOfficers
         )
-
-        if (handleCargo) {
-
-        }
 
         return missing
     }

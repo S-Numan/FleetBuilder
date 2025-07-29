@@ -1,4 +1,4 @@
-package fleetBuilder.persistence
+package fleetBuilder.persistence.person
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
@@ -8,8 +8,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
-import fleetBuilder.persistence.PersonSerialization.getPersonFromJson
-import fleetBuilder.persistence.PersonSerialization.savePersonToJson
+import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJson
+import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
 import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray

@@ -1,4 +1,5 @@
 ## 1.13.0
+- Now supports the Second-in-Command mod when saving/loading fleets (including save transfers) due to request. May need testing.
 - Fixed partially broken missing element reporter
 - Properly report missing cargo and blueprints now.
 - Better handling for loading ships from missing mods.

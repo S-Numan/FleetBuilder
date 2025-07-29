@@ -3,9 +3,9 @@ package fleetBuilder.variants
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.persistence.VariantSerialization
-import fleetBuilder.persistence.VariantSerialization.getVariantFromJson
-import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.variant.VariantSerialization.getVariantFromJson
+import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.getEffectiveHullId
 import org.json.JSONArray

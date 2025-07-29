@@ -27,10 +27,10 @@ import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
-import fleetBuilder.persistence.FleetSerialization
-import fleetBuilder.persistence.MemberSerialization
-import fleetBuilder.persistence.PersonSerialization
-import fleetBuilder.persistence.VariantSerialization
+import fleetBuilder.persistence.fleet.FleetSerialization
+import fleetBuilder.persistence.member.MemberSerialization
+import fleetBuilder.persistence.person.PersonSerialization
+import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.ui.PopUpUI.PopUpUIDialog
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector

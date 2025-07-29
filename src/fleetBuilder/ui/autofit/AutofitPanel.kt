@@ -15,8 +15,8 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.autofit.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.config.ModSettings
-import fleetBuilder.persistence.VariantSerialization
-import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.allDMods

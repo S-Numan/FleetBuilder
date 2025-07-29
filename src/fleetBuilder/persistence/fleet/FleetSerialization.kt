@@ -1,33 +1,25 @@
-package fleetBuilder.persistence
+package fleetBuilder.persistence.fleet
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import fleetBuilder.config.ModSettings.commandShuttleId
-import fleetBuilder.persistence.FleetSerialization.getFleetFromJson
-import fleetBuilder.persistence.FleetSerialization.saveFleetToJson
-import fleetBuilder.persistence.MemberSerialization.buildMember
-import fleetBuilder.persistence.MemberSerialization.filterParsedMemberData
-import fleetBuilder.persistence.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.MemberSerialization.validateAndCleanMemberData
-import fleetBuilder.persistence.PersonSerialization.buildPerson
-import fleetBuilder.persistence.PersonSerialization.extractPersonDataFromJson
-import fleetBuilder.persistence.PersonSerialization.filterParsedPersonData
-import fleetBuilder.persistence.PersonSerialization.savePersonToJson
-import fleetBuilder.persistence.PersonSerialization.validateAndCleanPersonData
-import fleetBuilder.persistence.VariantSerialization.addVariantSourceModsToJson
-import fleetBuilder.persistence.VariantSerialization.extractVariantDataFromJson
-import fleetBuilder.persistence.VariantSerialization.saveVariantToJson
+import fleetBuilder.config.ModSettings
+import fleetBuilder.persistence.fleet.FleetSerialization.getFleetFromJson
+import fleetBuilder.persistence.fleet.FleetSerialization.saveFleetToJson
+import fleetBuilder.persistence.fleet.SecondInCommandSerialization.buildSecondInCommandData
+import fleetBuilder.persistence.fleet.SecondInCommandSerialization.extractSecondInCommandData
+import fleetBuilder.persistence.fleet.SecondInCommandSerialization.saveSecondInCommandData
+import fleetBuilder.persistence.fleet.SecondInCommandSerialization.validateSecondInCommandData
+import fleetBuilder.persistence.member.MemberSerialization
+import fleetBuilder.persistence.person.PersonSerialization
+import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
-import fleetBuilder.variants.VariantLib.createErrorVariant
-import fleetBuilder.variants.VariantLib.getHullIDSet
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
-
 
 object FleetSerialization {
 
@@ -68,7 +60,8 @@ object FleetSerialization {
         val fleetName: String,
         val commander: PersonSerialization.ParsedPersonData?,
         val members: List<MemberSerialization.ParsedMemberData>,
-        val idleOfficers: List<PersonSerialization.ParsedPersonData>
+        val idleOfficers: List<PersonSerialization.ParsedPersonData>,
+        val secondInCommandData: SecondInCommandSerialization.SecondInCommandData?,
     )
 
     fun extractFleetDataFromJson(json: JSONObject): ParsedFleetData {
@@ -78,7 +71,7 @@ object FleetSerialization {
         json.optJSONArray("variants")?.let { variantsArray ->
             for (i in 0 until variantsArray.length()) {
                 variantsArray.optJSONObject(i)?.let {
-                    extractedVariants.add(extractVariantDataFromJson(it))
+                    extractedVariants.add(VariantSerialization.extractVariantDataFromJson(it))
                 }
             }
         }
@@ -91,7 +84,7 @@ object FleetSerialization {
             val isFlagship = memberJson.optBoolean("isFlagship", false)
 
             val variantData = variantById[variantId]?.copy()
-            val personData = memberJson.optJSONObject("officer")?.let { extractPersonDataFromJson(it) }
+            val personData = memberJson.optJSONObject("officer")?.let { PersonSerialization.extractPersonDataFromJson(it) }
 
             members.add(
                 MemberSerialization.ParsedMemberData(
@@ -114,7 +107,7 @@ object FleetSerialization {
                 }
                 null
             } else {
-                extractPersonDataFromJson(it)
+                PersonSerialization.extractPersonDataFromJson(it)
             }
         }
 
@@ -129,16 +122,26 @@ object FleetSerialization {
         json.optJSONArray("idleOfficers")?.let { officersArray ->
             for (i in 0 until officersArray.length()) {
                 officersArray.optJSONObject(i)?.let {
-                    idleOfficers.add(extractPersonDataFromJson(it))
+                    idleOfficers.add(PersonSerialization.extractPersonDataFromJson(it))
                 }
             }
         }
+
+
+        val sicData =
+            if (Global.getSettings().modManager.isModEnabled("second_in_command")) {
+                json.optJSONObject("second_in_command")?.let {
+                    extractSecondInCommandData(it)
+                }
+            } else null
+
 
         return ParsedFleetData(
             fleetName = fleetName,
             commander = commander,
             members = members,
-            idleOfficers = idleOfficers
+            idleOfficers = idleOfficers,
+            secondInCommandData = sicData
         )
     }
 
@@ -146,18 +149,18 @@ object FleetSerialization {
     fun filterParsedFleetData(data: ParsedFleetData, settings: FleetSettings): ParsedFleetData {
 
         var filteredCommander = if (settings.includeCommanderSetFlagship)
-            data.commander?.let { filterParsedPersonData(it, settings.memberSettings.personSettings) }
+            data.commander?.let { PersonSerialization.filterParsedPersonData(it, settings.memberSettings.personSettings) }
         else null
 
         val filteredMembers = data.members.mapNotNull { member ->
-            val filtered = filterParsedMemberData(member, settings.memberSettings)
+            val filtered = MemberSerialization.filterParsedMemberData(member, settings.memberSettings)
             if (filtered.variantData?.hullId in settings.excludeMembersWithHullID ||
                 filtered.variantData?.variantId in settings.excludeMembersWithID
             ) {
                 null
             } else if (filtered.isFlagship && (!settings.includeCommanderAsOfficer || !settings.memberSettings.includeOfficer)) {
                 if (filteredCommander == null && settings.includeCommanderSetFlagship && member.personData != null) {
-                    filteredCommander = filterParsedPersonData(member.personData, settings.memberSettings.personSettings)
+                    filteredCommander = PersonSerialization.filterParsedPersonData(member.personData, settings.memberSettings.personSettings)
                 }
                 filtered.copy(personData = null, isFlagship = false)
             } else if (!settings.memberSettings.includeOfficer) {
@@ -172,7 +175,7 @@ object FleetSerialization {
 
         val filteredIdleOfficers = if (settings.includeIdleOfficers) {
             data.idleOfficers.map {
-                filterParsedPersonData(it, settings.memberSettings.personSettings)
+                PersonSerialization.filterParsedPersonData(it, settings.memberSettings.personSettings)
             }
         } else emptyList()
 
@@ -189,15 +192,15 @@ object FleetSerialization {
         settings: FleetSettings
     ): ParsedFleetData {
         val validatedMembers = data.members.mapNotNull { member ->
-            val validated = validateAndCleanMemberData(member, missing)
+            val validated = MemberSerialization.validateAndCleanMemberData(member, missing)
             if (validated.variantData == null) {
-                validated.copy(extractVariantDataFromJson(saveVariantToJson(createErrorVariant("NOVAR"))))
-            } else if (!getHullIDSet().contains(validated.variantData.hullId)) {//Hull ID does not exist
+                validated.copy(VariantSerialization.extractVariantDataFromJson(VariantSerialization.saveVariantToJson(VariantLib.createErrorVariant("NOVAR"))))
+            } else if (!VariantLib.getHullIDSet().contains(validated.variantData.hullId)) {//Hull ID does not exist
                 missing.hullIds.add(validated.variantData.hullId)
                 if (!settings.excludeMembersWithMissingHullSpec) {
                     val name = "NOHUL:${validated.variantData.hullId}"
                     validated.copy(
-                        extractVariantDataFromJson(saveVariantToJson(createErrorVariant(name))),
+                        VariantSerialization.extractVariantDataFromJson(VariantSerialization.saveVariantToJson(VariantLib.createErrorVariant(name))),
                         shipName = name
                     )
                 } else null
@@ -213,17 +216,21 @@ object FleetSerialization {
         }
 
         val validatedCommander = data.commander?.let {
-            validateAndCleanPersonData(it, missing)
+            PersonSerialization.validateAndCleanPersonData(it, missing)
         }
 
         val validatedIdleOfficers = data.idleOfficers.map {
-            validateAndCleanPersonData(it, missing)
+            PersonSerialization.validateAndCleanPersonData(it, missing)
         }
+
+        if (data.secondInCommandData != null)
+            validateSecondInCommandData(data.secondInCommandData, missing)
 
         return data.copy(
             members = validatedMembers,
             commander = validatedCommander,
-            idleOfficers = validatedIdleOfficers
+            idleOfficers = validatedIdleOfficers,
+            secondInCommandData = data.secondInCommandData
         )
     }
 
@@ -232,7 +239,7 @@ object FleetSerialization {
         campFleet?.name = data.fleetName
 
         data.members.forEach { parsed ->
-            val member = buildMember(parsed)
+            val member = MemberSerialization.buildMember(parsed)
 
             fleet.addFleetMember(member)
 
@@ -271,14 +278,18 @@ object FleetSerialization {
         }
 
         data.commander?.let {
-            campFleet?.commander = buildPerson(it)
+            campFleet?.commander = PersonSerialization.buildPerson(it)
         }
 
         data.idleOfficers.forEach {
-            fleet.addOfficer(buildPerson(it))
+            fleet.addOfficer(PersonSerialization.buildPerson(it))
         }
 
         fleet.syncIfNeeded()
+
+        if (data.secondInCommandData != null && campFleet != null) {
+            buildSecondInCommandData(data.secondInCommandData, campFleet)
+        }
     }
 
     fun buildFleetFull(
@@ -538,11 +549,11 @@ object FleetSerialization {
         var flagshipSet = false
 
         for (member in fleet.membersListCopy) {
-            if (settings.excludeMembersWithID.contains(member.id) || member.variant.hasHullMod(commandShuttleId) || member.hullId in settings.excludeMembersWithHullID)
+            if (settings.excludeMembersWithID.contains(member.id) || member.variant.hasHullMod(ModSettings.commandShuttleId) || member.hullId in settings.excludeMembersWithHullID)
                 continue
 
             if (includeModInfo)
-                addVariantSourceModsToJson(member.variant, fleetJson, settings.memberSettings.variantSettings)
+                VariantSerialization.addVariantSourceModsToJson(member.variant, fleetJson, settings.memberSettings.variantSettings)
 
             val isCommander = member.captain?.id == fleet.commander?.id
 
@@ -552,7 +563,7 @@ object FleetSerialization {
                 else -> true
             }
 
-            val memberJson = saveMemberToJson(
+            val memberJson = MemberSerialization.saveMemberToJson(
                 member,
                 settings.memberSettings.copy().apply { this.includeOfficer = includeOfficer },
                 includeModInfo = false
@@ -603,7 +614,7 @@ object FleetSerialization {
 
         if (settings.includeCommanderSetFlagship && !flagshipSet && !fleet.commander.isDefault) {
             fleetJson.put(
-                "commander", savePersonToJson(
+                "commander", PersonSerialization.savePersonToJson(
                     fleet.commander,
                     settings.memberSettings.personSettings
                 )
@@ -620,17 +631,23 @@ object FleetSerialization {
             val idleOfficers = fleet.officersCopy.mapNotNull { officerData ->
                 val person = officerData.person
                 if (!person.isDefault && person.id != fleet.commander.id && fleet.getMemberWithCaptain(person) == null) {
-                    savePersonToJson(person, settings.memberSettings.personSettings)
+                    PersonSerialization.savePersonToJson(person, settings.memberSettings.personSettings)
                 } else null
             }
             fleetJson.put("idleOfficers", JSONArray(idleOfficers))
         }
 
-        if (campFleet != null)
+        if (campFleet != null) {
             fleetJson.put("fleetName", campFleet.name)
+
+            if (Global.getSettings().modManager.isModEnabled("second_in_command"))
+                saveSecondInCommandData(campFleet, fleetJson)
+
+        }
 
         return fleetJson
     }
+
 
     /*
     @JvmOverloads
