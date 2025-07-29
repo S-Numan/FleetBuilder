@@ -238,11 +238,13 @@ class FBPlayerAutofitDelegate(
     }
 
     override fun isPriority(weapon: WeaponSpecAPI): Boolean {
-        return faction.isWeaponPriority(weapon.weaponId)
+        //return faction.isWeaponPriority(weapon.weaponId)
+        return false
     }
 
     override fun isPriority(wing: FighterWingSpecAPI): Boolean {
-        return faction.isFighterPriority(wing.id)
+        //return faction.isFighterPriority(wing.id)
+        return false
     }
 
     override fun getAvailableHullmods(): MutableList<String> {
