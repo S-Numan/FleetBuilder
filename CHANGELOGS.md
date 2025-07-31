@@ -1,3 +1,6 @@
+## 1.14.0
+- Moved the /SaveTransfer folder to be inside the /FleetBuilder folder for organization purposes.
+
 ## 1.13.1
 - Fixed faction priority messing up player autofit
 
