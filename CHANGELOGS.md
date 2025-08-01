@@ -13,7 +13,6 @@
 - Store officers now works with IndEvo Repair Docks.
 - Autofit now properly prevents you from removing hullmods which require a dock
 
-
 ## 1.12.0
 - Fix the CommandShuttle being unable to jump even with other members present.
 - Minor performance optimizations

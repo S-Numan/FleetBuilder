@@ -246,7 +246,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
             dialog.addPadding(8f)
             dialog.addToggle("Max XP", default = true)
-            dialog.addToggle("Max Skills Pick Per Level", default = true)
+            dialog.addToggle("Max Skill Picks Per Level", default = true)
 
             dialog.addPadding(8f)
             dialog.addParagraph("Personality")
@@ -276,7 +276,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                 person.setPersonality(personality.lowercase());
 
-                if (fields["Max Skills Pick Per Level"] as Boolean)
+                if (fields["Max Skill Picks Per Level"] as Boolean)
                     person.memoryWithoutUpdate.set("\$officerSkillPicksPerLevel", officerSkillCount)
                 if (maxLevel != null)
                     person.memoryWithoutUpdate.set("\$officerMaxLevel", maxLevel)
