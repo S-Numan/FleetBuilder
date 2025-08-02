@@ -1,0 +1,471 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "skills": {
+            "tactical_drills":1,
+            "coordinated_maneuvers":1,
+            "wolfpack_tactics":1,
+            "crew_training":1,
+            "fighter_uplink":1,
+            "carrier_group":1,
+            "officer_training":1,
+            "officer_management":1,
+            "best_of_the_best":1,
+            "support_doctrine":0,
+
+            "navigation":1,
+            "sensors":1,
+            "electronic_warfare":1,
+            "flux_regulation":1,
+            "phase_corps":1,
+            "neural_link":1,
+            "cybernetic_augmentation":1,
+            "automated_ships":0,
+
+            "bulk_transport":1,
+            "salvaging":1,
+            "field_repairs":1,
+            "containment_procedures":1,
+            "makeshift_equipment":1,
+            "industrial_planning":1,
+            "hull_restoration":1,
+            "derelict_contingent":0
+        }
+    },
+    "fleetName": "Idiopathic",
+    "idleOfficers": [],
+    "members": [
+        {
+            "cr": 1,
+            "name": "MedusaSO1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_medusa_so"
+        },
+        {
+            "cr": 1,
+            "name": "MedusaSO2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_medusa_so"
+        },
+        {
+            "cr": 1,
+            "name": "MedusaSO3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_medusa_so"
+        },
+        {
+            "cr": 1,
+            "name": "MedusaSO4",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_medusa_so"
+        },
+        {
+            "cr": 1,
+            "name": "MedusaSO5",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_medusa_so"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa6",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_medusa_lr"
+        },
+        {
+            "cr": 1,
+            "name": "Omen1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_omen_so"
+        },
+        {
+            "cr": 1,
+            "name": "Omen2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_omen_so"
+        },
+        {
+            "cr": 1,
+            "name": "Omen3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_omen_so2"
+        },
+        {
+            "cr": 1,
+            "name": "Centurion",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "missile_specialization": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1
+                },
+                "tags": []
+            },
+            "variantId": "8454_centurion_so"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 10,
+            "hullId": "medusa",
+            "hullMods": [
+                "safetyoverrides",
+                "hardened_subsystems",
+                "frontemitter",
+                "converted_hangar"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "hardenedshieldemitter",
+                "extendedshieldemitter",
+                "auxiliarythrusters"
+            ],
+            "variantId": "8454_medusa_so",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "ionpulser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "heavyblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "lightdualmg",
+                        "WS 009": "lightdualmg"
+                    }
+                }
+            ],
+            "wings": ["talon_wing"]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 13,
+            "hullId": "medusa",
+            "hullMods": [
+                "frontemitter",
+                "advancedoptics",
+                "targetingunit",
+                "hardened_subsystems",
+                "converted_hangar"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "hardenedshieldemitter",
+                "magazines",
+                "extendedshieldemitter"
+            ],
+            "variantId": "8454_medusa_lr",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "lightneedler",
+                        "WS 009": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "ionbeam",
+                        "WS 007": "irautolance"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "pdburst"}
+                }
+            ],
+            "wings": ["talon_wing"]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 6,
+            "fluxVents": 0,
+            "hullId": "omen",
+            "hullMods": [
+                "safetyoverrides",
+                "hardened_subsystems"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "hardenedshieldemitter",
+                "missile_autoloader",
+                "auxiliarythrusters"
+            ],
+            "variantId": "8454_omen_so",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "mininglaser",
+                        "WS 003": "sabot"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 8,
+            "fluxVents": 0,
+            "hullId": "omen",
+            "hullMods": [
+                "safetyoverrides",
+                "hardened_subsystems"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "hardenedshieldemitter",
+                "missile_autoloader",
+                "auxiliarythrusters"
+            ],
+            "variantId": "8454_omen_so2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "mininglaser",
+                        "WS 003": "reaper"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 3,
+            "hullId": "centurion",
+            "hullMods": [
+                "safetyoverrides",
+                "heavyarmor"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "missile_autoloader",
+                "auxiliarythrusters",
+                "missleracks"
+            ],
+            "variantId": "8454_centurion_so",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "amblaster",
+                        "WS 002": "ioncannon"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "lightdualmg"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "lightdualmg"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "harpoon"}
+                }
+            ]
+        }
+    ]
+}
