@@ -118,7 +118,7 @@ object ModSettings {
 
         val hullModsToNeverSaveJSONArray = neverHullModsJson.optJSONArray("HullModsToNeverSave") ?: JSONArray()
 
-        listOf("rat_controller", "rat_artifact_controller").forEach { mod ->
+        listOf("rat_controller", "rat_artifact_controller", "SCVE_officerdetails_X").forEach { mod ->
             if (!hullModsToNeverSaveJSONArray.containsString(mod)) {
                 hullModsToNeverSaveJSONArray.put(mod)
             }
