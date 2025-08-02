@@ -634,7 +634,8 @@ object FleetSerialization {
                     PersonSerialization.savePersonToJson(person, settings.memberSettings.personSettings)
                 } else null
             }
-            fleetJson.put("idleOfficers", JSONArray(idleOfficers))
+            if (idleOfficers.isNotEmpty())
+                fleetJson.put("idleOfficers", JSONArray(idleOfficers))
         }
 
         if (campFleet != null) {
