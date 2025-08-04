@@ -107,7 +107,7 @@ object ClipboardUtil {
     fun getClipboardJson(): JSONObject? {
         val contents = getClipboardFileContents()
 
-        val clipboardText = contents ?: getClipboardTextSafe()
+        val clipboardText = contents ?: cleanJsonStringInput(getClipboardTextSafe())
 
         if (clipboardText.isNullOrEmpty()) return null
 
@@ -118,5 +118,16 @@ object ClipboardUtil {
             //Global.getLogger(this.javaClass).warn("Failed to convert clipboard to json")
         }
         return json
+    }
+
+    fun cleanJsonStringInput(raw: String?): String? {
+        if (raw == null) return null
+
+        return raw.lines()
+            .map { line ->
+                line.replace(Regex("""\s*#.*$"""), "") // Remove hash and anything after it
+            }
+            .filter { it.isNotBlank() } // Optionally remove empty lines
+            .joinToString("\n")
     }
 }

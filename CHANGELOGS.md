@@ -1,5 +1,6 @@
 ## 1.14.0
 - Moved the /SaveTransfer folder to be inside the /FleetBuilder folder for organization purposes.
+- Improved JSON file reading to skip '#' comments instead of failing.
 
 ## 1.13.1
 - Fixed faction priority messing up player autofit
