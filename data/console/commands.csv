@@ -19,7 +19,7 @@ LoadSave,fleetBuilder.consoleCommands.saveTransfer.LoadSave,"cheat,campaign,flee
 -no-credits"
 ,,,,
 ,,,,
-ReplaceFleet,fleetBuilder.consoleCommands.ReplaceFleet,"cheat,campaign,fleetbuilder",replacefleet,Replaces player fleet with fleet in clipboard
+,,,,
 ReloadShipDirs,fleetBuilder.consoleCommands.ReloadShipDirectories,fleetbuilder,reloadshipdirs,Reloads ship directories. Editing loadout files mid game wont load them in right away. The ship directory must be reloaded to load them in.
 BuildFleet,fleetBuilder.consoleCommands.BuildFleet,"cheat,campaign,fleetbuilder",buildfleet,"Prepares the player fleet for full customization.
 
@@ -27,4 +27,4 @@ Removes all ships and officers.
 Unlocks all hullmods.
 Puts all weapons and wings in the Abandoned Terraforming Platform in the Corvus system.
 Teleports player fleet to the Abandoned Terraforming Platform in the Corvus system."
-CopyFleet,fleetBuilder.consoleCommands.CopyFleet,"cheat,fleetbuilder",copyfleet <”player” or ”enemy”>,Arg ‘player’ or ‘enemy’ In combat to choose what side you want to copy
+CopyFleet,fleetBuilder.consoleCommands.CopyFleet,"cheat,fleetbuilder",copyfleet <”player” or ”enemy”>,Arg ‘player’ or ‘enemy’ In combat or when looking at a mission to choose what side you want to copy

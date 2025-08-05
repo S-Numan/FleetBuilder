@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.FBMisc
-import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
+import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings

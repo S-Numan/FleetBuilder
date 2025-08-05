@@ -8,6 +8,7 @@ import fleetBuilder.persistence.member.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.FBMisc
+import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 import org.json.JSONObject
@@ -36,7 +37,8 @@ object MemberSerialization {
         val shipName: String,
         val cr: Float,
         val isMothballed: Boolean,
-        val isFlagship: Boolean = false
+        val isFlagship: Boolean = false,
+        val gameMods: Set<GameModInfo>,
     )
 
     fun extractMemberDataFromJson(json: JSONObject): ParsedMemberData {
@@ -54,12 +56,15 @@ object MemberSerialization {
         else
             null
 
+        val gameMods = FBMisc.getModInfosFromJson(json)
+
         return ParsedMemberData(
             variantData = variantData,
             personData = personData,
             shipName = json.optString("name", ""),
             cr = json.optFloat("cr", 0.7f),
-            isMothballed = json.optBoolean("ismothballed")
+            isMothballed = json.optBoolean("ismothballed"),
+            gameMods = gameMods
         )
     }
 
@@ -115,7 +120,7 @@ object MemberSerialization {
 
     fun buildMemberFull(
         extracted: ParsedMemberData,
-        settings: MemberSettings
+        settings: MemberSettings = MemberSettings()
     ): Pair<FleetMemberAPI, MissingElements> {
         val missing = MissingElements()
 
@@ -132,9 +137,9 @@ object MemberSerialization {
         settings: MemberSettings = MemberSettings()
     ): Pair<FleetMemberAPI, MissingElements> {
         val missing = MissingElements()
-        FBMisc.getMissingFromModInfo(json, missing)
 
         val parsed = extractMemberDataFromJson(json)
+        missing.gameMods.addAll(parsed.gameMods)
 
         val (member, newMissing) = buildMemberFull(parsed, settings)
         missing.add(newMissing)

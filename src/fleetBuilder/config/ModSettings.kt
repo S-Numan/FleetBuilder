@@ -25,6 +25,7 @@ import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
 import fleetBuilder.config.ModSettings.storeOfficersInCargo
 import fleetBuilder.config.ModSettings.unassignPlayer
+import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.Reporter
 import fleetBuilder.util.containsString
 import fleetBuilder.variants.LoadoutManager
@@ -143,6 +144,14 @@ object ModSettings {
     private var hullModsToNeverSave = setOf<String>()
 
     fun getHullModsToNeverSave(): Set<String> = hullModsToNeverSave
+
+    fun getConfiguredVariantSettings(): VariantSerialization.VariantSettings {
+        return VariantSerialization.VariantSettings().apply {
+            applySMods = saveSMods
+            includeDMods = saveDMods
+            includeHiddenMods = saveHiddenMods
+        }
+    }
 
     val modID = "SN_FleetBuilder"
 

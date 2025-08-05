@@ -7,11 +7,17 @@ import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.impl.campaign.ids.Factions
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
+import fleetBuilder.persistence.fleet.FleetSerialization.getFleetFromJson
+import fleetBuilder.persistence.member.MemberSerialization
+import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJsonWithMissing
+import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.codexEntryToClipboard
 import fleetBuilder.util.FBMisc.createDevModeDialog
@@ -71,7 +77,30 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                     continue
                                 }
 
-                                val (tempElement, tempMissing) = FBMisc.getAnyFromJson(json)
+                                val (tempElement, tempMissing) = when {
+                                    json.has("variant") || json.has("officer") -> {
+                                        // Fleet member
+                                        MemberSerialization.getMemberFromJsonWithMissing(json)
+                                    }
+
+                                    json.has("hullId") -> {
+                                        // Variant
+                                        VariantSerialization.getVariantFromJsonWithMissing(json)
+                                    }
+
+                                    json.has("members") -> {
+                                        // Fleet
+                                        val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
+                                        val missing = getFleetFromJson(json, fleet.fleetData)
+                                        Pair(fleet, missing)
+                                    }
+
+                                    else -> {
+                                        Pair(null, MissingElements())
+                                    }
+
+                                }
+
                                 element = tempElement
                                 missing.add(tempMissing)
                             } else if (event.eventValue == Keyboard.KEY_D) {

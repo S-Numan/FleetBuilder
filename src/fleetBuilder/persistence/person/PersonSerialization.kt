@@ -11,6 +11,7 @@ import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJson
 import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
 import fleetBuilder.util.FBMisc
+import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
@@ -46,6 +47,7 @@ object PersonSerialization {
         val bonusXp: Long = 0,
         val points: Int = 0,
         val trueMemKeys: List<String> = emptyList(),
+        val gameMods: Set<GameModInfo>,
     )
 
     fun extractPersonDataFromJson(json: JSONObject): ParsedPersonData {
@@ -88,6 +90,8 @@ object PersonSerialization {
             if (Math.random() < 0.5) FullName.Gender.MALE else FullName.Gender.FEMALE
         }
 
+        val gameMods = FBMisc.getModInfosFromJson(json)
+
         return ParsedPersonData(
             aiCoreId = json.optString("aicoreid", ""),
             first = json.optString("first", "Unknown"),
@@ -103,7 +107,8 @@ object PersonSerialization {
             xp = json.optLong("xp", 0),
             bonusXp = json.optLong("bonusxp", 0),
             points = json.optInt("points", 0),
-            trueMemKeys = memKeys
+            trueMemKeys = memKeys,
+            gameMods = gameMods
         )
     }
 
@@ -193,7 +198,7 @@ object PersonSerialization {
 
     fun buildPersonFull(
         rawData: ParsedPersonData,
-        settings: PersonSettings
+        settings: PersonSettings = PersonSettings()
     ): Pair<PersonAPI, MissingElements> {
         val missing = MissingElements()
 
@@ -215,10 +220,10 @@ object PersonSerialization {
         settings: PersonSettings = PersonSettings()
     ): Pair<PersonAPI, MissingElements> {
         val missing = MissingElements()
-        FBMisc.getMissingFromModInfo(json, missing)
 
         // Extract raw data from JSON
         val rawData = extractPersonDataFromJson(json)
+        missing.gameMods.addAll(rawData.gameMods)
 
         val (person, subMissing) = buildPersonFull(rawData, settings)
         missing.add(subMissing)

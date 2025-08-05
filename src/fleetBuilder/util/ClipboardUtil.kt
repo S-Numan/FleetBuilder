@@ -89,7 +89,7 @@ object ClipboardUtil {
         }
     }
 
-    fun getClipboardFileContents(): String? {
+    fun getClipboardJSONFileContents(): String? {
         val filePath = getClipboardFilePath()
         return filePath?.let { readJSONContentsSafe(it) }
     }
@@ -105,29 +105,41 @@ object ClipboardUtil {
     }
 
     fun getClipboardJson(): JSONObject? {
-        val contents = getClipboardFileContents()
+        val contents = getClipboardJSONFileContents()
 
-        val clipboardText = contents ?: cleanJsonStringInput(getClipboardTextSafe())
+        var clipboardText = contents ?: getClipboardTextSafe() ?: return null
+        clipboardText = cleanJsonStringInput(clipboardText)
 
-        if (clipboardText.isNullOrEmpty()) return null
+        if (clipboardText.isEmpty()) return null
 
-        var json: JSONObject? = null
-        try {
-            json = JSONObject(clipboardText)
+        var json = try {
+            JSONObject(clipboardText)
         } catch (_: Exception) {
             //Global.getLogger(this.javaClass).warn("Failed to convert clipboard to json")
+            null
         }
         return json
     }
 
-    fun cleanJsonStringInput(raw: String?): String? {
-        if (raw == null) return null
-
+    fun cleanJsonStringInput(raw: String): String {
         return raw.lines()
             .map { line ->
                 line.replace(Regex("""\s*#.*$"""), "") // Remove hash and anything after it
             }
             .filter { it.isNotBlank() } // Optionally remove empty lines
             .joinToString("\n")
+    }
+
+    fun startsWithJsonBracket(input: String): Boolean {
+        input.lineSequence()
+            .map { it.substringBefore("#") }           // Remove inline comments
+            .map { it.trim() }                          // Trim whitespace
+            .filter { it.isNotEmpty() }                 // Ignore empty lines
+            .forEach { line ->
+                if (line.isNotEmpty()) {
+                    return line.first() == '{'
+                }
+            }
+        return false
     }
 }

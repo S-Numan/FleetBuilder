@@ -44,12 +44,12 @@ import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.FBMisc.initPopUpUI
 import fleetBuilder.util.FBMisc.loadPlayerCompiledSave
-import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.VariantLib
+import fleetBuilder.variants.reportMissingElementsIfAny
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
@@ -423,18 +423,22 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         val variantToSave = baseVariant.clone()
         variantToSave.hullVariantId = VariantLib.makeVariantID(baseVariant)
 
-        val json = VariantSerialization.saveVariantToJson(
-            variantToSave,
-            VariantSerialization.VariantSettings().apply {
-                applySMods = ModSettings.saveSMods
-                includeDMods = ModSettings.saveDMods
-                includeHiddenMods = ModSettings.saveHiddenMods
-            }
-        )
+        if (!event.isShiftDown) {
+            val json = VariantSerialization.saveVariantToJson(
+                variantToSave,
+                ModSettings.getConfiguredVariantSettings()
+            )
+            ClipboardUtil.setClipboardText(json.toString(4))
+            DisplayMessage.showMessage("Variant copied to clipboard")
+        } else {
+            val comp = VariantSerialization.saveVariantToCompString(
+                variantToSave,
+                ModSettings.getConfiguredVariantSettings()
+            )
+            ClipboardUtil.setClipboardText(comp)
+            DisplayMessage.showMessage("Variant compressed and copied to clipboard")
+        }
 
-        ClipboardUtil.setClipboardText(json.toString(4))
-
-        DisplayMessage.showMessage("Variant copied to clipboard")
         event.consume()
     }
 
@@ -449,15 +453,23 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleRefitPaste(event: InputEventAPI) {
-        val json = ClipboardUtil.getClipboardJson() ?: return
-        val (variant, missing) = json.optJSONObject("variant")?.let { variantJson ->
-            VariantSerialization.getVariantFromJsonWithMissing(variantJson)//JSON is of a FleetMemberAPI
-        } ?: VariantSerialization.getVariantFromJsonWithMissing(json)//JSON is of a ShipVariantAPI (also fallback)
+        var data = FBMisc.extractDataFromClipboard() ?: return
 
         event.consume()
+
+        if (data is MemberSerialization.ParsedMemberData && data.variantData != null) {
+            data = data.variantData
+        }
+        if (data !is VariantSerialization.ParsedVariantData) {
+            DisplayMessage.showMessage("Data in clipboard was valid, but not a variant", Color.YELLOW)
+            return
+        }
+
+        val (variant, missing) = VariantSerialization.buildVariantFull(data)
+
         if (missing.hullIds.isNotEmpty()) {
             DisplayMessage.showMessage(
-                "Failed to import loadout. Could not find hullId ${json.optString("hullId", "")}",
+                "Failed to import loadout. Could not find hullId ${missing.hullIds.first()}",
                 Color.YELLOW
             )
             return
@@ -529,19 +541,19 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        val json = ClipboardUtil.getClipboardJson() ?: run {
-            DisplayMessage.showMessage("No valid json in clipboard", Color.YELLOW)
+        val data = FBMisc.extractDataFromClipboard() ?: run {
+            DisplayMessage.showMessage("No valid data in clipboard", Color.YELLOW)
             event.consume()
             return
         }
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-            fleetPaste(sector, json)
+            fleetPaste(sector, data)
         } else if (ui.currentInteractionDialog == null &&// Handle campaign map paste (no dialog/menu showing)
             !ui.isShowingDialog &&
             !ui.isShowingMenu
         ) {
-            campaignPaste(sector, json)
+            campaignPaste(sector, data)
         }
 
         event.consume()

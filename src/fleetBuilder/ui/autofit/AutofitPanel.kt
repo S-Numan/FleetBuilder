@@ -17,6 +17,7 @@ import fleetBuilder.autofit.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
+import fleetBuilder.util.ClipboardUtil
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.allDMods
@@ -225,18 +226,22 @@ internal object AutofitPanel {
                         if (saveVariant != null) {
                             val variantToSave = saveVariant.clone()
                             variantToSave.hullVariantId = makeVariantID(saveVariant)
-                            val json = saveVariantToJson(
-                                variantToSave,
-                                VariantSerialization.VariantSettings().apply {
-                                    includeDMods = ModSettings.saveDMods
-                                    applySMods = ModSettings.saveSMods
-                                    includeHiddenMods = ModSettings.saveHiddenMods
-                                }
-                            )
 
-                            setClipboardText(json.toString(4))
-
-                            DisplayMessage.showMessage("Variant copied to clipboard")
+                            if (!event.isShiftDown) {
+                                val json = VariantSerialization.saveVariantToJson(
+                                    variantToSave,
+                                    ModSettings.getConfiguredVariantSettings()
+                                )
+                                ClipboardUtil.setClipboardText(json.toString(4))
+                                DisplayMessage.showMessage("Variant copied to clipboard")
+                            } else {
+                                val comp = VariantSerialization.saveVariantToCompString(
+                                    variantToSave,
+                                    ModSettings.getConfiguredVariantSettings()
+                                )
+                                ClipboardUtil.setClipboardText(comp)
+                                DisplayMessage.showMessage("Variant compressed and copied to clipboard")
+                            }
                         }
                     } else {//Save and load variant
                         selectorPlugins.forEach { it.isSelected = false }
@@ -245,11 +250,7 @@ internal object AutofitPanel {
 
                             val newVariantId = saveLoadoutVariant(
                                 baseVariant,
-                                settings = VariantSerialization.VariantSettings().apply {
-                                    includeDMods = ModSettings.saveDMods
-                                    applySMods = ModSettings.saveSMods
-                                    includeHiddenMods = ModSettings.saveHiddenMods
-                                }
+                                settings = ModSettings.getConfiguredVariantSettings()
                             )
 
                             //Global.getLogger(this.javaClass).info("Save ship variant with id $newVariantId")

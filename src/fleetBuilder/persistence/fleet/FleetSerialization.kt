@@ -15,6 +15,7 @@ import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.FBMisc
+import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 import org.json.JSONArray
@@ -58,9 +59,11 @@ object FleetSerialization {
 
     data class ParsedFleetData(
         val fleetName: String,
+        val aggression: Int,
         val commander: PersonSerialization.ParsedPersonData?,
         val members: List<MemberSerialization.ParsedMemberData>,
         val idleOfficers: List<PersonSerialization.ParsedPersonData>,
+        val gameMods: Set<GameModInfo>,
         val secondInCommandData: SecondInCommandSerialization.SecondInCommandData?,
     )
 
@@ -93,7 +96,8 @@ object FleetSerialization {
                     shipName = memberJson.optString("name", ""),
                     cr = memberJson.optDouble("cr", 0.7).toFloat(),
                     isMothballed = memberJson.optBoolean("ismothballed", false),
-                    isFlagship = isFlagship
+                    isFlagship = isFlagship,
+                    gameMods = emptySet()
                 )
             )
         }
@@ -135,13 +139,18 @@ object FleetSerialization {
                 }
             } else null
 
+        val gameMods = FBMisc.getModInfosFromJson(json)
+
+        val aggression = json.optInt("aggression_doctrine", -1)
 
         return ParsedFleetData(
             fleetName = fleetName,
+            aggression = aggression,
             commander = commander,
             members = members,
             idleOfficers = idleOfficers,
-            secondInCommandData = sicData
+            secondInCommandData = sicData,
+            gameMods = gameMods
         )
     }
 
@@ -258,10 +267,9 @@ object FleetSerialization {
                         fleet.addOfficer(officer)
 
                     // Apply doctrinal aggression to default officers
-                    if (settings.includeAggression && campFleet !== Global.getSector().playerFleet) { // Don't do this to the playerFleet, just set the player's faction aggression doctrine manually instead.
+                    if (data.aggression > 0 && settings.includeAggression && campFleet !== Global.getSector().playerFleet) { // Don't do this to the playerFleet, just set the player's faction aggression doctrine manually instead.
                         if (officer.isDefault) {
-                            val aggression = campFleet?.faction?.doctrine?.aggression ?: 2
-                            val personality = when (aggression) {
+                            val personality = when (data.aggression) {
                                 1 -> Personalities.CAUTIOUS
                                 2 -> Personalities.STEADY
                                 3 -> Personalities.AGGRESSIVE
@@ -295,7 +303,7 @@ object FleetSerialization {
     fun buildFleetFull(
         parsed: ParsedFleetData,
         fleet: FleetDataAPI,
-        settings: FleetSettings
+        settings: FleetSettings = FleetSettings()
     ): MissingElements {
         val missing = MissingElements()
 
@@ -314,9 +322,11 @@ object FleetSerialization {
         settings: FleetSettings = FleetSettings()
     ): MissingElements {
         val missing = MissingElements()
-        FBMisc.getMissingFromModInfo(json, missing)
 
         val extracted = extractFleetDataFromJson(json)
+
+        missing.gameMods.addAll(extracted.gameMods)
+        
         missing.add(buildFleetFull(extracted, fleet, settings))
 
         return missing
