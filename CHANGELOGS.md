@@ -1,9 +1,11 @@
 ## 1.14.0
 - Moved the /SaveTransfer folder to be inside the /FleetBuilder folder for organization purposes.
 - Improved JSON reading to skip '#' comments instead of failing.
-- Fix aggression_doctrine not being applied.
+- Fix aggression_doctrine not being applied correctly.
 - Basic variant compression support. Hold 'Shift" while copying a variant in the refit screen to compress the data into a smaller format.
-- Fix module ships failing to save after force applying their core autofit variant.
+- Fix ship modules failing to save after force applying via the autofit ui.
+### Technical
+- A notable amount of backend changes
 
 ## 1.13.1
 - Fixed faction priority messing up player autofit
