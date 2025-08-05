@@ -1,22 +1,19 @@
 package fleetBuilder.integration.combat
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.ViewportAPI
-import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
-import fleetBuilder.persistence.fleet.FleetSerialization.getFleetFromJson
+import fleetBuilder.persistence.fleet.FleetSerialization
+import fleetBuilder.persistence.fleet.FleetSerialization.buildFleetFull
 import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJsonWithMissing
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.codexEntryToClipboard
@@ -24,6 +21,7 @@ import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.reportMissingElementsIfAny
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
@@ -67,73 +65,60 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
                             ModifyInternalVariants.clearAllModifiedVariants()
                             var element: Any? = null
-                            val missing = MissingElements()
 
                             if (event.eventValue == Keyboard.KEY_V) {
-                                val json = ClipboardUtil.getClipboardJson()
-                                if (json == null) {
-                                    DisplayMessage.showMessage("No valid json in clipboard", Color.YELLOW)
+                                val data = FBMisc.extractDataFromClipboard() ?: return
+                                if (data is VariantSerialization.ParsedVariantData || data is MemberSerialization.ParsedMemberData || data is FleetSerialization.ParsedFleetData) {
+                                    //
+                                } else {
+                                    DisplayMessage.showMessage("No valid data in clipboard", Color.YELLOW)
                                     event.consume()
                                     continue
                                 }
 
-                                val (tempElement, tempMissing) = when {
-                                    json.has("variant") || json.has("officer") -> {
-                                        // Fleet member
-                                        MemberSerialization.getMemberFromJsonWithMissing(json)
-                                    }
-
-                                    json.has("hullId") -> {
-                                        // Variant
-                                        VariantSerialization.getVariantFromJsonWithMissing(json)
-                                    }
-
-                                    json.has("members") -> {
-                                        // Fleet
-                                        val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
-                                        val missing = getFleetFromJson(json, fleet.fleetData)
-                                        Pair(fleet, missing)
-                                    }
-
-                                    else -> {
-                                        Pair(null, MissingElements())
-                                    }
-
-                                }
-
-                                element = tempElement
-                                missing.add(tempMissing)
+                                element = data
                             } else if (event.eventValue == Keyboard.KEY_D) {
-                                element = Global.getSector().playerFleet
-                                val commandShuttleMember = element?.fleetData?.membersListCopy?.find { it.variant.hasHullMod(ModSettings.commandShuttleId) }
-                                if (commandShuttleMember != null)
-                                    element.fleetData.removeFleetMember(commandShuttleMember)
+                                val playerFleet = Global.getSector().playerFleet
+
+                                element = FleetSerialization.extractFleetDataFromJson(FleetSerialization.saveFleetToJson(playerFleet))
                             }
 
+                            var missing = MissingElements()
+
                             when (element) {
-                                is CampaignFleetAPI -> {
-                                    element.fleetData.membersListCopy.forEach { member ->
+                                is VariantSerialization.ParsedVariantData -> {
+                                    val (variant, newMissing) = VariantSerialization.buildVariantFull(element)
+                                    missing = newMissing
+
+                                    ModifyInternalVariants.setModifiedInternalVariant(variant as HullVariantSpec)
+                                    variantIdList.add("${ModifyInternalVariants.safteyPrefix}${variant.hullVariantId}")
+                                }
+
+                                is MemberSerialization.ParsedMemberData -> {
+                                    var variant: ShipVariantAPI? = null
+                                    if (element.variantData != null) {
+                                        val (tempVariant, tempMissing) = VariantSerialization.buildVariantFull(element.variantData)
+                                        variant = tempVariant
+                                        missing = tempMissing
+                                    }
+
+                                    ModifyInternalVariants.setModifiedInternalVariant(variant as HullVariantSpec)
+                                    variantIdList.add("${ModifyInternalVariants.safteyPrefix}${variant.hullVariantId}")
+                                }
+
+                                is FleetSerialization.ParsedFleetData -> {
+                                    val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
+                                    missing = buildFleetFull(element, fleet.fleetData)
+
+                                    fleet.fleetData.membersListCopy.forEach { member ->
                                         ModifyInternalVariants.setModifiedInternalVariant(member.variant as HullVariantSpec)
                                         variantIdList.add("${ModifyInternalVariants.safteyPrefix}${member.variant.hullVariantId}")
                                     }
                                 }
-
-                                is FleetMemberAPI -> {
-                                    ModifyInternalVariants.setModifiedInternalVariant(element.variant as HullVariantSpec)
-                                    variantIdList.add("${ModifyInternalVariants.safteyPrefix}${element.variant.hullVariantId}")
-                                }
-
-                                is ShipVariantAPI -> {
-                                    ModifyInternalVariants.setModifiedInternalVariant(element as HullVariantSpec)
-                                    variantIdList.add("${ModifyInternalVariants.safteyPrefix}${element.hullVariantId}")
-                                }
-
-                                else -> {
-                                    DisplayMessage.showMessage("Could not put element into simulator reserves", Color.YELLOW)
-                                    event.consume()
-                                    continue
-                                }
                             }
+
+                            reportMissingElementsIfAny(missing)
+
 
                             //simulatorUI.invoke("õ00000", true)//Remake Codex UI to show new members
 
