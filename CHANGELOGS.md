@@ -3,6 +3,7 @@
 - Improved JSON reading to skip '#' comments instead of failing.
 - Fix aggression_doctrine not being applied.
 - Basic variant compression support. Hold 'Shift" while copying a variant in the refit screen to compress the data into a smaller format.
+- Fix module ships failing to save after force applying their core autofit variant.
 
 ## 1.13.1
 - Fixed faction priority messing up player autofit

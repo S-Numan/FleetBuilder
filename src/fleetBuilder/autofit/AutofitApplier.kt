@@ -278,13 +278,16 @@ object AutofitApplier {
         to.setVariantDisplayName(from.displayName)
 
         for (slot in from.moduleSlots) {
-            //to.setModuleVariant(slot, from.getModuleVariant(slot))
+            val toVariant = to.getModuleVariant(slot)
+            val fromVariant = from.getModuleVariant(slot)
+            
             copyVariant(
-                to.getModuleVariant(slot),
-                from.getModuleVariant(slot),
+                toVariant,
+                fromVariant,
                 dontForceClearDMods,
                 dontForceClearSMods
             )
+            to.setModuleVariant(slot, toVariant)
         }
     }
 }
