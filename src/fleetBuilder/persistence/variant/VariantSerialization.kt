@@ -15,6 +15,9 @@ import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.windowed
 
 object VariantSerialization {
 
@@ -93,15 +96,27 @@ object VariantSerialization {
             return null
         }
 
-        val modInfo = fullData.substring(0, firstFieldSep)
+        val modInfoBulk = fullData.substring(0, firstFieldSep)
+        val modInfos = modInfoBulk.split(fieldSep)
+
+        val gameMods: Set<GameModInfo> = modInfos
+            .mapNotNull { mod ->
+                val parts = mod.split(sep)
+                if (parts.size == 3) {
+                    val (id, name, ver) = parts
+                    GameModInfo(id, name, ver)
+                } else null // Skip malformed lines
+            }
+            .toSet()
+
         val allData = fullData.substring(firstFieldSep + 1)
 
-        val segments = allData.split(":")
+        val segments = allData.split(metaSep)
         val rootSegment = segments[0]
         val moduleSegments = segments.drop(1)
 
         try {
-            return extractModuleFromCompString(rootSegment, moduleSegments)
+            return extractModuleFromCompString(rootSegment, moduleSegments, gameMods)
         } catch (e: Exception) {
             showError("Error parsing variant data", e)
             return null
@@ -109,7 +124,11 @@ object VariantSerialization {
     }
 
 
-    private fun extractModuleFromCompString(data: String, moduleSegments: List<String>): ParsedVariantData {
+    private fun extractModuleFromCompString(
+        data: String,
+        moduleSegments: List<String>,
+        gameMods: Set<GameModInfo>
+    ): ParsedVariantData {
         val fields = data.split(fieldSep)
 
         val hullId = fields[0]
@@ -144,12 +163,16 @@ object VariantSerialization {
             emptyList()
         }
 
-        // Recursively parse modules, if any
-        val modules: MutableMap<String, ParsedVariantData> = mutableMapOf()
-        moduleSegments.forEachIndexed { i, modData ->
-            val parsed = extractModuleFromCompString(modData, emptyList()) // Nested modules are not handled here
-            modules["module_$i"] = parsed // No slot name available in the compressed format
-        }
+        val modules = moduleSegments
+            .mapNotNull { segment ->
+                val parts = segment.split('%', limit = 2)
+                if (parts.size == 2) {
+                    val (slot, moduleData) = parts
+                    slot to extractModuleFromCompString(moduleData, emptyList(), emptySet())
+                } else null
+            }
+            .toMap()
+
 
         return ParsedVariantData(
             variantId = variantId,
@@ -166,7 +189,7 @@ object VariantSerialization {
             weaponGroups = weaponGroups,
             moduleVariants = modules,
             isGoalVariant = false,
-            emptySet()//TODO
+            gameMods = gameMods
         )
     }
 
@@ -841,7 +864,7 @@ object VariantSerialization {
         val structureVersion = 0
 
 
-        val ver = "${metaSep}v$structureVersion$metaSep"//v for variant. To identify the type of compressed string without having to decompress it first. member would be m, fleet would be f, etc.
+        val ver = "${metaSep}v$structureVersion$metaSep"//v for variant. To identify the type of compressed string without having to decompress it first. member would be m, fleet would be f, person would be p, etc.
 
 
         var compressedVariant = ""
@@ -852,7 +875,7 @@ object VariantSerialization {
 
             val compressedModuleVariant = saveModuleVariantToCompString(module, settings)
 
-            compressedVariant += ":$compressedModuleVariant"
+            compressedVariant += "$metaSep$moduleSlot$fieldSep$compressedModuleVariant"
         }
 
         var requiredMods = ""//For the user to see
@@ -864,7 +887,7 @@ object VariantSerialization {
 
             if (addedModIds.isNotEmpty()) {
 
-                requiredMods = "Req Mods: "
+                requiredMods = "Game Mods: "
 
                 for (mod in addedModIds) {
                     addedModDetails += "${mod.first}$sep${mod.second}$sep${mod.third}$fieldSep"
@@ -985,7 +1008,7 @@ object VariantSerialization {
         parts += weaponGroupString
         parts += variant.fittedWings.joinToString(sep)
         parts += hullMods.joinToString(sep)
-        parts += sMods.joinToString(sep)
+        parts += (sMods + sModdedbuiltins).joinToString(sep)
         parts += permaMods.joinToString(sep)
         parts += if (settings.includeTags) variant.tags.joinToString(sep) else ""
 
