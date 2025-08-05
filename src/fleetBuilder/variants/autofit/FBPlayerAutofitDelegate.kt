@@ -1,4 +1,4 @@
-package fleetBuilder.autofit
+package fleetBuilder.variants.autofit
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI

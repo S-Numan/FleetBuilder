@@ -1,4 +1,4 @@
-package fleetBuilder.autofit
+package fleetBuilder.variants.autofit
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUIAPI
@@ -280,7 +280,7 @@ object AutofitApplier {
         for (slot in from.moduleSlots) {
             val toVariant = to.getModuleVariant(slot)
             val fromVariant = from.getModuleVariant(slot)
-            
+
             copyVariant(
                 toVariant,
                 fromVariant,

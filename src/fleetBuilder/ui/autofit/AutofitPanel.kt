@@ -13,12 +13,10 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.autofit.AutofitApplier.applyVariantInRefitScreen
+import fleetBuilder.variants.autofit.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.ClipboardUtil
-import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.completelyRemoveMod
