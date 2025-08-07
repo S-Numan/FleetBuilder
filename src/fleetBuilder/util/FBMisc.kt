@@ -1,6 +1,6 @@
 package fleetBuilder.util
 
-
+import starficz.*
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
@@ -38,8 +38,8 @@ import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJsonWith
 import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
-import fleetBuilder.ui.PopUpUI.PopUpUI
-import fleetBuilder.ui.PopUpUI.PopUpUIDialog
+import fleetBuilder.ui.popUpUI.PopUpUI
+import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.ClipboardUtil.cleanJsonStringInput
 import fleetBuilder.util.ClipboardUtil.getClipboardJSONFileContents
 import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe

@@ -37,7 +37,7 @@ object MemberSerialization {
         val shipName: String,
         val cr: Float,
         val isMothballed: Boolean,
-        val isFlagship: Boolean = false,
+        val isFlagship: Boolean,
         val gameMods: Set<GameModInfo>,
     )
 
@@ -56,6 +56,8 @@ object MemberSerialization {
         else
             null
 
+        val isFlagship = json.optBoolean("isFlagship", false)
+
         val gameMods = FBMisc.getModInfosFromJson(json)
 
         return ParsedMemberData(
@@ -63,7 +65,8 @@ object MemberSerialization {
             personData = personData,
             shipName = json.optString("name", ""),
             cr = json.optFloat("cr", 0.7f),
-            isMothballed = json.optBoolean("ismothballed"),
+            isMothballed = json.optBoolean("ismothballed", false),
+            isFlagship = isFlagship,
             gameMods = gameMods
         )
     }

@@ -34,8 +34,8 @@ object PersonSerialization {
     data class ParsedPersonData(
         val aiCoreId: String = "",
         val first: String = "Unknown",
-        val last: String = "Officer",
-        val gender: FullName.Gender = FullName.Gender.MALE,
+        val last: String,
+        val gender: FullName.Gender,
         val portrait: String? = null,
         val tags: List<String> = emptyList(),
         val rank: String = Ranks.SPACE_LIEUTENANT,
@@ -85,9 +85,9 @@ object PersonSerialization {
         }
 
         val gender = try {
-            FullName.Gender.valueOf(json.optString("gender", "MALE"))
+            FullName.Gender.valueOf(json.optString("gender", "ANY"))
         } catch (_: Exception) {
-            if (Math.random() < 0.5) FullName.Gender.MALE else FullName.Gender.FEMALE
+            FullName.Gender.ANY
         }
 
         val gameMods = FBMisc.getModInfosFromJson(json)
@@ -95,7 +95,7 @@ object PersonSerialization {
         return ParsedPersonData(
             aiCoreId = json.optString("aicoreid", ""),
             first = json.optString("first", "Unknown"),
-            last = json.optString("last", "Officer"),
+            last = json.optString("last", ""),
             gender = gender,
             portrait = json.optString("portrait", null),
             tags = tags,
@@ -192,8 +192,10 @@ object PersonSerialization {
         val faction = Global.getSettings().getFactionSpec(Factions.PLAYER)
         return if (gender == FullName.Gender.MALE)
             faction.malePortraits.pick()
-        else
+        else if (gender == FullName.Gender.FEMALE)
             faction.femalePortraits.pick()
+        else
+            if (Random().nextBoolean()) faction.malePortraits.pick() else faction.femalePortraits.pick()
     }
 
     fun buildPersonFull(
@@ -248,8 +250,11 @@ object PersonSerialization {
             json.put("aicoreid", person.aiCoreId)
 
         json.put("first", person.name.first)
-        json.put("last", person.name.last)
-        json.put("gender", person.gender.name)
+        if (person.name.last.isNotBlank())
+            json.put("last", person.name.last)
+        if (person.name.gender != FullName.Gender.ANY)
+            json.put("gender", person.gender.name)
+
         json.put("portrait", person.portraitSprite)
 
         if (person.rankId != Ranks.SPACE_LIEUTENANT)
@@ -279,7 +284,9 @@ object PersonSerialization {
                 add("wasplayer")
             }
         }
-        json.put("tags", JSONArray(personTags))
+
+        if (personTags.isNotEmpty())
+            json.put("tags", JSONArray(personTags))
 
 
         val trueMemKeysJSON = JSONArray()

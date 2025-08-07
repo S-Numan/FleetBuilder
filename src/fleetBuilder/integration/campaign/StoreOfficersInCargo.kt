@@ -14,6 +14,7 @@ import fleetBuilder.util.*
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
+import starficz.*
 
 class StoreOfficersInCargo : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 10

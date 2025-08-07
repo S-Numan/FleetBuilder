@@ -4,6 +4,7 @@
 - Improved JSON reading to skip '#' comments instead of failing.
 - Basic variant compression support. Hold 'Shift" while copying a variant in the refit screen to compress the data into a smaller format.
 - Fix ship modules failing to save after force applying via the autofit ui.
+- "pick_random_variant" boolean for JSON variants. Instead of specifying the contents of a variant, simply use `"pick_random_variant": true`, and a random variant of the hullID will be selected.
 ### Technical
 - A notable amount of backend changes
 

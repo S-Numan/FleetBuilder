@@ -22,6 +22,7 @@ import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
+import starficz.*
 
 object ReflectionMisc {
     fun getCoreUI(topDialog: Boolean = true): UIPanelAPI? {

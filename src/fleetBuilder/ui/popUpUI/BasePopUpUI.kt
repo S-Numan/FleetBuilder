@@ -1,6 +1,6 @@
-package fleetBuilder.ui.PopUpUI
+package fleetBuilder.ui.popUpUI
 
-import MagicLib.onClick
+import starficz.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc

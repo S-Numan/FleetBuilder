@@ -1,7 +1,5 @@
 package fleetBuilder.ui
 
-import MagicLib.width
-import MagicLib.x
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.combat.ShieldAPI
@@ -10,6 +8,8 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.*
+import org.lwjgl.input.Mouse
+import starficz.*
 import starficz.ReflectionUtils.invoke
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
@@ -177,7 +177,12 @@ class FleetFilterPanel(
 
     override fun render(alphaMult: Float) = Unit
 
-    override fun processInput(events: List<InputEventAPI?>?) = Unit
+    override fun processInput(events: List<InputEventAPI>) {
+        if (Mouse.isButtonDown(2)) {
+            resetText()
+            ReflectionMisc.updateFleetPanelContents()
+        }
+    }
 
     override fun buttonPressed(buttonId: Any?) {
 

@@ -13,7 +13,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
+import starficz.getChildrenCopy
 
 fun JSONArray.containsString(value: String): Boolean {
     for (i in 0 until this.length()) {
@@ -123,15 +123,6 @@ fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
 
 val String.toBinary: Int
     get() = if (this.equals("TRUE", ignoreCase = true)) 1 else 0
-
-@Suppress("UNCHECKED_CAST")
-internal fun UIPanelAPI.getChildrenCopy(): List<UIComponentAPI> {
-    return this.invoke("getChildrenCopy") as List<UIComponentAPI>
-}
-
-internal fun UIPanelAPI.findChildWithMethod(methodName: String): UIComponentAPI? {
-    return getChildrenCopy().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
-}
 
 //For optimization purposes
 internal fun UIPanelAPI.findChildWithMethodReversed(methodName: String): UIComponentAPI? {

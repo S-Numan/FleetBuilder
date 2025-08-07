@@ -84,21 +84,12 @@ object FleetSerialization {
         val members = mutableListOf<MemberSerialization.ParsedMemberData>()
         fun getMember(memberJson: JSONObject) {
             val variantId = memberJson.optString("variantId", "")
-            val isFlagship = memberJson.optBoolean("isFlagship", false)
-
             val variantData = variantById[variantId]?.copy()
-            val personData = memberJson.optJSONObject("officer")?.let { PersonSerialization.extractPersonDataFromJson(it) }
+
+            val memberData = MemberSerialization.extractMemberDataFromJson(memberJson).copy(variantData = variantData)
 
             members.add(
-                MemberSerialization.ParsedMemberData(
-                    variantData = variantData,
-                    personData = personData,
-                    shipName = memberJson.optString("name", ""),
-                    cr = memberJson.optDouble("cr", 0.7).toFloat(),
-                    isMothballed = memberJson.optBoolean("ismothballed", false),
-                    isFlagship = isFlagship,
-                    gameMods = emptySet()
-                )
+                memberData
             )
         }
 
@@ -326,7 +317,7 @@ object FleetSerialization {
         val extracted = extractFleetDataFromJson(json)
 
         missing.gameMods.addAll(extracted.gameMods)
-        
+
         missing.add(buildFleetFull(extracted, fleet, settings))
 
         return missing

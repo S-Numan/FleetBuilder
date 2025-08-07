@@ -1,6 +1,5 @@
 package fleetBuilder.integration.campaign
 
-import MagicLib.*
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.SpecialItemSpecAPI
@@ -20,6 +19,7 @@ import fleetBuilder.util.FBMisc
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import org.lwjgl.input.Keyboard
+import starficz.*
 
 class CampaignCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -84,8 +84,8 @@ class CampaignCodexButton : EveryFrameScript {
                     Misc.getDarkPlayerColor(),
                     Alignment.MID,
                     CutStyle.NONE,
-                    Font.ORBITRON_20,
-                    24f, 24f
+                    24f, 24f,
+                    Font.ORBITRON_20
                 ) as ButtonAPI?
 
                 addToFleetButton!!.onClick { ->

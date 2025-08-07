@@ -1,9 +1,5 @@
-package fleetBuilder.ui.PopUpUI
+package fleetBuilder.ui.popUpUI
 
-import MagicLib.height
-import MagicLib.width
-import MagicLib.x
-import MagicLib.y
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.graphics.SpriteAPI
@@ -16,6 +12,7 @@ import fleetBuilder.util.ReflectionMisc.getCoreUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import java.awt.Color
+import starficz.*
 
 //Copied and modified from AshLib
 

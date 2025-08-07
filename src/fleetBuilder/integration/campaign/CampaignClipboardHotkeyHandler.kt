@@ -1,7 +1,5 @@
 package fleetBuilder.integration.campaign
 
-import MagicLib.height
-import MagicLib.width
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
@@ -31,13 +29,15 @@ import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.ui.PopUpUI.PopUpUIDialog
+import fleetBuilder.ui.CargoSpreadsheetPanel
+import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.util.*
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
+import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.compilePlayerSaveJson
 import fleetBuilder.util.FBMisc.createDevModeDialog
@@ -58,6 +58,7 @@ import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
+import starficz.*
 
 
 internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
@@ -216,33 +217,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val dialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = true, addConfirmButton = true)
             dialog.confirmButtonName = "Create"
 
-            fun addClampedNumericField(
-                dialog: PopUpUIDialog,
-                fieldId: String,
-                maxValue: Int
-            ) {
-                dialog.addTextField(fieldId) { fields ->
-                    val rawValue = fields[fieldId] as String
-                    val cleanedValue = rawValue.replace("\\D+".toRegex(), "")
-
-                    if (cleanedValue.isEmpty()) {
-                        dialog.textFieldRefs[fieldId]?.text = ""
-                        return@addTextField
-                    }
-
-                    val numericValue = cleanedValue.toIntOrNull() ?: return@addTextField
-                    val clampedValue = numericValue.coerceAtMost(maxValue)
-
-                    if (clampedValue.toString() != rawValue) {
-                        dialog.textFieldRefs[fieldId]?.text = clampedValue.toString()
-                    }
-                }
-            }
-
             dialog.addParagraph("Max Level")
-            addClampedNumericField(dialog, "MaxLevel", officerSkillCount)
+            dialog.addClampedNumericField("MaxLevel", officerSkillCount)
             dialog.addParagraph("Max Elite Skills")
-            addClampedNumericField(dialog, "MaxElite", officerSkillCount)
+            dialog.addClampedNumericField("MaxElite", officerSkillCount)
 
             dialog.addPadding(8f)
             dialog.addToggle("Max XP", default = true)
@@ -297,7 +275,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.isCodexOpen()) return//If codex is open, halt.
+        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
 
         val captainPicker = ReflectionMisc.getCaptainPickerDialog()
         if (captainPicker != null) {
@@ -310,7 +288,81 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 handleRefitRemoveHullMod(event)
         } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
             handleFleetMouseEvents(event, sector)
+        } else if (ui.getActualCurrentTab() == CoreUITabId.CARGO) {
+            if (event.isRMBDownEvent)
+                handleCargoMouseEvents(event)
         }
+    }
+
+    private fun handleCargoMouseEvents(event: InputEventAPI) {
+        val border = ReflectionMisc.getBorderContainer()
+        val cargoTab = border?.findChildWithMethod("shouldShowLogisticsOnSwitch")
+        val transferHandler = cargoTab?.invoke("getTransferHandler")//Cargo drawn when picked up with the mouse
+        //transferHandler?.invoke("setOpacity", 0.0f)
+
+        val cargoTabest = (cargoTab as? UIPanelAPI)?.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI
+
+        val submarketButtonParent = cargoTabest?.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI
+
+        val submarketButtons = submarketButtonParent?.getChildrenCopy()
+
+        submarketButtons?.forEachIndexed { index, submarketButton ->
+            val fader = submarketButton.invoke("getMouseoverHighlightFader") as? Fader ?: return@forEachIndexed
+            if (fader.isFadingIn || fader.brightness == 1f) {
+                val selectedSubmarket = Global.getSector().currentlyOpenMarket?.submarketsCopy?.getOrNull(index)
+                    ?: return@forEachIndexed
+
+                val dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
+
+                //Parent panel.
+                //On the top like a spreadsheet, left most thing is "Item", then "Amount", then "Percent", then "Take", then "Put". then "Quick Stack"
+                //Item parent panel per cargo item in list.
+                //Under "Item" is the cargo sprite and name.
+                //Under "Amount" is a text field where you can input an amount. Has a tooltip that says "The amount of this item to keep"
+                //Under "Percent" is a text field where you can input a percentage. Has a tooltip that says "The percentage of the fleet's capacity of this item to keep"
+                //Under "Take" is a togglable button. Has a tooltip that says "If checked, take this item from this submarket if below the specified amount of percentage"
+                //Under "Put" is a togglable button. Has a tooltip that says "If checked, put this item from this submarket if above the specified amount of percentage"
+                //Under "Quick Stack" is a togglable button. Has a tooltip that says "If checked, puts all of this item in the submarket if it is in the submarket. If it is not, do nothing."
+                //Amount and Percent are mutually exclusive. Changing one removes the text in the other.
+                //Quick Stack is mutually exclusive with the other togglable buttons. Changing one removes the toggle in the others.
+
+                //dialog.addParagraph("Maintain x per fleet daily supply cost. If below x, take supplies. If above x, deposit supplies. (E.G, how many days of supplies do you want to have)")//SUPPLIES ONLY
+
+                val cargoPanel = CargoSpreadsheetPanel(Global.getSector().playerFleet.cargo, 1000f - dialog.x * 2, 850f).getPanel()
+
+                dialog.addParagraph("TODO, description of what this does and how it works. Hover over elements to see tooltips")
+                dialog.addButton("Reset Settings") { _ ->
+                    val dialog = PopUpUIDialog("Are you sure?", addConfirmButton = true, addCancelButton = true)
+                    dialog.cancelButtonName = "No"
+                    dialog.confirmButtonName = "Yes"
+                    dialog.confirmAndCancelAlignment = Alignment.MID
+
+                    dialog.onConfirm { _ ->
+                        DisplayMessage.showMessage("Setting Reset TODO")
+                    }
+
+                    initPopUpUI(dialog, 380f, 80f)
+
+                }
+                dialog.addToggle("Apply when player fleet interacts with this station", default = true)
+                dialog.addToggle("Apply when the player fleet leaves this station")
+
+                dialog.addPadding(dialog.buttonHeight)
+                dialog.addCustom(cargoPanel)
+
+                //dialog.addParagraph("Supplies")
+                //dialog.addParagraph("Crew")
+                //dialog.addParagraph("Fuel")
+                //dialog.addParagraph("Weapons & Wings")
+                //dialog.addParagraph("Custom")
+                initPopUpUI(dialog, 1000f, 1000f)
+
+                event.consume()
+            }
+        }
+
+
+        border
     }
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
@@ -542,7 +594,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         val data = FBMisc.extractDataFromClipboard() ?: run {
-            DisplayMessage.showMessage("No valid data in clipboard", Color.YELLOW)
+            //DisplayMessage.showMessage("No valid data in clipboard", Color.YELLOW)
             event.consume()
             return
         }
