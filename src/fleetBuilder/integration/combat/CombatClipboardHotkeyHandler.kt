@@ -15,11 +15,13 @@ import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.fleet.FleetSerialization.buildFleetFull
 import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.util.ClipboardMisc
+import fleetBuilder.util.DialogUtil
+import fleetBuilder.util.Dialogs
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.FBMisc
-import fleetBuilder.util.FBMisc.codexEntryToClipboard
-import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.ModifyInternalVariants
+import fleetBuilder.util.PlayerSaveUtil
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCoreUI
@@ -48,15 +50,15 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             val codex = getCodexDialog()
 
                             if (codex != null) {
-                                codexEntryToClipboard(codex)
+                                ClipboardMisc.codexEntryToClipboard(codex)
                                 event.consume(); continue
                             }
                         } catch (e: Exception) {
                             DisplayMessage.showError("FleetBuilder hotkey failed", e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
-                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !FBMisc.isPopUpUIOpen() && !ReflectionMisc.isCodexOpen()) {
-                            createDevModeDialog()
+                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.isPopUpUIOpen() && !ReflectionMisc.isCodexOpen()) {
+                            Dialogs.createDevModeDialog()
                             event.consume()
                             continue
                         }
@@ -71,7 +73,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             var element: Any? = null
 
                             if (event.eventValue == Keyboard.KEY_V) {
-                                val data = FBMisc.extractDataFromClipboard() ?: return
+                                val data = ClipboardMisc.extractDataFromClipboard() ?: return
                                 if (data is VariantSerialization.ParsedVariantData || data is MemberSerialization.ParsedMemberData || data is FleetSerialization.ParsedFleetData) {
                                     //
                                 } else {

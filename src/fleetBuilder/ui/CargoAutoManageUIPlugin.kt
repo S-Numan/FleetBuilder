@@ -29,7 +29,8 @@ class CargoAutoManageUIPlugin(
     override fun renderBelow(alphaMult: Float) {}
     override fun render(alphaMult: Float) {}
 
-    val idFields = mutableListOf<String>()
+    val typeFields = mutableListOf<CargoAPI.CargoItemType>()
+    val dataFields = mutableListOf<Any?>()
     val iconFields = mutableListOf<String>()
     val displayNameFields = mutableListOf<String>()
     val amountFields = mutableListOf<TextFieldAPI>()
@@ -47,10 +48,11 @@ class CargoAutoManageUIPlugin(
     fun createCargoAutoManage(applyOnInteraction: Boolean = false, applyOnLeave: Boolean = false): CargoAutoManage {
         val itemAutoManages = mutableListOf<ItemAutoManage>()
 
-        idFields.forEachIndexed { index, id ->
+        typeFields.forEachIndexed { index, type ->
             itemAutoManages.add(
                 ItemAutoManage(
-                    id,
+                    type,
+                    dataFields[index],
                     iconFields[index],
                     displayNameFields[index],
                     if (amountFields[index].text.isEmpty()) null else amountFields[index].text.toInt(),
@@ -70,7 +72,7 @@ class CargoAutoManageUIPlugin(
     }
 
     override fun advance(amount: Float) {
-        val stackCount = idFields.size
+        val stackCount = typeFields.size
 
         for (i in 0 until stackCount) {
             val amountField = amountFields[i]
@@ -129,19 +131,6 @@ class CargoAutoManageUIPlugin(
                 }
             }
 
-
-            // -- Quick Stack toggled
-            val quickStackState = quickStackButton.isChecked
-            if (quickStackState != prevQuickStackStates[i]) {
-                prevQuickStackStates[i] = quickStackState
-                if (quickStackState) {
-                    if (takeButton.isChecked) takeButton.isChecked = false
-                    if (putButton.isChecked) putButton.isChecked = false
-                    prevTakeStates[i] = false
-                    prevPutStates[i] = false
-                }
-            }
-
             // -- Take toggled
             val takeState = takeButton.isChecked
             if (takeState != prevTakeStates[i]) {
@@ -162,13 +151,30 @@ class CargoAutoManageUIPlugin(
                 }
             }
 
+
+            // -- Quick Stack toggled
+            val quickStackState = quickStackButton.isChecked
+            if (quickStackState != prevQuickStackStates[i]) {
+                prevQuickStackStates[i] = quickStackState
+                if (quickStackState) {
+                    if (takeButton.isChecked) takeButton.isChecked = false
+                    prevTakeStates[i] = false
+                    if (putButton.isChecked) putButton.isChecked = false
+                    prevPutStates[i] = false
+                    amountField.text = ""
+                    prevAmountTexts[i] = ""
+                    percentField.text = ""
+                    prevPercentTexts[i] = ""
+                }
+            }
+
         }
     }
 
     override fun processInput(events: MutableList<InputEventAPI>?) {}
     override fun buttonPressed(buttonId: Any?) {}
 
-    val buttonHeight = 20f
+    val buttonHeight = 28f
 
     init {
 
@@ -202,13 +208,19 @@ class CargoAutoManageUIPlugin(
             )
 
             commodities.forEach { commodity ->
-                yOffset = addStack(commodity.name, commodity.iconName, commodity.id, "", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing)
+                yOffset = addStack(commodity.name, commodity.iconName, CargoAPI.CargoItemType.RESOURCES, commodity.id, "", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing)
             }
-            yOffset = addStack("Weapons and Wings", Global.getSector().playerFaction.crest, "weapon_and_wings", "", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing)
+            yOffset = addStack(
+                "Weapons and Wings", Global.getSector().playerFaction.crest,
+                CargoAPI.CargoItemType.NULL, "weapon_and_wings",
+                "", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing
+            )
+            //yOffset = addStack("Blueprints and ModSpecs", Global.getSector().playerFaction.crest, "blueprints_and_modspecs", "", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing)
         } else {
             prevCargoAutoManage.autoManageItems.forEach { item ->
                 yOffset = addStack(
-                    item.displayName, item.icon, item.id, item.amount?.toString() ?: "", item.percent?.toString()
+                    item.displayName, item.icon, item.type, item.data, item.amount?.toString()
+                        ?: "", item.percent?.toString()
                         ?: "", item.take, item.put, item.quickStack, ui, rowHeight, yOffset, columnWidths, spacing
                 )
             }
@@ -247,7 +259,8 @@ class CargoAutoManageUIPlugin(
     private fun addStack(
         displayName: String,
         iconName: String,
-        id: String,
+        type: CargoAPI.CargoItemType,
+        data: Any?,
         defaultAmount: String = "",
         defaultPercent: String = "",
         defaultTake: Boolean = false,
@@ -259,7 +272,8 @@ class CargoAutoManageUIPlugin(
         columnWidths: List<Float>,
         spacing: Float
     ): Float {
-        idFields.add(id)
+        typeFields.add(type)
+        dataFields.add(data)
         iconFields.add(iconName)
         displayNameFields.add(displayName)
 
@@ -287,6 +301,7 @@ class CargoAutoManageUIPlugin(
 
         // 2. Amount text field
         val amountField = ui.addTextField(columnWidths[1], 0f)
+        amountField.isUndoOnEscape = false
         amountField.text = defaultAmount
         amountFields.add(amountField)
         prevAmountTexts.add(amountField.text)
@@ -298,6 +313,7 @@ class CargoAutoManageUIPlugin(
 
         // 3. Percent text field
         val percentField = ui.addTextField(columnWidths[2], 0f)
+        percentField.isUndoOnEscape = false
         percentField.text = defaultPercent
         percentFields.add(percentField)
         prevPercentTexts.add(percentField.text)

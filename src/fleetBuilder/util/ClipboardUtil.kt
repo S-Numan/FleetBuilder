@@ -149,17 +149,4 @@ object ClipboardUtil {
             .filter { it.isNotBlank() }
             .joinToString("\n")
     }
-
-    fun startsWithJsonBracket(input: String): Boolean {
-        input.lineSequence()
-            .map { it.substringBefore("#") }           // Remove inline comments
-            .map { it.trim() }                          // Trim whitespace
-            .filter { it.isNotEmpty() }                 // Ignore empty lines
-            .forEach { line ->
-                if (line.isNotEmpty()) {
-                    return line.first() == '{'
-                }
-            }
-        return false
-    }
 }

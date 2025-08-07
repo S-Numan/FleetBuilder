@@ -1,5 +1,7 @@
 package fleetBuilder.features
 
+import com.fs.starfarer.api.campaign.CargoAPI
+
 data class CargoAutoManage(
     var applyOnInteraction: Boolean = true,
     var applyOnLeave: Boolean = true,
@@ -12,7 +14,8 @@ data class CargoAutoManage(
 }
 
 data class ItemAutoManage(
-    val id: String,
+    val type: CargoAPI.CargoItemType,
+    val data: Any?,
     val icon: String,
     val displayName: String,
     val amount: Int? = null,

@@ -3,6 +3,8 @@ package fleetBuilder.integration.campaign
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
+import com.fs.starfarer.api.campaign.econ.MarketAPI
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -10,7 +12,6 @@ import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent.SkillPickPreference
 import com.fs.starfarer.api.impl.campaign.submarkets.LocalResourcesSubmarketPlugin
-import com.fs.starfarer.api.impl.campaign.submarkets.OpenMarketPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
@@ -26,7 +27,6 @@ import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CargoAutoManage
 import fleetBuilder.features.CommanderShuttle
@@ -42,12 +42,10 @@ import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.*
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
+import fleetBuilder.util.DialogUtil.initPopUpUI
+import fleetBuilder.util.Dialogs.createDevModeDialog
 import fleetBuilder.util.FBMisc.campaignPaste
-import fleetBuilder.util.FBMisc.compilePlayerSaveJson
-import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.FBMisc.fleetPaste
-import fleetBuilder.util.FBMisc.initPopUpUI
-import fleetBuilder.util.FBMisc.loadPlayerCompiledSave
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
@@ -100,7 +98,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
         //if (!Global.getSettings().isDevMode) return
-        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
@@ -125,7 +123,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 dialog.addToggle("Include Credits", true)
 
                 dialog.onConfirm { fields ->
-                    val json = FBMisc.createPlayerSaveJson(
+                    val json = PlayerSaveUtil.createPlayerSaveJson(
                         handleCargo = fields["Include Cargo"] as Boolean,
                         handleRelations = fields["Include Reputation"] as Boolean,
                         handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
@@ -174,7 +172,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                         return@onConfirm
                     }
 
-                    val (compiled, missing) = compilePlayerSaveJson(json)
+                    val (compiled, missing) = PlayerSaveUtil.compilePlayerSaveJson(json)
 
                     if (compiled.isEmpty()) {
                         reportMissingElementsIfAny(missing)
@@ -182,7 +180,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                         return@onConfirm
                     }
 
-                    loadPlayerCompiledSave(
+                    PlayerSaveUtil.loadPlayerCompiledSave(
                         compiled,
                         handleCargo = fields["Include Cargo"] as Boolean,
                         handleRelations = fields["Include Reputation"] as Boolean,
@@ -208,7 +206,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
         if (!Global.getSettings().isDevMode) return
-        if (FBMisc.isPopUpUIOpen()) return
+        if (DialogUtil.isPopUpUIOpen()) return
         if (ReflectionMisc.getCodexDialog() != null) return
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
@@ -282,7 +280,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
 
         val captainPicker = ReflectionMisc.getCaptainPickerDialog()
         if (captainPicker != null) {
@@ -303,14 +301,12 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleCargoMouseEvents(event: InputEventAPI) {
         val openMarket = Global.getSector().currentlyOpenMarket ?: return
+        val cargoTab = ReflectionMisc.getCargoTab() ?: return
 
-        val cargoTab = ReflectionMisc.getCargoTab()
+        val submarketButtonParent = cargoTab.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI ?: return
+        val submarketButtons = submarketButtonParent.getChildrenCopy()
 
-        val submarketButtonParent = cargoTab?.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI
-
-        val submarketButtons = submarketButtonParent?.getChildrenCopy()
-
-        submarketButtons?.forEach { submarketButton ->
+        submarketButtons.forEach { submarketButton ->
             val fader = submarketButton.invoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
 
             if (fader.isFadingIn || fader.brightness == 1f) {
@@ -325,60 +321,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach
                 if (!submarketPlugin.isEnabled(coreUI)) return@forEach
                 if (!submarketPlugin.isFreeTransfer) return@forEach//Temporary to avoid cheating when WIP
-                //LocalResourcesSubmarketPlugin
+                if (submarketPlugin is LocalResourcesSubmarketPlugin) return@forEach
 
-                val dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
-
-                val cargoAutoManage = openMarket.memoryWithoutUpdate.get("\$FBC_${selectedSubmarket.specId}") as? CargoAutoManage
-                    ?: CargoAutoManage()
-
-                val cargoPanel = CargoAutoManageUIPlugin(cargoAutoManage, 1000f - dialog.x * 2, 850f).getPanel()
-
-                dialog.addParagraph("WIP: description of what this does and how it works. Hover over elements to see tooltips")
-
-                dialog.addButton("Reset Settings", dismissOnClick = false) { _ ->
-
-                    val areYouSureDialog = PopUpUIDialog("Are you sure?", addConfirmButton = true, addCancelButton = true)
-                    areYouSureDialog.cancelButtonName = "No"
-                    areYouSureDialog.confirmButtonName = "Yes"
-                    areYouSureDialog.confirmAndCancelAlignment = Alignment.MID
-
-                    areYouSureDialog.onConfirm { _ ->
-                        dialog.forceDismissNoExit()
-
-                        DisplayMessage.showMessage("Settings reset")
-                        openMarket.memoryWithoutUpdate.unset("\$FBC_${selectedSubmarket.specId}")
-                    }
-
-                    initPopUpUI(areYouSureDialog, 380f, 80f)
-                }
-
-                dialog.addToggle(
-                    "Apply when player fleet interacts with this station", default = cargoAutoManage.applyOnInteraction
-                )
-                dialog.addToggle(
-                    "Apply when the player fleet leaves this station", default = cargoAutoManage.applyOnLeave
-                )
-
-                dialog.addPadding(dialog.buttonHeight)
-
-                dialog.addCustom(cargoPanel)
-                dialog.onExit { fields ->
-                    val plugin = (cargoPanel.plugin as CargoAutoManageUIPlugin)
-
-                    val cargoAutoManage = plugin.createCargoAutoManage(
-                        fields["Apply when player fleet interacts with this station"] == true,
-                        fields["Apply when the player fleet leaves this station"] == true
-                    )
-
-                    if (cargoAutoManage.isDefault()) {//If the cargo is default
-                        openMarket.memoryWithoutUpdate.unset("\$FBC_${selectedSubmarket.specId}")
-                    } else {
-                        openMarket.memoryWithoutUpdate.set("\$FBC_${selectedSubmarket.specId}", cargoAutoManage)//FBC = Fleet Builder Cargo
-                    }
-                }
-
-                initPopUpUI(dialog, 1000f, 1000f)
+                Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket)
 
                 event.consume()
             }
@@ -388,14 +333,14 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
         if (!event.isShiftDown) return
-        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
         event.consume()
 
         createDevModeDialog()
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (FBMisc.isPopUpUIOpen()) return
+        if (DialogUtil.isPopUpUIOpen()) return
 
         try {
             val codex = ReflectionMisc.getCodexDialog()
@@ -411,7 +356,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleCodexCopy(event: InputEventAPI, codex: CodexDialog) {
-        FBMisc.codexEntryToClipboard(codex)
+        ClipboardMisc.codexEntryToClipboard(codex)
         event.consume()
     }
 
@@ -516,7 +461,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
-        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             handleRefitPaste(event)
@@ -526,7 +471,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleRefitPaste(event: InputEventAPI) {
-        var data = FBMisc.extractDataFromClipboard() ?: return
+        var data = ClipboardMisc.extractDataFromClipboard() ?: return
 
         event.consume()
 
@@ -614,7 +559,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        val data = FBMisc.extractDataFromClipboard() ?: run {
+        val data = ClipboardMisc.extractDataFromClipboard() ?: run {
             //DisplayMessage.showMessage("No valid data in clipboard", Color.YELLOW)
             event.consume()
             return

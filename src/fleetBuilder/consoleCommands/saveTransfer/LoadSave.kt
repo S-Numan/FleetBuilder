@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.PlayerSaveUtil
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
@@ -54,7 +55,7 @@ class LoadSave : BaseCommand {
             return BaseCommand.CommandResult.ERROR
         }
 
-        val missing = FBMisc.loadPlayerSaveJson(
+        val missing = PlayerSaveUtil.loadPlayerSaveJson(
             json,
             handleCargo = !argList.contains(NO_CARGO),
             handleRelations = !argList.contains(NO_REP),
