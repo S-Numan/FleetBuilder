@@ -201,6 +201,33 @@ object ReflectionMisc {
         return null
     }
 
+    fun getCargoTab(): UIPanelAPI? {
+        val border = ReflectionMisc.getBorderContainer()
+        val cargoTab = border?.findChildWithMethod("shouldShowLogisticsOnSwitch")
+
+        val cargoTabest = (cargoTab as? UIPanelAPI)?.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI
+        //val transferHandler = cargoTabest?.invoke("getTransferHandler")//Cargo drawn when picked up with the mouse
+        return cargoTabest
+    }
+
+    /*fun getSelectedSubmarketInCargoTab(
+    ): SubmarketAPI? {
+        val campaignUI = Global.getSector().campaignUI
+
+        if (campaignUI.getActualCurrentTab() == CoreUITabId.CARGO && campaignUI.isShowingDialog) {
+            val dialog = campaignUI.currentInteractionDialog ?: return null
+            dialog.interactionTarget?.market ?: return null
+
+            val cargoTab = getCargoTab() ?: return null
+
+            return cargoTab
+                .getFieldsMatching(fieldAssignableTo = Submarket::class.java)
+                .getOrNull(0)
+                ?.get(cargoTab) as? SubmarketAPI
+        }
+        return null
+    }*/
+
     private var postUpdateFleetPanelCallbacks = mutableListOf<() -> Unit>()
     fun addPostUpdateFleetPanelCallback(callback: () -> Unit) {
         if (postUpdateFleetPanelCallbacks.contains(callback)) return

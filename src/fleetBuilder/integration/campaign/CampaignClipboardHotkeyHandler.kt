@@ -9,6 +9,8 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent.SkillPickPreference
+import com.fs.starfarer.api.impl.campaign.submarkets.LocalResourcesSubmarketPlugin
+import com.fs.starfarer.api.impl.campaign.submarkets.OpenMarketPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
@@ -16,6 +18,7 @@ import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.Fonts
+import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
@@ -23,13 +26,15 @@ import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
+import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
 import fleetBuilder.config.ModSettings
+import fleetBuilder.features.CargoAutoManage
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.ui.CargoSpreadsheetPanel
+import fleetBuilder.ui.CargoAutoManageUIPlugin
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
@@ -297,74 +302,88 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleCargoMouseEvents(event: InputEventAPI) {
-        val border = ReflectionMisc.getBorderContainer()
-        val cargoTab = border?.findChildWithMethod("shouldShowLogisticsOnSwitch")
-        val transferHandler = cargoTab?.invoke("getTransferHandler")//Cargo drawn when picked up with the mouse
-        //transferHandler?.invoke("setOpacity", 0.0f)
+        val openMarket = Global.getSector().currentlyOpenMarket ?: return
 
-        val cargoTabest = (cargoTab as? UIPanelAPI)?.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI
+        val cargoTab = ReflectionMisc.getCargoTab()
 
-        val submarketButtonParent = cargoTabest?.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI
+        val submarketButtonParent = cargoTab?.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI
 
         val submarketButtons = submarketButtonParent?.getChildrenCopy()
 
-        submarketButtons?.forEachIndexed { index, submarketButton ->
-            val fader = submarketButton.invoke("getMouseoverHighlightFader") as? Fader ?: return@forEachIndexed
+        submarketButtons?.forEach { submarketButton ->
+            val fader = submarketButton.invoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
+
             if (fader.isFadingIn || fader.brightness == 1f) {
-                val selectedSubmarket = Global.getSector().currentlyOpenMarket?.submarketsCopy?.getOrNull(index)
-                    ?: return@forEachIndexed
+
+                val tool = submarketButton.invoke("getTooltip") as? TooltipMakerAPI ?: return@forEach
+                val pluginField = tool.getFieldsMatching(fieldAccepts = SubmarketPlugin::class.java, searchSuperclass = true).getOrNull(0)
+                val submarketPlugin = tool.get(pluginField?.name, searchSuperclass = true) as? SubmarketPlugin
+                    ?: return@forEach
+                val selectedSubmarket = submarketPlugin.submarket
+
+                val coreUI = ReflectionMisc.getCoreUI(topDialog = false) as CoreUIAPI
+                if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach
+                if (!submarketPlugin.isEnabled(coreUI)) return@forEach
+                if (!submarketPlugin.isFreeTransfer) return@forEach//Temporary to avoid cheating when WIP
+                //LocalResourcesSubmarketPlugin
 
                 val dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
 
-                //Parent panel.
-                //On the top like a spreadsheet, left most thing is "Item", then "Amount", then "Percent", then "Take", then "Put". then "Quick Stack"
-                //Item parent panel per cargo item in list.
-                //Under "Item" is the cargo sprite and name.
-                //Under "Amount" is a text field where you can input an amount. Has a tooltip that says "The amount of this item to keep"
-                //Under "Percent" is a text field where you can input a percentage. Has a tooltip that says "The percentage of the fleet's capacity of this item to keep"
-                //Under "Take" is a togglable button. Has a tooltip that says "If checked, take this item from this submarket if below the specified amount of percentage"
-                //Under "Put" is a togglable button. Has a tooltip that says "If checked, put this item from this submarket if above the specified amount of percentage"
-                //Under "Quick Stack" is a togglable button. Has a tooltip that says "If checked, puts all of this item in the submarket if it is in the submarket. If it is not, do nothing."
-                //Amount and Percent are mutually exclusive. Changing one removes the text in the other.
-                //Quick Stack is mutually exclusive with the other togglable buttons. Changing one removes the toggle in the others.
+                val cargoAutoManage = openMarket.memoryWithoutUpdate.get("\$FBC_${selectedSubmarket.specId}") as? CargoAutoManage
+                    ?: CargoAutoManage()
 
-                //dialog.addParagraph("Maintain x per fleet daily supply cost. If below x, take supplies. If above x, deposit supplies. (E.G, how many days of supplies do you want to have)")//SUPPLIES ONLY
+                val cargoPanel = CargoAutoManageUIPlugin(cargoAutoManage, 1000f - dialog.x * 2, 850f).getPanel()
 
-                val cargoPanel = CargoSpreadsheetPanel(Global.getSector().playerFleet.cargo, 1000f - dialog.x * 2, 850f).getPanel()
+                dialog.addParagraph("WIP: description of what this does and how it works. Hover over elements to see tooltips")
 
-                dialog.addParagraph("TODO, description of what this does and how it works. Hover over elements to see tooltips")
-                dialog.addButton("Reset Settings") { _ ->
-                    val dialog = PopUpUIDialog("Are you sure?", addConfirmButton = true, addCancelButton = true)
-                    dialog.cancelButtonName = "No"
-                    dialog.confirmButtonName = "Yes"
-                    dialog.confirmAndCancelAlignment = Alignment.MID
+                dialog.addButton("Reset Settings", dismissOnClick = false) { _ ->
 
-                    dialog.onConfirm { _ ->
-                        DisplayMessage.showMessage("Setting Reset TODO")
+                    val areYouSureDialog = PopUpUIDialog("Are you sure?", addConfirmButton = true, addCancelButton = true)
+                    areYouSureDialog.cancelButtonName = "No"
+                    areYouSureDialog.confirmButtonName = "Yes"
+                    areYouSureDialog.confirmAndCancelAlignment = Alignment.MID
+
+                    areYouSureDialog.onConfirm { _ ->
+                        dialog.forceDismissNoExit()
+
+                        DisplayMessage.showMessage("Settings reset")
+                        openMarket.memoryWithoutUpdate.unset("\$FBC_${selectedSubmarket.specId}")
                     }
 
-                    initPopUpUI(dialog, 380f, 80f)
-
+                    initPopUpUI(areYouSureDialog, 380f, 80f)
                 }
-                dialog.addToggle("Apply when player fleet interacts with this station", default = true)
-                dialog.addToggle("Apply when the player fleet leaves this station")
+
+                dialog.addToggle(
+                    "Apply when player fleet interacts with this station", default = cargoAutoManage.applyOnInteraction
+                )
+                dialog.addToggle(
+                    "Apply when the player fleet leaves this station", default = cargoAutoManage.applyOnLeave
+                )
 
                 dialog.addPadding(dialog.buttonHeight)
-                dialog.addCustom(cargoPanel)
 
-                //dialog.addParagraph("Supplies")
-                //dialog.addParagraph("Crew")
-                //dialog.addParagraph("Fuel")
-                //dialog.addParagraph("Weapons & Wings")
-                //dialog.addParagraph("Custom")
+                dialog.addCustom(cargoPanel)
+                dialog.onExit { fields ->
+                    val plugin = (cargoPanel.plugin as CargoAutoManageUIPlugin)
+
+                    val cargoAutoManage = plugin.createCargoAutoManage(
+                        fields["Apply when player fleet interacts with this station"] == true,
+                        fields["Apply when the player fleet leaves this station"] == true
+                    )
+
+                    if (cargoAutoManage.isDefault()) {//If the cargo is default
+                        openMarket.memoryWithoutUpdate.unset("\$FBC_${selectedSubmarket.specId}")
+                    } else {
+                        openMarket.memoryWithoutUpdate.set("\$FBC_${selectedSubmarket.specId}", cargoAutoManage)//FBC = Fleet Builder Cargo
+                    }
+                }
+
                 initPopUpUI(dialog, 1000f, 1000f)
 
                 event.consume()
             }
         }
 
-
-        border
     }
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {

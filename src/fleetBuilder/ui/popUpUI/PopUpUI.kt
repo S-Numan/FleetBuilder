@@ -69,10 +69,10 @@ open class PopUpUI : CustomUIPanelPlugin {
 
         panel.position.setSize(16f, 16f)
 
-        parent!!.addComponent(insertPanel).inTL(x, parent.position.height - y)
-        parent.bringComponentToTop(insertPanel)
+        parent!!.addComponent(panel).inTL(x, parent.position.height - y)
+        parent.bringComponentToTop(panel)
 
-        rendererBorder.setPanel(insertPanel)
+        rendererBorder.setPanel(panel)
 
         if (!isDialog) {
             quitWithEscKey = false
@@ -166,6 +166,10 @@ open class PopUpUI : CustomUIPanelPlugin {
     fun forceDismiss() {
         parent!!.removeComponent(panel)
         onExit()
+    }
+
+    fun forceDismissNoExit() {
+        parent!!.removeComponent(panel)
     }
 
     open fun onExit() {
