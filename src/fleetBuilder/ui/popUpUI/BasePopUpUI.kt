@@ -1,11 +1,11 @@
 package fleetBuilder.ui.popUpUI
 
-import starficz.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
+import starficz.onClick
 import java.awt.Color
 
 

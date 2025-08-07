@@ -1,6 +1,6 @@
 package fleetBuilder.ui.autofit
 
-import starficz.*
+import MagicLib.ReflectionUtils.instantiate
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
@@ -12,10 +12,10 @@ import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.integration.combat.CombatAutofitAdder
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
+import starficz.*
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import kotlin.math.max
-import MagicLib.ReflectionUtils.instantiate
 
 /**
  * Original author

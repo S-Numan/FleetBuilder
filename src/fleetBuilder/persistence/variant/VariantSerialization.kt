@@ -16,9 +16,6 @@ import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
 import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.windowed
 
 object VariantSerialization {
 

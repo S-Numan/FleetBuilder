@@ -1,6 +1,5 @@
 package fleetBuilder.util
 
-import starficz.*
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
@@ -50,15 +49,12 @@ import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
-import fleetBuilder.variants.GameModInfo
-import fleetBuilder.variants.MissingElements
-import fleetBuilder.variants.MissingElementsExtended
-import fleetBuilder.variants.VariantLib
-import fleetBuilder.variants.reportMissingElementsIfAny
+import fleetBuilder.variants.*
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
 import org.lwjgl.input.Keyboard
+import starficz.getChildrenCopy
 import java.awt.Color
 import java.util.*
 import kotlin.math.max

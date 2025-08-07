@@ -1,6 +1,5 @@
 package fleetBuilder.ui.autofit
 
-import starficz.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.CoreUIAPI
@@ -13,7 +12,6 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.variants.autofit.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.ClipboardUtil
@@ -32,12 +30,14 @@ import fleetBuilder.variants.VariantLib.compareVariantHullMods
 import fleetBuilder.variants.VariantLib.getAllDMods
 import fleetBuilder.variants.VariantLib.makeVariantID
 import fleetBuilder.variants.VariantLib.processSModsForComparison
+import fleetBuilder.variants.autofit.AutofitApplier.applyVariantInRefitScreen
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
+import starficz.*
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 

@@ -15,9 +15,7 @@ import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.util.ClipboardUtil
 import fleetBuilder.util.ReflectionMisc
 import org.lazywizard.console.BaseCommand
-import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
-import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 

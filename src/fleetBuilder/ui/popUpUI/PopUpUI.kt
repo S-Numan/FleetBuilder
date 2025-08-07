@@ -11,8 +11,11 @@ import fleetBuilder.util.FBMisc.isMouseWithinBounds
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
+import starficz.height
+import starficz.width
+import starficz.x
+import starficz.y
 import java.awt.Color
-import starficz.*
 
 //Copied and modified from AshLib
 

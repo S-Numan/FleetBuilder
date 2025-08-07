@@ -1,7 +1,7 @@
 package fleetBuilder.ui.popUpUI
 
-import starficz.*
 import com.fs.starfarer.api.ui.*
+import starficz.onClick
 import java.awt.Color
 
 class PopUpUIDialog(

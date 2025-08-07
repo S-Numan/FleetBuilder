@@ -15,17 +15,20 @@ import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.fleet.FleetSerialization.buildFleetFull
 import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.util.*
+import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBMisc.codexEntryToClipboard
 import fleetBuilder.util.FBMisc.createDevModeDialog
+import fleetBuilder.util.ModifyInternalVariants
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
 import java.awt.Color
-import starficz.*
 
 internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 

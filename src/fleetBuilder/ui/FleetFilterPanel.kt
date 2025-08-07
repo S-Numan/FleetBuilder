@@ -7,10 +7,16 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.*
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.allDMods
+import fleetBuilder.util.allSMods
+import fleetBuilder.util.getShipNameWithoutPrefix
 import org.lwjgl.input.Mouse
-import starficz.*
 import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
+import starficz.getChildrenCopy
+import starficz.width
+import starficz.x
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
 

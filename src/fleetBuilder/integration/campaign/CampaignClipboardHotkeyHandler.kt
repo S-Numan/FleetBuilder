@@ -30,14 +30,13 @@ import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.ui.CargoSpreadsheetPanel
-import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
+import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.*
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.compilePlayerSaveJson
 import fleetBuilder.util.FBMisc.createDevModeDialog
@@ -57,8 +56,11 @@ import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
+import starficz.getChildrenCopy
+import starficz.height
+import starficz.width
 import java.awt.Color
-import starficz.*
 
 
 internal class CampaignClipboardHotkeyHandler : CampaignInputListener {

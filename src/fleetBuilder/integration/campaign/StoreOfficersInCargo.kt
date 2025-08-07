@@ -10,11 +10,14 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.config.ModSettings
-import fleetBuilder.util.*
+import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.FBMisc
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.getActualCurrentTab
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
-import starficz.*
+import starficz.getChildrenCopy
 
 class StoreOfficersInCargo : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 10

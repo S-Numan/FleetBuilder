@@ -1,12 +1,12 @@
 package fleetBuilder.ui.autofit
 
-import starficz.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import org.magiclib.kotlin.setAlpha
+import starficz.*
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color

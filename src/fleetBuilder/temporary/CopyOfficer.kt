@@ -1,6 +1,5 @@
 package fleetBuilder.temporary
 
-import starficz.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -13,6 +12,7 @@ import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
 import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
 
 class CopyOfficer : BaseCommand {
 
