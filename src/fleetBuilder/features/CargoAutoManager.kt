@@ -4,16 +4,12 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.econ.MarketAPI
-import com.fs.starfarer.api.campaign.econ.MonthlyReport
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
-import com.fs.starfarer.api.impl.campaign.ids.Commodities
-import com.fs.starfarer.api.impl.campaign.shared.SharedData
-import com.fs.starfarer.api.impl.campaign.submarkets.LocalResourcesSubmarketPlugin
-import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.getBlueprintAndModSpecQuantity
 import fleetBuilder.util.getWeaponAndWingQuantity
+import fleetBuilder.util.moveBlueprintAndModSpec
 import fleetBuilder.util.moveItem
-import fleetBuilder.util.moveStack
 import fleetBuilder.util.moveWeaponAndWings
 
 
@@ -67,21 +63,14 @@ class CargoAutoManager : EveryFrameScript {
     ) {
         val playerCargo = Global.getSector().playerFleet.cargo
 
-        var playerItemQuantity =
-            if (item.data == "weapon_and_wings")
-                playerCargo.getWeaponAndWingQuantity()
-            else
-                playerCargo.getQuantity(item.type, item.data)
+        var playerItemQuantity = getItemQuantity(item, playerCargo)
 
         if (item.put && playerItemQuantity > 0) {
             var amount = 0
             if (item.amount != null) {
                 if (playerItemQuantity > item.amount.toFloat()) {
                     amount = (playerItemQuantity - item.amount.toFloat()).coerceAtMost(playerItemQuantity).toInt()
-                    if (item.data == "weapon_and_wings")
-                        playerCargo.moveWeaponAndWings(submarket.cargo, amount.toFloat())
-                    else
-                        playerCargo.moveItem(item.type, item.data, submarket.cargo, amount.toFloat())
+                    moveItem(item, playerCargo, submarket.cargo, amount)
                 }
             } else if (item.percent != null) {
                 val percent = item.percent.toFloat().coerceIn(0f, 1f)
@@ -95,25 +84,14 @@ class CargoAutoManager : EveryFrameScript {
                 val desiredAmount = percent * capacity
                 if (playerItemQuantity > desiredAmount) {
                     amount = (playerItemQuantity - desiredAmount).coerceIn(0f, playerItemQuantity).toInt()
-                    if (item.data == "weapon_and_wings")
-                        playerCargo.moveWeaponAndWings(submarket.cargo, amount.toFloat())
-                    else
-                        playerCargo.moveItem(item.type, item.data, submarket.cargo, amount.toFloat())
+                    moveItem(item, playerCargo, submarket.cargo, amount)
                 }
             }
         }
 
-        playerItemQuantity =
-            if (item.data == "weapon_and_wings")
-                playerCargo.getWeaponAndWingQuantity()
-            else
-                playerCargo.getQuantity(item.type, item.data)
+        playerItemQuantity = getItemQuantity(item, playerCargo)
 
-        var submarketItemQuantity =
-            if (item.data == "weapon_and_wings")
-                submarket.cargo.getWeaponAndWingQuantity()
-            else
-                submarket.cargo.getQuantity(item.type, item.data)
+        var submarketItemQuantity = getItemQuantity(item, submarket.cargo)
 
         if (item.take && submarketItemQuantity > 0) {
             var amount = 0
@@ -122,10 +100,7 @@ class CargoAutoManager : EveryFrameScript {
                 if (playerItemQuantity < item.amount.toFloat()) {
                     amount = (item.amount.toFloat() - playerItemQuantity).coerceAtMost(submarketItemQuantity).toInt()
 
-                    if (item.data == "weapon_and_wings")
-                        submarket.cargo.moveWeaponAndWings(playerCargo, amount.toFloat())
-                    else
-                        submarket.cargo.moveItem(item.type, item.data, playerCargo, amount.toFloat())
+                    moveItem(item, submarket.cargo, playerCargo, amount)
                 }
             } else if (item.percent != null) {
                 val percent = item.percent.toFloat().coerceIn(0f, 1f)
@@ -140,10 +115,7 @@ class CargoAutoManager : EveryFrameScript {
                 if (playerItemQuantity < desiredAmount) {
                     amount = (desiredAmount - playerItemQuantity).coerceIn(0f, submarketItemQuantity).toInt()
 
-                    if (item.data == "weapon_and_wings")
-                        submarket.cargo.moveWeaponAndWings(playerCargo, amount.toFloat())
-                    else
-                        submarket.cargo.moveItem(item.type, item.data, playerCargo, amount.toFloat())
+                    moveItem(item, submarket.cargo, playerCargo, amount)
                 }
             }
 
@@ -166,23 +138,36 @@ class CargoAutoManager : EveryFrameScript {
              */
         }
 
-        playerItemQuantity =
-            if (item.data == "weapon_and_wings")
-                playerCargo.getWeaponAndWingQuantity()
-            else
-                playerCargo.getQuantity(item.type, item.data)
+        playerItemQuantity = getItemQuantity(item, playerCargo)
 
-        submarketItemQuantity =
-            if (item.data == "weapon_and_wings")
-                submarket.cargo.getWeaponAndWingQuantity()
-            else
-                submarket.cargo.getQuantity(item.type, item.data)
+        submarketItemQuantity = getItemQuantity(item, submarket.cargo)
 
         if (item.quickStack && playerItemQuantity > 0 && submarketItemQuantity > 0) {
-            if (item.data == "weapon_and_wings")
-                playerCargo.moveWeaponAndWings(submarket.cargo)
-            else
-                playerCargo.moveItem(item.type, item.data, submarket.cargo)
+            moveItem(item, playerCargo, submarket.cargo)
         }
     }
+
+    private fun moveItem(
+        item: ItemAutoManage,
+        fromCargo: CargoAPI,
+        toCargo: CargoAPI,
+        amount: Int = -1
+    ) {
+        if (item.data == "weapon_and_wings")
+            fromCargo.moveWeaponAndWings(toCargo, amount.toFloat())
+        else if (item.data == "blueprints_and_modspecs")
+            fromCargo.moveBlueprintAndModSpec(toCargo, amount.toFloat())
+        else
+            fromCargo.moveItem(item.type, item.data, toCargo, amount.toFloat())
+    }
+
+    private fun getItemQuantity(
+        item: ItemAutoManage,
+        cargo: CargoAPI
+    ): Float = if (item.data == "weapon_and_wings")
+        cargo.getWeaponAndWingQuantity()
+    else if (item.data == "blueprints_and_modspecs")
+        cargo.getBlueprintAndModSpecQuantity()
+    else
+        cargo.getQuantity(item.type, item.data)
 }

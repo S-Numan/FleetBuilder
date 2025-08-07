@@ -300,7 +300,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleCargoMouseEvents(event: InputEventAPI) {
-        val openMarket = Global.getSector().currentlyOpenMarket ?: return
+        if (!ModSettings.cargoAutoManager) return
+        Global.getSector().currentlyOpenMarket ?: return
+
         val cargoTab = ReflectionMisc.getCargoTab() ?: return
 
         val submarketButtonParent = cargoTab.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI ?: return

@@ -1,5 +1,9 @@
 ## 1.14.0
+- Added Cargo Auto Manager. Right click your storage submarket to open a dialog that allows you to automatically take and store cargo items.
 - Fix aggression_doctrine not being applied correctly.
+- Added a tooltip to the Codex Button.
+- Added a tooltip to the Fleet Screen Filter.
+- Bracket Support for Fleet Screen Filter.
 - Moved the /SaveTransfer folder to be inside the /FleetBuilder folder for organization purposes.
 - Improved JSON reading to skip '#' comments instead of failing.
 - Basic variant compression support. Hold 'Shift" while copying a variant in the refit screen to compress the data into a smaller format.

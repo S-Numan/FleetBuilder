@@ -23,13 +23,16 @@ Simulator: Add the player’s fleet into simulator reserves. To fight a variant 
 CTRL + SHIFT + D
 Anywhere: Open developer options. You can toggle dev mode here.
 
+Right Click:
+Storage Submarket: Open the Cargo Auto Manager for automatic cargo management.
+
 THE BELOW REQUIRES DEV MODE TO BE ON
 
 CTRL + V in
 Fleet screen: Add the copied fleet/member/variant/officer to your fleet
 Campaign: Spawn fleet in the clipboard into the campaign
 
-Right Click in:
+Right Click:
 HullMod in refit screen: Removes the hullmod. Even if it’s an SMod, or a built in SMod.
 
 CTRL + O in
@@ -37,10 +40,18 @@ Fleet Screen: Open officer creator dialog
 
 CTRL + I
 Campaign: Open Save Transfer dialog",,,Hotkey Handler
+cargoAutoManager,Enable Cargo Auto Manager,Boolean,true,,"Right click a storage submarket to pull up the Cargo Auto Manager.
+
+This menu allows you to configure automatically taking and/or depositing cargo items on entering or leaving a market.
+You can, for example, automatically stock up on supplies, fuel, and crew on interaction with a market.
+You can also automatically deposit all weapons when interacting with a market
+Highly configurable",,,Hotkey Handler
+,,,,,,,,
+,,,,,,,,
 randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, automatically randomizes the ship name and officer name/portrait if present when pasting an element with them.
 
 This avoids pasted members looking like a clone army, and makes them look like a bunch of ships/officers that happen to have the same loadout instead",,,Hotkey Handler
-autofitMenuEnabled,Enable Autofit Menu,Boolean,true,,A custom autofit menu for the refit screen with unlimited variant slots that stay between saves.,,,Autofit Menu
+,,,,,,,,
 fleetScreenFilter,Enable Fleet Screen Filter,Boolean,false,,"A clickable filter on the fleet screen that allows you to type in keywords to filter visible ships.
 You can enter hull names like ""Hammerhead"", or ship types such as ""phase"", ""carrier"", or ""frigate"".
 Ships that do not match any of the entered keywords will be hidden.
@@ -52,7 +63,8 @@ Valid Inputs:
 
 Name of the ship hull (E.G “Hammerhead”)
 Name of the ship (E.G “Apologies To Goddard”)
-Design Type (E.G “Low Tech”)
+Design Type (E.G “Midline”)
+Name of the ship system (E.G “Maneuvering Jets”)
 
 smodded (Has SMods)
 dmodded (Has DMods)
@@ -68,14 +80,11 @@ destroyer
 cruiser
 capital
 automated
-marines/transport
-fuel/tanker
-crew/liner
-cargo/freighter",,,Fleet Filter
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
+marines / transport
+fuel / tanker
+crew / liner
+cargo / freighter",,,Fleet Filter
+autofitMenuEnabled,Enable Autofit Menu,Boolean,true,,A custom autofit menu for the refit screen with unlimited variant slots that stay between saves.,,,Autofit Menu
 keybindsHeader,Keybinds Header,Header,Keybinds,,,,,Autofit Menu
 autofitMenuHotkey,Autofit Menu Hotkey,Keycode,44,,Keybind to open this mod’s autofit menu. Use in the refit screen.,,,Autofit Menu
 ,,,,,,,,

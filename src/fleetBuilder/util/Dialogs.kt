@@ -154,63 +154,10 @@ object Dialogs {
     }
 
     fun openSubmarketCargoAutoManagerDialog(
-        selectedSubmarket: SubmarketAPI
+        selectedSubmarket: SubmarketAPI,
+        instantUp: Boolean = false
     ) {
-        val market = selectedSubmarket.market
-
-        val dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
-
-        val cargoAutoManage = market.memoryWithoutUpdate.get("\$FBC_${selectedSubmarket.specId}") as? CargoAutoManage
-            ?: CargoAutoManage()
-
-        val cargoPanel = CargoAutoManageUIPlugin(cargoAutoManage, 1000f - dialog.x * 2, 820f).getPanel()
-
-        dialog.addParagraph("This is a work in progress. TODO: put a description of what this does and how it works here. Hover over elements to see tooltips. ")
-
-        dialog.addButton("Reset Settings", dismissOnClick = false) { _ ->
-
-            val areYouSureDialog = PopUpUIDialog("Are you sure?", addConfirmButton = true, addCancelButton = true)
-            areYouSureDialog.cancelButtonName = "No"
-            areYouSureDialog.confirmButtonName = "Yes"
-            areYouSureDialog.confirmAndCancelAlignment = Alignment.MID
-
-            areYouSureDialog.onConfirm { _ ->
-                dialog.forceDismissNoExit()
-
-                market.memoryWithoutUpdate.unset("\$FBC_${selectedSubmarket.specId}")
-
-                openSubmarketCargoAutoManagerDialog(selectedSubmarket)
-            }
-
-            initPopUpUI(areYouSureDialog, 380f, 80f)
-        }
-
-        dialog.addToggle(
-            "Apply when player fleet interacts with this station", default = cargoAutoManage.applyOnInteraction
-        )
-        dialog.addToggle(
-            "Apply when the player fleet leaves this station", default = cargoAutoManage.applyOnLeave
-        )
-
-        dialog.addPadding(dialog.buttonHeight)
-
-        dialog.addCustom(cargoPanel)
-        dialog.onExit { fields ->
-            val plugin = (cargoPanel.plugin as CargoAutoManageUIPlugin)
-
-            val cargoAutoManage = plugin.createCargoAutoManage(
-                fields["Apply when player fleet interacts with this station"] == true,
-                fields["Apply when the player fleet leaves this station"] == true
-            )
-
-            if (cargoAutoManage.isDefault()) {//If the cargo is default
-                market.memoryWithoutUpdate.unset("\$FBC_${selectedSubmarket.specId}")
-            } else {
-                market.memoryWithoutUpdate.set("\$FBC_${selectedSubmarket.specId}", cargoAutoManage)//FBC = Fleet Builder Cargo
-            }
-        }
-
-        initPopUpUI(dialog, 1000f, 1000f)
+        CargoAutoManageUIPlugin(selectedSubmarket, 1000f, 1000f, instantUp).getPanel()
     }
 
     fun createDevModeDialog() {

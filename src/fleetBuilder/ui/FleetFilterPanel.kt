@@ -13,6 +13,7 @@ import fleetBuilder.util.allSMods
 import fleetBuilder.util.getShipNameWithoutPrefix
 import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.invoke
+import starficz.addTooltip
 import starficz.findChildWithMethod
 import starficz.getChildrenCopy
 import starficz.width
@@ -69,6 +70,37 @@ class FleetFilterPanel(
 
         mainPanel.addUIElement(tooltip).inTL(0f, 0f)
         fleetSidePanel.addComponent(mainPanel)//.inBR(xPad, yPad)
+
+        mainPanel.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 500f) {
+            it.addPara(
+                "Valid Inputs:\n" +
+                        "\n" +
+                        "\n" +
+                        "Name of the ship hull (E.G “Hammerhead”)\n" +
+                        "Name of the ship (E.G “Apologies To Goddard”)\n" +
+                        "Design Type (E.G “Midline”)\n" +
+                        "Name of the ship system (E.G “Maneuvering Jets”)\n" +
+                        "\n" +
+                        "smodded (Has SMods)\n" +
+                        "dmodded (Has DMods)\n" +
+                        "officer (Has Officer)\n" +
+                        "\n" +
+                        "combat (If a ship adds to the combat ship deployment point cost)\n" +
+                        "civilian\n" +
+                        "carrier\n" +
+                        "phase\n" +
+                        "shields\n" +
+                        "frigate\n" +
+                        "destroyer\n" +
+                        "cruiser\n" +
+                        "capital\n" +
+                        "automated\n" +
+                        "marines / transport\n" +
+                        "fuel / tanker\n" +
+                        "crew / liner\n" +
+                        "cargo / freighter", 0f
+            )
+        }
     }
 
     override fun advance(amount: Float) {
@@ -120,7 +152,17 @@ class FleetFilterPanel(
         @Suppress("UNCHECKED_CAST")
         val items = fleetGrid.invoke("getItems") as? List<UIPanelAPI?> ?: return
 
-        val descriptions = textField.text.lowercase().split(" ").filter { it != "" }
+        val regex = Regex("""(?:[^\s"]+|"[^"]*"|'[^']*')+""")//Non-space tokens or quoted strings with "double" or 'single' quotes
+        val descriptions = regex.findAll(textField.text.lowercase())
+            .map { match ->//Trim quotes, keep the dash
+                val token = match.value
+                val hasInitialDash = token.startsWith("-") && token.length > 1 && token[1] != '-'
+                val core = if (hasInitialDash) token.substring(1) else token
+                val trimmed = core.trim('"', '\'', '-') // Trim quotes and dashes
+                if (hasInitialDash) "-$trimmed" else trimmed
+            }
+            .filter { it.isNotBlank() }
+            .toList()
 
         descriptions.forEach { desc ->
             val itemsToRemove = mutableListOf<UIPanelAPI?>()
@@ -171,8 +213,8 @@ class FleetFilterPanel(
             !captain.isDefault && ("officered".startsWith(desc) || "captained".startsWith(desc)) -> true
 
             //
-            hullSpec.shipSystemId.startsWith(desc) -> true
-            hullSpec.shipDefenseId.isNotEmpty() && hullSpec.shipDefenseId != "phasecloak" && hullSpec.shipDefenseId.startsWith(desc) -> true
+            Global.getSettings().allShipSystemSpecs.find { it.id == hullSpec.shipSystemId }?.name?.lowercase()?.startsWith(desc) == true -> true
+            hullSpec.shipDefenseId.isNotEmpty() && hullSpec.shipDefenseId != "phasecloak" && Global.getSettings().allShipSystemSpecs.find { it.id == hullSpec.shipDefenseId }?.name?.lowercase()?.startsWith(desc) == true -> true
             else -> false
         }
     }

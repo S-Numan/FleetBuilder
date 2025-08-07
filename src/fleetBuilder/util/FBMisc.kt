@@ -385,7 +385,7 @@ object FBMisc {
             }
 
             else -> {
-                showMessage("No valid data found in clipboard", Color.YELLOW)
+                DisplayMessage.showMessage("Data valid, but was not fleet, member, variant, or officer data", Color.YELLOW)
             }
         }
 

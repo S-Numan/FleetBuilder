@@ -14,6 +14,7 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CutStyle
+import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.persistence.member.MemberSerialization.saveMemberToJson
@@ -94,6 +95,10 @@ class CampaignCodexButton : EveryFrameScript {
                     24f, 24f,
                     Font.ORBITRON_20
                 ) as ButtonAPI?
+
+                addToFleetButton!!.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 400f) { tooltip ->
+                    tooltip.addPara("Hold CTRL to add a blueprint if a blueprint is available\nHold ALT or SHIFT to multiply the value by 10", 0f)
+                }
 
                 addToFleetButton!!.onClick { ->
                     addCodexParamEntryToFleet(Global.getSector(), param!!)

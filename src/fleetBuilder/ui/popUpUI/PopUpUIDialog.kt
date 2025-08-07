@@ -4,7 +4,7 @@ import com.fs.starfarer.api.ui.*
 import starficz.onClick
 import java.awt.Color
 
-class PopUpUIDialog(
+open class PopUpUIDialog(
     override var headerTitle: String? = null,
     val addConfirmButton: Boolean = false,
     val addCancelButton: Boolean = false,
@@ -155,7 +155,6 @@ class PopUpUIDialog(
 
     override fun onExit() {
         super.onExit()
-
         exitCallback?.invoke(collectFieldStates())
     }
 

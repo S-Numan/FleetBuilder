@@ -138,6 +138,7 @@ open class PopUpUI : CustomUIPanelPlugin {
 
     override fun processInput(events: MutableList<InputEventAPI>) {
         for (event in events) {
+            if (event.isConsumed) continue
             if (frames >= limit - 1 && reachedMaxHeight) {
                 /*if (event.isMouseDownEvent && !isDialog) {
                     val hovers = FBMisc.isMouseHoveringOverComponent(panelToInfluence!!)
@@ -152,9 +153,11 @@ open class PopUpUI : CustomUIPanelPlugin {
                             forceDismiss()
                             event.consume()
                             break
-                        } else {
+                        } else if (event.isKeyDownEvent) {
+                            event.consume()
                             attemptedExit = true
-                        }
+                        } else
+                            event.consume()
                     }
                 }
             }
@@ -172,8 +175,16 @@ open class PopUpUI : CustomUIPanelPlugin {
         parent!!.removeComponent(panel)
     }
 
+    private var exitCallback: (() -> Unit)? = null
+
     open fun onExit() {
+        exitCallback?.invoke()
     }
+
+    fun onExit(callback: () -> Unit) {
+        exitCallback = callback
+    }
+
 
     override fun buttonPressed(buttonId: Any) {
     }

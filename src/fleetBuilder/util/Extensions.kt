@@ -5,6 +5,10 @@ import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
+import com.fs.starfarer.api.campaign.impl.items.ModSpecItemPlugin
+import com.fs.starfarer.api.campaign.impl.items.MultiBlueprintItemPlugin
+import com.fs.starfarer.api.campaign.impl.items.ShipBlueprintItemPlugin
+import com.fs.starfarer.api.campaign.impl.items.WeaponBlueprintItemPlugin
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -13,7 +17,6 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.json.JSONArray
 import org.json.JSONObject
-import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.getChildrenCopy
 
@@ -195,6 +198,43 @@ fun CargoAPI.moveWeaponAndWings(to: CargoAPI, inputAmount: Float = -1f) {
             }
         }
     }
+}
+
+fun CargoAPI.getBlueprintAndModSpecQuantity(): Float {
+    var count = 0f
+    for (stack in this.stacksCopy) {
+        if (stack.isNull) continue
+        if (stack.isBlueprintOrModSpec()) {
+            count += stack.size
+        }
+    }
+    return count
+}
+
+fun CargoAPI.moveBlueprintAndModSpec(to: CargoAPI, inputAmount: Float = -1f) {
+    var remaining = inputAmount
+
+    for (stack in this.stacksCopy) {
+        if (stack.isNull) continue
+
+        if (stack.isBlueprintOrModSpec()) {
+            val stackSize = stack.size
+            val moveAmount = minOf(stackSize, remaining)
+
+            stack.moveStack(to, moveAmount)
+
+            if (inputAmount != -1f) {
+                remaining -= moveAmount
+
+                if (remaining <= 0f)
+                    break
+            }
+        }
+    }
+}
+
+fun CargoStackAPI.isBlueprintOrModSpec(): Boolean {
+    return this.type == CargoAPI.CargoItemType.SPECIAL && (this.plugin is ShipBlueprintItemPlugin || this.plugin is WeaponBlueprintItemPlugin || this.plugin is MultiBlueprintItemPlugin || this.plugin is ModSpecItemPlugin)
 }
 
 fun String.startsWithJsonBracket(): Boolean {
