@@ -1,6 +1,7 @@
 ## 1.14.0
 - Added Cargo Auto Manager. Right click your storage submarket to open a dialog that allows you to automatically take and store cargo items.
 - Fix aggression_doctrine not being applied correctly.
+- Titlescreen message now implemented properly.
 - Added a tooltip to the Codex Button.
 - Added a tooltip to the Fleet Screen Filter.
 - Bracket Support for Fleet Screen Filter.
@@ -9,6 +10,7 @@
 - Basic variant compression support. Hold 'Shift" while copying a variant in the refit screen to compress the data into a smaller format.
 - Fix ship modules failing to save after force applying via the autofit ui.
 - "pick_random_variant" boolean for JSON variants. Instead of specifying the contents of a variant, simply use `"pick_random_variant": true`, and a random variant of the hullID will be selected.
+- Fixed codex not being acquried properly when clicking a ship in the missions tabs.
 ### Technical
 - A notable amount of backend changes
 

@@ -148,8 +148,9 @@ object ReflectionMisc {
         }
 
         //settingsCodex is false despite codex being open
-        if (Global.getCurrentState() == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
+        if ((Global.getCurrentState() == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) || Global.getCurrentState() == GameState.TITLE) {
             //F2 while hovering over ship or ship question mark press in the fleet screen. NOT hover over question mark and press F2, that is handled differently for some reason.
+            //Also clicking a ship in the title-screen missions to see its codex entry.
             val coreUI = getCoreUI()
             return coreUI?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog?
 
