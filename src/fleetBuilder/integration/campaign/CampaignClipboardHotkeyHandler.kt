@@ -1,16 +1,17 @@
 package fleetBuilder.integration.campaign
 
-import MagicLib.height
-import MagicLib.width
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
+import com.fs.starfarer.api.campaign.econ.MarketAPI
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent.SkillPickPreference
+import com.fs.starfarer.api.impl.campaign.submarkets.LocalResourcesSubmarketPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
@@ -18,6 +19,7 @@ import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.Fonts
+import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
@@ -26,30 +28,30 @@ import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
+import fleetBuilder.features.CargoAutoManage
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.ui.PopUpUI.PopUpUIDialog
+import fleetBuilder.ui.CargoAutoManageUIPlugin
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
+import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.*
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.ClipboardUtil.setClipboardText
+import fleetBuilder.util.DialogUtil.initPopUpUI
+import fleetBuilder.util.Dialogs.createDevModeDialog
 import fleetBuilder.util.FBMisc.campaignPaste
-import fleetBuilder.util.FBMisc.compilePlayerSaveJson
-import fleetBuilder.util.FBMisc.createDevModeDialog
 import fleetBuilder.util.FBMisc.fleetPaste
-import fleetBuilder.util.FBMisc.initPopUpUI
-import fleetBuilder.util.FBMisc.loadPlayerCompiledSave
-import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.VariantLib
+import fleetBuilder.variants.reportMissingElementsIfAny
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
@@ -57,6 +59,10 @@ import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
+import starficz.getChildrenCopy
+import starficz.height
+import starficz.width
 import java.awt.Color
 
 
@@ -92,7 +98,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
         //if (!Global.getSettings().isDevMode) return
-        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
@@ -117,7 +123,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 dialog.addToggle("Include Credits", true)
 
                 dialog.onConfirm { fields ->
-                    val json = FBMisc.createPlayerSaveJson(
+                    val json = PlayerSaveUtil.createPlayerSaveJson(
                         handleCargo = fields["Include Cargo"] as Boolean,
                         handleRelations = fields["Include Reputation"] as Boolean,
                         handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
@@ -166,7 +172,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                         return@onConfirm
                     }
 
-                    val (compiled, missing) = compilePlayerSaveJson(json)
+                    val (compiled, missing) = PlayerSaveUtil.compilePlayerSaveJson(json)
 
                     if (compiled.isEmpty()) {
                         reportMissingElementsIfAny(missing)
@@ -174,7 +180,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                         return@onConfirm
                     }
 
-                    loadPlayerCompiledSave(
+                    PlayerSaveUtil.loadPlayerCompiledSave(
                         compiled,
                         handleCargo = fields["Include Cargo"] as Boolean,
                         handleRelations = fields["Include Reputation"] as Boolean,
@@ -200,7 +206,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
         if (!Global.getSettings().isDevMode) return
-        if (FBMisc.isPopUpUIOpen()) return
+        if (DialogUtil.isPopUpUIOpen()) return
         if (ReflectionMisc.getCodexDialog() != null) return
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
@@ -216,37 +222,14 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val dialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = true, addConfirmButton = true)
             dialog.confirmButtonName = "Create"
 
-            fun addClampedNumericField(
-                dialog: PopUpUIDialog,
-                fieldId: String,
-                maxValue: Int
-            ) {
-                dialog.addTextField(fieldId) { fields ->
-                    val rawValue = fields[fieldId] as String
-                    val cleanedValue = rawValue.replace("\\D+".toRegex(), "")
-
-                    if (cleanedValue.isEmpty()) {
-                        dialog.textFieldRefs[fieldId]?.text = ""
-                        return@addTextField
-                    }
-
-                    val numericValue = cleanedValue.toIntOrNull() ?: return@addTextField
-                    val clampedValue = numericValue.coerceAtMost(maxValue)
-
-                    if (clampedValue.toString() != rawValue) {
-                        dialog.textFieldRefs[fieldId]?.text = clampedValue.toString()
-                    }
-                }
-            }
-
             dialog.addParagraph("Max Level")
-            addClampedNumericField(dialog, "MaxLevel", officerSkillCount)
+            dialog.addClampedNumericField("MaxLevel", officerSkillCount)
             dialog.addParagraph("Max Elite Skills")
-            addClampedNumericField(dialog, "MaxElite", officerSkillCount)
+            dialog.addClampedNumericField("MaxElite", officerSkillCount)
 
             dialog.addPadding(8f)
             dialog.addToggle("Max XP", default = true)
-            dialog.addToggle("Max Skills Pick Per Level", default = true)
+            dialog.addToggle("Max Skill Picks Per Level", default = true)
 
             dialog.addPadding(8f)
             dialog.addParagraph("Personality")
@@ -276,7 +259,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                 person.setPersonality(personality.lowercase());
 
-                if (fields["Max Skills Pick Per Level"] as Boolean)
+                if (fields["Max Skill Picks Per Level"] as Boolean)
                     person.memoryWithoutUpdate.set("\$officerSkillPicksPerLevel", officerSkillCount)
                 if (maxLevel != null)
                     person.memoryWithoutUpdate.set("\$officerMaxLevel", maxLevel)
@@ -297,7 +280,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.isCodexOpen()) return//If codex is open, halt.
+        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
 
         val captainPicker = ReflectionMisc.getCaptainPickerDialog()
         if (captainPicker != null) {
@@ -310,19 +293,56 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 handleRefitRemoveHullMod(event)
         } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
             handleFleetMouseEvents(event, sector)
+        } else if (ui.getActualCurrentTab() == CoreUITabId.CARGO) {
+            if (event.isRMBDownEvent)
+                handleCargoMouseEvents(event)
         }
+    }
+
+    private fun handleCargoMouseEvents(event: InputEventAPI) {
+        if (!ModSettings.cargoAutoManager) return
+        Global.getSector().currentlyOpenMarket ?: return
+
+        val cargoTab = ReflectionMisc.getCargoTab() ?: return
+
+        val submarketButtonParent = cargoTab.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI ?: return
+        val submarketButtons = submarketButtonParent.getChildrenCopy()
+
+        submarketButtons.forEach { submarketButton ->
+            val fader = submarketButton.invoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
+
+            if (fader.isFadingIn || fader.brightness == 1f) {
+
+                val tool = submarketButton.invoke("getTooltip") as? TooltipMakerAPI ?: return@forEach
+                val pluginField = tool.getFieldsMatching(fieldAccepts = SubmarketPlugin::class.java, searchSuperclass = true).getOrNull(0)
+                val submarketPlugin = tool.get(pluginField?.name, searchSuperclass = true) as? SubmarketPlugin
+                    ?: return@forEach
+                val selectedSubmarket = submarketPlugin.submarket
+
+                val coreUI = ReflectionMisc.getCoreUI(topDialog = false) as CoreUIAPI
+                if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach
+                if (!submarketPlugin.isEnabled(coreUI)) return@forEach
+                if (!submarketPlugin.isFreeTransfer) return@forEach//Temporary to avoid cheating when WIP
+                if (submarketPlugin is LocalResourcesSubmarketPlugin) return@forEach
+
+                Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket)
+
+                event.consume()
+            }
+        }
+
     }
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
         if (!event.isShiftDown) return
-        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
         event.consume()
 
         createDevModeDialog()
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (FBMisc.isPopUpUIOpen()) return
+        if (DialogUtil.isPopUpUIOpen()) return
 
         try {
             val codex = ReflectionMisc.getCodexDialog()
@@ -338,7 +358,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleCodexCopy(event: InputEventAPI, codex: CodexDialog) {
-        FBMisc.codexEntryToClipboard(codex)
+        ClipboardMisc.codexEntryToClipboard(codex)
         event.consume()
     }
 
@@ -423,23 +443,27 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         val variantToSave = baseVariant.clone()
         variantToSave.hullVariantId = VariantLib.makeVariantID(baseVariant)
 
-        val json = VariantSerialization.saveVariantToJson(
-            variantToSave,
-            VariantSerialization.VariantSettings().apply {
-                applySMods = ModSettings.saveSMods
-                includeDMods = ModSettings.saveDMods
-                includeHiddenMods = ModSettings.saveHiddenMods
-            }
-        )
+        if (!event.isShiftDown) {
+            val json = VariantSerialization.saveVariantToJson(
+                variantToSave,
+                ModSettings.getConfiguredVariantSettings()
+            )
+            ClipboardUtil.setClipboardText(json.toString(4))
+            DisplayMessage.showMessage("Variant copied to clipboard")
+        } else {
+            val comp = VariantSerialization.saveVariantToCompString(
+                variantToSave,
+                ModSettings.getConfiguredVariantSettings()
+            )
+            ClipboardUtil.setClipboardText(comp)
+            DisplayMessage.showMessage("Variant compressed and copied to clipboard")
+        }
 
-        ClipboardUtil.setClipboardText(json.toString(4))
-
-        DisplayMessage.showMessage("Variant copied to clipboard")
         event.consume()
     }
 
     private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
-        if (ReflectionMisc.isCodexOpen() || FBMisc.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             handleRefitPaste(event)
@@ -449,15 +473,23 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleRefitPaste(event: InputEventAPI) {
-        val json = ClipboardUtil.getClipboardJson() ?: return
-        val (variant, missing) = json.optJSONObject("variant")?.let { variantJson ->
-            VariantSerialization.getVariantFromJsonWithMissing(variantJson)//JSON is of a FleetMemberAPI
-        } ?: VariantSerialization.getVariantFromJsonWithMissing(json)//JSON is of a ShipVariantAPI (also fallback)
+        var data = ClipboardMisc.extractDataFromClipboard() ?: return
 
         event.consume()
+
+        if (data is MemberSerialization.ParsedMemberData && data.variantData != null) {
+            data = data.variantData
+        }
+        if (data !is VariantSerialization.ParsedVariantData) {
+            DisplayMessage.showMessage("Data in clipboard was valid, but not a variant", Color.YELLOW)
+            return
+        }
+
+        val (variant, missing) = VariantSerialization.buildVariantFull(data)
+
         if (missing.hullIds.isNotEmpty()) {
             DisplayMessage.showMessage(
-                "Failed to import loadout. Could not find hullId ${json.optString("hullId", "")}",
+                "Failed to import loadout. Could not find hullId ${missing.hullIds.first()}",
                 Color.YELLOW
             )
             return
@@ -529,19 +561,19 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        val json = ClipboardUtil.getClipboardJson() ?: run {
-            DisplayMessage.showMessage("No valid json in clipboard", Color.YELLOW)
+        val data = ClipboardMisc.extractDataFromClipboard() ?: run {
+            //DisplayMessage.showMessage("No valid data in clipboard", Color.YELLOW)
             event.consume()
             return
         }
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-            fleetPaste(sector, json)
+            fleetPaste(sector, data)
         } else if (ui.currentInteractionDialog == null &&// Handle campaign map paste (no dialog/menu showing)
             !ui.isShowingDialog &&
             !ui.isShowingMenu
         ) {
-            campaignPaste(sector, json)
+            campaignPaste(sector, data)
         }
 
         event.consume()

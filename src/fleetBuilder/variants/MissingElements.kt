@@ -1,6 +1,13 @@
 package fleetBuilder.variants
 
 import com.fs.starfarer.api.Global
+import fleetBuilder.util.DisplayMessage.showError
+
+data class GameModInfo(
+    val id: String,
+    val name: String,
+    val version: String
+)
 
 open class MissingElements(
 ) {
@@ -9,7 +16,7 @@ open class MissingElements(
     val hullIds: MutableSet<String> = mutableSetOf()
     val hullModIds: MutableSet<String> = mutableSetOf()
     val skillIds: MutableSet<String> = mutableSetOf()
-    val gameMods: MutableSet<Triple<String, String, String>> = mutableSetOf()//ID, name, version
+    val gameMods: MutableSet<GameModInfo> = mutableSetOf()//ID, name, version
 
     // Function to check if anything was missing from the variant.
     open fun hasMissing(): Boolean {
@@ -50,14 +57,16 @@ open class MissingElements(
 
         printIfNotEmpty("Missing Skills", missingMessages, skillIds)
 
-        val filteredMods: Set<Triple<String, String, String>> = if (doNotPrintEnabledMods) {
+        val filteredMods: Set<GameModInfo> = if (doNotPrintEnabledMods) {
             val modManager = Global.getSettings().modManager
-            gameMods.filterNot { (id, _, _) ->
-                modManager.isModEnabled(id)
-            }.toSet()
+            gameMods
+                .filterNot { mod -> modManager.isModEnabled(mod.id) }
+                .toSet()
         } else {
-            gameMods.toSet()
+            gameMods
+                .toSet()
         }
+
 
         printIfNotEmpty("Mods Saved With", missingMessages, filteredMods) { mod ->
             val (id, name, version) = mod
@@ -119,5 +128,15 @@ class MissingElementsExtended : MissingElements() {
         return (extra.filter { it.isNotBlank() } + listOf(base))
             .filter { it.isNotBlank() }
             .joinToString("\n\n")
+    }
+}
+
+fun reportMissingElementsIfAny(
+    missingElements: MissingElements,
+    defaultShortMessage: String = "HAD MISSING ELEMENTS: see console for more details"
+) {
+    val fullMessage = missingElements.getMissingElementsString()
+    if (fullMessage.isNotBlank()) {
+        showError(defaultShortMessage, fullMessage)
     }
 }

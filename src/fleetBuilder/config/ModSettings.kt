@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global
 import fleetBuilder.config.ModSettings.autofitMenuEnabled
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.config.ModSettings.backupSave
+import fleetBuilder.config.ModSettings.cargoAutoManager
 import fleetBuilder.config.ModSettings.defaultPrefix
 import fleetBuilder.config.ModSettings.devModeCodexButtonEnabled
 import fleetBuilder.config.ModSettings.dontForceClearDMods
@@ -25,6 +26,7 @@ import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
 import fleetBuilder.config.ModSettings.storeOfficersInCargo
 import fleetBuilder.config.ModSettings.unassignPlayer
+import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.Reporter
 import fleetBuilder.util.containsString
 import fleetBuilder.variants.LoadoutManager
@@ -79,6 +81,7 @@ internal class ModSettingsListener : LunaSettingsListener {
         fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
         storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
         removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
+        cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
 
         autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
 
@@ -118,7 +121,7 @@ object ModSettings {
 
         val hullModsToNeverSaveJSONArray = neverHullModsJson.optJSONArray("HullModsToNeverSave") ?: JSONArray()
 
-        listOf("rat_controller", "rat_artifact_controller").forEach { mod ->
+        listOf("rat_controller", "rat_artifact_controller", "SCVE_officerdetails_X").forEach { mod ->
             if (!hullModsToNeverSaveJSONArray.containsString(mod)) {
                 hullModsToNeverSaveJSONArray.put(mod)
             }
@@ -143,6 +146,14 @@ object ModSettings {
     private var hullModsToNeverSave = setOf<String>()
 
     fun getHullModsToNeverSave(): Set<String> = hullModsToNeverSave
+
+    fun getConfiguredVariantSettings(): VariantSerialization.VariantSettings {
+        return VariantSerialization.VariantSettings().apply {
+            applySMods = saveSMods
+            includeDMods = saveDMods
+            includeHiddenMods = saveHiddenMods
+        }
+    }
 
     val modID = "SN_FleetBuilder"
 
@@ -195,4 +206,6 @@ object ModSettings {
     var storeOfficersInCargo = false
 
     var removeDefaultDMods = true
+
+    var cargoAutoManager = true
 }

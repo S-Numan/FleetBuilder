@@ -1,0 +1,240 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "skills": {
+            "tactical_drills":1,
+            "coordinated_maneuvers":1,
+            "wolfpack_tactics":1,
+            "crew_training":1,
+            "fighter_uplink":1,
+            "carrier_group":1,
+            "officer_training":1,
+            "officer_management":1,
+            "best_of_the_best":1,
+            "support_doctrine":0,
+
+            "navigation":1,
+            "sensors":1,
+            "electronic_warfare":1,
+            "flux_regulation":1,
+            "phase_corps":1,
+            "neural_link":1,
+            "cybernetic_augmentation":1,
+            "automated_ships":0,
+
+            "bulk_transport":1,
+            "salvaging":1,
+            "field_repairs":1,
+            "containment_procedures":1,
+            "makeshift_equipment":1,
+            "industrial_planning":1,
+            "hull_restoration":1,
+            "derelict_contingent":0
+        }
+    },
+    "fleetName": "PixiCode",
+    "idleOfficers": [],
+    "members": [
+        {
+            "cr": 1,
+            "name": "Onslaught1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_hegemony06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "5743_onslaught_3"
+        },
+        {
+            "cr": 1,
+            "name": "Onslaught2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_hegemony04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "5743_onslaught_3"
+        },
+        {
+            "cr": 1,
+            "name": "Mora",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_hegemony01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "damage_control": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "5743_Mora_1"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 10,
+            "fluxVents": 50,
+            "hullId": "onslaught_xiv",
+            "hullMods": [
+                "targetingunit",
+                "fluxdistributor",
+                "armoredweapons",
+                "hardenedshieldemitter",
+                "adaptiveshields",
+                "advancedshieldemitter"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "turretgyros",
+                "magazines",
+                "autorepair"
+            ],
+            "variantId": "5743_onslaught_3",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 016": "tpc",
+                        "WS 017": "tpc"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 019": "multineedler"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 018": "multineedler",
+                        "WS 020": "multineedler"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "dualflak"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavymauler"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavymauler"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "vulcan",
+                        "WS 009": "vulcan",
+                        "WS 010": "flak",
+                        "WS 011": "flak",
+                        "WS 012": "heavymauler",
+                        "WS 013": "heavymauler",
+                        "WS 014": "heavymg",
+                        "WS 015": "heavymg",
+                        "WS 021": "sabotpod",
+                        "WS 022": "sabotpod",
+                        "WS 023": "sabotpod",
+                        "WS 024": "sabotpod"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 0,
+            "fluxVents": 19,
+            "hullId": "mora",
+            "hullMods": [
+                "advancedshieldemitter",
+                "eccm"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "reinforcedhull",
+                "targetingunit",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "5743_Mora_1",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "lightneedler",
+                        "WS 007": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "annihilatorpod",
+                        "WS 004": "annihilatorpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "vulcan",
+                        "WS 011": "vulcan",
+                        "WS 012": "vulcan",
+                        "WS 013": "vulcan"
+                    }
+                }
+            ],
+            "wings": [
+                "thunder_wing",
+                "thunder_wing",
+                "thunder_wing"
+            ]
+        }
+    ]
+}

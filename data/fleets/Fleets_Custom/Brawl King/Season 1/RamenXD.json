@@ -1,0 +1,384 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "skills": {
+            "tactical_drills":1,
+            "coordinated_maneuvers":1,
+            "wolfpack_tactics":1,
+            "crew_training":1,
+            "fighter_uplink":1,
+            "carrier_group":1,
+            "officer_training":1,
+            "officer_management":1,
+            "best_of_the_best":1,
+            "support_doctrine":0,
+
+            "navigation":1,
+            "sensors":1,
+            "electronic_warfare":1,
+            "flux_regulation":1,
+            "phase_corps":1,
+            "neural_link":1,
+            "cybernetic_augmentation":1,
+            "automated_ships":0,
+
+            "bulk_transport":1,
+            "salvaging":1,
+            "field_repairs":1,
+            "containment_procedures":1,
+            "makeshift_equipment":1,
+            "industrial_planning":1,
+            "hull_restoration":1,
+            "derelict_contingent":0
+        }
+    },
+    "fleetName": "RamenXD",
+    "idleOfficers": [],
+    "members": [
+        {
+            "cr": 1,
+            "name": "Hyperion1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Hyperion"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperion2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Hyperion"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperion3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Hyperion"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperion4",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Hyperion"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperion5",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Hyperion"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer1",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "gender": "ANY",
+                "last": "",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Glimmer"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer2",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "gender": "ANY",
+                "last": "",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Glimmer"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer3",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "gender": "ANY",
+                "last": "",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Glimmer"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer4",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "gender": "ANY",
+                "last": "",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "RamenXD_Glimmer"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "hyperion",
+            "hullMods": [
+                "safetyoverrides",
+                "missleracks",
+                "extendedshieldemitter",
+                "advancedshieldemitter"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "hardened_subsystems",
+                "hardenedshieldemitter",
+                "magazines"
+            ],
+            "variantId": "RamenXD_Hyperion",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "ionpulser",
+                        "WS 003": "dragon"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heavyblaster"}
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 7,
+            "fluxVents": 0,
+            "hullId": "brawler_tritachyon",
+            "hullMods": [
+                "safetyoverrides",
+                "missleracks",
+                "hardenedshieldemitter"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "hardened_subsystems",
+                "extendedshieldemitter",
+                "magazines"
+            ],
+            "variantId": "RamenXD_Brawler",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "miningblaster",
+                        "WS 002": "ionpulser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "hammer",
+                        "WS 004": "hammer"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 7,
+            "fluxVents": 0,
+            "hullId": "glimmer",
+            "hullMods": [
+                "safetyoverrides",
+                "missleracks",
+                "extendedshieldemitter"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "frontemitter",
+                "hardened_subsystems",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "RamenXD_Glimmer",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavyblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "hammer",
+                        "WS 005": "hammer"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.util.Misc
 import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings.isConsoleModEnabled
+import fleetBuilder.integration.combat.DrawMessageInTitle
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
 import starficz.ReflectionUtils.invoke
@@ -68,12 +69,8 @@ object DisplayMessage {
                 )
             }
         } else if (gameState == GameState.TITLE) {
-            //TEMP
-            val state = AppDriver.getInstance().currentState
-            state.invoke(
-                "showMessageDialog",
-                "$short\nTemporary dialog for TitleScreen messages, this will be improved later."
-            )
+
+            DrawMessageInTitle.addMessage(short)
 
             Global.getSoundPlayer().playUISound("ui_selection_cleared", 1f, 1f)
         }

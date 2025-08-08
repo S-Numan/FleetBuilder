@@ -22,6 +22,8 @@ import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
+import starficz.getChildrenCopy
 
 object ReflectionMisc {
     fun getCoreUI(topDialog: Boolean = true): UIPanelAPI? {
@@ -146,8 +148,9 @@ object ReflectionMisc {
         }
 
         //settingsCodex is false despite codex being open
-        if (Global.getCurrentState() == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
+        if ((Global.getCurrentState() == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) || Global.getCurrentState() == GameState.TITLE) {
             //F2 while hovering over ship or ship question mark press in the fleet screen. NOT hover over question mark and press F2, that is handled differently for some reason.
+            //Also clicking a ship in the title-screen missions to see its codex entry.
             val coreUI = getCoreUI()
             return coreUI?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog?
 
@@ -198,6 +201,33 @@ object ReflectionMisc {
         }
         return null
     }
+
+    fun getCargoTab(): UIPanelAPI? {
+        val border = ReflectionMisc.getBorderContainer()
+        val cargoTab = border?.findChildWithMethod("shouldShowLogisticsOnSwitch")
+
+        val cargoTabest = (cargoTab as? UIPanelAPI)?.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI
+        //val transferHandler = cargoTabest?.invoke("getTransferHandler")//Cargo drawn when picked up with the mouse
+        return cargoTabest
+    }
+
+    /*fun getSelectedSubmarketInCargoTab(
+    ): SubmarketAPI? {
+        val campaignUI = Global.getSector().campaignUI
+
+        if (campaignUI.getActualCurrentTab() == CoreUITabId.CARGO && campaignUI.isShowingDialog) {
+            val dialog = campaignUI.currentInteractionDialog ?: return null
+            dialog.interactionTarget?.market ?: return null
+
+            val cargoTab = getCargoTab() ?: return null
+
+            return cargoTab
+                .getFieldsMatching(fieldAssignableTo = Submarket::class.java)
+                .getOrNull(0)
+                ?.get(cargoTab) as? SubmarketAPI
+        }
+        return null
+    }*/
 
     private var postUpdateFleetPanelCallbacks = mutableListOf<() -> Unit>()
     fun addPostUpdateFleetPanelCallback(callback: () -> Unit) {

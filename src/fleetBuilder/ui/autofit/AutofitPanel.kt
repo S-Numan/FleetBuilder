@@ -1,6 +1,5 @@
 package fleetBuilder.ui.autofit
 
-import MagicLib.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.CoreUIAPI
@@ -13,11 +12,9 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.autofit.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
-import fleetBuilder.util.ClipboardUtil.setClipboardText
+import fleetBuilder.util.ClipboardUtil
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.completelyRemoveMod
@@ -33,12 +30,14 @@ import fleetBuilder.variants.VariantLib.compareVariantHullMods
 import fleetBuilder.variants.VariantLib.getAllDMods
 import fleetBuilder.variants.VariantLib.makeVariantID
 import fleetBuilder.variants.VariantLib.processSModsForComparison
+import fleetBuilder.variants.autofit.AutofitApplier.applyVariantInRefitScreen
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
+import starficz.*
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
@@ -130,10 +129,10 @@ internal object AutofitPanel {
         val scrollerTooltip = autofitPanel.createUIElement(width + 2f, height, true)
         scrollerTooltip.position.inTL(0f, 0f)
 
-        val shipDisplay = ReflectionUtils.invoke("getShipDisplay", refitPanel) as? UIPanelAPI ?: return autofitPanel
-        val baseVariant = ReflectionUtils.invoke("getCurrentVariant", shipDisplay) as? HullVariantSpec
+        val shipDisplay = refitPanel.invoke("getShipDisplay") as? UIPanelAPI ?: return autofitPanel
+        val baseVariant = shipDisplay.invoke("getCurrentVariant") as? HullVariantSpec
             ?: return autofitPanel
-        val fleetMember = ReflectionUtils.invoke("getMember", refitPanel) as? FleetMemberAPI ?: return autofitPanel
+        val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI ?: return autofitPanel
 
 
         //val currentPaintjob = MagicPaintjobManager.getCurrentShipPaintjob(baseVariant)
@@ -225,18 +224,22 @@ internal object AutofitPanel {
                         if (saveVariant != null) {
                             val variantToSave = saveVariant.clone()
                             variantToSave.hullVariantId = makeVariantID(saveVariant)
-                            val json = saveVariantToJson(
-                                variantToSave,
-                                VariantSerialization.VariantSettings().apply {
-                                    includeDMods = ModSettings.saveDMods
-                                    applySMods = ModSettings.saveSMods
-                                    includeHiddenMods = ModSettings.saveHiddenMods
-                                }
-                            )
 
-                            setClipboardText(json.toString(4))
-
-                            DisplayMessage.showMessage("Variant copied to clipboard")
+                            if (!event.isShiftDown) {
+                                val json = VariantSerialization.saveVariantToJson(
+                                    variantToSave,
+                                    ModSettings.getConfiguredVariantSettings()
+                                )
+                                ClipboardUtil.setClipboardText(json.toString(4))
+                                DisplayMessage.showMessage("Variant copied to clipboard")
+                            } else {
+                                val comp = VariantSerialization.saveVariantToCompString(
+                                    variantToSave,
+                                    ModSettings.getConfiguredVariantSettings()
+                                )
+                                ClipboardUtil.setClipboardText(comp)
+                                DisplayMessage.showMessage("Variant compressed and copied to clipboard")
+                            }
                         }
                     } else {//Save and load variant
                         selectorPlugins.forEach { it.isSelected = false }
@@ -245,11 +248,7 @@ internal object AutofitPanel {
 
                             val newVariantId = saveLoadoutVariant(
                                 baseVariant,
-                                settings = VariantSerialization.VariantSettings().apply {
-                                    includeDMods = ModSettings.saveDMods
-                                    applySMods = ModSettings.saveSMods
-                                    includeHiddenMods = ModSettings.saveHiddenMods
-                                }
+                                settings = ModSettings.getConfiguredVariantSettings()
                             )
 
                             //Global.getLogger(this.javaClass).info("Save ship variant with id $newVariantId")
@@ -318,7 +317,7 @@ internal object AutofitPanel {
                             }
 
                             //if (variant != null) {
-                            val ship = ReflectionUtils.invoke("getShip", shipDisplay) as? ShipAPI
+                            val ship = shipDisplay.invoke("getShip") as? ShipAPI
 
                             if (ship != null) {
                                 applyVariantInRefitScreen(baseVariant, variant, fleetMember, ship, coreUI, shipDisplay)
@@ -482,8 +481,8 @@ internal object AutofitPanel {
             Misc.getDarkPlayerColor(),
             Alignment.MID,
             CutStyle.ALL,
-            Font.ORBITRON_20,
-            25f, 25f
+            25f, 25f,
+            Font.ORBITRON_20
         )
         removeVariantButton.xAlignOffset = selectorPanel.right - removeVariantButton.right
         removeVariantButton.yAlignOffset = selectorPanel.top - removeVariantButton.top
@@ -515,7 +514,7 @@ internal object AutofitPanel {
             350f
         }
 
-        scrollerTooltip.addTooltip(selectorPanel, TooltipMakerAPI.TooltipLocation.BELOW, width) { tooltip ->
+        selectorPanel.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, width) { tooltip ->
             tooltip.addTitle(variant.displayName + " Variant")
 
 

@@ -1,0 +1,409 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "skills": {
+            "tactical_drills":1,
+            "coordinated_maneuvers":1,
+            "wolfpack_tactics":1,
+            "crew_training":1,
+            "fighter_uplink":1,
+            "carrier_group":1,
+            "officer_training":1,
+            "officer_management":1,
+            "best_of_the_best":1,
+            "support_doctrine":0,
+
+            "navigation":1,
+            "sensors":1,
+            "electronic_warfare":1,
+            "flux_regulation":1,
+            "phase_corps":1,
+            "neural_link":1,
+            "cybernetic_augmentation":1,
+            "automated_ships":0,
+
+            "bulk_transport":1,
+            "salvaging":1,
+            "field_repairs":1,
+            "containment_procedures":1,
+            "makeshift_equipment":1,
+            "industrial_planning":1,
+            "hull_restoration":1,
+            "derelict_contingent":0
+        }
+    },
+    "fleetName": "GrumpyThumper",
+    "idleOfficers": [],
+    "members": [
+        {
+            "cr": 1,
+            "name": "Mora1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                },
+                "tags": []
+            },
+            "variantId": "GrumpyThumper_Mora"
+        },
+        {
+            "cr": 1,
+            "name": "Mora2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                },
+                "tags": []
+            },
+            "variantId": "GrumpyThumper_Mora"
+        },
+        {
+            "cr": 1,
+            "name": "Eradicator1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "GrumpyThumper_Eradicator"
+        },
+        {
+            "cr": 1,
+            "name": "Eradicator2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "GrumpyThumper_Eradicator"
+        },
+        {
+            "cr": 1,
+            "name": "Enforcer",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "GrumpyThumper_Enforcer"
+        },
+        {
+            "cr": 1,
+            "name": "Kite1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "GrumpyThumper_Kite"
+        },
+        {
+            "cr": 1,
+            "name": "Kite2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "GrumpyThumper_Kite"
+        },
+        {
+            "cr": 1,
+            "name": "Kite3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "GrumpyThumper_Kite"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "mora",
+            "hullMods": [
+                "safetyoverrides",
+                "armoredweapons"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "shield_shunt",
+                "heavyarmor",
+                "expanded_deck_crew"
+            ],
+            "variantId": "GrumpyThumper_Mora",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "lightmg",
+                        "WS 007": "lightmg"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "typhoon",
+                        "WS 004": "typhoon"
+                    }
+                }
+            ],
+            "wings": [
+                "cobra_wing",
+                "cobra_wing",
+                "cobra_wing"
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 24,
+            "fluxVents": 0,
+            "hullId": "eradicator",
+            "hullMods": [
+                "fluxbreakers",
+                "pointdefenseai",
+                "safetyoverrides"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "shield_shunt",
+                "heavyarmor",
+                "missleracks"
+            ],
+            "variantId": "GrumpyThumper_Eradicator",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "chaingun",
+                        "WS 007": "chaingun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "reaper",
+                        "WS 001": "reaper",
+                        "WS 002": "reaper",
+                        "WS 003": "reaper",
+                        "WS 004": "reaper"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "heavymg"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "lightdualmg",
+                        "WS 010": "lightdualmg",
+                        "WS 011": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "vulcan",
+                        "WS 014": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 12,
+            "fluxVents": 23,
+            "hullId": "enforcer_xiv",
+            "hullMods": [
+                "safetyoverrides",
+                "autorepair",
+                "fluxbreakers"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "shield_shunt",
+                "heavyarmor",
+                "armoredweapons"
+            ],
+            "variantId": "GrumpyThumper_Enforcer",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "chaingun",
+                        "WS 004": "chaingun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 006": "reaper",
+                        "WS 007": "reaper",
+                        "WS 008": "reaper",
+                        "WS 009": "reaper"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavymg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 0,
+            "fluxVents": 5,
+            "hullId": "kite_hegemony",
+            "hullMods": [
+                "missleracks",
+                "missile_autoloader"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "frontemitter",
+                "fluxcoil",
+                "armoredweapons"
+            ],
+            "variantId": "GrumpyThumper_Kite",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "railgun"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "reaper",
+                        "WS 002": "reaper"
+                    }
+                }
+            ]
+        }
+    ]
+}

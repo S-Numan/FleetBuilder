@@ -1,6 +1,6 @@
 package fleetBuilder.ui.autofit
 
-import MagicLib.*
+import MagicLib.ReflectionUtils.instantiate
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
@@ -12,6 +12,7 @@ import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.integration.combat.CombatAutofitAdder
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
+import starficz.*
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import kotlin.math.max
@@ -260,15 +261,15 @@ internal object AutofitSelector {
 
         val clonedVariant = hullVariantSpec.clone()
 
-        val shipPreview = ReflectionUtils.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!!
-        ReflectionUtils.invoke("setVariant", shipPreview, clonedVariant)
-        ReflectionUtils.invoke("overrideVariant", shipPreview, clonedVariant)
-        ReflectionUtils.invoke("setShowBorder", shipPreview, false)
+        val shipPreview = instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!!
+        shipPreview.invoke("setVariant", clonedVariant)
+        shipPreview.invoke("overrideVariant", clonedVariant)
+        shipPreview.invoke("setShowBorder", false)
 
         if (!scaleDownSmallerShips)
-            ReflectionUtils.invoke("setScaleDownSmallerShipsMagnitude", shipPreview, 1f)
+            shipPreview.invoke("setScaleDownSmallerShipsMagnitude", 1f)
 
-        ReflectionUtils.invoke("adjustOverlay", shipPreview, 0f, 0f)
+        shipPreview.invoke("adjustOverlay", 0f, 0f)
 
         (shipPreview as UIPanelAPI).setSize(width, height)
 
@@ -285,7 +286,7 @@ internal object AutofitSelector {
         }*/
 
         // make the ship list so the ships exist when we try and get them
-        ReflectionUtils.invoke("prepareShip", shipPreview)
+        shipPreview.invoke("prepareShip")
 
         return shipPreview
     }

@@ -1,8 +1,9 @@
 package fleetBuilder.integration.campaign
 
-import MagicLib.*
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.SectorAPI
+import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.campaign.SpecialItemSpecAPI
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
@@ -13,13 +14,20 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CutStyle
+import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.persistence.member.MemberSerialization.saveMemberToJson
+import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
+import org.json.JSONObject
 import org.lwjgl.input.Keyboard
+import starficz.*
 
 class CampaignCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -84,12 +92,16 @@ class CampaignCodexButton : EveryFrameScript {
                     Misc.getDarkPlayerColor(),
                     Alignment.MID,
                     CutStyle.NONE,
-                    Font.ORBITRON_20,
-                    24f, 24f
+                    24f, 24f,
+                    Font.ORBITRON_20
                 ) as ButtonAPI?
 
+                addToFleetButton!!.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 400f) { tooltip ->
+                    tooltip.addPara("Hold CTRL to add a blueprint if a blueprint is available\nHold ALT or SHIFT to multiply the value by 10", 0f)
+                }
+
                 addToFleetButton!!.onClick { ->
-                    FBMisc.addCodexParamEntryToFleet(Global.getSector(), param!!)
+                    addCodexParamEntryToFleet(Global.getSector(), param!!)
                 }
             }
 
@@ -132,5 +144,94 @@ class CampaignCodexButton : EveryFrameScript {
             codex.removeComponent(addToFleetButton)
             addToFleetButton = null
         }
+    }
+
+    fun addCodexParamEntryToFleet(sector: SectorAPI, param: Any, ctrlCreatesBlueprints: Boolean = true) {
+        val shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)
+        val alt = Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)
+        val ctrl = ctrlCreatesBlueprints && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
+
+        val count = when {
+            shift && alt -> 100
+            shift || alt -> 10
+            else -> 1
+        }
+
+        val cargo = Global.getSector().playerFleet.cargo
+
+        var message: String? = null
+
+        var json: JSONObject? = null
+
+        when (param) {
+            is CommoditySpecAPI -> {
+                cargo.addCommodity(param.id, count.toFloat())
+                message = "Added $count '${param.name}' to cargo"
+            }
+
+            is SpecialItemSpecAPI -> {
+                cargo.addSpecial(SpecialItemData(param.id, null), count.toFloat())
+                message = "Added $count '${param.name}' to cargo"
+            }
+
+            is WeaponSpecAPI -> {
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("weapon_bp", param.weaponId), count.toFloat())
+                    message = "Added $count '${param.weaponName}' blueprint to your cargo"
+                } else {
+                    cargo.addWeapons(param.weaponId, count)
+                    message = "Added $count '${param.weaponName}' to cargo"
+                }
+            }
+
+            is FighterWingSpecAPI -> {
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("fighter_bp", param.id), count.toFloat())
+                    message = "Added $count '${param.wingName}' blueprint to your cargo"
+                } else {
+                    cargo.addFighters(param.id, count)
+                    message = "Added $count '${param.wingName}' to cargo"
+                }
+            }
+
+            is HullModSpecAPI -> {
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("modspec", param.id), count.toFloat())
+                    message = "Added $count '${param.displayName}' blueprint to your cargo"
+                } else {
+                    Global.getSector().playerFaction.addKnownHullMod(param.id)
+                    message = "Added '${param.displayName}' your faction's known hullmods"
+                }
+            }
+
+            is ShipHullSpecAPI -> {
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("ship_bp", param.hullId), count.toFloat())
+                    message = "Added $count '${param.hullName}' blueprint to your cargo"
+                } else {
+                    val emptyVariant =
+                        Global.getSettings().createEmptyVariant(param.hullId, param)
+                    json = saveVariantToJson(emptyVariant)
+                }
+            }
+
+            is FleetMemberAPI -> {
+                if (ctrl) {
+                    cargo.addSpecial(SpecialItemData("ship_bp", param.hullId), count.toFloat())
+                    message = "Added $count '${param.hullSpec.hullName}' blueprint to your cargo"
+                } else {
+                    json = saveMemberToJson(param)
+                }
+            }
+        }
+
+        if (json != null) {
+            repeat(count) {
+                fleetPaste(sector, json)
+            }
+        }
+
+        if (!message.isNullOrEmpty())
+            showMessage(message)
     }
 }

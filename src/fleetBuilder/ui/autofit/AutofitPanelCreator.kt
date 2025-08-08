@@ -1,12 +1,14 @@
 package fleetBuilder.ui.autofit
 
-import MagicLib.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import org.magiclib.kotlin.setAlpha
+import starficz.*
+import starficz.ReflectionUtils.getFieldsMatching
+import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
 /**
@@ -28,7 +30,7 @@ internal object AutofitPanelCreator {
 
         }*/
 
-        val fleetMember = ReflectionUtils.invoke("getMember", refitPanel) as? FleetMemberAPI
+        val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI
         val existingElements = hullmodsPanel.getChildrenCopy()
         val lastElement = existingElements.lastOrNull() ?: return // if children is empty, return
 
@@ -36,10 +38,10 @@ internal object AutofitPanelCreator {
         //    button.customData is String && button.customData == "REFIT_BUTTON"
         //}
 
-        val coreUI = ReflectionUtils.invoke("getCoreUI", refitPanel) as? UIPanelAPI ?: return
+        val coreUI = refitPanel.invoke("getCoreUI") as? UIPanelAPI ?: return
 
         val curPaintjobPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->
-            panel.plugin != null && ReflectionUtils.hasFieldOfName("autofitPanel", panel.plugin)
+            panel.plugin != null && panel.plugin.getFieldsMatching(name = "autofitPanel").isNotEmpty()
         }
 
         // button should be not exist on modules, ships with a perma paintjob, or ships without any possible paintjobs

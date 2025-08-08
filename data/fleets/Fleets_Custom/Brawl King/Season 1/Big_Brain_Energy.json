@@ -1,0 +1,347 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "skills": {
+            "tactical_drills":1,
+            "coordinated_maneuvers":1,
+            "wolfpack_tactics":1,
+            "crew_training":1,
+            "fighter_uplink":1,
+            "carrier_group":1,
+            "officer_training":1,
+            "officer_management":1,
+            "best_of_the_best":1,
+            "support_doctrine":0,
+
+            "navigation":1,
+            "sensors":1,
+            "electronic_warfare":1,
+            "flux_regulation":1,
+            "phase_corps":1,
+            "neural_link":1,
+            "cybernetic_augmentation":1,
+            "automated_ships":0,
+
+            "bulk_transport":1,
+            "salvaging":1,
+            "field_repairs":1,
+            "containment_procedures":1,
+            "makeshift_equipment":1,
+            "industrial_planning":1,
+            "hull_restoration":1,
+            "derelict_contingent":0
+        }
+    },
+    "fleetName": "Big_Brain_Energy",
+    "idleOfficers": [],
+    "members": [
+        {
+            "cr": 1,
+            "name": "Tactistar 2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "Big_Brain_Energy_Paragon"
+        },
+        {
+            "cr": 1,
+            "name": "Omen1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Big_Brain_Energy_Omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Big_Brain_Energy_Omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Big_Brain_Energy_Omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen4",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Big_Brain_Energy_Omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen5",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Big_Brain_Energy_Omen"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "Big_Brain_Energy_Afflictor"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 41,
+            "fluxVents": 55,
+            "hullId": "paragon",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "fluxdistributor",
+                "stabilizedshieldemitter",
+                "fluxbreakers",
+                "advancedshieldemitter"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "magazines",
+                "auxiliarythrusters",
+                "turretgyros"
+            ],
+            "variantId": "Big_Brain_Energy_Paragon",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "autopulse",
+                        "WS 002": "autopulse"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 012": "breach",
+                        "WS 014": "breach",
+                        "WS 018": "breach",
+                        "WS 020": "breach"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "tachyonlance",
+                        "WS 004": "tachyonlance"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "heavyneedler",
+                        "WS 008": "heavyneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "irautolance",
+                        "WS 006": "irautolance"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 011": "pdburst",
+                        "WS 013": "pdburst",
+                        "WS 016": "pdburst",
+                        "WS 017": "pdburst",
+                        "WS 019": "pdburst",
+                        "WS 022": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 15,
+            "fluxVents": 7,
+            "hullId": "omen",
+            "hullMods": ["hardened_subsystems"],
+            "permaMods": [],
+            "sModdedbuiltins": [
+                "eccm",
+                "hiressensors"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "fluxcoil",
+                "autorepair"
+            ],
+            "variantId": "Big_Brain_Energy_Omen",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "sabot"}
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 11,
+            "fluxVents": 0,
+            "hullId": "afflictor",
+            "hullMods": ["phase_anchor"],
+            "permaMods": [],
+            "sMods": [
+                "hardened_subsystems",
+                "fluxcoil",
+                "auxiliarythrusters"
+            ],
+            "variantId": "Big_Brain_Energy_Afflictor",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "amblaster",
+                        "WS 003": "amblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightneedler",
+                        "WS 004": "lightneedler"
+                    }
+                }
+            ]
+        }
+    ]
+}

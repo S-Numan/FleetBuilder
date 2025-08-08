@@ -2,7 +2,13 @@ package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
+import com.fs.starfarer.api.campaign.CargoAPI
+import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
+import com.fs.starfarer.api.campaign.impl.items.ModSpecItemPlugin
+import com.fs.starfarer.api.campaign.impl.items.MultiBlueprintItemPlugin
+import com.fs.starfarer.api.campaign.impl.items.ShipBlueprintItemPlugin
+import com.fs.starfarer.api.campaign.impl.items.WeaponBlueprintItemPlugin
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -11,9 +17,9 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.json.JSONArray
 import org.json.JSONObject
-import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
+import starficz.getChildrenCopy
+
 
 fun JSONArray.containsString(value: String): Boolean {
     for (i in 0 until this.length()) {
@@ -124,23 +130,135 @@ fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
 val String.toBinary: Int
     get() = if (this.equals("TRUE", ignoreCase = true)) 1 else 0
 
-@Suppress("UNCHECKED_CAST")
-internal fun UIPanelAPI.getChildrenCopy(): List<UIComponentAPI> {
-    return this.invoke("getChildrenCopy") as List<UIComponentAPI>
+fun CargoStackAPI.moveStack(to: CargoAPI, inputAmount: Float = -1f) {
+    if (!this.isNull && this.cargo !== to && inputAmount != 0f) {
+        val moveAmount = minOf(if (inputAmount == -1f) this.size else inputAmount, this.size)
+        if (moveAmount > 0) {
+            to.addItems(this.type, this.data, moveAmount)
+            this.cargo.removeItems(this.type, this.data, moveAmount)
+        }
+    }
 }
 
-internal fun UIPanelAPI.findChildWithMethod(methodName: String): UIComponentAPI? {
-    return getChildrenCopy().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
+fun CargoAPI.moveItem(
+    type: CargoAPI.CargoItemType,
+    data: Any?,
+    to: CargoAPI,
+    inputAmount: Float = -1f
+) {
+    var remaining = inputAmount
+
+    for (stack in this.stacksCopy) {
+        if (stack.type != type || stack.data != data) continue
+
+        val stackSize = stack.size
+        val moveAmount = when {
+            inputAmount == -1f -> stackSize // move entire stack
+            remaining <= 0f -> break
+            else -> minOf(stackSize, remaining)
+        }
+
+        stack.moveStack(to, moveAmount)
+
+        if (inputAmount != -1f) {
+            remaining -= moveAmount
+        }
+    }
 }
+
+fun CargoAPI.getWeaponAndWingQuantity(): Float {
+    var count = 0f
+    for (stack in this.stacksCopy) {
+        if (stack.isNull) continue
+
+        if (stack.type == CargoAPI.CargoItemType.WEAPONS || stack.type == CargoAPI.CargoItemType.FIGHTER_CHIP) {
+            count += stack.size
+        }
+    }
+    return count
+}
+
+fun CargoAPI.moveWeaponAndWings(to: CargoAPI, inputAmount: Float = -1f) {
+    var remaining = inputAmount
+
+    for (stack in this.stacksCopy) {
+        if (stack.isNull) continue
+
+        if (stack.type == CargoAPI.CargoItemType.WEAPONS || stack.type == CargoAPI.CargoItemType.FIGHTER_CHIP) {
+            val stackSize = stack.size
+            val moveAmount = minOf(stackSize, remaining)
+
+            stack.moveStack(to, moveAmount)
+
+            if (inputAmount != -1f) {
+                remaining -= moveAmount
+
+                if (remaining <= 0f)
+                    break
+            }
+        }
+    }
+}
+
+fun CargoAPI.getBlueprintAndModSpecQuantity(): Float {
+    var count = 0f
+    for (stack in this.stacksCopy) {
+        if (stack.isNull) continue
+        if (stack.isBlueprintOrModSpec()) {
+            count += stack.size
+        }
+    }
+    return count
+}
+
+fun CargoAPI.moveBlueprintAndModSpec(to: CargoAPI, inputAmount: Float = -1f) {
+    var remaining = inputAmount
+
+    for (stack in this.stacksCopy) {
+        if (stack.isNull) continue
+
+        if (stack.isBlueprintOrModSpec()) {
+            val stackSize = stack.size
+            val moveAmount = minOf(stackSize, remaining)
+
+            stack.moveStack(to, moveAmount)
+
+            if (inputAmount != -1f) {
+                remaining -= moveAmount
+
+                if (remaining <= 0f)
+                    break
+            }
+        }
+    }
+}
+
+fun CargoStackAPI.isBlueprintOrModSpec(): Boolean {
+    return this.type == CargoAPI.CargoItemType.SPECIAL && (this.plugin is ShipBlueprintItemPlugin || this.plugin is WeaponBlueprintItemPlugin || this.plugin is MultiBlueprintItemPlugin || this.plugin is ModSpecItemPlugin)
+}
+
+fun String.startsWithJsonBracket(): Boolean {
+    this.lineSequence()
+        .map { it.substringBefore("#") }           // Remove inline comments
+        .map { it.trim() }                          // Trim whitespace
+        .filter { it.isNotEmpty() }                 // Ignore empty lines
+        .forEach { line ->
+            if (line.isNotEmpty()) {
+                return line.first() == '{'
+            }
+        }
+    return false
+}
+
 
 //For optimization purposes
 internal fun UIPanelAPI.findChildWithMethodReversed(methodName: String): UIComponentAPI? {
     return getChildrenCopy().asReversed().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
 }
 
-internal fun UIPanelAPI.findChildWithField(fieldName: String): UIComponentAPI? {
-    return getChildrenCopy().find { it.getFieldsMatching(name = fieldName).isNotEmpty() }
-}
+//internal fun UIPanelAPI.findChildWithField(fieldName: String): UIComponentAPI? {
+//    return getChildrenCopy().find { it.getFieldsMatching(name = fieldName).isNotEmpty() }
+//}
 /*
 fun PersonAPI.isGenericOfficer(): Boolean {
     var hasSkill = false

@@ -1,0 +1,413 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "skills": {
+            "tactical_drills":1,
+            "coordinated_maneuvers":1,
+            "wolfpack_tactics":1,
+            "crew_training":1,
+            "fighter_uplink":1,
+            "carrier_group":1,
+            "officer_training":1,
+            "officer_management":1,
+            "best_of_the_best":1,
+            "support_doctrine":0,
+
+            "navigation":1,
+            "sensors":1,
+            "electronic_warfare":1,
+            "flux_regulation":1,
+            "phase_corps":1,
+            "neural_link":1,
+            "cybernetic_augmentation":1,
+            "automated_ships":0,
+
+            "bulk_transport":1,
+            "salvaging":1,
+            "field_repairs":1,
+            "containment_procedures":1,
+            "makeshift_equipment":1,
+            "industrial_planning":1,
+            "hull_restoration":1,
+            "derelict_contingent":0
+        }
+    },
+    "fleetName": "Firecat",
+    "idleOfficers": [],
+    "members": [
+        {
+            "cr": 1,
+            "name": "Atlas 1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Atlas"
+        },
+        {
+            "cr": 1,
+            "name": "Atlas 2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Atlas"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 4",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 5",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 6",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 7",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 8",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 9",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Brawler 10",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate11.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Firecat_Brawler"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 24,
+            "fluxVents": 55,
+            "hullId": "atlas2",
+            "hullMods": ["defensive_targeting_array"],
+            "permaMods": [],
+            "sMods": [
+                "converted_hangar",
+                "frontemitter",
+                "fluxdistributor"
+            ],
+            "variantId": "Firecat_Atlas",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "gauss",
+                        "WS 009": "gauss"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 012": "squall",
+                        "WS 013": "squall"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 014": "shredder",
+                        "WS 015": "shredder",
+                        "WS 017": "shredder",
+                        "WS 018": "shredder"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "vulcan",
+                        "WS 011": "vulcan"
+                    }
+                }
+            ],
+            "wings": ["wasp_wing"]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 4,
+            "fluxVents": 15,
+            "hullId": "brawler_LG",
+            "hullMods": [],
+            "permaMods": [],
+            "sModdedbuiltins": ["solar_shielding"],
+            "sMods": [
+                "auxiliarythrusters",
+                "magazines",
+                "stabilizedshieldemitter"
+            ],
+            "variantId": "Firecat_Brawler",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "ionpulser",
+                        "WS 002": "ionpulser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heatseeker",
+                        "WS 004": "heatseeker"
+                    }
+                }
+            ]
+        }
+    ]
+}

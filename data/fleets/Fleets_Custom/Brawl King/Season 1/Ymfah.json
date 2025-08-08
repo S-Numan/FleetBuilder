@@ -1,0 +1,203 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "skills": {
+            "tactical_drills":1,
+            "coordinated_maneuvers":1,
+            "wolfpack_tactics":1,
+            "crew_training":1,
+            "fighter_uplink":1,
+            "carrier_group":1,
+            "officer_training":1,
+            "officer_management":1,
+            "best_of_the_best":1,
+            "support_doctrine":0,
+
+            "navigation":1,
+            "sensors":1,
+            "electronic_warfare":1,
+            "flux_regulation":1,
+            "phase_corps":1,
+            "neural_link":1,
+            "cybernetic_augmentation":1,
+            "automated_ships":0,
+
+            "bulk_transport":1,
+            "salvaging":1,
+            "field_repairs":1,
+            "containment_procedures":1,
+            "makeshift_equipment":1,
+            "industrial_planning":1,
+            "hull_restoration":1,
+            "derelict_contingent":0
+        }
+    },
+    "fleetName": "Ymfah",
+    "idleOfficers": [],
+    "members": [
+        {
+            "cr": 1,
+            "name": "Gryphon1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ymfah_Gryphon"
+        },
+        {
+            "cr": 1,
+            "name": "Gryphon2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ymfah_Gryphon"
+        },
+        {
+            "cr": 1,
+            "name": "Gryphon3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ymfah_Gryphon"
+        },
+        {
+            "cr": 1,
+            "name": "Gryphon4",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ymfah_Gryphon"
+        },
+        {
+            "cr": 1,
+            "name": "Gryphon5",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ymfah_Gryphon"
+        }
+    ],
+    "variants": [{
+        "displayName": "Steady",
+        "fluxCapacitors": 30,
+        "fluxVents": 10,
+        "hullId": "gryphon",
+        "hullMods": ["targetingunit"],
+        "permaMods": [],
+        "sMods": [
+            "missile_autoloader",
+            "eccm",
+            "turretgyros"
+        ],
+        "variantId": "Ymfah_Gryphon",
+        "weaponGroups": [
+            {
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "squall",
+                    "WS 003": "vulcan",
+                    "WS 008": "harpoonpod",
+                    "WS 009": "harpoonpod",
+                    "WS 010": "harpoon",
+                    "WS 011": "harpoon",
+                    "WS 012": "harpoon"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {"WS 002": "hveldriver"}
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 004": "vulcan",
+                    "WS 005": "vulcan",
+                    "WS 006": "vulcan",
+                    "WS 007": "vulcan"
+                }
+            }
+        ]
+    }]
+}

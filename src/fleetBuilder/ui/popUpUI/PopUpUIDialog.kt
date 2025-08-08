@@ -1,10 +1,10 @@
-package fleetBuilder.ui.PopUpUI
+package fleetBuilder.ui.popUpUI
 
-import MagicLib.onClick
 import com.fs.starfarer.api.ui.*
+import starficz.onClick
 import java.awt.Color
 
-class PopUpUIDialog(
+open class PopUpUIDialog(
     override var headerTitle: String? = null,
     val addConfirmButton: Boolean = false,
     val addCancelButton: Boolean = false,
@@ -97,6 +97,27 @@ class PopUpUIDialog(
         return { state.value as String }
     }
 
+    fun addClampedNumericField(
+        label: String,
+        maxValue: Int
+    ) {
+        addTextField(label) { fields ->
+            val rawValue = fields[label] as String
+            val cleanedValue = rawValue.replace("\\D+".toRegex(), "")
+
+            if (cleanedValue.isEmpty()) {
+                textFieldRefs[label]?.text = ""
+                return@addTextField
+            }
+
+            val numericValue = cleanedValue.toIntOrNull() ?: return@addTextField
+            val clampedValue = numericValue.coerceAtMost(maxValue)
+
+            if (clampedValue.toString() != rawValue) {
+                textFieldRefs[label]?.text = clampedValue.toString()
+            }
+        }
+    }
 
     fun addButton(
         label: String,
@@ -134,7 +155,6 @@ class PopUpUIDialog(
 
     override fun onExit() {
         super.onExit()
-
         exitCallback?.invoke(collectFieldStates())
     }
 

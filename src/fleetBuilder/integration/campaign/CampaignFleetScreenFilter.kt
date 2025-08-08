@@ -9,7 +9,7 @@ import fleetBuilder.ui.FleetFilterPanel
 import fleetBuilder.ui.FleetFilterPanel.Companion.removePreviousIfAny
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.util.getChildrenCopy
+import starficz.getChildrenCopy
 
 class CampaignFleetScreenFilter : EveryFrameScript {
     override fun isDone(): Boolean {

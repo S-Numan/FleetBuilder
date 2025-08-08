@@ -1,9 +1,11 @@
 package fleetBuilder.consoleCommands.saveTransfer
 
 import com.fs.starfarer.api.Global
+import fleetBuilder.config.ModSettings
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.FBMisc
-import fleetBuilder.util.FBMisc.reportMissingElementsIfAny
+import fleetBuilder.util.PlayerSaveUtil
+import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
@@ -32,7 +34,7 @@ class LoadSave : BaseCommand {
         val argList = args.lowercase().split(" ")
 
         if (argList.contains("-backup")) {
-            val configPath = "SaveTransfer/lastSave"
+            val configPath = "${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave"
 
             if (!Global.getSettings().fileExistsInCommon(configPath)) {
                 Console.showMessage("Failed to find backup save")
@@ -53,7 +55,7 @@ class LoadSave : BaseCommand {
             return BaseCommand.CommandResult.ERROR
         }
 
-        val missing = FBMisc.loadPlayerSaveJson(
+        val missing = PlayerSaveUtil.loadPlayerSaveJson(
             json,
             handleCargo = !argList.contains(NO_CARGO),
             handleRelations = !argList.contains(NO_REP),

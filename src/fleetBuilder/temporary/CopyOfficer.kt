@@ -1,6 +1,5 @@
 package fleetBuilder.temporary
 
-import MagicLib.findChildWithMethod
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -12,7 +11,8 @@ import fleetBuilder.util.getActualCurrentTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
-import starficz.ReflectionUtils
+import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
 
 class CopyOfficer : BaseCommand {
 
@@ -34,7 +34,7 @@ class CopyOfficer : BaseCommand {
         val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
             ?: return BaseCommand.CommandResult.ERROR
         val fleetMember =
-            ReflectionUtils.invoke(refitPanel, "getMember") as? FleetMemberAPI ?: return BaseCommand.CommandResult.ERROR
+            refitPanel.invoke("getMember") as? FleetMemberAPI ?: return BaseCommand.CommandResult.ERROR
 
         val officer = fleetMember.captain
 

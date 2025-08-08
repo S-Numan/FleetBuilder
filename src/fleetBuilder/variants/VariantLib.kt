@@ -15,7 +15,7 @@ object VariantLib {
 
     private lateinit var allDMods: Set<String>
     private lateinit var allHiddenEverywhereMods: Set<String>
-    private lateinit var variantMap: Map<String, List<ShipVariantAPI>>
+    private lateinit var effectiveVariantMap: Map<String, List<ShipVariantAPI>>
     private lateinit var hullIDSet: Set<String>
     private var init = false
     fun Loaded() = init
@@ -59,7 +59,7 @@ object VariantLib {
             tempVariantMap.getOrPut(hullId) { mutableListOf() }.add(variant)
         }
 
-        variantMap = tempVariantMap.mapValues { it.value.toList() }
+        effectiveVariantMap = tempVariantMap.mapValues { it.value.toList() }
 
         hullIDSet = Global.getSettings().allShipHullSpecs.map { it.hullId }.toSet()
     }
@@ -69,7 +69,7 @@ object VariantLib {
     fun getHullIDSet(): Set<String> = hullIDSet
 
     fun getCoreVariantsForEffectiveHullspec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
-        return variantMap[hullSpec.getEffectiveHullId()].orEmpty()
+        return effectiveVariantMap[hullSpec.getEffectiveHullId()].orEmpty()
     }
 
     fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {

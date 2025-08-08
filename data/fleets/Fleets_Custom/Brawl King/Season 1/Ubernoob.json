@@ -1,0 +1,423 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "skills": {
+            "tactical_drills":1,
+            "coordinated_maneuvers":1,
+            "wolfpack_tactics":1,
+            "crew_training":1,
+            "fighter_uplink":1,
+            "carrier_group":1,
+            "officer_training":1,
+            "officer_management":1,
+            "best_of_the_best":1,
+            "support_doctrine":0,
+
+            "navigation":1,
+            "sensors":1,
+            "electronic_warfare":1,
+            "flux_regulation":1,
+            "phase_corps":1,
+            "neural_link":1,
+            "cybernetic_augmentation":1,
+            "automated_ships":0,
+
+            "bulk_transport":1,
+            "salvaging":1,
+            "field_repairs":1,
+            "containment_procedures":1,
+            "makeshift_equipment":1,
+            "industrial_planning":1,
+            "hull_restoration":1,
+            "derelict_contingent":0
+        }
+    },
+    "fleetName": "Ubernoob",
+    "idleOfficers": [],
+    "members": [
+        {
+            "cr": 1,
+            "name": "Afflictor1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Afflictor"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Afflictor"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Afflictor"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor4",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Afflictor"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Scarab"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Scarab"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Scarab"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab4",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Scarab"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab5",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Scarab"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab6",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Scarab"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer1",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "gender": "ANY",
+                "last": "",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Glimmer"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer2",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "gender": "ANY",
+                "last": "",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Ubernoob_Glimmer"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 9,
+            "fluxVents": 0,
+            "hullId": "afflictor",
+            "hullMods": [
+                "phase_anchor",
+                "targetingunit"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "fluxbreakers",
+                "pointdefenseai",
+                "heavyarmor"
+            ],
+            "variantId": "Ubernoob_Afflictor",
+            "weaponGroups": [{
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "lightneedler",
+                    "WS 002": "lightneedler",
+                    "WS 003": "lightneedler",
+                    "WS 004": "lightneedler"
+                }
+            }]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 13,
+            "fluxVents": 4,
+            "hullId": "scarab",
+            "hullMods": [
+                "stabilizedshieldemitter",
+                "hardened_subsystems"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "hardenedshieldemitter",
+                "magazines",
+                "advancedoptics"
+            ],
+            "variantId": "Ubernoob_Scarab",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "pdburst",
+                    "WS 002": "pdburst",
+                    "WS 003": "pdburst",
+                    "WS 005": "pdburst",
+                    "WS 010": "pdburst"
+                }
+            }]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 7,
+            "fluxVents": 0,
+            "hullId": "glimmer",
+            "hullMods": [
+                "stabilizedshieldemitter",
+                "frontemitter",
+                "unstable_injector"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "hardenedshieldemitter",
+                "magazines",
+                "advancedoptics"
+            ],
+            "variantId": "Ubernoob_Glimmer",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "irautolance"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "pdburst",
+                        "WS 003": "pdburst",
+                        "WS 004": "pdburst",
+                        "WS 005": "pdburst"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -10,11 +10,11 @@ import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.ui.autofit.AutofitPanelCreator
-import fleetBuilder.util.findChildWithMethod
-import fleetBuilder.util.getChildrenCopy
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
+import starficz.getChildrenCopy
 
 internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
     companion object {

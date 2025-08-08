@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.config.ModSettings
+import fleetBuilder.features.CargoAutoManager
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.integration.campaign.*
 import fleetBuilder.integration.save.MakeSaveRemovable
@@ -53,6 +54,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
 
             manageTransientScript(CampaignCodexButton::class.java, ModSettings.devModeCodexButtonEnabled) { CampaignCodexButton() }
             manageTransientScript(CampaignFleetScreenFilter::class.java, ModSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }
+            manageTransientScript(CargoAutoManager::class.java, ModSettings.cargoAutoManager) { CargoAutoManager() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
         }
     }
@@ -93,8 +95,8 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
         CommanderShuttle.afterGameSave()
 
         if (ModSettings.backupSave) {
-            val json = FBMisc.createPlayerSaveJson()
-            Global.getSettings().writeJSONToCommon("SaveTransfer/lastSave", json, false)
+            val json = PlayerSaveUtil.createPlayerSaveJson()
+            Global.getSettings().writeJSONToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", json, false)
         }
     }
 

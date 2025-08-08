@@ -1,0 +1,421 @@
+{
+    "aggression_doctrine": 2,
+    "commander": {
+        "skills": {
+            "tactical_drills":1,
+            "coordinated_maneuvers":1,
+            "wolfpack_tactics":1,
+            "crew_training":1,
+            "fighter_uplink":1,
+            "carrier_group":1,
+            "officer_training":1,
+            "officer_management":1,
+            "best_of_the_best":1,
+            "support_doctrine":0,
+
+            "navigation":1,
+            "sensors":1,
+            "electronic_warfare":1,
+            "flux_regulation":1,
+            "phase_corps":1,
+            "neural_link":1,
+            "cybernetic_augmentation":1,
+            "automated_ships":0,
+
+            "bulk_transport":1,
+            "salvaging":1,
+            "field_repairs":1,
+            "containment_procedures":1,
+            "makeshift_equipment":1,
+            "industrial_planning":1,
+            "hull_restoration":1,
+            "derelict_contingent":0
+        }
+    },
+    "fleetName": "Tranquility",
+    "idleOfficers": [],
+    "members": [
+        {
+            "cr": 1,
+            "name": "Omen1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_omen_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Omen2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_omen_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Omen3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_omen_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_afflictor_d_pirates_Support"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_afflictor_d_pirates_Support"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperion1",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_hyperion_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Omen4",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_omen_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Omen5",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_omen_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Omen6",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_omen_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Omen7",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_omen_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperion2",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_hyperion_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperion3",
+            "officer": {
+                "first": "Human",
+                "gender": "ANY",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate11.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                },
+                "tags": []
+            },
+            "variantId": "Tranquility_hyperion_Overdriven"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 11,
+            "fluxVents": 0,
+            "hullId": "omen",
+            "hullMods": [
+                "pointdefenseai",
+                "safetyoverrides"
+            ],
+            "permaMods": [],
+            "sModdedbuiltins": [
+                "eccm",
+                "hiressensors"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "missile_autoloader",
+                "stabilizedshieldemitter"
+            ],
+            "variantId": "Tranquility_omen_Overdriven",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "reaper"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                }
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 11,
+            "fluxVents": 0,
+            "hullId": "afflictor_d_pirates",
+            "hullMods": [
+                "fluxbreakers",
+                "targetingunit"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "adaptive_coils",
+                "pointdefenseai",
+                "reinforcedhull"
+            ],
+            "variantId": "Tranquility_afflictor_d_pirates_Support",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 002": "lightneedler",
+                    "WS 003": "lightneedler",
+                    "WS 006": "pdburst"
+                }
+            }]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 10,
+            "fluxVents": 1,
+            "hullId": "hyperion",
+            "hullMods": [
+                "extendedshieldemitter",
+                "hardenedshieldemitter",
+                "safetyoverrides"
+            ],
+            "permaMods": [],
+            "sMods": [
+                "auxiliarythrusters",
+                "missleracks",
+                "stabilizedshieldemitter"
+            ],
+            "variantId": "Tranquility_hyperion_Overdriven",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "heavyblaster",
+                        "WS 002": "heavyblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "jackhammer"}
+                }
+            ]
+        }
+    ]
+}

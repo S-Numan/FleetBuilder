@@ -1,4 +1,4 @@
-package fleetBuilder.ui.PopUpUI;
+package fleetBuilder.ui.popUpUI;
 
 import org.lwjgl.opengl.GL11;
 
