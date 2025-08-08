@@ -28,9 +28,8 @@ class CargoAutoManager : EveryFrameScript {
         val interactionTarget = interaction?.interactionTarget
         val market = interactionTarget?.market
 
-        if (market != null && interactionMarket == null) {
+        if (market != null && interactionMarket == null) {// Market Enter
             interactionMarket = market
-            DisplayMessage.showMessage("Market docked")
 
             interactionMarket?.submarketsCopy?.forEach { submarket ->
                 val cargoAutoManage = loadCargoAutoManage(submarket)
@@ -41,7 +40,7 @@ class CargoAutoManager : EveryFrameScript {
                     manageCargo(item, submarket)
                 }
             }
-        } else if (market == null && interactionMarket != null) {
+        } else if (market == null && interactionMarket != null) { // Market Leave
             interactionMarket?.submarketsCopy?.forEach { submarket ->
                 val cargoAutoManage = loadCargoAutoManage(submarket)
                     ?: return@forEach
@@ -53,7 +52,6 @@ class CargoAutoManager : EveryFrameScript {
             }
 
             interactionMarket = market
-            DisplayMessage.showMessage("Market undocked")
         }
     }
 
