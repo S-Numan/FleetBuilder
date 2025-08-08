@@ -17,6 +17,9 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.ui.trade.CargoItemStack
 import fleetBuilder.features.CargoAutoManage
 import fleetBuilder.features.ItemAutoManage
+import fleetBuilder.features.loadCargoAutoManage
+import fleetBuilder.features.saveCargoAutoManage
+import fleetBuilder.features.unsetCargoAutoManage
 import fleetBuilder.ui.popUpUI.PopUpUI
 import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.DialogUtil
@@ -33,6 +36,8 @@ import starficz.height
 import starficz.onClick
 import starficz.width
 
+//The implementation of this is extremely scuffed, I am aware.
+
 val defaultIcon = "graphics/factions/crest_player_flag.png"
 
 class CargoAutoManageUIPlugin(
@@ -47,6 +52,7 @@ class CargoAutoManageUIPlugin(
 
     private val dialog: PopUpUIDialog
     private val market: MarketAPI
+    private val ui: TooltipMakerAPI
 
     override fun positionChanged(position: PositionAPI?) {}
     override fun renderBelow(alphaMult: Float) {}
@@ -59,10 +65,13 @@ class CargoAutoManageUIPlugin(
         val data: Any?,
         val icon: String,
         val displayName: String,
+        val imageTooltip: TooltipMakerAPI,
+        val iconPanel: UIPanelAPI,
         val amountField: TextFieldAPI,
         val percentField: TextFieldAPI,
         val takeButton: ButtonAPI,
         val putButton: ButtonAPI,
+        val deleteButton: ButtonAPI,
         val quickStackButton: ButtonAPI,
         var prevAmountText: String = "",
         var prevPercentText: String = "",
@@ -70,6 +79,21 @@ class CargoAutoManageUIPlugin(
         var prevPutState: Boolean = false,
         var prevQuickStackState: Boolean = false
     )
+
+    private fun removeCargoRowOf(cargoRow: CargoRow) {
+        val index = cargoRows.indexOf(cargoRow)
+        if (index == -1) return
+
+        cargoRows[index].amountField.opacity = 0f
+        cargoRows[index].percentField.opacity = 0f
+        cargoRows[index].takeButton.opacity = 0f
+        cargoRows[index].putButton.opacity = 0f
+        cargoRows[index].quickStackButton.opacity = 0f
+        cargoRows[index].deleteButton.opacity = 0f
+        cargoRows[index].imageTooltip.opacity = 0f
+        cargoRows[index].iconPanel.opacity = 0f
+        cargoRows.removeAt(index)
+    }
 
     fun createCargoAutoManage(): CargoAutoManage {
         val itemAutoManages = mutableListOf<ItemAutoManage>()
@@ -205,7 +229,7 @@ class CargoAutoManageUIPlugin(
     init {
         market = selectedSubmarket.market
 
-        val cargoAutoManage = market.memoryWithoutUpdate.get("\$FBC_${selectedSubmarket.specId}") as? CargoAutoManage
+        val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
             ?: CargoAutoManage()
 
         dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
@@ -220,9 +244,9 @@ class CargoAutoManageUIPlugin(
             areYouSureDialog.onConfirm { _ ->
                 dialog.forceDismissNoExit()
 
-                market.memoryWithoutUpdate.unset("\$FBC_${selectedSubmarket.specId}")
+                unsetCargoAutoManage(selectedSubmarket)
 
-                Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket)
+                Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
             }
 
             DialogUtil.initPopUpUI(areYouSureDialog, 380f, 80f)
@@ -241,9 +265,9 @@ class CargoAutoManageUIPlugin(
             val cargoAutoManage = createCargoAutoManage()
 
             if (cargoAutoManage.isDefault()) {//If the cargo is default
-                market.memoryWithoutUpdate.unset("\$FBC_${selectedSubmarket.specId}")
+                unsetCargoAutoManage(selectedSubmarket)
             } else {
-                market.memoryWithoutUpdate.set("\$FBC_${selectedSubmarket.specId}", cargoAutoManage)//FBC = Fleet Builder Cargo
+                saveCargoAutoManage(selectedSubmarket, cargoAutoManage)
             }
         }
 
@@ -257,7 +281,7 @@ class CargoAutoManageUIPlugin(
         panel = Global.getSettings().createCustom(width - dialog.x * 2, height - (dialog.y * 2) - 100f, this)
 
         // Create main UI container
-        val ui = panel.createUIElement(panel.width, panel.height, true)
+        ui = panel.createUIElement(panel.width, panel.height, true)
 
         // Header row
         val headers = listOf("Item", "Amount", "Percent", "Take", "Put", "Quick Stack")
@@ -280,24 +304,24 @@ class CargoAutoManageUIPlugin(
             )
 
             commodities.forEach { commodity ->
-                yOffset = addStack(commodity.name, commodity.iconName, CargoAPI.CargoItemType.RESOURCES, commodity.id, "0", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing, dialog)
+                yOffset = addStack(commodity.name, commodity.iconName, CargoAPI.CargoItemType.RESOURCES, commodity.id, "0", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing)
             }
             yOffset = addStack(
                 "Weapons and Wings", defaultIcon,
                 CargoAPI.CargoItemType.NULL, "weapon_and_wings",
-                "0", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing, dialog
+                "0", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing
             )
             yOffset = addStack(
                 "Blueprints and ModSpecs", defaultIcon,
                 CargoAPI.CargoItemType.NULL, "blueprints_and_modspecs",
-                "0", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing, dialog
+                "0", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing
             )
         } else {
             cargoAutoManage.autoManageItems.forEach { item ->
                 yOffset = addStack(
                     item.displayName, item.icon, item.type, item.data, item.amount?.toString()
                         ?: "", item.percent?.toString()
-                        ?: "", item.take, item.put, item.quickStack, ui, rowHeight, yOffset, columnWidths, spacing, dialog
+                        ?: "", item.take, item.put, item.quickStack, ui, rowHeight, yOffset, columnWidths, spacing
                 )
             }
         }
@@ -350,111 +374,123 @@ class CargoAutoManageUIPlugin(
         rowHeight: Float,
         yOffset: Float,
         columnWidths: List<Float>,
-        spacing: Float,
-        dialog: PopUpUI
+        spacing: Float
     ): Float {
-        typeFields.add(type)
-        dataFields.add(data)
-        iconFields.add(iconName)
-        displayNameFields.add(displayName)
-
         var xPos1 = 0f
         var yOffset1 = yOffset
 
-        val imageTooltip = ui.beginImageWithText(
-            iconName,
-            rowHeight
-        )
-        val imageLabel = imageTooltip.addPara(
-            displayName,
-            0f,
-        )
+        // 1. Image + label
+        val imageTooltip = ui.beginImageWithText(iconName, rowHeight)
+        val imageLabel = imageTooltip.addPara(displayName, 0f)
         imageLabel.color = Misc.getButtonTextColor()
-
         val newText = ui.addImageWithText(0f)
         newText.position.inTL(xPos1, yOffset1)
-
 
         xPos1 += columnWidths[0] + spacing
 
         val tooltipLocation = TooltipMakerAPI.TooltipLocation.BELOW
         val tooltipWidth = 400f
 
-        // 2. Amount text field
-        val amountField = ui.addTextField(columnWidths[1], 0f)
-        amountField.isUndoOnEscape = false
-        amountField.text = defaultAmount
-        amountFields.add(amountField)
-        prevAmountTexts.add(amountField.text)
-        amountField.addTooltip(tooltipLocation, tooltipWidth) { tooltip ->
-            tooltip.addPara("The amount of this item to keep", 0f)
+        // 2. Amount field
+        val amountField = ui.addTextField(columnWidths[1], 0f).apply {
+            isUndoOnEscape = false
+            text = defaultAmount
+            addTooltip(tooltipLocation, tooltipWidth) {
+                it.addPara("The amount of this item to keep", 0f)
+            }
+            position.inTL(xPos1, yOffset1 + (rowHeight - position.height) / 2f)
         }
-        amountField.position.inTL(xPos1, yOffset1 + (rowHeight - amountField.position.height) / 2f)
         xPos1 += columnWidths[1] + spacing
 
-        // 3. Percent text field
-        val percentField = ui.addTextField(columnWidths[2], 0f)
-        percentField.isUndoOnEscape = false
-        percentField.text = defaultPercent
-        percentFields.add(percentField)
-        prevPercentTexts.add(percentField.text)
-        percentField.addTooltip(tooltipLocation, tooltipWidth) { tooltip ->
-            tooltip.addPara("The percentage of the fleet's capacity of this item to keep", 0f)
+        // 3. Percent field
+        val percentField = ui.addTextField(columnWidths[2], 0f).apply {
+            isUndoOnEscape = false
+            text = defaultPercent
+            addTooltip(tooltipLocation, tooltipWidth) {
+                it.addPara("The percentage of the fleet's capacity of this item to keep", 0f)
+            }
+            position.inTL(xPos1, yOffset1 + (rowHeight - position.height) / 2f)
         }
-        percentField.position.inTL(xPos1, yOffset1 + (rowHeight - percentField.position.height) / 2f)
         xPos1 += columnWidths[2] + spacing
 
-        // 4. Take toggle button
-        val takeBtn = ui.addAreaCheckbox("Take", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), columnWidths[3], buttonHeight, 0f)
-        takeBtn.isChecked = defaultTake
-        takeFields.add(takeBtn)
-        prevTakeStates.add(takeBtn.isChecked)
-        takeBtn.addTooltip(tooltipLocation, tooltipWidth) { tooltip ->
-            tooltip.addPara("If checked, take this item from this submarket if below the specified amount or percentage", 0f)
+        // 4. Take button
+        val takeBtn = ui.addAreaCheckbox(
+            "Take", null,
+            Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(),
+            columnWidths[3], buttonHeight, 0f
+        ).apply {
+            isChecked = defaultTake
+            addTooltip(tooltipLocation, tooltipWidth) {
+                it.addPara("If checked, take this item from this submarket if below the specified amount or percentage", 0f)
+            }
+            position.inTL(xPos1, yOffset1 + (rowHeight - position.height) / 2f)
         }
-        takeBtn.position.inTL(xPos1, yOffset1 + (rowHeight - takeBtn.position.height) / 2f)
         xPos1 += columnWidths[3] + spacing
 
-        // 5. Put toggle button
-        val putBtn = ui.addAreaCheckbox("Put", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), columnWidths[4], buttonHeight, 0f)
-        putBtn.isChecked = defaultPut
-        putFields.add(putBtn)
-        prevPutStates.add(putBtn.isChecked)
-        putBtn.addTooltip(tooltipLocation, tooltipWidth) { tooltip ->
-            tooltip.addPara("If checked, put this item in this submarket if above the specified amount or percentage", 0f)
+        // 5. Put button
+        val putBtn = ui.addAreaCheckbox(
+            "Put", null,
+            Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(),
+            columnWidths[4], buttonHeight, 0f
+        ).apply {
+            isChecked = defaultPut
+            addTooltip(tooltipLocation, tooltipWidth) {
+                it.addPara("If checked, put this item in this submarket if above the specified amount or percentage", 0f)
+            }
+            position.inTL(xPos1, yOffset1 + (rowHeight - position.height) / 2f)
         }
-        putBtn.position.inTL(xPos1, yOffset1 + (rowHeight - putBtn.position.height) / 2f)
         xPos1 += columnWidths[4] + spacing
 
-        // 6. Quick Stack toggle button
-        val quickBtn = ui.addAreaCheckbox("Quick Stack", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), columnWidths[5], buttonHeight, 0f)
-        quickBtn.isChecked = defaultQuickStack
-        quickStackFields.add(quickBtn)
-        prevQuickStackStates.add(quickBtn.isChecked)
-        quickBtn.addTooltip(tooltipLocation, tooltipWidth) { tooltip ->
-            tooltip.addPara("If checked, puts all of this item in the submarket if it is in the submarket. If it is not, do nothing.", 0f)
+        // 6. Quick Stack button
+        val quickBtn = ui.addAreaCheckbox(
+            "Quick Stack", null,
+            Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(),
+            columnWidths[5], buttonHeight, 0f
+        ).apply {
+            isChecked = defaultQuickStack
+            addTooltip(tooltipLocation, tooltipWidth) {
+                it.addPara("If checked, puts all of this item in the submarket if it is in the submarket. If it is not, do nothing.", 0f)
+            }
+            position.inTL(xPos1, yOffset1 + (rowHeight - position.height) / 2f)
         }
-        quickBtn.position.inTL(xPos1, yOffset1 + (rowHeight - quickBtn.position.height) / 2f)
         xPos1 += columnWidths[5] + spacing
 
-        // 7. Delete element button
-        val delBtn = ui.addButton("Delete", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), columnWidths[4], buttonHeight, 0f)
-        delBtn.addTooltip(tooltipLocation, tooltipWidth) { tooltip ->
-            tooltip.addPara("Click to delete this element.", 0f)
+        // 7. Delete button
+        val delBtn = ui.addButton("Delete", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), columnWidths[4], buttonHeight, 0f).apply {
+            addTooltip(tooltipLocation, tooltipWidth) {
+                it.addPara("Click to delete this element.", 0f)
+            }
+            position.inTL(xPos1, yOffset1 + (rowHeight - position.height) / 2f)
         }
-        delBtn.position.inTL(xPos1, yOffset1 + (rowHeight - delBtn.position.height) / 2f)
+
+        val cargoRow = CargoRow(
+            type = type,
+            data = data,
+            icon = iconName,
+            displayName = displayName,
+            imageTooltip = imageTooltip,
+            iconPanel = newText,
+            amountField = amountField,
+            percentField = percentField,
+            takeButton = takeBtn,
+            putButton = putBtn,
+            quickStackButton = quickBtn,
+            deleteButton = delBtn,
+            prevAmountText = amountField.text,
+            prevPercentText = percentField.text,
+            prevTakeState = takeBtn.isChecked,
+            prevPutState = putBtn.isChecked,
+            prevQuickStackState = quickBtn.isChecked
+        )
+        cargoRows += cargoRow
+
         delBtn.onClick {
-            dialog.forceDismissNoExit()
-
-            val cargoAutoManage = createCargoAutoManage()
-            market.memoryWithoutUpdate.set("\$FBC_${selectedSubmarket.specId}", cargoAutoManage)
-
-            Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket)
+            removeCargoRowOf(cargoRow)
         }
-
 
         yOffset1 += rowHeight + spacing
         return yOffset1
+
     }
 }
 
@@ -509,7 +545,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                         if (!FBMisc.isMouseHoveringOverComponent(child)) return@forEach
                         val stack = child.invoke("getStack") as? CargoItemStack ?: return
 
-                        val cargoAutoManage = market.memoryWithoutUpdate.get("\$FBC_${selectedSubmarket.specId}") as? CargoAutoManage
+                        val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
                             ?: CargoAutoManage()
 
                         val iconName: String =
@@ -543,7 +579,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                             )
                         )
 
-                        market.memoryWithoutUpdate.set("\$FBC_${selectedSubmarket.specId}", cargoAutoManage)
+                        saveCargoAutoManage(selectedSubmarket, cargoAutoManage)
 
                         forceDismiss()
                         return

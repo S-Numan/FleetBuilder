@@ -33,7 +33,7 @@ class CargoAutoManager : EveryFrameScript {
             DisplayMessage.showMessage("Market docked")
 
             interactionMarket?.submarketsCopy?.forEach { submarket ->
-                val cargoAutoManage = interactionMarket?.memoryWithoutUpdate?.get("\$FBC_${submarket.specId}") as? CargoAutoManage
+                val cargoAutoManage = loadCargoAutoManage(submarket)
                     ?: return@forEach
                 if (!cargoAutoManage.applyOnInteraction) return@forEach
 
@@ -43,7 +43,7 @@ class CargoAutoManager : EveryFrameScript {
             }
         } else if (market == null && interactionMarket != null) {
             interactionMarket?.submarketsCopy?.forEach { submarket ->
-                val cargoAutoManage = interactionMarket?.memoryWithoutUpdate?.get("\$FBC_${submarket.specId}") as? CargoAutoManage
+                val cargoAutoManage = loadCargoAutoManage(submarket)
                     ?: return@forEach
                 if (!cargoAutoManage.applyOnLeave) return@forEach
 
