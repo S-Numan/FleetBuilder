@@ -1,5 +1,6 @@
 package fleetBuilder.ui
 
+import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
@@ -542,7 +543,11 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                     }.flatten()
 
                     allDataChildren.forEach { child ->
-                        if (!FBMisc.isMouseHoveringOverComponent(child)) return@forEach
+                        //if (!FBMisc.isMouseHoveringOverComponent(child)) return@forEach // This applies even when behind another panel
+
+                        val fader = child.invoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
+                        if (!fader.isFadingIn && fader.brightness != 1f) return@forEach
+
                         val stack = child.invoke("getStack") as? CargoItemStack ?: return
 
                         val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
