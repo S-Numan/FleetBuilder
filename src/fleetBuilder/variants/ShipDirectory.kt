@@ -75,29 +75,36 @@ class ShipDirectory(
         return ships.contains(stripPrefix(variantId))
     }
 
-    fun removeShip(_variantId: String) {
+    fun removeShip(
+        _variantId: String,
+        editDirectoryFile: Boolean = true,
+        editVariantFile: Boolean = true
+    ) {
         val variantId = stripPrefix(_variantId)
         if (!containsShip(variantId)) return
 
         val shipPath = getShipPath(variantId)
 
-        // Read the ship directory JSON
-        val shipDirJson = Global.getSettings().readJSONFromCommon(configPath, false)
-        val shipPathsJson = shipDirJson.optJSONArray("shipPaths") ?: JSONArray()
-
-        // Remove the shipPath from the array
-        if (shipPath != null)
-            containsAndRemoveShipName(shipPathsJson, shipPath)
-        else
-            DisplayMessage.showError("shipPath was null when attempting to remove it")
-
-        shipDirJson.put("shipPaths", shipPathsJson)
-
         // Save the updated directory
-        Global.getSettings().writeJSONToCommon(configPath, shipDirJson, false)
+        if (editDirectoryFile) {
+            // Read the ship directory JSON
+            val shipDirJson = Global.getSettings().readJSONFromCommon(configPath, false)
+            val shipPathsJson = shipDirJson.optJSONArray("shipPaths") ?: JSONArray()
+
+            // Remove the shipPath from the array
+            if (shipPath != null)
+                containsAndRemoveShipName(shipPathsJson, shipPath)
+            else
+                DisplayMessage.showError("shipPath was null when attempting to remove it")
+
+            shipDirJson.put("shipPaths", shipPathsJson)
+
+            Global.getSettings().writeJSONToCommon(configPath, shipDirJson, false)
+        }
 
         // Delete the variant file
-        Global.getSettings().deleteTextFileFromCommon("$dir$shipPath")
+        if (editVariantFile)
+            Global.getSettings().deleteTextFileFromCommon("$dir$shipPath")
 
         // Remove the variant from this class
         ships.remove(variantId)
@@ -111,10 +118,18 @@ class ShipDirectory(
         variant: ShipVariantAPI,
         missingFromVariant: MissingElements = MissingElements(),
         settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
-        inputDesiredIndexInMenu: Int = 0
+        inputDesiredIndexInMenu: Int = 0,
+        editDirectoryFile: Boolean = true,
+        editVariantFile: Boolean = true,
+        setVariantID: String? = null
     ): String {
+        val currentTime = Date()
+
         val variantToSave = variant.clone()
-        variantToSave.hullVariantId = makeVariantID(variant)
+        if (setVariantID != null)
+            variantToSave.hullVariantId = setVariantID
+        else
+            variantToSave.hullVariantId = makeVariantID(variant)
 
         val newIndex = getSafeIndexInMenu(variantToSave, inputDesiredIndexInMenu)
 
@@ -129,35 +144,36 @@ class ShipDirectory(
             DisplayMessage.showError("The variantID of ${savedVariant.hullVariantId} already exists in the directory of prefix $prefix . Replacing existing variant.")
         }
 
-        // Read the ship directory JSON
-        val shipDirJson = Global.getSettings().readJSONFromCommon(configPath, false)
-        val shipPathsJson = shipDirJson.optJSONArray("shipPaths") ?: JSONArray()
-
-        // Add the new ship path
-        if (containsAndRemoveShipName(shipPathsJson, shipPath))
-            DisplayMessage.showError("$shipPath already exists in JSONArray when adding ship. The old file with be overwritten.")
-
-
-        val shipPathJson = JSONObject()
-        shipPathJson.put("shipPath", shipPath)
-
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-        val currentTime = Date()
-        val timeString = formatter.format(currentTime)
-        shipPathJson.put("modifyTime", timeString)
-
-        shipPathJson.put("indexInEffectiveMenu", newIndex)
-
-        shipPathsJson.put(shipPathJson)
-
-        shipDirJson.put("shipPaths", shipPathsJson)
-
-
         // Save the updated directory
-        Global.getSettings().writeJSONToCommon(configPath, shipDirJson, false)
+        if (editDirectoryFile) {
 
-        // Write the variant file
-        Global.getSettings().writeJSONToCommon("$dir$shipPath", json, false)
+            // Read the ship directory JSON
+            val shipDirJson = Global.getSettings().readJSONFromCommon(configPath, false)
+            val shipPathsJson = shipDirJson.optJSONArray("shipPaths") ?: JSONArray()
+
+            // Add the new ship path
+            if (containsAndRemoveShipName(shipPathsJson, shipPath))
+                DisplayMessage.showError("$shipPath already exists in JSONArray when adding ship. The old file with be overwritten.")
+
+
+            val shipPathJson = JSONObject()
+            shipPathJson.put("shipPath", shipPath)
+
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+            val timeString = formatter.format(currentTime)
+            shipPathJson.put("modifyTime", timeString)
+
+            shipPathJson.put("indexInEffectiveMenu", newIndex)
+
+            shipPathsJson.put(shipPathJson)
+
+            shipDirJson.put("shipPaths", shipPathsJson)
+
+            Global.getSettings().writeJSONToCommon(configPath, shipDirJson, false)
+        }
+        // Save the variant file
+        if (editVariantFile)
+            Global.getSettings().writeJSONToCommon("$dir$shipPath", json, false)
 
         // Add the variant to this class
         shipPaths[savedVariant.hullVariantId] = shipPath
@@ -169,7 +185,7 @@ class ShipDirectory(
         return "${prefix}_${savedVariant.hullVariantId}"
     }
 
-    private fun getSafeIndexInMenu(
+    fun getSafeIndexInMenu(
         variantToSave: ShipVariantAPI,
         inputDesiredIndexInMenu: Int = 0
     ): Int {

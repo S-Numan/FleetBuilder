@@ -12,7 +12,6 @@ import fleetBuilder.config.ModSettings.importPrefix
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.persistence.variant.VariantSerialization.getVariantFromJsonWithMissing
 import fleetBuilder.ui.autofit.AutofitSpec
-import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
 import org.json.JSONArray
@@ -156,22 +155,19 @@ object LoadoutManager {
 
             val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, shipTimeSaved, shipIndexInEffectiveMenu, description)
 
-            // Assure index isn't taken, or missing
+            // Assure indexes aren't colliding or missing
             shipDirectory.getAllVariants().toList().forEach { variant ->
-                fun remakeShip() {
+                fun remakeShip(index: Int = 0) {
                     val missing = shipDirectory.getShipMissings(variant.hullVariantId) ?: return
-                    shipDirectory.removeShip(variant.hullVariantId)
-                    shipDirectory.addShip(variant, missing)
+                    shipDirectory.removeShip(variant.hullVariantId, editVariantFile = false)
+                    shipDirectory.addShip(variant, missing, inputDesiredIndexInMenu = index, editVariantFile = false, setVariantID = variant.hullVariantId)
                 }
 
                 val thisIndex = shipDirectory.getShipIndexInMenu(variant.hullVariantId)
                 if (thisIndex == -1) { // Missing?
                     remakeShip()
-                } else {
-                    val shipIndexs = ships.filter { tVar -> tVar.value.hullSpec.getEffectiveHullId() == variant.hullSpec.getEffectiveHullId() }.map { shipIndexInEffectiveMenu[it.key] }
-                    if (thisIndex in shipIndexs) { // Colliding?
-                        remakeShip()
-                    }
+                } else if (shipDirectory.getSafeIndexInMenu(variant, thisIndex) != thisIndex) {
+                    remakeShip(thisIndex)
                 }
             }
 
