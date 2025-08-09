@@ -218,11 +218,11 @@ object LoadoutManager {
                 )
         }
 
-        val insertname = getLoadoutVariantsAndMissingsAndSourceForHullspec(hullSpec)
+        val variantsWithDetails = getLoadoutVariantsAndMissingsAndSourceForHullspec(hullSpec)
 
-        val loadouts = insertname.first
-        val missings = insertname.second
-        val source = insertname.third
+        val loadouts = variantsWithDetails.first
+        val missings = variantsWithDetails.second
+        val source = variantsWithDetails.third
 
         for ((i, variant) in loadouts.withIndex()) {
             variantSpecs.add(

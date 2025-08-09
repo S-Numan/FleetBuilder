@@ -49,7 +49,7 @@ import java.awt.Color
 internal object AutofitPanel {
     private const val BACKGROUND_ALPHA = 0.7f
 
-    internal class MagicPaintjobRefitPanelPlugin(private val refitTab: UIPanelAPI) : BaseCustomUIPanelPlugin() {
+    internal class AutofitPanelPlugin(private val refitTab: UIPanelAPI) : BaseCustomUIPanelPlugin() {
         lateinit var autofitPanel: CustomPanelAPI
 
         override fun renderBelow(alphaMult: Float) {
@@ -117,16 +117,12 @@ internal object AutofitPanel {
         width: Float, height: Float
     ): CustomPanelAPI {
 
-        val endPad = 6f
-        val midPad = 5f
-        val selectorsPerRow = ModSettings.selectorsPerRow
-
-        val paintjobPlugin = MagicPaintjobRefitPanelPlugin(refitTab)
-        val autofitPanel = Global.getSettings().createCustom(width, height, paintjobPlugin)
+        val paintjobPlugin = AutofitPanelPlugin(refitTab)
+        val autofitPanel = Global.getSettings().createCustom(width, height, paintjobPlugin)// Background Panel
         paintjobPlugin.autofitPanel = autofitPanel
 
         // borders are drawn outside of panel, so +2 needed to lineup scrollbar with border
-        val scrollerTooltip = autofitPanel.createUIElement(width + 2f, height, true)
+        val scrollerTooltip = autofitPanel.createUIElement(width + 2f, height, true) // Tooltip on background panel
         scrollerTooltip.position.inTL(0f, 0f)
 
         val shipDisplay = refitPanel.invoke("getShipDisplay") as? UIPanelAPI ?: return autofitPanel
@@ -134,24 +130,21 @@ internal object AutofitPanel {
             ?: return autofitPanel
         val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI ?: return autofitPanel
 
+        val effectiveHullAutofitSpecs = getAllAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec)
 
-        //val currentPaintjob = MagicPaintjobManager.getCurrentShipPaintjob(baseVariant)
-        //val baseHullPaintjobs = MagicPaintjobManager.getPaintjobsForHull(
-        //   (baseVariant as ShipVariantAPI).hullSpec, false)
-
-        //val currentPaintjob = AutofitSpec(baseVariant.hullVariantId, baseVariant.displayName, "",(baseVariant as ShipVariantAPI).hullSpec.spriteName)
-
-
-        val baseHullPaintjobs = getAllAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec)//mutableListOf<MagicPaintjobSpec>()
-
+        val endPad = 6f
+        val midPad = 5f
+        val selectorsPerRow = ModSettings.selectorsPerRow
         val selectorWidth = (autofitPanel.width - (endPad * 2 + midPad * (selectorsPerRow - 1))) / selectorsPerRow
+
         var firstInRow: UIPanelAPI? = null
         var prev: UIPanelAPI? = null
-        val selectorPlugins = mutableListOf<AutofitSelector.MagicPaintjobSelectorPlugin>()
+
+        val selectorPlugins = mutableListOf<AutofitSelector.AutofitSelectorPlugin>()
 
         var index = 0
 
-        val allPaintjobs = baseHullPaintjobs + listOf(null)
+        val allPaintjobs = effectiveHullAutofitSpecs + listOf(null)
         for (i in allPaintjobs.indices) {
             index = i
             val paintjobSpec = allPaintjobs[i]
@@ -167,7 +160,7 @@ internal object AutofitPanel {
 
             val selectorPanel = AutofitSelector.createAutofitSelector(variant, paintjobSpec, selectorWidth)
 
-            val selectorPlugin = selectorPanel.plugin as AutofitSelector.MagicPaintjobSelectorPlugin
+            val selectorPlugin = selectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
             selectorPlugins.add(selectorPlugin)
 
             if (paintjobSpec != null && paintjobSpec.missingFromVariant.hasMissing()) {
@@ -207,7 +200,7 @@ internal object AutofitPanel {
 
         // sync all the selectors
         for (selectorPlugin in selectorPlugins) {
-            selectorPlugin.onHoverEnter { event ->
+            selectorPlugin.onHoverEnter {
                 Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
             }
             selectorPlugin.onClick { event ->
@@ -215,10 +208,10 @@ internal object AutofitPanel {
                     Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 1f)
                     if (event.isCtrlDown) {//Copy variant to clipboard
                         var saveVariant: ShipVariantAPI?
-                        if (selectorPlugin.paintjobSpec == null) {
+                        if (selectorPlugin.autofitSpec == null) {
                             saveVariant = baseVariant
                         } else {
-                            saveVariant = getAnyVariant(selectorPlugin.paintjobSpec!!.variant.hullVariantId)
+                            saveVariant = getAnyVariant(selectorPlugin.autofitSpec!!.variant.hullVariantId)
                         }
 
                         if (saveVariant != null) {
@@ -244,7 +237,7 @@ internal object AutofitPanel {
                     } else {//Save and load variant
                         selectorPlugins.forEach { it.isSelected = false }
 
-                        if (selectorPlugin.paintjobSpec == null) {
+                        if (selectorPlugin.autofitSpec == null) {
 
                             val newVariantId = saveLoadoutVariant(
                                 baseVariant,
@@ -264,7 +257,7 @@ internal object AutofitPanel {
                                     "Loadout Variant",
                                     (baseVariant as ShipVariantAPI).hullSpec.spriteName
                                 )
-                                selectorPlugin.paintjobSpec = newSpec
+                                selectorPlugin.autofitSpec = newSpec
                                 selectorPlugin.isSelected = true
                                 selectorPlugin.highlightFader.forceIn()
 
@@ -306,7 +299,7 @@ internal object AutofitPanel {
                             }
                         } else {//Load variant
                             //Global.getLogger(this.javaClass).info("Load ship variant")
-                            var variant: HullVariantSpec? = getAnyVariant(selectorPlugin.paintjobSpec!!.variant.hullVariantId) as? HullVariantSpec
+                            var variant: HullVariantSpec? = getAnyVariant(selectorPlugin.autofitSpec!!.variant.hullVariantId) as? HullVariantSpec
                             if (variant == null) {
                                 variant = Global.getSettings().createEmptyVariant(
                                     (baseVariant as ShipVariantAPI).hullSpec.hullId,
@@ -346,7 +339,7 @@ internal object AutofitPanel {
                             //}
 
                             selectorPlugins.forEach {
-                                if (it.paintjobSpec != null) highlightBasedOnVariant(it.paintjobSpec?.variant as HullVariantSpec, baseVariant, it)
+                                if (it.autofitSpec != null) highlightBasedOnVariant(it.autofitSpec?.variant as HullVariantSpec, baseVariant, it)
                             }
                         }
 
@@ -358,7 +351,7 @@ internal object AutofitPanel {
 
 
         // add scroll at end after setting heightSoFar, needed when using addCustom to the tooltip
-        val rows = (baseHullPaintjobs.size / selectorsPerRow) + 1
+        val rows = (effectiveHullAutofitSpecs.size / selectorsPerRow) + 1
         scrollerTooltip.heightSoFar = endPad * 2 + prev!!.height * rows + midPad * (rows - 1)
         autofitPanel.addUIElement(scrollerTooltip)
         return autofitPanel
@@ -367,7 +360,7 @@ internal object AutofitPanel {
     private fun highlightBasedOnVariant(
         variant: HullVariantSpec,
         baseVariant: HullVariantSpec,
-        selectorPlugin: AutofitSelector.MagicPaintjobSelectorPlugin
+        selectorPlugin: AutofitSelector.AutofitSelectorPlugin
     ) {
         selectorPlugin.isEqual = false
         selectorPlugin.isBetter = false
@@ -396,7 +389,7 @@ internal object AutofitPanel {
     private fun outlinePanelBasedOnVariant(
         baseVariant: HullVariantSpec,
         variant: HullVariantSpec,
-        selectorPlugin: AutofitSelector.MagicPaintjobSelectorPlugin
+        selectorPlugin: AutofitSelector.AutofitSelectorPlugin
     ) {
         val compareBaseVariant = baseVariant.clone()
         val compareVariant = variant.clone()

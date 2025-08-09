@@ -512,7 +512,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
 
             val shipPreviewWidth = 375f
-            val popUpHeight = 520f
+            val popUpHeight = 480f
 
             dialog.addParagraph(
                 loadoutBaseHullName,
@@ -523,13 +523,15 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             )
 
 
-            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth - (dialog.x * 2) + AutofitSelector.descriptionHeight, null)
+            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth - (dialog.x * 2), null)
             val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
 
             val selectorPanel = AutofitSelector.createAutofitSelector(
-                variant as HullVariantSpec, paintjobSpec = AutofitSpec(variant, name = variant.displayName, description = "", spriteId = variant.hullSpec.spriteName),
-                shipPreviewWidth - (dialog.x * 2)
+                variant as HullVariantSpec, paintjobSpec = AutofitSpec(variant, name = "", description = "", spriteId = variant.hullSpec.spriteName),
+                shipPreviewWidth - (dialog.x * 2),
+                addDescriptionHeight = false
             )
+
             tempTMAPI.addComponent(selectorPanel)
             AutofitPanel.makeTooltip(tempTMAPI, selectorPanel, variant)
 

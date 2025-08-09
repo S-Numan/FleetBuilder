@@ -22,7 +22,7 @@ import kotlin.math.max
  * @author Starficz
  */
 internal object AutofitSelector {
-    internal class MagicPaintjobSelectorPlugin(var paintjobSpec: AutofitSpec?) : BaseCustomUIPanelPlugin() {
+    internal class AutofitSelectorPlugin(var autofitSpec: AutofitSpec?) : BaseCustomUIPanelPlugin() {
         lateinit var selectorPanel: CustomPanelAPI
 
         val defaultBGColor: Color = Color.BLACK
@@ -45,7 +45,8 @@ internal object AutofitSelector {
         private var onHoverEnterFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
         private var onHoverExitFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
 
-        val isUnlocked = true//paintjobSpec == null || paintjobSpec in MagicPaintjobManager.unlockedPaintjobs
+        val isUnlocked = true
+        var noClick = false
         var hasMissing = false
         var isBetter = false
         var isWorse = false
@@ -61,7 +62,7 @@ internal object AutofitSelector {
 
         init {
             onClickFunctions.add {
-                if (isUnlocked) clickFader.fadeIn()
+                if (isUnlocked && !noClick) clickFader.fadeIn()
             }
             onClickReleaseFunctions.add { clickFader.fadeOut() }
             onHoverEnterFunctions.add {
@@ -217,14 +218,17 @@ internal object AutofitSelector {
     internal fun createAutofitSelector(
         hullVariantSpec: HullVariantSpec,
         paintjobSpec: AutofitSpec?,
-        width: Float
+        width: Float,
+        addDescriptionHeight: Boolean = true
     ): CustomPanelAPI {
 
-        val plugin = MagicPaintjobSelectorPlugin(paintjobSpec)
-        val selectorPanel = Global.getSettings().createCustom(width, width + descriptionHeight, plugin)
+        val plugin = AutofitSelectorPlugin(paintjobSpec)
+        val selectorPanel = Global.getSettings().createCustom(width, width + if (addDescriptionHeight) descriptionHeight else 0f, plugin)
         plugin.selectorPanel = selectorPanel
 
-        return createAutofitSelectorChildren(hullVariantSpec, paintjobSpec, width, selectorPanel)
+        createAutofitSelectorChildren(hullVariantSpec, paintjobSpec, width, selectorPanel)
+
+        return selectorPanel
     }
 
     fun createAutofitSelectorChildren(
@@ -232,7 +236,7 @@ internal object AutofitSelector {
         paintjobSpec: AutofitSpec?,
         width: Float,
         selectorPanel: CustomPanelAPI
-    ): CustomPanelAPI {
+    ) {
         val descriptionYOffset = 2f
         val topPad = 5f
 
@@ -244,11 +248,17 @@ internal object AutofitSelector {
         with(textElement) {
             position.inTL(0f, width + topPad - descriptionYOffset)
             setTitleOrbitronLarge()
-            addTitle(paintjobSpec?.name ?: "Current Variant")
-            addPara(paintjobSpec?.description ?: "Click to save", 3f)
-        }
+            if (paintjobSpec == null) {
+                addTitle("Current Variant")
+                addPara("Click to save", 3f)
+            } else {
+                if (paintjobSpec.name.isNotEmpty())
+                    addTitle(paintjobSpec.name)
 
-        return selectorPanel
+                if (paintjobSpec.description != null && paintjobSpec.description!!.isNotEmpty())
+                    addPara(paintjobSpec.description, 3f)
+            }
+        }
     }
 
     fun createShipPreview(
