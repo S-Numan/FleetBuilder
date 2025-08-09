@@ -1,5 +1,6 @@
 ## 1.15.0
 - Fix scrollbar on Cargo Auto Manager.
+- Fix force autofit sometimes failing to remove SMods.
 
 ## 1.14.0
 - Added Cargo Auto Manager. Right click your storage submarket to open a dialog that allows you to automatically take and store cargo items.

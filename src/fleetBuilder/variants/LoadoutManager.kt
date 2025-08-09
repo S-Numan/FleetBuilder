@@ -155,20 +155,20 @@ object LoadoutManager {
 
             val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, shipTimeSaved, shipIndexInEffectiveMenu, description)
 
-            // Assure indexes aren't colliding or missing
+            // Assure indexes aren't missing
             shipDirectory.getAllVariants().toList().forEach { variant ->
-                fun remakeShip(index: Int = 0) {
+                fun remakeShip() {
                     val missing = shipDirectory.getShipMissings(variant.hullVariantId) ?: return
                     shipDirectory.removeShip(variant.hullVariantId, editVariantFile = false)
-                    shipDirectory.addShip(variant, missing, inputDesiredIndexInMenu = index, editVariantFile = false, setVariantID = variant.hullVariantId)
+                    shipDirectory.addShip(variant, missing, editVariantFile = false, setVariantID = variant.hullVariantId)
                 }
 
                 val thisIndex = shipDirectory.getShipIndexInMenu(variant.hullVariantId)
                 if (thisIndex == -1) { // Missing?
                     remakeShip()
-                } else if (shipDirectory.getSafeIndexInMenu(variant, thisIndex) != thisIndex) {
-                    remakeShip(thisIndex)
-                }
+                } //else if (shipDirectory.getHullSpecIndexes(variant, thisIndex) != thisIndex) {
+                //    remakeShip(thisIndex)
+                //}
             }
 
             shipDirectory
@@ -247,21 +247,16 @@ object LoadoutManager {
 
     fun getLoadoutAutofitSpecsForShip(
         hullSpec: ShipHullSpecAPI,
-        inputIndexOffset: Int = 0
+        indexOffset: Int = 0
     ): Map<ShipDirectory, List<AutofitSpec>> {
-        var indexOffset = inputIndexOffset
-
         val loadoutAutofitSpecs = mutableMapOf<ShipDirectory, List<AutofitSpec>>()
         shipDirectories.forEach {
             val autofitSpecs = mutableListOf<AutofitSpec>()
-
-            var maxIndex = 0
 
             val ships = it.getShips(hullSpec)
             ships.forEach { variant ->
                 val missing = it.getShipMissings(variant.hullVariantId) ?: return@forEach
                 val index = it.getShipIndexInMenu(variant.hullVariantId)
-                maxIndex = max(maxIndex, index + 1)
 
                 autofitSpecs.add(
                     AutofitSpec(
@@ -273,7 +268,6 @@ object LoadoutManager {
                     )
                 )
             }
-            indexOffset += maxIndex
 
             loadoutAutofitSpecs[it] = autofitSpecs
         }
@@ -288,6 +282,18 @@ object LoadoutManager {
             }
         }
         return null
+    }
+
+    fun getHighestIndexInEffectiveMenu(hullSpec: ShipHullSpecAPI): Int {
+        var maxIndex = 0
+        for (dir in shipDirectories) {
+            val ships = dir.getShips(hullSpec)
+            for (ship in ships) {
+                val index = dir.getShipIndexInMenu(ship.hullVariantId)
+                maxIndex = max(maxIndex, index)
+            }
+        }
+        return maxIndex
     }
 
     fun getAnyVariant(variantId: String): ShipVariantAPI? {

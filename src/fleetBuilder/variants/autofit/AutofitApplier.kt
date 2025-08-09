@@ -199,8 +199,8 @@ object AutofitApplier {
         //to.sModdedBuiltIns.clear()
         //to.suppressedMods.clear()
         to.hullMods.toList().forEach { mod ->
-            if (to.hullSpec.builtInMods.contains(mod))
-                return@forEach
+            //if (to.hullSpec.builtInMods.contains(mod))
+            //    return@forEach
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
             if (dontForceClearDMods && VariantLib.getAllDMods().contains(mod))

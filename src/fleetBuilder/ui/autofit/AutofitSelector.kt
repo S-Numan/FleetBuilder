@@ -11,6 +11,8 @@ import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.integration.combat.CombatAutofitAdder
+import fleetBuilder.util.FBMisc
+import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import starficz.*
@@ -42,12 +44,13 @@ internal object AutofitSelector {
         private var onClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
         private var onClickOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
         private var onClickReleaseFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
-        private var onClickReleaseOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
+        private var onClickReleaseOutsideFunctions: MutableList<() -> Unit> = ArrayList()
         private var onClickReleaseNoInitClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
         private var onHoverFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
         private var onHoverEnterFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
         private var onHoverExitFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
 
+        var isBase = false
         val isUnlocked = true
         var noClick = false
         var isBetter = false
@@ -87,6 +90,8 @@ internal object AutofitSelector {
             var panelColor = Misc.interpolateColor(defaultBGColor, highlightBGColor, highlightFader.brightness)
             panelColor = Misc.interpolateColor(panelColor, hoverBGColor, hoverFader.brightness)
             panelColor = Misc.interpolateColor(panelColor, clickedBGColor, clickFader.brightness)
+            if (isBase) panelColor = Misc.interpolateColor(panelColor, Color.BLACK, 0.4f)
+
             val panelAlpha = panelColor.alphaf * alphaMult
             GL11.glColor4f(panelColor.redf, panelColor.greenf, panelColor.bluef, panelAlpha)
             GL11.glRectf(selectorPanel.left, selectorPanel.bottom, selectorPanel.right, selectorPanel.top)
@@ -161,7 +166,8 @@ internal object AutofitSelector {
                     isHovering = true
                     if (event.isMouseDownEvent) {
                         hasClicked = true
-                        onClickFunctions.forEach { it(event) }
+                        if (!noClick)
+                            onClickFunctions.forEach { it(event) }
                     }
                     if (event.isMouseUpEvent) {
                         if (hasClicked) {
@@ -179,7 +185,7 @@ internal object AutofitSelector {
                     }
                     if (event.isMouseUpEvent && hasClicked) {
                         hasClicked = false
-                        onClickReleaseOutsideFunctions.forEach { it(event) }
+                        onClickReleaseOutsideFunctions.forEach { it() }
                     }
                 }
             }
@@ -193,7 +199,7 @@ internal object AutofitSelector {
             onClickReleaseFunctions.add(function)
         }
 
-        fun onClickReleaseOutside(function: (InputEventAPI) -> Unit) {
+        fun onClickReleaseOutside(function: () -> Unit) {
             onClickReleaseOutsideFunctions.add(function)
         }
 
@@ -217,7 +223,18 @@ internal object AutofitSelector {
             onHoverExitFunctions.add(function)
         }
 
+        var mouseUp = false
         override fun advance(amount: Float) {
+            if (hasClicked && !Mouse.isButtonDown(0) && !FBMisc.isMouseHoveringOverComponent(selectorPanel)) {
+                if (mouseUp) {
+                    onClickReleaseOutsideFunctions.forEach { it() }
+                    hasClicked = false
+                    mouseUp = false
+                } else {
+                    mouseUp = true
+                }
+            }
+
             highlightFader.advance(amount)
             hoverFader.advance(amount)
             lockedHoverFader.advance(amount)
@@ -267,7 +284,8 @@ internal object AutofitSelector {
         with(textElement) {
             position.inTL(0f, width + topPad - descriptionYOffset)
             setTitleOrbitronLarge()
-            addTitle(autofitSpec.variant.displayName)
+            val label = addTitle(autofitSpec.variant.displayName)
+            //label.position.inTL((width - label.computeTextWidth(label.text)) / 2f, 0f)
 
             if (autofitSpec.description.isNotEmpty())
                 addPara(autofitSpec.description, 3f)

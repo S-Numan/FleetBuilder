@@ -13,8 +13,12 @@ import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
+import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
+import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
 import fleetBuilder.util.ClipboardMisc
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.LoadoutManager
@@ -22,6 +26,7 @@ import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.getCoreAutofitSpecsForShip
 import fleetBuilder.variants.LoadoutManager.getLoadoutAutofitSpecsForShip
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.ShipDirectory
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.compareVariantHullMods
 import fleetBuilder.variants.VariantLib.getAllDMods
@@ -33,6 +38,7 @@ import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
+import org.magiclib.kotlin.setBrightness
 import starficz.*
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
@@ -57,7 +63,7 @@ internal object AutofitPanel {
             // background dark fadeout
             val bgColor = Color.BLACK
             val bgAlpha = BACKGROUND_ALPHA * bgColor.alphaf * alphaMult
-            GL11.glColor4f(bgColor.redf, bgColor.greenf, bgColor.bluef, bgAlpha)
+            GL11.glColor4f(bgColor.redf, bgColor.greenf, bgColor.bluef, bgAlpha)//TODO, avoid background dark fadeout in top right of scren to show stats.
             GL11.glRectf(0f, 0f, Global.getSettings().screenWidth, Global.getSettings().screenHeight)
 
             // vanilla panels are transparent, but paintjobs need a clear background for display purposes
@@ -91,20 +97,49 @@ internal object AutofitPanel {
             GL11.glRectf(x2, y2, x1 - 1, y2 + 1)
         }
 
-        override fun processInput(events: MutableList<InputEventAPI>?) {
-            for (event in events!!) {
-                if (!event.isConsumed && event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
+        var draggedAutofitSpec: AutofitSpec? = null
+        override fun processInput(events: MutableList<InputEventAPI>) {
+            for (event in events) {
+                if (event.isConsumed) continue
+
+                if (event.isMouseUpEvent) {
+                    draggedAutofitSpec = null
+                }
+
+                if (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
                     autofitPanel.parent?.removeComponent(autofitPanel)
+                    draggedPanel?.parent?.removeComponent(draggedPanel!!)
                     event.consume()
-                } else if (!event.isConsumed && (event.isKeyboardEvent || event.isMouseMoveEvent ||
-                            event.isMouseDownEvent || event.isMouseScrollEvent)
+                } else if (event.isKeyboardEvent || event.isMouseMoveEvent ||
+                    event.isMouseDownEvent || event.isMouseScrollEvent
                 ) {
                     event.consume()
                 }
             }
         }
 
+
+        var draggedPanel: UIPanelAPI? = null
+        var selectorWidth: Float = 0f
         override fun advance(amount: Float) {
+            if (draggedAutofitSpec == null) {
+                if (draggedPanel != null) {
+                    draggedPanel!!.parent?.removeComponent(draggedPanel!!)
+                    draggedPanel = null
+                }
+                return
+            }
+
+            if (draggedPanel == null)
+                draggedPanel = createShipPreview(draggedAutofitSpec!!.variant, selectorWidth, selectorWidth)
+
+            val coreUI = ReflectionMisc.getCoreUI() ?: return
+            if (coreUI.getChildrenCopy().find { it === draggedPanel } == null)
+                coreUI.addComponent(draggedPanel)
+
+            draggedPanel!!.position.setXAlignOffset(Global.getSettings().mouseX.toFloat() - draggedPanel!!.width / 2f)
+            draggedPanel!!.position.setYAlignOffset(Global.getSettings().mouseY.toFloat() - draggedPanel!!.height / 2f)
+
         }
     }
 
@@ -113,9 +148,9 @@ internal object AutofitPanel {
         width: Float, height: Float
     ): CustomPanelAPI {
 
-        val paintjobPlugin = AutofitPanelPlugin(refitTab)
-        val autofitPanel = Global.getSettings().createCustom(width, height, paintjobPlugin)// Background Panel
-        paintjobPlugin.autofitPanel = autofitPanel
+        val autofitPlugin = AutofitPanelPlugin(refitTab)
+        val autofitPanel = Global.getSettings().createCustom(width, height, autofitPlugin)// Background Panel
+        autofitPlugin.autofitPanel = autofitPanel
 
         // borders are drawn outside of panel, so +2 needed to lineup scrollbar with border
         val scrollerTooltip = autofitPanel.createUIElement(width + 2f, height, true) // Tooltip on background panel
@@ -127,44 +162,61 @@ internal object AutofitPanel {
         val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI ?: return autofitPanel
         val ship = shipDisplay.invoke("getShip") as? ShipAPI ?: return autofitPanel
 
-
-        val coreEffectiveHullAutofitSpecs = getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec)
-        val loadoutEffectiveHullAutofitSpecs = getLoadoutAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec, coreEffectiveHullAutofitSpecs.size).values.flatten()
-
         val endPad = 6f
         val midPad = 5f
         val selectorsPerRow = ModSettings.selectorsPerRow
         val selectorWidth = (autofitPanel.width - (endPad * 2 + midPad * (selectorsPerRow - 1))) / selectorsPerRow
+        autofitPlugin.selectorWidth = selectorWidth
 
         var firstInRow: UIPanelAPI? = null
         var prev: UIPanelAPI? = null
 
         val selectorPlugins = mutableListOf<AutofitSelector.AutofitSelectorPlugin>()
 
+        //TODO, change "indexInEffectiveMenu" to something like "desiredIndexInMenu".
+        val coreEffectiveHullAutofitSpecs = getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec)
+        val loadoutEffectiveHullAutofitSpecs = getLoadoutAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec, coreEffectiveHullAutofitSpecs.size).values.flatten()
+
 
         // Combine both lists into one, because they share the same index space in the menu
         val combinedSpecs = coreEffectiveHullAutofitSpecs + loadoutEffectiveHullAutofitSpecs
 
-        // Find the maximum index from all specs so we know how big to make the base list
-        val maxIndex = combinedSpecs.maxOfOrNull { it.indexInEffectiveMenu } ?: 0
+        // Sort by desired index first
+        val sortedSpecs = combinedSpecs.sortedBy { it.indexInEffectiveMenu }
 
-        // Start with a mutable list full of nulls, big enough to fit the highest index
-        val indexedSpecs = MutableList<AutofitSpec?>(maxIndex + 1) { null }
+        // Find the maximum index any spec wants
+        val maxDesiredIndex = sortedSpecs.maxOfOrNull { it.indexInEffectiveMenu } ?: 0
 
-        // Place each spec at its indexInMenu position
-        for (spec in combinedSpecs) {
-            if (indexedSpecs[spec.indexInEffectiveMenu] != null)
-                DisplayMessage.showError("Duplicate index when showing autofit options: ${spec.indexInEffectiveMenu}")
+        // Start with a list of nulls big enough to fit everything
+        val indexedSpecs = MutableList<AutofitSpec?>(maxDesiredIndex + sortedSpecs.size) { null }
 
-            indexedSpecs[spec.indexInEffectiveMenu] = spec
-        }
+        // For each unique desired index in ascending order
+        sortedSpecs.groupBy { it.indexInEffectiveMenu }
+            .toSortedMap()
+            .forEach { (desiredIndex, specsForIndex) ->
+                for (spec in specsForIndex) {
+                    // Try to place at desiredIndex or as close ahead as possible
+                    var placeAt = desiredIndex
+                    while (placeAt < indexedSpecs.size && indexedSpecs[placeAt] != null) {
+                        placeAt++
+                    }
+                    // If still full, expand list
+                    if (placeAt >= indexedSpecs.size) {
+                        indexedSpecs.addAll(List(specsForIndex.size) { null })
+                    }
+                    indexedSpecs[placeAt] = spec
+                }
+            }
 
-        // Now pad the last row and add an extra empty row
-        val remainder = indexedSpecs.size % selectorsPerRow
+
+        // --- Trim to only keep current row + next row nulls ---
+        val lastNonNullIndex = indexedSpecs.indexOfLast { it != null }
+        val remainder = (lastNonNullIndex + 1) % selectorsPerRow
         val fillToRow = if (remainder == 0) 0 else selectorsPerRow - remainder
         val extraNulls = fillToRow + selectorsPerRow
 
-        val allAutofitSpecs: List<AutofitSpec?> = indexedSpecs + List(extraNulls) { null }
+        // Build final list with padding
+        val allAutofitSpecs: List<AutofitSpec?> = indexedSpecs.subList(0, lastNonNullIndex + 1) + List(extraNulls) { null }
 
 
         for (i in allAutofitSpecs.indices) {
@@ -196,17 +248,142 @@ internal object AutofitPanel {
             }
         }
 
+        val baseSelectorPanel = AutofitSelector.createAutofitSelector(AutofitSpec(baseVariant, null, description = "Current Variant"), selectorWidth) // Create the panel
+        val baseSelectorPlugin = baseSelectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
+        baseSelectorPlugin.isBase = true
+        baseSelectorPlugin.noClick = true
+        baseSelectorPlugin.isEqual = true
+        baseSelectorPlugin.isSelected = true
+        selectorPlugins.add(baseSelectorPlugin)
+        autofitPanel.addComponent(baseSelectorPanel)
+        baseSelectorPanel.position.inTL(autofitPanel.width + midPad, autofitPanel.height / 2f - baseSelectorPanel.height / 2f)//TODO, change position to be top left aligned below the weapon flux stat.
+
+
         // sync all the selectors
-        for (selectorPlugin in selectorPlugins) {
+        for (index in selectorPlugins.indices) {
+            val selectorPlugin = selectorPlugins[index]
+
             selectorPlugin.onHoverEnter {
                 Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
             }
-            selectorPlugin.onClickRelease { event ->
-                DisplayMessage.showMessage("Release")
+            selectorPlugin.onHoverExit {
+                if (!selectorPlugin.hasClicked || selectorPlugin.autofitSpec === autofitPlugin.draggedAutofitSpec) return@onHoverExit
+
+                autofitPlugin.draggedAutofitSpec = selectorPlugin.autofitSpec
+                selectorPlugin.selectorPanel.opacity = 0.15f
             }
-            selectorPlugin.onClickReleaseNoInitClick { event ->
-                DisplayMessage.showMessage("Release no init click")
+            selectorPlugin.onClickRelease { event -> // Load variant
+                selectorPlugin.selectorPanel.opacity = 1f
+
+                if (selectorPlugin.autofitSpec == null || autofitPlugin.draggedAutofitSpec != null || event.isCtrlDown || selectorPlugin.noClick) return@onClickRelease // If no variant. or dragging self, do nothing
+
+                Global.getSoundPlayer().playUISound("ui_button_pressed", 0.5f, 1f)//TODO, better sound
+
+
+                applyVariantInRefitScreen(baseVariant, selectorPlugin.autofitSpec!!.variant, fleetMember, ship, coreUI, shipDisplay, refitPanel)
+
+                selectorPlugins.forEach {
+                    if (it.autofitSpec != null) highlightBasedOnVariant(it.autofitSpec!!.variant, baseVariant, it)
+                    else deHighlight(it)
+                }
+                selectorPlugin.isSelected = true
+
+                //Remake the baseSelector
+                baseSelectorPlugin.selectorPanel.clearChildren()
+                baseSelectorPlugin.autofitSpec = selectorPlugin.autofitSpec
+                makeTooltip(baseSelectorPlugin.selectorPanel, baseSelectorPlugin.autofitSpec!!.variant)
+                createAutofitSelectorChildren(
+                    baseSelectorPlugin.autofitSpec!!,
+                    selectorWidth,
+                    baseSelectorPlugin.selectorPanel
+                )
             }
+            selectorPlugin.onClickReleaseOutside {
+                selectorPlugin.selectorPanel.opacity = 1f
+            }
+            selectorPlugin.onClickReleaseNoInitClick { // Clicked and dragged from another autofit panel
+                selectorPlugin.selectorPanel.opacity = 1f
+
+                if (selectorPlugin.autofitSpec != null || autofitPlugin.draggedAutofitSpec == null) return@onClickReleaseNoInitClick
+
+                val settings: VariantSerialization.VariantSettings
+                val shipDirectory: ShipDirectory?
+
+                if (autofitPlugin.draggedAutofitSpec!!.source == null) {
+                    settings = ModSettings.getConfiguredVariantSettings()
+
+                    shipDirectory = LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)
+
+                } else {
+                    settings = VariantSerialization.VariantSettings()
+
+                    shipDirectory = autofitPlugin.draggedAutofitSpec!!.source
+                }
+
+                if (shipDirectory == null) {
+                    DisplayMessage.showError("Could not find ship directory with prefix ${ModSettings.defaultPrefix}")
+                    return@onClickReleaseNoInitClick
+                }
+
+                val indexInMenu = index - coreEffectiveHullAutofitSpecs.size
+
+                val draggedVariant = VariantSerialization.saveAndLoadVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings)
+
+                val equalVariant = shipDirectory.getShips(draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant, compareTags = true) }
+
+                val shipVariantID: String
+                if (equalVariant != null) { // Variant already exists?
+
+                    val missing = shipDirectory.getShipMissings(equalVariant.hullVariantId)
+                        ?: return@onClickReleaseNoInitClick
+
+                    shipDirectory.removeShip(equalVariant.hullVariantId, editVariantFile = false)
+                    shipVariantID = shipDirectory.addShip(
+                        equalVariant, missing,
+                        inputDesiredIndexInMenu = indexInMenu,
+                        setVariantID = equalVariant.hullVariantId.removePrefix(shipDirectory.prefix + "_"),
+                        editVariantFile = false, settings = settings
+                    )
+
+                    fun deleteAutofit(autofitPlugin: AutofitSelector.AutofitSelectorPlugin?) {
+                        autofitPlugin?.autofitSpec = null
+                        autofitPlugin?.noClick = true
+                        autofitPlugin?.selectorPanel?.clearChildren()
+                    }
+
+                    deleteAutofit(selectorPlugins.firstOrNull {
+                        it.autofitSpec?.source != null && it.autofitSpec?.variant != null &&
+                                compareVariantContents(
+                                    shipDirectory.getShip(shipVariantID)!!,
+                                    VariantSerialization.saveAndLoadVariant(it.autofitSpec!!.variant, settings),
+                                    compareTags = true
+                                )
+                    })
+
+                } else {
+                    shipVariantID = shipDirectory.addShip(
+                        draggedVariant,
+                        inputDesiredIndexInMenu = indexInMenu, settings = settings
+                    )
+                }
+
+                // Remake the new selector
+                selectorPlugin.noClick = false
+                selectorPlugin.autofitSpec = autofitPlugin.draggedAutofitSpec!!.copy(variant = shipDirectory.getShip(shipVariantID)!!, source = shipDirectory, indexInEffectiveMenu = indexInMenu, description = shipDirectory.getDescription())
+                createAutofitSelectorChildren(
+                    selectorPlugin.autofitSpec!!,
+                    selectorWidth,
+                    selectorPlugin.selectorPanel
+                )
+
+                selectorPlugins.forEach {
+                    if (it.autofitSpec != null) highlightBasedOnVariant(it.autofitSpec!!.variant, baseVariant, it)
+                    else deHighlight(it)
+                }
+                makeTooltip(selectorPlugin.selectorPanel, selectorPlugin.autofitSpec!!.variant, selectorPlugin.autofitSpec!!.missing)
+                removeSelectorPanelButton(selectorPlugin.selectorPanel, selectorPlugin.autofitSpec!!) // Allow it to be removed
+            }
+
             selectorPlugin.onClick { event ->
                 if (selectorPlugin.autofitSpec == null) return@onClick // If no variant. there's nothing to do
 
@@ -214,29 +391,6 @@ internal object AutofitPanel {
 
                 if (event.isCtrlDown) {//Copy variant to clipboard
                     ClipboardMisc.saveVariantToClipboard(selectorPlugin.autofitSpec!!.variant, event.isShiftDown)
-
-                } else {//Save and load variant
-
-                    val saveVariant = false
-
-                    if (saveVariant) { // Save variant
-                        val shipDirectory = LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)
-                        if (shipDirectory == null) {
-                            DisplayMessage.showError("Could not find ship directory with prefix ${ModSettings.defaultPrefix}")
-                            return@onClick
-                        }
-
-                        val newVariantId = shipDirectory.addShip(baseVariant, settings = ModSettings.getConfiguredVariantSettings())
-
-                    } else { // Load variant
-
-                        applyVariantInRefitScreen(baseVariant, selectorPlugin.autofitSpec!!.variant, fleetMember, ship, coreUI, shipDisplay, refitPanel)
-
-                        selectorPlugins.forEach {
-                            if (it.autofitSpec != null) highlightBasedOnVariant(it.autofitSpec!!.variant, baseVariant, it)
-                        }
-                        selectorPlugin.isSelected = true
-                    }
                 }
             }
         }
@@ -254,9 +408,7 @@ internal object AutofitPanel {
         baseVariant: ShipVariantAPI,
         selectorPlugin: AutofitSelector.AutofitSelectorPlugin
     ) {
-        selectorPlugin.isEqual = false
-        selectorPlugin.isBetter = false
-        selectorPlugin.isWorse = false
+        deHighlight(selectorPlugin)
 
         val equalDefault = compareVariantContents(
             variant,
@@ -275,9 +427,14 @@ internal object AutofitPanel {
             selectorPlugin.highlightFader.forceIn()
 
             outlinePanelBasedOnVariant(baseVariant, variant, selectorPlugin)
-        } else {
-            selectorPlugin.isSelected = false
         }
+    }
+
+    fun deHighlight(selectorPlugin: AutofitSelector.AutofitSelectorPlugin) {
+        selectorPlugin.isSelected = false
+        selectorPlugin.isEqual = false
+        selectorPlugin.isBetter = false
+        selectorPlugin.isWorse = false
     }
 
     private fun outlinePanelBasedOnVariant(
@@ -375,7 +532,15 @@ internal object AutofitPanel {
         removeVariantButton.onClick {
             deleteLoadoutVariant(newSpec.variant.hullVariantId)
             //selectorPanel.parent?.removeComponent(selectorPanel)
-            selectorPanel.opacity = 0f
+            //selectorPanel.opacity = 0f
+            val selectorPlugin = selectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
+            selectorPlugin.autofitSpec = null
+            selectorPlugin.noClick = true
+            selectorPlugin.selectorPanel.clearChildren()
+            selectorPlugin.isSelected = false
+            selectorPlugin.isEqual = false
+            selectorPlugin.isBetter = false
+            selectorPlugin.isWorse = false
         }
     }
 

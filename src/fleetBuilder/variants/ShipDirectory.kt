@@ -115,33 +115,36 @@ class ShipDirectory(
     }
 
     fun addShip(
-        variant: ShipVariantAPI,
+        inputVariant: ShipVariantAPI,
         missingFromVariant: MissingElements = MissingElements(),
         settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
-        inputDesiredIndexInMenu: Int = 0,
+        inputDesiredIndexInMenu: Int = -1,
         editDirectoryFile: Boolean = true,
         editVariantFile: Boolean = true,
         setVariantID: String? = null
     ): String {
         val currentTime = Date()
 
-        val variantToSave = variant.clone()
+        val variantToSave = inputVariant.clone()
         if (setVariantID != null)
             variantToSave.hullVariantId = setVariantID
         else
-            variantToSave.hullVariantId = makeVariantID(variant)
-
-        val newIndex = getSafeIndexInMenu(variantToSave, inputDesiredIndexInMenu)
+            variantToSave.hullVariantId = makeVariantID(inputVariant)
 
         val json = saveVariantToJson(variantToSave, settings)
 
         //Ensures the JSON is readable, and uses the saved version of the variant to guarantee consistency across game restarts.
         val savedVariant = getVariantFromJson(json)
 
-        val shipPath = "${variant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"
+        val shipPath = "${savedVariant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"
 
         if (containsShip(savedVariant.hullVariantId)) {
             DisplayMessage.showError("The variantID of ${savedVariant.hullVariantId} already exists in the directory of prefix $prefix . Replacing existing variant.")
+        }
+
+        var newIndex = inputDesiredIndexInMenu
+        if (newIndex == -1) {
+            newIndex = LoadoutManager.getHighestIndexInEffectiveMenu(variantToSave.hullSpec) + 1
         }
 
         // Save the updated directory
@@ -185,19 +188,10 @@ class ShipDirectory(
         return "${prefix}_${savedVariant.hullVariantId}"
     }
 
-    fun getSafeIndexInMenu(
-        variantToSave: ShipVariantAPI,
-        inputDesiredIndexInMenu: Int = 0
-    ): Int {
-        val hullSpecIndexsInMenu = getShips(variantToSave.hullSpec).map { it.hullVariantId }.map { getShipIndexInMenu(it) }
-        var newIndex = inputDesiredIndexInMenu
-        if (newIndex == -1)
-            newIndex = 0
-
-        while (newIndex in hullSpecIndexsInMenu) {
-            newIndex++
-        }
-        return newIndex
+    fun getHullSpecIndexes(
+        variantToSave: ShipVariantAPI
+    ): List<Int> {
+        return getShips(variantToSave.hullSpec).map { it.hullVariantId }.map { getShipIndexInMenu(it) }
     }
 
     fun makeVariantID(variant: ShipVariantAPI): String {

@@ -606,6 +606,12 @@ object VariantSerialization {
     }
 
     @JvmOverloads
+    fun saveAndLoadVariant(variant: ShipVariantAPI, settings: VariantSettings = VariantSettings()): ShipVariantAPI {
+        val json = saveVariantToJson(variant, settings)
+        return getVariantFromJson(json, settings)
+    }
+
+    @JvmOverloads
     fun getVariantFromCompStringWithMissing(
         comp: String,
         settings: VariantSettings = VariantSettings()
