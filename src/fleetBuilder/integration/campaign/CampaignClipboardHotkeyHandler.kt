@@ -3,10 +3,9 @@ package fleetBuilder.integration.campaign
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
-import com.fs.starfarer.api.campaign.econ.MarketAPI
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
@@ -28,13 +27,11 @@ import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
-import fleetBuilder.features.CargoAutoManage
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.ui.CargoAutoManageUIPlugin
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
@@ -440,24 +437,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         val baseVariant = ReflectionMisc.getCurrentVariantInRefitTab() ?: return
 
-        val variantToSave = baseVariant.clone()
-        variantToSave.hullVariantId = VariantLib.makeVariantID(baseVariant)
-
-        if (!event.isShiftDown) {
-            val json = VariantSerialization.saveVariantToJson(
-                variantToSave,
-                ModSettings.getConfiguredVariantSettings()
-            )
-            ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessage.showMessage("Variant copied to clipboard")
-        } else {
-            val comp = VariantSerialization.saveVariantToCompString(
-                variantToSave,
-                ModSettings.getConfiguredVariantSettings()
-            )
-            ClipboardUtil.setClipboardText(comp)
-            DisplayMessage.showMessage("Variant compressed and copied to clipboard")
-        }
+        ClipboardMisc.saveVariantToClipboard(baseVariant, event.isShiftDown)
 
         event.consume()
     }
@@ -512,7 +492,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
 
             val shipPreviewWidth = 375f
-            val popUpHeight = 480f
+            val popUpHeight = 490f
 
             dialog.addParagraph(
                 loadoutBaseHullName,
@@ -522,25 +502,26 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 highlightWords = arrayOf(loadoutBaseHullName)
             )
 
+            val height = shipPreviewWidth - (dialog.x * 2)
 
-            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth - (dialog.x * 2), null)
+            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, height, null)
             val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
 
             val selectorPanel = AutofitSelector.createAutofitSelector(
-                variant as HullVariantSpec, paintjobSpec = AutofitSpec(variant, name = "", description = "", spriteId = variant.hullSpec.spriteName),
-                shipPreviewWidth - (dialog.x * 2),
-                addDescriptionHeight = false
+                autofitSpec = AutofitSpec(variant, null),
+                height,
+                addDescription = false
             )
 
             tempTMAPI.addComponent(selectorPanel)
-            AutofitPanel.makeTooltip(tempTMAPI, selectorPanel, variant)
+            AutofitPanel.makeTooltip(selectorPanel, variant)
 
             tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
 
             dialog.addCustom(tempPanel)
 
 
-            dialog.onConfirm { fields ->
+            dialog.onConfirm {
 
                 importShipLoadout(variant, missing)
 

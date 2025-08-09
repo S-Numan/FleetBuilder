@@ -26,12 +26,12 @@ object AutofitApplier {
         fleetMember: FleetMemberAPI,
         ship: ShipAPI,
         coreUI: CoreUIAPI,
-        shipDisplay: UIPanelAPI
+        shipDisplay: UIPanelAPI,
+        refitPanel: UIPanelAPI
     ) {
         shipDisplay.invoke("setSuppressMessages", true)
 
         try {
-
             baseVariant.source = VariantSource.REFIT
 
             val delegate = FBPlayerAutofitDelegate(
@@ -167,6 +167,14 @@ object AutofitApplier {
         } catch (e: Exception) {
             DisplayMessage.showError("ERROR: Failed to apply ship variant", e)
             //e.printStackTrace()
+        }
+
+        try {
+            refitPanel.invoke("syncWithCurrentVariant")
+            shipDisplay.invoke("updateModules")
+            shipDisplay.invoke("updateButtonPositionsToZoomLevel")
+        } catch (e: Exception) {
+            DisplayMessage.showError("Failed to apply variant in refit screen", e)
         }
 
         shipDisplay.invoke("setSuppressMessages", false)

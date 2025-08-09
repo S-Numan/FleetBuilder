@@ -3,6 +3,7 @@ package fleetBuilder.ui.autofit
 import MagicLib.ReflectionUtils.instantiate
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
+import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -47,7 +48,6 @@ internal object AutofitSelector {
 
         val isUnlocked = true
         var noClick = false
-        var hasMissing = false
         var isBetter = false
         var isWorse = false
         var isEqual = false
@@ -125,7 +125,7 @@ internal object AutofitSelector {
                     lockedSprite.setSize(scaleFactor * lockedSprite.width, scaleFactor * lockedSprite.height)
                 lockedSprite.renderAtCenter(selectorPanel.centerX, selectorPanel.top - selectorPanel.width / 2)
             }
-            if (hasMissing) {
+            if (autofitSpec != null && autofitSpec!!.missing.hasMissing()) {
                 val lockedAlpha = Misc.interpolate(lockedColor.alphaf, 0f, lockedHoverFader.brightness) * alphaMult
                 GL11.glColor4f(lockedColor.redf, lockedColor.greenf, lockedColor.bluef, lockedAlpha)
                 GL11.glRectf(selectorPanel.left, selectorPanel.bottom, selectorPanel.right, selectorPanel.top)
@@ -216,60 +216,59 @@ internal object AutofitSelector {
     val descriptionHeight = 44f
 
     internal fun createAutofitSelector(
-        hullVariantSpec: HullVariantSpec,
-        paintjobSpec: AutofitSpec?,
+        autofitSpec: AutofitSpec?,
         width: Float,
-        addDescriptionHeight: Boolean = true
+        addDescription: Boolean = true
     ): CustomPanelAPI {
 
-        val plugin = AutofitSelectorPlugin(paintjobSpec)
-        val selectorPanel = Global.getSettings().createCustom(width, width + if (addDescriptionHeight) descriptionHeight else 0f, plugin)
+        val plugin = AutofitSelectorPlugin(autofitSpec)
+        val selectorPanel = Global.getSettings().createCustom(width, width + if (addDescription) descriptionHeight else 0f, plugin)
         plugin.selectorPanel = selectorPanel
 
-        createAutofitSelectorChildren(hullVariantSpec, paintjobSpec, width, selectorPanel)
+        if (autofitSpec != null)
+            createAutofitSelectorChildren(autofitSpec, width, selectorPanel)
+        else
+            plugin.noClick = true
 
         return selectorPanel
     }
 
     fun createAutofitSelectorChildren(
-        hullVariantSpec: HullVariantSpec,
-        paintjobSpec: AutofitSpec?,
+        autofitSpec: AutofitSpec,
         width: Float,
-        selectorPanel: CustomPanelAPI
+        selectorPanel: CustomPanelAPI,
+        addDescription: Boolean = true
     ) {
         val descriptionYOffset = 2f
         val topPad = 5f
 
-        val shipPreview = createShipPreview(hullVariantSpec, width, width, showFighters = true)
+        val shipPreview = createShipPreview(autofitSpec.variant, width, width, showFighters = true)
         selectorPanel.addComponent(shipPreview).inTL(0f, topPad)
+
+        if (!addDescription) return
 
         val textElement = selectorPanel.createUIElement(width, descriptionHeight - topPad, false)
         selectorPanel.addUIElement(textElement)
         with(textElement) {
             position.inTL(0f, width + topPad - descriptionYOffset)
             setTitleOrbitronLarge()
-            if (paintjobSpec == null) {
-                addTitle("Current Variant")
-                addPara("Click to save", 3f)
-            } else {
-                if (paintjobSpec.name.isNotEmpty())
-                    addTitle(paintjobSpec.name)
+            addTitle(autofitSpec.variant.displayName)
 
-                if (paintjobSpec.description != null && paintjobSpec.description!!.isNotEmpty())
-                    addPara(paintjobSpec.description, 3f)
-            }
+            if (autofitSpec.description.isNotEmpty())
+                addPara(autofitSpec.description, 3f)
+
         }
     }
 
     fun createShipPreview(
-        hullVariantSpec: HullVariantSpec,
+        variant: ShipVariantAPI,
         width: Float, height: Float,
         scaleDownSmallerShips: Boolean = false,
         showFighters: Boolean = false,
         setSchematicMode: Boolean = false
     ): UIPanelAPI {
 
-        val clonedVariant = hullVariantSpec.clone()
+        val clonedVariant = variant.clone() as HullVariantSpec
 
         val shipPreview = instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!!
         shipPreview.invoke("setVariant", clonedVariant)

@@ -90,7 +90,7 @@ internal object AutofitPanelCreator {
         val width = (refitTab.width - 343 + 32).coerceIn(667f, 700f + 213f + 32)
         val height = (refitTab.height - 12).coerceIn(722f, 800f + 26f + 16f + 2f)
         val paintjobPanel =
-            AutofitPanel.createMagicPaintjobRefitPanel(refitTab, refitPanel, coreUI as CoreUIAPI, width, height)
+            AutofitPanel.createMagicAutofitPanel(refitTab, refitPanel, coreUI as CoreUIAPI, width, height)
 
         coreUI.addComponent(paintjobPanel)
 
