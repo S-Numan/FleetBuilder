@@ -26,6 +26,10 @@ class ShipDirectory(
     private val shipIndexInMenu: MutableMap<String, Int>,
     private val description: String,
 ) {
+    fun getAllVariants(): Collection<ShipVariantAPI> {
+        return ships.values
+    }
+
     fun getDescription(): String {
         return description
     }
@@ -47,7 +51,7 @@ class ShipDirectory(
     }
 
     fun getShipIndexInMenu(variantId: String): Int {
-        return shipIndexInMenu[stripPrefix(variantId)] ?: 0
+        return shipIndexInMenu[stripPrefix(variantId)] ?: -1
     }
 
     fun getShips(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
@@ -142,7 +146,7 @@ class ShipDirectory(
         val timeString = formatter.format(currentTime)
         shipPathJson.put("modifyTime", timeString)
 
-        shipPathJson.put("indexInMenu", newIndex)
+        shipPathJson.put("indexInEffectiveMenu", newIndex)
 
         shipPathsJson.put(shipPathJson)
 
@@ -165,12 +169,15 @@ class ShipDirectory(
         return "${prefix}_${savedVariant.hullVariantId}"
     }
 
-    fun getSafeIndexInMenu(
+    private fun getSafeIndexInMenu(
         variantToSave: ShipVariantAPI,
         inputDesiredIndexInMenu: Int = 0
     ): Int {
         val hullSpecIndexsInMenu = getShips(variantToSave.hullSpec).map { it.hullVariantId }.map { getShipIndexInMenu(it) }
         var newIndex = inputDesiredIndexInMenu
+        if (newIndex == -1)
+            newIndex = 0
+
         while (newIndex in hullSpecIndexsInMenu) {
             newIndex++
         }

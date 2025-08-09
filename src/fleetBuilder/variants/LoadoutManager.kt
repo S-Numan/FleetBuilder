@@ -77,12 +77,11 @@ object LoadoutManager {
 
             upgradeLegacyShipPaths(directory, configFilePath)
 
-
             val ships = mutableMapOf<String, ShipVariantAPI>()
             val shipPaths = mutableMapOf<String, String>()
             val shipMissings = mutableMapOf<String, MissingElements>()
             val shipTimeSaved = mutableMapOf<String, Date>()
-            val shipIndexInMenu = mutableMapOf<String, Int>()
+            val shipIndexInEffectiveMenu = mutableMapOf<String, Int>()
 
             val description = directory.optString("description", "$prefix Loadout")
 
@@ -102,7 +101,7 @@ object LoadoutManager {
                         Date(0) // Oldest possible date (Unix epoch start)
                     }
 
-                    val parsedIndex = shipJson.optInt("indexInMenu", 0)
+                    val parsedEffectiveIndex = shipJson.optInt("indexInEffectiveMenu", -1)
 
                     // Check for duplicate ship path
                     if (!seenPaths.add(shipPath)) {
@@ -151,18 +150,32 @@ object LoadoutManager {
                     ships[variant.hullVariantId] = variant
                     shipMissings[variant.hullVariantId] = missings
                     shipTimeSaved[variant.hullVariantId] = parsedDate
-
-                    // Assure index isn't taken
-                    val shipIndexs = ships.filter { tVar -> tVar.value.hullSpec.getEffectiveHullId() == variant.hullSpec.getEffectiveHullId() }.map { shipIndexInMenu[it.key] }
-                    var newIndex = parsedIndex
-                    while (newIndex in shipIndexs) {
-                        newIndex++
-                    }
-                    shipIndexInMenu[variant.hullVariantId] = newIndex
+                    shipIndexInEffectiveMenu[variant.hullVariantId] = parsedEffectiveIndex
                 }
             }
 
-            ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, shipTimeSaved, shipIndexInMenu, description)
+            val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, shipTimeSaved, shipIndexInEffectiveMenu, description)
+
+            // Assure index isn't taken, or missing
+            shipDirectory.getAllVariants().toList().forEach { variant ->
+                fun remakeShip() {
+                    val missing = shipDirectory.getShipMissings(variant.hullVariantId) ?: return
+                    shipDirectory.removeShip(variant.hullVariantId)
+                    shipDirectory.addShip(variant, missing)
+                }
+
+                val thisIndex = shipDirectory.getShipIndexInMenu(variant.hullVariantId)
+                if (thisIndex == -1) { // Missing?
+                    remakeShip()
+                } else {
+                    val shipIndexs = ships.filter { tVar -> tVar.value.hullSpec.getEffectiveHullId() == variant.hullSpec.getEffectiveHullId() }.map { shipIndexInEffectiveMenu[it.key] }
+                    if (thisIndex in shipIndexs) { // Colliding?
+                        remakeShip()
+                    }
+                }
+            }
+
+            shipDirectory
         } catch (e: Exception) {
             Global.getLogger(this.javaClass).error("Failed to read JSON from within /saves/common/$dirPath\n", e)
             null
@@ -201,6 +214,8 @@ object LoadoutManager {
             directory.put("shipPaths", newArray)
         }
 
+
+
         Global.getSettings().writeJSONToCommon(configFilePath, directory, false)
     }
 
@@ -216,7 +231,7 @@ object LoadoutManager {
                     AutofitSpec(
                         variant,
                         source = null,
-                        indexInMenu = i + indexOffset,
+                        indexInEffectiveMenu = i + indexOffset,
                         "Core Autofit Variant"
                     )
                 )
@@ -225,7 +240,7 @@ object LoadoutManager {
                     AutofitSpec(
                         variant,
                         source = null,
-                        indexInMenu = i + indexOffset,
+                        indexInEffectiveMenu = i + indexOffset,
                         "Core Variant"
                     )
                 )
@@ -250,7 +265,7 @@ object LoadoutManager {
             ships.forEach { variant ->
                 val missing = it.getShipMissings(variant.hullVariantId) ?: return@forEach
                 val index = it.getShipIndexInMenu(variant.hullVariantId)
-                maxIndex = max(maxIndex, index)
+                maxIndex = max(maxIndex, index + 1)
 
                 autofitSpecs.add(
                     AutofitSpec(
@@ -258,7 +273,7 @@ object LoadoutManager {
                         description = it.getDescription(),
                         source = it,
                         missing = missing,
-                        indexInMenu = index + indexOffset
+                        indexInEffectiveMenu = index + indexOffset
                     )
                 )
             }

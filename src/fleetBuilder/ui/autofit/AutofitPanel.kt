@@ -146,14 +146,17 @@ internal object AutofitPanel {
         val combinedSpecs = coreEffectiveHullAutofitSpecs + loadoutEffectiveHullAutofitSpecs
 
         // Find the maximum index from all specs so we know how big to make the base list
-        val maxIndex = combinedSpecs.maxOfOrNull { it.indexInMenu } ?: 0
+        val maxIndex = combinedSpecs.maxOfOrNull { it.indexInEffectiveMenu } ?: 0
 
         // Start with a mutable list full of nulls, big enough to fit the highest index
         val indexedSpecs = MutableList<AutofitSpec?>(maxIndex + 1) { null }
 
         // Place each spec at its indexInMenu position
         for (spec in combinedSpecs) {
-            indexedSpecs[spec.indexInMenu] = spec
+            if (indexedSpecs[spec.indexInEffectiveMenu] != null)
+                DisplayMessage.showError("Duplicate index when showing autofit options: ${spec.indexInEffectiveMenu}")
+
+            indexedSpecs[spec.indexInEffectiveMenu] = spec
         }
 
         // Now pad the last row and add an extra empty row
