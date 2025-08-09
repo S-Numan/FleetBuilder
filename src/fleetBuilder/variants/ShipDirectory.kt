@@ -13,6 +13,8 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
+//TODO, make a data class to handle each of these maps. A single map should link to each of these
+
 class ShipDirectory(
     val dir: String,
     val configPath: String,
@@ -21,6 +23,7 @@ class ShipDirectory(
     private val shipPaths: MutableMap<String, String>,
     private val shipMissings: MutableMap<String, MissingElements>,
     private val shipTimeSaved: MutableMap<String, Date>,
+    private val shipIndexInMenu: MutableMap<String, Int>,
     private val description: String,
 ) {
     fun getDescription(): String {
@@ -41,6 +44,10 @@ class ShipDirectory(
 
     fun getShipMissings(variantId: String): MissingElements? {
         return shipMissings[stripPrefix(variantId)]
+    }
+
+    fun getShipIndexInMenu(variantId: String): Int {
+        return shipIndexInMenu[stripPrefix(variantId)] ?: 0
     }
 
     fun getShips(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
@@ -93,15 +100,19 @@ class ShipDirectory(
         shipPaths.remove(variantId)
         shipMissings.remove(variantId)
         shipTimeSaved.remove(variantId)
+        shipIndexInMenu.remove(variantId)
     }
 
     fun addShip(
         variant: ShipVariantAPI,
         missingFromVariant: MissingElements = MissingElements(),
         settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
+        inputDesiredIndexInMenu: Int = 0
     ): String {
         val variantToSave = variant.clone()
         variantToSave.hullVariantId = makeVariantID(variant)
+
+        val newIndex = getSafeIndexInMenu(variantToSave, inputDesiredIndexInMenu)
 
         val json = saveVariantToJson(variantToSave, settings)
 
@@ -119,9 +130,9 @@ class ShipDirectory(
         val shipPathsJson = shipDirJson.optJSONArray("shipPaths") ?: JSONArray()
 
         // Add the new ship path
-        if (containsAndRemoveShipName(shipPathsJson, shipPath)) {
+        if (containsAndRemoveShipName(shipPathsJson, shipPath))
             DisplayMessage.showError("$shipPath already exists in JSONArray when adding ship. The old file with be overwritten.")
-        }
+
 
         val shipPathJson = JSONObject()
         shipPathJson.put("shipPath", shipPath)
@@ -130,6 +141,8 @@ class ShipDirectory(
         val currentTime = Date()
         val timeString = formatter.format(currentTime)
         shipPathJson.put("modifyTime", timeString)
+
+        shipPathJson.put("indexInMenu", newIndex)
 
         shipPathsJson.put(shipPathJson)
 
@@ -147,8 +160,21 @@ class ShipDirectory(
         ships[savedVariant.hullVariantId] = savedVariant
         shipMissings[savedVariant.hullVariantId] = missingFromVariant
         shipTimeSaved[savedVariant.hullVariantId] = currentTime
+        shipIndexInMenu[savedVariant.hullVariantId] = newIndex
 
         return "${prefix}_${savedVariant.hullVariantId}"
+    }
+
+    fun getSafeIndexInMenu(
+        variantToSave: ShipVariantAPI,
+        inputDesiredIndexInMenu: Int = 0
+    ): Int {
+        val hullSpecIndexsInMenu = getShips(variantToSave.hullSpec).map { it.hullVariantId }.map { getShipIndexInMenu(it) }
+        var newIndex = inputDesiredIndexInMenu
+        while (newIndex in hullSpecIndexsInMenu) {
+            newIndex++
+        }
+        return newIndex
     }
 
     fun makeVariantID(variant: ShipVariantAPI): String {

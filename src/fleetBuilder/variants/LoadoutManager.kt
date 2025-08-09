@@ -12,12 +12,15 @@ import fleetBuilder.config.ModSettings.importPrefix
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.persistence.variant.VariantSerialization.getVariantFromJsonWithMissing
 import fleetBuilder.ui.autofit.AutofitSpec
+import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.plus
+import kotlin.math.max
 
 object LoadoutManager {
 
@@ -79,6 +82,7 @@ object LoadoutManager {
             val shipPaths = mutableMapOf<String, String>()
             val shipMissings = mutableMapOf<String, MissingElements>()
             val shipTimeSaved = mutableMapOf<String, Date>()
+            val shipIndexInMenu = mutableMapOf<String, Int>()
 
             val description = directory.optString("description", "$prefix Loadout")
 
@@ -97,6 +101,8 @@ object LoadoutManager {
                     } catch (_: Exception) {
                         Date(0) // Oldest possible date (Unix epoch start)
                     }
+
+                    val parsedIndex = shipJson.optInt("indexInMenu", 0)
 
                     // Check for duplicate ship path
                     if (!seenPaths.add(shipPath)) {
@@ -145,10 +151,18 @@ object LoadoutManager {
                     ships[variant.hullVariantId] = variant
                     shipMissings[variant.hullVariantId] = missings
                     shipTimeSaved[variant.hullVariantId] = parsedDate
+
+                    // Assure index isn't taken
+                    val shipIndexs = ships.filter { tVar -> tVar.value.hullSpec.getEffectiveHullId() == variant.hullSpec.getEffectiveHullId() }.map { shipIndexInMenu[it.key] }
+                    var newIndex = parsedIndex
+                    while (newIndex in shipIndexs) {
+                        newIndex++
+                    }
+                    shipIndexInMenu[variant.hullVariantId] = newIndex
                 }
             }
 
-            ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, shipTimeSaved, description)
+            ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, shipTimeSaved, shipIndexInMenu, description)
         } catch (e: Exception) {
             Global.getLogger(this.javaClass).error("Failed to read JSON from within /saves/common/$dirPath\n", e)
             null
@@ -191,51 +205,69 @@ object LoadoutManager {
     }
 
 
-    fun getAllAutofitSpecsForShip(hullSpec: ShipHullSpecAPI): List<AutofitSpec> {
-
+    fun getCoreAutofitSpecsForShip(hullSpec: ShipHullSpecAPI, indexOffset: Int = 0): List<AutofitSpec> {
         val variants = getCoreVariantsForEffectiveHullspec(hullSpec)
 
-        val variantSpecs = mutableListOf<AutofitSpec>()
+        val coreVariantSpecs = mutableListOf<AutofitSpec>()
 
-        for (variant in variants) {
+        for ((i, variant) in variants.withIndex()) {
             if (variant.isGoalVariant && ModSettings.showCoreGoalVariants)
-                variantSpecs.add(
+                coreVariantSpecs.add(
                     AutofitSpec(
                         variant,
                         source = null,
-                        "Core Autofit Variant",
-
-                        )
+                        indexInMenu = i + indexOffset,
+                        "Core Autofit Variant"
+                    )
                 )
             else if (!variant.isGoalVariant && ModSettings.showCoreNonGoalVariants)
-                variantSpecs.add(
+                coreVariantSpecs.add(
                     AutofitSpec(
                         variant,
                         source = null,
-                        "Core Variant",
-
-                        )
+                        indexInMenu = i + indexOffset,
+                        "Core Variant"
+                    )
                 )
         }
 
-        val variantsWithDetails = getLoadoutVariantsAndMissingsAndSourceForHullspec(hullSpec)
+        return coreVariantSpecs
+    }
 
-        val loadouts = variantsWithDetails.first
-        val missings = variantsWithDetails.second
-        val source = variantsWithDetails.third
+    fun getLoadoutAutofitSpecsForShip(
+        hullSpec: ShipHullSpecAPI,
+        inputIndexOffset: Int = 0
+    ): Map<ShipDirectory, List<AutofitSpec>> {
+        var indexOffset = inputIndexOffset
 
-        for ((i, variant) in loadouts.withIndex()) {
-            variantSpecs.add(
-                AutofitSpec(
-                    variant,
-                    description = source[i].getDescription(),
-                    source = source[i],
-                    missing = missings[i],
+        val loadoutAutofitSpecs = mutableMapOf<ShipDirectory, List<AutofitSpec>>()
+        shipDirectories.forEach {
+            val autofitSpecs = mutableListOf<AutofitSpec>()
+
+            var maxIndex = 0
+
+            val ships = it.getShips(hullSpec)
+            ships.forEach { variant ->
+                val missing = it.getShipMissings(variant.hullVariantId) ?: return@forEach
+                val index = it.getShipIndexInMenu(variant.hullVariantId)
+                maxIndex = max(maxIndex, index)
+
+                autofitSpecs.add(
+                    AutofitSpec(
+                        variant,
+                        description = it.getDescription(),
+                        source = it,
+                        missing = missing,
+                        indexInMenu = index + indexOffset
+                    )
                 )
-            )
+            }
+            indexOffset += maxIndex
+
+            loadoutAutofitSpecs[it] = autofitSpecs
         }
 
-        return variantSpecs
+        return loadoutAutofitSpecs
     }
 
     fun getShipDirectoryWithPrefix(prefix: String): ShipDirectory? {
@@ -269,39 +301,18 @@ object LoadoutManager {
             .flatMap { it.getShips(hullSpec) }
     }
 
-    fun getLoadoutVariantsAndMissingsAndSourceForHullspec(hullSpec: ShipHullSpecAPI): Triple<List<ShipVariantAPI>, List<MissingElements>, List<ShipDirectory>> {
-        val ships = getLoadoutVariantsForHullspec(hullSpec)
-
-        val shipSources: MutableList<ShipDirectory> = mutableListOf()
-        val shipMissings: MutableList<MissingElements> = mutableListOf()
-        for (ship in ships) {
-            for (dir in shipDirectories) {
-                if (ship.hullVariantId.removePrefix(dir.prefix).length == ship.hullVariantId.length)//Did this come from this database? (check with prefix)
-                    continue
-                if (!dir.containsShip(ship.hullVariantId)) {
-                    Global.getLogger(this.javaClass)
-                        .error("Ship of variant id ${ship.hullVariantId} has a prefix of ${dir.prefix} but was not in the ship directory of that prefix.")
-                    shipMissings.add(MissingElements())
-                } else {
-                    shipMissings.add(dir.getShipMissings(ship.hullVariantId) ?: throw Exception("Should never happen"))
-                }
-                shipSources.add(dir)
-                break
-            }
-        }
-        return Triple(ships, shipMissings, shipSources)
-    }
-
     fun saveLoadoutVariant(
         variant: ShipVariantAPI,
         prefix: String = ModSettings.defaultPrefix,
         missingFromVariant: MissingElements = MissingElements(),
         settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
+        desiredIndexInMenu: Int = 0
     ): String {
         return getShipDirectoryWithPrefix(prefix)?.addShip(
             variant,
             missingFromVariant,
-            settings
+            settings,
+            desiredIndexInMenu
         ) ?: ""
     }
 

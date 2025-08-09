@@ -42,6 +42,8 @@ internal object AutofitSelector {
         private var onClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
         private var onClickOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
         private var onClickReleaseFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
+        private var onClickReleaseOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
+        private var onClickReleaseNoInitClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
         private var onHoverFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
         private var onHoverEnterFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
         private var onHoverExitFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
@@ -161,9 +163,13 @@ internal object AutofitSelector {
                         hasClicked = true
                         onClickFunctions.forEach { it(event) }
                     }
-                    if (event.isMouseUpEvent && hasClicked) {
-                        hasClicked = false
-                        onClickReleaseFunctions.forEach { it(event) }
+                    if (event.isMouseUpEvent) {
+                        if (hasClicked) {
+                            hasClicked = false
+                            onClickReleaseFunctions.forEach { it(event) }
+                        } else {
+                            onClickReleaseNoInitClickFunctions.forEach { it(event) }
+                        }
                     }
                 } else {
                     if (isHovering) onHoverExitFunctions.forEach { it(event) }
@@ -171,8 +177,9 @@ internal object AutofitSelector {
                     if (event.isMouseDownEvent) {
                         onClickOutsideFunctions.forEach { it(event) }
                     }
-                    if (event.isMouseUpEvent) {
+                    if (event.isMouseUpEvent && hasClicked) {
                         hasClicked = false
+                        onClickReleaseOutsideFunctions.forEach { it(event) }
                     }
                 }
             }
@@ -184,6 +191,14 @@ internal object AutofitSelector {
 
         fun onClickRelease(function: (InputEventAPI) -> Unit) {
             onClickReleaseFunctions.add(function)
+        }
+
+        fun onClickReleaseOutside(function: (InputEventAPI) -> Unit) {
+            onClickReleaseOutsideFunctions.add(function)
+        }
+
+        fun onClickReleaseNoInitClick(function: (InputEventAPI) -> Unit) {
+            onClickReleaseNoInitClickFunctions.add(function)
         }
 
         fun onClickOutside(function: (InputEventAPI) -> Unit) {

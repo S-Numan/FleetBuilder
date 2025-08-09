@@ -19,7 +19,8 @@ import fleetBuilder.util.allDMods
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
-import fleetBuilder.variants.LoadoutManager.getAllAutofitSpecsForShip
+import fleetBuilder.variants.LoadoutManager.getCoreAutofitSpecsForShip
+import fleetBuilder.variants.LoadoutManager.getLoadoutAutofitSpecsForShip
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.compareVariantHullMods
@@ -126,7 +127,9 @@ internal object AutofitPanel {
         val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI ?: return autofitPanel
         val ship = shipDisplay.invoke("getShip") as? ShipAPI ?: return autofitPanel
 
-        val effectiveHullAutofitSpecs = getAllAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec)
+
+        val coreEffectiveHullAutofitSpecs = getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec)
+        val loadoutEffectiveHullAutofitSpecs = getLoadoutAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec, coreEffectiveHullAutofitSpecs.size).values.flatten()
 
         val endPad = 6f
         val midPad = 5f
@@ -138,14 +141,28 @@ internal object AutofitPanel {
 
         val selectorPlugins = mutableListOf<AutofitSelector.AutofitSelectorPlugin>()
 
-        // Calculate how many items in the last row so far
-        val remainder = effectiveHullAutofitSpecs.size % selectorsPerRow
-        // If remainder == 0, last row is already full
+
+        // Combine both lists into one, because they share the same index space in the menu
+        val combinedSpecs = coreEffectiveHullAutofitSpecs + loadoutEffectiveHullAutofitSpecs
+
+        // Find the maximum index from all specs so we know how big to make the base list
+        val maxIndex = combinedSpecs.maxOfOrNull { it.indexInMenu } ?: 0
+
+        // Start with a mutable list full of nulls, big enough to fit the highest index
+        val indexedSpecs = MutableList<AutofitSpec?>(maxIndex + 1) { null }
+
+        // Place each spec at its indexInMenu position
+        for (spec in combinedSpecs) {
+            indexedSpecs[spec.indexInMenu] = spec
+        }
+
+        // Now pad the last row and add an extra empty row
+        val remainder = indexedSpecs.size % selectorsPerRow
         val fillToRow = if (remainder == 0) 0 else selectorsPerRow - remainder
-        // Add another full row of nulls after filling
         val extraNulls = fillToRow + selectorsPerRow
 
-        val allAutofitSpecs = effectiveHullAutofitSpecs + List(extraNulls) { null }
+        val allAutofitSpecs: List<AutofitSpec?> = indexedSpecs + List(extraNulls) { null }
+
 
         for (i in allAutofitSpecs.indices) {
             val autofitSpec = allAutofitSpecs[i]
@@ -180,6 +197,12 @@ internal object AutofitPanel {
         for (selectorPlugin in selectorPlugins) {
             selectorPlugin.onHoverEnter {
                 Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
+            }
+            selectorPlugin.onClickRelease { event ->
+                DisplayMessage.showMessage("Release")
+            }
+            selectorPlugin.onClickReleaseNoInitClick { event ->
+                DisplayMessage.showMessage("Release no init click")
             }
             selectorPlugin.onClick { event ->
                 if (selectorPlugin.autofitSpec == null) return@onClick // If no variant. there's nothing to do
@@ -217,7 +240,7 @@ internal object AutofitPanel {
 
 
         // add scroll at end after setting heightSoFar, needed when using addCustom to the tooltip
-        val rows = (effectiveHullAutofitSpecs.size / selectorsPerRow) + 1
+        val rows = ((allAutofitSpecs.size - 1) / selectorsPerRow) + 1
         scrollerTooltip.heightSoFar = endPad * 2 + prev!!.height * rows + midPad * (rows - 1)
         autofitPanel.addUIElement(scrollerTooltip)
         return autofitPanel

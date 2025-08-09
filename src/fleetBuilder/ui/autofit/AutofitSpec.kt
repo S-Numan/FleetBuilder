@@ -7,6 +7,7 @@ import fleetBuilder.variants.ShipDirectory
 data class AutofitSpec @JvmOverloads constructor(
     val variant: ShipVariantAPI,
     val source: ShipDirectory?, //If from vanilla, this will be null
+    var indexInMenu: Int = 0,
     val description: String = "",
     var missing: MissingElements = MissingElements(),
 )
