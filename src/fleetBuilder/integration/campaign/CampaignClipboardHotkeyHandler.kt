@@ -16,6 +16,7 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
+import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -23,7 +24,6 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
-import com.fs.starfarer.coreui.refit.ModWidget
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.fleet.FleetSerialization
@@ -81,6 +81,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleKeyDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         if (!event.isCtrlDown) return
+        if (DialogUtil.isPopUpUIOpen()) return
 
         when (event.eventValue) {
             Keyboard.KEY_D -> handleDevModeHotkey(event, sector)
@@ -93,7 +94,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
         //if (!Global.getSettings().isDevMode) return
-        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen()) return
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
@@ -201,7 +202,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
         if (!Global.getSettings().isDevMode) return
-        if (DialogUtil.isPopUpUIOpen()) return
         if (ReflectionMisc.getCodexDialog() != null) return
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
@@ -330,15 +330,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
         if (!event.isShiftDown) return
-        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen()) return
         event.consume()
 
         createDevModeDialog()
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (DialogUtil.isPopUpUIOpen()) return
-
         try {
             val codex = ReflectionMisc.getCodexDialog()
             when {
@@ -441,7 +439,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             handleRefitPaste(event)
@@ -674,6 +672,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleRefitRemoveHullMod(event: InputEventAPI) {
+        val coreUI = ReflectionMisc.getCoreUI() ?: return
+        val isAutofitPanelOpen = coreUI
+            .getChildrenCopy()
+            .filterIsInstance<CustomPanelAPI>()
+            .any { it.plugin is AutofitPanel.AutofitPanelPlugin }
+        if (isAutofitPanelOpen) return
+
         try {
             val refitPanel = ReflectionMisc.getRefitPanel() ?: return
             val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return

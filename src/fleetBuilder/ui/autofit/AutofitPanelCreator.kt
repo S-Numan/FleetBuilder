@@ -41,7 +41,7 @@ internal object AutofitPanelCreator {
         val coreUI = refitPanel.invoke("getCoreUI") as? UIPanelAPI ?: return
 
         val curPaintjobPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->
-            panel.plugin != null && panel.plugin.getFieldsMatching(name = "autofitPanel").isNotEmpty()
+            panel.plugin != null && panel.plugin is AutofitPanel.AutofitPanelPlugin
         }
 
         // button should be not exist on modules, ships with a perma paintjob, or ships without any possible paintjobs

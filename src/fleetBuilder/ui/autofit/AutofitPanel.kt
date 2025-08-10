@@ -56,17 +56,17 @@ internal object AutofitPanel {
             GL11.glEnable(GL11.GL_BLEND)
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
-            // background dark fadeout
+            // Background dark fadeout
             val bgColor = Color.BLACK
             val bgAlpha = BACKGROUND_ALPHA * bgColor.alphaf * alphaMult
             GL11.glColor4f(bgColor.redf, bgColor.greenf, bgColor.bluef, bgAlpha)
             val screenW = Global.getSettings().screenWidth
             val screenH = Global.getSettings().screenHeight
-            // Tab bounds
-            val tx = refitTab.x
-            val ty = refitTab.y
-            val tw = refitTab.width
-            val th = refitTab.height
+            val buffer = -5f
+            val tx = refitTab.x - buffer
+            val ty = refitTab.y - buffer
+            val tw = refitTab.width + buffer * 2
+            val th = refitTab.height + buffer * 2
             // Left
             GL11.glRectf(0f, 0f, tx, screenH)
             // Right
@@ -75,6 +75,7 @@ internal object AutofitPanel {
             GL11.glRectf(tx, ty + th, tx + tw, screenH)
             // Bottom
             GL11.glRectf(tx, 0f, tx + tw, ty)
+
 
             // vanilla panels are transparent, but paintjobs need a clear background for display purposes
             val panelColor = Color.BLACK
@@ -121,8 +122,8 @@ internal object AutofitPanel {
                     draggedPanel?.parent?.removeComponent(draggedPanel!!)
                     event.consume()
                 } else if ((
-                            FBMisc.isMouseHoveringOverComponent(autofitPanel, 5f) ||
-                                    (baseVariantPanel != null && FBMisc.isMouseHoveringOverComponent(baseVariantPanel!!, 5f)) ||
+                            FBMisc.isMouseHoveringOverComponent(autofitPanel, 8f) ||
+                                    (baseVariantPanel != null && FBMisc.isMouseHoveringOverComponent(baseVariantPanel!!, 8f)) ||
                                     !FBMisc.isMouseWithinBounds(refitTab.x, refitTab.y, refitTab.width, refitTab.height) // block if outside tab
                             ) && (
                             event.isKeyboardEvent ||
@@ -320,6 +321,8 @@ internal object AutofitPanel {
             AutofitSpec(baseVariant, null),
             containerPanelWidth - 2f, addDescription = false, centerTitle = true
         )
+        makeTooltip(baseVariantSelectorPanel, baseVariant)
+
         val baseVariantSelectorPlugin = baseVariantSelectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
         baseVariantSelectorPlugin.isBase = true
         baseVariantSelectorPlugin.noClick = true
@@ -327,8 +330,6 @@ internal object AutofitPanel {
         baseVariantSelectorPlugin.isSelected = true
         selectorPlugins.add(baseVariantSelectorPlugin)
 
-        makeTooltip(baseVariantSelectorPanel, baseVariant)
-        
         // Center selector inside container
         baseVariantSelectorPanel.position.inTL(
             1f, 1f + descriptorHeight

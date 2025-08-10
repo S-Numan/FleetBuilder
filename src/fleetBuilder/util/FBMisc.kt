@@ -216,9 +216,9 @@ object FBMisc {
     fun isMouseHoveringOverComponent(component: UIComponentAPI, pad: Float = 0f): Boolean {
         val x = component.position.x - pad
         val y = component.position.y - pad
-        val width = component.position.width + pad
-        val height = component.position.height + pad
-
+        val width = component.position.width + pad * 2
+        val height = component.position.height + pad * 2
+        
         return isMouseWithinBounds(x, y, width, height)
     }
 
