@@ -16,6 +16,7 @@ import com.fs.starfarer.codex2.CodexDetailPanel
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.combat.CombatState
 import com.fs.starfarer.coreui.CaptainPickerDialog
+import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
 import starficz.ReflectionUtils.get
@@ -55,6 +56,29 @@ object ReflectionMisc {
 
     fun getRefitPanel(): UIPanelAPI? {
         return getRefitTab()?.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
+    }
+
+    fun getRefitPanelModWidget(refitPanel: UIPanelAPI): ModWidget? {
+        val children = refitPanel.getChildrenCopy()
+        var desiredChild: UIPanelAPI? = null
+        children.forEach { child ->
+            var yup = false
+
+            val panel = child as? UIPanelAPI
+            val childsChildren = panel?.getChildrenCopy()
+            childsChildren?.forEach { childChildChild ->
+                if (childChildChild.getMethodsMatching("removeNotApplicableMods").isNotEmpty()) {
+                    yup = true
+                    return@forEach
+                }
+            }
+            if (yup) {
+                desiredChild = child as? UIPanelAPI
+                return@forEach
+            }
+        }
+
+        return desiredChild?.findChildWithMethod("removeNotApplicableMods") as? ModWidget
     }
 
     fun getCurrentVariantInRefitTab(): ShipVariantAPI? {

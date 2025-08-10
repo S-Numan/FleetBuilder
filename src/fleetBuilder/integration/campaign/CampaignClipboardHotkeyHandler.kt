@@ -5,7 +5,6 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
@@ -25,7 +24,6 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.coreui.refit.ModWidget
-import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.fleet.FleetSerialization
@@ -510,7 +508,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val selectorPanel = AutofitSelector.createAutofitSelector(
                 autofitSpec = AutofitSpec(variant, null),
                 height,
-                addDescription = false
+                addDescription = false,
+                centerTitle = true
             )
 
             tempTMAPI.addComponent(selectorPanel)
@@ -676,29 +675,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleRefitRemoveHullMod(event: InputEventAPI) {
         try {
-            val refitTab = ReflectionMisc.getRefitTab() ?: return
-            //val refitTabChildren = refitTab.invoke("getChildrenCopy") as? MutableList<*> ?: return
-            val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
-            val children = refitPanel?.getChildrenCopy() ?: return
-            var desiredChild: UIPanelAPI? = null
-            children.forEach { child ->
-                var yup = false
+            val refitPanel = ReflectionMisc.getRefitPanel() ?: return
+            val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return
 
-                val panel = child as? UIPanelAPI
-                val childsChildren = panel?.getChildrenCopy()
-                childsChildren?.forEach { childChildChild ->
-                    if (childChildChild.getMethodsMatching("removeNotApplicableMods").isNotEmpty()) {
-                        yup = true
-                        return@forEach
-                    }
-                }
-                if (yup) {
-                    desiredChild = child as? UIPanelAPI
-                    return@forEach
-                }
-            }
-
-            val modWidget = desiredChild?.findChildWithMethod("removeNotApplicableMods") as? ModWidget ?: return
             val modWidgetModIcons = modWidget.findChildWithMethod("getColumns")
 
             @Suppress("UNCHECKED_CAST")

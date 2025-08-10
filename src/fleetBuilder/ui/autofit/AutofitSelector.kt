@@ -245,20 +245,23 @@ internal object AutofitSelector {
         }
     }
 
-    val descriptionHeight = 44f
+    val titleHeight = 26f
+    val descriptionHeight = 18f
 
     internal fun createAutofitSelector(
         autofitSpec: AutofitSpec?,
         width: Float,
+        addTitle: Boolean = true,
+        centerTitle: Boolean = false,
         addDescription: Boolean = true
     ): CustomPanelAPI {
 
         val plugin = AutofitSelectorPlugin(autofitSpec)
-        val selectorPanel = Global.getSettings().createCustom(width, width + if (addDescription) descriptionHeight else 0f, plugin)
+        val selectorPanel = Global.getSettings().createCustom(width, width + (if (addTitle) titleHeight else 0f) + (if (addDescription) descriptionHeight else 0f), plugin)
         plugin.selectorPanel = selectorPanel
 
         if (autofitSpec != null)
-            createAutofitSelectorChildren(autofitSpec, width, selectorPanel)
+            createAutofitSelectorChildren(autofitSpec, width, selectorPanel, addTitle = addTitle, addDescription = addDescription, centerTitle = centerTitle)
         else
             plugin.noClick = true
 
@@ -269,6 +272,8 @@ internal object AutofitSelector {
         autofitSpec: AutofitSpec,
         width: Float,
         selectorPanel: CustomPanelAPI,
+        addTitle: Boolean = true,
+        centerTitle: Boolean = false,
         addDescription: Boolean = true
     ) {
         val descriptionYOffset = 2f
@@ -277,19 +282,19 @@ internal object AutofitSelector {
         val shipPreview = createShipPreview(autofitSpec.variant, width, width, showFighters = true)
         selectorPanel.addComponent(shipPreview).inTL(0f, topPad)
 
-        if (!addDescription) return
+        if (!addTitle && !addDescription) return
 
-        val textElement = selectorPanel.createUIElement(width, descriptionHeight - topPad, false)
+        val textElement = selectorPanel.createUIElement(width, (if (addTitle) titleHeight else 0f) + (if (addDescription) descriptionHeight else 0f) - topPad, false)
         selectorPanel.addUIElement(textElement)
         with(textElement) {
             position.inTL(0f, width + topPad - descriptionYOffset)
             setTitleOrbitronLarge()
             val label = addTitle(autofitSpec.variant.displayName)
-            //label.position.inTL((width - label.computeTextWidth(label.text)) / 2f, 0f)
+            if (centerTitle)
+                label.position.inTL((width - label.computeTextWidth(label.text)) / 2f, -topPad * 3f)
 
-            if (autofitSpec.description.isNotEmpty())
+            if (autofitSpec.description.isNotEmpty() && addDescription)
                 addPara(autofitSpec.description, 3f)
-
         }
     }
 

@@ -38,7 +38,6 @@ import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
-import org.magiclib.kotlin.setBrightness
 import starficz.*
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
@@ -161,6 +160,7 @@ internal object AutofitPanel {
             ?: return autofitPanel
         val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI ?: return autofitPanel
         val ship = shipDisplay.invoke("getShip") as? ShipAPI ?: return autofitPanel
+        val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return autofitPanel
 
         val endPad = 6f
         val midPad = 5f
@@ -248,15 +248,71 @@ internal object AutofitPanel {
             }
         }
 
-        val baseSelectorPanel = AutofitSelector.createAutofitSelector(AutofitSpec(baseVariant, null, description = "Current Variant"), selectorWidth) // Create the panel
+        //Make base variant selector panel.
+
+        val containerPanelWidth = refitTab.width - autofitPanel.width - 7f
+        val containerPanelHeight = refitTab.height - modWidget.height + 44f
+        val descriptorHeight = 34f
+        val topPad = 5f
+        // Create container panel with modWidget size
+        val containerPanel = autofitPanel.CustomPanel(containerPanelWidth, containerPanelHeight) {
+            (plugin as ExtendableCustomUIPanelPlugin).renderBelow { alphaMult ->
+                // vanilla panels are transparent, but paintjobs need a clear background for display purposes
+                val panelColor = Color.BLACK
+                val panelAlpha = panelColor.alphaf * alphaMult
+                GL11.glColor4f(panelColor.redf, panelColor.greenf, panelColor.bluef, panelAlpha)
+                GL11.glRectf(left, bottom, right, top)
+
+                GL11.glDisable(GL11.GL_BLEND)
+
+                // the panel border itself is darker than standard player dark color
+                val borderColor = Misc.getDarkPlayerColor()
+                val darkerBorderColor = borderColor.darker()
+                val darkerBorderAlpha = darkerBorderColor.alphaf * alphaMult
+                GL11.glColor4f(darkerBorderColor.redf, darkerBorderColor.greenf, darkerBorderColor.bluef, darkerBorderAlpha)
+                fun drawBorder(x1: Float, y1: Float, x2: Float, y2: Float) {
+                    GL11.glRectf(x1, y1, x2 + 1, y1 - 1)
+                    GL11.glRectf(x2, y1, x2 + 1, y2 + 1)
+                    GL11.glRectf(x1, y2, x1 - 1, y1 - 1)
+                    GL11.glRectf(x2, y2, x1 - 1, y2 + 1)
+                }
+                drawBorder(left, bottom, right, top)
+
+                GL11.glRectf(left, top - descriptorHeight, right, top)
+            }
+        }
+
+        // Position container panel
+        containerPanel.position.inTL(autofitPanel.width + 1f, -autofitPanel.y + (modWidget.height - autofitPanel.y - 50f))
+
+        val containerTextElement = containerPanel.createUIElement(containerPanel.width, descriptorHeight - topPad, false)
+        containerPanel.addUIElement(containerTextElement)
+        with(containerTextElement) {
+            position.inTL(0f, topPad)
+            setTitleOrbitronVeryLarge()
+            val label = addTitle("Current Variant")
+            label.position.inTL((containerPanel.width - label.computeTextWidth(label.text)) / 2f, 0f)
+        }
+
+        // Create base selector panel
+        val baseSelectorPanel = AutofitSelector.createAutofitSelector(
+            AutofitSpec(baseVariant, null),
+            containerPanelWidth - 2f, addDescription = false, centerTitle = true
+        )
         val baseSelectorPlugin = baseSelectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
         baseSelectorPlugin.isBase = true
         baseSelectorPlugin.noClick = true
         baseSelectorPlugin.isEqual = true
         baseSelectorPlugin.isSelected = true
         selectorPlugins.add(baseSelectorPlugin)
-        autofitPanel.addComponent(baseSelectorPanel)
-        baseSelectorPanel.position.inTL(autofitPanel.width + midPad, autofitPanel.height / 2f - baseSelectorPanel.height / 2f)//TODO, change position to be top left aligned below the weapon flux stat.
+
+        // Center selector inside container
+        baseSelectorPanel.position.inTL(
+            1f, 1f + descriptorHeight
+        )
+        containerPanel.addComponent(baseSelectorPanel)
+        // Add container to autofitPanel
+        autofitPanel.addComponent(containerPanel)
 
 
         // sync all the selectors
