@@ -18,7 +18,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.plus
 import kotlin.math.max
 
 object LoadoutManager {

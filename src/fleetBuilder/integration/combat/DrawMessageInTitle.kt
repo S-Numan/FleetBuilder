@@ -9,7 +9,6 @@ import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
-import org.magiclib.kotlin.setAlpha
 import java.awt.Color
 
 class DrawMessageInTitle : EveryFrameCombatPlugin {

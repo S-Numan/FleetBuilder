@@ -7,35 +7,18 @@ import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.PositionAPI
-import com.fs.starfarer.api.ui.TextFieldAPI
-import com.fs.starfarer.api.ui.TooltipMakerAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
+import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.ui.trade.CargoItemStack
-import fleetBuilder.features.CargoAutoManage
-import fleetBuilder.features.ItemAutoManage
-import fleetBuilder.features.loadCargoAutoManage
-import fleetBuilder.features.saveCargoAutoManage
-import fleetBuilder.features.unsetCargoAutoManage
+import fleetBuilder.features.*
 import fleetBuilder.ui.popUpUI.PopUpUI
 import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.DialogUtil
 import fleetBuilder.util.Dialogs
 import fleetBuilder.util.ReflectionMisc
 import org.lwjgl.input.Keyboard
+import starficz.*
 import starficz.ReflectionUtils.invoke
-import starficz.addPara
-import starficz.addTooltip
-import starficz.allChildsWithMethod
-import starficz.getChildrenCopy
-import starficz.height
-import starficz.onClick
-import starficz.width
-import starficz.yAlignOffset
 
 //The implementation of this is extremely scuffed, I am aware.
 

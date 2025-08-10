@@ -12,12 +12,8 @@ import fleetBuilder.util.allDMods
 import fleetBuilder.util.allSMods
 import fleetBuilder.util.getShipNameWithoutPrefix
 import org.lwjgl.input.Mouse
+import starficz.*
 import starficz.ReflectionUtils.invoke
-import starficz.addTooltip
-import starficz.findChildWithMethod
-import starficz.getChildrenCopy
-import starficz.width
-import starficz.x
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
 

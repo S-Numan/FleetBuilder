@@ -7,7 +7,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import org.magiclib.kotlin.setAlpha
 import starficz.*
-import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 

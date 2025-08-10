@@ -6,8 +6,6 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
-import com.fs.starfarer.api.ui.Alignment
-import fleetBuilder.features.CargoAutoManage
 import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.fleet.FleetSerialization.buildFleetFull
 import fleetBuilder.ui.CargoAutoManageUIPlugin

@@ -4,19 +4,13 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.PositionAPI
-import com.fs.starfarer.api.ui.TextFieldAPI
-import com.fs.starfarer.api.ui.UIComponentAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
+import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.campaign.ui.UITable
 import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 import starficz.getChildrenCopy
-import kotlin.collections.forEach
 
 class ModPickerFilterPanel(
     width: Float,
@@ -104,7 +98,7 @@ class ModPickerFilterPanel(
                 val modSpecField = tooltip.getFieldsMatching(fieldAssignableTo = HullModSpecAPI::class.java)
                 val modSpec = modSpecField.getOrNull(0)?.let { tooltip.get(it.name) } as? HullModSpecAPI
                     ?: return@forEach
-                
+
                 if (desc.startsWith("-")) {
                     if (modSpec.matchesDescription(desc.removePrefix("-")))
                         itemsToRemove.add(item)

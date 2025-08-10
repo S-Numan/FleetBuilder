@@ -14,6 +14,7 @@ import fleetBuilder.config.ModSettings.fleetScreenFilter
 import fleetBuilder.config.ModSettings.forceAutofit
 import fleetBuilder.config.ModSettings.importPrefix
 import fleetBuilder.config.ModSettings.modID
+import fleetBuilder.config.ModSettings.modPickerFilter
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.config.ModSettings.removeDefaultDMods
 import fleetBuilder.config.ModSettings.saveDMods
@@ -26,7 +27,6 @@ import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
 import fleetBuilder.config.ModSettings.storeOfficersInCargo
 import fleetBuilder.config.ModSettings.unassignPlayer
-import fleetBuilder.config.ModSettings.modPickerFilter
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.Reporter
 import fleetBuilder.util.containsString

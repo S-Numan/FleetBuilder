@@ -25,7 +25,9 @@ import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
-import fleetBuilder.variants.*
+import fleetBuilder.variants.GameModInfo
+import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
 import java.awt.Color
 import java.util.*

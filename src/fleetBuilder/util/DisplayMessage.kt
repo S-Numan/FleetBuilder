@@ -3,12 +3,10 @@ package fleetBuilder.util
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.util.Misc
-import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings.isConsoleModEnabled
 import fleetBuilder.integration.combat.DrawMessageInTitle
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
-import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
 object DisplayMessage {

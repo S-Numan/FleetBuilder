@@ -3,15 +3,12 @@ package fleetBuilder.integration.campaign
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
-import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import com.fs.starfarer.campaign.ui.UITable
 import fleetBuilder.ui.ModPickerFilterPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import starficz.ReflectionUtils.invoke
 import starficz.findChildWithMethod
-import starficz.getChildrenCopy
 
 class CampaignModPickerFilter : EveryFrameScript {
     override fun isDone(): Boolean {

@@ -8,14 +8,9 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
-import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
-import fleetBuilder.features.unsetCargoAutoManage
-import fleetBuilder.ui.popUpUI.PopUpUIDialog
-import fleetBuilder.util.DialogUtil
-import fleetBuilder.util.Dialogs
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getRegularHullMods

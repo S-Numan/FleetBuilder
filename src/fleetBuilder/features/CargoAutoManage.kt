@@ -1,7 +1,6 @@
 package fleetBuilder.features
 
 import com.fs.starfarer.api.campaign.CargoAPI
-import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 
 data class CargoAutoManage(
