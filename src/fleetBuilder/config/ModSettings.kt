@@ -26,6 +26,7 @@ import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
 import fleetBuilder.config.ModSettings.storeOfficersInCargo
 import fleetBuilder.config.ModSettings.unassignPlayer
+import fleetBuilder.config.ModSettings.modPickerFilter
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.Reporter
 import fleetBuilder.util.containsString
@@ -82,6 +83,7 @@ internal class ModSettingsListener : LunaSettingsListener {
         storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
         removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
         cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
+        modPickerFilter = getBoolean(modID, "modPickerFilter")!!
 
         autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
 
@@ -208,4 +210,6 @@ object ModSettings {
     var removeDefaultDMods = true
 
     var cargoAutoManager = true
+
+    var modPickerFilter = false
 }

@@ -1,4 +1,6 @@
 ## 1.15.0
+- A complete revamp of the Autofit UI. Save compatible.
+- Created the Mod Picker Filter, similar to the Fleet Filter, but for hull mods.
 - Fix scrollbar on Cargo Auto Manager.
 - Fix force autofit sometimes failing to remove SMods.
 

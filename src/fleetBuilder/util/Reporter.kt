@@ -55,6 +55,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
             manageTransientScript(CampaignCodexButton::class.java, ModSettings.devModeCodexButtonEnabled) { CampaignCodexButton() }
             manageTransientScript(CampaignFleetScreenFilter::class.java, ModSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }
             manageTransientScript(CargoAutoManager::class.java, ModSettings.cargoAutoManager) { CargoAutoManager() }
+            manageTransientScript(CampaignModPickerFilter::class.java, ModSettings.modPickerFilter) { CampaignModPickerFilter() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
         }
     }
