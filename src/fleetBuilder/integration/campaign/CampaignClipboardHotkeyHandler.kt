@@ -305,7 +305,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                 val tool = submarketButton.invoke("getTooltip") as? TooltipMakerAPI ?: return@forEach
                 val pluginField = tool.getFieldsMatching(fieldAccepts = SubmarketPlugin::class.java, searchSuperclass = true).getOrNull(0)
-                val submarketPlugin = tool.get(pluginField?.name, searchSuperclass = true) as? SubmarketPlugin
+                val submarketPlugin = pluginField?.get(tool) as? SubmarketPlugin
                     ?: return@forEach
                 val selectedSubmarket = submarketPlugin.submarket
 
@@ -695,7 +695,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 ) {
                     val hullModField = item.getFieldsMatching(fieldAssignableTo = HullModSpecAPI::class.java).firstOrNull()
                         ?: return@forEach
-                    val hullModID = item.get(hullModField.name) as? HullModSpecAPI ?: return@forEach
+                    val hullModID = hullModField.get(item) as? HullModSpecAPI ?: return@forEach
 
                     val variant = ReflectionMisc.getCurrentVariantInRefitTab()
                     if (variant != null) {

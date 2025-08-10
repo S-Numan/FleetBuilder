@@ -96,7 +96,7 @@ class ModPickerFilterPanel(
                 if (item == null) return@forEach
                 val tooltip = item.invoke("getTooltip") ?: return@forEach
                 val modSpecField = tooltip.getFieldsMatching(fieldAssignableTo = HullModSpecAPI::class.java)
-                val modSpec = modSpecField.getOrNull(0)?.let { tooltip.get(it.name) } as? HullModSpecAPI
+                val modSpec = modSpecField.getOrNull(0)?.get(tooltip) as? HullModSpecAPI
                     ?: return@forEach
 
                 if (desc.startsWith("-")) {

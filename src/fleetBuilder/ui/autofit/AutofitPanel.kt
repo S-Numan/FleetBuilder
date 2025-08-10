@@ -34,6 +34,7 @@ import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
+import org.magiclib.kotlin.setAlpha
 import starficz.*
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
@@ -347,10 +348,13 @@ internal object AutofitPanel {
         // Position just below the selector
         toggleButtonsElement.position.inTL(2f, descriptorHeight + baseVariantSelectorPanel.height + 4f)
 
+        toggleButtonsElement.addPara("Click and drag to an empty slot to save", 0f)
+        toggleButtonsElement.addSpacer(12f)
+
         val checkboxHeight = 24f
         val checkboxPad = 4f
 
-        val fleetMemory = fleetMember.fleetData.fleet.memoryWithoutUpdate
+        val fleetMemory = fleetMember.fleetData?.fleet?.memoryWithoutUpdate
 
         fun addToggleButton(
             label: String,
@@ -367,17 +371,18 @@ internal object AutofitPanel {
                 checkboxPad
             )
 
-            if (!fleetMemory.contains(memoryKey))
-                button.isChecked = default
-            else
-                button.isChecked = fleetMemory.getBoolean(memoryKey)
+            button.isChecked = if (fleetMemory?.contains(memoryKey) == true) {
+                fleetMemory.getBoolean(memoryKey)
+            } else {
+                default
+            }
 
             button.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 400f) { tooltip ->
                 tooltip.addPara(tooltipText, 0f)
             }
 
             button.onClick {
-                fleetMemory.set(memoryKey, button.isChecked)
+                fleetMemory?.set(memoryKey, button.isChecked)
             }
 
             return button
@@ -406,7 +411,6 @@ internal object AutofitPanel {
             memoryKey = "\$FBA_useBlackMarket",
             tooltipText = "Buy weapons and fighter LPCs from the black market.\n\nNon-black-market options will be preferred if the alternatives are of equal quality"
         )
-
         // Add the buttons element to the panel
         baseVariantPanel.addUIElement(toggleButtonsElement)
 
@@ -763,7 +767,7 @@ internal object AutofitPanel {
             350f
         }
 
-        selectorPanel.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, width) { tooltip ->
+        selectorPanel.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, width) { tooltip ->
             tooltip.addTitle(variant.displayName + " Variant")
 
 

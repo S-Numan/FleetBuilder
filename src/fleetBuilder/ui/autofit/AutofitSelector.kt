@@ -16,6 +16,7 @@ import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import starficz.*
+import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import kotlin.math.max
@@ -325,6 +326,8 @@ internal object AutofitSelector {
 
         if (setSchematicMode)
             shipPreview.invoke("setSchematicMode", true)
+
+        //shipPreview.invoke("setScissor", false)
 
         /*for(slot in (clonedVariant as ShipVariantAPI).fittedWeaponSlots){
             val weapon = clonedVariant.getWeaponSpec(slot)

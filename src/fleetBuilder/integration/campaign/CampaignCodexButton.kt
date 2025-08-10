@@ -48,7 +48,7 @@ class CampaignCodexButton : EveryFrameScript {
         }
         /*val uiFields = codex.getFieldsMatching(fieldAssignableTo = UIPanelAPI::class.java)
         val tempArray = uiFields.map { field ->
-            codex.get(field.name)
+            field.get(codex)
         }
         (tempArray[2] as TextFieldAPI)//Text input field for searching
         val navContainer = (tempArray[3] as UIPanelAPI)//Bottom left: Left, Right, Up, Random, icons UI container.*/
