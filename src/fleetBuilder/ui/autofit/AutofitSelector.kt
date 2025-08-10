@@ -291,7 +291,7 @@ internal object AutofitSelector {
             setTitleOrbitronLarge()
             val label = addTitle(autofitSpec.variant.displayName)
             if (centerTitle)
-                label.position.inTL((width - label.computeTextWidth(label.text)) / 2f, -topPad * 3f)
+                label.position.inTL((width - label.computeTextWidth(label.text)) / 2f, -topPad * 2f)
 
             if (autofitSpec.description.isNotEmpty() && addDescription)
                 addPara(autofitSpec.description, 3f)

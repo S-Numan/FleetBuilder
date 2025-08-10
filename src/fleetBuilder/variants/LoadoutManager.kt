@@ -284,6 +284,15 @@ object LoadoutManager {
         return null
     }
 
+    fun getVariantSourceShipDirectory(variant: ShipVariantAPI): ShipDirectory? {
+        for (dir in shipDirectories) {
+            if (variant.hullVariantId.startsWith(dir.prefix)) {
+                return dir
+            }
+        }
+        return null
+    }
+
     fun getHighestIndexInEffectiveMenu(hullSpec: ShipHullSpecAPI): Int {
         var maxIndex = 0
         for (dir in shipDirectories) {

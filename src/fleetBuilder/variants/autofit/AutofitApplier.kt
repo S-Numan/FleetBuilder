@@ -8,9 +8,14 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
+import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
+import fleetBuilder.features.unsetCargoAutoManage
+import fleetBuilder.ui.popUpUI.PopUpUIDialog
+import fleetBuilder.util.DialogUtil
+import fleetBuilder.util.Dialogs
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getRegularHullMods
@@ -27,7 +32,11 @@ object AutofitApplier {
         ship: ShipAPI,
         coreUI: CoreUIAPI,
         shipDisplay: UIPanelAPI,
-        refitPanel: UIPanelAPI
+        refitPanel: UIPanelAPI,
+        allowCargo: Boolean = true,
+        allowStorage: Boolean = true,
+        allowMarket: Boolean = true,
+        allowBlackMarket: Boolean = true
     ) {
         shipDisplay.invoke("setSuppressMessages", true)
 
@@ -60,6 +69,9 @@ object AutofitApplier {
                         if (submarket.plugin.isHidden) continue
                         if (!submarket.plugin.isEnabled(coreUI)) continue
                         if (!submarket.plugin.showInCargoScreen()) continue
+                        if (!allowMarket && !submarket.plugin.isFreeTransfer) continue
+                        if (!allowBlackMarket && submarket.plugin.isBlackMarket) continue
+                        if (!allowStorage && submarket.plugin.isFreeTransfer) continue
 
                         for (weapon in submarket.cargo.weapons) {
                             delegate.addAvailableWeapon(
@@ -124,23 +136,26 @@ object AutofitApplier {
                     //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
                 } else {
 
-                    //Add player cargo weapons/fighters to delegate for AutofitPlugin to use.
-                    for (weapon in Global.getSector().playerFleet.cargo.weapons) {
-                        delegate.addAvailableWeapon(
-                            Global.getSettings().getWeaponSpec(weapon.item),
-                            weapon.count,
-                            Global.getSector().playerFleet.cargo,
-                            null
-                        )
+                    if (allowCargo) {
+                        //Add player cargo weapons/fighters to delegate for AutofitPlugin to use.
+                        for (weapon in Global.getSector().playerFleet.cargo.weapons) {
+                            delegate.addAvailableWeapon(
+                                Global.getSettings().getWeaponSpec(weapon.item),
+                                weapon.count,
+                                Global.getSector().playerFleet.cargo,
+                                null
+                            )
+                        }
+                        for (fighter in Global.getSector().playerFleet.cargo.fighters) {
+                            delegate.addAvailableFighter(
+                                Global.getSettings().getFighterWingSpec(fighter.item),
+                                fighter.count,
+                                Global.getSector().playerFleet.cargo,
+                                null
+                            )
+                        }
                     }
-                    for (fighter in Global.getSector().playerFleet.cargo.fighters) {
-                        delegate.addAvailableFighter(
-                            Global.getSettings().getFighterWingSpec(fighter.item),
-                            fighter.count,
-                            Global.getSector().playerFleet.cargo,
-                            null
-                        )
-                    }
+
 
                     auto.doFit(baseVariant, loadout, 0, delegate)
 
