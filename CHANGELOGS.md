@@ -3,6 +3,7 @@
 - Created the Mod Picker Filter, similar to the Fleet Filter, but for hull mods.
 - Fix scrollbar on Cargo Auto Manager.
 - Fix force autofit sometimes failing to remove SMods.
+- Added "Repair and Set Max CR" to campaign fleet spawning dialog.
 
 ## 1.14.0
 - Added Cargo Auto Manager. Right click your storage submarket to open a dialog that allows you to automatically take and store cargo items.

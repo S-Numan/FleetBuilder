@@ -150,7 +150,7 @@ object FBMisc {
             playerFleet.cargo.removeCrew(overflow.coerceAtMost(playerFleet.fleetData.minCrew).toInt())
         }
         // Repair
-        fullFleetRepair(playerFleet)
+        fullFleetRepair(playerFleet.fleetData)
 
 
         updateFleetPanelContents()
@@ -205,8 +205,8 @@ object FBMisc {
         return total
     }
 
-    fun fullFleetRepair(fleet: CampaignFleetAPI) {
-        fleet.fleetData.membersListCopy.forEach { member ->
+    fun fullFleetRepair(fleet: FleetDataAPI) {
+        fleet.membersListCopy.forEach { member ->
             member.status.repairFully()
 
             val repairs: RepairTrackerAPI = member.repairTracker
@@ -220,7 +220,7 @@ object FBMisc {
         val y = component.position.y - pad
         val width = component.position.width + pad * 2
         val height = component.position.height + pad * 2
-        
+
         return isMouseWithinBounds(x, y, width, height)
     }
 
