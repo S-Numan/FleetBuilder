@@ -293,7 +293,7 @@ internal object AutofitSelector {
             setTitleOrbitronLarge()
             val label = addTitle(autofitSpec.variant.displayName)
             if (centerTitle)
-                label.position.inTL((width - label.computeTextWidth(label.text)) / 2f, -topPad * 2f)
+                label.position.inTL((width - label.computeTextWidth(label.text)) / 2f, -topPad)
 
             if (autofitSpec.description.isNotEmpty() && addDescription)
                 addPara(autofitSpec.description, 3f)
@@ -326,20 +326,41 @@ internal object AutofitSelector {
         if (setSchematicMode)
             shipPreview.invoke("setSchematicMode", true)
 
-        shipPreview.invoke("setScissor", true)
+        //Remove this hard coded scaling code when things scale right properly in the base game.
 
         val effectiveHullId = variant.hullSpec.getEffectiveHullId()
 
-        // Scale and center
-        val scaleFactor = if (effectiveHullId == "apogee" || effectiveHullId == "paragon") {
-            //val sprite = Global.getSettings().getSprite(clonedVariant.hullSpec.spriteName)
-            //minOf(width / sprite.width, height / sprite.height, 1f)//Don't know how to get this to work automatically
-            0.92f
-        } else {
-            1f
+        // Define config for special ships
+        data class ShipDisplayConfig(
+            val scaleFactor: Float = 1f,
+            val yOffset: Float = 0f,
+            val disableScissor: Boolean = false
+        )
+
+        //val sprite = Global.getSettings().getSprite(clonedVariant.hullSpec.spriteName)
+        //minOf(width / sprite.width, height / sprite.height, 1f)//See https://fractalsoftworks.com/forum/index.php?topic=33818.0 for why this cannot work as intended
+
+        // Configurations for special hull IDs
+        val specialConfigs = mapOf(
+            "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 10f, disableScissor = true),
+            "radiant" to ShipDisplayConfig(scaleFactor = 0.95f, yOffset = 10f, disableScissor = true),
+            "paragon" to ShipDisplayConfig(scaleFactor = 0.95f, yOffset = 17f, disableScissor = true),
+            "pegasus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
+            "executor" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
+            "invictus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 0f, disableScissor = true)
+        )
+
+        // Get config or default
+        val config = specialConfigs[effectiveHullId] ?: ShipDisplayConfig()
+
+        // Apply config
+        if (config.disableScissor) {
+            shipPreview.invoke("setScissor", false)
         }
-        val scaledWidth = width * scaleFactor
-        val scaledHeight = height * scaleFactor
+
+        // Scale and set size
+        val scaledWidth = width * config.scaleFactor
+        val scaledHeight = height * config.scaleFactor
         shipPreview.setSize(scaledWidth, scaledHeight)
 
         // Prepare ship
@@ -348,14 +369,8 @@ internal object AutofitSelector {
         // Main container panel
         val containerPanel = Global.getSettings().createCustom(width, height, null)
 
-        // Base Y offset (extra 10f if Apogee)
-        val baseYOffset =
-            if (effectiveHullId == "apogee" || effectiveHullId == "paragon" || effectiveHullId == "radiant")
-                10f
-            else if (effectiveHullId == "pegasus" || effectiveHullId == "executor")
-                7f
-            else
-                0f
+        // Base Y offset from config
+        val baseYOffset = config.yOffset
 
         // Center offsets for shipPreview
         val offsetX = (width - scaledWidth) / 2f
