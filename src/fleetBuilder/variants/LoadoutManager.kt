@@ -99,7 +99,7 @@ object LoadoutManager {
                         Date(0) // Oldest possible date (Unix epoch start)
                     }
 
-                    val parsedEffectiveIndex = shipJson.optInt("indexInEffectiveMenu", -1)
+                    val parsedEffectiveIndex = shipJson.optInt("desiredIndexInMenu", -1)
 
                     // Check for duplicate ship path
                     if (!seenPaths.add(shipPath)) {
@@ -226,7 +226,7 @@ object LoadoutManager {
                     AutofitSpec(
                         variant,
                         source = null,
-                        indexInEffectiveMenu = i + indexOffset,
+                        desiredIndexInMenu = i + indexOffset,
                         "Core Autofit Variant"
                     )
                 )
@@ -235,7 +235,7 @@ object LoadoutManager {
                     AutofitSpec(
                         variant,
                         source = null,
-                        indexInEffectiveMenu = i + indexOffset,
+                        desiredIndexInMenu = i + indexOffset,
                         "Core Variant"
                     )
                 )
@@ -263,7 +263,7 @@ object LoadoutManager {
                         description = it.getDescription(),
                         source = it,
                         missing = missing,
-                        indexInEffectiveMenu = index + indexOffset
+                        desiredIndexInMenu = index + indexOffset
                     )
                 )
             }

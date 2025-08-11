@@ -37,9 +37,6 @@ class ShipDirectory(
     fun getShip(variantId: String): ShipVariantAPI? {
         val baseId = stripPrefix(variantId)
         return ships[baseId]?.let { cloneWithPrefix(it) }
-        /*return ships[baseId]?.clone()?.apply {
-            hullVariantId = "${prefix}_$baseId"
-        }*/
     }
 
     fun getShipMissingAnything(variantId: String): Boolean {
@@ -61,9 +58,6 @@ class ShipDirectory(
             .filter { it.hullSpec.getEffectiveHullId() == hullId }
             .map { original ->
                 cloneWithPrefix(original)
-                /*original.clone().apply {
-                    hullVariantId = "${prefix}_${original.hullVariantId}"
-                }*/
             }
     }
 
@@ -142,10 +136,10 @@ class ShipDirectory(
             DisplayMessage.showError("The variantID of ${savedVariant.hullVariantId} already exists in the directory of prefix $prefix . Replacing existing variant.")
         }
 
-        var newIndex = inputDesiredIndexInMenu
-        if (newIndex == -1) {
-            newIndex = LoadoutManager.getHighestIndexInEffectiveMenu(variantToSave.hullSpec) + 1
-        }
+        val newIndex = if (inputDesiredIndexInMenu < 0)
+            LoadoutManager.getHighestIndexInEffectiveMenu(variantToSave.hullSpec) + 1
+        else
+            inputDesiredIndexInMenu
 
         // Save the updated directory
         if (editDirectoryFile) {
@@ -166,7 +160,7 @@ class ShipDirectory(
             val timeString = formatter.format(currentTime)
             shipPathJson.put("modifyTime", timeString)
 
-            shipPathJson.put("indexInEffectiveMenu", newIndex)
+            shipPathJson.put("desiredIndexInMenu", newIndex)
 
             shipPathsJson.put(shipPathJson)
 

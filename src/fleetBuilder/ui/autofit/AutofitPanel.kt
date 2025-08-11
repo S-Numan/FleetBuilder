@@ -12,7 +12,6 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
 import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
@@ -36,8 +35,6 @@ import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import starficz.*
-import starficz.ReflectionUtils.getConstructorsMatching
-import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
@@ -197,7 +194,6 @@ internal object AutofitPanel {
 
         val selectorPlugins = mutableListOf<AutofitSelector.AutofitSelectorPlugin>()
 
-        //TODO, change "indexInEffectiveMenu" to something like "desiredIndexInMenu".
         val coreEffectiveHullAutofitSpecs = getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec)
         val loadoutEffectiveHullAutofitSpecs = getLoadoutAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec, coreEffectiveHullAutofitSpecs.size).values.flatten()
 
@@ -206,16 +202,16 @@ internal object AutofitPanel {
         val combinedSpecs = coreEffectiveHullAutofitSpecs + loadoutEffectiveHullAutofitSpecs
 
         // Sort by desired index first
-        val sortedSpecs = combinedSpecs.sortedBy { it.indexInEffectiveMenu }
+        val sortedSpecs = combinedSpecs.sortedBy { it.desiredIndexInMenu }
 
         // Find the maximum index any spec wants
-        val maxDesiredIndex = sortedSpecs.maxOfOrNull { it.indexInEffectiveMenu } ?: 0
+        val maxDesiredIndex = sortedSpecs.maxOfOrNull { it.desiredIndexInMenu } ?: 0
 
         // Start with a list of nulls big enough to fit everything
         val indexedSpecs = MutableList<AutofitSpec?>(maxDesiredIndex + sortedSpecs.size) { null }
 
         // For each unique desired index in ascending order
-        sortedSpecs.groupBy { it.indexInEffectiveMenu }
+        sortedSpecs.groupBy { it.desiredIndexInMenu }
             .toSortedMap()
             .forEach { (desiredIndex, specsForIndex) ->
                 for (spec in specsForIndex) {
@@ -573,7 +569,7 @@ internal object AutofitPanel {
 
                 // Remake the new selector
                 selectorPlugin.noClick = false
-                selectorPlugin.autofitSpec = autofitPlugin.draggedAutofitSpec!!.copy(variant = shipDirectory.getShip(shipVariantID)!!, source = shipDirectory, indexInEffectiveMenu = indexInMenu, description = shipDirectory.getDescription())
+                selectorPlugin.autofitSpec = autofitPlugin.draggedAutofitSpec!!.copy(variant = shipDirectory.getShip(shipVariantID)!!, source = shipDirectory, desiredIndexInMenu = indexInMenu, description = shipDirectory.getDescription())
                 createAutofitSelectorChildren(
                     selectorPlugin.autofitSpec!!,
                     selectorWidth,
