@@ -1,6 +1,7 @@
 ## 1.15.0
 - A complete revamp of the Autofit UI. Save compatible.
 - Created the Mod Picker Filter, similar to the Fleet Filter, but for hull mods.
+- Fix dev mode codex button failing to add variant's and members
 - Fix scrollbar on Cargo Auto Manager.
 - Fix force autofit sometimes failing to remove SMods.
 - Added "Repair and Set Max CR" to campaign fleet spawning dialog.
