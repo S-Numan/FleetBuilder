@@ -26,6 +26,9 @@ Anywhere: Open developer options. You can toggle dev mode here.
 Right Click:
 Storage Submarket: Open the Cargo Auto Manager for automatic cargo management.
 
+CTRL + I
+Campaign: Open Save Transfer dialog
+
 THE BELOW REQUIRES DEV MODE TO BE ON
 
 CTRL + V in
@@ -36,10 +39,7 @@ Right Click:
 HullMod in refit screen: Removes the hullmod. Even if it’s an SMod, or a built in SMod.
 
 CTRL + O in
-Fleet Screen: Open officer creator dialog
-
-CTRL + I
-Campaign: Open Save Transfer dialog",,,Hotkey Handler
+Fleet Screen: Open officer creator dialog",,,Hotkey Handler
 cargoAutoManager,Enable Cargo Auto Manager,Boolean,true,,"Right click a storage submarket to pull up the Cargo Auto Manager.
 
 This menu allows you to configure automatically taking and/or depositing cargo items on entering or leaving a market.
