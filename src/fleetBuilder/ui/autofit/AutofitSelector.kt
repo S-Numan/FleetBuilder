@@ -12,6 +12,7 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.integration.combat.CombatAutofitAdder
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.getEffectiveHullId
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
@@ -306,10 +307,9 @@ internal object AutofitSelector {
         showFighters: Boolean = false,
         setSchematicMode: Boolean = false
     ): UIPanelAPI {
-
         val clonedVariant = variant.clone() as HullVariantSpec
 
-        val shipPreview = instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!!
+        val shipPreview = instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!! as UIPanelAPI
         shipPreview.invoke("setVariant", clonedVariant)
         shipPreview.invoke("overrideVariant", clonedVariant)
         shipPreview.invoke("setShowBorder", false)
@@ -318,8 +318,7 @@ internal object AutofitSelector {
             shipPreview.invoke("setScaleDownSmallerShipsMagnitude", 1f)
 
         shipPreview.invoke("adjustOverlay", 0f, 0f)
-
-        (shipPreview as UIPanelAPI).setSize(width, height)
+        shipPreview.setSize(width, height)
 
         if (showFighters)
             shipPreview.invoke("setShowFighters", true)
@@ -327,17 +326,44 @@ internal object AutofitSelector {
         if (setSchematicMode)
             shipPreview.invoke("setSchematicMode", true)
 
-        //shipPreview.invoke("setScissor", false)
+        shipPreview.invoke("setScissor", true)
 
-        /*for(slot in (clonedVariant as ShipVariantAPI).fittedWeaponSlots){
-            val weapon = clonedVariant.getWeaponSpec(slot)
-            val sprite = Global.getSettings().getSprite(weapon.turretSpriteName)
-            sprite.height
-        }*/
+        val effectiveHullId = variant.hullSpec.getEffectiveHullId()
 
-        // make the ship list so the ships exist when we try and get them
+        // Scale and center
+        val scaleFactor = if (effectiveHullId == "apogee" || effectiveHullId == "paragon") {
+            //val sprite = Global.getSettings().getSprite(clonedVariant.hullSpec.spriteName)
+            //minOf(width / sprite.width, height / sprite.height, 1f)//Don't know how to get this to work automatically
+            0.92f
+        } else {
+            1f
+        }
+        val scaledWidth = width * scaleFactor
+        val scaledHeight = height * scaleFactor
+        shipPreview.setSize(scaledWidth, scaledHeight)
+
+        // Prepare ship
         shipPreview.invoke("prepareShip")
 
-        return shipPreview
+        // Main container panel
+        val containerPanel = Global.getSettings().createCustom(width, height, null)
+
+        // Base Y offset (extra 10f if Apogee)
+        val baseYOffset =
+            if (effectiveHullId == "apogee" || effectiveHullId == "paragon" || effectiveHullId == "radiant")
+                10f
+            else if (effectiveHullId == "pegasus" || effectiveHullId == "executor")
+                7f
+            else
+                0f
+
+        // Center offsets for shipPreview
+        val offsetX = (width - scaledWidth) / 2f
+        val offsetY = (height - scaledHeight) / 2f + baseYOffset
+
+        // Add shipPreview to container, positioned to center plus offset
+        containerPanel.addComponent(shipPreview).inTL(offsetX, offsetY)
+
+        return containerPanel
     }
 }
