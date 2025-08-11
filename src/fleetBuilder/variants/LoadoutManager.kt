@@ -56,7 +56,7 @@ object LoadoutManager {
 
         // Load all prefixed ship directories
         generatePrefixes().forEach { prefix ->
-            loadShipDirectory(PACKDIR, prefix)?.let { shipDirectories.add(it) }
+            loadShipDirectory(PACKDIR, prefix)
         }
     }
 
@@ -154,6 +154,8 @@ object LoadoutManager {
 
             val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, shipTimeSaved, shipIndexInEffectiveMenu, description)
 
+            shipDirectories.add(shipDirectory)
+
             // Assure indexes aren't missing
             shipDirectory.getAllVariants().toList().forEach { variant ->
                 fun remakeShip() {
@@ -163,7 +165,7 @@ object LoadoutManager {
                 }
 
                 val thisIndex = shipDirectory.getShipIndexInMenu(variant.hullVariantId)
-                if (thisIndex == -1) { // Missing?
+                if (thisIndex < 0) { // Missing?
                     remakeShip()
                 } //else if (shipDirectory.getHullSpecIndexes(variant, thisIndex) != thisIndex) {
                 //    remakeShip(thisIndex)
@@ -293,7 +295,7 @@ object LoadoutManager {
     }
 
     fun getHighestIndexInEffectiveMenu(hullSpec: ShipHullSpecAPI): Int {
-        var maxIndex = 0
+        var maxIndex = -1
         for (dir in shipDirectories) {
             val ships = dir.getShips(hullSpec)
             for (ship in ships) {
@@ -331,7 +333,7 @@ object LoadoutManager {
         prefix: String = ModSettings.defaultPrefix,
         missingFromVariant: MissingElements = MissingElements(),
         settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
-        desiredIndexInMenu: Int = 0
+        desiredIndexInMenu: Int = -1
     ): String {
         return getShipDirectoryWithPrefix(prefix)?.addShip(
             variant,
