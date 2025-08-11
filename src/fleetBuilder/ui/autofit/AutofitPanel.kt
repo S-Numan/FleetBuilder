@@ -12,6 +12,7 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
+import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
 import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
@@ -34,8 +35,9 @@ import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
-import org.magiclib.kotlin.setAlpha
 import starficz.*
+import starficz.ReflectionUtils.getConstructorsMatching
+import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
@@ -429,6 +431,9 @@ internal object AutofitPanel {
             selectorPlugin.onHoverExit {
                 if (!selectorPlugin.hasClicked || selectorPlugin.autofitSpec === autofitPlugin.draggedAutofitSpec) return@onHoverExit
 
+                //Global.getSoundPlayer().playUISound("ui_char_reset", 1f, 1f)
+                Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
+
                 autofitPlugin.draggedAutofitSpec = selectorPlugin.autofitSpec
                 selectorPlugin.selectorPanel.opacity = 0.15f
             }
@@ -436,8 +441,6 @@ internal object AutofitPanel {
                 selectorPlugin.selectorPanel.opacity = 1f
 
                 if (selectorPlugin.autofitSpec == null || autofitPlugin.draggedAutofitSpec != null || event.isCtrlDown || selectorPlugin.noClick) return@onClickRelease // If no variant. or dragging self, do nothing
-
-                Global.getSoundPlayer().playUISound("ui_button_pressed", 0.5f, 1f)//TODO, better sound
 
                 fun applyVariant(autofitSpec: AutofitSpec?) {
                     applyVariantInRefitScreen(
@@ -531,6 +534,8 @@ internal object AutofitPanel {
                 val shipVariantID: String
                 if (equalVariant != null) { // Variant already exists?
 
+                    Global.getSoundPlayer().playUISound("ui_button_pressed", 0.94f, 1f)
+
                     var missing = shipDirectory.getShipMissings(equalVariant.hullVariantId)
                     if (missing == null) {
                         //equalVariant exists, but not from this shipDirectory
@@ -548,13 +553,7 @@ internal object AutofitPanel {
                         editVariantFile = false, settings = settings
                     )
 
-                    fun deleteAutofit(autofitPlugin: AutofitSelector.AutofitSelectorPlugin?) {
-                        autofitPlugin?.autofitSpec = null
-                        autofitPlugin?.noClick = true
-                        autofitPlugin?.selectorPanel?.clearChildren()
-                    }
-
-                    deleteAutofit(selectorPlugins.firstOrNull {
+                    deleteSelector(selectorPlugins.firstOrNull {
                         it.autofitSpec?.source != null && it.autofitSpec?.variant != null &&
                                 compareVariantContents(
                                     shipDirectory.getShip(shipVariantID)!!,
@@ -564,6 +563,8 @@ internal object AutofitPanel {
                     })
 
                 } else {
+                    Global.getSoundPlayer().playUISound("ui_button_pressed", 0.94f, 1f)
+
                     shipVariantID = shipDirectory.addShip(
                         draggedVariant,
                         inputDesiredIndexInMenu = indexInMenu, settings = settings
@@ -716,6 +717,17 @@ internal object AutofitPanel {
         }
     }
 
+    fun deleteSelector(selectorPlugin: AutofitSelector.AutofitSelectorPlugin?) {
+        selectorPlugin?.autofitSpec = null
+        selectorPlugin?.noClick = true
+        selectorPlugin?.selectorPanel?.clearChildren()
+
+        selectorPlugin?.isSelected = false
+        selectorPlugin?.isEqual = false
+        selectorPlugin?.isBetter = false
+        selectorPlugin?.isWorse = false
+    }
+
     private fun removeSelectorPanelButton(
         selectorPanel: CustomPanelAPI,
         newSpec: AutofitSpec,
@@ -730,6 +742,7 @@ internal object AutofitPanel {
             25f, 25f,
             Font.ORBITRON_20
         )
+        //removeVariantButton.setButtonPressedSound("ui_refit_slot_cleared_large")
         removeVariantButton.xAlignOffset = selectorPanel.right - removeVariantButton.right
         removeVariantButton.yAlignOffset = selectorPanel.top - removeVariantButton.top
         removeVariantButton.onClick {
@@ -737,13 +750,7 @@ internal object AutofitPanel {
             //selectorPanel.parent?.removeComponent(selectorPanel)
             //selectorPanel.opacity = 0f
             val selectorPlugin = selectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
-            selectorPlugin.autofitSpec = null
-            selectorPlugin.noClick = true
-            selectorPlugin.selectorPanel.clearChildren()
-            selectorPlugin.isSelected = false
-            selectorPlugin.isEqual = false
-            selectorPlugin.isBetter = false
-            selectorPlugin.isWorse = false
+            deleteSelector(selectorPlugin)
         }
     }
 
