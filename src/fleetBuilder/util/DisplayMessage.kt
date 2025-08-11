@@ -70,7 +70,7 @@ object DisplayMessage {
 
             DrawMessageInTitle.addMessage(short)
 
-            Global.getSoundPlayer().playUISound("ui_selection_cleared", 1f, 1f)
+            Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
         }
     }
 
