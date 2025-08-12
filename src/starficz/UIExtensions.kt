@@ -262,10 +262,10 @@ internal fun UIComponentAPI.addTooltip(
             lambda(this)
         }
 
-        override fun notiftyHidden() {
-            super.notiftyHidden()
+        fun removeSelf() {
             this.opacity = 0f
         }
+
     }
 
     val tooltipClass = StandardTooltipV2Expandable::class.java

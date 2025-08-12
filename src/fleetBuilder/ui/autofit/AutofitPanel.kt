@@ -35,6 +35,7 @@ import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import starficz.*
+import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
@@ -717,6 +718,9 @@ internal object AutofitPanel {
         selectorPlugin?.autofitSpec = null
         selectorPlugin?.noClick = true
         selectorPlugin?.selectorPanel?.clearChildren()
+        val tooltip = selectorPlugin?.selectorPanel?.invoke("getTooltip")
+        tooltip?.getMethodsMatching("removeSelf")?.getOrNull(0)?.invoke(tooltip) // Safe way to remove the tooltip
+        //val tooltipLogic = selectorPlugin?.selectorPanel?.invoke("getTooltipLogic")
 
         selectorPlugin?.isSelected = false
         selectorPlugin?.isEqual = false
