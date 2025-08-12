@@ -46,7 +46,7 @@ object PersonSerialization {
         val xp: Long = 0,
         val bonusXp: Long = 0,
         val points: Int = 0,
-        val trueMemKeys: List<String> = emptyList(),
+        val memKeys: Map<String, Any> = emptyMap(),
         val gameMods: Set<GameModInfo>,
     )
 
@@ -72,16 +72,26 @@ object PersonSerialization {
                 add("wasplayer")
         }
 
-        val memKeys = buildList {
+        val memKeys = buildMap<String, Any> {
+            json.optJSONObject("memKeys")?.let { memKeysJson ->
+                memKeysJson.keys().forEach { keyName ->
+                    if (keyName !is String) return@forEach
+                    memKeysJson.opt(keyName)?.let { obj ->
+                        put("$$keyName", obj)
+                    }
+                }
+            }
+
+            // LEGACY behavior
             json.optJSONArray("trueMemKeys")?.let { arr ->
                 for (i in 0 until arr.length()) {
-                    add(arr.optString(i))
+                    put("$" + arr.optString(i), true)
                 }
             }
             // LEGACY behavior
-            if (json.optBoolean("mentored", false)) add(Misc.MENTORED)
-            if (json.optBoolean("mercenary", false)) add(Misc.IS_MERCENARY)
-            if (json.optBoolean("unremovable", false)) add(Misc.CAPTAIN_UNREMOVABLE)
+            if (json.optBoolean("mentored", false)) put("$" + Misc.MENTORED, true)
+            if (json.optBoolean("mercenary", false)) put("$" + Misc.IS_MERCENARY, true)
+            if (json.optBoolean("unremovable", false)) put("$" + Misc.CAPTAIN_UNREMOVABLE, true)
         }
 
         val gender = try {
@@ -107,7 +117,7 @@ object PersonSerialization {
             xp = json.optLong("xp", 0),
             bonusXp = json.optLong("bonusxp", 0),
             points = json.optInt("points", 0),
-            trueMemKeys = memKeys,
+            memKeys = memKeys,
             gameMods = gameMods
         )
     }
@@ -183,7 +193,10 @@ object PersonSerialization {
         person.stats.bonusXp = data.bonusXp
         person.stats.points = data.points
 
-        data.trueMemKeys.forEach { person.memoryWithoutUpdate.set(it, true) }
+        data.memKeys.forEach { (key, value) ->
+            if (value is String || value is Boolean)
+                person.memoryWithoutUpdate.set(key, value)
+        }
 
         return person
     }
@@ -289,7 +302,7 @@ object PersonSerialization {
             json.put("tags", JSONArray(personTags))
 
 
-        val trueMemKeysJSON = JSONArray()
+        val memKeysJSON = JSONObject()
 
         val storedOfficer = person.memoryWithoutUpdate.keys.contains(ModSettings.storedOfficerTag)
 
@@ -297,12 +310,14 @@ object PersonSerialization {
             if (storedOfficer && key == Misc.CAPTAIN_UNREMOVABLE) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
 
             val value = person.memoryWithoutUpdate.get(key)
-            if (value is Boolean && value) {
-                trueMemKeysJSON.put(key)
+            if (value is Boolean
+                || value is String
+            ) {
+                memKeysJSON.put(key.removePrefix("$"), value)
             }
         }
-        if (trueMemKeysJSON.length() > 0)
-            json.put("trueMemKeys", trueMemKeysJSON)
+        if (memKeysJSON.length() > 0)
+            json.put("memKeys", memKeysJSON)
 
         val skillsObject = JSONObject()
         for (skill in person.stats.skillsCopy) {
