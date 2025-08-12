@@ -6,8 +6,6 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
-import com.fs.starfarer.api.ui.Alignment
-import fleetBuilder.features.CargoAutoManage
 import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.fleet.FleetSerialization.buildFleetFull
 import fleetBuilder.ui.CargoAutoManageUIPlugin
@@ -198,6 +196,7 @@ object Dialogs {
         dialog.addToggle("Include Commander as Commander", default = true)
         dialog.addToggle("Include Commander as Officer", default = true)
         dialog.addToggle("Exclude Ships From Missing Mods", default = true)
+        dialog.addToggle("Repair and Set Max CR", default = true)
 
         dialog.onConfirm { fields ->
 
@@ -207,6 +206,7 @@ object Dialogs {
             settings.includeCommanderSetFlagship = fields["Include Commander as Commander"] as Boolean
             settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
             settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
+            val repairAndSetMaxCR = fields["Repair and Set Max CR"] as Boolean
 
             val fleet = Global.getFactory().createEmptyFleet(Factions.PIRATES, FleetTypes.TASK_FORCE, true)
 
@@ -216,6 +216,9 @@ object Dialogs {
             missing.add(buildFleetFull(data, fleet.fleetData, settings))
 
             reportMissingElementsIfAny(missing)
+
+            if (repairAndSetMaxCR)
+                FBMisc.fullFleetRepair(fleet.fleetData)
 
             sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
             Global.getSector().campaignUI.showInteractionDialog(fleet)

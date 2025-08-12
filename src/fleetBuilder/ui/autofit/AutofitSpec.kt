@@ -2,17 +2,12 @@ package fleetBuilder.ui.autofit
 
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.ShipDirectory
 
 data class AutofitSpec @JvmOverloads constructor(
-    //val modId: String,
-    //val modName: String,
-    //val id: String,
     val variant: ShipVariantAPI,
-    //@Deprecated("Use hullIds instead")
-    //val hullId: String,
-    //val hullIds: List<String> = listOf(hullId),
-    var name: String,
-    var description: String? = null,
-    var spriteId: String,
-    var missingFromVariant: MissingElements = MissingElements(),
+    val source: ShipDirectory?, //If from vanilla, this will be null
+    var desiredIndexInMenu: Int = 0,
+    val description: String = "",
+    var missing: MissingElements = MissingElements(),
 )

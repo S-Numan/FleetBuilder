@@ -1,16 +1,25 @@
+## 1.15.0
+- A complete revamp of the Autofit UI. Save compatible.
+- Created the Mod Picker Filter, similar to the Fleet Filter, but for hull mods.
+- Fix dev mode codex button failing to add variant's and members
+- Fix scrollbar on Cargo Auto Manager.
+- Fix force autofit sometimes failing to remove SMods.
+- Added "Repair and Set Max CR" to campaign fleet spawning dialog.
+
 ## 1.14.0
 - Added Cargo Auto Manager. Right click your storage submarket to open a dialog that allows you to automatically take and store cargo items.
 - Fix aggression_doctrine not being applied correctly.
 - Titlescreen message now implemented properly.
 - Added a tooltip to the Codex Button.
 - Added a tooltip to the Fleet Screen Filter.
-- Bracket Support for Fleet Screen Filter.
+- Quote Support for Fleet Screen Filter.
 - Moved the /SaveTransfer folder to be inside the /FleetBuilder folder for organization purposes.
 - Improved JSON reading to skip '#' comments instead of failing.
 - Basic variant compression support. Hold 'Shift" while copying a variant in the refit screen to compress the data into a smaller format.
 - Fix ship modules failing to save after force applying via the autofit ui.
 - "pick_random_variant" boolean for JSON variants. Instead of specifying the contents of a variant, simply use `"pick_random_variant": true`, and a random variant of the hullID will be selected.
 - Fixed codex not being acquried properly when clicking a ship in the missions tabs.
+- Various other undocumented fixes.
 ### Technical
 - A notable amount of backend changes
 

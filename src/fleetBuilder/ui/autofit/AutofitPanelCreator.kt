@@ -7,7 +7,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import org.magiclib.kotlin.setAlpha
 import starficz.*
-import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
@@ -16,8 +15,8 @@ import java.awt.Color
  * @author Starficz
  */
 internal object AutofitPanelCreator {
-    private val PAINTJOB_BUTTON_COLOR = Color(240, 160, 0, 130)
-    private val PAINTJOB_BUTTON_TEXT_COLOR = PAINTJOB_BUTTON_COLOR.brighter().setAlpha(255)
+    private val AUTOFIT_BUTTON_COLOR = Color(240, 160, 0, 130)
+    private val AUTOFIT_BUTTON_TEXT_COLOR = AUTOFIT_BUTTON_COLOR.brighter().setAlpha(255)
     fun toggleAutofitButton(refitTab: UIPanelAPI, inCampaign: Boolean) {
         val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return
         val statsAndHullmodsPanel = refitPanel.findChildWithMethod("getColorFor") as? UIPanelAPI ?: return
@@ -41,7 +40,7 @@ internal object AutofitPanelCreator {
         val coreUI = refitPanel.invoke("getCoreUI") as? UIPanelAPI ?: return
 
         val curPaintjobPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->
-            panel.plugin != null && panel.plugin.getFieldsMatching(name = "autofitPanel").isNotEmpty()
+            panel.plugin != null && panel.plugin is AutofitPanel.AutofitPanelPlugin
         }
 
         // button should be not exist on modules, ships with a perma paintjob, or ships without any possible paintjobs
@@ -90,7 +89,7 @@ internal object AutofitPanelCreator {
         val width = (refitTab.width - 343 + 32).coerceIn(667f, 700f + 213f + 32)
         val height = (refitTab.height - 12).coerceIn(722f, 800f + 26f + 16f + 2f)
         val paintjobPanel =
-            AutofitPanel.createMagicPaintjobRefitPanel(refitTab, refitPanel, coreUI as CoreUIAPI, width, height)
+            AutofitPanel.createMagicAutofitPanel(refitTab, refitPanel, coreUI as CoreUIAPI, width, height)
 
         coreUI.addComponent(paintjobPanel)
 

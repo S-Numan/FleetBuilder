@@ -63,7 +63,5 @@ class CampaignFleetScreenFilter : EveryFrameScript {
 
             prevFleetPanel = fleetPanel
         }
-
-
     }
 }

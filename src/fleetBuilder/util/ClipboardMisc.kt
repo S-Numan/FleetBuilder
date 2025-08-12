@@ -2,8 +2,10 @@ package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
+import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.member.MemberSerialization.saveMemberToJson
@@ -16,9 +18,32 @@ import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
+import fleetBuilder.variants.VariantLib
 import org.json.JSONObject
 
 object ClipboardMisc {
+
+    fun saveVariantToClipboard(variant: ShipVariantAPI, compress: Boolean = false) {
+        val variantToSave = variant.clone()
+        variantToSave.hullVariantId = VariantLib.makeVariantID(variantToSave)
+
+        if (compress) {
+            val comp = VariantSerialization.saveVariantToCompString(
+                variantToSave,
+                ModSettings.getConfiguredVariantSettings()
+            )
+            setClipboardText(comp)
+            DisplayMessage.showMessage("Variant compressed and copied to clipboard")
+        } else {
+            val json = VariantSerialization.saveVariantToJson(
+                variantToSave,
+                ModSettings.getConfiguredVariantSettings()
+            )
+            setClipboardText(json.toString(4))
+            DisplayMessage.showMessage("Variant copied to clipboard")
+        }
+    }
+
     fun codexEntryToClipboard(codex: CodexDialog) {
         val param = getCodexEntryParam(codex)
         if (param == null) return

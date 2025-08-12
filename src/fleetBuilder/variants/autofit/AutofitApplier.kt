@@ -26,12 +26,16 @@ object AutofitApplier {
         fleetMember: FleetMemberAPI,
         ship: ShipAPI,
         coreUI: CoreUIAPI,
-        shipDisplay: UIPanelAPI
+        shipDisplay: UIPanelAPI,
+        refitPanel: UIPanelAPI,
+        allowCargo: Boolean = true,
+        allowStorage: Boolean = true,
+        allowMarket: Boolean = true,
+        allowBlackMarket: Boolean = true
     ) {
         shipDisplay.invoke("setSuppressMessages", true)
 
         try {
-
             baseVariant.source = VariantSource.REFIT
 
             val delegate = FBPlayerAutofitDelegate(
@@ -60,6 +64,9 @@ object AutofitApplier {
                         if (submarket.plugin.isHidden) continue
                         if (!submarket.plugin.isEnabled(coreUI)) continue
                         if (!submarket.plugin.showInCargoScreen()) continue
+                        if (!allowMarket && !submarket.plugin.isFreeTransfer) continue
+                        if (!allowBlackMarket && submarket.plugin.isBlackMarket) continue
+                        if (!allowStorage && submarket.plugin.isFreeTransfer) continue
 
                         for (weapon in submarket.cargo.weapons) {
                             delegate.addAvailableWeapon(
@@ -124,23 +131,26 @@ object AutofitApplier {
                     //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
                 } else {
 
-                    //Add player cargo weapons/fighters to delegate for AutofitPlugin to use.
-                    for (weapon in Global.getSector().playerFleet.cargo.weapons) {
-                        delegate.addAvailableWeapon(
-                            Global.getSettings().getWeaponSpec(weapon.item),
-                            weapon.count,
-                            Global.getSector().playerFleet.cargo,
-                            null
-                        )
+                    if (allowCargo) {
+                        //Add player cargo weapons/fighters to delegate for AutofitPlugin to use.
+                        for (weapon in Global.getSector().playerFleet.cargo.weapons) {
+                            delegate.addAvailableWeapon(
+                                Global.getSettings().getWeaponSpec(weapon.item),
+                                weapon.count,
+                                Global.getSector().playerFleet.cargo,
+                                null
+                            )
+                        }
+                        for (fighter in Global.getSector().playerFleet.cargo.fighters) {
+                            delegate.addAvailableFighter(
+                                Global.getSettings().getFighterWingSpec(fighter.item),
+                                fighter.count,
+                                Global.getSector().playerFleet.cargo,
+                                null
+                            )
+                        }
                     }
-                    for (fighter in Global.getSector().playerFleet.cargo.fighters) {
-                        delegate.addAvailableFighter(
-                            Global.getSettings().getFighterWingSpec(fighter.item),
-                            fighter.count,
-                            Global.getSector().playerFleet.cargo,
-                            null
-                        )
-                    }
+
 
                     auto.doFit(baseVariant, loadout, 0, delegate)
 
@@ -169,6 +179,14 @@ object AutofitApplier {
             //e.printStackTrace()
         }
 
+        try {
+            refitPanel.invoke("syncWithCurrentVariant")
+            shipDisplay.invoke("updateModules")
+            shipDisplay.invoke("updateButtonPositionsToZoomLevel")
+        } catch (e: Exception) {
+            DisplayMessage.showError("Failed to apply variant in refit screen", e)
+        }
+
         shipDisplay.invoke("setSuppressMessages", false)
     }
 
@@ -191,8 +209,8 @@ object AutofitApplier {
         //to.sModdedBuiltIns.clear()
         //to.suppressedMods.clear()
         to.hullMods.toList().forEach { mod ->
-            if (to.hullSpec.builtInMods.contains(mod))
-                return@forEach
+            //if (to.hullSpec.builtInMods.contains(mod))
+            //    return@forEach
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
             if (dontForceClearDMods && VariantLib.getAllDMods().contains(mod))

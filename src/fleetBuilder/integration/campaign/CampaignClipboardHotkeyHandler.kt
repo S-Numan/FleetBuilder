@@ -3,8 +3,6 @@ package fleetBuilder.integration.campaign
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
-import com.fs.starfarer.api.campaign.econ.MarketAPI
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -16,25 +14,17 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.TooltipMakerAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
+import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
-import com.fs.starfarer.coreui.refit.ModWidget
-import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
-import fleetBuilder.features.CargoAutoManage
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.person.PersonSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.ui.CargoAutoManageUIPlugin
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
@@ -86,6 +76,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleKeyDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         if (!event.isCtrlDown) return
+        if (DialogUtil.isPopUpUIOpen()) return
 
         when (event.eventValue) {
             Keyboard.KEY_D -> handleDevModeHotkey(event, sector)
@@ -98,7 +89,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
         //if (!Global.getSettings().isDevMode) return
-        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen()) return
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
@@ -206,7 +197,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
         if (!Global.getSettings().isDevMode) return
-        if (DialogUtil.isPopUpUIOpen()) return
         if (ReflectionMisc.getCodexDialog() != null) return
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
@@ -315,7 +305,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                 val tool = submarketButton.invoke("getTooltip") as? TooltipMakerAPI ?: return@forEach
                 val pluginField = tool.getFieldsMatching(fieldAccepts = SubmarketPlugin::class.java, searchSuperclass = true).getOrNull(0)
-                val submarketPlugin = tool.get(pluginField?.name, searchSuperclass = true) as? SubmarketPlugin
+                val submarketPlugin = pluginField?.get(tool) as? SubmarketPlugin
                     ?: return@forEach
                 val selectedSubmarket = submarketPlugin.submarket
 
@@ -335,15 +325,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
         if (!event.isShiftDown) return
-        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen()) return
         event.consume()
 
         createDevModeDialog()
     }
 
     private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (DialogUtil.isPopUpUIOpen()) return
-
         try {
             val codex = ReflectionMisc.getCodexDialog()
             when {
@@ -440,30 +428,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         val baseVariant = ReflectionMisc.getCurrentVariantInRefitTab() ?: return
 
-        val variantToSave = baseVariant.clone()
-        variantToSave.hullVariantId = VariantLib.makeVariantID(baseVariant)
-
-        if (!event.isShiftDown) {
-            val json = VariantSerialization.saveVariantToJson(
-                variantToSave,
-                ModSettings.getConfiguredVariantSettings()
-            )
-            ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessage.showMessage("Variant copied to clipboard")
-        } else {
-            val comp = VariantSerialization.saveVariantToCompString(
-                variantToSave,
-                ModSettings.getConfiguredVariantSettings()
-            )
-            ClipboardUtil.setClipboardText(comp)
-            DisplayMessage.showMessage("Variant compressed and copied to clipboard")
-        }
+        ClipboardMisc.saveVariantToClipboard(baseVariant, event.isShiftDown)
 
         event.consume()
     }
 
     private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             handleRefitPaste(event)
@@ -512,7 +483,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
 
             val shipPreviewWidth = 375f
-            val popUpHeight = 520f
+            val popUpHeight = 490f
 
             dialog.addParagraph(
                 loadoutBaseHullName,
@@ -522,23 +493,27 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 highlightWords = arrayOf(loadoutBaseHullName)
             )
 
+            val height = shipPreviewWidth - (dialog.x * 2)
 
-            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, shipPreviewWidth - (dialog.x * 2) + AutofitSelector.descriptionHeight, null)
+            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, height, null)
             val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
 
             val selectorPanel = AutofitSelector.createAutofitSelector(
-                variant as HullVariantSpec, paintjobSpec = AutofitSpec(variant, name = variant.displayName, description = "", spriteId = variant.hullSpec.spriteName),
-                shipPreviewWidth - (dialog.x * 2)
+                autofitSpec = AutofitSpec(variant, null),
+                height,
+                addDescription = false,
+                centerTitle = true
             )
+
             tempTMAPI.addComponent(selectorPanel)
-            AutofitPanel.makeTooltip(tempTMAPI, selectorPanel, variant)
+            AutofitPanel.makeTooltip(selectorPanel, variant)
 
             tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
 
             dialog.addCustom(tempPanel)
 
 
-            dialog.onConfirm { fields ->
+            dialog.onConfirm {
 
                 importShipLoadout(variant, missing)
 
@@ -692,30 +667,17 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleRefitRemoveHullMod(event: InputEventAPI) {
+        val coreUI = ReflectionMisc.getCoreUI() ?: return
+        val isAutofitPanelOpen = coreUI
+            .getChildrenCopy()
+            .filterIsInstance<CustomPanelAPI>()
+            .any { it.plugin is AutofitPanel.AutofitPanelPlugin }
+        if (isAutofitPanelOpen) return
+
         try {
-            val refitTab = ReflectionMisc.getRefitTab() ?: return
-            //val refitTabChildren = refitTab.invoke("getChildrenCopy") as? MutableList<*> ?: return
-            val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
-            val children = refitPanel?.getChildrenCopy() ?: return
-            var desiredChild: UIPanelAPI? = null
-            children.forEach { child ->
-                var yup = false
+            val refitPanel = ReflectionMisc.getRefitPanel() ?: return
+            val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return
 
-                val panel = child as? UIPanelAPI
-                val childsChildren = panel?.getChildrenCopy()
-                childsChildren?.forEach { childChildChild ->
-                    if (childChildChild.getMethodsMatching("removeNotApplicableMods").isNotEmpty()) {
-                        yup = true
-                        return@forEach
-                    }
-                }
-                if (yup) {
-                    desiredChild = child as? UIPanelAPI
-                    return@forEach
-                }
-            }
-
-            val modWidget = desiredChild?.findChildWithMethod("removeNotApplicableMods") as? ModWidget ?: return
             val modWidgetModIcons = modWidget.findChildWithMethod("getColumns")
 
             @Suppress("UNCHECKED_CAST")
@@ -733,7 +695,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 ) {
                     val hullModField = item.getFieldsMatching(fieldAssignableTo = HullModSpecAPI::class.java).firstOrNull()
                         ?: return@forEach
-                    val hullModID = item.get(hullModField.name) as? HullModSpecAPI ?: return@forEach
+                    val hullModID = hullModField.get(item) as? HullModSpecAPI ?: return@forEach
 
                     val variant = ReflectionMisc.getCurrentVariantInRefitTab()
                     if (variant != null) {

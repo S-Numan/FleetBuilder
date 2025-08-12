@@ -2,55 +2,33 @@ package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
-import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.fleet.RepairTrackerAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags
-import com.fs.starfarer.api.loading.FighterWingSpecAPI
-import com.fs.starfarer.api.loading.HullModSpecAPI
-import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
-import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.CommanderShuttle.playerShuttleExists
 import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
-import fleetBuilder.persistence.cargo.CargoSerialization.getCargoFromJson
-import fleetBuilder.persistence.cargo.CargoSerialization.saveCargoToJson
 import fleetBuilder.persistence.fleet.FleetSerialization
 import fleetBuilder.persistence.fleet.FleetSerialization.buildFleetFull
 import fleetBuilder.persistence.fleet.FleetSerialization.getFleetFromJson
 import fleetBuilder.persistence.fleet.FleetSerialization.saveFleetToJson
 import fleetBuilder.persistence.fleet.FleetSerialization.validateAndCleanFleetData
 import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.member.MemberSerialization.saveMemberToJson
 import fleetBuilder.persistence.person.PersonSerialization
-import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJsonWithMissing
-import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
 import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
-import fleetBuilder.ui.popUpUI.PopUpUIDialog
-import fleetBuilder.util.ClipboardUtil.cleanJsonStringInput
-import fleetBuilder.util.ClipboardUtil.getClipboardJSONFileContents
-import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe
-import fleetBuilder.util.ClipboardUtil.setClipboardText
-import fleetBuilder.util.DialogUtil.initPopUpUI
-import fleetBuilder.util.DisplayMessage.showError
 import fleetBuilder.util.DisplayMessage.showMessage
-import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
-import fleetBuilder.variants.*
-import org.json.JSONArray
+import fleetBuilder.variants.GameModInfo
+import fleetBuilder.variants.MissingElements
+import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
-import org.lazywizard.lazylib.ext.json.optFloat
-import org.lwjgl.input.Keyboard
 import java.awt.Color
 import java.util.*
 import kotlin.math.max
@@ -172,7 +150,7 @@ object FBMisc {
             playerFleet.cargo.removeCrew(overflow.coerceAtMost(playerFleet.fleetData.minCrew).toInt())
         }
         // Repair
-        fullFleetRepair(playerFleet)
+        fullFleetRepair(playerFleet.fleetData)
 
 
         updateFleetPanelContents()
@@ -227,8 +205,8 @@ object FBMisc {
         return total
     }
 
-    fun fullFleetRepair(fleet: CampaignFleetAPI) {
-        fleet.fleetData.membersListCopy.forEach { member ->
+    fun fullFleetRepair(fleet: FleetDataAPI) {
+        fleet.membersListCopy.forEach { member ->
             member.status.repairFully()
 
             val repairs: RepairTrackerAPI = member.repairTracker
@@ -237,11 +215,11 @@ object FBMisc {
         }
     }
 
-    fun isMouseHoveringOverComponent(component: UIComponentAPI): Boolean {
-        val x = component.position.x
-        val y = component.position.y
-        val width = component.position.width
-        val height = component.position.height
+    fun isMouseHoveringOverComponent(component: UIComponentAPI, pad: Float = 0f): Boolean {
+        val x = component.position.x - pad
+        val y = component.position.y - pad
+        val width = component.position.width + pad * 2
+        val height = component.position.height + pad * 2
 
         return isMouseWithinBounds(x, y, width, height)
     }

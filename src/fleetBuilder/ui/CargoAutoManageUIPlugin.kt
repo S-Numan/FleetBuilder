@@ -7,35 +7,18 @@ import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.PositionAPI
-import com.fs.starfarer.api.ui.TextFieldAPI
-import com.fs.starfarer.api.ui.TooltipMakerAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
+import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.ui.trade.CargoItemStack
-import fleetBuilder.features.CargoAutoManage
-import fleetBuilder.features.ItemAutoManage
-import fleetBuilder.features.loadCargoAutoManage
-import fleetBuilder.features.saveCargoAutoManage
-import fleetBuilder.features.unsetCargoAutoManage
+import fleetBuilder.features.*
 import fleetBuilder.ui.popUpUI.PopUpUI
 import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.DialogUtil
 import fleetBuilder.util.Dialogs
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.ReflectionMisc
 import org.lwjgl.input.Keyboard
+import starficz.*
 import starficz.ReflectionUtils.invoke
-import starficz.addPara
-import starficz.addTooltip
-import starficz.allChildsWithMethod
-import starficz.getChildrenCopy
-import starficz.height
-import starficz.onClick
-import starficz.width
 
 //The implementation of this is extremely scuffed, I am aware.
 
@@ -53,7 +36,7 @@ class CargoAutoManageUIPlugin(
 
     private val dialog: PopUpUIDialog
     private val market: MarketAPI
-    private val ui: TooltipMakerAPI
+    private val scrollerTooltip: TooltipMakerAPI
 
     override fun positionChanged(position: PositionAPI?) {}
     override fun renderBelow(alphaMult: Float) {}
@@ -282,14 +265,14 @@ class CargoAutoManageUIPlugin(
         panel = Global.getSettings().createCustom(width - dialog.x * 2, height - (dialog.y * 2) - 100f, this)
 
         // Create main UI container
-        ui = panel.createUIElement(panel.width, panel.height, true)
+        scrollerTooltip = panel.createUIElement(panel.width, panel.height, true)
 
         // Header row
         val headers = listOf("Item", "Amount", "Percent", "Take", "Put", "Quick Stack")
         var xPos = 0f
         headers.forEachIndexed { index, text ->
             val colWidth = columnWidths[index]
-            val label = ui.addSectionHeading(text, Misc.getTextColor(), Misc.getDarkPlayerColor().darker().darker(), Alignment.MID, colWidth - spacing, 0f)
+            val label = scrollerTooltip.addSectionHeading(text, Misc.getTextColor(), Misc.getDarkPlayerColor().darker().darker(), Alignment.MID, colWidth - spacing, 0f)
             label.position.inTL(xPos, 0f)
             xPos += colWidth + spacing
         }
@@ -305,29 +288,29 @@ class CargoAutoManageUIPlugin(
             )
 
             commodities.forEach { commodity ->
-                yOffset = addStack(commodity.name, commodity.iconName, CargoAPI.CargoItemType.RESOURCES, commodity.id, "0", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing)
+                yOffset = addStack(commodity.name, commodity.iconName, CargoAPI.CargoItemType.RESOURCES, commodity.id, "0", "", false, false, false, scrollerTooltip, rowHeight, yOffset, columnWidths, spacing)
             }
             yOffset = addStack(
                 "Weapons and Wings", defaultIcon,
                 CargoAPI.CargoItemType.NULL, "weapon_and_wings",
-                "0", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing
+                "0", "", false, false, false, scrollerTooltip, rowHeight, yOffset, columnWidths, spacing
             )
             yOffset = addStack(
                 "Blueprints and ModSpecs", defaultIcon,
                 CargoAPI.CargoItemType.NULL, "blueprints_and_modspecs",
-                "0", "", false, false, false, ui, rowHeight, yOffset, columnWidths, spacing
+                "0", "", false, false, false, scrollerTooltip, rowHeight, yOffset, columnWidths, spacing
             )
         } else {
             cargoAutoManage.autoManageItems.forEach { item ->
                 yOffset = addStack(
                     item.displayName, item.icon, item.type, item.data, item.amount?.toString()
                         ?: "", item.percent?.toString()
-                        ?: "", item.take, item.put, item.quickStack, ui, rowHeight, yOffset, columnWidths, spacing
+                        ?: "", item.take, item.put, item.quickStack, scrollerTooltip, rowHeight, yOffset, columnWidths, spacing
                 )
             }
         }
 
-        val addCustom = ui.addAreaCheckbox("Add Custom", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), columnWidths[0], rowHeight, 0f)
+        val addCustom = scrollerTooltip.addAreaCheckbox("Add Custom", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), columnWidths[0], rowHeight, 0f)
         addCustom.position.inTL(0f, yOffset + (rowHeight - addCustom.position.height) / 2f)
         addCustom.onClick {
             dialog.forceDismiss()
@@ -349,7 +332,9 @@ class CargoAutoManageUIPlugin(
             }
         }
 
-        panel.addUIElement(ui).inTL(0f, 0f)
+        scrollerTooltip.heightSoFar = -addCustom.yAlignOffset + addCustom.height
+
+        panel.addUIElement(scrollerTooltip).inTL(0f, 0f)
 
 
 
