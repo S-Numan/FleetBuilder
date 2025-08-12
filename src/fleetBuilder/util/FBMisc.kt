@@ -2,6 +2,7 @@ package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
+import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
@@ -388,17 +389,21 @@ object FBMisc {
                 officer.name = randomPerson.name
                 officer.portraitSprite = randomPerson.portraitSprite
             } else {
-                val faction = Global.getSettings().getFactionSpec(Factions.PLAYER)
-                val portrait = if (Math.random() < 0.5)
-                    faction.malePortraits.pick()
-                else
-                    faction.femalePortraits.pick()
-
-                officer.portraitSprite = portrait
+                officer.name.gender = FullName.Gender.ANY
+                officer.portraitSprite = getRandomPortrait(officer.name.gender, faction = faction?.id)
                 officer.name.first = "Unknown"
-                officer.name.last = "Officer"
             }
         }
+    }
+
+    fun getRandomPortrait(gender: FullName.Gender = FullName.Gender.ANY, faction: String? = null): String {
+        val faction = Global.getSettings().getFactionSpec(faction ?: Factions.PLAYER)
+        return if (gender == FullName.Gender.MALE)
+            faction.malePortraits.pick()
+        else if (gender == FullName.Gender.FEMALE)
+            faction.femalePortraits.pick()
+        else
+            if (Random().nextBoolean()) faction.malePortraits.pick() else faction.femalePortraits.pick()
     }
 
     fun getModInfosFromJson(json: JSONObject, onlyMissing: Boolean = false): MutableSet<GameModInfo> {

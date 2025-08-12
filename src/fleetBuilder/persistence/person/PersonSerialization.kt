@@ -11,6 +11,7 @@ import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJson
 import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.FBMisc.getRandomPortrait
 import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
@@ -199,16 +200,6 @@ object PersonSerialization {
         }
 
         return person
-    }
-
-    private fun getRandomPortrait(gender: FullName.Gender): String {
-        val faction = Global.getSettings().getFactionSpec(Factions.PLAYER)
-        return if (gender == FullName.Gender.MALE)
-            faction.malePortraits.pick()
-        else if (gender == FullName.Gender.FEMALE)
-            faction.femalePortraits.pick()
-        else
-            if (Random().nextBoolean()) faction.malePortraits.pick() else faction.femalePortraits.pick()
     }
 
     fun buildPersonFull(
