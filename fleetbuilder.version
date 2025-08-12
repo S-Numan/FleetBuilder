@@ -5,11 +5,11 @@
   "modVersion":
     {
       "major": 1,
-      "minor": 14,
+      "minor": 15,
       "patch": "0" # Can be a number, character or string (1, 2, a, b, "-RC2", etc)
     },
 
-  #"modThreadId": 0,
+  "modThreadId": 33414,
 
   "directDownloadURL": "https://github.com/S-Numan/FleetBuilder/releases/latest/download/FleetBuilder.zip",
 
