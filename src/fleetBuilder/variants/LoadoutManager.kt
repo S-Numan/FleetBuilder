@@ -222,25 +222,25 @@ object LoadoutManager {
 
         val coreVariantSpecs = mutableListOf<AutofitSpec>()
 
-        for ((i, variant) in variants.withIndex()) {
-            if (variant.isGoalVariant && ModSettings.showCoreGoalVariants)
+        var variantCount = 0
+        variants.forEach { variant ->
+            val shouldShow = when {
+                variant.isGoalVariant -> ModSettings.showCoreGoalVariants
+                else -> ModSettings.showCoreNonGoalVariants
+            }
+
+            if (shouldShow) {
+                val label = if (variant.isGoalVariant) "Core Autofit Variant" else "Core Variant"
                 coreVariantSpecs.add(
                     AutofitSpec(
                         variant,
                         source = null,
-                        desiredIndexInMenu = i + indexOffset,
-                        "Core Autofit Variant"
+                        desiredIndexInMenu = variantCount + indexOffset,
+                        label
                     )
                 )
-            else if (!variant.isGoalVariant && ModSettings.showCoreNonGoalVariants)
-                coreVariantSpecs.add(
-                    AutofitSpec(
-                        variant,
-                        source = null,
-                        desiredIndexInMenu = i + indexOffset,
-                        "Core Variant"
-                    )
-                )
+                variantCount++
+            }
         }
 
         return coreVariantSpecs
