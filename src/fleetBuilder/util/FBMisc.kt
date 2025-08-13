@@ -42,7 +42,7 @@ object FBMisc {
         settings: FleetSerialization.FleetSettings = FleetSerialization.FleetSettings()
     ): MissingElements {
         val missing = MissingElements()
-        val fleet = FleetSerialization.createCampaignFleetFromData(data, false, missing = missing)
+        val fleet = FleetSerialization.createCampaignFleetFromData(data, true, missing = missing)
 
         replacePlayerFleetWith(
             fleet,

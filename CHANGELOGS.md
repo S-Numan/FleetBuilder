@@ -8,6 +8,7 @@
 - Fleet saving can now save and load the fleet's faction.
 - Simplified the Save Transfer dialog
 - Show message when Cargo Auto Manager manages your cargo. For clarity.
+- Fleet panel now updates when appending or replacing fleet.
 
 ## 1.15.0
 - A complete revamp of the Autofit UI. Save compatible.

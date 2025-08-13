@@ -136,6 +136,8 @@ object Dialogs {
 
             if (fields["Fulfill cargo, fuel, crew, and repair for fleet"] as Boolean)
                 FBMisc.fulfillPlayerFleet()
+
+            ReflectionMisc.updateFleetPanelContents()
         }
         dialog.addPadding(24f)
 
@@ -156,6 +158,8 @@ object Dialogs {
 
             if (fields["Fulfill cargo, fuel, crew, and repair for fleet"] as Boolean)
                 FBMisc.fulfillPlayerFleet()
+
+            ReflectionMisc.updateFleetPanelContents()
         }
         dialog.addToggle("Set Aggression Doctrine", default = true)
         dialog.addToggle("Replace Player with Commander", default = false)

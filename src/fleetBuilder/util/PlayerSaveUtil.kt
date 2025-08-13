@@ -176,7 +176,7 @@ object PlayerSaveUtil {
             try {
                 val fleetJson = json.getJSONObject("fleet")
                 val fleet = FleetSerialization.createCampaignFleetFromData(
-                    FleetSerialization.extractFleetDataFromJson(fleetJson), false,
+                    FleetSerialization.extractFleetDataFromJson(fleetJson), true,
                     FleetSerialization.FleetSettings().apply {
                         includeCommanderSetFlagship = false
                         includeCommanderAsOfficer = false
