@@ -38,7 +38,8 @@ class UnstoreOfficersInCargo : EveryFrameScript {
                 member.captain.memoryWithoutUpdate.unset(ModSettings.storedOfficerTag)
                 member.captain.memoryWithoutUpdate.unset(Misc.CAPTAIN_UNREMOVABLE)
 
-                playerFleet.fleetData.addOfficer(member.captain)
+                if (!member.captain.isDefault && !member.captain.isAICore)
+                    playerFleet.fleetData.addOfficer(member.captain)
             }
         }
     }

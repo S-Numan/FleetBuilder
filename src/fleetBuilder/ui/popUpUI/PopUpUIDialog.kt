@@ -50,6 +50,7 @@ open class PopUpUIDialog(
     private val previousTextValues = mutableMapOf<String, String>()
 
     private var confirmCallback: ((Map<String, Any>) -> Unit)? = null
+    private var cancelCallback: ((Map<String, Any>) -> Unit)? = null
     private var exitCallback: ((Map<String, Any>) -> Unit)? = null
 
     fun addToggle(
@@ -85,6 +86,7 @@ open class PopUpUIDialog(
         }
     }
 
+    
     fun addTextField(
         label: String,
         default: String = "",
@@ -147,6 +149,10 @@ open class PopUpUIDialog(
 
     fun onConfirm(callback: (Map<String, Any>) -> Unit) {
         confirmCallback = callback
+    }
+
+    fun onCancel(callback: (Map<String, Any>) -> Unit) {
+        cancelCallback = callback
     }
 
     fun onExit(callback: (Map<String, Any>) -> Unit) {
@@ -261,6 +267,10 @@ open class PopUpUIDialog(
 
     override fun applyConfirmScript() {
         confirmCallback?.invoke(collectFieldStates())
+    }
+
+    override fun applyCancelScript() {
+        cancelCallback?.invoke(collectFieldStates())
     }
 
     private fun collectFieldStates(): Map<String, Any> {

@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
+import fleetBuilder.config.ModSettings
 import fleetBuilder.util.*
 
 
@@ -24,6 +25,8 @@ class CargoAutoManager : EveryFrameScript {
         val market = interactionTarget?.market
 
         if (market != null && interactionMarket == null) {// Market Enter
+            var changeOccured = false
+
             interactionMarket = market
 
             interactionMarket?.submarketsCopy?.forEach { submarket ->
@@ -32,31 +35,46 @@ class CargoAutoManager : EveryFrameScript {
                 if (!cargoAutoManage.applyOnInteraction) return@forEach
 
                 cargoAutoManage.autoManageItems.forEach { item ->
-                    manageCargo(item, submarket)
+                    if (manageCargo(item, submarket))
+                        changeOccured = true
                 }
             }
+
+            if (changeOccured)
+                DisplayMessage.showMessage("Cargo auto-managed")
+
         } else if (market == null && interactionMarket != null) { // Market Leave
+            var changeOccured = false
+
             interactionMarket?.submarketsCopy?.forEach { submarket ->
                 val cargoAutoManage = loadCargoAutoManage(submarket)
                     ?: return@forEach
                 if (!cargoAutoManage.applyOnLeave) return@forEach
 
                 cargoAutoManage.autoManageItems.forEach { item ->
-                    manageCargo(item, submarket)
+                    if (manageCargo(item, submarket))
+                        changeOccured = true
                 }
             }
 
             interactionMarket = market
+
+            if (changeOccured && ModSettings.reportCargoAutoManagerChanges)
+                DisplayMessage.showMessage("Cargo auto-managed")
         }
+
+
     }
 
     private fun manageCargo(
         item: ItemAutoManage,
         submarket: SubmarketAPI
-    ) {
+    ): Boolean {
         val playerCargo = Global.getSector().playerFleet.cargo
 
         var playerItemQuantity = getItemQuantity(item, playerCargo)
+
+        var changeOccured = false
 
         if (item.put && playerItemQuantity > 0) {
             var amount = 0
@@ -64,6 +82,7 @@ class CargoAutoManager : EveryFrameScript {
                 if (playerItemQuantity > item.amount.toFloat()) {
                     amount = (playerItemQuantity - item.amount.toFloat()).coerceAtMost(playerItemQuantity).toInt()
                     moveItem(item, playerCargo, submarket.cargo, amount)
+                    changeOccured = true
                 }
             } else if (item.percent != null) {
                 val percent = item.percent.toFloat().coerceIn(0f, 1f)
@@ -78,6 +97,7 @@ class CargoAutoManager : EveryFrameScript {
                 if (playerItemQuantity > desiredAmount) {
                     amount = (playerItemQuantity - desiredAmount).coerceIn(0f, playerItemQuantity).toInt()
                     moveItem(item, playerCargo, submarket.cargo, amount)
+                    changeOccured = true
                 }
             }
         }
@@ -92,8 +112,8 @@ class CargoAutoManager : EveryFrameScript {
             if (item.amount != null) {
                 if (playerItemQuantity < item.amount.toFloat()) {
                     amount = (item.amount.toFloat() - playerItemQuantity).coerceAtMost(submarketItemQuantity).toInt()
-
                     moveItem(item, submarket.cargo, playerCargo, amount)
+                    changeOccured = true
                 }
             } else if (item.percent != null) {
                 val percent = item.percent.toFloat().coerceIn(0f, 1f)
@@ -107,8 +127,8 @@ class CargoAutoManager : EveryFrameScript {
                 val desiredAmount = percent * capacity
                 if (playerItemQuantity < desiredAmount) {
                     amount = (desiredAmount - playerItemQuantity).coerceIn(0f, submarketItemQuantity).toInt()
-
                     moveItem(item, submarket.cargo, playerCargo, amount)
+                    changeOccured = true
                 }
             }
 
@@ -137,7 +157,10 @@ class CargoAutoManager : EveryFrameScript {
 
         if (item.quickStack && playerItemQuantity > 0 && submarketItemQuantity > 0) {
             moveItem(item, playerCargo, submarket.cargo)
+            changeOccured = true
         }
+
+        return changeOccured
     }
 
     private fun moveItem(

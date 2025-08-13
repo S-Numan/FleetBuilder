@@ -46,7 +46,7 @@ This menu allows you to configure automatically taking and/or depositing cargo i
 You can, for example, automatically stock up on supplies, fuel, and crew on interaction with a market.
 You can also automatically deposit all weapons when interacting with a market
 Highly configurable",,,Hotkey Handler
-,,,,,,,,
+reportCargoAutoManagerChanges,Report Cargo Auto Manager Changes,Boolean,true,,"If true, will show a message at the top of the screen every time the Cargo Auto Manager moves your cargo on entering or leaving a market.",,,Hotkey Handler
 ,,,,,,,,
 randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, automatically randomizes the ship name and officer name/portrait if present when pasting an element with them.
 

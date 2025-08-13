@@ -51,7 +51,6 @@ object LoadoutManager {
             Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", json, false)
         }
 
-
         shipDirectories.clear()
 
         // Load all prefixed ship directories
@@ -63,16 +62,15 @@ object LoadoutManager {
     fun loadShipDirectory(dirPath: String, prefix: String): ShipDirectory? {
 
         val configFilePath = "$dirPath$prefix/$DIRECTORYCONFIGNAME"
+        val directory: JSONObject
+        if (Global.getSettings().fileExistsInCommon(configFilePath)) {
+            if (shipDirectories.any { it.dir + it.prefix == "$dirPath$prefix" })
+                throw Error("Loadout pack name conflict.\nThe prefix '$prefix' is already taken. You must rename the folder '/saves/common/$dirPath$prefix' to something other than '$prefix', as '$prefix' is already in use")
+            directory = Global.getSettings().readJSONFromCommon(configFilePath, false)
+        } else
+            return null
+
         return try {
-            val directory: JSONObject
-            if (Global.getSettings().fileExistsInCommon(configFilePath)) {
-                if (shipDirectories.any { it.dir + it.prefix == "$dirPath$prefix" })
-                    throw Error("Loadout pack name conflict.\nThe prefix '$prefix' is already taken. You must rename the folder '/saves/common/$dirPath$prefix' to something other than '$prefix', as '$prefix' is already in use")
-                directory = Global.getSettings().readJSONFromCommon(configFilePath, false)
-            } else
-                return null
-
-
             upgradeLegacyShipPaths(directory, configFilePath)
 
             val ships = mutableMapOf<String, ShipVariantAPI>()

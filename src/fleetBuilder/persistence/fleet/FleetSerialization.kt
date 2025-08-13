@@ -3,6 +3,8 @@ package fleetBuilder.persistence.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
+import com.fs.starfarer.api.impl.campaign.ids.Factions
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.fleet.FleetSerialization.getFleetFromJson
@@ -60,6 +62,7 @@ object FleetSerialization {
     data class ParsedFleetData(
         val fleetName: String,
         val aggression: Int,
+        val factionID: String,
         val commander: PersonSerialization.ParsedPersonData?,
         val members: List<MemberSerialization.ParsedMemberData>,
         val idleOfficers: List<PersonSerialization.ParsedPersonData>,
@@ -134,9 +137,12 @@ object FleetSerialization {
 
         val aggression = json.optInt("aggression_doctrine", -1)
 
+        val factionID = json.optString("factionID", "")
+
         return ParsedFleetData(
             fleetName = fleetName,
             aggression = aggression,
+            factionID = factionID,
             commander = commander,
             members = members,
             idleOfficers = idleOfficers,
@@ -144,7 +150,6 @@ object FleetSerialization {
             gameMods = gameMods
         )
     }
-
 
     fun filterParsedFleetData(data: ParsedFleetData, settings: FleetSettings): ParsedFleetData {
 
@@ -171,7 +176,6 @@ object FleetSerialization {
                 filtered
             }
         }
-
 
         val filteredIdleOfficers = if (settings.includeIdleOfficers) {
             data.idleOfficers.map {
@@ -223,6 +227,10 @@ object FleetSerialization {
             PersonSerialization.validateAndCleanPersonData(it, missing)
         }
 
+        val validatedFaction =
+            if (Global.getSettings().allFactionSpecs.any { it.id == data.factionID }) data.factionID
+            else ""
+
         if (data.secondInCommandData != null)
             validateSecondInCommandData(data.secondInCommandData, missing)
 
@@ -230,13 +238,17 @@ object FleetSerialization {
             members = validatedMembers,
             commander = validatedCommander,
             idleOfficers = validatedIdleOfficers,
-            secondInCommandData = data.secondInCommandData
+            secondInCommandData = data.secondInCommandData,
+            factionID = validatedFaction
         )
     }
 
     fun buildFleet(data: ParsedFleetData, fleet: FleetDataAPI, settings: FleetSettings) {
-        val campFleet = fleet.fleet
+        val campFleet: CampaignFleetAPI? = fleet.fleet
         campFleet?.name = data.fleetName
+
+        if (data.factionID.isNotEmpty())
+            campFleet?.setFaction(data.factionID)
 
         data.members.forEach { parsed ->
             val member = MemberSerialization.buildMember(parsed)
@@ -330,6 +342,18 @@ object FleetSerialization {
         settings: FleetSettings = FleetSettings()
     ): MissingElements {
         return getFleetFromJson(json, inputCampaignFleet.fleetData, settings)
+    }
+
+    @JvmOverloads
+    fun createCampaignFleetFromData(
+        data: ParsedFleetData,
+        aiMode: Boolean,
+        settings: FleetSettings = FleetSettings(),
+        missing: MissingElements = MissingElements()
+    ): CampaignFleetAPI {
+        val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, aiMode)
+        missing.add(buildFleetFull(data, fleet.fleetData, settings))
+        return fleet
     }
 
 
@@ -625,7 +649,7 @@ object FleetSerialization {
 
         fleetJson.put("members", membersJson)
         fleetJson.put("variants", variantsJson)
-        if (settings.includeAggression && campFleet != null && campFleet.faction != null)
+        if (settings.includeAggression && campFleet?.faction != null)
             fleetJson.put("aggression_doctrine", campFleet.faction.doctrine.aggression)
 
         if (settings.includeIdleOfficers) {
@@ -645,6 +669,7 @@ object FleetSerialization {
             if (Global.getSettings().modManager.isModEnabled("second_in_command"))
                 saveSecondInCommandData(campFleet, fleetJson)
 
+            fleetJson.put("factionID", campFleet.faction.id)
         }
 
         return fleetJson

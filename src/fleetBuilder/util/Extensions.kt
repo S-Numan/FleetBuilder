@@ -45,10 +45,11 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
 // Extension to get the effective hull ID
 fun ShipHullSpecAPI.getEffectiveHullId(): String {
     return if (isCompatibleWithBase) {//If the ship's variants are mostly compatible with the variant's of the base hull.
-        if (!dParentHullId.isNullOrEmpty() && dParentHullId != hullId)//If is DHull
-            dParentHullId//Get D Parent Hull
-        else
-            baseHullId//Otherwise, get de base hull
+        //The commented out below had issues when a hull was a _d variant of an alternate skin hull. It failed to get the effective hull.
+        //if (!dParentHullId.isNullOrEmpty() && dParentHullId != hullId)//If is DHull
+        //    dParentHullId//Get D Parent Hull
+        //else
+        baseHullId//Otherwise, get de base hull
     } else
         hullId
 }

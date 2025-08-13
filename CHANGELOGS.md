@@ -1,3 +1,15 @@
+## 1.16.0
+- Saving and loading should now support Combat Chatter.
+- Fix niche situation whereas the autofit menu fails to get the variants when viewing a skin of a hull, which happens to be dmodded skin and thus posses a dParentHullId.
+- Fix saving variants with built in wings and non built in wings at the same time.
+- Fix being unable to CTRL click copy the current variant.
+- Fix stored AI core officers being added to the fleet officers on recovery from submarket.
+- Fix accidental saving of the stored officer memKey
+- Fleet saving can now save and load the fleet's faction.
+- Simplified the Save Transfer dialog
+- Show message when Cargo Auto Manager manages your cargo. For clarity.
+- Fleet panel now updates when appending or replacing fleet.
+
 ## 1.15.0
 - A complete revamp of the Autofit UI. Save compatible.
 - Created the Mod Picker Filter, similar to the Fleet Filter, but for hull mods.

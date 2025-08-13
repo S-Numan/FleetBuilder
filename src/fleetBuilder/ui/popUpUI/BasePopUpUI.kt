@@ -50,6 +50,7 @@ open class BasePopUpUI() : PopUpUI() {
         if (cancelButton != null) {
             if (cancelButton!!.isChecked) {
                 cancelButton!!.isChecked = false
+                applyCancelScript()
                 if (doesCancelForceDismiss)
                     forceDismiss()
             }
@@ -57,6 +58,9 @@ open class BasePopUpUI() : PopUpUI() {
     }
 
     open fun applyConfirmScript() {
+    }
+
+    open fun applyCancelScript() {
     }
 
     fun generateConfirmButton(tooltip: TooltipMakerAPI): ButtonAPI {

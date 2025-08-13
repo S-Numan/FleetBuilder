@@ -11,11 +11,15 @@ import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJson
 import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.FBMisc.getRandomPortrait
 import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.MissingElements
+import org.histidine.chatter.ChatterDataManager
+import org.histidine.chatter.combat.ChatterCombatPlugin
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
+
 
 object PersonSerialization {
 
@@ -46,8 +50,9 @@ object PersonSerialization {
         val xp: Long = 0,
         val bonusXp: Long = 0,
         val points: Int = 0,
-        val trueMemKeys: List<String> = emptyList(),
+        val memKeys: Map<String, Any> = emptyMap(),
         val gameMods: Set<GameModInfo>,
+        val chatterID: String? = null,
     )
 
     fun extractPersonDataFromJson(json: JSONObject): ParsedPersonData {
@@ -72,16 +77,26 @@ object PersonSerialization {
                 add("wasplayer")
         }
 
-        val memKeys = buildList {
+        val memKeys = buildMap<String, Any> {
+            json.optJSONObject("memKeys")?.let { memKeysJson ->
+                memKeysJson.keys().forEach { keyName ->
+                    if (keyName !is String) return@forEach
+                    memKeysJson.opt(keyName)?.let { obj ->
+                        put("$$keyName", obj)
+                    }
+                }
+            }
+
+            // LEGACY behavior
             json.optJSONArray("trueMemKeys")?.let { arr ->
                 for (i in 0 until arr.length()) {
-                    add(arr.optString(i))
+                    put("$" + arr.optString(i), true)
                 }
             }
             // LEGACY behavior
-            if (json.optBoolean("mentored", false)) add(Misc.MENTORED)
-            if (json.optBoolean("mercenary", false)) add(Misc.IS_MERCENARY)
-            if (json.optBoolean("unremovable", false)) add(Misc.CAPTAIN_UNREMOVABLE)
+            if (json.optBoolean("mentored", false)) put("$" + Misc.MENTORED, true)
+            if (json.optBoolean("mercenary", false)) put("$" + Misc.IS_MERCENARY, true)
+            if (json.optBoolean("unremovable", false)) put("$" + Misc.CAPTAIN_UNREMOVABLE, true)
         }
 
         val gender = try {
@@ -107,8 +122,9 @@ object PersonSerialization {
             xp = json.optLong("xp", 0),
             bonusXp = json.optLong("bonusxp", 0),
             points = json.optInt("points", 0),
-            trueMemKeys = memKeys,
-            gameMods = gameMods
+            memKeys = memKeys,
+            gameMods = gameMods,
+            chatterID = json.optString("chatterID", null),
         )
     }
 
@@ -183,19 +199,21 @@ object PersonSerialization {
         person.stats.bonusXp = data.bonusXp
         person.stats.points = data.points
 
-        data.trueMemKeys.forEach { person.memoryWithoutUpdate.set(it, true) }
+        data.memKeys.forEach { (key, value) ->
+            if (value is String || value is Boolean)
+                person.memoryWithoutUpdate.set(key, value)
+        }
+
+        if (Global.getSettings().modManager.isModEnabled("chatter") && data.chatterID != null) {
+            val character = ChatterDataManager.getCharacterData(data.chatterID)
+            if (character != null) {
+                ChatterDataManager.saveCharacter(person, data.chatterID)
+                val plugin = ChatterCombatPlugin.getInstance()
+                plugin?.setCharacterForOfficer(person, data.chatterID)
+            }
+        }
 
         return person
-    }
-
-    private fun getRandomPortrait(gender: FullName.Gender): String {
-        val faction = Global.getSettings().getFactionSpec(Factions.PLAYER)
-        return if (gender == FullName.Gender.MALE)
-            faction.malePortraits.pick()
-        else if (gender == FullName.Gender.FEMALE)
-            faction.femalePortraits.pick()
-        else
-            if (Random().nextBoolean()) faction.malePortraits.pick() else faction.femalePortraits.pick()
     }
 
     fun buildPersonFull(
@@ -289,20 +307,23 @@ object PersonSerialization {
             json.put("tags", JSONArray(personTags))
 
 
-        val trueMemKeysJSON = JSONArray()
+        val memKeysJSON = JSONObject()
 
         val storedOfficer = person.memoryWithoutUpdate.keys.contains(ModSettings.storedOfficerTag)
 
         person.memoryWithoutUpdate.keys.forEach { key ->
-            if (storedOfficer && key == Misc.CAPTAIN_UNREMOVABLE) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
+            if (storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == ModSettings.storedOfficerTag)) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
 
             val value = person.memoryWithoutUpdate.get(key)
-            if (value is Boolean && value) {
-                trueMemKeysJSON.put(key)
+            if (value != "\$autoPointsMult"
+                && (value is Boolean
+                        || value is String)
+            ) {
+                memKeysJSON.put(key.removePrefix("$"), value)
             }
         }
-        if (trueMemKeysJSON.length() > 0)
-            json.put("trueMemKeys", trueMemKeysJSON)
+        if (memKeysJSON.length() > 0)
+            json.put("memKeys", memKeysJSON)
 
         val skillsObject = JSONObject()
         for (skill in person.stats.skillsCopy) {
@@ -311,6 +332,14 @@ object PersonSerialization {
         }
         if (skillsObject.length() > 0)
             json.put("skills", skillsObject)
+
+        if (Global.getSettings().modManager.isModEnabled("chatter")) {
+            val characterId = ChatterDataManager.getCharacterFromMemory(person)
+            if (characterId != null) {
+                //val character = ChatterDataManager.getCharacterData(characterId)
+                json.put("chatterID", characterId)
+            }
+        }
 
 
         return json

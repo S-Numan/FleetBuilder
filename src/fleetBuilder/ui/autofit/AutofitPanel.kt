@@ -325,7 +325,7 @@ internal object AutofitPanel {
 
         val baseVariantSelectorPlugin = baseVariantSelectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
         baseVariantSelectorPlugin.isBase = true
-        baseVariantSelectorPlugin.noClick = true
+        baseVariantSelectorPlugin.noClickFader = true
         baseVariantSelectorPlugin.isEqual = true
         baseVariantSelectorPlugin.isSelected = true
         selectorPlugins.add(baseVariantSelectorPlugin)
@@ -437,7 +437,7 @@ internal object AutofitPanel {
             selectorPlugin.onClickRelease { event -> // Load variant
                 selectorPlugin.selectorPanel.opacity = 1f
 
-                if (selectorPlugin.autofitSpec == null || autofitPlugin.draggedAutofitSpec != null || event.isCtrlDown || selectorPlugin.noClick) return@onClickRelease // If no variant. or dragging self, do nothing
+                if (selectorPlugin.autofitSpec == null || autofitPlugin.draggedAutofitSpec != null || event.isCtrlDown || selectorPlugin.noClickFader) return@onClickRelease // If no variant. or dragging self, do nothing
 
                 fun applyVariant(autofitSpec: AutofitSpec?) {
                     applyVariantInRefitScreen(
@@ -569,7 +569,7 @@ internal object AutofitPanel {
                 }
 
                 // Remake the new selector
-                selectorPlugin.noClick = false
+                selectorPlugin.noClickFader = false
                 selectorPlugin.autofitSpec = autofitPlugin.draggedAutofitSpec!!.copy(variant = shipDirectory.getShip(shipVariantID)!!, source = shipDirectory, desiredIndexInMenu = indexInMenu, description = shipDirectory.getDescription())
                 createAutofitSelectorChildren(
                     selectorPlugin.autofitSpec!!,
@@ -716,11 +716,10 @@ internal object AutofitPanel {
 
     fun deleteSelector(selectorPlugin: AutofitSelector.AutofitSelectorPlugin?) {
         selectorPlugin?.autofitSpec = null
-        selectorPlugin?.noClick = true
+        selectorPlugin?.noClickFader = true
         selectorPlugin?.selectorPanel?.clearChildren()
         val tooltip = selectorPlugin?.selectorPanel?.invoke("getTooltip")
         tooltip?.getMethodsMatching("removeSelf")?.getOrNull(0)?.invoke(tooltip) // Safe way to remove the tooltip
-        //val tooltipLogic = selectorPlugin?.selectorPanel?.invoke("getTooltipLogic")
 
         selectorPlugin?.isSelected = false
         selectorPlugin?.isEqual = false

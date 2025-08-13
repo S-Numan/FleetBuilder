@@ -5,15 +5,13 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
-import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
-import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent.SkillPickPreference
 import com.fs.starfarer.api.impl.campaign.submarkets.LocalResourcesSubmarketPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.loading.HullModSpecAPI
-import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
@@ -40,12 +38,11 @@ import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
+import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.reportMissingElementsIfAny
-import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
-import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
@@ -93,105 +90,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
-            val initialDialog = PopUpUIDialog("Save Transfer", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
-
-            initialDialog.addButton("Copy Save") { _ ->
-                val dialog = PopUpUIDialog("Copy Save", addConfirmButton = true, addCancelButton = true)
-                dialog.confirmButtonName = "Copy"
-                dialog.confirmAndCancelAlignment = Alignment.MID
-
-                dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
-                    dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
-                }
-                dialog.addPadding(dialog.buttonHeight)
-                dialog.addToggle("Include Blueprints", true)
-                dialog.addToggle("Include Hullmods", true)
-                dialog.addToggle("Include Player", true)
-                dialog.addToggle("Include Fleet", true)
-                dialog.addToggle("Include Officers", true)
-                dialog.addToggle("Include Reputation", true)
-                dialog.addToggle("Include Cargo", true)
-                dialog.addToggle("Include Credits", true)
-
-                dialog.onConfirm { fields ->
-                    val json = PlayerSaveUtil.createPlayerSaveJson(
-                        handleCargo = fields["Include Cargo"] as Boolean,
-                        handleRelations = fields["Include Reputation"] as Boolean,
-                        handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
-                        handlePlayer = fields["Include Player"] as Boolean,
-                        handleFleet = fields["Include Fleet"] as Boolean,
-                        handleCredits = fields["Include Credits"] as Boolean,
-                        handleKnownHullmods = fields["Include Hullmods"] as Boolean,
-                        handleOfficers = fields["Include Officers"] as Boolean
-                    )
-
-                    setClipboardText(json.toString(4))
-
-                    DisplayMessage.showMessage("Save copied to clipboard")
-                }
-
-                initPopUpUI(dialog, 360f, 375f)
-            }
-
-            initialDialog.addButton("Load Save") { _ ->
-                //val clipboardContents = getClipboardJson()
-
-                val dialog = PopUpUIDialog("Load Save", addConfirmButton = true, addCancelButton = true)
-                dialog.confirmButtonName = "Load"
-                dialog.confirmAndCancelAlignment = Alignment.MID
-
-                //dialog.addParagraph("Clipboard contains: ")
-
-                dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
-                    dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
-                }
-                dialog.addPadding(dialog.buttonHeight)
-                dialog.addToggle("Include Blueprints", true)
-                dialog.addToggle("Include Hullmods", true)
-                dialog.addToggle("Include Player", true)
-                dialog.addToggle("Include Fleet", true)
-                dialog.addToggle("Include Officers", true)
-                dialog.addToggle("Include Reputation", true)
-                dialog.addToggle("Include Cargo", true)
-                dialog.addToggle("Include Credits", true)
-
-                dialog.onConfirm { fields ->
-                    val json = getClipboardJson()
-
-                    if (json == null) {
-                        DisplayMessage.showMessage("Failed to read json in clipboard\n")
-                        return@onConfirm
-                    }
-
-                    val (compiled, missing) = PlayerSaveUtil.compilePlayerSaveJson(json)
-
-                    if (compiled.isEmpty()) {
-                        reportMissingElementsIfAny(missing)
-                        DisplayMessage.showMessage("Could not find contents of save in clipboard. Are you sure you copied a valid save?", Color.RED)
-                        return@onConfirm
-                    }
-
-                    PlayerSaveUtil.loadPlayerCompiledSave(
-                        compiled,
-                        handleCargo = fields["Include Cargo"] as Boolean,
-                        handleRelations = fields["Include Reputation"] as Boolean,
-                        handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
-                        handlePlayer = fields["Include Player"] as Boolean,
-                        handleFleet = fields["Include Fleet"] as Boolean,
-                        handleCredits = fields["Include Credits"] as Boolean,
-                        handleKnownHullmods = fields["Include Hullmods"] as Boolean,
-                        handleOfficers = fields["Include Officers"] as Boolean
-                    )
-
-                    DisplayMessage.showMessage("Save loaded from clipboard")
-
-                    reportMissingElementsIfAny(missing)
-                }
-
-                initPopUpUI(dialog, 360f, 375f)
-            }
-
-            initPopUpUI(initialDialog, 300f, 110f)
+            Dialogs.createSaveTransferDialog()
         }
     }
 
@@ -201,71 +100,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
-            var officerSkillCount = 0
-
-            Global.getSettings().skillIds.forEach { skill ->
-                val spec = Global.getSettings().getSkillSpec(skill)
-                if (spec.isCombatOfficerSkill && !spec.isAdminSkill && !spec.isAdmiralSkill && !spec.isAptitudeEffect && !spec.isPermanent && !spec.hasTag("npc_only") && !spec.hasTag("deprecated"))
-                    officerSkillCount += 1
-            }
-
-            val dialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = true, addConfirmButton = true)
-            dialog.confirmButtonName = "Create"
-
-            dialog.addParagraph("Max Level")
-            dialog.addClampedNumericField("MaxLevel", officerSkillCount)
-            dialog.addParagraph("Max Elite Skills")
-            dialog.addClampedNumericField("MaxElite", officerSkillCount)
-
-            dialog.addPadding(8f)
-            dialog.addToggle("Max XP", default = true)
-            dialog.addToggle("Max Skill Picks Per Level", default = true)
-
-            dialog.addPadding(8f)
-            dialog.addParagraph("Personality")
-
-
-            var personality = "Steady"
-            dialog.addRadioGroup(
-                listOf("Timid", "Cautious", "Steady", "Aggressive", "Reckless"), personality
-            ) { select ->
-                personality = select
-            }
-
-
-            dialog.onConfirm { fields ->
-                var maxLevel = (fields["MaxLevel"] as String).toIntOrNull()
-                val maxElite = (fields["MaxElite"] as String).toIntOrNull()
-
-                val playerFleet = Global.getSector().playerFleet.fleetData
-
-
-                val person = OfficerManagerEvent.createOfficer(
-                    Global.getSector().playerFaction, 1, SkillPickPreference.ANY,
-                    false, null, false, false, -1, MathUtils.getRandom()
-                )
-                person.stats.skillsCopy.forEach { person.stats.setSkillLevel(it.skill.id, 0f) }
-                person.stats.level = 0
-
-                person.setPersonality(personality.lowercase());
-
-                if (fields["Max Skill Picks Per Level"] as Boolean)
-                    person.memoryWithoutUpdate.set("\$officerSkillPicksPerLevel", officerSkillCount)
-                if (maxLevel != null)
-                    person.memoryWithoutUpdate.set("\$officerMaxLevel", maxLevel)
-                if (maxElite != null)
-                    person.memoryWithoutUpdate.set("\$officerMaxEliteSkills", maxElite)
-
-                playerFleet.addOfficer(person);
-
-                val plugin = Global.getSettings().getPlugin("officerLevelUp") as? OfficerLevelupPlugin
-                if (plugin != null && fields["Max XP"] as Boolean) {
-                    if (maxLevel == null)
-                        maxLevel = Misc.MAX_OFFICER_LEVEL.toInt()
-                    playerFleet.getOfficerData(person).addXP(plugin.getXPForLevel(maxLevel));
-                }
-            }
-            initPopUpUI(dialog, 500f, 348f)
+            Dialogs.createOfficerCreatorDialog()
         }
     }
 
@@ -471,60 +306,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
 
         if (!loadoutExists) {
-            val baseHullSpec = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }
-                ?: return
-            val loadoutBaseHullName = baseHullSpec.hullName
-                ?: return
 
-            val dialog = PopUpUIDialog("Import loadout", addCancelButton = true, addConfirmButton = true)
-            dialog.confirmButtonName = "Import"
-            dialog.confirmAndCancelAlignment = Alignment.MID
-
-            //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
-
-            val shipPreviewWidth = 375f
-            val popUpHeight = 490f
-
-            dialog.addParagraph(
-                loadoutBaseHullName,
-                alignment = Alignment.MID,
-                font = Fonts.ORBITRON_24AABOLD,
-                highlights = arrayOf(Color.YELLOW),
-                highlightWords = arrayOf(loadoutBaseHullName)
-            )
-
-            val height = shipPreviewWidth - (dialog.x * 2)
-
-            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, height, null)
-            val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
-
-            val selectorPanel = AutofitSelector.createAutofitSelector(
-                autofitSpec = AutofitSpec(variant, null),
-                height,
-                addDescription = false,
-                centerTitle = true
-            )
-
-            tempTMAPI.addComponent(selectorPanel)
-            AutofitPanel.makeTooltip(selectorPanel, variant)
-
-            tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
-
-            dialog.addCustom(tempPanel)
-
-
-            dialog.onConfirm {
-
-                importShipLoadout(variant, missing)
-
-                DisplayMessage.showMessage(
-                    " Loadout imported for hull: $loadoutBaseHullName",
-                    variant.hullSpec.hullId,
-                    Misc.getHighlightColor()
-                )
-            }
-
-            initPopUpUI(dialog, shipPreviewWidth, popUpHeight)
+            Dialogs.createImportLoadoutDialog(variant, missing)
 
         } else {
             DisplayMessage.showMessage(
