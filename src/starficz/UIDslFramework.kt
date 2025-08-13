@@ -79,58 +79,6 @@ internal fun UIPanelAPI.Button(
     return this.addButton(text, null, baseColor, bgColor, align, style, width, height, font).apply(builder)
 }
 
-internal fun UIPanelAPI.AreaCheckbox(
-    text: String,
-    baseColor: Color,
-    bgColor: Color,
-    brightColor: Color,
-    width: Float,
-    height: Float,
-    font: Font? = null,
-    leftAlign: Boolean = false,
-    flag: Flag? = null,
-    buttonGroup: ButtonGroup? = null,
-    builder: ButtonAPI.() -> Unit = {} // Configures the BoxedButton wrapper
-): ButtonAPI {
-    val validGroup = (buttonGroup != null && flag != null)
-
-    val button = this.addAreaCheckbox(
-        text, null, baseColor, bgColor, brightColor, width, height, font,
-        leftAlign, if (!validGroup) flag else null
-    ).apply(builder)
-    if (validGroup) buttonGroup!!.addButtonToGroup(button, flag!!)
-
-    return button
-}
-
-internal class ButtonGroup {
-    val allFlags: MutableCollection<Flag> = mutableListOf()
-
-    fun addButtonToGroup(button: ButtonAPI, flag: Flag) {
-        allFlags.add(flag)
-        button.isChecked = flag.isEnabled
-        button.onClick {
-            if (allFlags.count { it.isEnabled } == 1 && flag.isEnabled) {
-                // If the only active item is clicked, re-enable all items in the group.
-                allFlags.forEach { it.isEnabled = true }
-            } else {
-                // if multiselect key (Shift or Ctrl) is held, toggle the clicked filter
-                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ||
-                    Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
-                ) {
-                    flag.isEnabled = !flag.isEnabled
-                } else { // if no modifier key is held, only exclusively enable the clicked filter
-                    allFlags.forEach { it.isEnabled = (it === flag) }
-                }
-            }
-            // sync the button to the flag
-            button.isChecked = flag.isEnabled
-        }
-    }
-}
-
 fun UIPanelAPI.CustomPanel(
     width: Float,
     height: Float,

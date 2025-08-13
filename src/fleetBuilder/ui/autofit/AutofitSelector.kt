@@ -1,6 +1,6 @@
 package fleetBuilder.ui.autofit
 
-import MagicLib.ReflectionUtils.instantiate
+import MagicLib.ReflectionUtilsExtra
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -17,6 +17,7 @@ import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import starficz.*
+import starficz.ReflectionUtils.getConstructorsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import kotlin.math.max
@@ -307,7 +308,7 @@ internal object AutofitSelector {
     ): UIPanelAPI {
         val clonedVariant = variant.clone() as HullVariantSpec
 
-        val shipPreview = instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!! as UIPanelAPI
+        val shipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
         shipPreview.invoke("setVariant", clonedVariant)
         shipPreview.invoke("overrideVariant", clonedVariant)
         shipPreview.invoke("setShowBorder", false)
