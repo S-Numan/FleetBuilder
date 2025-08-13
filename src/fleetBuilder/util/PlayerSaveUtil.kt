@@ -174,17 +174,16 @@ object PlayerSaveUtil {
 
         if (json.has("fleet")) {
             try {
-                val fleet = Global.getFactory().createEmptyFleet(Factions.PLAYER, FleetTypes.TASK_FORCE, false)
                 val fleetJson = json.getJSONObject("fleet")
-                val fleetMissing = getFleetFromJson(
-                    fleetJson,
-                    fleet,
+                val fleet = FleetSerialization.createCampaignFleetFromData(
+                    FleetSerialization.extractFleetDataFromJson(fleetJson), false,
                     FleetSerialization.FleetSettings().apply {
                         includeCommanderSetFlagship = false
                         includeCommanderAsOfficer = false
                         includeAggression = false
-                    })
-                missing.add(fleetMissing)
+                    },
+                    missing
+                )
                 compiled.aggressionDoctrine = fleetJson.optInt("aggression_doctrine", 2)
 
                 compiled.fleet = fleet

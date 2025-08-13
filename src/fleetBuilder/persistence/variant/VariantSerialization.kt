@@ -515,10 +515,10 @@ object VariantSerialization {
             loadout.sModdedBuiltIns.add(modId)
         }
 
-
+        val wingOffset = hullSpec.builtInWings.size
         data.wings.forEachIndexed { i, wingId ->
             if (wingId.isNotEmpty()) {
-                loadout.setWingId(i, wingId)
+                loadout.setWingId(wingOffset + i, wingId)
             }
         }
 

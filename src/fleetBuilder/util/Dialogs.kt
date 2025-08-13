@@ -93,14 +93,15 @@ object Dialogs {
         dialog.addButton("Append to Player Fleet") { fields ->
             val playerFleet = Global.getSector().playerFleet.fleetData
 
-            val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
-            val addMissing = buildFleetFull(
-                data, fleet.fleetData,
+            val addMissing = MissingElements()
+            val fleet = FleetSerialization.createCampaignFleetFromData(
+                data, false,
                 settings = FleetSerialization.FleetSettings().apply {
                     excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
                     memberSettings.includeOfficer = fields["Include Officers"] as Boolean
                     includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
-                }
+                },
+                missing = addMissing
             )
 
             fleet.fleetData.membersListCopy.forEach { member ->
@@ -190,13 +191,16 @@ object Dialogs {
 
         dialog.addPadding(8f)
 
-        dialog.addToggle("Set Aggression Doctrine", default = true)
-        dialog.addToggle("Fight To The Last", default = true)
         dialog.addToggle("Include Officers", default = true)
         dialog.addToggle("Include Commander as Commander", default = true)
         dialog.addToggle("Include Commander as Officer", default = true)
-        dialog.addToggle("Exclude Ships From Missing Mods", default = true)
+        dialog.addPadding(dialog.buttonHeight / 2)
+        dialog.addToggle("Set Faction to Pirate", default = true)
+        dialog.addToggle("Set Aggression Doctrine", default = true)
+        dialog.addToggle("Fight To The Last", default = true)
+        dialog.addPadding(dialog.buttonHeight / 2)
         dialog.addToggle("Repair and Set Max CR", default = true)
+        dialog.addToggle("Exclude Ships From Missing Mods", default = true)
 
         dialog.onConfirm { fields ->
 
@@ -207,13 +211,14 @@ object Dialogs {
             settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
             settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
             val repairAndSetMaxCR = fields["Repair and Set Max CR"] as Boolean
-
-            val fleet = Global.getFactory().createEmptyFleet(Factions.PIRATES, FleetTypes.TASK_FORCE, true)
-
+            val setFactionToPirates = (fields["Set Faction to Pirate"] as Boolean)
             val missing = MissingElements()
             missing.gameMods.addAll(data.gameMods)
 
-            missing.add(buildFleetFull(data, fleet.fleetData, settings))
+            val fleet = FleetSerialization.createCampaignFleetFromData(
+                if (setFactionToPirates) data.copy(factionID = Factions.PIRATES) else data,
+                true, settings = settings, missing = missing
+            )
 
             reportMissingElementsIfAny(missing)
 
@@ -228,6 +233,6 @@ object Dialogs {
             showMessage("Fleet from clipboard added to campaign")
         }
 
-        initPopUpUI(dialog, 500f, 324f)
+        initPopUpUI(dialog, 500f, 350f)
     }
 }

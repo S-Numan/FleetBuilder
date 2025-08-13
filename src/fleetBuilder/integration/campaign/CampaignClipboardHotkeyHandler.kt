@@ -94,104 +94,72 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             event.consume()
 
             val initialDialog = PopUpUIDialog("Save Transfer", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
+            initialDialog.addButton("Flip All Values", dismissOnClick = false) {
+                initialDialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
+            }
+            initialDialog.addPadding(initialDialog.buttonHeight / 4f)
+            initialDialog.addToggle("Include Blueprints", true)
+            initialDialog.addToggle("Include Hullmods", true)
+            initialDialog.addToggle("Include Player", true)
+            initialDialog.addToggle("Include Fleet", true)
+            initialDialog.addToggle("Include Officers", true)
+            initialDialog.addToggle("Include Reputation", true)
+            initialDialog.addToggle("Include Cargo", true)
+            initialDialog.addToggle("Include Credits", true)
+            initialDialog.addPadding(initialDialog.buttonHeight)
 
-            initialDialog.addButton("Copy Save") { _ ->
-                val dialog = PopUpUIDialog("Copy Save", addConfirmButton = true, addCancelButton = true)
-                dialog.confirmButtonName = "Copy"
-                dialog.confirmAndCancelAlignment = Alignment.MID
+            initialDialog.addButton("Copy Save To Clipboard") { fields ->
+                val json = PlayerSaveUtil.createPlayerSaveJson(
+                    handleCargo = fields["Include Cargo"] as Boolean,
+                    handleRelations = fields["Include Reputation"] as Boolean,
+                    handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
+                    handlePlayer = fields["Include Player"] as Boolean,
+                    handleFleet = fields["Include Fleet"] as Boolean,
+                    handleCredits = fields["Include Credits"] as Boolean,
+                    handleKnownHullmods = fields["Include Hullmods"] as Boolean,
+                    handleOfficers = fields["Include Officers"] as Boolean
+                )
 
-                dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
-                    dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
-                }
-                dialog.addPadding(dialog.buttonHeight)
-                dialog.addToggle("Include Blueprints", true)
-                dialog.addToggle("Include Hullmods", true)
-                dialog.addToggle("Include Player", true)
-                dialog.addToggle("Include Fleet", true)
-                dialog.addToggle("Include Officers", true)
-                dialog.addToggle("Include Reputation", true)
-                dialog.addToggle("Include Cargo", true)
-                dialog.addToggle("Include Credits", true)
+                setClipboardText(json.toString(4))
 
-                dialog.onConfirm { fields ->
-                    val json = PlayerSaveUtil.createPlayerSaveJson(
-                        handleCargo = fields["Include Cargo"] as Boolean,
-                        handleRelations = fields["Include Reputation"] as Boolean,
-                        handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
-                        handlePlayer = fields["Include Player"] as Boolean,
-                        handleFleet = fields["Include Fleet"] as Boolean,
-                        handleCredits = fields["Include Credits"] as Boolean,
-                        handleKnownHullmods = fields["Include Hullmods"] as Boolean,
-                        handleOfficers = fields["Include Officers"] as Boolean
-                    )
-
-                    setClipboardText(json.toString(4))
-
-                    DisplayMessage.showMessage("Save copied to clipboard")
-                }
-
-                initPopUpUI(dialog, 360f, 375f)
+                DisplayMessage.showMessage("Save copied to clipboard")
             }
 
-            initialDialog.addButton("Load Save") { _ ->
-                //val clipboardContents = getClipboardJson()
+            initialDialog.addButton("Load Save From Clipboard") { fields ->
 
-                val dialog = PopUpUIDialog("Load Save", addConfirmButton = true, addCancelButton = true)
-                dialog.confirmButtonName = "Load"
-                dialog.confirmAndCancelAlignment = Alignment.MID
+                val json = getClipboardJson()
 
-                //dialog.addParagraph("Clipboard contains: ")
-
-                dialog.addButton("Flip All Values", dismissOnClick = false) { fields ->
-                    dialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
+                if (json == null) {
+                    DisplayMessage.showMessage("Failed to read json in clipboard", Color.YELLOW)
+                    return@addButton
                 }
-                dialog.addPadding(dialog.buttonHeight)
-                dialog.addToggle("Include Blueprints", true)
-                dialog.addToggle("Include Hullmods", true)
-                dialog.addToggle("Include Player", true)
-                dialog.addToggle("Include Fleet", true)
-                dialog.addToggle("Include Officers", true)
-                dialog.addToggle("Include Reputation", true)
-                dialog.addToggle("Include Cargo", true)
-                dialog.addToggle("Include Credits", true)
 
-                dialog.onConfirm { fields ->
-                    val json = getClipboardJson()
+                val (compiled, missing) = PlayerSaveUtil.compilePlayerSaveJson(json)
 
-                    if (json == null) {
-                        DisplayMessage.showMessage("Failed to read json in clipboard\n")
-                        return@onConfirm
-                    }
-
-                    val (compiled, missing) = PlayerSaveUtil.compilePlayerSaveJson(json)
-
-                    if (compiled.isEmpty()) {
-                        reportMissingElementsIfAny(missing)
-                        DisplayMessage.showMessage("Could not find contents of save in clipboard. Are you sure you copied a valid save?", Color.RED)
-                        return@onConfirm
-                    }
-
-                    PlayerSaveUtil.loadPlayerCompiledSave(
-                        compiled,
-                        handleCargo = fields["Include Cargo"] as Boolean,
-                        handleRelations = fields["Include Reputation"] as Boolean,
-                        handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
-                        handlePlayer = fields["Include Player"] as Boolean,
-                        handleFleet = fields["Include Fleet"] as Boolean,
-                        handleCredits = fields["Include Credits"] as Boolean,
-                        handleKnownHullmods = fields["Include Hullmods"] as Boolean,
-                        handleOfficers = fields["Include Officers"] as Boolean
-                    )
-
-                    DisplayMessage.showMessage("Save loaded from clipboard")
-
+                if (compiled.isEmpty()) {
                     reportMissingElementsIfAny(missing)
+                    DisplayMessage.showMessage("Could not find contents of save in clipboard. Are you sure you copied a valid save?", Color.YELLOW)
+                    return@addButton
                 }
 
-                initPopUpUI(dialog, 360f, 375f)
+                PlayerSaveUtil.loadPlayerCompiledSave(
+                    compiled,
+                    handleCargo = fields["Include Cargo"] as Boolean,
+                    handleRelations = fields["Include Reputation"] as Boolean,
+                    handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
+                    handlePlayer = fields["Include Player"] as Boolean,
+                    handleFleet = fields["Include Fleet"] as Boolean,
+                    handleCredits = fields["Include Credits"] as Boolean,
+                    handleKnownHullmods = fields["Include Hullmods"] as Boolean,
+                    handleOfficers = fields["Include Officers"] as Boolean
+                )
+
+                DisplayMessage.showMessage("Save loaded from clipboard")
+
+                reportMissingElementsIfAny(missing)
             }
 
-            initPopUpUI(initialDialog, 300f, 110f)
+            initPopUpUI(initialDialog, 300f, 360f)
         }
     }
 

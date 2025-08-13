@@ -17,7 +17,6 @@ import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import starficz.*
-import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import kotlin.math.max
@@ -54,7 +53,7 @@ internal object AutofitSelector {
 
         var isBase = false
         val isUnlocked = true
-        var noClick = false
+        var noClickFader = false
         var isBetter = false
         var isWorse = false
         var isEqual = false
@@ -69,7 +68,7 @@ internal object AutofitSelector {
 
         init {
             onClickFunctions.add {
-                if (isUnlocked && !noClick) clickFader.fadeIn()
+                if (isUnlocked && !noClickFader) clickFader.fadeIn()
             }
             onClickReleaseFunctions.add { clickFader.fadeOut() }
             onHoverEnterFunctions.add {
@@ -168,8 +167,7 @@ internal object AutofitSelector {
                     isHovering = true
                     if (event.isMouseDownEvent) {
                         hasClicked = true
-                        if (!noClick)
-                            onClickFunctions.forEach { it(event) }
+                        onClickFunctions.forEach { it(event) }
                     }
                     if (event.isMouseUpEvent) {
                         if (hasClicked) {
@@ -265,7 +263,7 @@ internal object AutofitSelector {
         if (autofitSpec != null)
             createAutofitSelectorChildren(autofitSpec, width, selectorPanel, addTitle = addTitle, addDescription = addDescription, centerTitle = centerTitle)
         else
-            plugin.noClick = true
+            plugin.noClickFader = true
 
         return selectorPanel
     }

@@ -5,14 +5,11 @@ import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.ViewportAPI
-import com.fs.starfarer.api.impl.campaign.ids.Factions
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.persistence.fleet.FleetSerialization
-import fleetBuilder.persistence.fleet.FleetSerialization.buildFleetFull
 import fleetBuilder.persistence.member.MemberSerialization
 import fleetBuilder.persistence.variant.VariantSerialization
 import fleetBuilder.util.*
@@ -106,8 +103,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 }
 
                                 is FleetSerialization.ParsedFleetData -> {
-                                    val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
-                                    missing = buildFleetFull(element, fleet.fleetData)
+                                    val fleet = FleetSerialization.createCampaignFleetFromData(element, false, missing = missing)
 
                                     fleet.fleetData.membersListCopy.forEach { member ->
                                         ModifyInternalVariants.setModifiedInternalVariant(member.variant as HullVariantSpec)

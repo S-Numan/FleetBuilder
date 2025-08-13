@@ -41,8 +41,8 @@ object FBMisc {
         data: FleetSerialization.ParsedFleetData, replacePlayer: Boolean = false,
         settings: FleetSerialization.FleetSettings = FleetSerialization.FleetSettings()
     ): MissingElements {
-        val fleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
-        val missing = buildFleetFull(data, fleet.fleetData)
+        val missing = MissingElements()
+        val fleet = FleetSerialization.createCampaignFleetFromData(data, false, missing = missing)
 
         replacePlayerFleetWith(
             fleet,
@@ -231,24 +231,6 @@ object FBMisc {
 
         return mouseX >= x && mouseX <= x + width &&
                 mouseY >= y && mouseY <= y + height
-    }
-
-    fun createFleetFromJson(
-        json: JSONObject,
-        settings: FleetSerialization.FleetSettings = FleetSerialization.FleetSettings(),
-        faction: String = Factions.INDEPENDENT
-    ): CampaignFleetAPI {
-        val fleet = Global.getFactory().createEmptyFleet(faction, FleetTypes.TASK_FORCE, true)
-
-        val missingElements = getFleetFromJson(
-            json,
-            fleet,
-            settings
-        )
-
-        reportMissingElementsIfAny(missingElements)
-
-        return fleet
     }
 
     fun campaignPaste(

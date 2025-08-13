@@ -298,7 +298,7 @@ object PersonSerialization {
         val storedOfficer = person.memoryWithoutUpdate.keys.contains(ModSettings.storedOfficerTag)
 
         person.memoryWithoutUpdate.keys.forEach { key ->
-            if (storedOfficer && key == Misc.CAPTAIN_UNREMOVABLE) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
+            if (storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == ModSettings.storedOfficerTag)) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
 
             val value = person.memoryWithoutUpdate.get(key)
             if (value is Boolean
