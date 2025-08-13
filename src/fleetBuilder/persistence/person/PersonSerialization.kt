@@ -14,9 +14,12 @@ import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBMisc.getRandomPortrait
 import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.MissingElements
+import org.histidine.chatter.ChatterDataManager
+import org.histidine.chatter.combat.ChatterCombatPlugin
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
+
 
 object PersonSerialization {
 
@@ -49,6 +52,7 @@ object PersonSerialization {
         val points: Int = 0,
         val memKeys: Map<String, Any> = emptyMap(),
         val gameMods: Set<GameModInfo>,
+        val chatterID: String? = null,
     )
 
     fun extractPersonDataFromJson(json: JSONObject): ParsedPersonData {
@@ -119,7 +123,8 @@ object PersonSerialization {
             bonusXp = json.optLong("bonusxp", 0),
             points = json.optInt("points", 0),
             memKeys = memKeys,
-            gameMods = gameMods
+            gameMods = gameMods,
+            chatterID = json.optString("chatterID", null),
         )
     }
 
@@ -197,6 +202,15 @@ object PersonSerialization {
         data.memKeys.forEach { (key, value) ->
             if (value is String || value is Boolean)
                 person.memoryWithoutUpdate.set(key, value)
+        }
+
+        if (Global.getSettings().modManager.isModEnabled("chatter") && data.chatterID != null) {
+            val character = ChatterDataManager.getCharacterData(data.chatterID)
+            if (character != null) {
+                ChatterDataManager.saveCharacter(person, data.chatterID)
+                val plugin = ChatterCombatPlugin.getInstance()
+                plugin?.setCharacterForOfficer(person, data.chatterID)
+            }
         }
 
         return person
@@ -301,8 +315,9 @@ object PersonSerialization {
             if (storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == ModSettings.storedOfficerTag)) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
 
             val value = person.memoryWithoutUpdate.get(key)
-            if (value is Boolean
-                || value is String
+            if (value != "\$autoPointsMult"
+                && (value is Boolean
+                        || value is String)
             ) {
                 memKeysJSON.put(key.removePrefix("$"), value)
             }
@@ -317,6 +332,14 @@ object PersonSerialization {
         }
         if (skillsObject.length() > 0)
             json.put("skills", skillsObject)
+
+        if (Global.getSettings().modManager.isModEnabled("chatter")) {
+            val characterId = ChatterDataManager.getCharacterFromMemory(person)
+            if (characterId != null) {
+                //val character = ChatterDataManager.getCharacterData(characterId)
+                json.put("chatterID", characterId)
+            }
+        }
 
 
         return json

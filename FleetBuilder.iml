@@ -16,5 +16,6 @@
     <orderEntry type="library" name="MagicLib-Kotlin" level="project" />
     <orderEntry type="library" name="Kotlin-Runtime" level="project" />
     <orderEntry type="library" name="SecondInCommand" level="project" />
+    <orderEntry type="library" name="CombatChatter" level="project" />
   </component>
 </module>
