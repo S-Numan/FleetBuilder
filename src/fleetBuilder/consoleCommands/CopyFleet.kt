@@ -119,22 +119,30 @@ class CopyFleet : BaseCommand {
             }
 
             val membersMethod = side?.getMethodsMatching(returnType = List::class.java)
-            val members = membersMethod?.getOrNull(0)?.invoke(side) as? List<*>
-            val fleetData = (members?.getOrNull(0) as? FleetMember)?.fleetData ?: return BaseCommand.CommandResult.ERROR
 
-            var aggression = 2
-
-            fleetData.membersListCopy.forEach { member ->
-                if (member.captain.isDefault) {
-                    if (member.captain.personalityAPI.id == Personalities.CAUTIOUS)
-                        aggression = 1
-                    else if (member.captain.personalityAPI.id == Personalities.STEADY)
-                        aggression = 2
-                    else if (member.captain.personalityAPI.id == Personalities.AGGRESSIVE)
-                        aggression = 3
-                    else if (member.captain.personalityAPI.id == Personalities.RECKLESS)
-                        aggression = 5
+            @Suppress("UNCHECKED_CAST")
+            val members = membersMethod?.getOrNull(0)?.invoke(side) as? List<FleetMemberAPI>
+                ?: return BaseCommand.CommandResult.ERROR
+            val fleetData = (members.getOrNull(0) as? FleetMember)?.fleetData
+                ?: run {
+                    val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, false)
+                    members.forEach { member ->
+                        fleet.fleetData.addFleetMember(member)
+                    }
+                    fleet.fleetData
                 }
+
+            var aggression: Int
+
+            val hasAggressive = members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.AGGRESSIVE }
+            val hasReckless = members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.RECKLESS }
+
+            aggression = when {
+                hasAggressive && hasReckless -> 4
+                members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.CAUTIOUS } -> 1
+                members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.AGGRESSIVE } -> 3
+                members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.RECKLESS } -> 5
+                else -> -1
             }
 
             val json = FleetSerialization.saveFleetToJson(
@@ -142,12 +150,13 @@ class CopyFleet : BaseCommand {
                 FleetSerialization.FleetSettings().apply {
                     includeAggression = false
                 })
-            json.put("aggression_doctrine", aggression)
+            if (aggression != -1)
+                json.put("aggression_doctrine", aggression)
 
             ClipboardUtil.setClipboardText(json.toString(4))
 
             Console.showMessage("Commander: ${fleetData.commander?.name?.fullName}")
-            Console.showMessage("Ships: ${fleetData.membersListCopy.size}")
+            Console.showMessage("Ships: ${members.size}")
             Console.showMessage("Copied to clipboard")
 
             return BaseCommand.CommandResult.SUCCESS
