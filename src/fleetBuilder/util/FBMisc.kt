@@ -238,7 +238,7 @@ object FBMisc {
         data: Any,
     ): Boolean {
         if (data !is FleetSerialization.ParsedFleetData) {
-            DisplayMessage.showError("Data valid, but it was not fleet data. You can only paste fleet data into the campaign.")
+            DisplayMessage.showMessage("Data valid, but not fleet data. You can only paste fleet data into the campaign.", Color.YELLOW)
             return false
         }
 
