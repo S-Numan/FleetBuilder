@@ -48,6 +48,16 @@ object DataFleet {
     )
 
     @JvmOverloads
+    fun copyFleet(
+        fleet: CampaignFleetAPI,
+        aiMode: Boolean,
+        settings: FleetSettings = FleetSettings()
+    ): CampaignFleetAPI {
+        val data = getFleetDataFromFleet(fleet, settings)
+        return createCampaignFleetFromData(data, aiMode, settings)
+    }
+
+    @JvmOverloads
     fun getFleetDataFromFleet(
         fleet: CampaignFleetAPI,
         settings: FleetSettings = FleetSettings(),

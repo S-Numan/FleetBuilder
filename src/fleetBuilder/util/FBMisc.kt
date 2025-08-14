@@ -16,7 +16,9 @@ import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.CommanderShuttle.playerShuttleExists
 import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
 import fleetBuilder.persistence.fleet.DataFleet
+import fleetBuilder.persistence.fleet.DataFleet.buildFleetFull
 import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
+import fleetBuilder.persistence.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.persistence.fleet.DataFleet.validateAndCleanFleetData
 import fleetBuilder.persistence.fleet.FleetSettings
 import fleetBuilder.persistence.fleet.JSONFleet.getFleetFromJson
@@ -69,18 +71,14 @@ object FBMisc {
         for (officer in playerFleet.fleetData.officersCopy)
             playerFleet.fleetData.removeOfficer(officer.person)
 
-
         addPlayerShuttle()
 
         settings.includeCommanderSetFlagship = false//The player is always commanding the flagship. Thus if this isn't false, the player will displace the officer of that ship with themselves.
         settings.includeAggression = false//We do this manually for the player faction
 
-        //Hack to copy the fleet over
-        val jsonFleet = saveFleetToJson(fleet)
-        getFleetFromJson(
-            jsonFleet, playerFleet,
-            settings
-        )
+        //Copy the fleet over
+        val dataFleet = getFleetDataFromFleet(fleet, settings)
+        buildFleetFull(dataFleet, playerFleet.fleetData, settings)
 
         if (replacePlayer) {
             val playerPerson = Global.getSector().playerPerson
