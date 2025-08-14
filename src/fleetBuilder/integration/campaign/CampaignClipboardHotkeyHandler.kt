@@ -19,10 +19,13 @@ import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
-import fleetBuilder.persistence.fleet.FleetSerialization
-import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.person.PersonSerialization
-import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.fleet.FleetSettings
+import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
+import fleetBuilder.persistence.member.DataMember
+import fleetBuilder.persistence.member.JSONMember.saveMemberToJson
+import fleetBuilder.persistence.person.JSONPerson.savePersonToJson
+import fleetBuilder.persistence.variant.DataVariant
+import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
@@ -196,9 +199,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
 
         fleet?.let { fleetToCopy ->
-            val json = FleetSerialization.saveFleetToJson(
+            val json = saveFleetToJson(
                 fleetToCopy,
-                FleetSerialization.FleetSettings().apply {
+                FleetSettings().apply {
                     memberSettings.personSettings.handleXpAndPoints = false
                 }
             )
@@ -218,7 +221,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     private fun handleFleetCopy(event: InputEventAPI, sector: SectorAPI) {
         val playerFleet = sector.playerFleet.fleetData
 
-        val settings = FleetSerialization.FleetSettings()
+        val settings = FleetSettings()
         settings.includeIdleOfficers = false
 
         var fleetToCopy: FleetDataAPI? = null
@@ -253,7 +256,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             return
         }
 
-        val json = FleetSerialization.saveFleetToJson(fleetToCopy, settings)
+        val json = saveFleetToJson(fleetToCopy, settings)
         ClipboardUtil.setClipboardText(json.toString(4))
         DisplayMessage.showMessage("Copied ${if (settings.excludeMembersWithID.isEmpty()) "entire" else "visible"} ${if (uiShowsSubmarketFleet) "submarket fleet" else "fleet"} to clipboard")
         event.consume()
@@ -283,15 +286,16 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         event.consume()
 
-        if (data is MemberSerialization.ParsedMemberData && data.variantData != null) {
+        if (data is DataMember.ParsedMemberData && data.variantData != null) {
             data = data.variantData
         }
-        if (data !is VariantSerialization.ParsedVariantData) {
+        if (data !is DataVariant.ParsedVariantData) {
             DisplayMessage.showMessage("Data in clipboard was valid, but not a variant", Color.YELLOW)
             return
         }
 
-        val (variant, missing) = VariantSerialization.buildVariantFull(data)
+        val missing = MissingElements()
+        val variant = buildVariantFull(data, missing = missing)
 
         if (missing.hullIds.isNotEmpty()) {
             DisplayMessage.showMessage(
@@ -349,7 +353,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 } else null
             } ?: return
 
-            val json = PersonSerialization.savePersonToJson(hoverOfficer)
+            val json = savePersonToJson(hoverOfficer)
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage("Officer copied to clipboard")
             event.consume()
@@ -371,11 +375,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
             if (event.isCtrlDown && event.isLMBDownEvent) {
                 if (isPortraitHoveredOver) {
-                    val json = PersonSerialization.savePersonToJson(mouseOverMember.captain)
+                    val json = savePersonToJson(mouseOverMember.captain)
                     ClipboardUtil.setClipboardText(json.toString(4))
                     DisplayMessage.showMessage("Officer copied to clipboard")
                 } else {
-                    val json = MemberSerialization.saveMemberToJson(mouseOverMember)
+                    val json = saveMemberToJson(mouseOverMember)
                     ClipboardUtil.setClipboardText(json.toString(4))
                     DisplayMessage.showMessage("Fleet member copied to clipboard")
                 }
@@ -440,7 +444,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             if (!(fader.isFadingIn || fader.brightness == 1f)) return
 
             val member = thing.invoke("getMember") as? FleetMemberAPI ?: return
-            val json = PersonSerialization.savePersonToJson(member.captain)
+            val json = savePersonToJson(member.captain)
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage("Officer copied to clipboard")
             event.consume()

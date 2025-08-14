@@ -8,11 +8,12 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import fleetBuilder.persistence.cargo.CargoSerialization.getCargoFromJson
 import fleetBuilder.persistence.cargo.CargoSerialization.saveCargoToJson
-import fleetBuilder.persistence.fleet.FleetSerialization
-import fleetBuilder.persistence.fleet.FleetSerialization.getFleetFromJson
-import fleetBuilder.persistence.fleet.FleetSerialization.saveFleetToJson
-import fleetBuilder.persistence.person.PersonSerialization.getPersonFromJsonWithMissing
-import fleetBuilder.persistence.person.PersonSerialization.savePersonToJson
+import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
+import fleetBuilder.persistence.fleet.FleetSettings
+import fleetBuilder.persistence.fleet.JSONFleet.extractFleetDataFromJson
+import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
+import fleetBuilder.persistence.person.JSONPerson.getPersonFromJson
+import fleetBuilder.persistence.person.JSONPerson.savePersonToJson
 import fleetBuilder.util.DisplayMessage.showError
 import fleetBuilder.util.FBMisc.replacePlayerFleetWith
 import fleetBuilder.variants.MissingElements
@@ -66,7 +67,7 @@ object PlayerSaveUtil {
         if (handleFleet) {
             val fleetJson = saveFleetToJson(
                 sector.playerFleet,
-                FleetSerialization.FleetSettings().apply {
+                FleetSettings().apply {
                     includeCommanderSetFlagship = false
                     includeCommanderAsOfficer = false
                     memberSettings.includeOfficer = handleOfficers
@@ -163,8 +164,7 @@ object PlayerSaveUtil {
         if (json.has("player")) {
             try {
                 val playerJson = json.getJSONObject("player")
-                val (loadedPlayer, personMissing) = getPersonFromJsonWithMissing(playerJson)
-                missing.add(personMissing)
+                val loadedPlayer = getPersonFromJson(playerJson, missing = missing)
 
                 compiled.player = loadedPlayer
             } catch (e: Exception) {
@@ -175,9 +175,9 @@ object PlayerSaveUtil {
         if (json.has("fleet")) {
             try {
                 val fleetJson = json.getJSONObject("fleet")
-                val fleet = FleetSerialization.createCampaignFleetFromData(
-                    FleetSerialization.extractFleetDataFromJson(fleetJson), true,
-                    FleetSerialization.FleetSettings().apply {
+                val fleet = createCampaignFleetFromData(
+                    extractFleetDataFromJson(fleetJson), true,
+                    FleetSettings().apply {
                         includeCommanderSetFlagship = false
                         includeCommanderAsOfficer = false
                         includeAggression = false
@@ -300,7 +300,7 @@ object PlayerSaveUtil {
         if (handleFleet && compiled.fleet != null) {
             replacePlayerFleetWith(
                 compiled.fleet!!, replacePlayer = false, aggression = compiled.aggressionDoctrine,
-                settings = FleetSerialization.FleetSettings().apply {
+                settings = FleetSettings().apply {
                     memberSettings.includeOfficer = handleOfficers
                     includeIdleOfficers = handleOfficers
                     includeCommanderSetFlagship = false

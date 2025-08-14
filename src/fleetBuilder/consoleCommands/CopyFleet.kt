@@ -9,9 +9,12 @@ import com.fs.starfarer.api.mission.FleetSide
 import com.fs.starfarer.api.mission.MissionDefinitionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
-import fleetBuilder.persistence.fleet.FleetSerialization
-import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.person.PersonSerialization
+import fleetBuilder.persistence.fleet.FleetSettings
+import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
+import fleetBuilder.persistence.member.DataMember.buildMember
+import fleetBuilder.persistence.member.DataMember.copyMember
+import fleetBuilder.persistence.member.DataMember.getMemberDataFromMember
+import fleetBuilder.persistence.person.DataPerson.copyPerson
 import fleetBuilder.util.ClipboardUtil
 import fleetBuilder.util.ReflectionMisc
 import org.lazywizard.console.BaseCommand
@@ -51,8 +54,7 @@ class CopyFleet : BaseCommand {
 
             var hasFlagship = false
             allShips.forEach { (id, tempMember) ->
-                val jsonMember = MemberSerialization.saveMemberToJson(tempMember)
-                val member = MemberSerialization.getMemberFromJson(jsonMember)
+                val member = copyMember(tempMember)
                 fleet.fleetData.addFleetMember(member)
 
                 if (member.captain.id == commander.id) {
@@ -76,12 +78,12 @@ class CopyFleet : BaseCommand {
             }
 
             if (!hasFlagship)
-                fleet.commander = PersonSerialization.getPersonFromJson(PersonSerialization.savePersonToJson(commander))
+                fleet.commander = copyPerson(commander)
 
 
-            val json = FleetSerialization.saveFleetToJson(
+            val json = saveFleetToJson(
                 fleet,
-                FleetSerialization.FleetSettings().apply {
+                FleetSettings().apply {
                     includeAggression = false
                 })
             json.put("aggression_doctrine", aggression)
@@ -145,9 +147,9 @@ class CopyFleet : BaseCommand {
                 else -> -1
             }
 
-            val json = FleetSerialization.saveFleetToJson(
+            val json = saveFleetToJson(
                 fleetData,
-                FleetSerialization.FleetSettings().apply {
+                FleetSettings().apply {
                     includeAggression = false
                 })
             if (aggression != -1)

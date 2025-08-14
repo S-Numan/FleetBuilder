@@ -49,7 +49,7 @@ object AutofitApplier {
             val auto: CoreAutofitPlugin
 
             if (!Global.getSettings().isInCampaignState) {
-                copyVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
+                replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
 
             } else {
                 val ui = Global.getSector().campaignUI
@@ -126,7 +126,7 @@ object AutofitApplier {
 
 
                 if (ModSettings.forceAutofit) {
-                    copyVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
+                    replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
                     //baseVariant.addTag(Tags.SHIP_RECOVERABLE)
                     //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
                 } else {
@@ -190,7 +190,7 @@ object AutofitApplier {
         shipDisplay.invoke("setSuppressMessages", false)
     }
 
-    fun copyVariant(
+    private fun replaceVariantWithVariant(
         to: ShipVariantAPI,
         from: ShipVariantAPI,
         dontForceClearDMods: Boolean = false,
@@ -299,7 +299,7 @@ object AutofitApplier {
             val toVariant = to.getModuleVariant(slot)
             val fromVariant = from.getModuleVariant(slot)
 
-            copyVariant(
+            replaceVariantWithVariant(
                 toVariant,
                 fromVariant,
                 dontForceClearDMods,

@@ -28,7 +28,7 @@ import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
 import fleetBuilder.config.ModSettings.storeOfficersInCargo
 import fleetBuilder.config.ModSettings.unassignPlayer
-import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.util.Reporter
 import fleetBuilder.util.containsString
 import fleetBuilder.variants.LoadoutManager
@@ -151,8 +151,8 @@ object ModSettings {
 
     fun getHullModsToNeverSave(): Set<String> = hullModsToNeverSave
 
-    fun getConfiguredVariantSettings(): VariantSerialization.VariantSettings {
-        return VariantSerialization.VariantSettings().apply {
+    fun getConfiguredVariantSettings(): VariantSettings {
+        return VariantSettings().apply {
             applySMods = saveSMods
             includeDMods = saveDMods
             includeHiddenMods = saveHiddenMods

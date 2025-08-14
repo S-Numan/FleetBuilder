@@ -9,9 +9,12 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
-import fleetBuilder.persistence.fleet.FleetSerialization
-import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.fleet.DataFleet
+import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
+import fleetBuilder.persistence.fleet.DataFleet.getFleetDataFromFleet
+import fleetBuilder.persistence.member.DataMember
+import fleetBuilder.persistence.variant.DataVariant
+import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.util.*
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCoreUI
@@ -64,7 +67,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
                             if (event.eventValue == Keyboard.KEY_V) {
                                 val data = ClipboardMisc.extractDataFromClipboard() ?: return
-                                if (data is VariantSerialization.ParsedVariantData || data is MemberSerialization.ParsedMemberData || data is FleetSerialization.ParsedFleetData) {
+                                if (data is DataVariant.ParsedVariantData || data is DataMember.ParsedMemberData || data is DataFleet.ParsedFleetData) {
                                     //
                                 } else {
                                     DisplayMessage.showMessage("No valid data in clipboard", Color.YELLOW)
@@ -76,34 +79,30 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             } else if (event.eventValue == Keyboard.KEY_D) {
                                 val playerFleet = Global.getSector().playerFleet
 
-                                element = FleetSerialization.extractFleetDataFromJson(FleetSerialization.saveFleetToJson(playerFleet))
+                                element = getFleetDataFromFleet(playerFleet)
                             }
 
                             var missing = MissingElements()
 
                             when (element) {
-                                is VariantSerialization.ParsedVariantData -> {
-                                    val (variant, newMissing) = VariantSerialization.buildVariantFull(element)
-                                    missing = newMissing
+                                is DataVariant.ParsedVariantData -> {
+                                    val variant = buildVariantFull(element, missing = missing)
 
                                     ModifyInternalVariants.setModifiedInternalVariant(variant as HullVariantSpec)
                                     variantIdList.add("${ModifyInternalVariants.safteyPrefix}${variant.hullVariantId}")
                                 }
 
-                                is MemberSerialization.ParsedMemberData -> {
+                                is DataMember.ParsedMemberData -> {
                                     var variant: ShipVariantAPI? = null
-                                    if (element.variantData != null) {
-                                        val (tempVariant, tempMissing) = VariantSerialization.buildVariantFull(element.variantData)
-                                        variant = tempVariant
-                                        missing = tempMissing
-                                    }
+                                    if (element.variantData != null)
+                                        variant = buildVariantFull(element.variantData, missing = missing)
 
                                     ModifyInternalVariants.setModifiedInternalVariant(variant as HullVariantSpec)
                                     variantIdList.add("${ModifyInternalVariants.safteyPrefix}${variant.hullVariantId}")
                                 }
 
-                                is FleetSerialization.ParsedFleetData -> {
-                                    val fleet = FleetSerialization.createCampaignFleetFromData(element, false, missing = missing)
+                                is DataFleet.ParsedFleetData -> {
+                                    val fleet = createCampaignFleetFromData(element, false, missing = missing)
 
                                     fleet.fleetData.membersListCopy.forEach { member ->
                                         ModifyInternalVariants.setModifiedInternalVariant(member.variant as HullVariantSpec)

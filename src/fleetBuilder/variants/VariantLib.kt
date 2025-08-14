@@ -5,7 +5,10 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.loading.FighterWingSpecAPI
+import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.VariantSource
+import com.fs.starfarer.api.loading.WeaponSpecAPI
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
@@ -17,6 +20,11 @@ object VariantLib {
     private lateinit var allHiddenEverywhereMods: Set<String>
     private lateinit var effectiveVariantMap: Map<String, List<ShipVariantAPI>>
     private lateinit var hullIDSet: Set<String>
+    private lateinit var errorVariantHullID: String
+    private lateinit var IDToHullSpec: Map<String, ShipHullSpecAPI>
+    private lateinit var IDToWing: Map<String, FighterWingSpecAPI>
+    private lateinit var IDToWeapon: Map<String, WeaponSpecAPI>
+    private lateinit var IDToHullMod: Map<String, HullModSpecAPI>
     private var init = false
     fun Loaded() = init
 
@@ -62,11 +70,23 @@ object VariantLib {
         effectiveVariantMap = tempVariantMap.mapValues { it.value.toList() }
 
         hullIDSet = Global.getSettings().allShipHullSpecs.map { it.hullId }.toSet()
+
+        errorVariantHullID = createErrorVariant().hullSpec.hullId
+
+        IDToHullSpec = Global.getSettings().allShipHullSpecs.associateBy { it.hullId }
+
+        IDToWing = Global.getSettings().allFighterWingSpecs.associateBy { it.id }
+        IDToWeapon = Global.getSettings().allWeaponSpecs.associateBy { it.weaponId }
+        IDToHullMod = Global.getSettings().allHullModSpecs.associateBy { it.id }
     }
 
     fun getAllDMods(): Set<String> = allDMods
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
     fun getHullIDSet(): Set<String> = hullIDSet
+    fun getHullSpec(hullId: String) = IDToHullSpec[hullId]
+    fun getFighterWingSpec(wingId: String) = IDToWing[wingId]
+    fun getWeaponSpec(weaponId: String) = IDToWeapon[weaponId]
+    fun getHullModSpec(hullModId: String) = IDToHullMod[hullModId]
 
     fun getCoreVariantsForEffectiveHullspec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         return effectiveVariantMap[hullSpec.getEffectiveHullId()].orEmpty()
@@ -310,5 +330,9 @@ object VariantLib {
         tempVariant.addTag(errorTag)
 
         return tempVariant
+    }
+
+    fun getErrorVariantHullID(): String {
+        return errorVariantHullID
     }
 }

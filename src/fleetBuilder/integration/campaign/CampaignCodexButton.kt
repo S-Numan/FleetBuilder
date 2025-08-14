@@ -13,11 +13,8 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.member.MemberSerialization.extractMemberDataFromJson
-import fleetBuilder.persistence.member.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.variant.VariantSerialization.extractVariantDataFromJson
-import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
+import fleetBuilder.persistence.member.DataMember.getMemberDataFromMember
+import fleetBuilder.persistence.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.FBMisc.fleetPaste
@@ -209,7 +206,7 @@ class CampaignCodexButton : EveryFrameScript {
                 } else {
                     val emptyVariant =
                         Global.getSettings().createEmptyVariant(param.hullId, param)
-                    parsedData = extractVariantDataFromJson(saveVariantToJson(emptyVariant))
+                    parsedData = getVariantDataFromVariant(emptyVariant)
                 }
             }
 
@@ -218,7 +215,7 @@ class CampaignCodexButton : EveryFrameScript {
                     cargo.addSpecial(SpecialItemData("ship_bp", param.hullId), count.toFloat())
                     message = "Added $count '${param.hullSpec.hullName}' blueprint to your cargo"
                 } else {
-                    parsedData = extractMemberDataFromJson(saveMemberToJson(param))
+                    parsedData = getMemberDataFromMember(param)
                 }
             }
         }

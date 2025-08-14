@@ -13,7 +13,8 @@ import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
-import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.variant.DataVariant.copyVariant
+import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
 import fleetBuilder.util.*
@@ -503,7 +504,7 @@ internal object AutofitPanel {
 
                 if (selectorPlugin.autofitSpec != null || autofitPlugin.draggedAutofitSpec == null) return@onClickReleaseNoInitClick
 
-                val settings: VariantSerialization.VariantSettings
+                val settings: VariantSettings
                 var shipDirectory: ShipDirectory?
 
                 if (autofitPlugin.draggedAutofitSpec!!.source == null) {
@@ -512,7 +513,7 @@ internal object AutofitPanel {
                     shipDirectory = LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)
 
                 } else {
-                    settings = VariantSerialization.VariantSettings()
+                    settings = VariantSettings()
 
                     shipDirectory = autofitPlugin.draggedAutofitSpec!!.source
                 }
@@ -524,7 +525,7 @@ internal object AutofitPanel {
 
                 val indexInMenu = index - coreEffectiveHullAutofitSpecs.size
 
-                val draggedVariant = VariantSerialization.saveAndLoadVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings)
+                val draggedVariant = copyVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would loaded if brought up later
 
                 val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant, compareTags = true) }
 
@@ -554,7 +555,7 @@ internal object AutofitPanel {
                         it.autofitSpec?.source != null && it.autofitSpec?.variant != null &&
                                 compareVariantContents(
                                     shipDirectory.getShip(shipVariantID)!!,
-                                    VariantSerialization.saveAndLoadVariant(it.autofitSpec!!.variant, settings),
+                                    copyVariant(it.autofitSpec!!.variant, settings), // Copied to apply settings
                                     compareTags = true
                                 )
                     })

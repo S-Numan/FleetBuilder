@@ -15,14 +15,18 @@ import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.CommanderShuttle.playerShuttleExists
 import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
-import fleetBuilder.persistence.fleet.FleetSerialization
-import fleetBuilder.persistence.fleet.FleetSerialization.buildFleetFull
-import fleetBuilder.persistence.fleet.FleetSerialization.getFleetFromJson
-import fleetBuilder.persistence.fleet.FleetSerialization.saveFleetToJson
-import fleetBuilder.persistence.fleet.FleetSerialization.validateAndCleanFleetData
-import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.person.PersonSerialization
-import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.fleet.DataFleet
+import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
+import fleetBuilder.persistence.fleet.DataFleet.validateAndCleanFleetData
+import fleetBuilder.persistence.fleet.FleetSettings
+import fleetBuilder.persistence.fleet.JSONFleet.getFleetFromJson
+import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
+import fleetBuilder.persistence.member.DataMember
+import fleetBuilder.persistence.member.DataMember.buildMemberFull
+import fleetBuilder.persistence.person.DataPerson
+import fleetBuilder.persistence.person.DataPerson.buildPersonFull
+import fleetBuilder.persistence.variant.DataVariant
+import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
@@ -38,11 +42,11 @@ import kotlin.math.max
 object FBMisc {
 
     fun replacePlayerFleetWith(
-        data: FleetSerialization.ParsedFleetData, replacePlayer: Boolean = false,
-        settings: FleetSerialization.FleetSettings = FleetSerialization.FleetSettings()
+        data: DataFleet.ParsedFleetData, replacePlayer: Boolean = false,
+        settings: FleetSettings = FleetSettings()
     ): MissingElements {
         val missing = MissingElements()
-        val fleet = FleetSerialization.createCampaignFleetFromData(data, true, missing = missing)
+        val fleet = createCampaignFleetFromData(data, true, missing = missing)
 
         replacePlayerFleetWith(
             fleet,
@@ -55,7 +59,7 @@ object FBMisc {
 
     fun replacePlayerFleetWith(
         fleet: CampaignFleetAPI, aggression: Int = -1, replacePlayer: Boolean = false,
-        settings: FleetSerialization.FleetSettings = FleetSerialization.FleetSettings()
+        settings: FleetSettings = FleetSettings()
     ) {
         val playerFleet = Global.getSector().playerFleet
 
@@ -146,9 +150,12 @@ object FBMisc {
 
         // Remove excess crew
         if (playerFleet.cargo.totalPersonnel > playerFleet.cargo.maxPersonnel) {
-            val overflow = (playerFleet.cargo.totalPersonnel - playerFleet.cargo.maxPersonnel)
+            val removable = playerFleet.cargo.crew - playerFleet.fleetData.minCrew
+            val overflow = playerFleet.cargo.totalPersonnel - playerFleet.cargo.maxPersonnel
 
-            playerFleet.cargo.removeCrew(overflow.coerceAtMost(playerFleet.fleetData.minCrew).toInt())
+            if (removable > 0) {
+                playerFleet.cargo.removeCrew(minOf(removable, overflow).toInt())
+            }
         }
         // Repair
         fullFleetRepair(playerFleet.fleetData)
@@ -237,16 +244,16 @@ object FBMisc {
         sector: SectorAPI,
         data: Any,
     ): Boolean {
-        if (data !is FleetSerialization.ParsedFleetData) {
+        if (data !is DataFleet.ParsedFleetData) {
             DisplayMessage.showMessage("Data valid, but not fleet data. You can only paste fleet data into the campaign.", Color.YELLOW)
             return false
         }
 
-        val subMissing = MissingElements()
-        val validatedData = validateAndCleanFleetData(data, MissingElements(), settings = FleetSerialization.FleetSettings())
+        val missing = MissingElements()
+        val validatedData = validateAndCleanFleetData(data, settings = FleetSettings(), missing = missing)
 
         if (validatedData.members.isEmpty()) {
-            reportMissingElementsIfAny(subMissing, "Fleet was empty when pasting")
+            reportMissingElementsIfAny(missing, "Fleet was empty when pasting")
             return false
         }
 
@@ -270,10 +277,9 @@ object FBMisc {
         val missing = MissingElements()
 
         when (data) {
-            is PersonSerialization.ParsedPersonData -> {
+            is DataPerson.ParsedPersonData -> {
                 // Officer
-                val (person, subMissing) = PersonSerialization.buildPersonFull(data)
-                missing.add(subMissing)
+                val person = buildPersonFull(data, missing = missing)
 
                 if (randomPastedCosmetics) {
                     randomizePersonCosmetics(person, playerFleet.fleet.faction)
@@ -282,13 +288,12 @@ object FBMisc {
                 showMessage("Added officer to fleet")
             }
 
-            is VariantSerialization.ParsedVariantData -> {
+            is DataVariant.ParsedVariantData -> {
                 // Variant
-                val (variant, subMissing) = VariantSerialization.buildVariantFull(data)
-                missing.add(subMissing)
+                val variant = buildVariantFull(data, missing = missing)
 
-                if (subMissing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(subMissing, "Could not find hullId when pasting variant")
+                if (missing.hullIds.size > 1) {
+                    reportMissingElementsIfAny(missing, "Could not find hullId when pasting variant")
                     return
                 }
 
@@ -304,13 +309,12 @@ object FBMisc {
                 updateFleetPanelContents()
             }
 
-            is MemberSerialization.ParsedMemberData -> {
+            is DataMember.ParsedMemberData -> {
                 // Fleet member
-                val (member, subMissing) = MemberSerialization.buildMemberFull(data)
-                missing.add(subMissing)
+                val member = buildMemberFull(data, missing = missing)
 
-                if (subMissing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(subMissing, "Could not find hullId when pasting member")
+                if (missing.hullIds.size > 1) {
+                    reportMissingElementsIfAny(missing, "Could not find hullId when pasting member")
                     return
                 }
 
@@ -332,10 +336,10 @@ object FBMisc {
                 updateFleetPanelContents()
             }
 
-            is FleetSerialization.ParsedFleetData -> {
+            is DataFleet.ParsedFleetData -> {
                 // Fleet
                 val subMissing = MissingElements()
-                val validatedFleet = validateAndCleanFleetData(data, subMissing, settings = FleetSerialization.FleetSettings())
+                val validatedFleet = validateAndCleanFleetData(data, missing = subMissing)
 
                 if (validatedFleet.members.isEmpty()) {
                     reportMissingElementsIfAny(subMissing, "Fleet was empty when pasting")
