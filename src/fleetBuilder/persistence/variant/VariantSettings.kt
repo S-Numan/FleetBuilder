@@ -18,4 +18,5 @@ data class VariantSettings(
     var excludeWeaponsWithID: MutableSet<String> = mutableSetOf(),
     var excludeWingsWithID: MutableSet<String> = mutableSetOf(),
     var excludeHullModsWithID: MutableSet<String> = mutableSetOf(),
+    var excludeTagsWithID: MutableSet<String> = mutableSetOf()
 )

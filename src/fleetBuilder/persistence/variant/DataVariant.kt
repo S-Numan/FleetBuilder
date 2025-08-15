@@ -173,6 +173,10 @@ object DataVariant {
             return wingId !in settings.excludeWingsWithID
         }
 
+        fun shouldKeepTag(tagId: String): Boolean {
+            return tagId !in settings.excludeTagsWithID
+        }
+
         // Remove entries from missing that were filtered out, as they aren't missing if they weren't supposed to be included in the first place.
         missing.hullModIds.retainAll { shouldKeepMod(it) }
         missing.weaponIds.retainAll { shouldKeepWeapon(it) }
@@ -200,7 +204,7 @@ object DataVariant {
         }
 
         val filteredTags = if (settings.includeTags) {
-            data.tags
+            data.tags.filter(::shouldKeepTag)
         } else emptySet()
 
         return data.copy(

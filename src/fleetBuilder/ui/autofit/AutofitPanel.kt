@@ -13,6 +13,7 @@ import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
+import fleetBuilder.config.ModSettings.getDefaultExcludeVariantTags
 import fleetBuilder.persistence.variant.DataVariant.copyVariant
 import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
@@ -513,7 +514,9 @@ internal object AutofitPanel {
                     shipDirectory = LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)
 
                 } else {
-                    settings = VariantSettings()
+                    settings = VariantSettings().apply {
+                        excludeTagsWithID = getDefaultExcludeVariantTags()
+                    }
 
                     shipDirectory = autofitPlugin.draggedAutofitSpec!!.source
                 }
@@ -525,7 +528,7 @@ internal object AutofitPanel {
 
                 val indexInMenu = index - coreEffectiveHullAutofitSpecs.size
 
-                val draggedVariant = copyVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would loaded if brought up later
+                val draggedVariant = copyVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would be loaded if brought up later
 
                 val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant, compareTags = true) }
 

@@ -1,6 +1,7 @@
 package fleetBuilder.config
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.config.ModSettings.autofitMenuEnabled
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.config.ModSettings.backupSave
@@ -156,8 +157,11 @@ object ModSettings {
             applySMods = saveSMods
             includeDMods = saveDMods
             includeHiddenMods = saveHiddenMods
+            excludeTagsWithID = getDefaultExcludeVariantTags()
         }
     }
+
+    fun getDefaultExcludeVariantTags(): MutableSet<String> = mutableSetOf(Tags.SHIP_RECOVERABLE, Tags.TAG_RETAIN_SMODS_ON_RECOVERY, Tags.TAG_NO_AUTOFIT, Tags.VARIANT_CONSISTENT_WEAPON_DROPS)
 
     val modID = "SN_FleetBuilder"
 

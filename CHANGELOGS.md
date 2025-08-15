@@ -1,3 +1,8 @@
+## 1.17.0
+- Tweak to the autofit menu to not save specific variant tags. This should make autofitting more consistent in the future.
+### Technical
+- Another big refactor of the serialization functions (excluding cargo). I've got to stop doing this. The end user wont notice a thing.
+
 ## 1.16.0
 - Saving and loading should now support Combat Chatter.
 - Fix niche situation whereas the autofit menu fails to get the variant when viewing a skin of a hull, which happens to be a dmodded skin and thus posses a dParentHullId.
