@@ -3,7 +3,6 @@ package fleetBuilder.persistence.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
-import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.fleet.DataFleet.buildFleetFull
 import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.persistence.fleet.DataFleet.getFleetDataFromFleet
