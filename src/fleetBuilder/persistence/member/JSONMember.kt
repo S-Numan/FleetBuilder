@@ -40,7 +40,7 @@ object JSONMember {
             variantData = variantData,
             personData = personData,
             shipName = json.optString("name", ""),
-            cr = json.optFloat("cr", 0.7f),
+            cr = if (json.has("cr")) json.optFloat("cr") else null,
             isMothballed = json.optBoolean("ismothballed", false),
             isFlagship = isFlagship
         )
@@ -89,7 +89,7 @@ object JSONMember {
 
         //memberJson.put("id", member.id)
 
-        if (data.cr != 0.7f)
+        if (data.cr != null)
             memberJson.put("cr", data.cr)
 
         memberJson.put("name", data.shipName)

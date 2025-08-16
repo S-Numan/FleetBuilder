@@ -21,7 +21,7 @@ object DataMember {
         val variantData: DataVariant.ParsedVariantData?,
         val personData: DataPerson.ParsedPersonData?,
         val shipName: String,
-        val cr: Float,
+        val cr: Float?,
         val isMothballed: Boolean,
         val isFlagship: Boolean,
         val id: String? = null
@@ -66,7 +66,7 @@ object DataMember {
         val personData = if (data.personData != null && settings.includeOfficer) filterParsedPersonData(data.personData, settings.personSettings, missing) else null
         val variantData = if (data.variantData != null) filterParsedVariantData(data.variantData, settings.variantSettings, missing) else null
 
-        val cr = if (settings.includeCR) data.cr else 0.7f
+        val cr = if (settings.includeCR) data.cr else null
 
         return data.copy(
             personData = personData,
@@ -92,7 +92,7 @@ object DataMember {
         return data.copy(
             personData = personData,
             variantData = variantData,
-            cr = data.cr.coerceIn(0f, 1f)
+            cr = data.cr?.coerceIn(0f, 1f)
         )
     }
 
@@ -107,8 +107,12 @@ object DataMember {
 
         // Set name and CR
         member.shipName = data.shipName
-        member.repairTracker.cr = data.cr
         member.repairTracker.isMothballed = data.isMothballed
+        if (data.cr != null)
+            member.repairTracker.cr = data.cr
+        else
+            member.repairTracker.cr = member.repairTracker.maxCR
+
 
         // Officer
         if (data.personData != null)
