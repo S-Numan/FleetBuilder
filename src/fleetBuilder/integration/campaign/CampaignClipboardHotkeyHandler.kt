@@ -121,44 +121,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 handleRefitRemoveHullMod(event)
         } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
             handleFleetMouseEvents(event, sector)
-        } else if (ui.getActualCurrentTab() == CoreUITabId.CARGO) {
-            if (event.isRMBDownEvent)
-                handleCargoMouseEvents(event)
         }
-    }
-
-    private fun handleCargoMouseEvents(event: InputEventAPI) {
-        if (!ModSettings.cargoAutoManager) return
-        Global.getSector().currentlyOpenMarket ?: return
-
-        val cargoTab = ReflectionMisc.getCargoTab() ?: return
-
-        val submarketButtonParent = cargoTab.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI ?: return
-        val submarketButtons = submarketButtonParent.getChildrenCopy()
-
-        submarketButtons.forEach { submarketButton ->
-            val fader = submarketButton.invoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
-
-            if (fader.isFadingIn || fader.brightness == 1f) {
-
-                val tool = submarketButton.invoke("getTooltip") as? TooltipMakerAPI ?: return@forEach
-                val pluginField = tool.getFieldsMatching(fieldAccepts = SubmarketPlugin::class.java, searchSuperclass = true).getOrNull(0)
-                val submarketPlugin = pluginField?.get(tool) as? SubmarketPlugin
-                    ?: return@forEach
-                val selectedSubmarket = submarketPlugin.submarket
-
-                val coreUI = ReflectionMisc.getCoreUI(topDialog = false) as CoreUIAPI
-                if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach
-                if (!submarketPlugin.isEnabled(coreUI)) return@forEach
-                if (!submarketPlugin.isFreeTransfer) return@forEach//Temporary to avoid cheating when WIP
-                if (submarketPlugin is LocalResourcesSubmarketPlugin) return@forEach
-
-                Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket)
-
-                event.consume()
-            }
-        }
-
     }
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {

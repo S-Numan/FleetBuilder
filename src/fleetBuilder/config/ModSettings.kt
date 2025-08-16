@@ -65,38 +65,50 @@ internal class ModSettingsListener : LunaSettingsListener {
     //Gets called whenever settings are saved in the campaign or the main menu.
     override fun settingsChanged(modID: String) {
 
-        selectorsPerRow = getInt(modID, "selectorsPerRow")!!
-        showCoreGoalVariants = getBoolean(modID, "showCoreGoalVariants")!!
-        showCoreNonGoalVariants = getBoolean(modID, "showCoreNonGoalVariants")!!
-        showHiddenModsInTooltip = getBoolean(modID, "showHiddenModsInTooltip")!!
-        showDebug = getBoolean(modID, "showDebug")!!
-        saveDMods = getBoolean(modID, "saveDMods")!!
-        saveSMods = getBoolean(modID, "saveSMods")!!
-        saveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
-        unassignPlayer = getBoolean(modID, "unassignPlayer")!!
-        forceAutofit = getBoolean(modID, "forceAutofit")!!
-        dontForceClearDMods = getBoolean(modID, "dontForceClearDMods")!!
-        dontForceClearSMods = getBoolean(modID, "dontForceClearSMods")!!
-        randomPastedCosmetics = getBoolean(modID, "randomPastedCosmetics")!!
-        backupSave = getBoolean(modID, "backupSave")!!
-        fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
-        devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
-        fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
-        storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
-        removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
-        cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
-        modPickerFilter = getBoolean(modID, "modPickerFilter")!!
-        reportCargoAutoManagerChanges = getBoolean(modID, "reportCargoAutoManagerChanges")!!
+        val featuresDisabled = getBoolean(modID, "featuresDisabled")!!
 
-        autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
+        if (!featuresDisabled) {
+            selectorsPerRow = getInt(modID, "selectorsPerRow")!!
+            showCoreGoalVariants = getBoolean(modID, "showCoreGoalVariants")!!
+            showCoreNonGoalVariants = getBoolean(modID, "showCoreNonGoalVariants")!!
+            showHiddenModsInTooltip = getBoolean(modID, "showHiddenModsInTooltip")!!
+            showDebug = getBoolean(modID, "showDebug")!!
+            saveDMods = getBoolean(modID, "saveDMods")!!
+            saveSMods = getBoolean(modID, "saveSMods")!!
+            saveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
+            unassignPlayer = getBoolean(modID, "unassignPlayer")!!
+            forceAutofit = getBoolean(modID, "forceAutofit")!!
+            dontForceClearDMods = getBoolean(modID, "dontForceClearDMods")!!
+            dontForceClearSMods = getBoolean(modID, "dontForceClearSMods")!!
+            randomPastedCosmetics = getBoolean(modID, "randomPastedCosmetics")!!
+            backupSave = getBoolean(modID, "backupSave")!!
+            fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
+            devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
+            fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
+            storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
+            removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
+            cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
+            modPickerFilter = getBoolean(modID, "modPickerFilter")!!
+            reportCargoAutoManagerChanges = getBoolean(modID, "reportCargoAutoManagerChanges")!!
+            autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
+            val _autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
+            if (_autofitMenuHotkey != 0) {
+                autofitMenuHotkey = _autofitMenuHotkey
+            }
 
-        val _autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
-        if (_autofitMenuHotkey != 0) {
-            autofitMenuHotkey = _autofitMenuHotkey
+            if (VariantLib.Loaded())
+                LoadoutManager.loadAllDirectories()//Reload the LoadoutManager
+        } else {
+            unassignPlayer = false
+            backupSave = false
+            fleetClipboardHotkeyHandler = false
+            devModeCodexButtonEnabled = false
+            fleetScreenFilter = false
+            storeOfficersInCargo = false
+            cargoAutoManager = false
+            modPickerFilter = false
+            autofitMenuEnabled = false
         }
-
-        if (VariantLib.Loaded())
-            LoadoutManager.loadAllDirectories()//Reload the LoadoutManager
 
         Reporter.setListeners()
     }

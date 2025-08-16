@@ -100,7 +100,7 @@ object CompressedVariant {
         val displayName = fields[2]
 
         //val variantId = "${hullId}_$displayName"
-        
+
         val fluxCap = fields[3].toInt()
         val fluxVents = fields[4].toInt()
 
@@ -210,11 +210,11 @@ object CompressedVariant {
 
             if (addedModIds.isNotEmpty()) {
 
-                requiredMods = "Game Mods: "
+                requiredMods = "Mods Used: "
 
                 for (mod in addedModIds) {
                     addedModDetails += "${mod.first}$sep${mod.second}$sep${mod.third}$fieldSep"
-                    requiredMods += "${mod.second} $sep "
+                    requiredMods += "(${mod.second}) $sep "
                 }
                 requiredMods = requiredMods.dropLast(3)
                 addedModDetails = addedModDetails.dropLast(1)

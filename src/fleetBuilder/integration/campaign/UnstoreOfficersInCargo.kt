@@ -27,8 +27,8 @@ class UnstoreOfficersInCargo : EveryFrameScript {
         }*/
 
         val ui = sector.campaignUI ?: return
-        if (ui.currentInteractionDialog == null || ui.currentInteractionDialog.interactionTarget == null || ui.currentInteractionDialog.interactionTarget.market == null) return
-        if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return
+        if (ui.currentInteractionDialog == null || ui.currentInteractionDialog.interactionTarget == null || ui.currentInteractionDialog.interactionTarget.market == null) return // Interacting with a market
+        if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return // In fleet screen
         val playerFleet = sector.playerFleet ?: return
         //Can only get here if in the fleet tab of a market
 
