@@ -1,16 +1,4 @@
 {
-    "aggression_doctrine": 2,
-    "commander": {
-        "first": "Hakim",
-        "gender": "MALE",
-        "last": "Juteau",
-        "level": 1,
-        "personality": "steady",
-        "portrait": "graphics/portraits/portrait_hegemony07.png",
-        "post": "fleetCommander",
-        "rank": "spaceCommander",
-        "tags": []
-    },
     "fleetName": "Low Tech Star Fortress",
     "members": [{
         "cr": 0.975,

@@ -9,6 +9,7 @@ import fleetBuilder.persistence.variant.JSONVariant.addVariantSourceModsToJson
 import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.persistence.variant.JSONVariant.saveVariantToJson
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.roundToDecimals
 import fleetBuilder.variants.MissingElements
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
@@ -90,7 +91,7 @@ object JSONMember {
         //memberJson.put("id", member.id)
 
         if (data.cr != null)
-            memberJson.put("cr", data.cr)
+            memberJson.put("cr", data.cr.roundToDecimals(2))
 
         memberJson.put("name", data.shipName)
 

@@ -1,0 +1,1 @@
+This folder contains vanilla fleets not from the vanilla game; either those from mods, or custom user fleets.

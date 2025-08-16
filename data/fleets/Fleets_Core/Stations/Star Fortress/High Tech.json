@@ -1,16 +1,4 @@
 {
-    "aggression_doctrine": 2,
-    "commander": {
-        "first": "Autumn",
-        "gender": "MALE",
-        "last": "Heka",
-        "level": 1,
-        "personality": "steady",
-        "portrait": "graphics/portraits/portrait25.png",
-        "post": "fleetCommander",
-        "rank": "spaceCommander",
-        "tags": []
-    },
     "fleetName": "High Tech Star Fortress",
     "members": [{
         "cr": 1,

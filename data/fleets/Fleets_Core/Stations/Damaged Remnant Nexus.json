@@ -1,36 +1,32 @@
 {
     "aggression_doctrine": 3,
-    "commander": {
-        "aicoreid": "alpha_core",
-        "first": "Alpha Core",
-        "gender": "ANY",
-        "last": "",
-        "member": {
-            "cr": 0.7,
-            "name": "TTDS Risk Accretion",
-            "variantId": "remnant_station2_Standard"
+    "factionID": "remnant",
+    "fleetName": "Nexus (Damaged)",
+    "members": [{
+        "cr": 0.85,
+        "isFlagship": true,
+        "name": "TTDS Via Acubens",
+        "officer": {
+            "aicoreid": "alpha_core",
+            "first": "Alpha Core",
+            "level": 7,
+            "personality": "reckless",
+            "portrait": "graphics/portraits/portrait_ai2b.png",
+            "rank": "spaceCaptain",
+            "skills": {
+                "combat_endurance": 2,
+                "damage_control": 2,
+                "field_modulation": 2,
+                "gunnery_implants": 2,
+                "helmsmanship": 2,
+                "impact_mitigation": 2,
+                "target_analysis": 2
+            }
         },
-        "personality": "reckless",
-        "portrait": "graphics/portraits/portrait_ai2b.png",
-        "rank": "spaceCaptain",
-        "skills": {
-            "coordinated_maneuvers": 1,
-            "damage_control": 2,
-            "energy_weapon_mastery": 2,
-            "field_modulation": 2,
-            "flux_regulation": 1,
-            "gunnery_implants": 2,
-            "helmsmanship": 2,
-            "impact_mitigation": 2,
-            "polarized_armor": 2,
-            "target_analysis": 2
-        },
-        "tags": []
-    },
-    "fleetName": "Nexus",
-    "members": [],
+        "variantId": "remnant_station2_Damaged"
+    }],
     "variants": [{
-        "displayName": "Standard",
+        "displayName": "Damaged",
         "fluxCapacitors": 0,
         "fluxVents": 0,
         "hullId": "remnant_station2",
@@ -150,127 +146,7 @@
                 "variantId": "remnant_armour3_Standard",
                 "weaponGroups": []
             },
-            "WS 032": {
-                "displayName": "Standard",
-                "fluxCapacitors": 10,
-                "fluxVents": 10,
-                "hullId": "remnant_shield2",
-                "hullMods": [],
-                "permaMods": [],
-                "sMods": [],
-                "variantId": "remnant_shield2_Standard",
-                "weaponGroups": [{
-                    "autofire": true,
-                    "mode": "LINKED",
-                    "weapons": {
-                        "WS 001": "guardian",
-                        "WS 002": "guardian"
-                    }
-                }]
-            },
-            "WS 033": {
-                "displayName": "Standard",
-                "fluxCapacitors": 10,
-                "fluxVents": 10,
-                "hullId": "remnant_shield2",
-                "hullMods": [],
-                "permaMods": [],
-                "sMods": [],
-                "variantId": "remnant_shield2_Standard",
-                "weaponGroups": [{
-                    "autofire": true,
-                    "mode": "LINKED",
-                    "weapons": {
-                        "WS 001": "guardian",
-                        "WS 002": "guardian"
-                    }
-                }]
-            },
-            "WS 034": {
-                "displayName": "Standard",
-                "fluxCapacitors": 10,
-                "fluxVents": 10,
-                "hullId": "remnant_shield2",
-                "hullMods": [],
-                "permaMods": [],
-                "sMods": [],
-                "variantId": "remnant_shield2_Standard",
-                "weaponGroups": [{
-                    "autofire": true,
-                    "mode": "LINKED",
-                    "weapons": {
-                        "WS 001": "guardian",
-                        "WS 002": "guardian"
-                    }
-                }]
-            },
-            "WS 035": {
-                "displayName": "Standard",
-                "fluxCapacitors": 10,
-                "fluxVents": 10,
-                "hullId": "remnant_weapon_platform2",
-                "hullMods": [],
-                "permaMods": [],
-                "sMods": [],
-                "variantId": "remnant_weapon_platform2_Standard",
-                "weaponGroups": [
-                    {
-                        "autofire": false,
-                        "mode": "LINKED",
-                        "weapons": {"WS 002": "autopulse"}
-                    },
-                    {
-                        "autofire": true,
-                        "mode": "LINKED",
-                        "weapons": {
-                            "WS 006": "pdburst",
-                            "WS 007": "pdburst"
-                        }
-                    },
-                    {
-                        "autofire": true,
-                        "mode": "LINKED",
-                        "weapons": {
-                            "WS 003": "pulselaser",
-                            "WS 004": "ionpulser"
-                        }
-                    }
-                ]
-            },
             "WS 036": {
-                "displayName": "Standard",
-                "fluxCapacitors": 10,
-                "fluxVents": 10,
-                "hullId": "remnant_weapon_platform2",
-                "hullMods": [],
-                "permaMods": [],
-                "sMods": [],
-                "variantId": "remnant_weapon_platform2_Standard",
-                "weaponGroups": [
-                    {
-                        "autofire": false,
-                        "mode": "LINKED",
-                        "weapons": {"WS 002": "autopulse"}
-                    },
-                    {
-                        "autofire": true,
-                        "mode": "LINKED",
-                        "weapons": {
-                            "WS 006": "pdburst",
-                            "WS 007": "pdburst"
-                        }
-                    },
-                    {
-                        "autofire": true,
-                        "mode": "LINKED",
-                        "weapons": {
-                            "WS 003": "pulselaser",
-                            "WS 004": "ionpulser"
-                        }
-                    }
-                ]
-            },
-            "WS 037": {
                 "displayName": "Standard",
                 "fluxCapacitors": 10,
                 "fluxVents": 10,
@@ -368,36 +244,12 @@
                     "spark_wing",
                     "spark_wing"
                 ]
-            },
-            "WS 040": {
-                "displayName": "Strike",
-                "fluxCapacitors": 10,
-                "fluxVents": 10,
-                "hullId": "remnant_hangar1",
-                "hullMods": [],
-                "permaMods": [],
-                "sMods": [],
-                "variantId": "remnant_hangar1_Strike",
-                "weaponGroups": [{
-                    "autofire": true,
-                    "mode": "LINKED",
-                    "weapons": {
-                        "WS 001": "pulselaser",
-                        "WS 002": "pulselaser",
-                        "WS 004": "pdlaser",
-                        "WS 005": "pdlaser"
-                    }
-                }],
-                "wings": [
-                    "lux_wing",
-                    "flash_wing",
-                    "flash_wing"
-                ]
             }
         },
         "permaMods": [],
         "sMods": [],
-        "variantId": "remnant_station2_Standard",
+        "tags": ["skip_for_default_hull_modules"],
+        "variantId": "remnant_station2_Damaged",
         "weaponGroups": []
     }]
 }

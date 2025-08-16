@@ -1,5 +1,6 @@
 {
     "aggression_doctrine": 2,
+    "factionID": "hegemony",
     "commander": {
         "first": "Amon",
         "gender": "MALE",

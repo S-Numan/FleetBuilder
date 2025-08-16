@@ -1,20 +1,8 @@
 {
-    "aggression_doctrine": 2,
-    "commander": {
-        "first": "Fourth",
-        "gender": "FEMALE",
-        "last": "Gagnon",
-        "level": 1,
-        "personality": "steady",
-        "portrait": "graphics/portraits/portrait29.png",
-        "post": "fleetCommander",
-        "rank": "spaceCommander",
-        "tags": []
-    },
-    "fleetName": "Mid Line Star Fortress",
+    "fleetName": "Midline Star Fortress",
     "members": [{
         "cr": 1,
-        "name": "Mid Line Star Fortress",
+        "name": "Midline Star Fortress",
         "variantId": "station3_midline_Star_Fortress"
     }],
     "variants": [{

@@ -1,5 +1,6 @@
 {
     "aggression_doctrine": 3,
+    "factionID": "luddic_church",
     "commander": {
         "first": "Gao",
         "gender": "MALE",
