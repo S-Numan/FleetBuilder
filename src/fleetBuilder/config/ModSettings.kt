@@ -18,6 +18,7 @@ import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.modPickerFilter
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.config.ModSettings.removeDefaultDMods
+import fleetBuilder.config.ModSettings.removeRefitHullmod
 import fleetBuilder.config.ModSettings.reportCargoAutoManagerChanges
 import fleetBuilder.config.ModSettings.saveDMods
 import fleetBuilder.config.ModSettings.saveHiddenMods
@@ -91,6 +92,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             modPickerFilter = getBoolean(modID, "modPickerFilter")!!
             reportCargoAutoManagerChanges = getBoolean(modID, "reportCargoAutoManagerChanges")!!
             autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
+            removeRefitHullmod = getBoolean(modID, "removeRefitHullmod")!!
             val _autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
             if (_autofitMenuHotkey != 0) {
                 autofitMenuHotkey = _autofitMenuHotkey
@@ -108,6 +110,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             cargoAutoManager = false
             modPickerFilter = false
             autofitMenuEnabled = false
+            removeRefitHullmod = false
         }
 
         Reporter.setListeners()
@@ -232,4 +235,6 @@ object ModSettings {
     var modPickerFilter = false
 
     var reportCargoAutoManagerChanges = true
+
+    var removeRefitHullmod = true
 }

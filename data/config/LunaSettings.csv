@@ -24,23 +24,17 @@ Simulator: Add the copied fleet/member/variant to the simulator reserves.
 CTRL + D in
 Simulator: Add the player’s fleet into simulator reserves. To fight a variant from your own fleet.
 
-CTRL + SHIFT + D
-Anywhere: Open developer options. You can toggle dev mode here.
-
-Right Click:
-Storage Submarket: Open the Cargo Auto Manager for automatic cargo management.
-
 CTRL + I
 Campaign: Open Save Transfer dialog
+
+CTRL + SHIFT + D
+Anywhere: Open developer options. You can toggle dev mode here.
 
 THE BELOW REQUIRES DEV MODE TO BE ON
 
 CTRL + V in
 Fleet screen: Add the copied fleet/member/variant/officer to your fleet
 Campaign: Spawn fleet in the clipboard into the campaign
-
-Right Click:
-HullMod in refit screen: Removes the hullmod. Even if it’s an SMod, or a built in SMod.
 
 CTRL + O in
 Fleet Screen: Open officer creator dialog",,,Hotkey Handler
@@ -116,6 +110,8 @@ You can, for example, automatically stock up on supplies, fuel, and crew on inte
 You can also automatically deposit all weapons when interacting with a market
 Highly configurable",,,Misc
 reportCargoAutoManagerChanges,Report Cargo Auto Manager Changes,Boolean,true,,"If true, will show a message at the top of the screen every time the Cargo Auto Manager moves your cargo on entering or leaving a market.",,,Misc
+removeRefitHullmod,Force Remove Refit Hullmod,Boolean,true,,"If true, right click a hullmod in the refit screen to remove it. This works on built in SMods, SMods, DMods, etc.
+Dev Mode must be on.",,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave -backup” in the console to load it.",,,Misc
@@ -126,7 +122,6 @@ saveSMods,Save Smods,Boolean,true,,"If false: SMods will still be included when 
 saveDMods,Save Dmods,Boolean,false,,If false: DMods will be excluded when saving.,,,Misc
 saveHiddenMods,Save Hidden Mods,Boolean,true,,"If false: hullmods that do not show up in the hullmods list will be excluded when saving.
 Enable the setting ‘Show Hidden HullMods’ in the ‘Autofit Menu’ tab and hover over a ship in the autofit menu to see its hidden hullmods, provided it has them.",,,Misc
-,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc

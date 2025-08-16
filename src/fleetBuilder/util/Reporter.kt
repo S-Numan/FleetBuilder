@@ -53,6 +53,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
             manageListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
             manageListener(StoreOfficersInCargo::class.java, ModSettings.storeOfficersInCargo) { StoreOfficersInCargo() }
             manageListener(CargoAutoManagerOpener::class.java, ModSettings.cargoAutoManager) { CargoAutoManagerOpener() }
+            manageListener(RemoveRefitHullmod::class.java, ModSettings.removeRefitHullmod) { RemoveRefitHullmod() }
 
             manageTransientScript(CampaignCodexButton::class.java, ModSettings.devModeCodexButtonEnabled) { CampaignCodexButton() }
             manageTransientScript(CampaignFleetScreenFilter::class.java, ModSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }

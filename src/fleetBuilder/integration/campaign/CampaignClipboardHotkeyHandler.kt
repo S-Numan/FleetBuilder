@@ -117,8 +117,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         } else if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             if (event.isCtrlDown && event.isLMBDownEvent)
                 handleRefitMouseEvents(event)
-            else if (event.isRMBDownEvent && Global.getSettings().isDevMode)
-                handleRefitRemoveHullMod(event)
         } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
             handleFleetMouseEvents(event, sector)
         }
@@ -411,71 +409,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage("Officer copied to clipboard")
             event.consume()
-        } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey failed", e)
-        }
-    }
-
-    private fun handleRefitRemoveHullMod(event: InputEventAPI) {
-        val coreUI = ReflectionMisc.getCoreUI() ?: return
-        val isAutofitPanelOpen = coreUI
-            .getChildrenCopy()
-            .filterIsInstance<CustomPanelAPI>()
-            .any { it.plugin is AutofitPanel.AutofitPanelPlugin }
-        if (isAutofitPanelOpen) return
-
-        try {
-            val refitPanel = ReflectionMisc.getRefitPanel() ?: return
-            val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return
-
-            val modWidgetModIcons = modWidget.findChildWithMethod("getColumns")
-
-            @Suppress("UNCHECKED_CAST")
-            val items = modWidgetModIcons?.invoke("getItems") as? MutableList<UIPanelAPI?> ?: return
-
-            items.forEach { item ->
-                if (item == null) return@forEach
-                val modIcon = item.findChildWithMethod("getFader") as? ButtonAPI ?: return@forEach
-
-                val mouseX = Global.getSettings().mouseX
-                val mouseY = Global.getSettings().mouseY
-                val modIconVec = Vector2f(modIcon.position.x, modIcon.position.y)
-                if (mouseX >= modIconVec.x && mouseX <= modIconVec.x + modIcon.width &&
-                    mouseY >= modIconVec.y && mouseY <= modIconVec.y + modIcon.height
-                ) {
-                    val hullModField = item.getFieldsMatching(fieldAssignableTo = HullModSpecAPI::class.java).firstOrNull()
-                        ?: return@forEach
-                    val hullModID = hullModField.get(item) as? HullModSpecAPI ?: return@forEach
-
-                    val variant = ReflectionMisc.getCurrentVariantInRefitTab()
-                    if (variant != null) {
-                        if (variant.hullSpec.builtInMods.contains(hullModID.id)) {//Built in SMod?
-                            if (variant.sModdedBuiltIns.contains(hullModID.id)) {
-                                variant.completelyRemoveMod(hullModID.id)
-                                refitPanel.invoke("syncWithCurrentVariant")
-
-                                DisplayMessage.showMessage("Removed sModdedBuiltIn in with ID '${hullModID.id}'")
-                            } else if (VariantLib.getAllDMods().contains(hullModID.id)) {//Built in DMod?
-                                variant.hullMods.remove(hullModID.id)
-                                refitPanel.invoke("syncWithCurrentVariant")
-
-                                DisplayMessage.showMessage("Removed built in DMod with ID '${hullModID.id}'")
-                            } else {
-                                DisplayMessage.showMessage("The hullmod '${hullModID.id}' is built into the hullspec, it cannot be removed from the variant")
-                            }
-                        } else {
-                            variant.completelyRemoveMod(hullModID.id)
-                            refitPanel.invoke("syncWithCurrentVariant")
-
-                            DisplayMessage.showMessage("Removed hullmod with ID '$hullModID'")
-                        }
-
-                        event.consume()
-                        return
-                    }
-                }
-            }
-
         } catch (e: Exception) {
             DisplayMessage.showError("FleetBuilder hotkey failed", e)
         }
