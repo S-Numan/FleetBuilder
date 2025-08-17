@@ -9,8 +9,8 @@
 		"FleetBuilder":{
 			"mission_indicator":"graphics/icons/mission_marker.png",
 			"white_square":"graphics/fx/white_square.png",
-			"different_weapon_groups":"graphics/icons/NO-WG.png",
-			"different_flux_stats":"graphics/icons/NO-FLUX.png",
+			"different_weapon_groups":"graphics/icons/NO-WG-white.png",
+			"different_flux_stats":"graphics/icons/NO-FLUX-white.png",
 		}
 	}
 }

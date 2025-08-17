@@ -424,6 +424,9 @@ internal object AutofitPanel {
         for (index in selectorPlugins.indices) {
             val selectorPlugin = selectorPlugins[index]
 
+            selectorPlugin.onPressOutside {
+                if (selectorPlugin.autofitSpec != null) highlightBasedOnVariant(selectorPlugin.autofitSpec!!.variant, baseVariant, selectorPlugin) // Mostly for applying the different flux stat symbol on alteration of flux stats.
+            }
             selectorPlugin.onHoverEnter {
                 Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
             }
@@ -619,8 +622,8 @@ internal object AutofitPanel {
             variant,
             baseVariant,
             compareWeaponGroups = false,
-            compareBuiltInHullMods = false,
             compareFlux = false,
+            compareBuiltInHullMods = false,
             compareDMods = false,
             convertSModsToRegular = true,
             compareHiddenHullMods = false,
@@ -632,6 +635,29 @@ internal object AutofitPanel {
             selectorPlugin.highlightFader.forceIn()
 
             outlinePanelBasedOnVariant(baseVariant, variant, selectorPlugin)
+
+            val diffWeaponGroups = !compareVariantContents(
+                variant,
+                baseVariant,
+                compareWeaponGroups = true,
+                compareFlux = false,
+                compareHullMods = false,
+                useEffectiveHull = true
+            )
+            val diffFluxStats = !compareVariantContents(
+                variant,
+                baseVariant,
+                compareWeaponGroups = false,
+                compareFlux = true,
+                compareHullMods = false,
+                useEffectiveHull = true
+            )
+            if (diffFluxStats) {
+                selectorPlugin.diffFluxStats = true
+            }
+            if (diffWeaponGroups) {
+                selectorPlugin.diffWeaponGroups = true
+            }
         }
     }
 
@@ -640,6 +666,8 @@ internal object AutofitPanel {
         selectorPlugin.isEqual = false
         selectorPlugin.isBetter = false
         selectorPlugin.isWorse = false
+        selectorPlugin.diffFluxStats = false
+        selectorPlugin.diffWeaponGroups = false
     }
 
     private fun outlinePanelBasedOnVariant(

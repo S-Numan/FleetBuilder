@@ -1,5 +1,7 @@
 ## 1.17.0
+- Autofit variants that differ in flux stats or weapon groups but are the same otherwise now render a little icon showing that difference.
 - Tweak to the autofit menu to not save specific variant tags. This should make autofitting more consistent in the future.
+- A bunch of minor tweaks here and there.
 ### Technical
 - Another big refactor of the serialization functions (excluding cargo). I've got to stop doing this. The end user wont notice a thing.
 

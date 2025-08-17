@@ -159,11 +159,16 @@ object VariantLib {
             if (variant1.numFluxVents != variant2.numFluxVents || variant1.numFluxCapacitors != variant2.numFluxCapacitors)
                 return false
         }
-        if (compareWeapons) {
-            if (!compareWeaponGroups) {
-                variant1.autoGenerateWeaponGroups()
-                variant2.autoGenerateWeaponGroups()
+        if (compareWeaponGroups) {
+            if (variant1.weaponGroups.count { it.slots.isNotEmpty() } != variant2.weaponGroups.count { it.slots.isNotEmpty() }) return false
+            variant1.weaponGroups.forEachIndexed { i, _ ->
+                if (variant1.weaponGroups[i]?.slots?.isEmpty() == true) return@forEachIndexed
+                if (variant1.weaponGroups[i]?.slots != variant2.weaponGroups[i]?.slots) return false
+                if (variant1.weaponGroups[i]?.type != variant2.weaponGroups[i]?.type) return false
+                if (variant1.weaponGroups[i]?.isAutofireOnByDefault != variant2.weaponGroups[i]?.isAutofireOnByDefault) return false
             }
+        }
+        if (compareWeapons) {
             if (variant1.fittedWeaponSlots.size != variant2.fittedWeaponSlots.size) return false
             for (slotId in variant1.fittedWeaponSlots) {
                 if (variant1.getWeaponId(slotId) != variant2.getWeaponId(slotId))
