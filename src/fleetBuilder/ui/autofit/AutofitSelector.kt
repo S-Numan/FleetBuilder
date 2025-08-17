@@ -54,9 +54,12 @@ internal object AutofitSelector {
         var isBase = false
         val isUnlocked = true
         var noClickFader = false
-        var isBetter = false
-        var isWorse = false
-        var isEqual = false
+
+        enum class ComparisonStatus {
+            DEFAULT, BETTER, WORSE, EQUAL
+        }
+
+        var comparisonStatus = ComparisonStatus.DEFAULT
         var diffWeaponGroups = false
         var diffFluxStats = false
 
@@ -100,11 +103,11 @@ internal object AutofitSelector {
             GL11.glRectf(selectorPanel.left, selectorPanel.bottom, selectorPanel.right, selectorPanel.top)
 
             val darkerBorderColor =
-                if (isEqual)
+                if (comparisonStatus == ComparisonStatus.EQUAL)
                     Misc.getGrayColor().darker()
-                else if (isBetter)
+                else if (comparisonStatus == ComparisonStatus.BETTER)
                     Misc.getPositiveHighlightColor().darker().darker()
-                else if (isWorse)
+                else if (comparisonStatus == ComparisonStatus.WORSE)
                     Misc.getNegativeHighlightColor().darker().darker()
                 else
                     Misc.getDarkPlayerColor().darker()

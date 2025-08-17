@@ -16,6 +16,7 @@ import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.getDefaultExcludeVariantTags
 import fleetBuilder.persistence.variant.DataVariant.copyVariant
 import fleetBuilder.persistence.variant.VariantSettings
+import fleetBuilder.ui.autofit.AutofitSelector.AutofitSelectorPlugin.ComparisonStatus
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
 import fleetBuilder.util.*
@@ -45,6 +46,7 @@ import java.awt.Color
 /**
  * Original author
  * @author Starficz
+ * Heavily modified otherwise
  */
 internal object AutofitPanel {
     private const val BACKGROUND_ALPHA = 0.7f
@@ -328,7 +330,7 @@ internal object AutofitPanel {
         val baseVariantSelectorPlugin = baseVariantSelectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
         baseVariantSelectorPlugin.isBase = true
         baseVariantSelectorPlugin.noClickFader = true
-        baseVariantSelectorPlugin.isEqual = true
+        baseVariantSelectorPlugin.comparisonStatus = ComparisonStatus.EQUAL
         baseVariantSelectorPlugin.isSelected = true
         selectorPlugins.add(baseVariantSelectorPlugin)
 
@@ -663,9 +665,7 @@ internal object AutofitPanel {
 
     fun deHighlight(selectorPlugin: AutofitSelector.AutofitSelectorPlugin) {
         selectorPlugin.isSelected = false
-        selectorPlugin.isEqual = false
-        selectorPlugin.isBetter = false
-        selectorPlugin.isWorse = false
+        selectorPlugin.comparisonStatus = ComparisonStatus.DEFAULT
         selectorPlugin.diffFluxStats = false
         selectorPlugin.diffWeaponGroups = false
     }
@@ -738,11 +738,11 @@ internal object AutofitPanel {
         }
 
         if (equalMods) {
-            selectorPlugin.isEqual = true
+            selectorPlugin.comparisonStatus = ComparisonStatus.EQUAL
         } else if (equalSMods) {
-            selectorPlugin.isBetter = true
+            selectorPlugin.comparisonStatus = ComparisonStatus.BETTER
         } else if (unequalDMod || unequalSMods) {
-            selectorPlugin.isWorse = true
+            selectorPlugin.comparisonStatus = ComparisonStatus.WORSE
         }
     }
 
