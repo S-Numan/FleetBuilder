@@ -678,9 +678,9 @@ internal object AutofitPanel {
         val compareBaseVariant = baseVariant.clone()
         val compareVariant = variant.clone()
 
-        //Treat built in DMods like regular PermaMods.
-        compareBaseVariant.allDMods().forEach { compareBaseVariant.addPermaMod(it) }
-        compareVariant.allDMods().forEach { compareVariant.addPermaMod(it) }
+        //Treat built in DMods like regular hullmods.
+        //compareBaseVariant.allDMods().forEach { compareBaseVariant.hullMods.add(it) }
+        //compareVariant.allDMods().forEach { compareVariant.hullMods.add(it) }
 
         //Treat SModdedBuiltIns like SMods.
         compareBaseVariant.sModdedBuiltIns.forEach { compareBaseVariant.addPermaMod(it, true) }
@@ -718,7 +718,7 @@ internal object AutofitPanel {
 
         var unequalDMod = false
         if (compareBaseVariant.allDMods().isNotEmpty()) {
-            compareBaseVariant.allDMods().forEach { compareBaseVariant.completelyRemoveMod(it) }
+            compareBaseVariant.allDMods().forEach { compareBaseVariant.completelyRemoveMod(it); compareBaseVariant.hullMods.remove(it) }
             if (compareBaseVariant.sMods.isNotEmpty()) {
                 unequalDMod = compareVariantHullMods(
                     compareVariant,

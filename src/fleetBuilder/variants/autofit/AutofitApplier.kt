@@ -12,6 +12,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.allDMods
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.getRegularHullMods
@@ -224,6 +225,12 @@ object AutofitApplier {
             to.completelyRemoveMod(mod)
         }
 
+        if (ModSettings.removeDefaultDMods) {
+            to.allDMods().forEach {
+                to.hullMods.remove(it)
+            }
+        }
+
         if (!dontForceClearSMods) {
             to.sModdedBuiltIns.clear()
         }
@@ -256,6 +263,12 @@ object AutofitApplier {
         // Copy S-modded built-ins
         for (mod in from.sModdedBuiltIns) {
             to.sModdedBuiltIns.add(mod)
+        }
+
+        // Copy Built-in DMods
+        for (mod in from.allDMods()) {
+            if (mod !in from.hullSpec.builtInMods) continue
+            to.hullMods.add(mod)
         }
 
         for (mod in from.suppressedMods) {

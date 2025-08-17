@@ -76,17 +76,20 @@ object VariantLib {
         IDToHullSpec = Global.getSettings().allShipHullSpecs.associateBy { it.hullId }
 
         IDToWing = Global.getSettings().allFighterWingSpecs.associateBy { it.id }
-        IDToWeapon = Global.getSettings().allWeaponSpecs.associateBy { it.weaponId }
         IDToHullMod = Global.getSettings().allHullModSpecs.associateBy { it.id }
+        IDToWeapon = Global.getSettings().actuallyAllWeaponSpecs.associateBy { it.weaponId }
     }
 
     fun getAllDMods(): Set<String> = allDMods
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
-    fun getHullIDSet(): Set<String> = hullIDSet
     fun getHullSpec(hullId: String) = IDToHullSpec[hullId]
+    fun getHullIDSet(): Set<String> = IDToHullSpec.keys
     fun getFighterWingSpec(wingId: String) = IDToWing[wingId]
+    fun getFighterWingIDSet(): Set<String> = IDToWing.keys
     fun getWeaponSpec(weaponId: String) = IDToWeapon[weaponId]
+    fun getActuallyAllWeaponSpecs(): Set<String> = IDToWeapon.keys
     fun getHullModSpec(hullModId: String) = IDToHullMod[hullModId]
+    fun getHullModIDSet(): Set<String> = IDToHullMod.keys
 
     fun getCoreVariantsForEffectiveHullspec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         return effectiveVariantMap[hullSpec.getEffectiveHullId()].orEmpty()
@@ -237,7 +240,7 @@ object VariantLib {
         compareDMods: Boolean = true,
         compareSMods: Boolean = true,
         convertSModsToRegular: Boolean = false,
-        compareBuiltInHullMods: Boolean = true
+        compareBuiltInHullMods: Boolean = true // Does not include built in DMods
     ): Boolean {
         val variant1 = insertVariant1.clone()
         val variant2 = insertVariant2.clone()
@@ -269,8 +272,8 @@ object VariantLib {
             variant1.sModdedBuiltIns.clear()
             variant2.sModdedBuiltIns.clear()
 
-            val toRemove1 = variant1HullMods.filter { it in variant1.hullSpec.builtInMods }
-            val toRemove2 = variant2HullMods.filter { it in variant2.hullSpec.builtInMods }
+            val toRemove1 = variant1HullMods.filter { it in variant1.hullSpec.builtInMods && it !in allDMods }
+            val toRemove2 = variant2HullMods.filter { it in variant2.hullSpec.builtInMods && it !in allDMods }
 
             toRemove1.forEach { modId ->
                 variant1.sMods.remove(modId)

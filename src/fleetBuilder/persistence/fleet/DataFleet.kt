@@ -94,10 +94,10 @@ object DataFleet {
             }
         )
 
-        if (filterParsed)
-            return filterParsedFleetData(data, settings)
+        return if (filterParsed)
+            filterParsedFleetData(data, settings)
         else
-            return data
+            data
     }
 
     @JvmOverloads
@@ -240,7 +240,7 @@ object DataFleet {
         val campFleet: CampaignFleetAPI? = fleet.fleet
         campFleet?.name = data.fleetName
 
-        if (data.factionID != null)
+        if (data.factionID != null && campFleet !== Global.getSector().playerFleet) // Don't change player fleet faction.
             campFleet?.setFaction(data.factionID)
 
         data.members.forEach { parsed ->
@@ -257,26 +257,21 @@ object DataFleet {
             }
 
             member.captain?.let { officer ->
-                if (!officer.isAICore) {
-
-                    if (!officer.isDefault)
-                        fleet.addOfficer(officer)
-
+                if (officer.isAICore) return@let
+                if (!officer.isDefault) {
+                    fleet.addOfficer(officer)
+                } else if (data.aggression > 0 && campFleet !== Global.getSector().playerFleet) { // Don't do this to the playerFleet, just set the player's faction aggression doctrine manually instead.
                     // Apply doctrinal aggression to default officers
-                    if (data.aggression > 0 && campFleet !== Global.getSector().playerFleet) { // Don't do this to the playerFleet, just set the player's faction aggression doctrine manually instead.
-                        if (officer.isDefault) {
-                            val personality = when (data.aggression) {
-                                1 -> Personalities.CAUTIOUS
-                                2 -> Personalities.STEADY
-                                3 -> Personalities.AGGRESSIVE
-                                4 -> if (Random().nextBoolean()) Personalities.AGGRESSIVE else Personalities.RECKLESS
-                                5 -> Personalities.RECKLESS
-                                else -> Personalities.STEADY
-                            }
-
-                            officer.setPersonality(personality)
-                        }
+                    val personality = when (data.aggression) {
+                        1 -> Personalities.CAUTIOUS
+                        2 -> Personalities.STEADY
+                        3 -> Personalities.AGGRESSIVE
+                        4 -> if (Random().nextBoolean()) Personalities.AGGRESSIVE else Personalities.RECKLESS
+                        5 -> Personalities.RECKLESS
+                        else -> Personalities.STEADY
                     }
+
+                    officer.setPersonality(personality)
                 }
             }
         }

@@ -8,6 +8,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage.showError
 import fleetBuilder.util.allDMods
+import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 
@@ -61,7 +62,6 @@ object DataVariant {
                 inputVariant
             }
 
-
         /*val allDMods = VariantLib.getAllDMods()
         val allHiddenEverywhereMods = VariantLib.getAllHiddenEverywhereMods()
 
@@ -73,12 +73,11 @@ object DataVariant {
             if (!settings.includeHiddenMods) addAll(allHiddenEverywhereMods)
         }*/
 
-        // Set of all possible mod IDs on the variant
+        // Set of all hullmods IDs on the variant
         val allModIds = buildSet {
             addAll(variant.hullMods)
             addAll(variant.sMods)
             addAll(variant.sModdedBuiltIns)
-            addAll(variant.suppressedMods)
             addAll(variant.permaMods)
         }
 
@@ -144,10 +143,10 @@ object DataVariant {
             isGoalVariant = variant.isGoalVariant,
         )
 
-        if (filterParsed)
-            return filterParsedVariantData(data, settings)
+        return if (filterParsed)
+            filterParsedVariantData(data, settings)
         else
-            return data
+            data
     }
 
     @JvmOverloads
@@ -244,7 +243,7 @@ object DataVariant {
         }
 
         // --- HullMods ---
-        val allHullMods = settingsAPI.allHullModSpecs.map { it.id }.toSet()
+        val allHullMods = VariantLib.getHullModIDSet()
 
         val cleanHullMods = data.hullMods.filter { modId ->
             if (modId !in allHullMods) {
@@ -275,7 +274,7 @@ object DataVariant {
         }
 
         // --- Wings ---
-        val allWingIds = settingsAPI.allFighterWingSpecs.map { it.id }.toSet()
+        val allWingIds = VariantLib.getFighterWingIDSet()
         val cleanWings = data.wings.mapIndexed { _, wingId ->
             if (wingId !in allWingIds && wingId.isNotBlank()) {
                 missing.wingIds.add(wingId)
@@ -284,7 +283,7 @@ object DataVariant {
         }
 
         // --- Weapon Groups ---
-        val allWeapons = settingsAPI.actuallyAllWeaponSpecs.map { it.weaponId }.toSet()
+        val allWeapons = VariantLib.getActuallyAllWeaponSpecs()
         val cleanWeaponGroups = data.weaponGroups.map { wg ->
             val cleanedSlots = wg.weapons.filter { (_, weaponId) ->
                 val valid = weaponId in allWeapons
@@ -408,11 +407,6 @@ object DataVariant {
         missing: MissingElements = MissingElements()
     ): ShipVariantAPI {
         val ourMissing = MissingElements()
-
-        if (data.hullId !in VariantLib.getHullIDSet()) { // HullID does not exist?
-            ourMissing.hullIds.add(data.hullId)
-            return VariantLib.createErrorVariant("ERR:NOHUL:${data.hullId}")
-        }
 
         val cleanedData = validateAndCleanVariantData(data, ourMissing)
         val filteredData = filterParsedVariantData(cleanedData, settings, ourMissing)

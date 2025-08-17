@@ -6,6 +6,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.config.ModSettings
+import fleetBuilder.config.ModSettings.getDefaultExcludeVariantTags
 import fleetBuilder.persistence.fleet.JSONFleet.extractFleetDataFromJson
 import fleetBuilder.persistence.member.JSONMember.extractMemberDataFromJson
 import fleetBuilder.persistence.member.JSONMember.saveMemberToJson
@@ -14,6 +15,7 @@ import fleetBuilder.persistence.variant.CompressedVariant.extractVariantDataFrom
 import fleetBuilder.persistence.variant.CompressedVariant.saveVariantToCompString
 import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.persistence.variant.JSONVariant.saveVariantToJson
+import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.util.ClipboardUtil.cleanJsonStringInput
 import fleetBuilder.util.ClipboardUtil.getClipboardJSONFileContents
 import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe
@@ -32,14 +34,18 @@ object ClipboardMisc {
         if (compress) {
             val comp = saveVariantToCompString(
                 variantToSave,
-                ModSettings.getConfiguredVariantSettings()
+                VariantSettings().apply {
+                    excludeTagsWithID = getDefaultExcludeVariantTags()
+                }
             )
             setClipboardText(comp)
             DisplayMessage.showMessage("Variant compressed and copied to clipboard")
         } else {
             val json = saveVariantToJson(
                 variantToSave,
-                ModSettings.getConfiguredVariantSettings()
+                VariantSettings().apply {
+                    excludeTagsWithID = getDefaultExcludeVariantTags()
+                }
             )
             setClipboardText(json.toString(4))
             DisplayMessage.showMessage("Variant copied to clipboard")
