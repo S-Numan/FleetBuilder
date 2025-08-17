@@ -174,12 +174,6 @@ object JSONVariant {
     }
 
     @JvmOverloads
-    fun saveAndLoadVariant(variant: ShipVariantAPI, settings: VariantSettings = VariantSettings()): ShipVariantAPI {
-        val json = saveVariantToJson(variant, settings)
-        return getVariantFromJson(json, settings)
-    }
-
-    @JvmOverloads
     fun saveVariantToJson(
         variant: ShipVariantAPI,
         settings: VariantSettings = VariantSettings(),

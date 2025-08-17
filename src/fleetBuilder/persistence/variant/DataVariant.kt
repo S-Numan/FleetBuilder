@@ -226,10 +226,11 @@ object DataVariant {
         val settingsAPI = Global.getSettings()
 
         // --- Hull ID ---
-        val validHullId = data.hullId.takeIf { hullId ->
-            hullId.isNotBlank() && settingsAPI.allShipHullSpecs.any { it.hullId == hullId }
-        } ?: settingsAPI.getVariant(settingsAPI.getString("errorShipVariant")).hullSpec.hullId.also {
+        val validHullId = if (data.hullId in VariantLib.getHullIDSet()) {
+            data.hullId
+        } else {
             missing.hullIds.add(data.hullId)
+            null
         }
 
         // --- Variant ID ---
@@ -239,7 +240,7 @@ object DataVariant {
 
         // --- Display Name ---
         val fixedDisplayName = data.displayName.ifBlank {
-            "No Name"
+            "Nameless"
         }
 
         // --- HullMods ---
@@ -301,7 +302,7 @@ object DataVariant {
         }
 
         val cleanedData = data.copy(
-            hullId = validHullId,
+            hullId = validHullId ?: VariantLib.getErrorVariantHullID(),
             variantId = fixedVariantId,
             displayName = fixedDisplayName,
             hullMods = cleanHullMods.toList(),
@@ -310,7 +311,8 @@ object DataVariant {
             sModdedBuiltIns = cleanSModdedBuiltIns.toSet(),
             wings = cleanWings,
             weaponGroups = cleanWeaponGroups,
-            moduleVariants = cleanedModuleVariants
+            moduleVariants = cleanedModuleVariants,
+            tags = if (validHullId == null) (data.tags + VariantLib.errorTag) else data.tags
         )
 
         return cleanedData
@@ -322,13 +324,6 @@ object DataVariant {
         val hullSpec = Global.getSettings().getHullSpec(data.hullId)
         val loadout = Global.getSettings().createEmptyVariant(hullSpec.hullId, hullSpec)
 
-        //Remove default DMods
-        if (ModSettings.removeDefaultDMods) {
-            loadout.allDMods().forEach {
-                loadout.hullMods.remove(it)
-            }
-        }
-
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
@@ -336,6 +331,16 @@ object DataVariant {
         loadout.numFluxVents = data.fluxVents
 
         data.tags.forEach { loadout.addTag(it) }
+
+        if (loadout.hasTag(VariantLib.errorTag))
+            return loadout
+
+        //Remove default DMods
+        if (ModSettings.removeDefaultDMods) {
+            loadout.allDMods().forEach {
+                loadout.hullMods.remove(it)
+            }
+        }
 
         data.hullMods.forEach { modId ->
             loadout.addMod(modId)
@@ -393,7 +398,6 @@ object DataVariant {
             }
         }
 
-
         return loadout
     }
 
@@ -404,6 +408,11 @@ object DataVariant {
         missing: MissingElements = MissingElements()
     ): ShipVariantAPI {
         val ourMissing = MissingElements()
+
+        if (data.hullId !in VariantLib.getHullIDSet()) { // HullID does not exist?
+            ourMissing.hullIds.add(data.hullId)
+            return VariantLib.createErrorVariant("ERR:NOHUL:${data.hullId}")
+        }
 
         val cleanedData = validateAndCleanVariantData(data, ourMissing)
         val filteredData = filterParsedVariantData(cleanedData, settings, ourMissing)

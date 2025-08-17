@@ -725,10 +725,8 @@ internal object AutofitPanel {
         val tooltip = selectorPlugin?.selectorPanel?.invoke("getTooltip")
         tooltip?.getMethodsMatching("removeSelf")?.getOrNull(0)?.invoke(tooltip) // Safe way to remove the tooltip
 
-        selectorPlugin?.isSelected = false
-        selectorPlugin?.isEqual = false
-        selectorPlugin?.isBetter = false
-        selectorPlugin?.isWorse = false
+        if (selectorPlugin != null)
+            deHighlight(selectorPlugin)
     }
 
     private fun removeSelectorPanelButton(

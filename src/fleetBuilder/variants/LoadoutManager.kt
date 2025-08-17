@@ -119,10 +119,13 @@ object LoadoutManager {
                             continue
                         }
 
+                        if (variantJson.optString("hullId", "") !in VariantLib.getHullIDSet()) // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
+                            continue // Skip it if so
+
                         variant = getVariantFromJson(variantJson, missing = missing)
-                        if (missing.hullIds.isNotEmpty()) {//Could not find hullSpec. Most likely it is a hullspec from a mod which was disabled.
+                        if (missing.hullIds.isNotEmpty()) // Extra check for safety
                             continue
-                        }
+
                     } else {//Failed to find ship at specific path.
                         Global.getLogger(this.javaClass)
                             .warn("shipPath in path directory /saves/common/$dirPath$prefix linked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location")

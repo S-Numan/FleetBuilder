@@ -291,11 +291,14 @@ internal object AutofitSelector {
             position.inTL(0f, width + topPad - descriptionYOffset)
             setTitleOrbitronLarge()
             val label = addTitle(autofitSpec.variant.displayName)
+            label.autoSizeToText(autofitSpec.variant.displayName)
             if (centerTitle)
                 label.position.inTL((width - label.computeTextWidth(label.text)) / 2f, -topPad)
 
-            if (autofitSpec.description.isNotEmpty() && addDescription)
-                addPara(autofitSpec.description, 3f)
+            if (autofitSpec.description.isNotEmpty() && addDescription) {
+                val description = addPara(autofitSpec.description, 3f)
+                description.autoSizeToText(autofitSpec.description)
+            }
         }
     }
 
@@ -304,7 +307,7 @@ internal object AutofitSelector {
         width: Float, height: Float,
         scaleDownSmallerShips: Boolean = false,
         showFighters: Boolean = false,
-        setSchematicMode: Boolean = false
+        setSchematicMode: Boolean = false,
     ): UIPanelAPI {
         val clonedVariant = variant.clone() as HullVariantSpec
 

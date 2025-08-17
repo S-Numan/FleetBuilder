@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.completelyRemoveMod
+import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.getRegularHullMods
 import fleetBuilder.variants.VariantLib
 import starficz.ReflectionUtils.invoke
@@ -196,6 +197,10 @@ object AutofitApplier {
         dontForceClearDMods: Boolean = false,
         dontForceClearSMods: Boolean = false
     ) {
+        if (to.hullSpec.getEffectiveHullId() != from.hullSpec.getEffectiveHullId()) {
+            DisplayMessage.showError("Replace Variant With Variant failed. Base hulls '${to.hullSpec.getEffectiveHullId()}' and '${from.hullSpec.getEffectiveHullId()}' do not match.")
+            return
+        }
         to.clear()
         to.weaponGroups.clear()
         to.clearTags()
