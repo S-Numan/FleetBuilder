@@ -37,10 +37,6 @@ object JSONPerson {
                     add(arr.optString(i))
                 }
             }
-
-            //LEGACY
-            if (json.has("wasplayer"))
-                add("wasplayer")
         }
 
         val memKeys = buildMap<String, Any> {
@@ -150,9 +146,6 @@ object JSONPerson {
         val personTags = buildList {
             data.tags.forEach { tag ->
                 add(tag)
-            }
-            if (data.wasPlayer) {
-                add("wasplayer")
             }
         }
 

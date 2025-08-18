@@ -1,7 +1,9 @@
 ## 1.17.0
 - Autofit variants that differ in flux stats or weapon groups but are the same otherwise now render a little icon showing that difference.
+- Don't set the player's faction on replacing your fleet with another.
+- Fix fleet commander not being saved on saving a fleet, if the ship the commander was piloting was excluded for whatever reason.
 - Tweak to the autofit menu to not save specific variant tags. This should make autofitting more consistent in the future.
-- Oops. Don't set the player's fleet faction on replacing your fleet.
+- Moved several features outside of the Hotkey Handler.
 - Improvements to built in DMod handling.
 - A bunch of minor tweaks here and there.
 ### Technical

@@ -34,7 +34,6 @@ object DataPerson {
         val bonusXp: Long = 0,
         val points: Int = 0,
         val memKeys: Map<String, Any> = emptyMap(),
-        val wasPlayer: Boolean = false,
         val combatChatterData: CombatChatterSerialization.CombatChatterData? = null,
     )
 
@@ -68,7 +67,6 @@ object DataPerson {
             bonusXp = person.stats.bonusXp,
             points = person.stats.points,
             memKeys = person.memoryWithoutUpdate.keys.associateWith { key -> person.memoryWithoutUpdate[key] },
-            wasPlayer = person.isPlayer,
             combatChatterData =
                 if (Global.getSettings().modManager.isModEnabled("chatter")) {
                     val characterId = ChatterDataManager.getCharacterFromMemory(person)

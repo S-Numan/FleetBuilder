@@ -74,13 +74,13 @@ object DataFleet {
     ): ParsedFleetData {
         val campFleet: CampaignFleetAPI? = fleet.fleet
 
-        val hasFlagship = fleet.membersListCopy.any { it.isFlagship }
+        //val hasFlagship = fleet.membersListCopy.any { it.isFlagship && !it.variant.hullMods.contains(ModSettings.commandShuttleId) }
 
         val data = ParsedFleetData(
             fleetName = campFleet?.name,
             aggression = campFleet?.faction?.doctrine?.aggression ?: -1,
             factionID = campFleet?.faction?.id,
-            commander = if (hasFlagship) null else fleet.commander?.let { if (it.isDefault) null else getPersonDataFromPerson(it, filterParsed = false) },
+            commander = fleet.commander?.let { if (it.isDefault) null else getPersonDataFromPerson(it, filterParsed = false) },
             members = fleet.membersListCopy.map { getMemberDataFromMember(it, filterParsed = false) },
             idleOfficers = fleet.officersCopy.mapNotNull { officerData ->
                 val person = officerData.person
@@ -107,9 +107,7 @@ object DataFleet {
         missing: MissingElements = MissingElements()
     ): ParsedFleetData {
 
-        var filteredCommander = if (settings.includeCommanderSetFlagship)
-            data.commander?.let { filterParsedPersonData(it, settings.memberSettings.personSettings, missing) }
-        else null
+        var filteredCommander: DataPerson.ParsedPersonData? = null
 
         val filteredMembers = data.members.mapNotNull { member ->
             val variantData = member.variantData
@@ -124,8 +122,7 @@ object DataFleet {
 
             // Commander handling
             if (member.isFlagship && (!settings.includeCommanderAsOfficer || !settings.memberSettings.includeOfficer)) {
-                if (filteredCommander == null &&
-                    settings.includeCommanderSetFlagship &&
+                if (settings.includeCommanderSetFlagship &&
                     member.personData != null
                 ) {
                     filteredCommander = filterParsedPersonData(
@@ -147,6 +144,12 @@ object DataFleet {
 
             filterParsedMemberData(processedMember, settings.memberSettings, missing)
         }
+
+        val hasFlagship = (filteredMembers.any { it.isFlagship })
+        if (!settings.includeCommanderSetFlagship)
+            filteredCommander = null
+        else if (!hasFlagship && filteredCommander == null) // No flagship, no commander, supposed to set commander?
+            filteredCommander = data.commander?.let { filterParsedPersonData(it, settings.memberSettings.personSettings, missing) } // Set commander
 
         val filteredIdleOfficers = if (settings.includeIdleOfficers) {
             data.idleOfficers.map {
