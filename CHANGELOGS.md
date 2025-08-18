@@ -1,3 +1,6 @@
+## 1.18.0
+- Improve Roider Union MIDAS support when saving and loading a variant.
+
 ## 1.17.0
 - Autofit variants that differ in flux stats or weapon groups but are the same otherwise now render a little icon showing that difference.
 - Don't set the player's faction on replacing your fleet with another.
