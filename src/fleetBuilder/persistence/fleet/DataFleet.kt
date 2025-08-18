@@ -238,10 +238,22 @@ object DataFleet {
 
     fun buildFleet(data: ParsedFleetData, fleet: FleetDataAPI) {
         val campFleet: CampaignFleetAPI? = fleet.fleet
-        campFleet?.name = data.fleetName
+        val isPlayerFleet = campFleet === Global.getSector().playerFleet
 
-        if (data.factionID != null && campFleet !== Global.getSector().playerFleet) // Don't change player fleet faction.
-            campFleet?.setFaction(data.factionID)
+        if (!isPlayerFleet) {
+            campFleet?.name = data.fleetName
+
+            if (data.factionID != null)
+                campFleet?.setFaction(data.factionID)
+
+            data.commander?.let {
+                campFleet?.commander = buildPerson(it)
+            }
+        }
+
+        data.idleOfficers.forEach {
+            fleet.addOfficer(buildPerson(it))
+        }
 
         data.members.forEach { parsed ->
             val member = buildMember(parsed)
@@ -260,7 +272,7 @@ object DataFleet {
                 if (officer.isAICore) return@let
                 if (!officer.isDefault) {
                     fleet.addOfficer(officer)
-                } else if (data.aggression > 0 && campFleet !== Global.getSector().playerFleet) { // Don't do this to the playerFleet, just set the player's faction aggression doctrine manually instead.
+                } else if (data.aggression > 0 && !isPlayerFleet) { // Don't do this to the playerFleet, just set the player's faction aggression doctrine manually instead.
                     // Apply doctrinal aggression to default officers
                     val personality = when (data.aggression) {
                         1 -> Personalities.CAUTIOUS
@@ -274,14 +286,6 @@ object DataFleet {
                     officer.setPersonality(personality)
                 }
             }
-        }
-
-        data.commander?.let {
-            campFleet?.commander = buildPerson(it)
-        }
-
-        data.idleOfficers.forEach {
-            fleet.addOfficer(buildPerson(it))
         }
 
         fleet.syncIfNeeded()
