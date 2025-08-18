@@ -1,6 +1,6 @@
 package fleetBuilder.ui.autofit
 
-import MagicLib.ReflectionUtils.instantiate
+import MagicLib.ReflectionUtilsExtra
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -43,7 +43,7 @@ internal object AutofitSelector {
         private val clickFader = FaderUtil(0.0F, 0.05F, 0.25F)
 
         private var onClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
-        private var onClickOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
+        private var onPressOutsideFunctions: MutableList<() -> Unit> = ArrayList()
         private var onClickReleaseFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
         private var onClickReleaseOutsideFunctions: MutableList<() -> Unit> = ArrayList()
         private var onClickReleaseNoInitClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
@@ -54,9 +54,14 @@ internal object AutofitSelector {
         var isBase = false
         val isUnlocked = true
         var noClickFader = false
-        var isBetter = false
-        var isWorse = false
-        var isEqual = false
+
+        enum class ComparisonStatus {
+            DEFAULT, BETTER, WORSE, EQUAL
+        }
+
+        var comparisonStatus = ComparisonStatus.DEFAULT
+        var diffWeaponGroups = false
+        var diffFluxStats = false
 
         var isHovering = false
             private set
@@ -98,11 +103,11 @@ internal object AutofitSelector {
             GL11.glRectf(selectorPanel.left, selectorPanel.bottom, selectorPanel.right, selectorPanel.top)
 
             val darkerBorderColor =
-                if (isEqual)
+                if (comparisonStatus == ComparisonStatus.EQUAL)
                     Misc.getGrayColor().darker()
-                else if (isBetter)
+                else if (comparisonStatus == ComparisonStatus.BETTER)
                     Misc.getPositiveHighlightColor().darker().darker()
-                else if (isWorse)
+                else if (comparisonStatus == ComparisonStatus.WORSE)
                     Misc.getNegativeHighlightColor().darker().darker()
                 else
                     Misc.getDarkPlayerColor().darker()
@@ -133,18 +138,29 @@ internal object AutofitSelector {
                     lockedSprite.setSize(scaleFactor * lockedSprite.width, scaleFactor * lockedSprite.height)
                 lockedSprite.renderAtCenter(selectorPanel.centerX, selectorPanel.top - selectorPanel.width / 2)
             }
-            if (autofitSpec != null && autofitSpec!!.missing.hasMissing()) {
-                val lockedAlpha = Misc.interpolate(lockedColor.alphaf, 0f, lockedHoverFader.brightness) * alphaMult
-                GL11.glColor4f(lockedColor.redf, lockedColor.greenf, lockedColor.bluef, lockedAlpha)
-                GL11.glRectf(selectorPanel.left, selectorPanel.bottom, selectorPanel.right, selectorPanel.top)
+            //
+            if (autofitSpec != null) {
+                if (autofitSpec!!.missing.hasMissing()) {
+                    val lockedAlpha = Misc.interpolate(lockedColor.alphaf, 0f, lockedHoverFader.brightness) * alphaMult
+                    GL11.glColor4f(lockedColor.redf, lockedColor.greenf, lockedColor.bluef, lockedAlpha)
+                    GL11.glRectf(selectorPanel.left, selectorPanel.bottom, selectorPanel.right, selectorPanel.top)
 
-                val lockedSprite = Global.getSettings().getSprite("FleetBuilder", "mission_indicator")
-                lockedSprite.alphaMult = Misc.interpolate(lockAlpha, 0f, lockedHoverFader.brightness)
-                lockedSprite.color = Color.RED
-                val scaleFactor = lockSize * selectorPanel.width / max(lockedSprite.width, lockedSprite.height)
-                if (scaleFactor < 1)
-                    lockedSprite.setSize(scaleFactor * lockedSprite.width, scaleFactor * lockedSprite.height)
-                lockedSprite.renderAtCenter(selectorPanel.centerX, selectorPanel.top - selectorPanel.width / 2)
+                    val lockedSprite = Global.getSettings().getSprite("FleetBuilder", "mission_indicator")
+                    lockedSprite.alphaMult = Misc.interpolate(lockAlpha, 0f, lockedHoverFader.brightness)
+                    lockedSprite.color = Color.RED
+                    val scaleFactor = lockSize * selectorPanel.width / max(lockedSprite.width, lockedSprite.height)
+                    if (scaleFactor < 1)
+                        lockedSprite.setSize(scaleFactor * lockedSprite.width, scaleFactor * lockedSprite.height)
+                    lockedSprite.renderAtCenter(selectorPanel.centerX, selectorPanel.top - selectorPanel.width / 2)
+                }
+                if (diffWeaponGroups) {
+                    val diffWGSprite = Global.getSettings().getSprite("FleetBuilder", "different_weapon_groups")
+                    diffWGSprite.render(selectorPanel.x + selectorPanel.width - diffWGSprite.width, selectorPanel.y + diffWGSprite.height)
+                }
+                if (diffFluxStats) {
+                    val diffFSSprite = Global.getSettings().getSprite("FleetBuilder", "different_flux_stats")
+                    diffFSSprite.render(selectorPanel.x + selectorPanel.width - diffFSSprite.width, selectorPanel.y)
+                }
             }
             GL11.glPopMatrix()
         }
@@ -180,9 +196,9 @@ internal object AutofitSelector {
                 } else {
                     if (isHovering) onHoverExitFunctions.forEach { it(event) }
                     isHovering = false
-                    if (event.isMouseDownEvent) {
-                        onClickOutsideFunctions.forEach { it(event) }
-                    }
+                    //if (event.isMouseDownEvent) {
+                    //    onPressClickFunctions.forEach { it() }
+                    //}
                     if (event.isMouseUpEvent && hasClicked) {
                         hasClicked = false
                         onClickReleaseOutsideFunctions.forEach { it() }
@@ -207,8 +223,8 @@ internal object AutofitSelector {
             onClickReleaseNoInitClickFunctions.add(function)
         }
 
-        fun onClickOutside(function: (InputEventAPI) -> Unit) {
-            onClickOutsideFunctions.add(function)
+        fun onPressOutside(function: () -> Unit) {
+            onPressOutsideFunctions.add(function)
         }
 
         fun onHover(function: (InputEventAPI) -> Unit) {
@@ -225,13 +241,18 @@ internal object AutofitSelector {
 
         var mouseUp = false
         override fun advance(amount: Float) {
-            if (hasClicked && !Mouse.isButtonDown(0) && !FBMisc.isMouseHoveringOverComponent(selectorPanel)) {
-                if (mouseUp) {
-                    onClickReleaseOutsideFunctions.forEach { it() }
-                    hasClicked = false
-                    mouseUp = false
-                } else {
-                    mouseUp = true
+            if (!FBMisc.isMouseHoveringOverComponent(selectorPanel)) {
+                if (hasClicked && !Mouse.isButtonDown(0)) {
+                    if (mouseUp) {
+                        onClickReleaseOutsideFunctions.forEach { it() }
+                        hasClicked = false
+                        mouseUp = false
+                    } else {
+                        mouseUp = true
+                    }
+                }
+                if (!isHovering && Mouse.isButtonDown(0)) {
+                    onPressOutsideFunctions.forEach { it() }
                 }
             }
 
@@ -290,11 +311,14 @@ internal object AutofitSelector {
             position.inTL(0f, width + topPad - descriptionYOffset)
             setTitleOrbitronLarge()
             val label = addTitle(autofitSpec.variant.displayName)
+            label.autoSizeToText(autofitSpec.variant.displayName)
             if (centerTitle)
                 label.position.inTL((width - label.computeTextWidth(label.text)) / 2f, -topPad)
 
-            if (autofitSpec.description.isNotEmpty() && addDescription)
-                addPara(autofitSpec.description, 3f)
+            if (autofitSpec.description.isNotEmpty() && addDescription) {
+                val description = addPara(autofitSpec.description, 3f)
+                description.autoSizeToText(autofitSpec.description)
+            }
         }
     }
 
@@ -303,11 +327,11 @@ internal object AutofitSelector {
         width: Float, height: Float,
         scaleDownSmallerShips: Boolean = false,
         showFighters: Boolean = false,
-        setSchematicMode: Boolean = false
+        setSchematicMode: Boolean = false,
     ): UIPanelAPI {
         val clonedVariant = variant.clone() as HullVariantSpec
 
-        val shipPreview = instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!)!! as UIPanelAPI
+        val shipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
         shipPreview.invoke("setVariant", clonedVariant)
         shipPreview.invoke("overrideVariant", clonedVariant)
         shipPreview.invoke("setShowBorder", false)
@@ -340,7 +364,7 @@ internal object AutofitSelector {
 
         // Configurations for special hull IDs
         val specialConfigs = mapOf(
-            "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 10f, disableScissor = true),
+            "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 12f, disableScissor = true),
             "radiant" to ShipDisplayConfig(scaleFactor = 0.95f, yOffset = 10f, disableScissor = true),
             "paragon" to ShipDisplayConfig(scaleFactor = 0.94f, yOffset = 15f, disableScissor = true),
             "pegasus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),

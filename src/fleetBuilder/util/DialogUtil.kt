@@ -10,10 +10,10 @@ object DialogUtil {
     fun initPopUpUI(dialog: PopUpUI, width: Float, height: Float) {
         val coreUI = ReflectionMisc.getCoreUI() ?: return
 
-        if (!Global.getSector().isPaused)
+        if (Global.getCurrentState() == GameState.CAMPAIGN && !Global.getSector().isPaused)
             Global.getSector().isPaused = true
 
-        if (Global.getCurrentState() != GameState.TITLE && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
+        if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
             Global.getCombatEngine().isPaused = true
 
         val panelAPI = Global.getSettings().createCustom(width, height, dialog)

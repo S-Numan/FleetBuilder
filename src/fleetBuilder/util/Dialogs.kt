@@ -14,7 +14,9 @@ import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.persistence.fleet.FleetSerialization
+import fleetBuilder.persistence.fleet.DataFleet
+import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
+import fleetBuilder.persistence.fleet.FleetSettings
 import fleetBuilder.ui.CargoAutoManageUIPlugin
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
@@ -37,19 +39,19 @@ import java.awt.Color
 
 object Dialogs {
     fun pasteFleetIntoPlayerFleetDialog(
-        data: FleetSerialization.ParsedFleetData,
-        validatedFleet: FleetSerialization.ParsedFleetData,
+        data: DataFleet.ParsedFleetData,
+        validatedData: DataFleet.ParsedFleetData,
     ) {
         val dialog = PopUpUIDialog("Paste Fleet into Player Fleet", addCloseButton = true)
 
-        val memberCount = validatedFleet.members.size
-        val officerCount = validatedFleet.members.count { it.personData != null }
+        val memberCount = validatedData.members.size
+        val officerCount = validatedData.members.count { it.personData != null }
         dialog.addParagraph(
             "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
                     if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else ""
         )
 
-        val missingHullCount = validatedFleet.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
+        val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
         if (missingHullCount > 0)
             dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
 
@@ -112,15 +114,15 @@ object Dialogs {
         dialog.addButton("Append to Player Fleet") { fields ->
             val playerFleet = Global.getSector().playerFleet.fleetData
 
-            val addMissing = MissingElements()
-            val fleet = FleetSerialization.createCampaignFleetFromData(
+            val missing = MissingElements()
+            val fleet = createCampaignFleetFromData(
                 data, false,
-                settings = FleetSerialization.FleetSettings().apply {
+                settings = FleetSettings().apply {
                     excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
                     memberSettings.includeOfficer = fields["Include Officers"] as Boolean
                     includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
                 },
-                missing = addMissing
+                missing = missing
             )
 
             fleet.fleetData.membersListCopy.forEach { member ->
@@ -132,7 +134,7 @@ object Dialogs {
                 }
             }
 
-            reportMissingElementsIfAny(addMissing)
+            reportMissingElementsIfAny(missing)
 
             if (fields["Fulfill cargo, fuel, crew, and repair for fleet"] as Boolean)
                 FBMisc.fulfillPlayerFleet()
@@ -142,7 +144,7 @@ object Dialogs {
         dialog.addPadding(24f)
 
         dialog.addButton("Replace Player Fleet") { fields ->
-            val settings = FleetSerialization.FleetSettings()
+            val settings = FleetSettings()
             settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
             settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
             settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
@@ -194,8 +196,8 @@ object Dialogs {
 
     fun spawnFleetInCampaignDialog(
         sector: SectorAPI,
-        data: FleetSerialization.ParsedFleetData,
-        validatedData: FleetSerialization.ParsedFleetData
+        data: DataFleet.ParsedFleetData,
+        validatedData: DataFleet.ParsedFleetData
     ) {
         val dialog = PopUpUIDialog("Spawn Fleet in Campaign", addConfirmButton = true, addCancelButton = true)
         dialog.confirmButtonName = "Spawn Fleet"
@@ -217,9 +219,9 @@ object Dialogs {
         dialog.addToggle("Include Officers", default = true)
         dialog.addToggle("Include Commander as Commander", default = true)
         dialog.addToggle("Include Commander as Officer", default = true)
+        dialog.addToggle("Set Aggression Doctrine", default = true)
         dialog.addPadding(dialog.buttonHeight / 2)
         dialog.addToggle("Set Faction to Pirate", default = true)
-        dialog.addToggle("Set Aggression Doctrine", default = true)
         dialog.addToggle("Fight To The Last", default = true)
         dialog.addPadding(dialog.buttonHeight / 2)
         dialog.addToggle("Repair and Set Max CR", default = true)
@@ -227,7 +229,7 @@ object Dialogs {
 
         dialog.onConfirm { fields ->
 
-            val settings = FleetSerialization.FleetSettings()
+            val settings = FleetSettings()
             settings.includeAggression = fields["Set Aggression Doctrine"] as Boolean
             settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
             settings.includeCommanderSetFlagship = fields["Include Commander as Commander"] as Boolean
@@ -235,10 +237,9 @@ object Dialogs {
             settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
             val repairAndSetMaxCR = fields["Repair and Set Max CR"] as Boolean
             val setFactionToPirates = (fields["Set Faction to Pirate"] as Boolean)
-            val missing = MissingElements()
-            missing.gameMods.addAll(data.gameMods)
 
-            val fleet = FleetSerialization.createCampaignFleetFromData(
+            val missing = MissingElements()
+            val fleet = createCampaignFleetFromData(
                 if (setFactionToPirates) data.copy(factionID = Factions.PIRATES) else data,
                 true, settings = settings, missing = missing
             )

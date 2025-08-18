@@ -137,6 +137,8 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     override fun processInput(events: MutableList<InputEventAPI>) {
+        if (!isDialog) return
+
         for (event in events) {
             if (event.isConsumed) continue
             if (frames >= limit - 1 && reachedMaxHeight) {
@@ -161,7 +163,7 @@ open class PopUpUI : CustomUIPanelPlugin {
                     }
                 }
             }
-            if (isDialog || (isMouseWithinBounds(panel.x, panel.y, panel.width, panel.height)))
+            if (isMouseWithinBounds(panel.x, panel.y, panel.width, panel.height))
                 event.consume()
         }
     }

@@ -1,0 +1,82 @@
+{
+    "aggression_doctrine": 3,
+    "factionID": "neutral",
+    "fleetName": "Unidentified Vessel",
+    "members": [{
+        "cr": 0.85,
+        "isFlagship": true,
+        "name": "TTS Xenorphica",
+        "officer": {
+            "first": "Motes",
+            "level": 10,
+            "personality": "reckless",
+            "portrait": "graphics/portraits/characters/zig_captain.png",
+            "rank": "spaceCaptain",
+            "skills": {
+                "combat_endurance": 2,
+                "damage_control": 2,
+                "energy_weapon_mastery": 2,
+                "field_modulation": 2,
+                "gunnery_implants": 2,
+                "helmsmanship": 2,
+                "impact_mitigation": 2,
+                "missile_specialization": 2,
+                "navigation": 1,
+                "polarized_armor": 2,
+                "target_analysis": 2
+            }
+        },
+        "variantId": "ziggurat_Experimental"
+    }],
+    "variants": [{
+        "displayName": "Experimental",
+        "fluxCapacitors": 50,
+        "fluxVents": 50,
+        "hullId": "ziggurat",
+        "hullMods": [
+            "targetingunit",
+            "fluxbreakers"
+        ],
+        "permaMods": ["high_frequency_attractor"],
+        "sMods": [],
+        "variantId": "ziggurat_Experimental",
+        "weaponGroups": [
+            {
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 000": "tachyonlance",
+                    "WS 001": "tachyonlance"
+                }
+            },
+            {
+                "autofire": false,
+                "mode": "ALTERNATING",
+                "weapons": {
+                    "WS 006": "reaper",
+                    "WS 007": "reaper",
+                    "WS 008": "reaper",
+                    "WS 009": "reaper",
+                    "WS 010": "reaper",
+                    "WS 011": "reaper"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 002": "disintegrator",
+                    "WS 005": "disintegrator"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 003": "heavyneedler",
+                    "WS 004": "heavyneedler"
+                }
+            }
+        ]
+    }]
+}

@@ -6,12 +6,16 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.config.ModSettings
-import fleetBuilder.persistence.fleet.FleetSerialization
-import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.member.MemberSerialization.saveMemberToJson
-import fleetBuilder.persistence.person.PersonSerialization
-import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
+import fleetBuilder.config.ModSettings.getDefaultExcludeVariantTags
+import fleetBuilder.persistence.fleet.JSONFleet.extractFleetDataFromJson
+import fleetBuilder.persistence.member.JSONMember.extractMemberDataFromJson
+import fleetBuilder.persistence.member.JSONMember.saveMemberToJson
+import fleetBuilder.persistence.person.JSONPerson.extractPersonDataFromJson
+import fleetBuilder.persistence.variant.CompressedVariant.extractVariantDataFromCompString
+import fleetBuilder.persistence.variant.CompressedVariant.saveVariantToCompString
+import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
+import fleetBuilder.persistence.variant.JSONVariant.saveVariantToJson
+import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.util.ClipboardUtil.cleanJsonStringInput
 import fleetBuilder.util.ClipboardUtil.getClipboardJSONFileContents
 import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe
@@ -28,16 +32,20 @@ object ClipboardMisc {
         variantToSave.hullVariantId = VariantLib.makeVariantID(variantToSave)
 
         if (compress) {
-            val comp = VariantSerialization.saveVariantToCompString(
+            val comp = saveVariantToCompString(
                 variantToSave,
-                ModSettings.getConfiguredVariantSettings()
+                VariantSettings().apply {
+                    excludeTagsWithID = getDefaultExcludeVariantTags()
+                }
             )
             setClipboardText(comp)
             DisplayMessage.showMessage("Variant compressed and copied to clipboard")
         } else {
-            val json = VariantSerialization.saveVariantToJson(
+            val json = saveVariantToJson(
                 variantToSave,
-                ModSettings.getConfiguredVariantSettings()
+                VariantSettings().apply {
+                    excludeTagsWithID = getDefaultExcludeVariantTags()
+                }
             )
             setClipboardText(json.toString(4))
             DisplayMessage.showMessage("Variant copied to clipboard")
@@ -45,8 +53,7 @@ object ClipboardMisc {
     }
 
     fun codexEntryToClipboard(codex: CodexDialog) {
-        val param = getCodexEntryParam(codex)
-        if (param == null) return
+        val param = getCodexEntryParam(codex) ?: return
 
         when (param) {
             is ShipHullSpecAPI -> {
@@ -82,22 +89,22 @@ object ClipboardMisc {
             return when {
                 json.has("skills") -> {
                     // Officer
-                    PersonSerialization.extractPersonDataFromJson(json)
+                    extractPersonDataFromJson(json)
                 }
 
                 json.has("variant") || json.has("officer") -> {
                     // Fleet member
-                    MemberSerialization.extractMemberDataFromJson(json)
+                    extractMemberDataFromJson(json)
                 }
 
                 json.has("hullId") -> {
                     // Variant
-                    VariantSerialization.extractVariantDataFromJson(json)
+                    extractVariantDataFromJson(json)
                 }
 
                 json.has("members") -> {
                     // Fleet
-                    FleetSerialization.extractFleetDataFromJson(json)
+                    extractFleetDataFromJson(json)
                 }
 
                 else -> {
@@ -107,7 +114,7 @@ object ClipboardMisc {
 
 
         } else {
-            val data = VariantSerialization.extractVariantDataFromCompString(clipboardText)
+            val data = extractVariantDataFromCompString(clipboardText)
             if (data != null) {
                 return data
             }

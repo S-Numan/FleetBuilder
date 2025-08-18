@@ -129,6 +129,15 @@ internal fun UIComponentAPI.setLocation(x: Float, y: Float) {
     position.setLocation(x, y)
 }
 
+/**
+ * Uses x/yAlignOffset to position the bottom left of a UIComponent in absolute pixel coords,
+ * where (0,0) is the bottom left of the screen.
+ */
+fun UIComponentAPI.setAbsoluteLocation(x: Float, y: Float) {
+    xAlignOffset += (x - position.x)
+    yAlignOffset += (y - position.y)
+}
+
 internal val UIComponentAPI.centerX
     get() = position.centerX
 
@@ -251,10 +260,10 @@ internal fun UIComponentAPI.anchorToPreviousMatchingCenter(xPad: Float = 0f, yPa
     }
 }
 
-internal fun UIComponentAPI.addTooltip(
+fun UIComponentAPI.addTooltip(
     location: TooltipLocation,
     width: Float,
-    padding: Float? = null,
+    margin: Float? = null,
     lambda: (TooltipMakerAPI) -> Unit
 ) {
     val tooltip = object : StandardTooltipV2Expandable(width, false, true) {
@@ -265,11 +274,11 @@ internal fun UIComponentAPI.addTooltip(
         fun removeSelf() {
             this.opacity = 0f
         }
-
     }
 
+
     val tooltipClass = StandardTooltipV2Expandable::class.java
-    if (padding == null) {
+    if (margin == null) {
         when (location) {
             TooltipLocation.LEFT -> tooltipClass.invoke("addTooltipLeft", this, tooltip)
             TooltipLocation.RIGHT -> tooltipClass.invoke("addTooltipRight", this, tooltip)
@@ -278,13 +287,14 @@ internal fun UIComponentAPI.addTooltip(
         }
     } else {
         when (location) {
-            TooltipLocation.LEFT -> tooltipClass.invoke("addTooltipLeft", this, tooltip, padding)
-            TooltipLocation.RIGHT -> tooltipClass.invoke("addTooltipRight", this, tooltip, padding)
-            TooltipLocation.ABOVE -> tooltipClass.invoke("addTooltipAbove", this, tooltip, padding)
-            TooltipLocation.BELOW -> tooltipClass.invoke("addTooltipBelow", this, tooltip, padding)
+            TooltipLocation.LEFT -> tooltipClass.invoke("addTooltipLeft", this, tooltip, margin)
+            TooltipLocation.RIGHT -> tooltipClass.invoke("addTooltipRight", this, tooltip, margin)
+            TooltipLocation.ABOVE -> tooltipClass.invoke("addTooltipAbove", this, tooltip, margin)
+            TooltipLocation.BELOW -> tooltipClass.invoke("addTooltipBelow", this, tooltip, margin)
         }
     }
 }
+
 
 // UIPanelAPI extensions that expose UIPanel methods
 internal fun UIPanelAPI.getChildrenCopy(): List<UIComponentAPI> {
@@ -381,9 +391,66 @@ class BoxedUIImage(val uiImage: UIComponentAPI) : BoxedUIElement(uiImage), UICom
     }
 }
 
-internal fun UIPanelAPI.addPara(
+class BoxedUISliderBar(val uiBar: UIPanelAPI) : BoxedUIElement(uiBar), UIComponentAPI by uiBar {
+    var bonusColor = uiBar.invoke("getBonusColor") as Color
+        set(color) {
+            uiBar.invoke("setBonusColor", color)
+        }
+
+    var widgetColor = uiBar.invoke("getWidgetColor") as Color
+        set(color) {
+            uiBar.invoke("setWidgetColor", color)
+        }
+
+    var barColor = uiBar.invoke("getBarColor") as Color
+        set(color) {
+            uiBar.invoke("setBarColor", color)
+        }
+
+    var numSubivisions = uiBar.invoke("getNumSubivisions") as Int
+        set(amount) {
+            uiBar.invoke("setNumSubivisions", amount)
+        }
+
+    var roundingIncrement = uiBar.invoke("getRoundingIncrement") as Int
+        set(amount) {
+            uiBar.invoke("setRoundingIncrement", amount)
+        }
+
+    var rangeMax = uiBar.invoke("getRangeMax") as Float
+        set(amount) {
+            uiBar.invoke("setRangeMax", amount)
+        }
+
+    var rangeMin = uiBar.invoke("getRangeMin") as Float
+        set(amount) {
+            uiBar.invoke("setRangeMin", amount)
+        }
+
+    var bonusAmount = uiBar.invoke("getBonusAmount") as Float
+        set(amount) {
+            uiBar.invoke("setBonusAmount", amount)
+        }
+
+    var progress = uiBar.invoke("getProgress") as Float
+        set(amount) {
+            uiBar.invoke("setProgress", amount)
+        }
+
+    var showNotchOnIfBelowProgress = uiBar.invoke("getShowNotchOnIfBelowProgress") as Float
+        set(amount) {
+            uiBar.invoke("setShowNotchOnIfBelowProgress", amount)
+        }
+
+    val isShowNoText = uiBar.invoke("isShowNoText") as Boolean
+
+    val textLabel = BoxedUILabel(uiBar.invoke("getValue") as LabelAPI)
+}
+
+fun UIPanelAPI.addPara(
     text: String, font: Font? = null, color: Color? = null,
-    highlightedText: Collection<Pair<String, Color>>? = null
+    highlightedText: Collection<Pair<String, Color>>? = null,
+    widthOverride: Float? = null, xPad: Float = 0f, yPad: Float = 0f
 ): BoxedUILabel {
     val tempPanel = Global.getSettings().createCustom(width, height, null)
     val tempTMAPI = tempPanel.createUIElement(width, height, false)
@@ -398,11 +465,15 @@ internal fun UIPanelAPI.addPara(
     }
 
     this.addComponent(para as UIComponentAPI)
+    para.setAlignment(Alignment.MID)
     para.invoke("autoSize")
+    widthOverride?.let { para.autoSizeToWidth(it) }
+
+    para.setSize(para.width + xPad * 2, para.height + yPad * 2)
     return BoxedUILabel(para)
 }
 
-internal fun UIPanelAPI.addImage(imageSpritePath: String, width: Float, height: Float): BoxedUIImage {
+fun UIPanelAPI.addImage(imageSpritePath: String, width: Float, height: Float): BoxedUIImage {
     val tempPanel = Global.getSettings().createCustom(width, height, null)
     val tempTMAPI = tempPanel.createUIElement(width, height, false)
     tempTMAPI.addImage(imageSpritePath, width, height, 0f)
@@ -413,7 +484,7 @@ internal fun UIPanelAPI.addImage(imageSpritePath: String, width: Float, height: 
     return BoxedUIImage(image)
 }
 
-internal fun UIPanelAPI.addLabelledValue(
+fun UIPanelAPI.addLabelledValue(
     label: String,
     value: String,
     labelColor: Color,
@@ -435,9 +506,9 @@ internal fun UIPanelAPI.addTextField(width: Float, height: Float, font: Font): T
     return textField
 }
 
-internal fun UIPanelAPI.addButton(
+fun UIPanelAPI.addButton(
     text: String, data: Any?, baseColor: Color, bgColor: Color, align: Alignment, style: CutStyle,
-    width: Float, height: Float, font: Font? = null
+    width: Float, height: Float, font: Font? = null, shortcut: Int? = null
 ): ButtonAPI {
     // make a button in a temp panel/element
     val tempPanel = Global.getSettings().createCustom(width, height, null)
@@ -450,8 +521,10 @@ internal fun UIPanelAPI.addButton(
         Font.ORBITRON_24 -> tempTMAPI.setButtonFontOrbitron24()
         Font.ORBITRON_24_BOLD -> tempTMAPI.setButtonFontOrbitron24Bold()
         null -> tempTMAPI.setButtonFontDefault()
+        else -> throw IllegalArgumentException("Button does not support font of type: $font")
     }
     val button = tempTMAPI.addButton(text, data, baseColor, bgColor, align, style, width, height, 0f)
+    shortcut?.let { button.setShortcut(shortcut, true) }
 
     // hijack button and move it to UIPanel
     this.addComponent(button)
@@ -460,7 +533,7 @@ internal fun UIPanelAPI.addButton(
     return button
 }
 
-internal fun UIPanelAPI.addAreaCheckbox(
+fun UIPanelAPI.addAreaCheckbox(
     text: String, data: Any?, baseColor: Color, bgColor: Color, brightColor: Color,
     width: Float, height: Float, font: Font? = null, leftAlign: Boolean = false, flag: Flag? = null
 ): ButtonAPI {
@@ -475,12 +548,32 @@ internal fun UIPanelAPI.addAreaCheckbox(
 
     this.addComponent(button)
     if (flag != null) {
-        button.isChecked = flag.isEnabled
-        button.onClick { flag.isEnabled = button.isChecked }
+        button.isChecked = flag.isChecked
+        button.onClick { flag.isChecked = button.isChecked }
     }
     button.xAlignOffset = 0f
     button.yAlignOffset = 0f
     return button
+}
+
+fun UIPanelAPI.addCheckbox(
+    width: Float, height: Float, text: String, data: Any?, font: Font = Font.INSIGNIA_15,
+    color: Color, size: ButtonAPI.UICheckboxSize? = ButtonAPI.UICheckboxSize.SMALL, flag: Flag? = null
+): ButtonAPI {
+    // make a button in a temp panel/element
+    val tempPanel = Global.getSettings().createCustom(width, height, null)
+    val tempTMAPI = tempPanel.createUIElement(width, height, false)
+
+    val checkbox = tempTMAPI.addCheckbox(width, height, text, data, getFontPath(font), color, size, 0f)
+
+    this.addComponent(checkbox)
+    if (flag != null) {
+        checkbox.isChecked = flag.isChecked
+        checkbox.onClick { flag.isChecked = checkbox.isChecked }
+    }
+    checkbox.xAlignOffset = 0f
+    checkbox.yAlignOffset = 0f
+    return checkbox
 }
 
 

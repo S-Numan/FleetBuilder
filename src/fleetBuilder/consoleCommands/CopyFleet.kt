@@ -9,9 +9,12 @@ import com.fs.starfarer.api.mission.FleetSide
 import com.fs.starfarer.api.mission.MissionDefinitionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
-import fleetBuilder.persistence.fleet.FleetSerialization
-import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.person.PersonSerialization
+import fleetBuilder.persistence.fleet.FleetSettings
+import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
+import fleetBuilder.persistence.member.DataMember.buildMember
+import fleetBuilder.persistence.member.DataMember.copyMember
+import fleetBuilder.persistence.member.DataMember.getMemberDataFromMember
+import fleetBuilder.persistence.person.DataPerson.copyPerson
 import fleetBuilder.util.ClipboardUtil
 import fleetBuilder.util.ReflectionMisc
 import org.lazywizard.console.BaseCommand
@@ -51,8 +54,7 @@ class CopyFleet : BaseCommand {
 
             var hasFlagship = false
             allShips.forEach { (id, tempMember) ->
-                val jsonMember = MemberSerialization.saveMemberToJson(tempMember)
-                val member = MemberSerialization.getMemberFromJson(jsonMember)
+                val member = copyMember(tempMember)
                 fleet.fleetData.addFleetMember(member)
 
                 if (member.captain.id == commander.id) {
@@ -76,12 +78,12 @@ class CopyFleet : BaseCommand {
             }
 
             if (!hasFlagship)
-                fleet.commander = PersonSerialization.getPersonFromJson(PersonSerialization.savePersonToJson(commander))
+                fleet.commander = copyPerson(commander)
 
 
-            val json = FleetSerialization.saveFleetToJson(
+            val json = saveFleetToJson(
                 fleet,
-                FleetSerialization.FleetSettings().apply {
+                FleetSettings().apply {
                     includeAggression = false
                 })
             json.put("aggression_doctrine", aggression)
@@ -119,35 +121,44 @@ class CopyFleet : BaseCommand {
             }
 
             val membersMethod = side?.getMethodsMatching(returnType = List::class.java)
-            val members = membersMethod?.getOrNull(0)?.invoke(side) as? List<*>
-            val fleetData = (members?.getOrNull(0) as? FleetMember)?.fleetData ?: return BaseCommand.CommandResult.ERROR
 
-            var aggression = 2
-
-            fleetData.membersListCopy.forEach { member ->
-                if (member.captain.isDefault) {
-                    if (member.captain.personalityAPI.id == Personalities.CAUTIOUS)
-                        aggression = 1
-                    else if (member.captain.personalityAPI.id == Personalities.STEADY)
-                        aggression = 2
-                    else if (member.captain.personalityAPI.id == Personalities.AGGRESSIVE)
-                        aggression = 3
-                    else if (member.captain.personalityAPI.id == Personalities.RECKLESS)
-                        aggression = 5
+            @Suppress("UNCHECKED_CAST")
+            val members = membersMethod?.getOrNull(0)?.invoke(side) as? List<FleetMemberAPI>
+                ?: return BaseCommand.CommandResult.ERROR
+            val fleetData = (members.getOrNull(0) as? FleetMember)?.fleetData
+                ?: run {
+                    val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, false)
+                    members.forEach { member ->
+                        fleet.fleetData.addFleetMember(member)
+                    }
+                    fleet.fleetData
                 }
+
+            var aggression: Int
+
+            val hasAggressive = members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.AGGRESSIVE }
+            val hasReckless = members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.RECKLESS }
+
+            aggression = when {
+                hasAggressive && hasReckless -> 4
+                members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.CAUTIOUS } -> 1
+                members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.AGGRESSIVE } -> 3
+                members.any { it.captain.isDefault && it.captain.personalityAPI.id == Personalities.RECKLESS } -> 5
+                else -> -1
             }
 
-            val json = FleetSerialization.saveFleetToJson(
+            val json = saveFleetToJson(
                 fleetData,
-                FleetSerialization.FleetSettings().apply {
+                FleetSettings().apply {
                     includeAggression = false
                 })
-            json.put("aggression_doctrine", aggression)
+            if (aggression != -1)
+                json.put("aggression_doctrine", aggression)
 
             ClipboardUtil.setClipboardText(json.toString(4))
 
             Console.showMessage("Commander: ${fleetData.commander?.name?.fullName}")
-            Console.showMessage("Ships: ${fleetData.membersListCopy.size}")
+            Console.showMessage("Ships: ${members.size}")
             Console.showMessage("Copied to clipboard")
 
             return BaseCommand.CommandResult.SUCCESS

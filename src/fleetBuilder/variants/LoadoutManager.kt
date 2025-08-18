@@ -9,8 +9,8 @@ import fleetBuilder.config.ModSettings.FLEETDIR
 import fleetBuilder.config.ModSettings.PACKDIR
 import fleetBuilder.config.ModSettings.defaultPrefix
 import fleetBuilder.config.ModSettings.importPrefix
-import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.persistence.variant.VariantSerialization.getVariantFromJsonWithMissing
+import fleetBuilder.persistence.variant.JSONVariant.getVariantFromJson
+import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
@@ -105,7 +105,7 @@ object LoadoutManager {
                     }
 
                     var variant: ShipVariantAPI
-                    var missings: MissingElements
+                    val missing = MissingElements()
 
                     if (Global.getSettings().fileExistsInCommon("$dirPath$prefix/$shipPath")) {
                         val variantJson: JSONObject
@@ -119,12 +119,13 @@ object LoadoutManager {
                             continue
                         }
 
-                        val result = getVariantFromJsonWithMissing(variantJson)
-                        variant = result.first
-                        missings = result.second
-                        if (missings.hullIds.isNotEmpty()) {//Could not find hullSpec. Most likely it is a hullspec from a mod which was disabled.
+                        if (variantJson.optString("hullId", "") !in VariantLib.getHullIDSet()) // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
+                            continue // Skip it if so
+
+                        variant = getVariantFromJson(variantJson, missing = missing)
+                        if (missing.hullIds.isNotEmpty()) // Extra check for safety
                             continue
-                        }
+
                     } else {//Failed to find ship at specific path.
                         Global.getLogger(this.javaClass)
                             .warn("shipPath in path directory /saves/common/$dirPath$prefix linked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location")
@@ -144,7 +145,7 @@ object LoadoutManager {
 
                     shipPaths[variant.hullVariantId] = shipPath
                     ships[variant.hullVariantId] = variant
-                    shipMissings[variant.hullVariantId] = missings
+                    shipMissings[variant.hullVariantId] = missing
                     shipTimeSaved[variant.hullVariantId] = parsedDate
                     shipIndexInEffectiveMenu[variant.hullVariantId] = parsedEffectiveIndex
                 }
@@ -330,7 +331,7 @@ object LoadoutManager {
         variant: ShipVariantAPI,
         prefix: String = ModSettings.defaultPrefix,
         missingFromVariant: MissingElements = MissingElements(),
-        settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
+        settings: VariantSettings = VariantSettings(),
         desiredIndexInMenu: Int = -1
     ): String {
         return getShipDirectoryWithPrefix(prefix)?.addShip(

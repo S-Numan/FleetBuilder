@@ -3,9 +3,9 @@ package fleetBuilder.variants
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.persistence.variant.VariantSerialization
-import fleetBuilder.persistence.variant.VariantSerialization.getVariantFromJson
-import fleetBuilder.persistence.variant.VariantSerialization.saveVariantToJson
+import fleetBuilder.persistence.variant.JSONVariant.getVariantFromJson
+import fleetBuilder.persistence.variant.JSONVariant.saveVariantToJson
+import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.getEffectiveHullId
 import org.json.JSONArray
@@ -111,7 +111,7 @@ class ShipDirectory(
     fun addShip(
         inputVariant: ShipVariantAPI,
         missingFromVariant: MissingElements = MissingElements(),
-        settings: VariantSerialization.VariantSettings = VariantSerialization.VariantSettings(),
+        settings: VariantSettings = VariantSettings(),
         inputDesiredIndexInMenu: Int = -1,
         editDirectoryFile: Boolean = true,
         editVariantFile: Boolean = true,

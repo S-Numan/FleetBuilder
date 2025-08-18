@@ -1,9 +1,12 @@
 package starficz
 
-data class Flag(var isEnabled: Boolean = true) {
-    var isFiltered: Boolean
-        get() = !isEnabled
-        set(filtered) {
-            isEnabled = !filtered
+class Flag() {
+    var isChecked: Boolean = true
+        internal set
+
+    var isUnchecked: Boolean
+        get() = !isChecked
+        internal set(unchecked) {
+            isChecked = !unchecked
         }
 }

@@ -5,7 +5,10 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.loading.FighterWingSpecAPI
+import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.VariantSource
+import com.fs.starfarer.api.loading.WeaponSpecAPI
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
@@ -17,6 +20,11 @@ object VariantLib {
     private lateinit var allHiddenEverywhereMods: Set<String>
     private lateinit var effectiveVariantMap: Map<String, List<ShipVariantAPI>>
     private lateinit var hullIDSet: Set<String>
+    private lateinit var errorVariantHullID: String
+    private lateinit var IDToHullSpec: Map<String, ShipHullSpecAPI>
+    private lateinit var IDToWing: Map<String, FighterWingSpecAPI>
+    private lateinit var IDToWeapon: Map<String, WeaponSpecAPI>
+    private lateinit var IDToHullMod: Map<String, HullModSpecAPI>
     private var init = false
     fun Loaded() = init
 
@@ -62,11 +70,26 @@ object VariantLib {
         effectiveVariantMap = tempVariantMap.mapValues { it.value.toList() }
 
         hullIDSet = Global.getSettings().allShipHullSpecs.map { it.hullId }.toSet()
+
+        errorVariantHullID = createErrorVariant().hullSpec.hullId
+
+        IDToHullSpec = Global.getSettings().allShipHullSpecs.associateBy { it.hullId }
+
+        IDToWing = Global.getSettings().allFighterWingSpecs.associateBy { it.id }
+        IDToHullMod = Global.getSettings().allHullModSpecs.associateBy { it.id }
+        IDToWeapon = Global.getSettings().actuallyAllWeaponSpecs.associateBy { it.weaponId }
     }
 
     fun getAllDMods(): Set<String> = allDMods
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
-    fun getHullIDSet(): Set<String> = hullIDSet
+    fun getHullSpec(hullId: String) = IDToHullSpec[hullId]
+    fun getHullIDSet(): Set<String> = IDToHullSpec.keys
+    fun getFighterWingSpec(wingId: String) = IDToWing[wingId]
+    fun getFighterWingIDSet(): Set<String> = IDToWing.keys
+    fun getWeaponSpec(weaponId: String) = IDToWeapon[weaponId]
+    fun getActuallyAllWeaponSpecs(): Set<String> = IDToWeapon.keys
+    fun getHullModSpec(hullModId: String) = IDToHullMod[hullModId]
+    fun getHullModIDSet(): Set<String> = IDToHullMod.keys
 
     fun getCoreVariantsForEffectiveHullspec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         return effectiveVariantMap[hullSpec.getEffectiveHullId()].orEmpty()
@@ -139,11 +162,16 @@ object VariantLib {
             if (variant1.numFluxVents != variant2.numFluxVents || variant1.numFluxCapacitors != variant2.numFluxCapacitors)
                 return false
         }
-        if (compareWeapons) {
-            if (!compareWeaponGroups) {
-                variant1.autoGenerateWeaponGroups()
-                variant2.autoGenerateWeaponGroups()
+        if (compareWeaponGroups) {
+            if (variant1.weaponGroups.count { it.slots.isNotEmpty() } != variant2.weaponGroups.count { it.slots.isNotEmpty() }) return false
+            variant1.weaponGroups.forEachIndexed { i, _ ->
+                if (variant1.weaponGroups[i]?.slots?.isEmpty() == true) return@forEachIndexed
+                if (variant1.weaponGroups[i]?.slots != variant2.weaponGroups[i]?.slots) return false
+                if (variant1.weaponGroups[i]?.type != variant2.weaponGroups[i]?.type) return false
+                if (variant1.weaponGroups[i]?.isAutofireOnByDefault != variant2.weaponGroups[i]?.isAutofireOnByDefault) return false
             }
+        }
+        if (compareWeapons) {
             if (variant1.fittedWeaponSlots.size != variant2.fittedWeaponSlots.size) return false
             for (slotId in variant1.fittedWeaponSlots) {
                 if (variant1.getWeaponId(slotId) != variant2.getWeaponId(slotId))
@@ -212,7 +240,7 @@ object VariantLib {
         compareDMods: Boolean = true,
         compareSMods: Boolean = true,
         convertSModsToRegular: Boolean = false,
-        compareBuiltInHullMods: Boolean = true
+        compareBuiltInHullMods: Boolean = true // Does not include built in DMods
     ): Boolean {
         val variant1 = insertVariant1.clone()
         val variant2 = insertVariant2.clone()
@@ -244,8 +272,8 @@ object VariantLib {
             variant1.sModdedBuiltIns.clear()
             variant2.sModdedBuiltIns.clear()
 
-            val toRemove1 = variant1HullMods.filter { it in variant1.hullSpec.builtInMods }
-            val toRemove2 = variant2HullMods.filter { it in variant2.hullSpec.builtInMods }
+            val toRemove1 = variant1HullMods.filter { it in variant1.hullSpec.builtInMods && it !in allDMods }
+            val toRemove2 = variant2HullMods.filter { it in variant2.hullSpec.builtInMods && it !in allDMods }
 
             toRemove1.forEach { modId ->
                 variant1.sMods.remove(modId)
@@ -310,5 +338,9 @@ object VariantLib {
         tempVariant.addTag(errorTag)
 
         return tempVariant
+    }
+
+    fun getErrorVariantHullID(): String {
+        return errorVariantHullID
     }
 }

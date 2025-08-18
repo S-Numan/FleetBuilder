@@ -93,7 +93,7 @@ class DrawMessageInTitle : EveryFrameCombatPlugin {
         fadingOut = false
 
         toDraw = font?.createText(currentMessage ?: "", Color.WHITE, 24f)?.apply {
-            maxWidth = 600f
+            maxWidth = 800f
         }
     }
 

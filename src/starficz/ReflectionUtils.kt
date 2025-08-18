@@ -251,7 +251,7 @@ internal object ReflectionUtils {
     @JvmSynthetic
     @JvmName("ExtensionGet")
     fun Any.get(name: String? = null, type: Class<*>? = null, searchSuperclass: Boolean = false): Any? {
-        val target = this
+        val target = if (this is BoxedUIElement) this.boxedElement else this
         val reflectedFields = target.getFieldsMatching(name, fieldAssignableTo = type, searchSuperclass = searchSuperclass)
         if (reflectedFields.isEmpty())
             throw IllegalArgumentException(
@@ -309,7 +309,7 @@ internal object ReflectionUtils {
     @JvmSynthetic
     @JvmName("ExtensionSet")
     fun Any.set(name: String? = null, value: Any?, searchSuperclass: Boolean = false) {
-        val target = this
+        val target = if (this is BoxedUIElement) this.boxedElement else this
         val valueType = value?.let { it::class.javaPrimitiveType ?: it::class.java }
         val reflectedFields = target.getFieldsMatching(name, fieldAccepts = valueType, searchSuperclass = searchSuperclass)
         if (reflectedFields.isEmpty())
@@ -421,6 +421,7 @@ internal object ReflectionUtils {
             fieldAccepts = fieldAccepts,
             searchSuperclass = searchSuperclass
         )
+
         return reflectedFieldsCache.getOrPut(cacheKey) {
             (if (searchSuperclass) getAllFields(this) else this.declaredFields.toSet()).filter { field ->
                 // 1. Check Name
@@ -693,7 +694,7 @@ internal object ReflectionUtils {
     @JvmSynthetic
     @JvmName("ExtensionInvoke")
     fun Any.invoke(name: String? = null, vararg args: Any?): Any? {
-        val target = this
+        val target = if (this is BoxedUIElement) this.boxedElement else this
         val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
         val reflectedMethods = target.getMethodsMatching(name, parameterTypes = paramTypes)
         if (reflectedMethods.isEmpty())
@@ -1094,9 +1095,8 @@ internal object ReflectionUtils {
             numOfParams = numOfParams,
             parameterTypes = parameterTypes
         )
-
         return ReflectedConstructorsCache.getOrPut(cacheKey) {
-            this.declaredConstructors.filter { constructor ->
+            (this.declaredConstructors.toSet() as Set<Any>).filter { constructor ->
                 // Get actual parameters
                 @Suppress("UNCHECKED_CAST")
                 val actualParamTypes = getConstructorParametersHandle.invoke(constructor) as Array<Class<*>> // Example handle
@@ -1141,7 +1141,7 @@ internal object ReflectionUtils {
          * @return The value of the field. Primitive types will be boxed. Returns `null` if the field value is `null`.
          */
         fun get(instance: Any?): Any? {
-            val target = instance
+            val target = if (instance is BoxedUIElement) instance.boxedElement else instance
             setFieldAccessibleHandle.invoke(field, true)
             return getFieldHandle.invoke(field, target)
         }
@@ -1154,7 +1154,7 @@ internal object ReflectionUtils {
          * @param value The new value to assign to the field.
          */
         fun set(instance: Any?, value: Any?) {
-            val target = instance
+            val target = if (instance is BoxedUIElement) instance.boxedElement else instance
             setFieldAccessibleHandle.invoke(field, true)
             setFieldHandle.invoke(field, target, value)
         }
@@ -1186,7 +1186,7 @@ internal object ReflectionUtils {
          *         has a `void` return type or explicitly returns `null`.
          */
         fun invoke(instance: Any?, vararg arguments: Any?): Any? {
-            val target = instance
+            val target = if (instance is BoxedUIElement) instance.boxedElement else instance
             setMethodAccessibleHandle.invoke(method, true)
             return invokeMethodHandle.invoke(method, target, arguments)
         }

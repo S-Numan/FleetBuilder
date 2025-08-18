@@ -19,10 +19,13 @@ import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
-import fleetBuilder.persistence.fleet.FleetSerialization
-import fleetBuilder.persistence.member.MemberSerialization
-import fleetBuilder.persistence.person.PersonSerialization
-import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.fleet.FleetSettings
+import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
+import fleetBuilder.persistence.member.DataMember
+import fleetBuilder.persistence.member.JSONMember.saveMemberToJson
+import fleetBuilder.persistence.person.JSONPerson.savePersonToJson
+import fleetBuilder.persistence.variant.DataVariant
+import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
@@ -114,48 +117,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         } else if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             if (event.isCtrlDown && event.isLMBDownEvent)
                 handleRefitMouseEvents(event)
-            else if (event.isRMBDownEvent && Global.getSettings().isDevMode)
-                handleRefitRemoveHullMod(event)
         } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
             handleFleetMouseEvents(event, sector)
-        } else if (ui.getActualCurrentTab() == CoreUITabId.CARGO) {
-            if (event.isRMBDownEvent)
-                handleCargoMouseEvents(event)
         }
-    }
-
-    private fun handleCargoMouseEvents(event: InputEventAPI) {
-        if (!ModSettings.cargoAutoManager) return
-        Global.getSector().currentlyOpenMarket ?: return
-
-        val cargoTab = ReflectionMisc.getCargoTab() ?: return
-
-        val submarketButtonParent = cargoTab.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI ?: return
-        val submarketButtons = submarketButtonParent.getChildrenCopy()
-
-        submarketButtons.forEach { submarketButton ->
-            val fader = submarketButton.invoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
-
-            if (fader.isFadingIn || fader.brightness == 1f) {
-
-                val tool = submarketButton.invoke("getTooltip") as? TooltipMakerAPI ?: return@forEach
-                val pluginField = tool.getFieldsMatching(fieldAccepts = SubmarketPlugin::class.java, searchSuperclass = true).getOrNull(0)
-                val submarketPlugin = pluginField?.get(tool) as? SubmarketPlugin
-                    ?: return@forEach
-                val selectedSubmarket = submarketPlugin.submarket
-
-                val coreUI = ReflectionMisc.getCoreUI(topDialog = false) as CoreUIAPI
-                if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach
-                if (!submarketPlugin.isEnabled(coreUI)) return@forEach
-                if (!submarketPlugin.isFreeTransfer) return@forEach//Temporary to avoid cheating when WIP
-                if (submarketPlugin is LocalResourcesSubmarketPlugin) return@forEach
-
-                Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket)
-
-                event.consume()
-            }
-        }
-
     }
 
     private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
@@ -196,9 +160,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
 
         fleet?.let { fleetToCopy ->
-            val json = FleetSerialization.saveFleetToJson(
+            val json = saveFleetToJson(
                 fleetToCopy,
-                FleetSerialization.FleetSettings().apply {
+                FleetSettings().apply {
                     memberSettings.personSettings.handleXpAndPoints = false
                 }
             )
@@ -218,7 +182,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     private fun handleFleetCopy(event: InputEventAPI, sector: SectorAPI) {
         val playerFleet = sector.playerFleet.fleetData
 
-        val settings = FleetSerialization.FleetSettings()
+        val settings = FleetSettings()
         settings.includeIdleOfficers = false
 
         var fleetToCopy: FleetDataAPI? = null
@@ -253,7 +217,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             return
         }
 
-        val json = FleetSerialization.saveFleetToJson(fleetToCopy, settings)
+        val json = saveFleetToJson(fleetToCopy, settings)
         ClipboardUtil.setClipboardText(json.toString(4))
         DisplayMessage.showMessage("Copied ${if (settings.excludeMembersWithID.isEmpty()) "entire" else "visible"} ${if (uiShowsSubmarketFleet) "submarket fleet" else "fleet"} to clipboard")
         event.consume()
@@ -283,15 +247,16 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         event.consume()
 
-        if (data is MemberSerialization.ParsedMemberData && data.variantData != null) {
+        if (data is DataMember.ParsedMemberData && data.variantData != null) {
             data = data.variantData
         }
-        if (data !is VariantSerialization.ParsedVariantData) {
+        if (data !is DataVariant.ParsedVariantData) {
             DisplayMessage.showMessage("Data in clipboard was valid, but not a variant", Color.YELLOW)
             return
         }
 
-        val (variant, missing) = VariantSerialization.buildVariantFull(data)
+        val missing = MissingElements()
+        val variant = buildVariantFull(data, missing = missing)
 
         if (missing.hullIds.isNotEmpty()) {
             DisplayMessage.showMessage(
@@ -349,7 +314,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 } else null
             } ?: return
 
-            val json = PersonSerialization.savePersonToJson(hoverOfficer)
+            val json = savePersonToJson(hoverOfficer)
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage("Officer copied to clipboard")
             event.consume()
@@ -371,11 +336,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
             if (event.isCtrlDown && event.isLMBDownEvent) {
                 if (isPortraitHoveredOver) {
-                    val json = PersonSerialization.savePersonToJson(mouseOverMember.captain)
+                    val json = savePersonToJson(mouseOverMember.captain)
                     ClipboardUtil.setClipboardText(json.toString(4))
                     DisplayMessage.showMessage("Officer copied to clipboard")
                 } else {
-                    val json = MemberSerialization.saveMemberToJson(mouseOverMember)
+                    val json = saveMemberToJson(mouseOverMember)
                     ClipboardUtil.setClipboardText(json.toString(4))
                     DisplayMessage.showMessage("Fleet member copied to clipboard")
                 }
@@ -440,75 +405,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             if (!(fader.isFadingIn || fader.brightness == 1f)) return
 
             val member = thing.invoke("getMember") as? FleetMemberAPI ?: return
-            val json = PersonSerialization.savePersonToJson(member.captain)
+            val json = savePersonToJson(member.captain)
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage("Officer copied to clipboard")
             event.consume()
-        } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey failed", e)
-        }
-    }
-
-    private fun handleRefitRemoveHullMod(event: InputEventAPI) {
-        val coreUI = ReflectionMisc.getCoreUI() ?: return
-        val isAutofitPanelOpen = coreUI
-            .getChildrenCopy()
-            .filterIsInstance<CustomPanelAPI>()
-            .any { it.plugin is AutofitPanel.AutofitPanelPlugin }
-        if (isAutofitPanelOpen) return
-
-        try {
-            val refitPanel = ReflectionMisc.getRefitPanel() ?: return
-            val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return
-
-            val modWidgetModIcons = modWidget.findChildWithMethod("getColumns")
-
-            @Suppress("UNCHECKED_CAST")
-            val items = modWidgetModIcons?.invoke("getItems") as? MutableList<UIPanelAPI?> ?: return
-
-            items.forEach { item ->
-                if (item == null) return@forEach
-                val modIcon = item.findChildWithMethod("getFader") as? ButtonAPI ?: return@forEach
-
-                val mouseX = Global.getSettings().mouseX
-                val mouseY = Global.getSettings().mouseY
-                val modIconVec = Vector2f(modIcon.position.x, modIcon.position.y)
-                if (mouseX >= modIconVec.x && mouseX <= modIconVec.x + modIcon.width &&
-                    mouseY >= modIconVec.y && mouseY <= modIconVec.y + modIcon.height
-                ) {
-                    val hullModField = item.getFieldsMatching(fieldAssignableTo = HullModSpecAPI::class.java).firstOrNull()
-                        ?: return@forEach
-                    val hullModID = hullModField.get(item) as? HullModSpecAPI ?: return@forEach
-
-                    val variant = ReflectionMisc.getCurrentVariantInRefitTab()
-                    if (variant != null) {
-                        if (variant.hullSpec.builtInMods.contains(hullModID.id)) {//Built in SMod?
-                            if (variant.sModdedBuiltIns.contains(hullModID.id)) {
-                                variant.completelyRemoveMod(hullModID.id)
-                                refitPanel.invoke("syncWithCurrentVariant")
-
-                                DisplayMessage.showMessage("Removed sModdedBuiltIn in with ID '${hullModID.id}'")
-                            } else if (VariantLib.getAllDMods().contains(hullModID.id)) {//Built in DMod?
-                                variant.hullMods.remove(hullModID.id)
-                                refitPanel.invoke("syncWithCurrentVariant")
-
-                                DisplayMessage.showMessage("Removed built in DMod with ID '${hullModID.id}'")
-                            } else {
-                                DisplayMessage.showMessage("The hullmod '${hullModID.id}' is built into the hullspec, it cannot be removed from the variant")
-                            }
-                        } else {
-                            variant.completelyRemoveMod(hullModID.id)
-                            refitPanel.invoke("syncWithCurrentVariant")
-
-                            DisplayMessage.showMessage("Removed hullmod with ID '$hullModID'")
-                        }
-
-                        event.consume()
-                        return
-                    }
-                }
-            }
-
         } catch (e: Exception) {
             DisplayMessage.showError("FleetBuilder hotkey failed", e)
         }

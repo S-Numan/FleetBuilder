@@ -1,6 +1,7 @@
 package fleetBuilder.config
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.config.ModSettings.autofitMenuEnabled
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.config.ModSettings.backupSave
@@ -17,6 +18,7 @@ import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.modPickerFilter
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.config.ModSettings.removeDefaultDMods
+import fleetBuilder.config.ModSettings.removeRefitHullmod
 import fleetBuilder.config.ModSettings.reportCargoAutoManagerChanges
 import fleetBuilder.config.ModSettings.saveDMods
 import fleetBuilder.config.ModSettings.saveHiddenMods
@@ -28,7 +30,7 @@ import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
 import fleetBuilder.config.ModSettings.storeOfficersInCargo
 import fleetBuilder.config.ModSettings.unassignPlayer
-import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.util.Reporter
 import fleetBuilder.util.containsString
 import fleetBuilder.variants.LoadoutManager
@@ -42,64 +44,6 @@ import lunalib.lunaSettings.LunaSettingsListener
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
-
-
-internal class ModSettingsListener : LunaSettingsListener {
-    init {
-        settingsChanged(modID)
-
-        //Only happens once
-
-        val _defaultPrefix = getString(modID, "defaultPrefix")!!
-
-        val _importPrefix = getString(modID, "importPrefix")!!
-
-        if (generatePrefixes().contains(_defaultPrefix))
-            defaultPrefix = _defaultPrefix
-        if (generatePrefixes().contains(_importPrefix))
-            importPrefix = _importPrefix
-
-    }
-
-    //Gets called whenever settings are saved in the campaign or the main menu.
-    override fun settingsChanged(modID: String) {
-
-        selectorsPerRow = getInt(modID, "selectorsPerRow")!!
-        showCoreGoalVariants = getBoolean(modID, "showCoreGoalVariants")!!
-        showCoreNonGoalVariants = getBoolean(modID, "showCoreNonGoalVariants")!!
-        showHiddenModsInTooltip = getBoolean(modID, "showHiddenModsInTooltip")!!
-        showDebug = getBoolean(modID, "showDebug")!!
-        saveDMods = getBoolean(modID, "saveDMods")!!
-        saveSMods = getBoolean(modID, "saveSMods")!!
-        saveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
-        unassignPlayer = getBoolean(modID, "unassignPlayer")!!
-        forceAutofit = getBoolean(modID, "forceAutofit")!!
-        dontForceClearDMods = getBoolean(modID, "dontForceClearDMods")!!
-        dontForceClearSMods = getBoolean(modID, "dontForceClearSMods")!!
-        randomPastedCosmetics = getBoolean(modID, "randomPastedCosmetics")!!
-        backupSave = getBoolean(modID, "backupSave")!!
-        fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
-        devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
-        fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
-        storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
-        removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
-        cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
-        modPickerFilter = getBoolean(modID, "modPickerFilter")!!
-        reportCargoAutoManagerChanges = getBoolean(modID, "reportCargoAutoManagerChanges")!!
-
-        autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
-
-        val _autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
-        if (_autofitMenuHotkey != 0) {
-            autofitMenuHotkey = _autofitMenuHotkey
-        }
-
-        if (VariantLib.Loaded())
-            LoadoutManager.loadAllDirectories()//Reload the LoadoutManager
-
-        Reporter.setListeners()
-    }
-}
 
 object ModSettings {
     fun onApplicationLoad() {
@@ -151,13 +95,16 @@ object ModSettings {
 
     fun getHullModsToNeverSave(): Set<String> = hullModsToNeverSave
 
-    fun getConfiguredVariantSettings(): VariantSerialization.VariantSettings {
-        return VariantSerialization.VariantSettings().apply {
+    fun getConfiguredVariantSettings(): VariantSettings {
+        return VariantSettings().apply {
             applySMods = saveSMods
             includeDMods = saveDMods
             includeHiddenMods = saveHiddenMods
+            excludeTagsWithID = getDefaultExcludeVariantTags()
         }
     }
+
+    fun getDefaultExcludeVariantTags(): MutableSet<String> = mutableSetOf(Tags.SHIP_RECOVERABLE, Tags.TAG_RETAIN_SMODS_ON_RECOVERY, Tags.TAG_NO_AUTOFIT, Tags.VARIANT_CONSISTENT_WEAPON_DROPS)
 
     val modID = "SN_FleetBuilder"
 
@@ -216,4 +163,6 @@ object ModSettings {
     var modPickerFilter = false
 
     var reportCargoAutoManagerChanges = true
+
+    var removeRefitHullmod = true
 }

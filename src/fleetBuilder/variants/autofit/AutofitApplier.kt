@@ -12,7 +12,9 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.allDMods
 import fleetBuilder.util.completelyRemoveMod
+import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.getRegularHullMods
 import fleetBuilder.variants.VariantLib
 import starficz.ReflectionUtils.invoke
@@ -49,7 +51,7 @@ object AutofitApplier {
             val auto: CoreAutofitPlugin
 
             if (!Global.getSettings().isInCampaignState) {
-                copyVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
+                replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
 
             } else {
                 val ui = Global.getSector().campaignUI
@@ -126,7 +128,7 @@ object AutofitApplier {
 
 
                 if (ModSettings.forceAutofit) {
-                    copyVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
+                    replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
                     //baseVariant.addTag(Tags.SHIP_RECOVERABLE)
                     //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
                 } else {
@@ -190,12 +192,16 @@ object AutofitApplier {
         shipDisplay.invoke("setSuppressMessages", false)
     }
 
-    fun copyVariant(
+    private fun replaceVariantWithVariant(
         to: ShipVariantAPI,
         from: ShipVariantAPI,
         dontForceClearDMods: Boolean = false,
         dontForceClearSMods: Boolean = false
     ) {
+        if (to.hullSpec.getEffectiveHullId() != from.hullSpec.getEffectiveHullId()) {
+            DisplayMessage.showError("Replace Variant With Variant failed. Base hulls '${to.hullSpec.getEffectiveHullId()}' and '${from.hullSpec.getEffectiveHullId()}' do not match.")
+            return
+        }
         to.clear()
         to.weaponGroups.clear()
         to.clearTags()
@@ -217,6 +223,12 @@ object AutofitApplier {
                 return@forEach
 
             to.completelyRemoveMod(mod)
+        }
+
+        if (ModSettings.removeDefaultDMods) {
+            to.allDMods().forEach {
+                to.hullMods.remove(it)
+            }
         }
 
         if (!dontForceClearSMods) {
@@ -251,6 +263,12 @@ object AutofitApplier {
         // Copy S-modded built-ins
         for (mod in from.sModdedBuiltIns) {
             to.sModdedBuiltIns.add(mod)
+        }
+
+        // Copy Built-in DMods
+        for (mod in from.allDMods()) {
+            if (mod !in from.hullSpec.builtInMods) continue
+            to.hullMods.add(mod)
         }
 
         for (mod in from.suppressedMods) {
@@ -299,7 +317,7 @@ object AutofitApplier {
             val toVariant = to.getModuleVariant(slot)
             val fromVariant = from.getModuleVariant(slot)
 
-            copyVariant(
+            replaceVariantWithVariant(
                 toVariant,
                 fromVariant,
                 dontForceClearDMods,

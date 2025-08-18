@@ -13,7 +13,10 @@ import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
-import fleetBuilder.persistence.variant.VariantSerialization
+import fleetBuilder.config.ModSettings.getDefaultExcludeVariantTags
+import fleetBuilder.persistence.variant.DataVariant.copyVariant
+import fleetBuilder.persistence.variant.VariantSettings
+import fleetBuilder.ui.autofit.AutofitSelector.AutofitSelectorPlugin.ComparisonStatus
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
 import fleetBuilder.util.*
@@ -43,6 +46,7 @@ import java.awt.Color
 /**
  * Original author
  * @author Starficz
+ * Heavily modified otherwise
  */
 internal object AutofitPanel {
     private const val BACKGROUND_ALPHA = 0.7f
@@ -326,7 +330,7 @@ internal object AutofitPanel {
         val baseVariantSelectorPlugin = baseVariantSelectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
         baseVariantSelectorPlugin.isBase = true
         baseVariantSelectorPlugin.noClickFader = true
-        baseVariantSelectorPlugin.isEqual = true
+        baseVariantSelectorPlugin.comparisonStatus = ComparisonStatus.EQUAL
         baseVariantSelectorPlugin.isSelected = true
         selectorPlugins.add(baseVariantSelectorPlugin)
 
@@ -422,6 +426,9 @@ internal object AutofitPanel {
         for (index in selectorPlugins.indices) {
             val selectorPlugin = selectorPlugins[index]
 
+            selectorPlugin.onPressOutside {
+                if (selectorPlugin.autofitSpec != null) highlightBasedOnVariant(selectorPlugin.autofitSpec!!.variant, baseVariant, selectorPlugin) // Mostly for applying the different flux stat symbol on alteration of flux stats.
+            }
             selectorPlugin.onHoverEnter {
                 Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
             }
@@ -503,7 +510,7 @@ internal object AutofitPanel {
 
                 if (selectorPlugin.autofitSpec != null || autofitPlugin.draggedAutofitSpec == null) return@onClickReleaseNoInitClick
 
-                val settings: VariantSerialization.VariantSettings
+                val settings: VariantSettings
                 var shipDirectory: ShipDirectory?
 
                 if (autofitPlugin.draggedAutofitSpec!!.source == null) {
@@ -512,7 +519,9 @@ internal object AutofitPanel {
                     shipDirectory = LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)
 
                 } else {
-                    settings = VariantSerialization.VariantSettings()
+                    settings = VariantSettings().apply {
+                        excludeTagsWithID = getDefaultExcludeVariantTags()
+                    }
 
                     shipDirectory = autofitPlugin.draggedAutofitSpec!!.source
                 }
@@ -524,7 +533,7 @@ internal object AutofitPanel {
 
                 val indexInMenu = index - coreEffectiveHullAutofitSpecs.size
 
-                val draggedVariant = VariantSerialization.saveAndLoadVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings)
+                val draggedVariant = copyVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would be loaded if brought up later
 
                 val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant, compareTags = true) }
 
@@ -554,7 +563,7 @@ internal object AutofitPanel {
                         it.autofitSpec?.source != null && it.autofitSpec?.variant != null &&
                                 compareVariantContents(
                                     shipDirectory.getShip(shipVariantID)!!,
-                                    VariantSerialization.saveAndLoadVariant(it.autofitSpec!!.variant, settings),
+                                    copyVariant(it.autofitSpec!!.variant, settings), // Copied to apply settings
                                     compareTags = true
                                 )
                     })
@@ -615,8 +624,8 @@ internal object AutofitPanel {
             variant,
             baseVariant,
             compareWeaponGroups = false,
-            compareBuiltInHullMods = false,
             compareFlux = false,
+            compareBuiltInHullMods = false,
             compareDMods = false,
             convertSModsToRegular = true,
             compareHiddenHullMods = false,
@@ -628,14 +637,37 @@ internal object AutofitPanel {
             selectorPlugin.highlightFader.forceIn()
 
             outlinePanelBasedOnVariant(baseVariant, variant, selectorPlugin)
+
+            val diffWeaponGroups = !compareVariantContents(
+                variant,
+                baseVariant,
+                compareWeaponGroups = true,
+                compareFlux = false,
+                compareHullMods = false,
+                useEffectiveHull = true
+            )
+            val diffFluxStats = !compareVariantContents(
+                variant,
+                baseVariant,
+                compareWeaponGroups = false,
+                compareFlux = true,
+                compareHullMods = false,
+                useEffectiveHull = true
+            )
+            if (diffFluxStats) {
+                selectorPlugin.diffFluxStats = true
+            }
+            if (diffWeaponGroups) {
+                selectorPlugin.diffWeaponGroups = true
+            }
         }
     }
 
     fun deHighlight(selectorPlugin: AutofitSelector.AutofitSelectorPlugin) {
         selectorPlugin.isSelected = false
-        selectorPlugin.isEqual = false
-        selectorPlugin.isBetter = false
-        selectorPlugin.isWorse = false
+        selectorPlugin.comparisonStatus = ComparisonStatus.DEFAULT
+        selectorPlugin.diffFluxStats = false
+        selectorPlugin.diffWeaponGroups = false
     }
 
     private fun outlinePanelBasedOnVariant(
@@ -646,9 +678,9 @@ internal object AutofitPanel {
         val compareBaseVariant = baseVariant.clone()
         val compareVariant = variant.clone()
 
-        //Treat built in DMods like regular PermaMods.
-        compareBaseVariant.allDMods().forEach { compareBaseVariant.addPermaMod(it) }
-        compareVariant.allDMods().forEach { compareVariant.addPermaMod(it) }
+        //Treat built in DMods like regular hullmods.
+        //compareBaseVariant.allDMods().forEach { compareBaseVariant.hullMods.add(it) }
+        //compareVariant.allDMods().forEach { compareVariant.hullMods.add(it) }
 
         //Treat SModdedBuiltIns like SMods.
         compareBaseVariant.sModdedBuiltIns.forEach { compareBaseVariant.addPermaMod(it, true) }
@@ -686,7 +718,7 @@ internal object AutofitPanel {
 
         var unequalDMod = false
         if (compareBaseVariant.allDMods().isNotEmpty()) {
-            compareBaseVariant.allDMods().forEach { compareBaseVariant.completelyRemoveMod(it) }
+            compareBaseVariant.allDMods().forEach { compareBaseVariant.completelyRemoveMod(it); compareBaseVariant.hullMods.remove(it) }
             if (compareBaseVariant.sMods.isNotEmpty()) {
                 unequalDMod = compareVariantHullMods(
                     compareVariant,
@@ -706,11 +738,11 @@ internal object AutofitPanel {
         }
 
         if (equalMods) {
-            selectorPlugin.isEqual = true
+            selectorPlugin.comparisonStatus = ComparisonStatus.EQUAL
         } else if (equalSMods) {
-            selectorPlugin.isBetter = true
+            selectorPlugin.comparisonStatus = ComparisonStatus.BETTER
         } else if (unequalDMod || unequalSMods) {
-            selectorPlugin.isWorse = true
+            selectorPlugin.comparisonStatus = ComparisonStatus.WORSE
         }
     }
 
@@ -721,10 +753,8 @@ internal object AutofitPanel {
         val tooltip = selectorPlugin?.selectorPanel?.invoke("getTooltip")
         tooltip?.getMethodsMatching("removeSelf")?.getOrNull(0)?.invoke(tooltip) // Safe way to remove the tooltip
 
-        selectorPlugin?.isSelected = false
-        selectorPlugin?.isEqual = false
-        selectorPlugin?.isBetter = false
-        selectorPlugin?.isWorse = false
+        if (selectorPlugin != null)
+            deHighlight(selectorPlugin)
     }
 
     private fun removeSelectorPanelButton(

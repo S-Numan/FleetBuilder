@@ -1,0 +1,81 @@
+{
+    "aggression_doctrine": 5,
+    "factionID": "omega",
+    "fleetName": "Automated Defenses",
+    "members": [
+        {
+            "cr": 0.85,
+            "isFlagship": true,
+            "name": "01011001 415240",
+            "officer": {
+                "aicoreid": "omega_core",
+                "first": "Omega Core",
+                "gender": "ANY",
+                "level": 9,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/characters/omega.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "omega_ecm": 2,
+                    "point_defense": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "random_tesseract_1"
+        },
+        {
+            "cr": 0.85,
+            "name": "01011001 377f34",
+            "officer": {
+                "aicoreid": "omega_core",
+                "first": "Omega Core",
+                "gender": "ANY",
+                "level": 9,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/characters/omega.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "omega_ecm": 2,
+                    "point_defense": 2,
+                    "target_analysis": 2
+                },
+                "tags": []
+            },
+            "variantId": "random_tesseract_2"
+        }
+    ],
+    "variants": [
+        {
+            "hullId": "tesseract",
+            "variantId": "random_tesseract_1",
+            "tags": [
+                "ship_limited_tooltip"
+            ],
+            "pick_random_variant": true
+        },
+        {
+            "hullId": "tesseract",
+            "variantId": "random_tesseract_2",
+            "tags": [
+                "ship_limited_tooltip"
+            ],
+            "pick_random_variant": true
+        }
+    ]
+}

@@ -1,0 +1,253 @@
+{
+    "fleetName": "Midline Battlestation",
+    "members": [{
+        "cr": 1,
+        "name": "Midline Battlestation",
+        "variantId": "station2_midline_Battlestation"
+    }],
+    "variants": [{
+        "displayName": "Battlestation",
+        "fluxCapacitors": 0,
+        "fluxVents": 0,
+        "hullId": "station2_midline",
+        "hullMods": [],
+        "moduleVariants": {
+            "WS 002": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_midline_support",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_midline_support_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS 000": "pilum",
+                            "WS 001": "pilum",
+                            "WS 002": "pilum",
+                            "WS 003": "pilum"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS 004": "heatseeker",
+                            "WS 009": "heatseeker"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 005": "vulcan",
+                            "WS 006": "vulcan",
+                            "WS 007": "vulcan",
+                            "WS 008": "vulcan"
+                        }
+                    }
+                ],
+                "wings": [
+                    "hoplon_wing",
+                    "hoplon_wing",
+                    "broadsword_wing",
+                    "thunder_wing"
+                ]
+            },
+            "WS 003": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_blocker2b",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_blocker2b_Standard",
+                "weaponGroups": []
+            },
+            "WS 004": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_blocker2b",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_blocker2b_Standard",
+                "weaponGroups": []
+            },
+            "WS 005": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_blocker2b",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_blocker2b_Standard",
+                "weaponGroups": []
+            },
+            "WS 006": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_blocker2b",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_blocker2b_Standard",
+                "weaponGroups": []
+            },
+            "WS 007": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_decor_midline1",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_decor_midline1_Standard",
+                "weaponGroups": []
+            },
+            "WS 008": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_midline_bastion",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_midline_bastion_Standard1",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "dualflak",
+                            "WS 003": "dualflak",
+                            "WS 005": "vulcan",
+                            "WS 006": "vulcan",
+                            "WS 007": "vulcan"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS 001": "squall",
+                            "WS 002": "squall"
+                        }
+                    }
+                ]
+            },
+            "WS 009": {
+                "displayName": "",
+                "fluxCapacitors": 0,
+                "fluxVents": 0,
+                "hullId": "module_decor_midline1",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_decor_midline1_Standard",
+                "weaponGroups": []
+            },
+            "WS 010": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_midline_bastion",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_midline_bastion_Standard2",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "dualflak",
+                            "WS 003": "dualflak",
+                            "WS 005": "vulcan",
+                            "WS 006": "vulcan",
+                            "WS 007": "vulcan"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS 001": "hurricane",
+                            "WS 002": "hurricane"
+                        }
+                    }
+                ]
+            },
+            "WS 011": {
+                "displayName": "Standard",
+                "fluxCapacitors": 10,
+                "fluxVents": 10,
+                "hullId": "module_midline_broadside",
+                "hullMods": [],
+                "permaMods": [],
+                "sMods": [],
+                "variantId": "module_midline_broadside_Standard",
+                "weaponGroups": [
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 000": "hephag",
+                            "WS 002": "hephag",
+                            "WS 003": "mjolnir",
+                            "WS 005": "mjolnir",
+                            "WS 006": "hephag",
+                            "WS 008": "hephag"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 001": "multineedler",
+                            "WS 004": "multineedler",
+                            "WS 007": "multineedler"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 010": "gravitonbeam",
+                            "WS 011": "gravitonbeam",
+                            "WS 012": "gravitonbeam",
+                            "WS 013": "gravitonbeam",
+                            "WS 014": "gravitonbeam",
+                            "WS 015": "gravitonbeam"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS 016": "vulcan",
+                            "WS 017": "vulcan",
+                            "WS 018": "vulcan",
+                            "WS 019": "vulcan",
+                            "WS 020": "vulcan",
+                            "WS 021": "vulcan",
+                            "WS 022": "vulcan"
+                        }
+                    }
+                ]
+            }
+        },
+        "permaMods": [],
+        "sMods": [],
+        "variantId": "station2_midline_Battlestation",
+        "weaponGroups": []
+    }]
+}
