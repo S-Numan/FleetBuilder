@@ -1,5 +1,5 @@
-## 1.18.0
-- Kindly inform the Nexerelin version checker dialog to not exist on CTRL + V.
+## 1.17.1
+- Prevent the Nexerelin version checker dialog from opening when pasting fleets into the campaign.
 - Fix being able to interact with outside elements when in dialog.
 - Improve Roider Union MIDAS support when saving and loading a variant.
 - Avoid showing non-relevant toggles in the missions tab. (which is all of them)
