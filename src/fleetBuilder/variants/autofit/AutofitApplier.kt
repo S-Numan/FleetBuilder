@@ -2,9 +2,11 @@ package fleetBuilder.variants.autofit
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUIAPI
+import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
@@ -12,12 +14,16 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.FBMisc.getHullModBonusXP
+import fleetBuilder.util.FBMisc.sModHandlerTemp
+import fleetBuilder.util.FBMisc.spendStoryPoint
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.getRegularHullMods
 import fleetBuilder.variants.VariantLib
 import starficz.ReflectionUtils.invoke
+import java.awt.Color
 import java.util.*
 
 object AutofitApplier {
@@ -33,9 +39,12 @@ object AutofitApplier {
         allowCargo: Boolean = true,
         allowStorage: Boolean = true,
         allowMarket: Boolean = true,
-        allowBlackMarket: Boolean = true
+        allowBlackMarket: Boolean = true,
+        applySMods: Boolean = false
     ) {
         shipDisplay.invoke("setSuppressMessages", true)
+
+        var appliedSMods = false
 
         try {
             baseVariant.source = VariantSource.REFIT
@@ -50,6 +59,8 @@ object AutofitApplier {
 
             val auto: CoreAutofitPlugin
 
+            var market: MarketAPI? = null
+
             if (!Global.getSettings().isInCampaignState) {
                 replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
 
@@ -59,7 +70,7 @@ object AutofitApplier {
 
                 //Add market to delegate if present
                 if (interaction != null && interaction.interactionTarget != null && interaction.interactionTarget.market != null) {
-                    val market = interaction.interactionTarget.market
+                    market = interaction.interactionTarget.market
                     delegate.setMarket(market)
 
                     for (submarket in market.submarketsCopy) {
@@ -153,6 +164,31 @@ object AutofitApplier {
                         }
                     }
 
+                    if (applySMods) {
+                        var (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship, baseVariant, loadout)
+                        sModsToApply = sModsToApply.filter { delegate.canAddRemoveHullmodInPlayerCampaignRefit(it) }.toMutableList()
+                        if (sModsToApply.isNotEmpty()) {
+                            val itemManager = HullModItemManager.getInstance()
+                            sModsToApply.toList().forEach {
+                                if (!itemManager.isRequiredItemAvailable(it, ship.fleetMember, baseVariant, market)) {
+                                    sModsToApply.remove(it)
+                                    bonusXpToGrant -= getHullModBonusXP(baseVariant, it)
+                                    DisplayMessage.showMessage("Failed to apply ${Global.getSettings().getHullModSpec(it).displayName}. Required item not available", Color.YELLOW)
+                                    return@forEach
+                                }
+
+                                appliedSMods = true
+
+                                if (baseVariant.hullSpec.builtInMods.contains(it)) {
+                                    baseVariant.sModdedBuiltIns.add(it)
+                                } else {
+                                    baseVariant.addPermaMod(it, true)
+                                }
+                            }
+
+                            spendStoryPoint(sModsToApply.size, bonusXpToGrant)
+                        }
+                    }
 
                     auto.doFit(baseVariant, loadout, 0, delegate)
 
@@ -182,6 +218,10 @@ object AutofitApplier {
         }
 
         try {
+            if (appliedSMods) {
+                refitPanel.invoke("saveCurrentVariant") // Prevent undo. Refunding SMods is difficult.
+                refitPanel.invoke("setEditedSinceSave", false)
+            }
             refitPanel.invoke("syncWithCurrentVariant")
             shipDisplay.invoke("updateModules")
             shipDisplay.invoke("updateButtonPositionsToZoomLevel")

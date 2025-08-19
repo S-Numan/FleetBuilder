@@ -129,7 +129,7 @@ class CopyFleet : BaseCommand {
                 ?: run {
                     val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, false)
                     members.forEach { member ->
-                        fleet.fleetData.addFleetMember(member)
+                        fleet.fleetData.addFleetMember(copyMember(member))
                     }
                     fleet.fleetData
                 }

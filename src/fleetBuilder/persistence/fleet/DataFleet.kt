@@ -3,36 +3,27 @@ package fleetBuilder.persistence.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
-import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.fleet.SecondInCommandSerialization.buildSecondInCommandData
-import fleetBuilder.persistence.fleet.SecondInCommandSerialization.extractSecondInCommandData
 import fleetBuilder.persistence.fleet.SecondInCommandSerialization.getSecondInCommandDataFromFleet
-import fleetBuilder.persistence.fleet.SecondInCommandSerialization.saveSecondInCommandData
 import fleetBuilder.persistence.fleet.SecondInCommandSerialization.validateSecondInCommandData
 import fleetBuilder.persistence.member.DataMember
 import fleetBuilder.persistence.member.DataMember.buildMember
 import fleetBuilder.persistence.member.DataMember.filterParsedMemberData
 import fleetBuilder.persistence.member.DataMember.getMemberDataFromMember
 import fleetBuilder.persistence.member.DataMember.validateAndCleanMemberData
-import fleetBuilder.persistence.member.MemberSettings
 import fleetBuilder.persistence.person.DataPerson
 import fleetBuilder.persistence.person.DataPerson.buildPerson
-import fleetBuilder.persistence.person.DataPerson.buildPersonFull
 import fleetBuilder.persistence.person.DataPerson.filterParsedPersonData
 import fleetBuilder.persistence.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.persistence.person.DataPerson.validateAndCleanPersonData
-import fleetBuilder.persistence.person.JSONPerson.savePersonToJson
 import fleetBuilder.persistence.variant.DataVariant
-import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
-import fleetBuilder.persistence.variant.JSONVariant.saveVariantToJson
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getErrorVariantHullID
-import org.json.JSONObject
 import java.util.Random
 import kotlin.collections.forEach
 
@@ -41,7 +32,7 @@ object DataFleet {
         val fleetName: String? = null,
         val aggression: Int = -1,
         val factionID: String? = null,
-        val commander: DataPerson.ParsedPersonData?, // null if flagship exists, as commander is on flagship
+        val commanderIfNoFlagship: DataPerson.ParsedPersonData?, // null if flagship exists, as commander is on flagship
         val members: List<DataMember.ParsedMemberData>,
         val idleOfficers: List<DataPerson.ParsedPersonData>,
         val secondInCommandData: SecondInCommandSerialization.SecondInCommandData?,
@@ -80,7 +71,7 @@ object DataFleet {
             fleetName = campFleet?.name,
             aggression = campFleet?.faction?.doctrine?.aggression ?: -1,
             factionID = campFleet?.faction?.id,
-            commander = fleet.commander?.let { if (it.isDefault) null else getPersonDataFromPerson(it, filterParsed = false) },
+            commanderIfNoFlagship = fleet.commander?.let { if (it.isDefault) null else getPersonDataFromPerson(it, filterParsed = false) },
             members = fleet.membersListCopy.map { getMemberDataFromMember(it, filterParsed = false) },
             idleOfficers = fleet.officersCopy.mapNotNull { officerData ->
                 val person = officerData.person
@@ -149,7 +140,7 @@ object DataFleet {
         if (!settings.includeCommanderSetFlagship)
             filteredCommander = null
         else if (!hasFlagship && filteredCommander == null) // No flagship, no commander, supposed to set commander?
-            filteredCommander = data.commander?.let { filterParsedPersonData(it, settings.memberSettings.personSettings, missing) } // Set commander
+            filteredCommander = data.commanderIfNoFlagship?.let { filterParsedPersonData(it, settings.memberSettings.personSettings, missing) } // Set commander
 
         val filteredIdleOfficers = if (settings.includeIdleOfficers) {
             data.idleOfficers.map {
@@ -163,7 +154,7 @@ object DataFleet {
 
         return data.copy(
             members = filteredMembers,
-            commander = filteredCommander,
+            commanderIfNoFlagship = filteredCommander,
             idleOfficers = filteredIdleOfficers,
             aggression = filteredAggression
         )
@@ -215,7 +206,7 @@ object DataFleet {
             validated
         }
 
-        val validatedCommander = data.commander?.let {
+        val validatedCommander = data.commanderIfNoFlagship?.let {
             validateAndCleanPersonData(it, missing)
         }
 
@@ -232,7 +223,7 @@ object DataFleet {
 
         return data.copy(
             members = validatedMembers,
-            commander = validatedCommander,
+            commanderIfNoFlagship = validatedCommander,
             idleOfficers = validatedIdleOfficers,
             secondInCommandData = data.secondInCommandData,
             factionID = validatedFaction
@@ -249,7 +240,7 @@ object DataFleet {
             if (data.factionID != null)
                 campFleet?.setFaction(data.factionID)
 
-            data.commander?.let {
+            data.commanderIfNoFlagship?.let {
                 campFleet?.commander = buildPerson(it)
             }
         }

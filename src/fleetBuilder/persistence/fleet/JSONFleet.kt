@@ -100,7 +100,7 @@ object JSONFleet {
             fleetName = fleetName,
             aggression = aggression,
             factionID = factionID,
-            commander = commander,
+            commanderIfNoFlagship = commander,
             members = members,
             idleOfficers = idleOfficers,
             secondInCommandData = sicData,
@@ -229,9 +229,9 @@ object JSONFleet {
             membersJson.put(memberJson)
         }
 
-        if (!flagshipSet && data.commander != null) {
+        if (!flagshipSet && data.commanderIfNoFlagship != null) {
             fleetJson.put(
-                "commander", savePersonToJson(data.commander)
+                "commander", savePersonToJson(data.commanderIfNoFlagship)
             )
         }
 

@@ -1,5 +1,6 @@
 package fleetBuilder.ui.autofit
 
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.CoreUIAPI
@@ -19,7 +20,11 @@ import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSelector.AutofitSelectorPlugin.ComparisonStatus
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
+import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.*
+import fleetBuilder.util.FBMisc.getMaxSMods
+import fleetBuilder.util.FBMisc.sModHandlerTemp
+import fleetBuilder.util.FBMisc.spendStoryPoint
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.getCoreAutofitSpecsForShip
@@ -35,12 +40,14 @@ import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
+import org.magiclib.kotlin.getBuildInBonusXP
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import starficz.*
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
+import kotlin.math.min
 
 
 /**
@@ -391,29 +398,46 @@ internal object AutofitPanel {
             return button
         }
 
-        val cargoButton = addToggleButton(
-            label = "Use ordnance from cargo",
-            memoryKey = "\$FBA_useCargo",
-            tooltipText = "Use weapons and fighter LPCs from your fleet's cargo holds."
+        var cargoButton: ButtonAPI? = null
+        var storageButton: ButtonAPI? = null
+        var marketButton: ButtonAPI? = null
+        var blackMarketButton: ButtonAPI? = null
+
+        if (Global.getCurrentState() != GameState.TITLE) {
+            cargoButton = addToggleButton(
+                label = "Use ordnance from cargo",
+                memoryKey = "\$FBA_useCargo",
+                tooltipText = "Use weapons and fighter LPCs from your fleet's cargo holds."
+            )
+
+            storageButton = addToggleButton(
+                label = "Use ordnance from storage",
+                memoryKey = "\$FBA_useStorage",
+                tooltipText = "Use weapons and fighter LPCs from your local storage facilities."
+            )
+
+            marketButton = addToggleButton(
+                label = "Buy ordnance from market",
+                memoryKey = "\$FBA_useMarket",
+                tooltipText = "Buy weapons and fighter LPCs from market, if docked at one.\n\nOrdnance from your cargo will be preferred"
+            )
+
+            blackMarketButton = addToggleButton(
+                label = "Allow black market purchases",
+                memoryKey = "\$FBA_useBlackMarket",
+                tooltipText = "Buy weapons and fighter LPCs from the black market.\n\nNon-black-market options will be preferred if the alternatives are of equal quality"
+            )
+        }
+
+        val applySModsButton = addToggleButton(
+            label = "Apply SMods",
+            memoryKey = "\$FBA_applySMods",
+            tooltipText = "Spend story points to apply SMods to your ship.",
+            default = false
         )
 
-        val storageButton = addToggleButton(
-            label = "Use ordnance from storage",
-            memoryKey = "\$FBA_useStorage",
-            tooltipText = "Use weapons and fighter LPCs from your local storage facilities."
-        )
+        applySModsButton.opacity = 0f
 
-        val marketButton = addToggleButton(
-            label = "Buy ordnance from market",
-            memoryKey = "\$FBA_useMarket",
-            tooltipText = "Buy weapons and fighter LPCs from market, if docked at one.\n\nOrdnance from your cargo will be preferred"
-        )
-
-        val blackMarketButton = addToggleButton(
-            label = "Allow black market purchases",
-            memoryKey = "\$FBA_useBlackMarket",
-            tooltipText = "Buy weapons and fighter LPCs from the black market.\n\nNon-black-market options will be preferred if the alternatives are of equal quality"
-        )
         // Add the buttons element to the panel
         baseVariantPanel.addUIElement(toggleButtonsElement)
 
@@ -446,10 +470,10 @@ internal object AutofitPanel {
 
                 if (selectorPlugin.autofitSpec == null || autofitPlugin.draggedAutofitSpec != null || event.isCtrlDown || selectorPlugin.noClickFader) return@onClickRelease // If no variant. or dragging self, do nothing
 
-                fun applyVariant(autofitSpec: AutofitSpec?) {
+                fun applyVariant(autofitSpec: AutofitSpec?, applySMods: Boolean = false) {
                     applyVariantInRefitScreen(
                         baseVariant, autofitSpec!!.variant, fleetMember, ship, coreUI, shipDisplay, refitPanel,
-                        allowCargo = cargoButton.isChecked, allowStorage = storageButton.isChecked, allowMarket = marketButton.isChecked, allowBlackMarket = blackMarketButton.isChecked
+                        allowCargo = cargoButton?.isChecked == true, allowStorage = storageButton?.isChecked == true, allowMarket = marketButton?.isChecked == true, allowBlackMarket = blackMarketButton?.isChecked == true, applySMods = applySMods
                     )
 
                     //Remake the baseSelector
@@ -469,38 +493,29 @@ internal object AutofitPanel {
                     selectorPlugin.isSelected = true
                 }
 
-                //Too complicated
-                /*if (applySModsButton.isChecked && !ModSettings.forceAutofit) {
-                    val maxSMods = ship.mutableStats.dynamic.getStat(Stats.MAX_PERMANENT_HULLMODS_MOD).modifiedInt
 
-                    val currentSMods = baseVariant.sMods.size
-                    val newSMods = selectorPlugin.autofitSpec!!.variant.sMods.size
-                    val sModsToApply = min(newSMods, maxSMods) - currentSMods
-                    if (sModsToApply <= 0) {
-                        DisplayMessage.showMessage("No free SMods to apply")
-                        applyVariant(selectorPlugin.autofitSpec)
+                if (applySModsButton.isChecked && !ModSettings.forceAutofit &&
+                    (selectorPlugin.autofitSpec!!.variant.sMods.any { it !in baseVariant.sMods } || selectorPlugin.autofitSpec!!.variant.sModdedBuiltIns.any { it !in baseVariant.sModdedBuiltIns })
+                ) {
+                    val (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship, baseVariant, selectorPlugin.autofitSpec!!.variant)
+                    if (sModsToApply.isEmpty())
                         return@onClickRelease
-                    }
 
-                    val xpToGrant = 0f
-                    xpToGrant += Misc.getBuildInBonusXP()
-
-                    Global.getSector().playerStats.addBonusXP(xpToGrant.toLong(), true, null, true)
-
-                    val areYouSureDialog = PopUpUIDialog("Use Story Points to apply SMods?", addConfirmButton = true, addCancelButton = true)
+                    val areYouSureDialog = PopUpUIDialog("Use Story Points to Apply SMods?", addConfirmButton = true, addCancelButton = true)
                     areYouSureDialog.cancelButtonName = "No"
                     areYouSureDialog.confirmButtonName = "Yes"
                     areYouSureDialog.confirmAndCancelAlignment = Alignment.MID
-                    areYouSureDialog.addParagraph("This will consume x Story points and give x bonus xp")
+                    areYouSureDialog.addParagraph("This will consume ${sModsToApply.size} Story points and give ${bonusXpToGrant.toInt()} bonus xp", alignment = Alignment.MID)
 
                     areYouSureDialog.onConfirm { _ ->
-                        applyVariant(selectorPlugin.autofitSpec)
+                        applyVariant(selectorPlugin.autofitSpec, true)
                     }
 
-                    DialogUtil.initPopUpUI(areYouSureDialog, 380f, 110f)
-                } else {*/
-                applyVariant(selectorPlugin.autofitSpec)
-                //}
+                    DialogUtil.initPopUpUI(areYouSureDialog, 450f, 110f)
+                } else {
+                    applyVariant(selectorPlugin.autofitSpec)
+                }
+
             }
             selectorPlugin.onClickReleaseOutside {
                 selectorPlugin.selectorPanel.opacity = 1f

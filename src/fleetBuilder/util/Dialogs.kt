@@ -1,6 +1,7 @@
 package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -13,6 +14,8 @@ import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.ui.UIComponentAPI
+import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.persistence.fleet.DataFleet
 import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
@@ -33,7 +36,13 @@ import fleetBuilder.variants.reportMissingElementsIfAny
 import org.histidine.chatter.ChatterDataManager
 import org.histidine.chatter.combat.ChatterCombatPlugin
 import org.lazywizard.lazylib.MathUtils
+import starficz.ReflectionUtils.get
+import starficz.ReflectionUtils.getMethodsMatching
+import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
+import starficz.getChildrenCopy
 import starficz.onClick
+import starficz.parent
 import java.awt.Color
 
 
@@ -197,7 +206,8 @@ object Dialogs {
     fun spawnFleetInCampaignDialog(
         sector: SectorAPI,
         data: DataFleet.ParsedFleetData,
-        validatedData: DataFleet.ParsedFleetData
+        validatedData: DataFleet.ParsedFleetData,
+        ui: CampaignUIAPI
     ) {
         val dialog = PopUpUIDialog("Spawn Fleet in Campaign", addConfirmButton = true, addCancelButton = true)
         dialog.confirmButtonName = "Spawn Fleet"
@@ -255,6 +265,11 @@ object Dialogs {
                 fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
 
             showMessage("Fleet from clipboard added to campaign")
+        }
+
+        // Hack to prevent Nexerelin version check from opening
+        if (Global.getSettings().modManager.isModEnabled("nexerelin")) {
+            dialog.makeDummyDialog(ui)
         }
 
         initPopUpUI(dialog, 500f, 350f)

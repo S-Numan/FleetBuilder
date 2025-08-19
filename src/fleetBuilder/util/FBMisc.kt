@@ -4,11 +4,15 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
+import com.fs.starfarer.api.combat.MutableShipStatsAPI
+import com.fs.starfarer.api.combat.ShipAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.fleet.RepairTrackerAPI
+import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.impl.campaign.ids.Factions
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
+import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
@@ -21,8 +25,6 @@ import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.persistence.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.persistence.fleet.DataFleet.validateAndCleanFleetData
 import fleetBuilder.persistence.fleet.FleetSettings
-import fleetBuilder.persistence.fleet.JSONFleet.getFleetFromJson
-import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.persistence.member.DataMember
 import fleetBuilder.persistence.member.DataMember.buildMemberFull
 import fleetBuilder.persistence.person.DataPerson
@@ -36,12 +38,116 @@ import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
+import org.magiclib.kotlin.getBuildInBonusXP
 import java.awt.Color
 import java.util.*
 import kotlin.math.max
+import kotlin.math.min
 
 
 object FBMisc {
+
+    fun sModHandlerTemp(
+        ship: ShipAPI,
+        baseVariant: ShipVariantAPI,
+        loadout: ShipVariantAPI
+    ): Pair<List<String>, Float> {
+        val coreUI = ReflectionMisc.getCoreUI() as? CoreUIAPI ?: return emptyList<String>() to 0f
+
+        val playerSPLeft = Global.getSector().playerStats.storyPoints
+
+        var maxSMods = getMaxSMods(ship.mutableStats)
+        val currentSMods = (baseVariant.sMods + baseVariant.sModdedBuiltIns).toSet()
+        val newSMods = (loadout.sMods + loadout.sModdedBuiltIns).toSet()
+        val sModsToApply = newSMods.filter { it !in currentSMods }
+        if (currentSMods.count { it !in baseVariant.sModdedBuiltIns } + sModsToApply.count { it !in loadout.sModdedBuiltIns } > maxSMods) {
+            DisplayMessage.showMessage("Cannot apply SMods. Not enough build in slots left", Color.YELLOW)
+            return emptyList<String>() to 0f
+        }
+        maxSMods = min(maxSMods, playerSPLeft)
+
+        if (sModsToApply.size > maxSMods) {
+            DisplayMessage.showMessage("Cannot apply SMods. Not enough Story Points", Color.YELLOW)
+            return emptyList<String>() to 0f
+        }
+
+        var canApplySMods: List<String> = sModsToApply.filter { Global.getSector().playerFaction.knowsHullMod(it) }
+
+        if (sModsToApply.size != canApplySMods.size) {
+            DisplayMessage.showMessage("Cannot apply some SMods as you do not know how to apply them initially.", Color.YELLOW)
+            return emptyList<String>() to 0f
+        }
+
+        /*val requiredItems = sModsToApply.mapNotNull { Global.getSettings().getHullModSpec(it).effect.requiredItem }
+        val numAvailable = requiredItems.sumOf { HullModItemManager.getInstance().getNumAvailableMinusUnconfirmed(it, ship.fleetMember, baseVariant, Global.getSector().currentlyOpenMarket) }
+        if (numAvailable < sModsToApply.size) {
+            DisplayMessage.showMessage("Cannot apply some SMods. Lacking required items ...", Color.YELLOW)
+            return emptyList<String>() to 0f
+        }
+
+        sModsToApply.forEach { modID ->
+            val modSpec = Global.getSettings().getHullModSpec(modID)
+            if (modSpec.effect.requiredItem == null) return@forEach
+            modSpec.effect.requiredItem
+            val numAvailable = HullModItemManager.getInstance().getNumAvailableMinusUnconfirmed(modSpec.effect.requiredItem, ship.fleetMember, baseVariant, Global.getSector().currentlyOpenMarket)
+        }*/
+
+        canApplySMods = sModsToApply.filter { HullModItemManager.getInstance().isRequiredItemAvailable(it, ship.fleetMember, baseVariant, Global.getSector().currentlyOpenMarket) }
+        if (sModsToApply.size != canApplySMods.size) {
+            DisplayMessage.showMessage("Cannot apply some SMods. Lacking required items ...", Color.YELLOW)
+            return emptyList<String>() to 0f
+        }
+
+        canApplySMods = sModsToApply.filter { Global.getSettings().getHullModSpec(it).effect.canBeAddedOrRemovedNow(ship, Global.getSector().currentlyOpenMarket, coreUI.tradeMode) }
+
+        if (sModsToApply.size != canApplySMods.size) {
+            DisplayMessage.showMessage("Cannot apply some SMods in the current context. Try legally docking at a market.", Color.YELLOW)
+            return emptyList<String>() to 0f
+        }
+
+        var bonusXpToGrant = 0f
+        sModsToApply.forEach { modID ->
+            bonusXpToGrant += getHullModBonusXP(baseVariant, modID)
+        }
+
+        return sModsToApply to bonusXpToGrant
+    }
+
+    fun getHullModBonusXP(
+        variant: ShipVariantAPI,
+        modID: String,
+    ): Float {
+        val defaultBonusXP = Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()
+        if (variant.hullSpec.builtInMods.contains(modID)) {
+            return defaultBonusXP
+        } else {
+            val sMod = Global.getSettings().getHullModSpec(modID)
+            return defaultBonusXP * sMod.getBuildInBonusXP(variant.hullSize)
+        }
+    }
+
+    fun getMaxSMods(fleetMember: FleetMemberAPI): Int {
+        return getMaxSMods(fleetMember.stats)
+    }
+
+    fun getMaxSMods(stats: MutableShipStatsAPI): Int {
+        return stats.dynamic
+            .getMod(Stats.MAX_PERMANENT_HULLMODS_MOD)
+            .computeEffective(Misc.MAX_PERMA_MODS.toFloat()).toInt()
+        //stats.dynamic.getStat(Stats.MAX_PERMANENT_HULLMODS_MOD).modifiedInt
+    }
+
+    fun spendStoryPoint(points: Int, buildInBonus: Float) {
+        Global.getSector().playerStats.spendStoryPoints(
+            points,
+            true,
+            null,
+            true,
+            buildInBonus / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat(),
+            "Used $points story point" + if (points > 1) "s" else ""
+        );
+        Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1f, 1f);
+    }
 
     fun replacePlayerFleetWith(
         data: DataFleet.ParsedFleetData, replacePlayer: Boolean = false,
@@ -241,6 +347,7 @@ object FBMisc {
     fun campaignPaste(
         sector: SectorAPI,
         data: Any,
+        ui: CampaignUIAPI
     ): Boolean {
         if (data !is DataFleet.ParsedFleetData) {
             DisplayMessage.showMessage("Data valid, but not fleet data. You can only paste fleet data into the campaign.", Color.YELLOW)
@@ -255,7 +362,7 @@ object FBMisc {
             return false
         }
 
-        Dialogs.spawnFleetInCampaignDialog(sector, data, validatedData)
+        Dialogs.spawnFleetInCampaignDialog(sector, data, validatedData, ui)
 
         return true
     }

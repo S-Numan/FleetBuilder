@@ -90,8 +90,8 @@ showHiddenModsInTooltip,Show Hidden HullMods,Boolean,false,,Shows hullmods that 
 ,,,,,,,,
 ,,,,,,,,
 autofitDevHeader,Cheats,Header,Cheats,,,,,Autofit Menu
-forceAutofit,Force Autofit,Boolean,false,,"Autofit force applies a variant for free.
-This is true by default in missions, as there is no real cargo to source ship equipment from in missions.",,,Autofit Menu
+forceAutofit,Overwrite Variant on Autofit,Boolean,false,,"Enabling this causes an autofit to remove all contents of your current variant and replace it with the selected one. At no cost.
+This is default behavior in the main menu missions, as there is no cargo or story points in that context.",,,Autofit Menu
 dontForceClearDMods,Dont Force Clear D-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove D-Mods on autofit",,,Autofit Menu
 dontForceClearSMods,Dont Force Clear S-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove S-Mods on autofit",,,Autofit Menu
 ,,,,,,,,

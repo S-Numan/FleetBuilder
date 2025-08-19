@@ -90,8 +90,8 @@ object DataVariant {
             //if (mod in excludedMods) continue
 
             when {
-                mod in variant.sModdedBuiltIns && settings.applySMods -> sModdedBuiltIns += mod
-                mod in variant.sMods && settings.applySMods -> sMods += mod
+                mod in variant.sModdedBuiltIns && (mod in variant.hullSpec.builtInMods || mod in variant.permaMods) -> sModdedBuiltIns += mod
+                mod in variant.sMods -> sMods += mod
                 mod in variant.permaMods &&
                         mod !in variant.hullSpec.builtInMods &&
                         mod !in sMods && mod !in sModdedBuiltIns -> permaMods += mod
@@ -358,6 +358,9 @@ object DataVariant {
 
         data.sModdedBuiltIns.forEach { modId ->
             loadout.sModdedBuiltIns.add(modId)
+
+            if (!hullSpec.builtInMods.contains(modId)) // If SModded built in, but hullspec doesn't have this mod to build in?
+                loadout.addPermaMod(modId, false) // Assume it's a built in perma mod instead. (See Roider Union MIDAS)
         }
 
         val wingOffset = hullSpec.builtInWings.size

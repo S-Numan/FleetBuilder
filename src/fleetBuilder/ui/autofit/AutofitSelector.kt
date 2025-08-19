@@ -175,6 +175,7 @@ internal object AutofitSelector {
         override fun processInput(events: MutableList<InputEventAPI>?) {
             events!!.filter { it.isMouseEvent }.forEach { event ->
 
+                if (event.isConsumed) return@forEach
                 val inElement = event.x.toFloat() in selectorPanel.left..selectorPanel.right &&
                         event.y.toFloat() in selectorPanel.bottom..selectorPanel.top
                 if (inElement) {
