@@ -351,7 +351,7 @@ object LoadoutManager {
     fun importShipLoadout(variant: ShipVariantAPI, missing: MissingElements): Boolean {
         //variantToSave.hullVariantId = makeVariantID(saveVariant)
 
-        var loadoutExists = doesLoadoutExist(variant)
+        val loadoutExists = doesLoadoutExist(variant)
 
         if (!loadoutExists)
             saveLoadoutVariant(variant, importPrefix, missing)
@@ -365,8 +365,7 @@ object LoadoutManager {
         for (hullspecVariant in hullspecVariants) {
             if (compareVariantContents(
                     variant,
-                    hullspecVariant,
-                    compareTags = true
+                    hullspecVariant
                 )
             ) {//If the variants are equal
                 loadoutExists = true

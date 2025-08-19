@@ -103,7 +103,7 @@ object VariantLib {
         val possibleVariants = getAnyVariantsForHullspec(member.hullSpec)
 
         val matchingVariant = possibleVariants.find { candidate ->
-            compareVariantContents(candidate, member.variant)
+            compareVariantContents(candidate, member.variant, CompareOptions(tags = false))
         }
 
         member.variant.hullVariantId = when {
@@ -131,38 +131,68 @@ object VariantLib {
         }
     }
 
+    data class CompareOptions(
+        val flux: Boolean = true,
+        val weapons: Boolean = true,
+        val weaponGroups: Boolean = true,
+        val wings: Boolean = true,
+        val hullMods: Boolean = true,
+        val builtInHullMods: Boolean = true, // Does not include built in DMods
+        val hiddenHullMods: Boolean = true,
+        val dMods: Boolean = true,
+        val sMods: Boolean = true,
+        val modules: Boolean = true,
+        val tags: Boolean = true,
+        val hull: Boolean = true,
+        val convertSModsToRegular: Boolean = false,
+        val useEffectiveHull: Boolean = false,
+    ) {
+        companion object {
+            fun allFalse(
+                flux: Boolean = false,
+                weapons: Boolean = false,
+                weaponGroups: Boolean = false,
+                wings: Boolean = false,
+                hullMods: Boolean = false,
+                builtInHullMods: Boolean = false,
+                hiddenHullMods: Boolean = false,
+                dMods: Boolean = false,
+                sMods: Boolean = false,
+                convertSModsToRegular: Boolean = false,
+                modules: Boolean = false,
+                tags: Boolean = false,
+                hull: Boolean = false,
+                useEffectiveHull: Boolean = false,
+            ) = CompareOptions(
+                flux, weapons, weaponGroups, wings, hullMods, builtInHullMods, hiddenHullMods,
+                dMods, sMods, convertSModsToRegular, modules, tags, hull, useEffectiveHull
+            )
+        }
+    }
+
+
     @JvmOverloads
     fun compareVariantContents(
         insertVariant1: ShipVariantAPI,
         insertVariant2: ShipVariantAPI,
-        compareFlux: Boolean = true,
-        compareWeapons: Boolean = true,
-        compareWeaponGroups: Boolean = true,
-        compareWings: Boolean = true,
-        compareHullMods: Boolean = true,
-        compareBuiltInHullMods: Boolean = true,
-        compareHiddenHullMods: Boolean = true,
-        compareDMods: Boolean = true,
-        compareSMods: Boolean = true,
-        convertSModsToRegular: Boolean = false,
-        compareModules: Boolean = true,
-        compareTags: Boolean = false,
-        useEffectiveHull: Boolean = false
+        options: CompareOptions = CompareOptions()
     ): Boolean {
         val variant1 = insertVariant1.clone()
         val variant2 = insertVariant2.clone()
 
-        if (useEffectiveHull) {
-            if (variant1.hullSpec.getEffectiveHullId() != variant2.hullSpec.getEffectiveHullId())
+        if (options.hull) {
+            if (options.useEffectiveHull) {
+                if (variant1.hullSpec.getEffectiveHullId() != variant2.hullSpec.getEffectiveHullId())
+                    return false
+            } else if (variant1.hullSpec.hullId != variant2.hullSpec.hullId)
                 return false
-        } else if (variant1.hullSpec.hullId != variant2.hullSpec.hullId)
-            return false
+        }
 
-        if (compareFlux) {
+        if (options.flux) {
             if (variant1.numFluxVents != variant2.numFluxVents || variant1.numFluxCapacitors != variant2.numFluxCapacitors)
                 return false
         }
-        if (compareWeaponGroups) {
+        if (options.weaponGroups) {
             if (variant1.weaponGroups.count { it.slots.isNotEmpty() } != variant2.weaponGroups.count { it.slots.isNotEmpty() }) return false
             variant1.weaponGroups.forEachIndexed { i, _ ->
                 if (variant1.weaponGroups[i]?.slots?.isEmpty() == true) return@forEachIndexed
@@ -171,14 +201,14 @@ object VariantLib {
                 if (variant1.weaponGroups[i]?.isAutofireOnByDefault != variant2.weaponGroups[i]?.isAutofireOnByDefault) return false
             }
         }
-        if (compareWeapons) {
+        if (options.weapons) {
             if (variant1.fittedWeaponSlots.size != variant2.fittedWeaponSlots.size) return false
             for (slotId in variant1.fittedWeaponSlots) {
                 if (variant1.getWeaponId(slotId) != variant2.getWeaponId(slotId))
                     return false
             }
         }
-        if (compareWings) {
+        if (options.wings) {
             if (variant1.fittedWings.size != variant2.fittedWings.size) return false
             for (i in variant1.fittedWings.indices) {
                 if (variant1.getWingId(i) != variant2.getWingId(i)) {
@@ -186,18 +216,14 @@ object VariantLib {
                 }
             }
         }
-        if (compareHullMods) {
+        if (options.hullMods) {
             if (!compareVariantHullMods(
                     variant1, variant2,
-                    compareHiddenHullMods = compareHiddenHullMods,
-                    compareDMods = compareDMods,
-                    compareSMods = compareSMods,
-                    convertSModsToRegular = convertSModsToRegular,
-                    compareBuiltInHullMods = compareBuiltInHullMods
+                    options
                 )
             ) return false
         }
-        if (compareTags) {
+        if (options.tags) {
             if (variant1.tags.size != variant2.tags.size) return false
             for (tag in variant1.tags) {
                 if (!variant2.tags.contains(tag))
@@ -205,24 +231,12 @@ object VariantLib {
             }
         }
 
-        if (compareModules) {
+        if (options.modules) {
             variant1.moduleSlots.forEach { slot ->
                 if (!compareVariantContents(
                         variant1.getModuleVariant(slot),
                         variant2.getModuleVariant(slot),
-                        compareFlux = compareFlux,
-                        compareWeapons = compareWeapons,
-                        compareWeaponGroups = compareWeaponGroups,
-                        compareWings = compareWings,
-                        compareHullMods = compareHullMods,
-                        compareBuiltInHullMods = compareBuiltInHullMods,
-                        compareHiddenHullMods = compareHiddenHullMods,
-                        compareDMods = compareDMods,
-                        compareSMods = compareSMods,
-                        convertSModsToRegular = convertSModsToRegular,
-                        compareModules = true,
-                        compareTags = compareTags,
-                        useEffectiveHull = useEffectiveHull
+                        options
                     )
                 ) {
                     return false
@@ -233,14 +247,11 @@ object VariantLib {
         return true
     }
 
+    @JvmOverloads
     fun compareVariantHullMods(
         insertVariant1: ShipVariantAPI,
         insertVariant2: ShipVariantAPI,
-        compareHiddenHullMods: Boolean = true,
-        compareDMods: Boolean = true,
-        compareSMods: Boolean = true,
-        convertSModsToRegular: Boolean = false,
-        compareBuiltInHullMods: Boolean = true // Does not include built in DMods
+        options: CompareOptions = CompareOptions(),
     ): Boolean {
         val variant1 = insertVariant1.clone()
         val variant2 = insertVariant2.clone()
@@ -250,25 +261,25 @@ object VariantLib {
             set2: Set<String>,
         ): Boolean {
             fun filterMods(mods: Set<String>) = mods.filterNot { modId ->
-                (!compareHiddenHullMods && modId in allHiddenEverywhereMods) ||
-                        (!compareDMods && modId in allDMods)
+                (!options.hiddenHullMods && modId in allHiddenEverywhereMods) ||
+                        (!options.dMods && modId in allDMods)
             }.toSet()
 
             return filterMods(set1) == filterMods(set2)
         }
 
-        if (!compareSMods || convertSModsToRegular) {
+        if (!options.sMods || options.convertSModsToRegular) {
             variant1.sModdedBuiltIns.clear()
             variant2.sModdedBuiltIns.clear()
 
-            processSModsForComparison(variant1, convertSModsToRegular)
-            processSModsForComparison(variant2, convertSModsToRegular)
+            processSModsForComparison(variant1, options.convertSModsToRegular)
+            processSModsForComparison(variant2, options.convertSModsToRegular)
         }
 
         val variant1HullMods = variant1.hullMods.toMutableSet()
         val variant2HullMods = variant2.hullMods.toMutableSet()
 
-        if (!compareBuiltInHullMods) {
+        if (!options.builtInHullMods) {
             variant1.sModdedBuiltIns.clear()
             variant2.sModdedBuiltIns.clear()
 
