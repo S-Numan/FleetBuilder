@@ -68,9 +68,8 @@ fun ShipHullSpecAPI.getCompatibleDLessHullId(): String {
 
 fun ShipVariantAPI.completelyRemoveMod(modId: String) {
     sModdedBuiltIns.remove(modId)
-    removeMod(modId)
+    suppressedMods.remove(modId)
     removePermaMod(modId)
-    removeSuppressedMod(modId)
 }
 
 fun ShipVariantAPI.allDMods(): Set<String> {

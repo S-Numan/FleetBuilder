@@ -1,6 +1,7 @@
 package fleetBuilder.ui.popUpUI
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.input.InputEventAPI
@@ -11,6 +12,9 @@ import fleetBuilder.util.FBMisc.isMouseWithinBounds
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
+import starficz.ReflectionUtils.get
+import starficz.ReflectionUtils.invoke
+import starficz.findChildWithMethod
 import starficz.height
 import starficz.width
 import starficz.x
@@ -115,6 +119,7 @@ open class PopUpUI : CustomUIPanelPlugin {
     override fun render(alphaMult: Float) {
     }
 
+    var firstAdvance = false
     override fun advance(amount: Float) {
         if (frames <= limit) {
             frames++
@@ -137,10 +142,17 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     override fun processInput(events: MutableList<InputEventAPI>) {
-        if (!isDialog) return
-
         for (event in events) {
             if (event.isConsumed) continue
+
+            val hovers = isMouseWithinBounds(panel.x, panel.y, panel.width, panel.height)
+
+            if (!isDialog) {
+                if (hovers)
+                    event.consume()
+                continue
+            }
+
             if (frames >= limit - 1 && reachedMaxHeight) {
                 /*if (event.isMouseDownEvent && !isDialog) {
                     val hovers = FBMisc.isMouseHoveringOverComponent(panelToInfluence!!)
@@ -149,22 +161,20 @@ open class PopUpUI : CustomUIPanelPlugin {
                         event.consume()
                     }
                 }*/
-                if (!event.isConsumed) {
-                    if (quitWithEscKey && event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
-                        if (attemptedExit) {
-                            forceDismiss()
-                            event.consume()
-                            break
-                        } else if (event.isKeyDownEvent) {
-                            event.consume()
-                            attemptedExit = true
-                        } else
-                            event.consume()
-                    }
+
+                if (quitWithEscKey && event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
+                    if (attemptedExit) {
+                        forceDismiss()
+                        event.consume()
+                        break
+                    } else if (event.isKeyDownEvent) {
+                        event.consume()
+                        attemptedExit = true
+                    } else
+                        event.consume()
                 }
             }
-            if (isMouseWithinBounds(panel.x, panel.y, panel.width, panel.height))
-                event.consume()
+            event.consume()
         }
     }
 
@@ -180,6 +190,9 @@ open class PopUpUI : CustomUIPanelPlugin {
     private var exitCallback: (() -> Unit)? = null
 
     open fun onExit() {
+        if (messageDialog != null)
+            messageDialog!!.invoke("dismiss", 0)
+
         exitCallback?.invoke()
     }
 
@@ -187,8 +200,20 @@ open class PopUpUI : CustomUIPanelPlugin {
         exitCallback = callback
     }
 
-
     override fun buttonPressed(buttonId: Any) {
+    }
+
+    var messageDialog: UIPanelAPI? = null
+    fun makeDummyDialog(ui: CampaignUIAPI) {
+        ui.showMessageDialog("FleetBuilder Placeholder Dialog")
+        val screenPanel = ui.get("screenPanel") as? UIPanelAPI
+        messageDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
+        if (messageDialog != null) {
+            messageDialog!!.invoke("setOpacity", 0f)
+            messageDialog!!.invoke("setBackgroundDimAmount", 0f)
+            messageDialog!!.invoke("setAbsorbOutsideEvents", false)
+            messageDialog!!.invoke("makeOptionInstant", 0)
+        }
     }
 
     fun renderBorders() {

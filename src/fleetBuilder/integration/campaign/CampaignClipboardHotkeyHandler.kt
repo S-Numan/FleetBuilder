@@ -62,7 +62,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
         val sector = Global.getSector() ?: return
         val ui = sector.campaignUI ?: return
-
+        
         events.forEach { event ->
             if (event.isConsumed) return@forEach
 
@@ -296,7 +296,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             !ui.isShowingDialog &&
             !ui.isShowingMenu
         ) {
-            campaignPaste(sector, data)
+            campaignPaste(sector, data, ui)
         }
 
         event.consume()
