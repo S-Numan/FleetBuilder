@@ -436,8 +436,6 @@ internal object AutofitPanel {
             default = false
         )
 
-        applySModsButton.opacity = 0f
-
         // Add the buttons element to the panel
         baseVariantPanel.addUIElement(toggleButtonsElement)
 

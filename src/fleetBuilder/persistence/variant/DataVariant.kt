@@ -102,7 +102,7 @@ object DataVariant {
             }
         }
 
-        // Add built-in DMods as default behavior is to exclude built in DMods when loading a variant.
+        // Add built-in DMods as default behavior is to exclude these.
         variant.allDMods()
             .filter { it in variant.hullSpec.builtInMods && it !in hullMods } //&& it !in excludedMods }
             .forEach { hullMods += it }
