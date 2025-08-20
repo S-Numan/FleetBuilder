@@ -225,6 +225,7 @@ object AutofitApplier {
             refitPanel.invoke("syncWithCurrentVariant")
             shipDisplay.invoke("updateModules")
             shipDisplay.invoke("updateButtonPositionsToZoomLevel")
+            //refitPanel.invoke("recreateUI")
         } catch (e: Exception) {
             DisplayMessage.showError("Failed to apply variant in refit screen", e)
         }

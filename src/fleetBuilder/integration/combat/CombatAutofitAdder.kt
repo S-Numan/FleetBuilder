@@ -2,6 +2,8 @@ package fleetBuilder.integration.combat
 
 
 import MagicLib.ReflectionUtilsExtra
+import com.fs.starfarer.api.GameState
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -11,6 +13,7 @@ import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.ui.autofit.AutofitPanelCreator
+import fleetBuilder.util.ReflectionMisc
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.getConstructorsMatching
 import starficz.ReflectionUtils.getFieldsMatching
@@ -31,11 +34,10 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
     var keyDown = false
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
-        val state = AppDriver.getInstance().currentState
+        if (Global.getCurrentState() != GameState.TITLE)
+            return
 
-        val newCoreUI = (state as? TitleScreenState)?.let {
-            it.invoke("getScreenPanel") as? UIPanelAPI
-        } ?: return
+        val newCoreUI = ReflectionMisc.getCoreUI() ?: return
         cacheShipPreviewClass(newCoreUI)
 
         if (!ModSettings.autofitMenuEnabled) return

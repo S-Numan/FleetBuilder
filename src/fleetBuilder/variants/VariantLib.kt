@@ -158,14 +158,14 @@ object VariantLib {
                 hiddenHullMods: Boolean = false,
                 dMods: Boolean = false,
                 sMods: Boolean = false,
-                convertSModsToRegular: Boolean = false,
                 modules: Boolean = false,
                 tags: Boolean = false,
                 hull: Boolean = false,
+                convertSModsToRegular: Boolean = false,
                 useEffectiveHull: Boolean = false,
             ) = CompareOptions(
-                flux, weapons, weaponGroups, wings, hullMods, builtInHullMods, hiddenHullMods,
-                dMods, sMods, convertSModsToRegular, modules, tags, hull, useEffectiveHull
+                flux = flux, weapons = weapons, weaponGroups = weaponGroups, wings = wings, hullMods = hullMods, builtInHullMods = builtInHullMods, hiddenHullMods = hiddenHullMods,
+                dMods = dMods, sMods = sMods, modules = modules, tags = tags, hull = hull, convertSModsToRegular = convertSModsToRegular, useEffectiveHull = useEffectiveHull
             )
         }
     }

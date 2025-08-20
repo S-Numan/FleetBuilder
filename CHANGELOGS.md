@@ -1,3 +1,7 @@
+## 1.17.2
+- Allowed copying variant's, and importing variant's to function in the titlescreen missions.
+- Do not open refit dialog the wing or weapon selector dialogs are open.
+
 ## 1.17.1
 - Prevent the Nexerelin version checker dialog from opening when pasting fleets into the campaign.
 - Fix being able to interact with outside elements when in dialog.

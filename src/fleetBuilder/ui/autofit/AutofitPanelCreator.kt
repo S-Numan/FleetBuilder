@@ -17,11 +17,11 @@ import java.awt.Color
 internal object AutofitPanelCreator {
     private val AUTOFIT_BUTTON_COLOR = Color(240, 160, 0, 130)
     private val AUTOFIT_BUTTON_TEXT_COLOR = AUTOFIT_BUTTON_COLOR.brighter().setAlpha(255)
-    fun toggleAutofitButton(refitTab: UIPanelAPI, inCampaign: Boolean) {
-        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return
-        val statsAndHullmodsPanel = refitPanel.findChildWithMethod("getColorFor") as? UIPanelAPI ?: return
+    fun toggleAutofitButton(refitTab: UIPanelAPI, inCampaign: Boolean): Boolean {
+        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return false
+        val statsAndHullmodsPanel = refitPanel.findChildWithMethod("getColorFor") as? UIPanelAPI ?: return false
         val hullmodsPanel =
-            statsAndHullmodsPanel.findChildWithMethod("removeNotApplicableMods") as? UIPanelAPI ?: return
+            statsAndHullmodsPanel.findChildWithMethod("removeNotApplicableMods") as? UIPanelAPI ?: return false
 
         /*refitPanel.getChildrenCopy()
         val testVar = refitPanel.findChildWithMethod("getVariantMap") as? UIPanelAPI ?: return
@@ -31,13 +31,18 @@ internal object AutofitPanelCreator {
 
         val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI
         val existingElements = hullmodsPanel.getChildrenCopy()
-        val lastElement = existingElements.lastOrNull() ?: return // if children is empty, return
+        if (existingElements.isEmpty()) return false // if children is empty, return
 
         //val paintjobButton = existingElements.filterIsInstance<ButtonAPI>().firstOrNull { button ->
         //    button.customData is String && button.customData == "REFIT_BUTTON"
         //}
 
-        val coreUI = refitPanel.invoke("getCoreUI") as? UIPanelAPI ?: return
+        val coreUI = refitPanel.invoke("getCoreUI") as? UIPanelAPI ?: return false
+
+        val shipDisplay = refitPanel.invoke("getShipDisplay") as? UIPanelAPI ?: return false
+
+        val dialogShowing = shipDisplay.invoke("isShowingDialog") as Boolean
+        if (dialogShowing) return false
 
         val curPaintjobPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->
             panel.plugin != null && panel.plugin is AutofitPanel.AutofitPanelPlugin
@@ -53,7 +58,7 @@ internal object AutofitPanelCreator {
         if (curPaintjobPanel != null || fleetMember == null) {
             coreUI.removeComponent(curPaintjobPanel)
             Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 1f)
-            return
+            return true
         }
         Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 1f)
 
@@ -89,7 +94,7 @@ internal object AutofitPanelCreator {
         val width = (refitTab.width - 343 + 32).coerceIn(667f, 700f + 213f + 32)
         val height = (refitTab.height - 12).coerceIn(722f, 800f + 26f + 16f + 2f)
         val paintjobPanel =
-            AutofitPanel.createMagicAutofitPanel(refitTab, refitPanel, coreUI as CoreUIAPI, width, height)
+            AutofitPanel.createMagicAutofitPanel(refitTab, refitPanel, shipDisplay, coreUI as CoreUIAPI, width, height)
 
         coreUI.addComponent(paintjobPanel)
 
@@ -120,5 +125,7 @@ internal object AutofitPanelCreator {
             paintjobPanel.parent?.removeComponent(paintjobPanel)
         }*/
         //}
+
+        return true
     }
 }

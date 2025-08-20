@@ -37,6 +37,8 @@ import fleetBuilder.util.DialogUtil.initPopUpUI
 import fleetBuilder.util.Dialogs.createDevModeDialog
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.fleetPaste
+import fleetBuilder.util.FBMisc.handleRefitCopy
+import fleetBuilder.util.FBMisc.handleRefitPaste
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
@@ -62,7 +64,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
         val sector = Global.getSector() ?: return
         val ui = sector.campaignUI ?: return
-        
+
         events.forEach { event ->
             if (event.isConsumed) return@forEach
 
@@ -136,7 +138,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             when {
                 codex != null -> handleCodexCopy(event, codex)
                 ui.getActualCurrentTab() == CoreUITabId.FLEET -> handleFleetCopy(event, sector)
-                ui.getActualCurrentTab() == CoreUITabId.REFIT -> handleRefitCopy(event)
+                ui.getActualCurrentTab() == CoreUITabId.REFIT -> if (handleRefitCopy(event.isShiftDown)) event.consume()
                 ui.currentInteractionDialog != null -> handleInteractionCopy(event, ui)
             }
         } catch (e: Exception) {
@@ -223,63 +225,14 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         event.consume()
     }
 
-    private fun handleRefitCopy(event: InputEventAPI) {
-
-        val baseVariant = ReflectionMisc.getCurrentVariantInRefitTab() ?: return
-
-        ClipboardMisc.saveVariantToClipboard(baseVariant, event.isShiftDown)
-
-        event.consume()
-    }
-
     private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
         if (ReflectionMisc.isCodexOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
-            handleRefitPaste(event)
+            if (handleRefitPaste())
+                event.consume()
         } else if (Global.getSettings().isDevMode) {
             handleOtherPaste(event, sector, ui)
-        }
-    }
-
-    private fun handleRefitPaste(event: InputEventAPI) {
-        var data = ClipboardMisc.extractDataFromClipboard() ?: return
-
-        event.consume()
-
-        if (data is DataMember.ParsedMemberData && data.variantData != null) {
-            data = data.variantData
-        }
-        if (data !is DataVariant.ParsedVariantData) {
-            DisplayMessage.showMessage("Data in clipboard was valid, but not a variant", Color.YELLOW)
-            return
-        }
-
-        val missing = MissingElements()
-        val variant = buildVariantFull(data, missing = missing)
-
-        if (missing.hullIds.isNotEmpty()) {
-            DisplayMessage.showMessage(
-                "Failed to import loadout. Could not find hullId ${missing.hullIds.first()}",
-                Color.YELLOW
-            )
-            return
-        }
-
-
-        val loadoutExists = doesLoadoutExist(variant)
-
-
-        if (!loadoutExists) {
-
-            Dialogs.createImportLoadoutDialog(variant, missing)
-
-        } else {
-            DisplayMessage.showMessage(
-                "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}",
-                variant.hullSpec.hullId,
-                Misc.getHighlightColor()
-            )
         }
     }
 

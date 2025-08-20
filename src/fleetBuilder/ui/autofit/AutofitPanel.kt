@@ -177,7 +177,7 @@ internal object AutofitPanel {
     }
 
     internal fun createMagicAutofitPanel(
-        refitTab: UIPanelAPI, refitPanel: UIPanelAPI, coreUI: CoreUIAPI,
+        refitTab: UIPanelAPI, refitPanel: UIPanelAPI, shipDisplay: UIPanelAPI, coreUI: CoreUIAPI,
         width: Float, height: Float
     ): CustomPanelAPI {
 
@@ -189,7 +189,6 @@ internal object AutofitPanel {
         val scrollerTooltip = autofitPanel.createUIElement(width + 2f, height, true) // Tooltip on background panel
         scrollerTooltip.position.inTL(0f, 0f)
 
-        val shipDisplay = refitPanel.invoke("getShipDisplay") as? UIPanelAPI ?: return autofitPanel
         val baseVariant = shipDisplay.invoke("getCurrentVariant") as? HullVariantSpec
             ?: return autofitPanel
         val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI ?: return autofitPanel
@@ -403,6 +402,7 @@ internal object AutofitPanel {
         var storageButton: ButtonAPI? = null
         var marketButton: ButtonAPI? = null
         var blackMarketButton: ButtonAPI? = null
+        var applySModsButton: ButtonAPI? = null
 
         if (Global.getCurrentState() != GameState.TITLE) {
             cargoButton = addToggleButton(
@@ -428,14 +428,14 @@ internal object AutofitPanel {
                 memoryKey = "\$FBA_useBlackMarket",
                 tooltipText = "Buy weapons and fighter LPCs from the black market.\n\nNon-black-market options will be preferred if the alternatives are of equal quality"
             )
-        }
 
-        val applySModsButton = addToggleButton(
-            label = "Apply SMods",
-            memoryKey = "\$FBA_applySMods",
-            tooltipText = "Spend story points to apply SMods to your ship.",
-            default = false
-        )
+            applySModsButton = addToggleButton(
+                label = "Apply SMods",
+                memoryKey = "\$FBA_applySMods",
+                tooltipText = "Spend story points to apply SMods to your ship. If S-mods are installed, the autofit cannot be undone.",
+                default = false
+            )
+        }
 
         // Add the buttons element to the panel
         baseVariantPanel.addUIElement(toggleButtonsElement)
@@ -493,7 +493,7 @@ internal object AutofitPanel {
                 }
 
 
-                if (applySModsButton.isChecked && !ModSettings.forceAutofit &&
+                if (applySModsButton?.isChecked == true && !ModSettings.forceAutofit &&
                     (selectorPlugin.autofitSpec!!.variant.sMods.any { it !in baseVariant.sMods } || selectorPlugin.autofitSpec!!.variant.sModdedBuiltIns.any { it !in baseVariant.sModdedBuiltIns })
                 ) {
                     val (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship, baseVariant, selectorPlugin.autofitSpec!!.variant)

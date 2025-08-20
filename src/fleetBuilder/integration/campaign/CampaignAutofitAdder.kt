@@ -30,9 +30,8 @@ internal class CampaignAutofitAdder : CampaignInputListener {
 
                 val refitTab = ReflectionMisc.getRefitTab() ?: continue
 
-                AutofitPanelCreator.toggleAutofitButton(refitTab, true)
-
-                event.consume();
+                if (AutofitPanelCreator.toggleAutofitButton(refitTab, true))
+                    event.consume();
             }
         }
     }
