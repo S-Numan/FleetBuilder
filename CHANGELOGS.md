@@ -1,6 +1,7 @@
 ## 1.17.2
-- Allowed copying variant's, and importing variant's to function in the titlescreen missions.
-- Do not open refit dialog the wing or weapon selector dialogs are open.
+- Allowed copying and importing variants in the titlescreen missions.
+- Do not open the refit dialog when the wing or weapon selector dialogs are open.
+- PersonAPI now saves integer memKeys
 
 ## 1.17.1
 - Prevent the Nexerelin version checker dialog from opening when pasting fleets into the campaign.

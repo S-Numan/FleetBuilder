@@ -108,7 +108,7 @@ object DataPerson {
         // Filter memory keys
         val filteredMemory = data.memKeys.filterKeys { key ->
             val value = data.memKeys[key]
-            key != "\$autoPointsMult" && (value is Boolean || value is String)
+            key != "\$autoPointsMult" && (value is Boolean || value is String || value is Int)
         }
 
         return data.copy(
@@ -188,7 +188,7 @@ object DataPerson {
         person.stats.points = data.points
 
         data.memKeys.forEach { (key, value) ->
-            if (value is String || value is Boolean)
+            if (value is String || value is Boolean || value is Int)
                 person.memoryWithoutUpdate.set(key, value)
         }
 
