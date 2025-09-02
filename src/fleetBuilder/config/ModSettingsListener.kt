@@ -86,10 +86,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
             replaceVanillaAutofitButton = getBoolean(modID, "replaceVanillaAutofitButton")!!
             removeRefitHullmod = getBoolean(modID, "removeRefitHullmod")!!
-            val _autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
-            if (_autofitMenuHotkey != 0) {
-                autofitMenuHotkey = _autofitMenuHotkey
-            }
+            autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
 
             if (VariantLib.Loaded())
                 LoadoutManager.loadAllDirectories()//Reload the LoadoutManager

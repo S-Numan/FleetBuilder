@@ -6,6 +6,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.input.InputEventAPI
+import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.combat.entities.Ship
 import com.fs.starfarer.title.TitleScreenState
@@ -13,13 +14,16 @@ import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.ui.autofit.AutofitPanelCreator
+import fleetBuilder.util.FBMisc
 import fleetBuilder.util.ReflectionMisc
 import org.lwjgl.input.Keyboard
+import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.getConstructorsMatching
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.invoke
 import starficz.findChildWithMethod
 import starficz.getChildrenCopy
+import starficz.onClick
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
@@ -30,8 +34,7 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
         var SHIPS_FIELD: String? = null
     }
 
-    //var hackButton: ButtonAPI? = null
-    var keyDown = false
+    var refitTab: UIPanelAPI? = null
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
         if (Global.getCurrentState() != GameState.TITLE)
@@ -48,52 +51,25 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
 
         val refitTab = holographicBG.invoke("getCurr") as? UIPanelAPI ?: return
 
+        if (this.refitTab === refitTab)
+            return
 
+        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return
+        val bottomLeftPanel = refitPanel.findChildWithMethod("instantiateForSimulation") as? UIPanelAPI ?: return
+        val autofitButton = bottomLeftPanel.invoke("getManageButton") as? ButtonAPI ?: return
+        autofitButton.setShortcut(ModSettings.autofitMenuHotkey, false)
 
-        if (Keyboard.isKeyDown(autofitMenuHotkey)) {
-            if (!keyDown) {
-                AutofitPanelCreator.toggleAutofitButton(refitTab, false)
-                keyDown = true
+        autofitButton.onClick {
+            if (ModSettings.autofitMenuHotkey != Keyboard.KEY_NONE && Keyboard.isKeyDown(ModSettings.autofitMenuHotkey))
+                AutofitPanelCreator.toggleAutofitButton(refitTab, true)
+            else if (ModSettings.replaceVanillaAutofitButton) {
+                AutofitPanelCreator.toggleAutofitButton(refitTab, true)
+            } else {
+                bottomLeftPanel.invoke("actionPerformed", null, autofitButton)
             }
-        } else if (keyDown) {
-            keyDown = false
         }
 
-
-        /*
-        if(hackButton != null) return
-
-        //HACK
-        hackButton = refitTab.addButton(
-            "",
-            "TEMP_BUTTON",
-            Color.BLACK,
-            Color.BLACK,
-            Alignment.MID,
-            CutStyle.ALL,
-            Font.ORBITRON_20,
-            0f,
-            0f
-        )
-        //hackButton!!.position.setLocation(-99999f, -99999f)
-        hackButton!!.setShortcut(ModSettings.autofitMenuHotkey, true)
-        hackButton!!.onClick {
-            AutofitPanelCreator.toggleAutofitButton(refitTab, false)
-        }*/
-
-
-        /*
-        for (event in events) {
-            if (event.isConsumed) continue
-            if (event.eventType == InputEventType.KEY_DOWN) {
-                if(event.eventValue == Keyboard.KEY_Z) {
-
-                }
-            }
-        }*/
-
-
-        //AutofitPanelCreator.toggleAutofitButton(refitTab, false)
+        this.refitTab = refitTab
     }
 
     private fun cacheShipPreviewClass(newCoreUI: UIPanelAPI) {

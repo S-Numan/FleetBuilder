@@ -130,7 +130,9 @@ internal object AutofitPanel {
                     draggedAutofitSpec = null
                 }
 
-                if (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
+                if (event.isKeyDownEvent
+                    && (event.eventValue == Keyboard.KEY_ESCAPE || event.eventValue == ModSettings.autofitMenuHotkey)
+                ) {
                     autofitPanel.parent?.removeComponent(autofitPanel)
                     draggedPanel?.parent?.removeComponent(draggedPanel!!)
                     event.consume()
