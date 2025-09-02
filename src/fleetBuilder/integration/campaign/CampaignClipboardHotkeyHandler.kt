@@ -18,6 +18,7 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.config.ModSettings
+import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.fleet.FleetSettings
 import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
@@ -293,6 +294,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     ClipboardUtil.setClipboardText(json.toString(4))
                     DisplayMessage.showMessage("Officer copied to clipboard")
                 } else {
+                    if (mouseOverMember.variant.hasHullMod(commandShuttleId)) {
+                        DisplayMessage.showMessage("Cannot copy the commander's shuttle", Color.YELLOW)
+                        return
+                    }
+
                     val json = saveMemberToJson(mouseOverMember)
                     ClipboardUtil.setClipboardText(json.toString(4))
                     DisplayMessage.showMessage("Fleet member copied to clipboard")

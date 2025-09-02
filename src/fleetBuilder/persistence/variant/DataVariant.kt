@@ -5,6 +5,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
+import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage.showError
 import fleetBuilder.util.allDMods
@@ -395,7 +396,7 @@ object DataVariant {
             try { // Can't check for what module slots the HullSpec can support, so we have to do this instead
                 loadout.moduleSlots == null
             } catch (_: Exception) {
-                showError("${loadout.hullSpec.hullId} Does not contain module slot $slotId")
+                showError("${loadout.hullSpec.hullId} Does not contain module slot $slotId. Removing variant to avoid crash")
                 return VariantLib.createErrorVariant("BAD_MODULE_SLOT:{$slotId}")
             }
         }

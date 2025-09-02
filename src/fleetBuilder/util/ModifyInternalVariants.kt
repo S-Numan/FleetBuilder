@@ -1,14 +1,16 @@
 package fleetBuilder.util
 
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.util.DisplayMessage.showError
 import starficz.ReflectionUtils.getFieldsMatching
+import starficz.ReflectionUtils.getMethodsMatching
 
 object ModifyInternalVariants {
 
     const val safteyPrefix = "FBV_"//FBV = Fleet Builder Variant
     private fun getInternalVariantsMap(): HashMap<String, HullVariantSpec> {
-        val eep = Class.forName("com.fs.starfarer.loading.new")
+        val eep = Class.forName("com.fs.starfarer.loading.new") // Not proper use of reflection, cannot work in different game versions or non linux architectures.
         val erp = eep.getFieldsMatching(fieldAccepts = Map::class.java).firstOrNull() ?: return hashMapOf()
         @Suppress("UNCHECKED_CAST")
         return erp.get(eep) as HashMap<String, HullVariantSpec>

@@ -241,7 +241,7 @@ object CompressedVariant {
 
         // Weapon groups (mode;autofire;slot+id,slot+id - ...)
         val weaponGroupStrings = data.weaponGroups.map { group ->
-            val mode = group.mode // 0 = LINKED, 1 = ALTERNATING
+            val mode = group.mode.ordinal // 0 = LINKED, 1 = ALTERNATING
             val autofire = group.autofire.toString().toBinary
             val weapons = group.weapons.mapNotNull { (slotId, weaponId) ->
                 "$slotId$sep$weaponId"

@@ -124,9 +124,11 @@ object ModSettings {
 
     var saveHiddenMods = true
 
-    var autofitMenuEnabled = true
+    var autofitMenuEnabled = false
 
-    var autofitMenuHotkey = Keyboard.KEY_Z
+    var replaceVanillaAutofitButton = true
+
+    var autofitMenuHotkey = Keyboard.KEY_V
 
     var randomPastedCosmetics = true
 
@@ -165,4 +167,5 @@ object ModSettings {
     var reportCargoAutoManagerChanges = true
 
     var removeRefitHullmod = true
+
 }
