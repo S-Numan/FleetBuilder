@@ -5,8 +5,8 @@
   "modVersion":
     {
       "major": 1,
-      "minor": 17,
-      "patch": "1" # Can be a number, character or string (1, 2, a, b, "-RC2", etc)
+      "minor": 18,
+      "patch": "0" # Can be a number, character or string (1, 2, a, b, "-RC2", etc)
     },
 
   "modThreadId": 33414,

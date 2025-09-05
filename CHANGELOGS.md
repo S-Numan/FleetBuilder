@@ -1,4 +1,4 @@
-## 1.17.2
+## 1.18.0
 - Allowed copying and importing variants in the titlescreen missions.
 - Do not open the refit dialog when the wing or weapon selector dialogs are open.
 - PersonAPI now saves integer memKeys
