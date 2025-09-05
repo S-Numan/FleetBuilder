@@ -42,17 +42,17 @@ open class BasePopUpUI() : PopUpUI() {
         if (confirmButton != null) {
             if (confirmButton!!.isChecked) {
                 confirmButton!!.isChecked = false
-                applyConfirmScript()
                 if (doesConfirmForceDismiss)
                     forceDismiss()
+                applyConfirmScript()
             }
         }
         if (cancelButton != null) {
             if (cancelButton!!.isChecked) {
                 cancelButton!!.isChecked = false
-                applyCancelScript()
                 if (doesCancelForceDismiss)
                     forceDismiss()
+                applyCancelScript()
             }
         }
     }

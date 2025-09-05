@@ -638,7 +638,7 @@ internal object AutofitPanel {
         val equalDefault = compareVariantContents(
             variant,
             baseVariant,
-            CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true)
+            CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true)
         )
 
         if (equalDefault) {

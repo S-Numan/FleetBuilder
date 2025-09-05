@@ -192,7 +192,7 @@ object FBMisc {
             true,
             null,
             true,
-            buildInBonus / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat(),
+            (buildInBonus / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()) / points,
             "Used $points story point" + if (points > 1) "s" else ""
         );
         Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1f, 1f);

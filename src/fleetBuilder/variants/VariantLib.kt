@@ -192,13 +192,32 @@ object VariantLib {
             if (variant1.numFluxVents != variant2.numFluxVents || variant1.numFluxCapacitors != variant2.numFluxCapacitors)
                 return false
         }
+
+        fun slotsMatch(slots1: List<String>, slots2: List<String>): Boolean {
+            val set1 = slots1.filter { it.isNotEmpty() }.toSet()
+            val set2 = slots2.filter { it.isNotEmpty() }.toSet()
+            return set1 == set2
+        }
         if (options.weaponGroups) {
-            if (variant1.weaponGroups.count { it.slots.isNotEmpty() } != variant2.weaponGroups.count { it.slots.isNotEmpty() }) return false
-            variant1.weaponGroups.forEachIndexed { i, _ ->
-                if (variant1.weaponGroups[i]?.slots?.isEmpty() == true) return@forEachIndexed
-                if (variant1.weaponGroups[i]?.slots != variant2.weaponGroups[i]?.slots) return false
-                if (variant1.weaponGroups[i]?.type != variant2.weaponGroups[i]?.type) return false
-                if (variant1.weaponGroups[i]?.isAutofireOnByDefault != variant2.weaponGroups[i]?.isAutofireOnByDefault) return false
+            // Want to be extra careful here in case something is null
+
+            if (variant1.weaponGroups.count { !it.slots.isNullOrEmpty() } != variant2.weaponGroups.count { !it.slots.isNullOrEmpty() }) return false
+
+            variant1.weaponGroups.forEachIndexed { i, g1 ->
+                val g2 = variant2.weaponGroups[i]
+
+                val slots1 = g1?.slots ?: emptyList()
+                val slots2 = g2?.slots ?: emptyList()
+
+                // both empty? skip
+                if (slots1.isEmpty() && slots2.isEmpty()) return@forEachIndexed
+
+                // mismatch in slots
+                if (!slotsMatch(slots1, slots2)) return false
+
+                // other property checks
+                if (g1?.type != g2?.type) return false
+                if (g1?.isAutofireOnByDefault != g2?.isAutofireOnByDefault) return false
             }
         }
         if (options.weapons) {
