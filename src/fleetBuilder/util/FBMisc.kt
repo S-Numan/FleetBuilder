@@ -13,6 +13,7 @@ import com.fs.starfarer.api.fleet.RepairTrackerAPI
 import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Stats
+import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
@@ -35,6 +36,7 @@ import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.variants.GameModInfo
+import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
@@ -46,6 +48,53 @@ import kotlin.math.min
 
 
 object FBMisc {
+
+    fun handleRefitCopy(isShiftDown: Boolean): Boolean {
+        val baseVariant = ReflectionMisc.getCurrentVariantInRefitTab() ?: return false
+
+        ClipboardMisc.saveVariantToClipboard(baseVariant, isShiftDown)
+
+        return true
+    }
+
+    fun handleRefitPaste(): Boolean {
+        var data = ClipboardMisc.extractDataFromClipboard() ?: return false
+
+        if (data is DataMember.ParsedMemberData && data.variantData != null) {
+            data = data.variantData
+        }
+        if (data !is DataVariant.ParsedVariantData) {
+            DisplayMessage.showMessage("Data in clipboard was valid, but not a variant", Color.YELLOW)
+            return true
+        }
+
+        val missing = MissingElements()
+        val variant = buildVariantFull(data, missing = missing)
+
+        if (missing.hullIds.isNotEmpty()) {
+            DisplayMessage.showMessage(
+                "Failed to import loadout. Could not find hullId ${missing.hullIds.first()}",
+                Color.YELLOW
+            )
+            return true
+        }
+
+
+        val loadoutExists = doesLoadoutExist(variant)
+
+
+        if (!loadoutExists) {
+            Dialogs.createImportLoadoutDialog(variant, missing)
+        } else {
+            DisplayMessage.showMessage(
+                "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}",
+                variant.hullSpec.hullId,
+                Misc.getHighlightColor()
+            )
+        }
+
+        return true
+    }
 
     fun sModHandlerTemp(
         ship: ShipAPI,
@@ -60,7 +109,7 @@ object FBMisc {
         val currentSMods = (baseVariant.sMods + baseVariant.sModdedBuiltIns).toSet()
         val newSMods = (loadout.sMods + loadout.sModdedBuiltIns).toSet()
         val sModsToApply = newSMods.filter { it !in currentSMods }
-        if (currentSMods.count { it !in baseVariant.sModdedBuiltIns } + sModsToApply.count { it !in loadout.sModdedBuiltIns } > maxSMods) {
+        if (currentSMods.count { it !in baseVariant.hullSpec.builtInMods } + sModsToApply.count { it !in loadout.hullSpec.builtInMods } > maxSMods) {
             DisplayMessage.showMessage("Cannot apply SMods. Not enough build in slots left", Color.YELLOW)
             return emptyList<String>() to 0f
         }
@@ -143,7 +192,7 @@ object FBMisc {
             true,
             null,
             true,
-            buildInBonus / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat(),
+            (buildInBonus / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()) / points,
             "Used $points story point" + if (points > 1) "s" else ""
         );
         Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1f, 1f);

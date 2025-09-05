@@ -19,10 +19,6 @@ Codex: Copies variant/member
 
 CTRL + V in
 Refit Screen: Add variant in clipboard to the corresponding ship hull’s autofit menu.
-Simulator: Add the copied fleet/member/variant to the simulator reserves.
-
-CTRL + D in
-Simulator: Add the player’s fleet into simulator reserves. To fight a variant from your own fleet.
 
 CTRL + I in
 Campaign: Open Save Transfer dialog
@@ -37,7 +33,7 @@ Fleet screen: Add the copied fleet/member/variant/officer to your fleet
 Campaign: Spawn fleet in the clipboard into the campaign
 
 CTRL + O in
-Fleet Screen: Open officer creator dialog",,,Hotkey Handler
+Campaign: Open officer creator dialog",,,Hotkey Handler
 randomPastedCosmetics,Randomize Pasted Cosmetics,Boolean,true,,"When true, automatically randomizes the ship name and officer name/portrait if present when pasting an element with them.
 
 This avoids pasted members looking like a clone army, and makes them look like a bunch of ships/officers that happen to have the same loadout instead",,,Hotkey Handler
@@ -76,9 +72,11 @@ marines / transport
 fuel / tanker
 crew / liner
 cargo / freighter",,,Fleet Filter
-autofitMenuEnabled,Enable Autofit Menu,Boolean,true,,A custom autofit menu for the refit screen with unlimited variant slots that stay between saves.,,,Autofit Menu
-keybindsHeader,Keybinds Header,Header,Keybinds,,,,,Autofit Menu
-autofitMenuHotkey,Autofit Menu Hotkey,Keycode,44,,Keybind to open this mod’s autofit menu. Use in the refit screen.,,,Autofit Menu
+autofitMenuEnabled,Enable Autofit Menu,Boolean,false,,A custom autofit menu for the refit screen with unlimited variant slots that stay between saves.,,,Autofit Menu
+autofitSettingsHeader,Autofit Settings Header,Header,Settings,,,,,Autofit Menu
+replaceVanillaAutofitButton,Replace Vanilla Button,Boolean,true,,"When true, opens this mod’s autofit menu instead of vanilla’s autofit menu when clicking the autofit button.",,,Autofit Menu
+autofitMenuHotkey,Autofit Menu Hotkey,Keycode,47,,"Keybind to open this mod’s autofit menu. Press this keybind in the refit screen to open the autofit menu,.",,,Autofit Menu
+,,,,,,,,
 ,,,,,,,,
 uIHeader,UI Header,Header,UI,,,,,Autofit Menu
 selectorsPerRow,Selectors Per Row,Int,4,,"Amount of autofit loadouts you see per row.
@@ -92,8 +90,12 @@ showHiddenModsInTooltip,Show Hidden HullMods,Boolean,false,,Shows hullmods that 
 autofitDevHeader,Cheats,Header,Cheats,,,,,Autofit Menu
 forceAutofit,Overwrite Variant on Autofit,Boolean,false,,"Enabling this causes an autofit to remove all contents of your current variant and replace it with the selected one. At no cost.
 This is default behavior in the main menu missions, as there is no cargo or story points in that context.",,,Autofit Menu
-dontForceClearDMods,Dont Force Clear D-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove D-Mods on autofit",,,Autofit Menu
-dontForceClearSMods,Dont Force Clear S-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove S-Mods on autofit",,,Autofit Menu
+dontForceClearDMods,Dont Force Clear D-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove D-Mods on an overwrite autofit",,,Autofit Menu
+dontForceClearSMods,Dont Force Clear S-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove S-Mods on an overwrite autofit",,,Autofit Menu
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
 ,,,,,,,,
 extraHeader,Extra Header,Header,Extra,,,,,Misc
 devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When dev mode is enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
@@ -126,12 +128,6 @@ Enable the setting ‘Show Hidden HullMods’ in the ‘Autofit Menu’ tab and 
 ,,,,,,,,
 memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
 fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,

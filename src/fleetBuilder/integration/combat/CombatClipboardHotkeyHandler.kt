@@ -16,6 +16,8 @@ import fleetBuilder.persistence.member.DataMember
 import fleetBuilder.persistence.variant.DataVariant
 import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.util.*
+import fleetBuilder.util.FBMisc.handleRefitCopy
+import fleetBuilder.util.FBMisc.handleRefitPaste
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import fleetBuilder.variants.MissingElements
@@ -46,6 +48,9 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 ClipboardMisc.codexEntryToClipboard(codex)
                                 event.consume(); continue
                             }
+                            if (handleRefitCopy(event.isShiftDown))
+                                event.consume()
+
                         } catch (e: Exception) {
                             DisplayMessage.showError("FleetBuilder hotkey failed", e)
                         }
@@ -137,6 +142,12 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
                             DisplayMessage.showMessage("Replaced simulator reserves")
                             event.consume()
+                        } else if (event.eventValue == Keyboard.KEY_V) {
+                            if (!ReflectionMisc.isCodexOpen() && !DialogUtil.isPopUpUIOpen())
+                                if (handleRefitPaste())
+                                    event.consume()
+
+                            continue
                         }
                     }
                 }

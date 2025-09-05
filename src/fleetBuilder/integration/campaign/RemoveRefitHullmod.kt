@@ -83,7 +83,7 @@ class RemoveRefitHullmod : CampaignInputListener {
 
                                 DisplayMessage.showMessage("Removed sModdedBuiltIn in with ID '${hullModID.id}'")
                             } else if (VariantLib.getAllDMods().contains(hullModID.id)) {//Built in DMod?
-                                variant.hullMods.remove(hullModID.id)
+                                variant.completelyRemoveMod(hullModID.id)
                                 refitPanel.invoke("syncWithCurrentVariant")
 
                                 DisplayMessage.showMessage("Removed built in DMod with ID '${hullModID.id}'")

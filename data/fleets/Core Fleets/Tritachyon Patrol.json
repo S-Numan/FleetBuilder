@@ -1,26 +1,29 @@
 {
     "aggression_doctrine": 2,
-    "commander": {
-        "first": "Liam",
-        "gender": "MALE",
-        "last": "Ezana",
-        "member": {
-            "cr": 0.7,
-            "name": "TTS Fortunate Cloud",
-            "variantId": "1b702_0"
-        },
-        "personality": "steady",
-        "portrait": "graphics/portraits/portrait26.png",
-        "post": "fleetCommander",
-        "rank": "spaceCommander",
-        "skills": {
-            "energy_weapon_mastery": 2,
-            "field_modulation": 1
-        },
-        "tags": []
-    },
+    "factionID": "tritachyon",
     "fleetName": "Patrol",
     "members": [
+        {
+            "cr": 0.7,
+            "isFlagship": true,
+            "name": "TTS Fortunate Cloud",
+            "officer": {
+                "first": "Liam",
+                "gender": "MALE",
+                "last": "Ezana",
+                "level": 3,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait26.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "electronic_warfare": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1
+                }
+            },
+            "variantId": "1b702_0"
+        },
         {
             "cr": 0.7,
             "name": "TTS Gegenschein",
@@ -28,13 +31,13 @@
                 "first": "Allat",
                 "gender": "FEMALE",
                 "last": "Bernard",
+                "level": 2,
                 "personality": "steady",
                 "portrait": "graphics/portraits/portrait34.png",
                 "skills": {
                     "energy_weapon_mastery": 1,
                     "field_modulation": 2
-                },
-                "tags": []
+                }
             },
             "variantId": "1b702_2"
         },
@@ -45,10 +48,10 @@
                 "first": "Dajeil",
                 "gender": "FEMALE",
                 "last": "Shannon",
+                "level": 1,
                 "personality": "steady",
                 "portrait": "graphics/portraits/portrait41.png",
-                "skills": {"field_modulation": 2},
-                "tags": []
+                "skills": {"field_modulation": 2}
             },
             "variantId": "1b702_3"
         }

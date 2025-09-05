@@ -14,6 +14,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.json.JSONArray
 import org.json.JSONObject
@@ -69,7 +70,19 @@ fun ShipHullSpecAPI.getCompatibleDLessHullId(): String {
 fun ShipVariantAPI.completelyRemoveMod(modId: String) {
     sModdedBuiltIns.remove(modId)
     suppressedMods.remove(modId)
+    hullMods.remove(modId)
     removePermaMod(modId)
+}
+
+fun ShipVariantAPI.isEquivalentTo(
+    other: ShipVariantAPI,
+    options: VariantLib.CompareOptions = VariantLib.CompareOptions()
+): Boolean {
+    return VariantLib.compareVariantContents(
+        this,
+        other,
+        options
+    )
 }
 
 fun ShipVariantAPI.allDMods(): Set<String> {

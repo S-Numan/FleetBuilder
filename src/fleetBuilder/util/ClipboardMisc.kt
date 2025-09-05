@@ -6,6 +6,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.config.ModSettings
+import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.config.ModSettings.getDefaultExcludeVariantTags
 import fleetBuilder.persistence.fleet.JSONFleet.extractFleetDataFromJson
 import fleetBuilder.persistence.member.JSONMember.extractMemberDataFromJson
@@ -24,10 +25,17 @@ import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import fleetBuilder.variants.VariantLib
 import org.json.JSONObject
+import org.lwjgl.input.Keyboard
+import java.awt.Color
 
 object ClipboardMisc {
 
     fun saveVariantToClipboard(variant: ShipVariantAPI, compress: Boolean = false) {
+        if (variant.hasHullMod(commandShuttleId)) {
+            DisplayMessage.showMessage("Cannot copy the commander's shuttle", Color.YELLOW)
+            return
+        }
+
         val variantToSave = variant.clone()
         variantToSave.hullVariantId = VariantLib.makeVariantID(variantToSave)
 
@@ -52,21 +60,35 @@ object ClipboardMisc {
         }
     }
 
+    fun saveMemberToClipboard(member: FleetMemberAPI, compress: Boolean = false) {
+        if (member.variant.hasHullMod(commandShuttleId)) {
+            DisplayMessage.showMessage("Cannot copy the commander's shuttle", Color.YELLOW)
+            return
+        }
+
+        if (compress) {
+            //val comp = saveMemberToCompString(member)
+            //setClipboardText(comp)
+            //DisplayMessage.showMessage("Member compressed and copied to clipboard")
+            DisplayMessage.showMessage("Copying the compressed member is currently unimplemented. Please avoid holding shift.", Color.YELLOW)
+        } else {
+            val json = saveMemberToJson(member)
+            setClipboardText(json.toString(4))
+            DisplayMessage.showMessage("Member copied to clipboard")
+        }
+    }
+
     fun codexEntryToClipboard(codex: CodexDialog) {
         val param = getCodexEntryParam(codex) ?: return
 
         when (param) {
             is ShipHullSpecAPI -> {
                 val emptyVariant = Global.getSettings().createEmptyVariant(param.hullId, param)
-                val json = saveVariantToJson(emptyVariant)
-                setClipboardText(json.toString(4))
-                showMessage("Copied codex variant to clipboard")
+                saveVariantToClipboard(emptyVariant, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
             }
 
             is FleetMemberAPI -> {
-                val json = saveMemberToJson(param)
-                setClipboardText(json.toString(4))
-                showMessage("Copied codex member to clipboard")
+                saveMemberToClipboard(param, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
             }
         }
     }

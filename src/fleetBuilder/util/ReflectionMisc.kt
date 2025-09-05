@@ -51,7 +51,15 @@ object ReflectionMisc {
     }
 
     fun getRefitTab(): UIPanelAPI? {
-        return getBorderContainer()?.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
+        if (Global.getCurrentState() == GameState.CAMPAIGN) {
+            return getBorderContainer()?.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
+        } else {
+            val delegateChild = getCoreUI()?.findChildWithMethod("dismiss") as? UIPanelAPI ?: return null
+            val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return null
+            val holographicBG = oldCoreUI.findChildWithMethod("forceFoldIn") ?: return null
+
+            return holographicBG.invoke("getCurr") as? UIPanelAPI ?: return null
+        }
     }
 
     fun getRefitPanel(): UIPanelAPI? {

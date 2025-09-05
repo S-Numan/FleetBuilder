@@ -31,6 +31,7 @@ import fleetBuilder.variants.LoadoutManager.getCoreAutofitSpecsForShip
 import fleetBuilder.variants.LoadoutManager.getLoadoutAutofitSpecsForShip
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.ShipDirectory
+import fleetBuilder.variants.VariantLib.CompareOptions
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.compareVariantHullMods
 import fleetBuilder.variants.VariantLib.getAllDMods
@@ -129,7 +130,9 @@ internal object AutofitPanel {
                     draggedAutofitSpec = null
                 }
 
-                if (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
+                if (event.isKeyDownEvent
+                    && (event.eventValue == Keyboard.KEY_ESCAPE || event.eventValue == ModSettings.autofitMenuHotkey)
+                ) {
                     autofitPanel.parent?.removeComponent(autofitPanel)
                     draggedPanel?.parent?.removeComponent(draggedPanel!!)
                     event.consume()
@@ -176,7 +179,7 @@ internal object AutofitPanel {
     }
 
     internal fun createMagicAutofitPanel(
-        refitTab: UIPanelAPI, refitPanel: UIPanelAPI, coreUI: CoreUIAPI,
+        refitTab: UIPanelAPI, refitPanel: UIPanelAPI, shipDisplay: UIPanelAPI, coreUI: CoreUIAPI,
         width: Float, height: Float
     ): CustomPanelAPI {
 
@@ -188,7 +191,6 @@ internal object AutofitPanel {
         val scrollerTooltip = autofitPanel.createUIElement(width + 2f, height, true) // Tooltip on background panel
         scrollerTooltip.position.inTL(0f, 0f)
 
-        val shipDisplay = refitPanel.invoke("getShipDisplay") as? UIPanelAPI ?: return autofitPanel
         val baseVariant = shipDisplay.invoke("getCurrentVariant") as? HullVariantSpec
             ?: return autofitPanel
         val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI ?: return autofitPanel
@@ -402,6 +404,7 @@ internal object AutofitPanel {
         var storageButton: ButtonAPI? = null
         var marketButton: ButtonAPI? = null
         var blackMarketButton: ButtonAPI? = null
+        var applySModsButton: ButtonAPI? = null
 
         if (Global.getCurrentState() != GameState.TITLE) {
             cargoButton = addToggleButton(
@@ -427,16 +430,14 @@ internal object AutofitPanel {
                 memoryKey = "\$FBA_useBlackMarket",
                 tooltipText = "Buy weapons and fighter LPCs from the black market.\n\nNon-black-market options will be preferred if the alternatives are of equal quality"
             )
+
+            applySModsButton = addToggleButton(
+                label = "Apply SMods",
+                memoryKey = "\$FBA_applySMods",
+                tooltipText = "Spend story points to apply SMods to your ship. If S-mods are installed, the autofit cannot be undone.",
+                default = false
+            )
         }
-
-        val applySModsButton = addToggleButton(
-            label = "Apply SMods",
-            memoryKey = "\$FBA_applySMods",
-            tooltipText = "Spend story points to apply SMods to your ship.",
-            default = false
-        )
-
-        applySModsButton.opacity = 0f
 
         // Add the buttons element to the panel
         baseVariantPanel.addUIElement(toggleButtonsElement)
@@ -494,7 +495,7 @@ internal object AutofitPanel {
                 }
 
 
-                if (applySModsButton.isChecked && !ModSettings.forceAutofit &&
+                if (applySModsButton?.isChecked == true && !ModSettings.forceAutofit &&
                     (selectorPlugin.autofitSpec!!.variant.sMods.any { it !in baseVariant.sMods } || selectorPlugin.autofitSpec!!.variant.sModdedBuiltIns.any { it !in baseVariant.sModdedBuiltIns })
                 ) {
                     val (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship, baseVariant, selectorPlugin.autofitSpec!!.variant)
@@ -550,7 +551,7 @@ internal object AutofitPanel {
 
                 val draggedVariant = copyVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would be loaded if brought up later
 
-                val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant, compareTags = true) }
+                val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant) }
 
                 val shipVariantID: String
                 if (equalVariant != null) { // Variant already exists?
@@ -578,8 +579,7 @@ internal object AutofitPanel {
                         it.autofitSpec?.source != null && it.autofitSpec?.variant != null &&
                                 compareVariantContents(
                                     shipDirectory.getShip(shipVariantID)!!,
-                                    copyVariant(it.autofitSpec!!.variant, settings), // Copied to apply settings
-                                    compareTags = true
+                                    copyVariant(it.autofitSpec!!.variant, settings) // Copied to apply settings
                                 )
                     })
 
@@ -638,13 +638,7 @@ internal object AutofitPanel {
         val equalDefault = compareVariantContents(
             variant,
             baseVariant,
-            compareWeaponGroups = false,
-            compareFlux = false,
-            compareBuiltInHullMods = false,
-            compareDMods = false,
-            convertSModsToRegular = true,
-            compareHiddenHullMods = false,
-            useEffectiveHull = true
+            CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true)
         )
 
         if (equalDefault) {
@@ -656,18 +650,12 @@ internal object AutofitPanel {
             val diffWeaponGroups = !compareVariantContents(
                 variant,
                 baseVariant,
-                compareWeaponGroups = true,
-                compareFlux = false,
-                compareHullMods = false,
-                useEffectiveHull = true
+                CompareOptions.allFalse(modules = true, weaponGroups = true)
             )
             val diffFluxStats = !compareVariantContents(
                 variant,
                 baseVariant,
-                compareWeaponGroups = false,
-                compareFlux = true,
-                compareHullMods = false,
-                useEffectiveHull = true
+                CompareOptions.allFalse(modules = true, flux = true)
             )
             if (diffFluxStats) {
                 selectorPlugin.diffFluxStats = true
@@ -704,8 +692,7 @@ internal object AutofitPanel {
         val equalMods = compareVariantHullMods(
             compareVariant,
             compareBaseVariant,
-            compareBuiltInHullMods = false,
-            compareHiddenHullMods = false,
+            CompareOptions(builtInHullMods = false, hiddenHullMods = false)
         )
 
         var equalSMods = false
@@ -716,8 +703,7 @@ internal object AutofitPanel {
             equalSMods = compareVariantHullMods(
                 compareVariant,
                 compareBaseVariantTemp,
-                compareBuiltInHullMods = false,
-                compareHiddenHullMods = false,
+                CompareOptions(builtInHullMods = false, hiddenHullMods = false)
             )
         }
         if (compareVariant.sMods.isNotEmpty()) {
@@ -726,8 +712,7 @@ internal object AutofitPanel {
             unequalSMods = compareVariantHullMods(
                 compareVariantTemp,
                 compareBaseVariant,
-                compareBuiltInHullMods = false,
-                compareHiddenHullMods = false,
+                CompareOptions(builtInHullMods = false, hiddenHullMods = false)
             )
         }
 
@@ -738,16 +723,13 @@ internal object AutofitPanel {
                 unequalDMod = compareVariantHullMods(
                     compareVariant,
                     compareBaseVariant,
-                    compareBuiltInHullMods = false,
-                    compareHiddenHullMods = false,
+                    CompareOptions(builtInHullMods = false, hiddenHullMods = false)
                 )
             } else {
                 unequalDMod = compareVariantHullMods(
                     compareVariant,
                     compareBaseVariant,
-                    compareBuiltInHullMods = false,
-                    compareHiddenHullMods = false,
-                    convertSModsToRegular = true
+                    CompareOptions(builtInHullMods = false, hiddenHullMods = false, convertSModsToRegular = true)
                 )
             }
         }

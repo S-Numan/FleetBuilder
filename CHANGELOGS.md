@@ -1,3 +1,11 @@
+## 1.18.0
+- Allowed copying and importing variants in the titlescreen missions.
+- Do not open the refit dialog when the wing or weapon selector dialogs are open.
+- PersonAPI now saves integer memKeys
+- Prevent copying of the commander shuttle.
+- Commander shuttle improvements.
+- Fix compressed variants not functioning.
+
 ## 1.17.1
 - Prevent the Nexerelin version checker dialog from opening when pasting fleets into the campaign.
 - Fix being able to interact with outside elements when in dialog.

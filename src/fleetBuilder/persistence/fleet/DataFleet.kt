@@ -105,7 +105,7 @@ object DataFleet {
 
             // Exclude by variant or hull ID
             if (variantData?.hullId in settings.excludeMembersWithHullID ||
-                variantData?.variantId in settings.excludeMembersWithID ||
+                member.id in settings.excludeMembersWithID ||
                 variantData?.allHullMods()?.contains(ModSettings.commandShuttleId) == true
             ) return@mapNotNull null
 

@@ -372,7 +372,7 @@ internal object AutofitSelector {
             "executor" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
             "invictus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 0f, disableScissor = true)
         )
-
+ 
         // Get config or default
         val config = specialConfigs[effectiveHullId] ?: ShipDisplayConfig()
 

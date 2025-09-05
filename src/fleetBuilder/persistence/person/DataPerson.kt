@@ -3,14 +3,10 @@ package fleetBuilder.persistence.person
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.persistence.variant.DataVariant.buildVariant
-import fleetBuilder.persistence.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.util.FBMisc.getRandomPortrait
 import fleetBuilder.variants.MissingElements
 import org.histidine.chatter.ChatterDataManager
@@ -105,10 +101,28 @@ object DataPerson {
         // Remove filtered-out skills from missing
         missing.skillIds.retainAll { shouldKeepSkill(it) }
 
+        val excludeKeys = setOf(
+            "\$autoPointsMult"
+        )
+
+        val peopleKeys = setOf(
+            "\$Post", "\$Rank", "\$id", "\$importance", "\$importanceAtLeastHigh",
+            "\$importanceAtMostLow", "\$isContact", "\$isPerson", "\$level",
+            "\$menuState", "\$name", "\$option", "\$personName", "\$personality",
+            "\$post", "\$postAOrAn", "\$postId", "\$rank", "\$rankAOrAn",
+            "\$rankId", "\$relName", "\$rel", "\$relValue"
+        )
+
         // Filter memory keys
         val filteredMemory = data.memKeys.filterKeys { key ->
             val value = data.memKeys[key]
-            key != "\$autoPointsMult" && (value is Boolean || value is String)
+
+            when {
+                value is Boolean || value is String || value is Int -> return@filterKeys false
+                key in excludeKeys -> return@filterKeys false
+                settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
+                else -> return@filterKeys true
+            }
         }
 
         return data.copy(
@@ -188,7 +202,7 @@ object DataPerson {
         person.stats.points = data.points
 
         data.memKeys.forEach { (key, value) ->
-            if (value is String || value is Boolean)
+            if (value is String || value is Boolean || value is Int)
                 person.memoryWithoutUpdate.set(key, value)
         }
 
