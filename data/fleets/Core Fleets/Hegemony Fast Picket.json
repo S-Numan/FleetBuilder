@@ -1,38 +1,41 @@
 {
     "aggression_doctrine": 2,
-    "commander": {
-        "first": "Charm",
-        "gender": "FEMALE",
-        "last": "Chiron",
-        "member": {
-            "cr": 1,
-            "name": "HSS Venerable",
-            "variantId": "a5d6_0"
-        },
-        "personality": "steady",
-        "portrait": "graphics/portraits/portrait22.png",
-        "post": "patrolCommander",
-        "skills": {
-            "ballistic_mastery": 1,
-            "combat_endurance": 1,
-            "crew_training": 1,
-            "damage_control": 2,
-            "gunnery_implants": 1,
-            "officer_training": 1,
-            "ordnance_expert": 1,
-            "systems_expertise": 1
-        },
-        "tags": []
-    },
+    "factionID": "hegemony",
     "fleetName": "Fast Picket",
     "members": [
         {
-            "cr": 0.84999996,
+            "cr": 1,
+            "isFlagship": true,
+            "name": "HSS Venerable",
+            "officer": {
+                "first": "Charm",
+                "gender": "FEMALE",
+                "last": "Chiron",
+                "level": 8,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait22.png",
+                "post": "patrolCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "crew_training": 1,
+                    "damage_control": 2,
+                    "gunnery_implants": 1,
+                    "officer_training": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "a5d6_0"
+        },
+        {
+            "cr": 0.85,
             "name": "HSS Duellona",
             "officer": {
                 "first": "Hakim",
                 "gender": "MALE",
                 "last": "Mathis",
+                "level": 5,
                 "personality": "steady",
                 "portrait": "graphics/portraits/portrait_hegemony01.png",
                 "skills": {
@@ -41,18 +44,18 @@
                     "field_modulation": 1,
                     "missile_specialization": 1,
                     "ordnance_expert": 1
-                },
-                "tags": []
+                }
             },
             "variantId": "a5d6_1"
         },
         {
-            "cr": 0.84999996,
+            "cr": 0.85,
             "name": "HSS Aequitas",
             "officer": {
                 "first": "Claudia",
                 "gender": "FEMALE",
                 "last": "Alvarez",
+                "level": 4,
                 "personality": "steady",
                 "portrait": "graphics/portraits/portrait_hegemony03.png",
                 "skills": {
@@ -60,23 +63,23 @@
                     "gunnery_implants": 2,
                     "helmsmanship": 1,
                     "ordnance_expert": 2
-                },
-                "tags": []
+                }
             },
             "variantId": "a5d6_2"
         },
         {
-            "cr": 0.84999996,
+            "cr": 0.85,
             "name": "HSS Graeae",
             "variantId": "a5d6_3"
         },
         {
-            "cr": 0.84999996,
+            "cr": 0.85,
             "name": "HSS Hemera",
             "officer": {
                 "first": "Leon",
                 "gender": "MALE",
                 "last": "Gravell",
+                "level": 4,
                 "personality": "steady",
                 "portrait": "graphics/portraits/portrait_hegemony09.png",
                 "skills": {
@@ -84,8 +87,7 @@
                     "damage_control": 1,
                     "impact_mitigation": 2,
                     "ordnance_expert": 1
-                },
-                "tags": []
+                }
             },
             "variantId": "a5d6_4"
         }
@@ -226,8 +228,7 @@
             "hullId": "hound_hegemony_default_D",
             "hullMods": [
                 "auxiliarythrusters",
-                "fluxdistributor",
-                "comp_hull"
+                "fluxdistributor"
             ],
             "permaMods": ["comp_hull"],
             "sMods": [],
