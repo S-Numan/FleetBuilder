@@ -101,7 +101,7 @@ class CampaignCodexButton : EveryFrameScript {
             }
 
             if (addToFleetButton == null) {
-                DisplayMessage.showError("addToFleetButton was null, when it shouldn't be.")
+                DisplayMessage.showError("addToFleetButton was null when it shouldn't be.")
                 return
             }
 

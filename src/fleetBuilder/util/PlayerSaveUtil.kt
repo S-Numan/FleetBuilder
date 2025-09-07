@@ -127,7 +127,12 @@ object PlayerSaveUtil {
 
         if (json.has("cargo")) {
             try {
-                missing.add(getCargoFromJson(json.getJSONArray("cargo"), cargo))
+                json.optJSONObject("cargo")?.let { // New
+                    missing.add(getCargoFromJson(it, cargo))
+                } ?: json.getJSONArray("cargo")?.let { // Legacy
+                    missing.add(getCargoFromJson(it, cargo))
+                }
+
             } catch (e: Exception) {
                 showError("Failed to load cargo", e)
             }
