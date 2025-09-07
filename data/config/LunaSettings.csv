@@ -76,7 +76,8 @@ autofitMenuEnabled,Enable Autofit Menu,Boolean,false,,A custom autofit menu for 
 autofitSettingsHeader,Autofit Settings Header,Header,Settings,,,,,Autofit Menu
 replaceVanillaAutofitButton,Replace Vanilla Button,Boolean,true,,"When true, opens this mod’s autofit menu instead of vanilla’s autofit menu when clicking the autofit button.",,,Autofit Menu
 autofitMenuHotkey,Autofit Menu Hotkey,Keycode,47,,"Keybind to open this mod’s autofit menu. Press this keybind in the refit screen to open the autofit menu,.",,,Autofit Menu
-,,,,,,,,
+autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
+This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as hullmod is an sModdedBuiltIn without the ship having MIDAS built in.",,,Autofit Menu
 ,,,,,,,,
 uIHeader,UI Header,Header,UI,,,,,Autofit Menu
 selectorsPerRow,Selectors Per Row,Int,4,,"Amount of autofit loadouts you see per row.
@@ -84,7 +85,8 @@ Setting this to a lower number will increase the size of your autofit options.",
 showCoreGoalVariants,Show Core Goal Variants,Boolean,true,,Shows core game variants that are shown in the vanilla autofit menu,,,Autofit Menu
 showCoreNonGoalVariants,Show Core Non Goal Variants,Boolean,false,,Shows core game variants that aren’t shown in the vanila autofit menu,,,Autofit Menu
 showHiddenModsInTooltip,Show Hidden HullMods,Boolean,false,,Shows hullmods that are usually hidden in the tooltip,,,Autofit Menu
-,,,,,,,,
+reserveFirstFourAutofitSlots,Reserve First Four Slots,Boolean,true,,"Reserve the first four autofit slots, making them unable to be saved to.
+If a game or mod update adds or removes goal variants, the slot positioning would be pushed around and thus messed up. This prevents that.",,,Autofit Menu
 ,,,,,,,,
 ,,,,,,,,
 autofitDevHeader,Cheats,Header,Cheats,,,,,Autofit Menu

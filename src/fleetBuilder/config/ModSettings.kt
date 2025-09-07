@@ -168,4 +168,8 @@ object ModSettings {
 
     var removeRefitHullmod = true
 
+    var autofitNoSModdedBuiltInWhenNotBuiltInMod = true
+
+    var reserveFirstFourAutofitSlots = true
+
 }

@@ -48,6 +48,7 @@ import starficz.*
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
+import kotlin.math.max
 import kotlin.math.min
 
 
@@ -197,28 +198,43 @@ internal object AutofitPanel {
         val ship = shipDisplay.invoke("getShip") as? ShipAPI ?: return autofitPanel
         val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return autofitPanel
 
+        var firstInRow: UIPanelAPI? = null
+        var prev: UIPanelAPI? = null
+
         val endPad = 6f
         val midPad = 5f
         val selectorsPerRow = ModSettings.selectorsPerRow
         val selectorWidth = (autofitPanel.width - (endPad * 2 + midPad * (selectorsPerRow - 1))) / selectorsPerRow
         autofitPlugin.selectorWidth = selectorWidth
 
-        var firstInRow: UIPanelAPI? = null
-        var prev: UIPanelAPI? = null
-
         val selectorPlugins = mutableListOf<AutofitSelector.AutofitSelectorPlugin>()
 
-        val coreEffectiveHullAutofitSpecs = getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec)
-        val loadoutEffectiveHullAutofitSpecs = getLoadoutAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec, coreEffectiveHullAutofitSpecs.size).values.flatten()
+        // Determine minimum reserved slots for core specs
+        val minCoreSlots = if (ModSettings.reserveFirstFourAutofitSlots) 4 else 0
 
+        // Get core specs and convert to mutable list
+        val coreEffectiveHullAutofitSpecs: MutableList<AutofitSpec?> =
+            getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec).toMutableList()
 
-        // Combine both lists into one, because they share the same index space in the menu
-        val combinedSpecs = coreEffectiveHullAutofitSpecs + loadoutEffectiveHullAutofitSpecs
+        // Pad with nulls if fewer than minCoreSlots
+        while (coreEffectiveHullAutofitSpecs.size < minCoreSlots) {
+            coreEffectiveHullAutofitSpecs.add(null)
+        }
 
-        // Sort by desired index first
-        val sortedSpecs = combinedSpecs.sortedBy { it.desiredIndexInMenu }
+        // Get loadout specs
+        val loadoutEffectiveHullAutofitSpecs =
+            getLoadoutAutofitSpecsForShip(
+                (baseVariant as ShipVariantAPI).hullSpec,
+                coreEffectiveHullAutofitSpecs.size
+            ).values.flatten()
 
-        // Find the maximum index any spec wants
+        // Combine core (with nulls) + loadout specs
+        val combinedSpecs: List<AutofitSpec?> = coreEffectiveHullAutofitSpecs + loadoutEffectiveHullAutofitSpecs
+
+        // Sort non-null specs by desired index, nulls will naturally stay after
+        val sortedSpecs = combinedSpecs.filterNotNull().sortedBy { it.desiredIndexInMenu }
+
+        // Find max desired index for indexed list
         val maxDesiredIndex = sortedSpecs.maxOfOrNull { it.desiredIndexInMenu } ?: 0
 
         // Start with a list of nulls big enough to fit everything
@@ -247,17 +263,21 @@ internal object AutofitPanel {
         val lastNonNullIndex = indexedSpecs.indexOfLast { it != null }
         val remainder = (lastNonNullIndex + 1) % selectorsPerRow
         val fillToRow = if (remainder == 0) 0 else selectorsPerRow - remainder
-        val extraNulls = fillToRow + selectorsPerRow
+        var extraNulls = fillToRow + selectorsPerRow
+        if (indexedSpecs.isEmpty() && ModSettings.reserveFirstFourAutofitSlots)
+            extraNulls += selectorsPerRow
 
         // Build final list with padding
         val allAutofitSpecs: List<AutofitSpec?> = indexedSpecs.subList(0, lastNonNullIndex + 1) + List(extraNulls) { null }
 
 
+
+
         for (i in allAutofitSpecs.indices) {
             val autofitSpec = allAutofitSpecs[i]
 
-            val selectorPanel = AutofitSelector.createAutofitSelector(autofitSpec, selectorWidth) // Create the panel
-            // Add the panel's plugin to the plugin list
+            val selectorPanel = AutofitSelector.createAutofitSelector(autofitSpec, selectorWidth, addXIfAutofitSpecNull = ModSettings.reserveFirstFourAutofitSlots && i < 4) // Create the panel
+            // Add the panel's plugin to the ModSettings.plugin && list
             val selectorPlugin = selectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
             selectorPlugins.add(selectorPlugin)
 
@@ -279,6 +299,16 @@ internal object AutofitPanel {
 
                 if (autofitSpec.source != null) // Is this a loadout from this mod?
                     removeSelectorPanelButton(selectorPanel, autofitSpec) // Allow it to be removed
+            } else {
+                if (selectorPlugin.addXIfAutofitSpecNull) {
+                    selectorPanel.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 780f) { tooltip ->
+                        tooltip.addPara(
+                            "This slot is reserved for goal variants." +
+                                    "\nIf a game or mod update adds or removes goal variants, the slot positioning would be pushed around and thus messed up. This prevents that." +
+                                    "\n\nThis reservation can be disabled in the LunaLib settings.", 0f
+                        )
+                    }
+                }
             }
         }
 
@@ -456,8 +486,13 @@ internal object AutofitPanel {
             }
             selectorPlugin.onHoverEnter {
                 Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
+                if (autofitPlugin.draggedAutofitSpec != null) {
+                    selectorPlugin.draggingAutofitSpec = true
+                }
             }
             selectorPlugin.onHoverExit {
+                selectorPlugin.draggingAutofitSpec = false
+
                 if (!selectorPlugin.hasClicked || selectorPlugin.autofitSpec === autofitPlugin.draggedAutofitSpec) return@onHoverExit
 
                 //Global.getSoundPlayer().playUISound("ui_char_reset", 1f, 1f)
@@ -524,7 +559,18 @@ internal object AutofitPanel {
             selectorPlugin.onClickReleaseNoInitClick { // Clicked and dragged from another autofit panel
                 selectorPlugin.selectorPanel.opacity = 1f
 
-                if (selectorPlugin.autofitSpec != null || autofitPlugin.draggedAutofitSpec == null) return@onClickReleaseNoInitClick
+                if (autofitPlugin.draggedAutofitSpec == null) return@onClickReleaseNoInitClick
+
+                if (selectorPlugin.autofitSpec != null) {
+                    if (selectorPlugin.autofitSpec !== autofitPlugin.draggedAutofitSpec)
+                        DisplayMessage.showMessage("Slot already occupied", Color.YELLOW)
+                    return@onClickReleaseNoInitClick
+                }
+                if (selectorPlugin.addXIfAutofitSpecNull) {
+                    DisplayMessage.showMessage("Slot is reserved. Hover over the slot for more details.", Color.YELLOW)
+                    return@onClickReleaseNoInitClick
+                }
+                //Slot does not have an autofitSpec, and an autofitSpec is being dragged.
 
                 val settings: VariantSettings
                 var shipDirectory: ShipDirectory?
@@ -550,6 +596,15 @@ internal object AutofitPanel {
                 val indexInMenu = index - coreEffectiveHullAutofitSpecs.size
 
                 val draggedVariant = copyVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would be loaded if brought up later
+
+                if (ModSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod) {
+                    draggedVariant.sModdedBuiltIns.toList().forEach {
+                        if (it !in draggedVariant.hullSpec.builtInMods) {
+                            draggedVariant.completelyRemoveMod(it)
+                        }
+                    }
+                }
+
 
                 val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant) }
 

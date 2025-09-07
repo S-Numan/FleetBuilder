@@ -26,7 +26,8 @@ import kotlin.math.max
  * @author Starficz
  */
 internal object AutofitSelector {
-    internal class AutofitSelectorPlugin(var autofitSpec: AutofitSpec?) : BaseCustomUIPanelPlugin() {
+    internal class AutofitSelectorPlugin(var autofitSpec: AutofitSpec?, var addXIfAutofitSpecNull: Boolean = false) :
+        BaseCustomUIPanelPlugin() {
         lateinit var selectorPanel: CustomPanelAPI
 
         val defaultBGColor: Color = Color.BLACK
@@ -54,6 +55,8 @@ internal object AutofitSelector {
         var isBase = false
         val isUnlocked = true
         var noClickFader = false
+
+        var draggingAutofitSpec = false
 
         enum class ComparisonStatus {
             DEFAULT, BETTER, WORSE, EQUAL
@@ -161,6 +164,19 @@ internal object AutofitSelector {
                     val diffFSSprite = Global.getSettings().getSprite("FleetBuilder", "different_flux_stats")
                     diffFSSprite.render(selectorPanel.x + selectorPanel.width - diffFSSprite.width, selectorPanel.y)
                 }
+            } else if (addXIfAutofitSpecNull) {
+                val xSprite = Global.getSettings().getSprite("FleetBuilder", "entity")
+                //val xButton = Global.getSettings().getSprite("ui", "checkmark_x")
+                //xSprite.alphaMult = Misc.interpolate(0.5f, 0.75f, hoverFader.brightness)
+                if (draggingAutofitSpec)
+                    xSprite.color = Misc.interpolateColor(Color.GRAY, Color.RED.darker(), lockedHoverFader.brightness)
+                else
+                    xSprite.color = Misc.interpolateColor(Color.GRAY, Color.YELLOW.darker().darker(), lockedHoverFader.brightness)
+
+                val scaleFactor = 1.0f * selectorPanel.width / max(xSprite.width, xSprite.height)
+                if (scaleFactor < 1)
+                    xSprite.setSize(scaleFactor * xSprite.width, scaleFactor * xSprite.height)
+                xSprite.renderAtCenter(selectorPanel.centerX, selectorPanel.top - selectorPanel.width / 2)
             }
             GL11.glPopMatrix()
         }
@@ -275,10 +291,11 @@ internal object AutofitSelector {
         width: Float,
         addTitle: Boolean = true,
         centerTitle: Boolean = false,
-        addDescription: Boolean = true
+        addDescription: Boolean = true,
+        addXIfAutofitSpecNull: Boolean = false
     ): CustomPanelAPI {
 
-        val plugin = AutofitSelectorPlugin(autofitSpec)
+        val plugin = AutofitSelectorPlugin(autofitSpec, addXIfAutofitSpecNull)
         val selectorPanel = Global.getSettings().createCustom(width, width + (if (addTitle) titleHeight else 0f) + (if (addDescription) descriptionHeight else 0f), plugin)
         plugin.selectorPanel = selectorPanel
 
@@ -372,7 +389,7 @@ internal object AutofitSelector {
             "executor" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
             "invictus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 0f, disableScissor = true)
         )
- 
+
         // Get config or default
         val config = specialConfigs[effectiveHullId] ?: ShipDisplayConfig()
 

@@ -229,7 +229,7 @@ object LoadoutManager {
             }
 
             if (shouldShow) {
-                val label = if (variant.isGoalVariant) "Core Autofit Variant" else "Core Variant"
+                val label = if (variant.isGoalVariant) "Goal Variant" else "Core Variant"
                 coreVariantSpecs.add(
                     AutofitSpec(
                         variant,
