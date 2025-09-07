@@ -11,6 +11,7 @@
 			"white_square":"graphics/fx/white_square.png",
 			"different_weapon_groups":"graphics/icons/NO-WG-white.png",
 			"different_flux_stats":"graphics/icons/NO-FLUX-white.png",
+			"entity":"graphics/icons/entity.png"
 		}
 	}
 }

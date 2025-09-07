@@ -2,6 +2,7 @@ package fleetBuilder.config
 
 import fleetBuilder.config.ModSettings.autofitMenuEnabled
 import fleetBuilder.config.ModSettings.autofitMenuHotkey
+import fleetBuilder.config.ModSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod
 import fleetBuilder.config.ModSettings.backupSave
 import fleetBuilder.config.ModSettings.cargoAutoManager
 import fleetBuilder.config.ModSettings.defaultPrefix
@@ -19,6 +20,7 @@ import fleetBuilder.config.ModSettings.removeDefaultDMods
 import fleetBuilder.config.ModSettings.removeRefitHullmod
 import fleetBuilder.config.ModSettings.replaceVanillaAutofitButton
 import fleetBuilder.config.ModSettings.reportCargoAutoManagerChanges
+import fleetBuilder.config.ModSettings.reserveFirstFourAutofitSlots
 import fleetBuilder.config.ModSettings.saveDMods
 import fleetBuilder.config.ModSettings.saveHiddenMods
 import fleetBuilder.config.ModSettings.saveSMods
@@ -87,6 +89,8 @@ internal class ModSettingsListener : LunaSettingsListener {
             replaceVanillaAutofitButton = getBoolean(modID, "replaceVanillaAutofitButton")!!
             removeRefitHullmod = getBoolean(modID, "removeRefitHullmod")!!
             autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
+            autofitNoSModdedBuiltInWhenNotBuiltInMod = getBoolean(modID, "autofitNoSModdedBuiltInWhenNotBuiltInMod")!!
+            reserveFirstFourAutofitSlots = getBoolean(modID, "reserveFirstFourAutofitSlots")!!
 
             if (VariantLib.Loaded())
                 LoadoutManager.loadAllDirectories()//Reload the LoadoutManager

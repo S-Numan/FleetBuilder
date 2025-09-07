@@ -1,3 +1,13 @@
+## 1.19.0
+- Fixed right clicking hullmods removing the built in hullmod too, when the hullmod is an sModdedBuiltIn.
+- Presumably fixed crash after save on gigantic save files.
+
+Autofit:
+- Reserve the first four slots by default to prevent your saved loadout positioning from being messed up. This can be disabled in the mod settings.
+- When stripping the loadout, the logic did not inform the autofit applier that the weapon existed again. This has been fixed.
+- Do not save SModded Built Ins which aren’t actually built into the ship hull. (E.G Mad Rockerpiper MIDAS from Roider Union)
+- No longer applies SMods when there isn't enough OP to apply the hullmod in the first place. (For some modded ships that have 0 OP)
+
 ## 1.18.0
 - Allowed copying and importing variants in the titlescreen missions.
 - Do not open the refit dialog when the wing or weapon selector dialogs are open.

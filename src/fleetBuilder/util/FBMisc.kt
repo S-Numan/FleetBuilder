@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.input.InputEventAPI
+import com.fs.starfarer.api.plugins.AutofitPlugin
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
@@ -41,6 +42,7 @@ import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
 import org.magiclib.kotlin.getBuildInBonusXP
+import org.magiclib.kotlin.getOPCost
 import java.awt.Color
 import java.util.*
 import kotlin.math.max
@@ -108,7 +110,10 @@ object FBMisc {
         var maxSMods = getMaxSMods(ship.mutableStats)
         val currentSMods = (baseVariant.sMods + baseVariant.sModdedBuiltIns).toSet()
         val newSMods = (loadout.sMods + loadout.sModdedBuiltIns).toSet()
-        val sModsToApply = newSMods.filter { it !in currentSMods }
+        var sModsToApply = newSMods.filter { it !in currentSMods }
+
+        // Filter out SMods that are sModdedBuiltIns in the loadout, but not a built-in hullmod in the baseVariant. See Mad Rockpiper MIDAS from Roider Union for why this is done. Also, sometimes variant skins have built in hullmods that can be sModded.
+        sModsToApply = sModsToApply.filterNot { it in loadout.sModdedBuiltIns && !baseVariant.hullSpec.builtInMods.contains(it) }
         if (currentSMods.count { it !in baseVariant.hullSpec.builtInMods } + sModsToApply.count { it !in loadout.hullSpec.builtInMods } > maxSMods) {
             DisplayMessage.showMessage("Cannot apply SMods. Not enough build in slots left", Color.YELLOW)
             return emptyList<String>() to 0f
@@ -123,7 +128,7 @@ object FBMisc {
         var canApplySMods: List<String> = sModsToApply.filter { Global.getSector().playerFaction.knowsHullMod(it) }
 
         if (sModsToApply.size != canApplySMods.size) {
-            DisplayMessage.showMessage("Cannot apply some SMods as you do not know how to apply them initially.", Color.YELLOW)
+            DisplayMessage.showMessage("Cannot apply some SMods as you do not know how to add them as hullmods.", Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
@@ -152,6 +157,13 @@ object FBMisc {
         if (sModsToApply.size != canApplySMods.size) {
             DisplayMessage.showMessage("Cannot apply some SMods in the current context. Try legally docking at a market.", Color.YELLOW)
             return emptyList<String>() to 0f
+        }
+
+        sModsToApply.forEach { modID ->
+            if (baseVariant.hullSpec.getOrdnancePoints(null) < Global.getSettings().getHullModSpec(modID).getOPCost(baseVariant.hullSize)) {
+                DisplayMessage.showMessage("Cannot apply some SMods. Hull does not have enough Ordnance Points", Color.YELLOW)
+                return emptyList<String>() to 0f
+            }
         }
 
         var bonusXpToGrant = 0f

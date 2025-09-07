@@ -59,48 +59,21 @@ object AutofitApplier {
 
             val auto: CoreAutofitPlugin
 
+            val ui = Global.getSector().campaignUI
+            val interaction = ui.currentInteractionDialog
+
             var market: MarketAPI? = null
+
+            //Add market to delegate if present
+            if (interaction != null && interaction.interactionTarget != null && interaction.interactionTarget.market != null) {
+                market = interaction.interactionTarget.market
+                delegate.setMarket(market)
+            }
 
             if (!Global.getSettings().isInCampaignState) {
                 replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
 
             } else {
-                val ui = Global.getSector().campaignUI
-                val interaction = ui.currentInteractionDialog
-
-                //Add market to delegate if present
-                if (interaction != null && interaction.interactionTarget != null && interaction.interactionTarget.market != null) {
-                    market = interaction.interactionTarget.market
-                    delegate.setMarket(market)
-
-                    for (submarket in market.submarketsCopy) {
-                        if (submarket.plugin.isHidden) continue
-                        if (!submarket.plugin.isEnabled(coreUI)) continue
-                        if (!submarket.plugin.showInCargoScreen()) continue
-                        if (!allowMarket && !submarket.plugin.isFreeTransfer) continue
-                        if (!allowBlackMarket && submarket.plugin.isBlackMarket) continue
-                        if (!allowStorage && submarket.plugin.isFreeTransfer) continue
-
-                        for (weapon in submarket.cargo.weapons) {
-                            delegate.addAvailableWeapon(
-                                Global.getSettings().getWeaponSpec(weapon.item),
-                                weapon.count,
-                                submarket.cargo,
-                                submarket
-                            )
-                        }
-                        for (fighter in submarket.cargo.fighters) {
-                            delegate.addAvailableFighter(
-                                Global.getSettings().getFighterWingSpec(fighter.item),
-                                fighter.count,
-                                submarket.cargo,
-                                submarket
-                            )
-                        }
-                    }
-                }
-
-
                 //Strip items off ship first if in campaign. Both so they can be used by the autofitplugin, and so if using forceAutofit, the things on the ship aren't erased.
                 auto = CoreAutofitPlugin(fleetMember.fleetData.commander).apply { random = Random() }
                 auto.setChecked(CoreAutofitPlugin.STRIP, false)
@@ -137,12 +110,40 @@ object AutofitApplier {
                     stripVaraint(baseModule, loadoutModule)
                 }
 
-
                 if (ModSettings.forceAutofit) {
                     replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
                     //baseVariant.addTag(Tags.SHIP_RECOVERABLE)
                     //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
                 } else {
+
+                    //Add submarkets to delegate if present
+                    if (market != null) {
+                        for (submarket in market.submarketsCopy) {
+                            if (submarket.plugin.isHidden) continue
+                            if (!submarket.plugin.isEnabled(coreUI)) continue
+                            if (!submarket.plugin.showInCargoScreen()) continue
+                            if (!allowMarket && !submarket.plugin.isFreeTransfer) continue
+                            if (!allowBlackMarket && submarket.plugin.isBlackMarket) continue
+                            if (!allowStorage && submarket.plugin.isFreeTransfer) continue
+
+                            for (weapon in submarket.cargo.weapons) {
+                                delegate.addAvailableWeapon(
+                                    Global.getSettings().getWeaponSpec(weapon.item),
+                                    weapon.count,
+                                    submarket.cargo,
+                                    submarket
+                                )
+                            }
+                            for (fighter in submarket.cargo.fighters) {
+                                delegate.addAvailableFighter(
+                                    Global.getSettings().getFighterWingSpec(fighter.item),
+                                    fighter.count,
+                                    submarket.cargo,
+                                    submarket
+                                )
+                            }
+                        }
+                    }
 
                     if (allowCargo) {
                         //Add player cargo weapons/fighters to delegate for AutofitPlugin to use.
@@ -165,6 +166,7 @@ object AutofitApplier {
                     }
 
                     if (applySMods) {
+
                         var (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship, baseVariant, loadout)
                         sModsToApply = sModsToApply.filter { delegate.canAddRemoveHullmodInPlayerCampaignRefit(it) }.toMutableList()
                         if (sModsToApply.isNotEmpty()) {

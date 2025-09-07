@@ -1,0 +1,80 @@
+{
+    "aggression_doctrine": 3,
+    "factionID": "ML_bounty",
+    "fleetName": "???",
+    "members": [{
+        "cr": 1,
+        "isFlagship": true,
+        "name": "TTS Aperioris",
+        "officer": {
+            "first": "???",
+            "gender": "MALE",
+            "level": 12,
+            "personality": "reckless",
+            "portrait": "graphics/swp/portraits/swp_lee_ghost.png",
+            "post": "swp_unknown",
+            "rank": "swp_unknown",
+            "skills": {
+                "combat_endurance": 2,
+                "coordinated_maneuvers": 1,
+                "crew_training": 1,
+                "damage_control": 2,
+                "electronic_warfare": 1,
+                "energy_weapon_mastery": 2,
+                "field_modulation": 2,
+                "flux_regulation": 1,
+                "gunnery_implants": 2,
+                "helmsmanship": 2,
+                "hull_restoration": 1,
+                "impact_mitigation": 2,
+                "missile_specialization": 2,
+                "omega_ecm": 1,
+                "ordnance_expert": 2,
+                "phase_corps": 1,
+                "polarized_armor": 2,
+                "systems_expertise": 2,
+                "tactical_drills": 1,
+                "target_analysis": 2,
+                "wolfpack_tactics": 1
+            }
+        },
+        "variantId": "swp_excelsior_boss"
+    }],
+    "mod_info": [{
+        "mod_id": "swp",
+        "mod_name": "Ship/Weapon Pack",
+        "mod_version": "1.16.6"
+    }],
+    "variants": [{
+        "displayName": "Prototype",
+        "fluxCapacitors": 15,
+        "fluxVents": 0,
+        "hullId": "swp_excelsior_boss",
+        "hullMods": [
+            "insulatedengine",
+            "autorepair"
+        ],
+        "permaMods": [],
+        "sMods": [
+            "heavyarmor",
+            "missleracks",
+            "unstable_injector"
+        ],
+        "variantId": "swp_excelsior_boss",
+        "weaponGroups": [
+            {
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {"WS0001": "swp_excelsiorcannon"}
+            },
+            {
+                "autofire": false,
+                "mode": "ALTERNATING",
+                "weapons": {
+                    "WS0002": "amsrm",
+                    "WS0003": "amsrm"
+                }
+            }
+        ]
+    }]
+}

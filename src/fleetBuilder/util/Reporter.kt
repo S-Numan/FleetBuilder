@@ -16,6 +16,7 @@ import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
+import java.awt.Color
 import kotlin.jvm.java
 
 class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedListener {
@@ -99,7 +100,12 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
 
         if (ModSettings.backupSave) {
             val json = PlayerSaveUtil.createPlayerSaveJson()
-            Global.getSettings().writeJSONToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", json, false)
+
+            val jsonString = json.toString(4)
+            if (jsonString.length < 1000000) // Starsector cannot save files over 1MB
+                Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", jsonString)
+            else
+                DisplayMessage.showMessage("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.", Color.YELLOW)
         }
     }
 

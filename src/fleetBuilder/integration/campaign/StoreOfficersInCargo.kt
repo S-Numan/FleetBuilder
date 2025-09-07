@@ -30,11 +30,11 @@ class StoreOfficersInCargo : CampaignInputListener {
         if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return
 
         val submarket = ReflectionMisc.getSelectedSubmarketInFleetTab() ?: return
-        if (!submarket.plugin.isFreeTransfer) return //Don't sell officers
+        if (!submarket.plugin.isFreeTransfer // Don't sell officers
+        ) return
         val viewedFleet = ReflectionMisc.getViewedFleetInFleetPanel()
         if (viewedFleet !== sector.playerFleet.fleetData)//If we aren't looking at the user's fleet, don't continue
             return
-
 
         fun storeOfficer(memberUI: UIPanelAPI) {
             val mouseOverMember = memberUI.getFieldsMatching(type = FleetMember::class.java).getOrNull(0)?.get(memberUI) as? FleetMemberAPI
