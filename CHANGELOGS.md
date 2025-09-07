@@ -1,3 +1,6 @@
+## 1.20.0
+- Removed duplicate entries in the cargo saving JSON. Backwards compatible.
+
 ## 1.19.0
 - Fixed right clicking hullmods removing the built in hullmod too, when the hullmod is an sModdedBuiltIn.
 - Presumably fixed crash after save on gigantic save files.
