@@ -1,3 +1,6 @@
+## 1.21.1
+- Fixed paste into fleet message being backwards.
+
 ## 1.21.0
 - Fixed person memkeys failing to save. (Including combat chatter character)
 - Support for pasting members and variants onto the campaign layer.
