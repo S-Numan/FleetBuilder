@@ -87,6 +87,8 @@
   "autofit_confirmed":"Autofit confirmed",
   "autofit_confirmed_purchased":"Autofit confirmed, purchased %s worth of ordnance",
 
+  "enable_cheats_to_use_officer_creator":"Enable cheats in %s settings to unlock officer creation functionality",
+  "enable_cheats_to_use_paste":"Enable cheats in %s settings to unlock paste functionality",
 
 
 

@@ -1,6 +1,7 @@
 fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
 featuresDisabled,Disable All Features,Boolean,false,,"Set this to true to disable all features this mod provides, effectively turning this into a library mod.",,,General
-,,,,,,,,
+enableCheats,Enable Cheats,Boolean,false,,"This must be enabled to use the more cheat like commands this mod provides.
+If Dev mode is on, this will be treated as enabled, even if it isn’t.",,,General
 ,,,,,,,,
 ,,,,,,,,
 fleetClipboardHotkeyHandler,Enable Hotkey Handler,Boolean,true,,"Adds a bunch of useful hotkeys in many places.
@@ -26,7 +27,7 @@ Campaign: Open Save Transfer dialog
 CTRL + SHIFT + D
 Anywhere: Open developer options. You can toggle dev mode here.
 
-THE BELOW REQUIRES DEV MODE TO BE ON
+THE BELOW REQUIRES CHEATS TO BE ENABLED
 
 CTRL + V in
 Fleet screen: Add the copied fleet/member/variant/officer to your fleet
@@ -99,7 +100,7 @@ dontForceClearSMods,Dont Force Clear S-Mods,Boolean,false,,"If Force Autofit is 
 ,,,,,,,,
 ,,,,,,,,
 extraHeader,Extra Header,Header,Extra,,,,,Misc
-devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When dev mode is enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
+devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When cheats are enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
 Hold Shift or Alt to multiply the added value by 10
 Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,Misc
 storeOfficersInCargo,Store Officers In Cargo,Boolean,false,,"Officers stay with their ships when putting a ship in storage, thus removing them from your fleet.
@@ -114,7 +115,7 @@ You can also automatically deposit all weapons when interacting with a market
 Highly configurable",,,Misc
 reportCargoAutoManagerChanges,Report Cargo Auto Manager Changes,Boolean,true,,"If true, will show a message at the top of the screen every time the Cargo Auto Manager moves your cargo on entering or leaving a market.",,,Misc
 removeRefitHullmod,Force Remove Refit Hullmod,Boolean,true,,"If true, right click a hullmod in the refit screen to remove it. This works on built in SMods, SMods, DMods, etc.
-Dev Mode must be on.",,,Misc
+Cheats must be enabled.",,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave -backup” in the console to load it.",,,Misc

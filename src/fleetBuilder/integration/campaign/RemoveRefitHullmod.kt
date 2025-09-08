@@ -31,7 +31,7 @@ class RemoveRefitHullmod : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 1
 
     override fun processCampaignInputPreCore(events: List<InputEventAPI>) {
-        if (!Global.getSettings().isDevMode) return
+        if (!ModSettings.cheatsEnabled()) return
 
         val sector = Global.getSector() ?: return
         val ui = sector.campaignUI ?: return

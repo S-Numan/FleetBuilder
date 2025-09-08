@@ -25,6 +25,7 @@ import fleetBuilder.config.ModSettings.saveDMods
 import fleetBuilder.config.ModSettings.saveHiddenMods
 import fleetBuilder.config.ModSettings.saveSMods
 import fleetBuilder.config.ModSettings.selectorsPerRow
+import fleetBuilder.config.ModSettings.setCheatsEnabled
 import fleetBuilder.config.ModSettings.showCoreGoalVariants
 import fleetBuilder.config.ModSettings.showCoreNonGoalVariants
 import fleetBuilder.config.ModSettings.showDebug
@@ -35,6 +36,7 @@ import fleetBuilder.util.Reporter
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.generatePrefixes
 import fleetBuilder.variants.VariantLib
+import lunalib.backend.ui.settings.LunaSettingsLoader
 import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
 import lunalib.lunaSettings.LunaSettings.getString
@@ -91,6 +93,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
             autofitNoSModdedBuiltInWhenNotBuiltInMod = getBoolean(modID, "autofitNoSModdedBuiltInWhenNotBuiltInMod")!!
             reserveFirstFourAutofitSlots = getBoolean(modID, "reserveFirstFourAutofitSlots")!!
+            setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
 
             if (VariantLib.Loaded())
                 LoadoutManager.loadAllDirectories()//Reload the LoadoutManager

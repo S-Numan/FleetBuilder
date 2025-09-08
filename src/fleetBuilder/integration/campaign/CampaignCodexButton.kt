@@ -14,6 +14,7 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.FBTxt
+import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.member.DataMember.getMemberDataFromMember
 import fleetBuilder.persistence.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.DisplayMessage
@@ -39,7 +40,7 @@ class CampaignCodexButton : EveryFrameScript {
 
     override fun advance(amount: Float) {
         if (!Global.getSector().isPaused) return
-        if (!Global.getSettings().isDevMode) return
+        if (!ModSettings.cheatsEnabled()) return
 
         val codex = getCodexDialog()
         if (codex == null) {
