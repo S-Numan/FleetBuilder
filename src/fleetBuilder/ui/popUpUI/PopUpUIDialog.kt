@@ -4,6 +4,8 @@ import com.fs.starfarer.api.ui.*
 import starficz.onClick
 import java.awt.Color
 
+//This class is awful, please don't use it.
+
 open class PopUpUIDialog(
     override var headerTitle: String? = null,
     val addConfirmButton: Boolean = false,

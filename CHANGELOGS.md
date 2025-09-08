@@ -2,6 +2,7 @@
 - Prevent game freeze if pasted string into fleet filter is too large by capping the allowed character count.
 - LunaLib cheats setting.
 - Inform user to enable the cheat setting if they want to use the more cheaty commands on usage of one that requires cheats.
+- Added messages after appending to or replacing your fleet, for clarity.
 
 ## 1.21.1
 - Fixed paste into fleet message being backwards.

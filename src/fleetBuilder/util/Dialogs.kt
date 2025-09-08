@@ -17,6 +17,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.config.FBTxt
 import fleetBuilder.persistence.fleet.DataFleet
 import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.persistence.fleet.FleetSettings
@@ -149,6 +150,12 @@ object Dialogs {
                 FBMisc.fulfillPlayerFleet()
 
             ReflectionMisc.updateFleetPanelContents()
+
+            if (fleet.fleetData.membersListCopy.size > 1)
+                DisplayMessage.showMessage(FBTxt.txt("members_appended_into_fleet", fleet.fleetData.membersListCopy.size))
+            else
+                DisplayMessage.showMessage(FBTxt.txt("member_appended_into_fleet", fleet.fleetData.membersListCopy.size))
+
         }
         dialog.addPadding(24f)
 
@@ -171,6 +178,8 @@ object Dialogs {
                 FBMisc.fulfillPlayerFleet()
 
             ReflectionMisc.updateFleetPanelContents()
+
+            DisplayMessage.showMessage(FBTxt.txt("player_fleet_replaced"))
         }
         dialog.addToggle("Set Aggression Doctrine", default = true)
         dialog.addToggle("Replace Player with Commander", default = false)

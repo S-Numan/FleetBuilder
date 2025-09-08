@@ -73,12 +73,12 @@ marines / transport
 fuel / tanker
 crew / liner
 cargo / freighter",,,Fleet Filter
+,,,,,,,,
+autofitMainHeader,Autofit Main Header,Header,Main,,,,,Autofit Menu
 autofitMenuEnabled,Enable Autofit Menu,Boolean,false,,A custom autofit menu for the refit screen with unlimited variant slots that stay between saves.,,,Autofit Menu
 autofitSettingsHeader,Autofit Settings Header,Header,Settings,,,,,Autofit Menu
 replaceVanillaAutofitButton,Replace Vanilla Button,Boolean,true,,"When true, opens this mod’s autofit menu instead of vanilla’s autofit menu when clicking the autofit button.",,,Autofit Menu
 autofitMenuHotkey,Autofit Menu Hotkey,Keycode,47,,"Keybind to open this mod’s autofit menu. Press this keybind in the refit screen to open the autofit menu,.",,,Autofit Menu
-,,,,,,,,
-,,,,,,,,
 uIHeader,UI Header,Header,UI,,,,,Autofit Menu
 selectorsPerRow,Selectors Per Row,Int,4,,"Amount of autofit loadouts you see per row.
 Setting this to a lower number will increase the size of your autofit options.",1,10,Autofit Menu
