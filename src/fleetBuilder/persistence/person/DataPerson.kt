@@ -192,8 +192,7 @@ object DataPerson {
         person.stats.points = data.points
 
         data.memKeys.forEach { (key, value) ->
-            if (value is String || value is Boolean || value is Int)
-                person.memoryWithoutUpdate.set(key, value)
+            person.memoryWithoutUpdate.set(key, value)
         }
 
         if (Global.getSettings().modManager.isModEnabled("chatter") && data.memKeys.containsKey("chatterChar")) {
