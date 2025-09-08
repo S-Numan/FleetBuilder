@@ -29,8 +29,7 @@ object DataPerson {
         val xp: Long = 0,
         val bonusXp: Long = 0,
         val points: Int = 0,
-        val memKeys: Map<String, Any> = emptyMap(),
-        val combatChatterData: CombatChatterSerialization.CombatChatterData? = null,
+        val memKeys: Map<String, Any> = emptyMap()
     )
 
     @JvmOverloads
@@ -62,16 +61,7 @@ object DataPerson {
             xp = person.stats.xp,
             bonusXp = person.stats.bonusXp,
             points = person.stats.points,
-            memKeys = person.memoryWithoutUpdate.keys.associateWith { key -> person.memoryWithoutUpdate[key] },
-            combatChatterData =
-                if (Global.getSettings().modManager.isModEnabled("chatter")) {
-                    val characterId = ChatterDataManager.getCharacterFromMemory(person)
-                    if (characterId != null)
-                        CombatChatterSerialization.CombatChatterData(characterId)
-                    else
-                        CombatChatterSerialization.CombatChatterData("")
-                } else
-                    CombatChatterSerialization.CombatChatterData("")
+            memKeys = person.memoryWithoutUpdate.keys.associateWith { key -> person.memoryWithoutUpdate[key] }
         )
         if (filterParsed)
             return filterParsedPersonData(data, settings)
@@ -118,7 +108,7 @@ object DataPerson {
             val value = data.memKeys[key]
 
             when {
-                value is Boolean || value is String || value is Int -> return@filterKeys false
+                value !is Boolean && value !is String && value !is Int -> return@filterKeys false
                 key in excludeKeys -> return@filterKeys false
                 settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
                 else -> return@filterKeys true
@@ -202,16 +192,18 @@ object DataPerson {
         person.stats.points = data.points
 
         data.memKeys.forEach { (key, value) ->
-            if (value is String || value is Boolean || value is Int)
-                person.memoryWithoutUpdate.set(key, value)
+            person.memoryWithoutUpdate.set(key, value)
         }
 
-        if (Global.getSettings().modManager.isModEnabled("chatter") && data.combatChatterData != null) {
-            val character = ChatterDataManager.getCharacterData(data.combatChatterData.chatterID)
-            if (character != null) {
-                ChatterDataManager.saveCharacter(person, data.combatChatterData.chatterID)
-                val plugin = ChatterCombatPlugin.getInstance()
-                plugin?.setCharacterForOfficer(person, data.combatChatterData.chatterID)
+        if (Global.getSettings().modManager.isModEnabled("chatter") && data.memKeys.containsKey("chatterChar")) {
+            val charID = data.memKeys["chatterChar"] as? String
+            if (charID != null) {
+                val character = ChatterDataManager.getCharacterData(charID)
+                if (character != null) {
+                    ChatterDataManager.saveCharacter(person, charID)
+                    val plugin = ChatterCombatPlugin.getInstance()
+                    plugin?.setCharacterForOfficer(person, charID)
+                }
             }
         }
 

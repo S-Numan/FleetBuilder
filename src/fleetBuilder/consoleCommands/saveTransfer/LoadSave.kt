@@ -1,6 +1,7 @@
 package fleetBuilder.consoleCommands.saveTransfer
 
 import com.fs.starfarer.api.Global
+import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.PlayerSaveUtil
@@ -36,13 +37,13 @@ class LoadSave : BaseCommand {
             val configPath = "${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave"
 
             if (!Global.getSettings().fileExistsInCommon(configPath)) {
-                Console.showMessage("Failed to find backup save")
+                Console.showMessage(FBTxt.txt("backup_save_not_found"))
                 return BaseCommand.CommandResult.ERROR
             }
             try {
                 json = Global.getSettings().readJSONFromCommon(configPath, false)
             } catch (e: Exception) {
-                Console.showMessage("Failed to read backup save json\n$e")
+                Console.showMessage("${FBTxt.txt("backup_save_read_error")}\n$e")
                 return BaseCommand.CommandResult.ERROR
             }
         } else {
@@ -50,7 +51,7 @@ class LoadSave : BaseCommand {
         }
 
         if (json == null) {
-            Console.showMessage("Failed to read json in clipboard\n")
+            Console.showMessage(FBTxt.txt("failed_to_read_json_in_clipboard") + "\n")
             return BaseCommand.CommandResult.ERROR
         }
 
@@ -68,13 +69,13 @@ class LoadSave : BaseCommand {
 
 
         if (!missing.hasMissing()) {
-            Console.showMessage("No missing elements.")
+            Console.showMessage(FBTxt.txt("no_missing_elements"))
         } else {
             reportMissingElementsIfAny(missing)
         }
 
 
-        Console.showMessage("\nLoad Complete")
+        Console.showMessage("\n" + FBTxt.txt("load_complete"))
         return BaseCommand.CommandResult.SUCCESS
 
     }

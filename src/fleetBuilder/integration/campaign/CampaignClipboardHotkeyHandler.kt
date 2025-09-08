@@ -5,36 +5,23 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
-import com.fs.starfarer.api.impl.campaign.submarkets.LocalResourcesSubmarketPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
-import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
-import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
+import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.persistence.fleet.FleetSettings
 import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
-import fleetBuilder.persistence.member.DataMember
 import fleetBuilder.persistence.member.JSONMember.saveMemberToJson
 import fleetBuilder.persistence.person.JSONPerson.savePersonToJson
-import fleetBuilder.persistence.variant.DataVariant
-import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
-import fleetBuilder.ui.autofit.AutofitPanel
-import fleetBuilder.ui.autofit.AutofitSelector
-import fleetBuilder.ui.autofit.AutofitSpec
-import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.*
-import fleetBuilder.util.ClipboardUtil.getClipboardJson
-import fleetBuilder.util.ClipboardUtil.setClipboardText
-import fleetBuilder.util.DialogUtil.initPopUpUI
 import fleetBuilder.util.Dialogs.createDevModeDialog
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.fleetPaste
@@ -42,20 +29,11 @@ import fleetBuilder.util.FBMisc.handleRefitCopy
 import fleetBuilder.util.FBMisc.handleRefitPaste
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
-import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
-import fleetBuilder.variants.LoadoutManager.importShipLoadout
-import fleetBuilder.variants.MissingElements
-import fleetBuilder.variants.VariantLib
-import fleetBuilder.variants.reportMissingElementsIfAny
 import org.lwjgl.input.Keyboard
-import org.lwjgl.util.vector.Vector2f
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import starficz.findChildWithMethod
-import starficz.getChildrenCopy
-import starficz.height
-import starficz.width
 import java.awt.Color
 
 
@@ -143,7 +121,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 ui.currentInteractionDialog != null -> handleInteractionCopy(event, ui)
             }
         } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey failed", e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
     }
 
@@ -173,9 +151,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage(
                 if (!event.isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1) {
-                    "Copied interaction fleet with supporting fleets to clipboard"
+                    FBTxt.txt("copied_interaction_fleet_with_supporting_to_clipboard")
                 } else {
-                    "Copied interaction fleet to clipboard"
+                    FBTxt.txt("copied_interaction_fleet_to_clipboard")
                 }
             )
             event.consume()
@@ -213,16 +191,28 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 }
             }
         } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey had an error", e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
         if (fleetToCopy == null) {
-            DisplayMessage.showError("FleetBuilder hotkey failed")
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName))
             return
         }
 
         val json = saveFleetToJson(fleetToCopy, settings)
         ClipboardUtil.setClipboardText(json.toString(4))
-        DisplayMessage.showMessage("Copied ${if (settings.excludeMembersWithID.isEmpty()) "entire" else "visible"} ${if (uiShowsSubmarketFleet) "submarket fleet" else "fleet"} to clipboard")
+        val txt =
+            if (settings.excludeMembersWithID.isEmpty()) {
+                if (!uiShowsSubmarketFleet)
+                    FBTxt.txt("copied_entire_fleet_to_clipboard")
+                else
+                    FBTxt.txt("copied_entire_submarket_to_clipboard")
+            } else {
+                if (!uiShowsSubmarketFleet)
+                    FBTxt.txt("copied_visible_fleet_to_clipboard")
+                else
+                    FBTxt.txt("copied_visible_submarket_to_clipboard")
+            }
+        DisplayMessage.showMessage(txt)
         event.consume()
     }
 
@@ -239,7 +229,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         val data = ClipboardMisc.extractDataFromClipboard() ?: run {
-            //DisplayMessage.showMessage("No valid data in clipboard", Color.YELLOW)
+            //DisplayMessage.showMessage(FBTxt.txt("no_valid_data_in_clipboard"), Color.YELLOW)
             event.consume()
             return
         }
@@ -270,10 +260,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
             val json = savePersonToJson(hoverOfficer)
             ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessage.showMessage("Officer copied to clipboard")
+            DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
             event.consume()
         } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey failed", e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
     }
 
@@ -292,16 +282,16 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 if (isPortraitHoveredOver) {
                     val json = savePersonToJson(mouseOverMember.captain)
                     ClipboardUtil.setClipboardText(json.toString(4))
-                    DisplayMessage.showMessage("Officer copied to clipboard")
+                    DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
                 } else {
                     if (mouseOverMember.variant.hasHullMod(commandShuttleId)) {
-                        DisplayMessage.showMessage("Cannot copy the commander's shuttle", Color.YELLOW)
+                        DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
                         return
                     }
 
                     val json = saveMemberToJson(mouseOverMember)
                     ClipboardUtil.setClipboardText(json.toString(4))
-                    DisplayMessage.showMessage("Fleet member copied to clipboard")
+                    DisplayMessage.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
                 }
                 event.consume()
             } else if (isPortraitHoveredOver && mouseOverMember.captain.isPlayer) {
@@ -318,7 +308,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     when {
                         isShuttle -> {
                             if (sector.playerFleet.fleetSizeCount == 1)
-                                DisplayMessage.showMessage("Cannot remove last ship in fleet", Color.YELLOW)
+                                DisplayMessage.showMessage(FBTxt.txt("cannot_remove_last_ship_in_fleet"), Color.YELLOW)
                             else
                                 CommanderShuttle.removePlayerShuttle()
                         }
@@ -329,7 +319,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
                         else -> {
                             DisplayMessage.showMessage(
-                                "Unassign Player must be on in the FleetBuilder mod settings to unassign the player",
+                                FBTxt.txt("enable_unassign_player", ModSettings.modName),
                                 Color.YELLOW
                             )
                         }
@@ -340,7 +330,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 }
             }
         } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey failed", e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
     }
 
@@ -366,10 +356,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val member = thing.invoke("getMember") as? FleetMemberAPI ?: return
             val json = savePersonToJson(member.captain)
             ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessage.showMessage("Officer copied to clipboard")
+            DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
             event.consume()
         } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey failed", e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
     }
 

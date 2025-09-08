@@ -12,6 +12,7 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.FBMisc.getHullModBonusXP
@@ -175,7 +176,7 @@ object AutofitApplier {
                                 if (!itemManager.isRequiredItemAvailable(it, ship.fleetMember, baseVariant, market)) {
                                     sModsToApply.remove(it)
                                     bonusXpToGrant -= getHullModBonusXP(baseVariant, it)
-                                    DisplayMessage.showMessage("Failed to apply ${Global.getSettings().getHullModSpec(it).displayName}. Required item not available", Color.YELLOW)
+                                    DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
                                     return@forEach
                                 }
 
@@ -206,16 +207,17 @@ object AutofitApplier {
                     }
 
                     if (auto.creditCost > 0) {
+                        val creditString = Misc.getDGSCredits(auto.creditCost.toFloat())
                         DisplayMessage.showMessage(
-                            "Autofit confirmed, purchased ${Misc.getDGSCredits(auto.creditCost.toFloat())} worth of ordnance",
-                            Misc.getDGSCredits(auto.creditCost.toFloat()), Misc.getHighlightColor()
+                            FBTxt.txt("autofit_confirmed_purchased", creditString),
+                            creditString, Misc.getHighlightColor()
                         )
                     }
                 }
 
             }
         } catch (e: Exception) {
-            DisplayMessage.showError("ERROR: Failed to apply ship variant", e)
+            DisplayMessage.showError(FBTxt.txt("failed_to_apply_variant"), e)
             //e.printStackTrace()
         }
 
@@ -229,7 +231,7 @@ object AutofitApplier {
             shipDisplay.invoke("updateButtonPositionsToZoomLevel")
             //refitPanel.invoke("recreateUI")
         } catch (e: Exception) {
-            DisplayMessage.showError("Failed to apply variant in refit screen", e)
+            DisplayMessage.showError("ERROR: " + FBTxt.txt("failed_to_apply_variant"), e)
         }
 
         shipDisplay.invoke("setSuppressMessages", false)

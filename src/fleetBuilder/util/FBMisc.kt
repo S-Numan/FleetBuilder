@@ -12,11 +12,11 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.fleet.RepairTrackerAPI
 import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.impl.campaign.ids.Factions
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Stats
-import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.plugins.AutofitPlugin
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.CommanderShuttle.playerShuttleExists
@@ -66,7 +66,7 @@ object FBMisc {
             data = data.variantData
         }
         if (data !is DataVariant.ParsedVariantData) {
-            DisplayMessage.showMessage("Data in clipboard was valid, but not a variant", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_variant"), Color.YELLOW)
             return true
         }
 
@@ -75,7 +75,7 @@ object FBMisc {
 
         if (missing.hullIds.isNotEmpty()) {
             DisplayMessage.showMessage(
-                "Failed to import loadout. Could not find hullId ${missing.hullIds.first()}",
+                FBTxt.txt("failed_to_import_loadout", missing.hullIds.first()),
                 Color.YELLOW
             )
             return true
@@ -84,13 +84,12 @@ object FBMisc {
 
         val loadoutExists = doesLoadoutExist(variant)
 
-
         if (!loadoutExists) {
             Dialogs.createImportLoadoutDialog(variant, missing)
         } else {
             DisplayMessage.showMessage(
-                "Loadout already exists, cannot import loadout with hull: ${variant.hullSpec.hullId}",
-                variant.hullSpec.hullId,
+                FBTxt.txt("loadout_already_exists", variant.hullSpec.hullId),
+                variant.hullSpec.hullName,
                 Misc.getHighlightColor()
             )
         }
@@ -115,20 +114,20 @@ object FBMisc {
         // Filter out SMods that are sModdedBuiltIns in the loadout, but not a built-in hullmod in the baseVariant. See Mad Rockpiper MIDAS from Roider Union for why this is done. Also, sometimes variant skins have built in hullmods that can be sModded.
         sModsToApply = sModsToApply.filterNot { it in loadout.sModdedBuiltIns && !baseVariant.hullSpec.builtInMods.contains(it) }
         if (currentSMods.count { it !in baseVariant.hullSpec.builtInMods } + sModsToApply.count { it !in loadout.hullSpec.builtInMods } > maxSMods) {
-            DisplayMessage.showMessage("Cannot apply SMods. Not enough build in slots left", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_build_in_slots"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
         maxSMods = min(maxSMods, playerSPLeft)
 
         if (sModsToApply.size > maxSMods) {
-            DisplayMessage.showMessage("Cannot apply SMods. Not enough Story Points", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_story_point"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
         var canApplySMods: List<String> = sModsToApply.filter { Global.getSector().playerFaction.knowsHullMod(it) }
 
         if (sModsToApply.size != canApplySMods.size) {
-            DisplayMessage.showMessage("Cannot apply some SMods as you do not know how to add them as hullmods.", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_knowledge"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
@@ -148,20 +147,20 @@ object FBMisc {
 
         canApplySMods = sModsToApply.filter { HullModItemManager.getInstance().isRequiredItemAvailable(it, ship.fleetMember, baseVariant, Global.getSector().currentlyOpenMarket) }
         if (sModsToApply.size != canApplySMods.size) {
-            DisplayMessage.showMessage("Cannot apply some SMods. Lacking required items ...", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
         canApplySMods = sModsToApply.filter { Global.getSettings().getHullModSpec(it).effect.canBeAddedOrRemovedNow(ship, Global.getSector().currentlyOpenMarket, coreUI.tradeMode) }
 
         if (sModsToApply.size != canApplySMods.size) {
-            DisplayMessage.showMessage("Cannot apply some SMods in the current context. Try legally docking at a market.", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_dock"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
         sModsToApply.forEach { modID ->
             if (baseVariant.hullSpec.getOrdnancePoints(null) < Global.getSettings().getHullModSpec(modID).getOPCost(baseVariant.hullSize)) {
-                DisplayMessage.showMessage("Cannot apply some SMods. Hull does not have enough Ordnance Points", Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_op"), Color.YELLOW)
                 return emptyList<String>() to 0f
             }
         }
@@ -199,13 +198,19 @@ object FBMisc {
     }
 
     fun spendStoryPoint(points: Int, buildInBonus: Float) {
+        val text =
+            if (points > 1)
+                FBTxt.txt("used_story_point_plural", points)
+            else
+                FBTxt.txt("used_story_point", points)
+
         Global.getSector().playerStats.spendStoryPoints(
             points,
             true,
             null,
             true,
             (buildInBonus / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()) / points,
-            "Used $points story point" + if (points > 1) "s" else ""
+            text
         );
         Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1f, 1f);
     }
@@ -410,20 +415,37 @@ object FBMisc {
         data: Any,
         ui: CampaignUIAPI
     ): Boolean {
-        if (data !is DataFleet.ParsedFleetData) {
-            DisplayMessage.showMessage("Data valid, but not fleet data. You can only paste fleet data into the campaign.", Color.YELLOW)
-            return false
+        var newData = data
+        if (newData !is DataFleet.ParsedFleetData) {
+            fun hackTogetherFleet(member: FleetMemberAPI) {
+                val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, true)
+                fleet.fleetData.addFleetMember(member)
+                newData = getFleetDataFromFleet(fleet)
+            }
+            if (newData is DataMember.ParsedMemberData) {
+                val member = buildMemberFull(newData as DataMember.ParsedMemberData)
+                hackTogetherFleet(member)
+            } else if (newData is DataVariant.ParsedVariantData) {
+                val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, buildVariantFull(newData as DataVariant.ParsedVariantData))
+                hackTogetherFleet(member)
+            } else if (newData is DataPerson.ParsedPersonData) {
+                DisplayMessage.showMessage(FBTxt.txt("campaign_officer_spawn"), Color.YELLOW)
+                return false
+            } else {
+                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_campaign_paste"), Color.YELLOW)
+                return false
+            }
         }
 
         val missing = MissingElements()
-        val validatedData = validateAndCleanFleetData(data, settings = FleetSettings(), missing = missing)
+        val validatedData = validateAndCleanFleetData(newData as DataFleet.ParsedFleetData, settings = FleetSettings(), missing = missing)
 
         if (validatedData.members.isEmpty()) {
-            reportMissingElementsIfAny(missing, "Fleet was empty when pasting")
+            reportMissingElementsIfAny(missing, FBTxt.txt("fleet_was_empty_when_pasting"))
             return false
         }
 
-        Dialogs.spawnFleetInCampaignDialog(sector, data, validatedData, ui)
+        Dialogs.spawnFleetInCampaignDialog(sector, newData as DataFleet.ParsedFleetData, validatedData, ui)
 
         return true
     }
@@ -451,7 +473,7 @@ object FBMisc {
                     randomizePersonCosmetics(person, playerFleet.fleet.faction)
                 }
                 playerFleet.addOfficer(person)
-                showMessage("Added officer to fleet")
+                showMessage(FBTxt.txt("added_officer_to_fleet"))
             }
 
             is DataVariant.ParsedVariantData -> {
@@ -459,7 +481,7 @@ object FBMisc {
                 val variant = buildVariantFull(data, missing = missing)
 
                 if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, "Could not find hullId when pasting variant")
+                    reportMissingElementsIfAny(missing, FBTxt.txt("could_not_find_hullid_when_variant", missing.hullIds.first()))
                     return
                 }
 
@@ -470,7 +492,14 @@ object FBMisc {
 
                 fleetToAddTo.addFleetMember(member)
 
-                showMessage("Added variant of hull '${variant.hullSpec.hullName}' to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}", variant.hullSpec.hullName, Misc.getHighlightColor())
+                val shipName = variant.hullSpec.hullName
+
+                val message = if (uiShowsSubmarketFleet)
+                    FBTxt.txt("added_ship_to_fleet", shipName)
+                else
+                    FBTxt.txt("added_ship_to_submarket", shipName)
+
+                showMessage(message, shipName, Misc.getHighlightColor())
 
                 updateFleetPanelContents()
             }
@@ -480,7 +509,7 @@ object FBMisc {
                 val member = buildMemberFull(data, missing = missing)
 
                 if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, "Could not find hullId when pasting member")
+                    reportMissingElementsIfAny(missing, FBTxt.txt("could_not_find_hullid_when_member", missing.hullIds.first()))
                     return
                 }
 
@@ -492,9 +521,18 @@ object FBMisc {
                     fleetToAddTo.addOfficer(member.captain)
 
                 val shipName = member.hullSpec.hullName
-                val message = buildString {
-                    append("Added '${shipName}' to ${if (uiShowsSubmarketFleet) "submarket" else "fleet"}")
-                    if (!member.captain.isDefault) append(", with an officer")
+                val message = if (uiShowsSubmarketFleet) {
+                    if (member.captain.isDefault) {
+                        FBTxt.txt("added_ship_to_fleet", shipName)
+                    } else {
+                        FBTxt.txt("added_ship_to_fleet_with_officer", shipName)
+                    }
+                } else {
+                    if (member.captain.isDefault) {
+                        FBTxt.txt("added_ship_to_submarket", shipName)
+                    } else {
+                        FBTxt.txt("added_ship_to_submarket_with_officer", shipName)
+                    }
                 }
 
                 showMessage(message, shipName, Misc.getHighlightColor())
@@ -508,7 +546,7 @@ object FBMisc {
                 val validatedFleet = validateAndCleanFleetData(data, missing = subMissing)
 
                 if (validatedFleet.members.isEmpty()) {
-                    reportMissingElementsIfAny(subMissing, "Fleet was empty when pasting")
+                    reportMissingElementsIfAny(subMissing, FBTxt.txt("fleet_was_empty_when_pasting"))
                     return
                 }
 
@@ -516,7 +554,7 @@ object FBMisc {
             }
 
             else -> {
-                DisplayMessage.showMessage("Data valid, but was not fleet, member, variant, or officer data", Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_not_fleet_member_variant_person"), Color.YELLOW)
             }
         }
 

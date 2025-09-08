@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.impl.campaign.ids.Industries
 import com.fs.starfarer.api.impl.campaign.ids.Items
+import fleetBuilder.config.FBTxt
 import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
@@ -77,7 +78,7 @@ class BuildFleet : BaseCommand {
         addSpecialUpToLimit(cargo, Items.SHROUDED_MANTLE, 10000f)
         addSpecialUpToLimit(cargo, Items.SHROUDED_LENS, 10000f)
 
-        Console.showMessage("\nFleet builder done")
+        Console.showMessage("\n" + FBTxt.txt("done"))
 
         return BaseCommand.CommandResult.SUCCESS
     }

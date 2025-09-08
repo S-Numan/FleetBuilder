@@ -1,0 +1,124 @@
+{
+  "SN_FleetBuilder": {
+  "backup_save_not_found": "Backup save not found",
+  "backup_save_read_error": "Failed to read backup save json",
+  "failed_to_read_json_in_clipboard": "Failed to read json in clipboard",
+  "no_missing_elements": "No missing elements.",
+  "cargo_auto_manage_message": "Cargo auto-managed",
+  "copied_interaction_fleet_to_clipboard": "Copied interaction fleet to clipboard",
+  "copied_interaction_fleet_with_supporting_to_clipboard": "Copied interaction fleet with supporting fleets to clipboard",
+  "officer_copied_to_clipboard": "Officer copied to clipboard",
+  "save_copied": "Save copied to clipboard",
+  "load_complete": "Load Complete",
+  "done": "Done",
+  "mod_hotkey_failed": "%s hotkey failed",
+  "hold_ctrl_to_add_blueprint": "Hold CTRL to add a blueprint if a blueprint is available",
+  "hold_alt_or_shift_to_multiply_value_by_10": "Hold SHIFT or ALT to multiply the value by 10",
+
+  "add_blueprint": "Add blueprint",
+  "already_known": "Already known",
+  "add_to_faction": "Add to faction",
+  "add_count_to_fleet": "Add %s to fleet",
+
+  "copied_entire_fleet_to_clipboard": "Copied entire fleet to clipboard",
+  "copied_entire_submarket_to_clipboard": "Copied entire submarket to clipboard",
+  "copied_visible_fleet_to_clipboard":"Copied visible fleet to clipboard",
+  "copied_visible_submarket_to_clipboard":"Copied visible submarket to clipboard",
+
+  "fleet_member_copied_to_clipboard":"Fleet member copied to clipboard",
+
+  "no_command_shuttle_jump_alone": "Your command shuttle cannot jump alone",
+  "no_copy_command_shuttle": "The commander's shuttle cannot be copied",
+  "command_shuttle_transfer_message": "Refunding market %s credits",
+  "cannot_remove_last_ship_in_fleet": "Cannot remove last ship in fleet",
+
+  "enable_unassign_player": "Unassign Player must be on in the %s mod settings to unassign the player",
+
+  "added_to_cargo":"Added %s '%s' to cargo",
+  "added_blueprint_to_cargo":"Added %s '%s' blueprint to your cargo",
+  "added_to_player_faction_known_hullmods":"Added '%s' to your faction's known hullmods",
+
+  "removed_smoddedbuiltin":"Removed sModdedBuiltIn with name '%s'",
+  "removed_built_in_dmod":"Removed built in DMod with name '%s'",
+  "cannot_remove_built_in_hullmod":"The hullmod '%s' is built into the hullspec, it cannot be removed from the variant",
+  "removed_hullmod":"Removed hullmod with name '%s'",
+
+  "failed_to_store_officer_in_cargo":"Failed to store officer in cargo",
+
+  "no_valid_data_in_clipboard":"No valid data in clipboard",
+
+  "compressed_variant_copied_to_clipboard":"Variant compressed and copied to clipboard",
+  "variant_copied_to_clipboard":"Variant copied to clipboard",
+
+  "failed_to_load_cargo":"Failed to load cargo",
+  "failed_to_load_credits":"Failed to load credits",
+  "failed_to_load_relations":"Failed to load relations",
+  "failed_to_load_player":"Failed to load player",
+  "failed_to_load_fleet":"Failed to load fleet",
+
+  "data_valid_but_not_fleet_member_variant_person":"Data valid, but was not fleet, member, variant, or officer data",
+  "data_valid_but_no_campaign_paste":"Data valid, but not fleet, member, or variant data. You cannot paste this into the campaign.",
+  "campaign_officer_spawn":"Officer manifests, immediately regrets not being a ship. Try pasting the officer in your fleet screen next time.",
+  "fleet_was_empty_when_pasting":"Fleet was empty when pasting",
+  "could_not_find_hullid_when_member":"Could not find hullId '%s' when pasting member",
+  "could_not_find_hullid_when_variant":"Could not find hullId '%s' when pasting variant",
+  "added_ship_to_fleet":"Added '%s' to fleet",
+  "added_ship_to_fleet_with_officer":"Added '%s' to fleet, with an officer",
+  "added_ship_to_submarket":"Added '%s' to submarket",
+  "added_ship_to_submarket_with_officer":"Added '%s' to submarket, with an officer",
+  "added_officer_to_fleet":"Added officer to fleet",
+
+  "used_story_point":"Used %s story point",
+  "used_story_point_plural":"Used %s story point",
+
+  "cannot_apply_smod_lack_build_in_slots":"Cannot apply SMods. Not enough build in slots left",
+  "cannot_apply_smod_lack_story_point":"Cannot apply SMods. Not enough Story Points",
+  "cannot_apply_smod_lack_knowledge":"Cannot apply some SMods as you do not know how to add them as hullmods",
+  "cannot_apply_smod_lack_item":"Cannot apply some SMods. Lacking required items ...",
+  "cannot_apply_smod_lack_dock":"Cannot apply some SMods in the current context. Try legally docking at a market",
+  "cannot_apply_smod_lack_op":"Cannot apply some SMods. Hull does not have enough Ordnance Points",
+
+  "failed_to_import_loadout":"Failed to import loadout. Could not find hullId '%s'",
+  "data_valid_but_no_variant":"Data in clipboard was valid, but not a variant",
+  "loadout_already_exists":"Loadout already exists, cannot import loadout with hull '%s'",
+
+  "failed_to_apply_variant":"Failed to apply variant",
+
+  "autofit_confirmed":"Autofit confirmed",
+  "autofit_confirmed_purchased":"Autofit confirmed, purchased %s worth of ordnance",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "%": "%",
+    "su": "su",
+    "op": "OP",
+    "/": "/",
+    "-": "-",
+    "+": "+",
+    ".": ".",
+    "(": "(",
+    ")": ")",
+    "an": "an",
+
+
+    "mb_type_neutralisation1": "neutralization",
+    "mb_type_neutralisation2": "disable at least ",
+    "mb_type_neutralisation3": "% of the enemy fleet",
+    "mb_comm_reply": "The other $shipFleet does not answer to your hails.",
+
+    "ml_mp_appliedPaintjobNoMore": "%s",
+    "ml_mp_appliedPaintjobMore": "%s (+%s more)",
+
+  }
+}

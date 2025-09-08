@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
+import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.*
 
@@ -41,7 +42,7 @@ class CargoAutoManager : EveryFrameScript {
             }
 
             if (changeOccured)
-                DisplayMessage.showMessage("Cargo auto-managed")
+                DisplayMessage.showMessage(FBTxt.txt("cargo_auto_manage_message"))
 
         } else if (market == null && interactionMarket != null) { // Market Leave
             var changeOccured = false
@@ -60,7 +61,7 @@ class CargoAutoManager : EveryFrameScript {
             interactionMarket = market
 
             if (changeOccured && ModSettings.reportCargoAutoManagerChanges)
-                DisplayMessage.showMessage("Cargo auto-managed")
+                DisplayMessage.showMessage(FBTxt.txt("cargo_auto_manage_message"))
         }
 
 

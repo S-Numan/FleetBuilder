@@ -1,3 +1,8 @@
+## 1.21.0
+- Fixed person memkeys failing to save. (Including combat chatter character)
+- Support for pasting members and variants onto the campaign layer.
+- Unfinished porting strings to strings.json, for translation support.
+
 ## 1.20.0
 - Removed duplicate entries in the cargo saving JSON. Backwards compatible.
 
@@ -5,7 +10,7 @@
 - Fixed right clicking hullmods removing the built in hullmod too, when the hullmod is an sModdedBuiltIn.
 - Presumably fixed crash after save on gigantic save files.
 
-Autofit:
+### Autofit
 - Reserve the first four slots by default to prevent your saved loadout positioning from being messed up. This can be disabled in the mod settings.
 - When stripping the loadout, the logic did not inform the autofit applier that the weapon existed again. This has been fixed.
 - Do not save SModded Built Ins which aren’t actually built into the ship hull. (E.G Mad Rockerpiper MIDAS from Roider Union)

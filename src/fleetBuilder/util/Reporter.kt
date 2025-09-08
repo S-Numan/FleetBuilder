@@ -102,10 +102,17 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
             val json = PlayerSaveUtil.createPlayerSaveJson()
 
             val jsonString = json.toString(4)
-            if (jsonString.length < 1000000) // Starsector cannot save files over 1MB
-                Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", jsonString)
-            else
-                DisplayMessage.showMessage("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.", Color.YELLOW)
+
+            //Safety
+            if (jsonString.length < 1000000) { // Starsector cannot save files over 1MB
+                try {
+                    Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", jsonString)
+                } catch (e: Exception) {
+                    //DisplayMessage.showError("FleetBuilder: Backup Save failed.", e)
+                }
+            } else {
+                //DisplayMessage.showMessage("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.", Color.YELLOW)
+            }
         }
     }
 

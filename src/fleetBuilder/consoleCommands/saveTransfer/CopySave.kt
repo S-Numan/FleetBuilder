@@ -1,5 +1,6 @@
 package fleetBuilder.consoleCommands.saveTransfer
 
+import fleetBuilder.config.FBTxt
 import fleetBuilder.util.ClipboardUtil.setClipboardText
 import fleetBuilder.util.PlayerSaveUtil
 import org.lazywizard.console.BaseCommand
@@ -38,7 +39,7 @@ class CopySave : BaseCommand {
 
         setClipboardText(json.toString(4))
 
-        Console.showMessage("Save copied to clipboard")
+        Console.showMessage(FBTxt.txt("save_copied"))
         return BaseCommand.CommandResult.SUCCESS
     }
 }

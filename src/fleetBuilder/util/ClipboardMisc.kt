@@ -5,6 +5,7 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
+import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.config.ModSettings.getDefaultExcludeVariantTags
@@ -32,7 +33,7 @@ object ClipboardMisc {
 
     fun saveVariantToClipboard(variant: ShipVariantAPI, compress: Boolean = false) {
         if (variant.hasHullMod(commandShuttleId)) {
-            DisplayMessage.showMessage("Cannot copy the commander's shuttle", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return
         }
 
@@ -47,7 +48,7 @@ object ClipboardMisc {
                 }
             )
             setClipboardText(comp)
-            DisplayMessage.showMessage("Variant compressed and copied to clipboard")
+            DisplayMessage.showMessage(FBTxt.txt("compressed_variant_copied_to_clipboard"))
         } else {
             val json = saveVariantToJson(
                 variantToSave,
@@ -56,13 +57,13 @@ object ClipboardMisc {
                 }
             )
             setClipboardText(json.toString(4))
-            DisplayMessage.showMessage("Variant copied to clipboard")
+            DisplayMessage.showMessage(FBTxt.txt("variant_copied_to_clipboard"))
         }
     }
 
     fun saveMemberToClipboard(member: FleetMemberAPI, compress: Boolean = false) {
         if (member.variant.hasHullMod(commandShuttleId)) {
-            DisplayMessage.showMessage("Cannot copy the commander's shuttle", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return
         }
 
@@ -74,7 +75,7 @@ object ClipboardMisc {
         } else {
             val json = saveMemberToJson(member)
             setClipboardText(json.toString(4))
-            DisplayMessage.showMessage("Member copied to clipboard")
+            DisplayMessage.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
         }
     }
 
