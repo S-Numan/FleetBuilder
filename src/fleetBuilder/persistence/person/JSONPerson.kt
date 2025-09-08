@@ -69,11 +69,6 @@ object JSONPerson {
 
         missing.gameMods.addAll(FBMisc.getModInfosFromJson(json))
 
-        val chatterID = json.optString("chatterID", null)
-        val combatChatterData = if (chatterID != null) {
-            CombatChatterSerialization.CombatChatterData(chatterID = chatterID)
-        } else null
-
         return DataPerson.ParsedPersonData(
             aiCoreId = json.optString("aicoreid", ""),
             first = json.optString("first", "Unknown"),
@@ -89,8 +84,7 @@ object JSONPerson {
             xp = json.optLong("xp", 0),
             bonusXp = json.optLong("bonusxp", 0),
             points = json.optInt("points", 0),
-            memKeys = memKeys,
-            combatChatterData = combatChatterData,
+            memKeys = memKeys
         )
     }
 
@@ -172,16 +166,6 @@ object JSONPerson {
         }
         if (skillsObject.length() > 0)
             json.put("skills", skillsObject)
-
-        if (Global.getSettings().modManager.isModEnabled("chatter")) {
-            val characterId = data.memKeys[ChatterDataManager.CHARACTER_MEMORY_KEY] as? String // TODO, this is a memory key right? isn't this saved normally then? and thus can be removed?
-
-            if (characterId != null) {
-                //val character = ChatterDataManager.getCharacterData(characterId)
-                json.put("chatterID", characterId)
-            }
-        }
-
 
         return json
     }
