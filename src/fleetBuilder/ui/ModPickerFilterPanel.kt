@@ -37,6 +37,7 @@ class ModPickerFilterPanel(
         val tooltip = mainPanel.createUIElement(width, height, false)
         textField = tooltip.addTextField(width, height, Fonts.DEFAULT_SMALL, 0f)
         textField.isLimitByStringWidth = false
+        textField.maxChars = 255
         resetText()
 
         mainPanel.addUIElement(tooltip).inTL(0f, 0f)

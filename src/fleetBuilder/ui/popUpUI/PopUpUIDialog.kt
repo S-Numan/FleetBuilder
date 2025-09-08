@@ -86,7 +86,7 @@ open class PopUpUIDialog(
         }
     }
 
-    
+
     fun addTextField(
         label: String,
         default: String = "",
@@ -213,6 +213,7 @@ open class PopUpUIDialog(
                     //ui.addPara(entry.label, 0f)
                     val textField = ui.addTextField(buttonWidth, 0f)
                     textField.isLimitByStringWidth = false
+                    textField.maxChars = 255
                     textField.text = entry.state.value as String
                     textFieldRefs[entry.label] = textField
                 }

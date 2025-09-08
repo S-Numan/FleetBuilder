@@ -1,3 +1,6 @@
+## 1.22.0
+- Prevent game freeze if pasted string into fleet filter is too large by capping the allowed character count.
+
 ## 1.21.1
 - Fixed paste into fleet message being backwards.
 

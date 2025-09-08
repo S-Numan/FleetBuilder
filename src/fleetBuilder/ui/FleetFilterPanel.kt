@@ -62,6 +62,7 @@ class FleetFilterPanel(
         val tooltip = mainPanel.createUIElement(width, height, false)
         textField = tooltip.addTextField(width, height, Fonts.DEFAULT_SMALL, 0f)
         textField.isLimitByStringWidth = false
+        textField.maxChars = 255 // Prevent game freeze if pasted element is too large
         resetText()
 
         mainPanel.addUIElement(tooltip).inTL(0f, 0f)
