@@ -420,6 +420,12 @@ object FBMisc {
             fun hackTogetherFleet(member: FleetMemberAPI) {
                 val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, true)
                 fleet.fleetData.addFleetMember(member)
+                if (!member.captain.isDefault) {
+                    fleet.fleetData.addOfficer(member.captain)
+                    fleet.commander = member.captain
+                }
+                //fleet.fleetData.setFlagship(member)
+                
                 newData = getFleetDataFromFleet(fleet)
             }
             if (newData is DataMember.ParsedMemberData) {
@@ -495,9 +501,9 @@ object FBMisc {
                 val shipName = variant.hullSpec.hullName
 
                 val message = if (uiShowsSubmarketFleet)
-                    FBTxt.txt("added_ship_to_fleet", shipName)
-                else
                     FBTxt.txt("added_ship_to_submarket", shipName)
+                else
+                    FBTxt.txt("added_ship_to_fleet", shipName)
 
                 showMessage(message, shipName, Misc.getHighlightColor())
 
@@ -523,15 +529,15 @@ object FBMisc {
                 val shipName = member.hullSpec.hullName
                 val message = if (uiShowsSubmarketFleet) {
                     if (member.captain.isDefault) {
-                        FBTxt.txt("added_ship_to_fleet", shipName)
-                    } else {
-                        FBTxt.txt("added_ship_to_fleet_with_officer", shipName)
-                    }
-                } else {
-                    if (member.captain.isDefault) {
                         FBTxt.txt("added_ship_to_submarket", shipName)
                     } else {
                         FBTxt.txt("added_ship_to_submarket_with_officer", shipName)
+                    }
+                } else {
+                    if (member.captain.isDefault) {
+                        FBTxt.txt("added_ship_to_fleet", shipName)
+                    } else {
+                        FBTxt.txt("added_ship_to_fleet_with_officer", shipName)
                     }
                 }
 
