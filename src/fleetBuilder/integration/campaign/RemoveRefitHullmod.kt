@@ -9,6 +9,8 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.config.FBTxt
+import fleetBuilder.config.ModSettings
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.ReflectionMisc
@@ -81,20 +83,20 @@ class RemoveRefitHullmod : CampaignInputListener {
                                 variant.completelyRemoveMod(hullModID.id)
                                 refitPanel.invoke("syncWithCurrentVariant")
 
-                                DisplayMessage.showMessage("Removed sModdedBuiltIn in with ID '${hullModID.id}'")
+                                DisplayMessage.showMessage(FBTxt.txt("removed_smoddedbuiltin", hullModID.displayName))
                             } else if (VariantLib.getAllDMods().contains(hullModID.id)) {//Built in DMod?
                                 variant.completelyRemoveMod(hullModID.id)
                                 refitPanel.invoke("syncWithCurrentVariant")
 
-                                DisplayMessage.showMessage("Removed built in DMod with ID '${hullModID.id}'")
+                                DisplayMessage.showMessage(FBTxt.txt("removed_built_in_dmod", hullModID.displayName))
                             } else {
-                                DisplayMessage.showMessage("The hullmod '${hullModID.id}' is built into the hullspec, it cannot be removed from the variant")
+                                DisplayMessage.showMessage(FBTxt.txt("cannot_remove_built_in_hullmod", hullModID.displayName))
                             }
                         } else {
                             variant.completelyRemoveMod(hullModID.id)
                             refitPanel.invoke("syncWithCurrentVariant")
 
-                            DisplayMessage.showMessage("Removed hullmod with ID '$hullModID'")
+                            DisplayMessage.showMessage(FBTxt.txt("removed_hullmod", hullModID.displayName))
                         }
 
                         event.consume()
@@ -104,7 +106,7 @@ class RemoveRefitHullmod : CampaignInputListener {
             }
 
         } catch (e: Exception) {
-            DisplayMessage.showError("FleetBuilder hotkey failed", e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
     }
 

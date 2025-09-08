@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
+import fleetBuilder.config.FBTxt
 import fleetBuilder.persistence.cargo.CargoSerialization.getCargoFromJson
 import fleetBuilder.persistence.cargo.CargoSerialization.saveCargoToJson
 import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
@@ -134,7 +135,7 @@ object PlayerSaveUtil {
                 }
 
             } catch (e: Exception) {
-                showError("Failed to load cargo", e)
+                showError(FBTxt.txt("failed_to_load_cargo"), e)
             }
         }
 
@@ -142,7 +143,7 @@ object PlayerSaveUtil {
             try {
                 cargo.credits.add(json.optDouble("credits", 0.0).toFloat())
             } catch (e: Exception) {
-                showError("Failed to load credits", e)
+                showError(FBTxt.txt("failed_to_load_credits"), e)
             }
         }
 
@@ -162,7 +163,7 @@ object PlayerSaveUtil {
                 }
                 compiled.relations = relationsMap
             } catch (e: Exception) {
-                showError("Failed to load relations", e)
+                showError(FBTxt.txt("failed_to_load_relations"), e)
             }
         }
 
@@ -173,7 +174,7 @@ object PlayerSaveUtil {
 
                 compiled.player = loadedPlayer
             } catch (e: Exception) {
-                showError("Failed to load player", e)
+                showError(FBTxt.txt("failed_to_load_player"), e)
             }
         }
 
@@ -193,7 +194,7 @@ object PlayerSaveUtil {
 
                 compiled.fleet = fleet
             } catch (e: Exception) {
-                showError("Failed to load fleet", e)
+                showError(FBTxt.txt("failed_to_load_fleet"), e)
             }
         }
 

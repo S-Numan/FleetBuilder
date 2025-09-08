@@ -9,6 +9,7 @@ import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
+import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.FBMisc
@@ -76,7 +77,7 @@ class StoreOfficersInCargo : CampaignInputListener {
                     }
 
                 } catch (e: Exception) {
-                    DisplayMessage.showError("Storing the officer in cargo failed", e)
+                    DisplayMessage.showError(FBTxt.txt("failed_to_store_officer_in_cargo"), e)
                 }
             }
 

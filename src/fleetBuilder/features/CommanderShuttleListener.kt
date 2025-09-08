@@ -10,6 +10,7 @@ import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl
+import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle.playerShuttleExists
 import fleetBuilder.util.DisplayMessage
@@ -60,7 +61,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
                         || (interactionDialog.interactionTarget != null && interactionDialog.interactionTarget.customPlugin is GateEntityPlugin)
                     ) {
                         interactionDialog.dismiss()
-                        DisplayMessage.showMessage("Your command shuttle cannot jump alone", Color.YELLOW)
+                        DisplayMessage.showMessage(FBTxt.txt("no_command_shuttle_jump_alone"), Color.YELLOW)
                     }
                     //val pods = Misc.addCargoPods(playerFleet.containingLocation, playerFleet.location)
                     //pods.cargo.addFuel(playerFleet.cargo.fuel)
@@ -82,7 +83,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
             Global.getSector().currentLocation = prevLocationSetter
 
             playerFleet.setLocation(0f, 0f)
-            DisplayMessage.showMessage("Your command shuttle cannot jump alone ...", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("no_command_shuttle_jump_alone") + "...", Color.YELLOW)
 
             prevLocationSetter = null
         }
@@ -142,12 +143,11 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
             if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
                 transaction.submarket.cargo.mothballedShips.removeFleetMember(member)
 
-                var message = "You cannot transfer your command shuttle."
                 if (transaction.creditValue > 0) {
-                    message += " Refunding market ${transaction.creditValue.toInt()} credits"
+                    val message = FBTxt.txt("command_shuttle_transfer_message", transaction.creditValue.toInt())
                     Global.getSector().playerFleet.cargo.credits.subtract(transaction.creditValue)
+                    DisplayMessage.showMessage(message, Color.YELLOW)
                 }
-                DisplayMessage.showMessage(message, Color.YELLOW)
             }
         }
     }

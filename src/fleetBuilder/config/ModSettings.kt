@@ -107,6 +107,9 @@ object ModSettings {
     fun getDefaultExcludeVariantTags(): MutableSet<String> = mutableSetOf(Tags.SHIP_RECOVERABLE, Tags.TAG_RETAIN_SMODS_ON_RECOVERY, Tags.TAG_NO_AUTOFIT, Tags.VARIANT_CONSISTENT_WEAPON_DROPS)
 
     val modID = "SN_FleetBuilder"
+    
+    val modName = "FleetBuilder"
+
 
     var selectorsPerRow = 4
 

@@ -8,6 +8,8 @@ import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.loading.specs.HullVariantSpec
+import fleetBuilder.config.FBTxt
+import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.persistence.fleet.DataFleet
 import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
@@ -52,7 +54,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 event.consume()
 
                         } catch (e: Exception) {
-                            DisplayMessage.showError("FleetBuilder hotkey failed", e)
+                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
                         if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.isPopUpUIOpen() && !ReflectionMisc.isCodexOpen()) {
@@ -75,7 +77,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 if (data is DataVariant.ParsedVariantData || data is DataMember.ParsedMemberData || data is DataFleet.ParsedFleetData) {
                                     //
                                 } else {
-                                    DisplayMessage.showMessage("No valid data in clipboard", Color.YELLOW)
+                                    DisplayMessage.showMessage(FBTxt.txt("no_valid_data_in_clipboard"), Color.YELLOW)
                                     event.consume()
                                     continue
                                 }

@@ -13,6 +13,7 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.config.FBTxt
 import fleetBuilder.persistence.member.DataMember.getMemberDataFromMember
 import fleetBuilder.persistence.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.DisplayMessage
@@ -92,7 +93,7 @@ class CampaignCodexButton : EveryFrameScript {
                 ) as ButtonAPI?
 
                 addToFleetButton!!.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 400f) { tooltip ->
-                    tooltip.addPara("Hold CTRL to add a blueprint if a blueprint is available\nHold ALT or SHIFT to multiply the value by 10", 0f)
+                    tooltip.addPara("${FBTxt.txt("hold_ctrl_to_add_blueprint")}\n${FBTxt.txt("hold_alt_or_shift_to_multiply_value_by_10")}", 0f)
                 }
 
                 addToFleetButton!!.onClick { ->
@@ -119,14 +120,14 @@ class CampaignCodexButton : EveryFrameScript {
             val entry: String
 
             if (ctrl && param !is CommoditySpecAPI && param !is SpecialItemSpecAPI)
-                entry = "Add blueprint"
+                entry = FBTxt.txt("add_blueprint")
             else if (param is HullModSpecAPI) {
                 if (Global.getSector().playerFaction.knowsHullMod((param as HullModSpecAPI).id))
-                    entry = "Already known"
+                    entry = FBTxt.txt("already_known")
                 else
-                    entry = "Add to faction"
+                    entry = FBTxt.txt("add_to_faction")
             } else
-                entry = "Add $count to fleet"
+                entry = FBTxt.txt("add_count_to_fleet", count)
 
             //val width = Global.getSettings().computeStringWidth(entry, Fonts.ORBITRON_20AA) // Perhaps it's better that the button's width itself does not change, rather only the text within
             addToFleetButton!!.width = 154f
@@ -161,48 +162,48 @@ class CampaignCodexButton : EveryFrameScript {
         when (param) {
             is CommoditySpecAPI -> {
                 cargo.addCommodity(param.id, count.toFloat())
-                message = "Added $count '${param.name}' to cargo"
+                message = FBTxt.txt("added_to_cargo", count, param.name)
             }
 
             is SpecialItemSpecAPI -> {
                 cargo.addSpecial(SpecialItemData(param.id, null), count.toFloat())
-                message = "Added $count '${param.name}' to cargo"
+                message = FBTxt.txt("added_to_cargo", count, param.name)
             }
 
             is WeaponSpecAPI -> {
                 if (ctrl) {
                     cargo.addSpecial(SpecialItemData("weapon_bp", param.weaponId), count.toFloat())
-                    message = "Added $count '${param.weaponName}' blueprint to your cargo"
+                    message = FBTxt.txt("added_blueprint_to_cargo", count, param.weaponId)
                 } else {
                     cargo.addWeapons(param.weaponId, count)
-                    message = "Added $count '${param.weaponName}' to cargo"
+                    message = FBTxt.txt("added_to_cargo", count, param.weaponName)
                 }
             }
 
             is FighterWingSpecAPI -> {
                 if (ctrl) {
                     cargo.addSpecial(SpecialItemData("fighter_bp", param.id), count.toFloat())
-                    message = "Added $count '${param.wingName}' blueprint to your cargo"
+                    message = FBTxt.txt("added_blueprint_to_cargo", count, param.wingName)
                 } else {
                     cargo.addFighters(param.id, count)
-                    message = "Added $count '${param.wingName}' to cargo"
+                    message = FBTxt.txt("added_to_cargo", count, param.wingName)
                 }
             }
 
             is HullModSpecAPI -> {
                 if (ctrl) {
                     cargo.addSpecial(SpecialItemData("modspec", param.id), count.toFloat())
-                    message = "Added $count '${param.displayName}' blueprint to your cargo"
+                    message = FBTxt.txt("added_blueprint_to_cargo", count, param.displayName)
                 } else {
                     Global.getSector().playerFaction.addKnownHullMod(param.id)
-                    message = "Added '${param.displayName}' your faction's known hullmods"
+                    message = FBTxt.txt("added_to_player_faction_known_hullmods", param.displayName)
                 }
             }
 
             is ShipHullSpecAPI -> {
                 if (ctrl) {
                     cargo.addSpecial(SpecialItemData("ship_bp", param.hullId), count.toFloat())
-                    message = "Added $count '${param.hullName}' blueprint to your cargo"
+                    message = FBTxt.txt("added_blueprint_to_cargo", count, param.hullName)
                 } else {
                     val emptyVariant =
                         Global.getSettings().createEmptyVariant(param.hullId, param)
@@ -213,7 +214,7 @@ class CampaignCodexButton : EveryFrameScript {
             is FleetMemberAPI -> {
                 if (ctrl) {
                     cargo.addSpecial(SpecialItemData("ship_bp", param.hullId), count.toFloat())
-                    message = "Added $count '${param.hullSpec.hullName}' blueprint to your cargo"
+                    message = FBTxt.txt("added_blueprint_to_cargo", count, param.hullSpec.hullName)
                 } else {
                     parsedData = getMemberDataFromMember(param)
                 }

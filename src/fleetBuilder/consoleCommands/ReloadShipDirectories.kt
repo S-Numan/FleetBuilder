@@ -1,5 +1,6 @@
 package fleetBuilder.consoleCommands
 
+import fleetBuilder.config.FBTxt
 import fleetBuilder.variants.LoadoutManager
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.Console
@@ -10,7 +11,7 @@ class ReloadShipDirectories : BaseCommand {
 
         LoadoutManager.loadAllDirectories()
 
-        Console.showMessage("Reloaded ship directories")
+        Console.showMessage(FBTxt.txt("done"))
 
         return BaseCommand.CommandResult.SUCCESS
     }
