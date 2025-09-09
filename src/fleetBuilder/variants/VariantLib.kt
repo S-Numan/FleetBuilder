@@ -288,9 +288,6 @@ object VariantLib {
         }
 
         if (!options.sMods || options.convertSModsToRegular) {
-            variant1.sModdedBuiltIns.clear()
-            variant2.sModdedBuiltIns.clear()
-
             processSModsForComparison(variant1, options.convertSModsToRegular)
             processSModsForComparison(variant2, options.convertSModsToRegular)
         }
@@ -299,19 +296,18 @@ object VariantLib {
         val variant2HullMods = variant2.hullMods.toMutableSet()
 
         if (!options.builtInHullMods) {
-            variant1.sModdedBuiltIns.clear()
-            variant2.sModdedBuiltIns.clear()
-
             val toRemove1 = variant1HullMods.filter { it in variant1.hullSpec.builtInMods && it !in allDMods }
             val toRemove2 = variant2HullMods.filter { it in variant2.hullSpec.builtInMods && it !in allDMods }
 
             toRemove1.forEach { modId ->
                 variant1.sMods.remove(modId)
+                variant1.sModdedBuiltIns.remove(modId)
                 variant1HullMods.remove(modId)
             }
 
             toRemove2.forEach { modId ->
                 variant2.sMods.remove(modId)
+                variant2.sModdedBuiltIns.remove(modId)
                 variant2HullMods.remove(modId)
             }
         }
@@ -326,10 +322,11 @@ object VariantLib {
     }
 
     fun processSModsForComparison(variant: ShipVariantAPI, convert: Boolean) {
-        val sModsCopy = variant.sMods.toSet()
+        val sModsCopy = (variant.sMods + variant.sModdedBuiltIns).toSet()
         sModsCopy.forEach { sMod ->
+            val isBuiltIn = sMod in variant.hullSpec.builtInMods
             variant.completelyRemoveMod(sMod)
-            if (convert) {
+            if (convert && !isBuiltIn) {
                 variant.addMod(sMod)
             }
         }

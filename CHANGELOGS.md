@@ -4,6 +4,7 @@
 - LunaLib cheats setting.
 - Inform user to enable the cheat setting if they want to use the more cheaty commands on usage of one that requires cheats.
 - Added messages after appending to or replacing your fleet, for clarity.
+- Highlight, but don't outline autofit slot which is equal excluding a sModdedBuiltIn which the variant's hullSpec does not have a built in of (See Mad Rockerpiper MIDAS from Roider Union)
 
 ## 1.21.1
 - Fixed paste into fleet message being backwards.
