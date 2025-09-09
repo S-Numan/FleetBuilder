@@ -43,7 +43,7 @@
   "cannot_remove_built_in_hullmod":"The hullmod '%s' is built into the hullspec, it cannot be removed from the variant",
   "removed_hullmod":"Removed hullmod with name '%s'",
 
-  "failed_to_store_officer_in_cargo":"Failed to store officer in cargo",
+  "failed_to_get_store_member_button":"Failed to get store member button",
 
   "no_valid_data_in_clipboard":"No valid data in clipboard",
 
@@ -67,6 +67,9 @@
   "added_ship_to_submarket":"Added '%s' to submarket",
   "added_ship_to_submarket_with_officer":"Added '%s' to submarket, with an officer",
   "added_officer_to_fleet":"Added officer to fleet",
+  "member_appended_into_fleet":"%s member appended to fleet",
+  "members_appended_into_fleet":"%s members appended to fleet",
+  "player_fleet_replaced":"Fleet replaced",
 
   "used_story_point":"Used %s story point",
   "used_story_point_plural":"Used %s story point",
@@ -87,6 +90,8 @@
   "autofit_confirmed":"Autofit confirmed",
   "autofit_confirmed_purchased":"Autofit confirmed, purchased %s worth of ordnance",
 
+  "enable_cheats_to_use_officer_creator":"Enable cheats in %s settings to unlock officer creation functionality",
+  "enable_cheats_to_use_paste":"Enable cheats in %s settings to unlock paste functionality",
 
 
 

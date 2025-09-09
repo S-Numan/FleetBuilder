@@ -69,7 +69,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
-        //if (!Global.getSettings().isDevMode) return
+        //if (ModSettings.areCheatsEnabled()) return
         if (ReflectionMisc.isCodexOpen()) return
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
@@ -79,10 +79,14 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (!Global.getSettings().isDevMode) return
         if (ReflectionMisc.getCodexDialog() != null) return
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
+
+            if (!ModSettings.cheatsEnabled()) {
+                DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_officer_creator", ModSettings.modName), Color.YELLOW)
+                return
+            }
 
             Dialogs.createOfficerCreatorDialog()
         }
@@ -222,7 +226,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             if (handleRefitPaste())
                 event.consume()
-        } else if (Global.getSettings().isDevMode) {
+        } else {
             handleOtherPaste(event, sector, ui)
         }
     }
@@ -235,12 +239,18 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-            fleetPaste(sector, data)
+            if (!ModSettings.cheatsEnabled())
+                DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
+            else
+                fleetPaste(sector, data)
         } else if (ui.currentInteractionDialog == null &&// Handle campaign map paste (no dialog/menu showing)
             !ui.isShowingDialog &&
             !ui.isShowingMenu
         ) {
-            campaignPaste(sector, data, ui)
+            if (!ModSettings.cheatsEnabled())
+                DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
+            else
+                campaignPaste(sector, data, ui)
         }
 
         event.consume()

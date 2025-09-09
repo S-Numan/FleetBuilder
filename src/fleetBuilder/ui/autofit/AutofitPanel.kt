@@ -22,9 +22,7 @@ import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
 import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.*
-import fleetBuilder.util.FBMisc.getMaxSMods
 import fleetBuilder.util.FBMisc.sModHandlerTemp
-import fleetBuilder.util.FBMisc.spendStoryPoint
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.deleteLoadoutVariant
 import fleetBuilder.variants.LoadoutManager.getCoreAutofitSpecsForShip
@@ -41,15 +39,12 @@ import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
-import org.magiclib.kotlin.getBuildInBonusXP
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import starficz.*
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import java.awt.Color
-import kotlin.math.max
-import kotlin.math.min
 
 
 /**
@@ -605,7 +600,6 @@ internal object AutofitPanel {
                     }
                 }
 
-
                 val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant) }
 
                 val shipVariantID: String
@@ -690,17 +684,38 @@ internal object AutofitPanel {
     ) {
         deHighlight(selectorPlugin)
 
-        val equalDefault = compareVariantContents(
+        var equalDefault = compareVariantContents(
             variant,
             baseVariant,
             CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true)
         )
+        var outline = true
+
+        if (!equalDefault && ModSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod) {
+            val baseVariantClone = baseVariant.clone()
+            //We want to highlight but not outline the variant if it has sModdedBuiltIns that the HullSpec does not have as a built-in hullmod.
+            baseVariantClone.sModdedBuiltIns.forEach {
+                if (it !in baseVariant.hullSpec.builtInMods)
+                    baseVariantClone.completelyRemoveMod(it)
+            }
+
+            if (compareVariantContents(
+                    variant,
+                    baseVariantClone,
+                    CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true)
+                )
+            ) {
+                equalDefault = true
+                outline = false
+            }
+        }
 
         if (equalDefault) {
             selectorPlugin.isSelected = true
             selectorPlugin.highlightFader.forceIn()
 
-            outlinePanelBasedOnVariant(baseVariant, variant, selectorPlugin)
+            if (outline)
+                outlinePanelBasedOnVariant(baseVariant, variant, selectorPlugin)
 
             val diffWeaponGroups = !compareVariantContents(
                 variant,

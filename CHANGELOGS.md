@@ -1,3 +1,11 @@
+## 1.22.0
+- If unassign player setting is on, put player in commander shuttle when storing/selling the player piloted ship to avoid the player officer replacing another.
+- Prevent game freeze if pasted string into fleet filter is too large by capping the allowed character count.
+- LunaLib cheats setting.
+- Inform user to enable the cheat setting if they want to use the more cheaty commands on usage of one that requires cheats.
+- Added messages after appending to or replacing your fleet, for clarity.
+- Highlight, but don't outline autofit slot which is equal excluding a sModdedBuiltIn which the variant's hullSpec does not have a built in of (See Mad Rockerpiper MIDAS from Roider Union)
+
 ## 1.21.1
 - Fixed paste into fleet message being backwards.
 
