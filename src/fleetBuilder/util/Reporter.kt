@@ -16,7 +16,6 @@ import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
-import java.awt.Color
 import kotlin.jvm.java
 
 class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedListener {
@@ -50,7 +49,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
             }
 
             manageListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
-            manageListener(StoreOfficersInCargo::class.java, ModSettings.storeOfficersInCargo) { StoreOfficersInCargo() }
+            manageListener(CatchStoreMemberButton::class.java, ModSettings.storeOfficersInCargo || ModSettings.unassignPlayer) { CatchStoreMemberButton() }
             manageListener(CargoAutoManagerOpener::class.java, ModSettings.cargoAutoManager) { CargoAutoManagerOpener() }
             manageListener(RemoveRefitHullmod::class.java, ModSettings.removeRefitHullmod) { RemoveRefitHullmod() }
 

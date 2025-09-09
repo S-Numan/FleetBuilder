@@ -43,7 +43,7 @@
   "cannot_remove_built_in_hullmod":"The hullmod '%s' is built into the hullspec, it cannot be removed from the variant",
   "removed_hullmod":"Removed hullmod with name '%s'",
 
-  "failed_to_store_officer_in_cargo":"Failed to store officer in cargo",
+  "failed_to_get_store_member_button":"Failed to get store member button",
 
   "no_valid_data_in_clipboard":"No valid data in clipboard",
 

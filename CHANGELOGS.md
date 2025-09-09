@@ -1,4 +1,5 @@
 ## 1.22.0
+- If unassign player setting is on, put player in commander shuttle when storing/selling the player piloted ship to avoid the player officer replacing another.
 - Prevent game freeze if pasted string into fleet filter is too large by capping the allowed character count.
 - LunaLib cheats setting.
 - Inform user to enable the cheat setting if they want to use the more cheaty commands on usage of one that requires cheats.
