@@ -1,3 +1,6 @@
+## 1.22.2
+- Autofit highlight and outline now pays attention to wings too. It previously did not.
+
 ## 1.22.1
 - Added some code to further assure the nexerelin version checker dialog does not appear on CTRL + V. The annoyance.
 

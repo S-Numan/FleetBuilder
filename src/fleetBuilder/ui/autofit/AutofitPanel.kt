@@ -687,7 +687,7 @@ internal object AutofitPanel {
         var equalDefault = compareVariantContents(
             variant,
             baseVariant,
-            CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true)
+            CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true, wings = true)
         )
         var outline = true
 
@@ -702,7 +702,7 @@ internal object AutofitPanel {
             if (compareVariantContents(
                     variant,
                     baseVariantClone,
-                    CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true)
+                    CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true, wings = true)
                 )
             ) {
                 equalDefault = true
