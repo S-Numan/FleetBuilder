@@ -30,6 +30,7 @@ import fleetBuilder.util.FBMisc.handleRefitPaste
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import org.lwjgl.input.Keyboard
+import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
@@ -43,6 +44,12 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
         val sector = Global.getSector() ?: return
         val ui = sector.campaignUI ?: return
+
+        //Anti nexerelin code
+        if (dialogToDismiss != null && !Keyboard.isKeyDown(Keyboard.KEY_V)) {
+            dialogToDismiss!!.invoke("dismiss", 0)
+            dialogToDismiss = null
+        }
 
         events.forEach { event ->
             if (event.isConsumed) return@forEach
@@ -231,6 +238,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
     }
 
+    var dialogToDismiss: UIPanelAPI? = null
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         val data = ClipboardMisc.extractDataFromClipboard() ?: run {
             //DisplayMessage.showMessage(FBTxt.txt("no_valid_data_in_clipboard"), Color.YELLOW)
@@ -243,13 +251,29 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
             else
                 fleetPaste(sector, data)
-        } else if (ui.currentInteractionDialog == null &&// Handle campaign map paste (no dialog/menu showing)
-            !ui.isShowingDialog &&
-            !ui.isShowingMenu
+        } else if (
+            (ui.currentInteractionDialog == null &&// Handle campaign map paste (no dialog/menu showing)
+                    !ui.isShowingDialog &&
+                    !ui.isShowingMenu)
         ) {
-            if (!ModSettings.cheatsEnabled())
+            if (!ModSettings.cheatsEnabled()) {
+
+                //Anti nexerelin code
+                if (Global.getSettings().modManager.isModEnabled("nexerelin")) {
+                    ui.showMessageDialog("FleetBuilder Placeholder Dialog")
+                    val screenPanel = ui.get("screenPanel") as? UIPanelAPI
+                    dialogToDismiss = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
+                    if (dialogToDismiss != null) {
+                        dialogToDismiss!!.invoke("setOpacity", 0f)
+                        dialogToDismiss!!.invoke("setBackgroundDimAmount", 0f)
+                        dialogToDismiss!!.invoke("setAbsorbOutsideEvents", false)
+                        dialogToDismiss!!.invoke("makeOptionInstant", 0)
+                    }
+                }
+
                 DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
-            else
+
+            } else
                 campaignPaste(sector, data, ui)
         }
 
