@@ -2,7 +2,6 @@ package fleetBuilder.persistence.variant
 
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
-import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.CompressedMisc.fieldSep
 import fleetBuilder.persistence.CompressedMisc.metaSep
 import fleetBuilder.persistence.CompressedMisc.sep
@@ -10,10 +9,8 @@ import fleetBuilder.persistence.CompressedMisc.weaponGroupSep
 import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.persistence.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.persistence.variant.VariantMisc.getSourceModsFromVariant
-import fleetBuilder.util.CompressionUtil
+import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.DisplayMessage.showError
-import fleetBuilder.util.allDMods
-import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.toBinary
 import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.MissingElements
@@ -38,19 +35,29 @@ object CompressedVariant {
         }
 
         val metaVersion = comp.substring(metaIndexStart + 1, metaIndexEnd)
-        if (metaVersion.isEmpty() || metaVersion.getOrNull(0) != 'v')
+        if (metaVersion.isEmpty())
             return null
 
-        // Extract the compressed portion after the second metaSep
-        val compressedData = comp.substring(metaIndexEnd + 1)
+        var fullData: String? = null
 
-        val fullData = try {
-            CompressionUtil.decompressData(compressedData)
-        } catch (e: Exception) {
-            showError("Error decompressing variant data", e)
-            null
+        if (metaVersion == "v0") { // Compressed
+
+            // Extract the compressed portion after the second metaSep
+            val compressedData = comp.substring(metaIndexEnd + 1)
+
+            fullData = try {
+                CompressionUtil.decompressString(compressedData)
+            } catch (e: Exception) {
+                showError("Error decompressing variant data", e)
+                null
+            }
+            if (fullData.isNullOrBlank()) return null
+        } else if (metaVersion == "V0") { // Non compressed
+            fullData = comp.substring(metaIndexEnd + 1)
+        } else {
+            showError("Invalid meta version: $metaVersion")
+            return null
         }
-        if (fullData.isNullOrBlank()) return null
 
         // From here, your original logic applies — parse fields
         val firstFieldSep = fullData.indexOf(fieldSep)
@@ -184,12 +191,15 @@ object CompressedVariant {
     fun saveVariantToCompString(
         data: DataVariant.ParsedVariantData,
         includePrepend: Boolean = true,
-        includeModInfo: Boolean = true
+        includeModInfo: Boolean = true,
+        compressString: Boolean = true,
     ): String {
-        val structureVersion = 0
+        val structureVersion =
+            if (compressString) "v0" // Variant compressed 0
+            else "V0" // Variant uncompressed 0
 
 
-        val ver = "${metaSep}v$structureVersion$metaSep"//v for variant. To identify the type of compressed string without having to decompress it first. member would be m, fleet would be f, person would be p, etc.
+        val ver = "$metaSep$structureVersion$metaSep"//v for variant. To identify the type of compressed string without having to decompress it first. member would be m, fleet would be f, person would be p, etc.
 
 
         var compressedVariant = ""
@@ -223,7 +233,8 @@ object CompressedVariant {
 
         compressedVariant = "$addedModDetails$fieldSep$compressedVariant"
 
-        compressedVariant = CompressionUtil.compressString(compressedVariant)
+        if (compressString)
+            compressedVariant = CompressionUtil.compressString(compressedVariant)
 
         compressedVariant = "$ver$compressedVariant"//Indicate structure version for compatibility with future compressed format changes
 

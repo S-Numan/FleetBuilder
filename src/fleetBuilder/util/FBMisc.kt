@@ -27,12 +27,18 @@ import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.persistence.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.persistence.fleet.DataFleet.validateAndCleanFleetData
 import fleetBuilder.persistence.fleet.FleetSettings
+import fleetBuilder.persistence.fleet.JSONFleet.extractFleetDataFromJson
 import fleetBuilder.persistence.member.DataMember
 import fleetBuilder.persistence.member.DataMember.buildMemberFull
+import fleetBuilder.persistence.member.JSONMember.extractMemberDataFromJson
 import fleetBuilder.persistence.person.DataPerson
 import fleetBuilder.persistence.person.DataPerson.buildPersonFull
+import fleetBuilder.persistence.person.JSONPerson.extractPersonDataFromJson
+import fleetBuilder.persistence.variant.CompressedVariant.extractVariantDataFromCompString
 import fleetBuilder.persistence.variant.DataVariant
 import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
+import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
+import fleetBuilder.util.lib.ClipboardUtil.cleanJsonStringInput
 import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
@@ -50,6 +56,62 @@ import kotlin.math.min
 
 
 object FBMisc {
+
+    fun extractDataFromString(text: String): Any? {
+        if (text.isEmpty()) return null
+
+        if (text.startsWithJsonBracket()) {
+            val json = getJSONFromStringSafe(text) ?: return null
+
+            return when {
+                json.has("skills") -> {
+                    // Officer
+                    extractPersonDataFromJson(json)
+                }
+
+                json.has("variant") || json.has("officer") -> {
+                    // Fleet member
+                    extractMemberDataFromJson(json)
+                }
+
+                json.has("hullId") -> {
+                    // Variant
+                    extractVariantDataFromJson(json)
+                }
+
+                json.has("members") -> {
+                    // Fleet
+                    extractFleetDataFromJson(json)
+                }
+
+                else -> {
+                    null
+                }
+            }
+
+
+        } else {
+            val data = extractVariantDataFromCompString(text)
+            if (data != null) {
+                return data
+            }
+        }
+
+        return null
+    }
+
+    fun getJSONFromStringSafe(inputText: String): JSONObject? {
+        var text = inputText
+        text = cleanJsonStringInput(text)
+
+        if (text.isEmpty()) return null
+
+        return try {
+            JSONObject(text)
+        } catch (_: Exception) {
+            null
+        }
+    }
 
     fun handleRefitCopy(isShiftDown: Boolean): Boolean {
         val baseVariant = ReflectionMisc.getCurrentVariantInRefitTab() ?: return false
@@ -425,7 +487,7 @@ object FBMisc {
                     fleet.commander = member.captain
                 }
                 //fleet.fleetData.setFlagship(member)
-                
+
                 newData = getFleetDataFromFleet(fleet)
             }
             if (newData is DataMember.ParsedMemberData) {

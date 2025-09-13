@@ -3,7 +3,7 @@ package fleetBuilder.consoleCommands.saveTransfer
 import com.fs.starfarer.api.Global
 import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
-import fleetBuilder.util.ClipboardUtil.getClipboardJson
+import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.PlayerSaveUtil
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject

@@ -1,5 +1,6 @@
-package fleetBuilder.util
+package fleetBuilder.util.lib
 
+import fleetBuilder.util.FBMisc
 import org.json.JSONObject
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
@@ -29,8 +30,9 @@ object ClipboardUtil {
             var totalCharsRead = 0
             var firstSignificantCharFound = false
             var insideComment = false
+            var insideDoubleQuotes = false
+            var prevCharWasEscape = false
 
-            // This is done char by char instead of line by line to avoid crashing the game from reading excessively large files
             var intChar = reader.read()
             while (intChar != -1) {
                 val ch = intChar.toChar()
@@ -42,7 +44,7 @@ object ClipboardUtil {
                     return null
                 }
 
-                // Handle # comments (ignore until newline)
+                // Handle comment mode
                 if (insideComment) {
                     if (ch == '\n') {
                         insideComment = false
@@ -52,7 +54,13 @@ object ClipboardUtil {
                     continue
                 }
 
-                if (ch == '#') {
+                // Toggle double quote state
+                if (ch == '"' && !prevCharWasEscape) {
+                    insideDoubleQuotes = !insideDoubleQuotes
+                }
+
+                // Only start comment if not inside quotes
+                if (!insideDoubleQuotes && ch == '#') {
                     insideComment = true
                     intChar = reader.read()
                     continue
@@ -68,6 +76,8 @@ object ClipboardUtil {
                 }
 
                 builder.append(ch)
+
+                prevCharWasEscape = (ch == '\\' && !prevCharWasEscape)
                 intChar = reader.read()
             }
 
@@ -107,18 +117,8 @@ object ClipboardUtil {
     fun getClipboardJson(): JSONObject? {
         val contents = getClipboardJSONFileContents()
 
-        var clipboardText = contents ?: getClipboardTextSafe() ?: return null
-        clipboardText = cleanJsonStringInput(clipboardText)
-
-        if (clipboardText.isEmpty()) return null
-
-        var json = try {
-            JSONObject(clipboardText)
-        } catch (_: Exception) {
-            //Global.getLogger(this.javaClass).warn("Failed to convert clipboard to json")
-            null
-        }
-        return json
+        val clipboardText = contents ?: getClipboardTextSafe() ?: return null
+        return FBMisc.getJSONFromStringSafe(clipboardText)
     }
 
     fun cleanJsonStringInput(raw: String): String {

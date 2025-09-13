@@ -1,5 +1,8 @@
-## 1.22.2
+## 1.23.0
 - Autofit highlight and outline now pays attention to wings too. It previously did not.
+- Fix the incorrect autofit hull showing up in some cases
+- Copied variants are now compressed strings by default. Hold shift to copy variants as a json instead.
+- Saved autofit variants store themselves as compressed strings now, for space efficiency.
 
 ## 1.22.1
 - Added some code to further assure the nexerelin version checker dialog does not appear on CTRL + V. The annoyance.

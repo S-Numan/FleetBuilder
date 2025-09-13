@@ -1,0 +1,254 @@
+{
+    "aggression_doctrine": 4,
+    "factionID": "plague",
+    "fleetName": "Rampage",
+    "members": [{
+        "cr": 0.85,
+        "isFlagship": true,
+        "name": "Rampage",
+        "officer": {
+            "aicoreid": "alpha_core",
+            "first": "Rampage",
+            "last": "Rampage",
+            "level": 10,
+            "personality": "aggressive",
+            "portrait": "graphics/SEEKER/portraits/SKR_plagueB.png",
+            "post": "fleetCommander",
+            "rank": "spaceCommander",
+            "skills": {
+                "ballistic_mastery": 2,
+                "combat_endurance": 2,
+                "coordinated_maneuvers": 1,
+                "damage_control": 2,
+                "field_modulation": 2,
+                "fighter_uplink": 1,
+                "helmsmanship": 2,
+                "ordnance_expert": 2,
+                "point_defense": 2,
+                "polarized_armor": 2,
+                "systems_expertise": 2,
+                "target_analysis": 2
+            }
+        },
+        "variantId": "SKR_rampage_01"
+    }],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [{
+        "displayName": "World Eater",
+        "fluxCapacitors": 1,
+        "fluxVents": 50,
+        "hullId": "SKR_rampage",
+        "hullMods": ["hardenedshieldemitter"],
+        "moduleVariants": {
+            "LEFT": {
+                "displayName": "World Eater",
+                "fluxCapacitors": 42,
+                "fluxVents": 50,
+                "hullId": "SKR_rampage_L",
+                "hullMods": ["advancedshieldemitter"],
+                "variantId": "SKR_rampage_L_01",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS0001": "SKR_sling",
+                            "WS0002": "SKR_sling",
+                            "WS0006": "SKR_lightstreak",
+                            "WS0007": "SKR_lightstreak"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS0003": "SKR_dainsleif",
+                            "WS0004": "SKR_dainsleif"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS0005": "SKR_hvBlaster"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS0008": "SKR_intercept",
+                            "WS0009": "SKR_intercept",
+                            "WS0010": "SKR_intercept"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS0015": "SKR_burstPulse",
+                            "WS0016": "SKR_burstPulse"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS0012": "SKR_pdGrenade",
+                            "WS0013": "SKR_pdGrenade",
+                            "WS0014": "SKR_pdGrenade"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS0011": "SKR_pdCharger"}
+                    }
+                ],
+                "wings": [
+                    "SKR_beetle_wing",
+                    "SKR_pillbug_wing"
+                ]
+            },
+            "RIGHT": {
+                "displayName": "World Eater",
+                "fluxCapacitors": 41,
+                "fluxVents": 50,
+                "hullId": "SKR_rampage_R",
+                "hullMods": ["advancedshieldemitter"],
+                "variantId": "SKR_rampage_R_01",
+                "weaponGroups": [
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS0001": "SKR_sling",
+                            "WS0002": "SKR_sling",
+                            "WS0006": "SKR_lightstreak",
+                            "WS0007": "SKR_lightstreak"
+                        }
+                    },
+                    {
+                        "autofire": false,
+                        "mode": "ALTERNATING",
+                        "weapons": {
+                            "WS0003": "SKR_dainsleif",
+                            "WS0004": "SKR_dainsleif"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS0005": "SKR_hvBlaster"}
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS0008": "SKR_intercept",
+                            "WS0009": "SKR_intercept",
+                            "WS0010": "SKR_intercept"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS0014": "SKR_burstPulse",
+                            "WS0015": "SKR_burstPulse",
+                            "WS0016": "SKR_burstPulse"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {
+                            "WS0012": "SKR_pdGrenade",
+                            "WS0013": "SKR_pdGrenade"
+                        }
+                    },
+                    {
+                        "autofire": true,
+                        "mode": "LINKED",
+                        "weapons": {"WS0011": "SKR_pdCharger"}
+                    }
+                ],
+                "wings": [
+                    "SKR_beetle_wing",
+                    "SKR_pillbug_wing"
+                ]
+            }
+        },
+        "variantId": "SKR_rampage_01",
+        "weaponGroups": [
+            {
+                "autofire": false,
+                "mode": "ALTERNATING",
+                "weapons": {
+                    "WS0001": "SKR_fauchard",
+                    "WS0002": "SKR_fauchard",
+                    "WS0003": "SKR_fauchard"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS0012": "SKR_hvBlaster",
+                    "WS0013": "SKR_hvBlaster"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS0004": "SKR_hvBlaster",
+                    "WS0005": "SKR_hvBlaster"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS0019": "SKR_pdCharger",
+                    "WS0020": "SKR_pdCharger",
+                    "WS0023": "SKR_pdCharger",
+                    "WS0024": "SKR_pdCharger"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS0017": "SKR_pdGrenade",
+                    "WS0018": "SKR_pdGrenade",
+                    "WS0021": "SKR_pdGrenade",
+                    "WS0022": "SKR_pdGrenade"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "ALTERNATING",
+                "weapons": {
+                    "WS0006": "SKR_intercept",
+                    "WS0007": "SKR_intercept",
+                    "WS0008": "SKR_intercept",
+                    "WS0009": "SKR_intercept",
+                    "WS0010": "SKR_intercept",
+                    "WS0011": "SKR_intercept"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS0014": "SKR_intercept",
+                    "WS0015": "SKR_intercept",
+                    "WS0016": "SKR_intercept"
+                }
+            }
+        ]
+    }]
+}

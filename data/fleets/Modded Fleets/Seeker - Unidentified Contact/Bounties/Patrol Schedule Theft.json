@@ -1,0 +1,697 @@
+{
+    "aggression_doctrine": 2,
+    "factionID": "independent",
+    "fleetName": "Standard System Patrol",
+    "members": [
+        {
+            "cr": 0.85,
+            "name": "ISS Argo",
+            "officer": {
+                "first": "Hasper",
+                "gender": "MALE",
+                "last": "Daraw",
+                "level": 5,
+                "memKeys": {"voice": "soldier"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait26.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "missile_specialization": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "9da85_0"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Psilone",
+            "variantId": "9da85_1"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Firbolg",
+            "officer": {
+                "first": "Enyo",
+                "gender": "FEMALE",
+                "last": "Pyramus",
+                "level": 5,
+                "memKeys": {"voice": "business"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "skills": {
+                    "gunnery_implants": 2,
+                    "impact_mitigation": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "9da85_2"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Via Acubens",
+            "variantId": "9da85_3"
+        },
+        {
+            "cr": 0.85,
+            "isFlagship": true,
+            "name": "ISS Indomitable",
+            "officer": {
+                "first": "Schaffa",
+                "gender": "MALE",
+                "last": "Sirocco",
+                "level": 4,
+                "memKeys": {"voice": "soldier"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait36.png",
+                "post": "patrolCommander",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "fighter_uplink": 1,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 1
+                }
+            },
+            "variantId": "SKR_butterfly_elite"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Coeurl",
+            "variantId": "9da85_4"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Eurynome",
+            "officer": {
+                "first": "Zhi",
+                "gender": "FEMALE",
+                "last": "Perez",
+                "level": 5,
+                "memKeys": {"voice": "official"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait41.png",
+                "skills": {
+                    "field_modulation": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "9da85_5"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Ambitor",
+            "variantId": "9da85_6"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Unrivalled",
+            "variantId": "9da85_7"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Thunder Child",
+            "officer": {
+                "first": "Umbriel",
+                "gender": "FEMALE",
+                "last": "Mwezi",
+                "level": 5,
+                "memKeys": {"voice": "soldier"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait22.png",
+                "skills": {
+                    "damage_control": 2,
+                    "energy_weapon_mastery": 1,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "9da85_8"
+        },
+        {
+            "cr": 0.85,
+            "name": "ISS Indefatigable",
+            "officer": {
+                "first": "Rio",
+                "gender": "MALE",
+                "last": "Katsav",
+                "level": 5,
+                "memKeys": {"voice": "business"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait36.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "gunnery_implants": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "9da85_9"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Grannus",
+            "officer": {
+                "first": "Valeri",
+                "gender": "FEMALE",
+                "last": "Acamar",
+                "level": 5,
+                "memKeys": {"voice": "soldier"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait21.png",
+                "skills": {
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "9da85_10"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Hippolyta",
+            "variantId": "9da85_11"
+        },
+        {
+            "cr": 0.7,
+            "name": "ISS Korybantes",
+            "variantId": "9da85_12"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 16,
+            "fluxVents": 30,
+            "hullId": "SKR_halligan",
+            "hullMods": ["targetingunit"],
+            "variantId": "9da85_0",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "heavymauler",
+                        "WS0002": "heavymauler"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0009": "heatseeker",
+                        "WS0010": "heatseeker",
+                        "WS0011": "heatseeker",
+                        "WS0012": "heatseeker",
+                        "WS0013": "heatseeker",
+                        "WS0014": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "pilum"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "heavyac",
+                        "WS0004": "heavyac",
+                        "WS0005": "heavyac",
+                        "WS0006": "heavyac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0015": "lightdualmg",
+                        "WS0016": "lightdualmg",
+                        "WS0017": "lightdualmg",
+                        "WS0018": "lightdualmg",
+                        "WS0019": "lightdualmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Combat",
+            "fluxCapacitors": 6,
+            "fluxVents": 30,
+            "hullId": "SKR_tumbleweed_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": ["faulty_auto"],
+            "variantId": "9da85_1",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "mjolnir"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0005": "heatseeker",
+                        "WS0006": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "lightneedler",
+                        "WS0003": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0007": "taclaser",
+                        "WS0008": "taclaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0009": "lightdualmg",
+                        "WS0010": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0004": "dualflak"}
+                }
+            ],
+            "wings": ["broadsword_wing"]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 10,
+            "fluxVents": 30,
+            "hullId": "eagle_default_D",
+            "hullMods": [
+                "targetingunit",
+                "missile_autoloader"
+            ],
+            "permaMods": ["glitched_sensors"],
+            "variantId": "9da85_2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "hveldriver",
+                        "WS 008": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "atropos",
+                        "WS 002": "atropos"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 013": "heavymortar"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "irautolance",
+                        "WS 009": "ionbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "gravitonbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "pdlaser",
+                        "WS 004": "pdlaser",
+                        "WS 010": "pdlaser",
+                        "WS 012": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Elite",
+            "fluxCapacitors": 12,
+            "fluxVents": 0,
+            "hullId": "revenant",
+            "hullMods": [
+                "efficiency_overhaul",
+                "augmentedengines"
+            ],
+            "variantId": "9da85_3",
+            "weaponGroups": []
+        },
+        {
+            "displayName": "Elite",
+            "fluxCapacitors": 0,
+            "fluxVents": 19,
+            "hullId": "SKR_butterfly",
+            "hullMods": [
+                "fluxbreakers",
+                "targetingunit"
+            ],
+            "sMods": ["advancedoptics"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_butterfly_elite",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "SKR_revolverBeam",
+                        "WS0002": "SKR_revolverBeam"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0003": "sabot",
+                        "WS0004": "sabot"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "pdburst",
+                        "WS0006": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 20,
+            "fluxVents": 20,
+            "hullId": "enforcer",
+            "hullMods": ["safetyoverrides"],
+            "variantId": "9da85_4",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 006": "reaper",
+                        "WS 007": "reaper",
+                        "WS 008": "reaper"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "annihilator"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "heavyac",
+                        "WS 004": "heavyac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "chaingun"}
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 13,
+            "fluxVents": 20,
+            "hullId": "shrike",
+            "hullMods": ["unstable_injector"],
+            "variantId": "9da85_5",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "ionpulser"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "breachpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "irpulse",
+                        "WS 001": "irpulse",
+                        "WS 002": "irpulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "pdlaser",
+                        "WS 007": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 12,
+            "fluxVents": 8,
+            "hullId": "tarsus",
+            "hullMods": [],
+            "variantId": "9da85_6",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "lightdualmg",
+                    "WS 002": "lightdualmg",
+                    "WS 003": "lightdualmg",
+                    "WS 004": "lightdualmg"
+                }
+            }]
+        },
+        {
+            "displayName": "Elite",
+            "fluxCapacitors": 3,
+            "fluxVents": 20,
+            "hullId": "valkyrie_default_D",
+            "hullMods": [],
+            "permaMods": ["comp_storage"],
+            "variantId": "9da85_7",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "ioncannon",
+                        "WS 006": "ioncannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightdualmg",
+                        "WS 002": "lightdualmg",
+                        "WS 003": "lightdualmg",
+                        "WS 004": "lightdualmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Experimental",
+            "fluxCapacitors": 3,
+            "fluxVents": 10,
+            "hullId": "scarab",
+            "hullMods": [
+                "hardened_subsystems",
+                "fluxdistributor",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "9da85_8",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "ioncannon",
+                        "WS 005": "irpulse",
+                        "WS 010": "irpulse"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "atropos",
+                        "WS 003": "atropos"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "pdlaser",
+                        "WS 009": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 9,
+            "fluxVents": 10,
+            "hullId": "SKR_malet_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": ["comp_structure"],
+            "sMods": ["auxiliarythrusters"],
+            "variantId": "9da85_9",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "annihilator",
+                        "WS0003": "annihilator"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "lightag",
+                        "WS0005": "lightag"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "EW",
+            "fluxCapacitors": 10,
+            "fluxVents": 4,
+            "hullId": "omen",
+            "hullMods": [
+                "hardened_subsystems",
+                "auxiliarythrusters",
+                "missile_autoloader"
+            ],
+            "variantId": "9da85_10",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdlaser",
+                        "WS 002": "pdlaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "swarmer"}
+                }
+            ]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "hullId": "dram",
+            "hullMods": ["missile_autoloader"],
+            "variantId": "9da85_11",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "vulcan"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "breach"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lightdualmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 6,
+            "fluxVents": 0,
+            "hullId": "dram",
+            "hullMods": [
+                "missile_autoloader",
+                "targetingunit"
+            ],
+            "variantId": "9da85_12",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "harpoon"}
+                }
+            ]
+        }
+    ]
+}

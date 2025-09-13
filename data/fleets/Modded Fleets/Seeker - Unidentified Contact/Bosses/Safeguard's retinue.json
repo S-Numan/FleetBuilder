@@ -1,0 +1,969 @@
+{
+    "aggression_doctrine": 4,
+    "factionID": "plague",
+    "fleetName": "Safeguard's retinue",
+    "members": [
+        {
+            "cr": 0.7,
+            "isFlagship": true,
+            "name": "Safeguard",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Safeguard",
+                "last": "Safeguard",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueA.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "damage_control": 2,
+                    "impact_mitigation": 1,
+                    "polarized_armor": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "333e_0"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Aleph-Angel",
+            "officer": {
+                "first": "Sapphire",
+                "gender": "FEMALE",
+                "last": "Ascendant",
+                "level": 5,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "damage_control": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "333e_1"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Zeta-Molly",
+            "officer": {
+                "first": "Chartreuse",
+                "gender": "MALE",
+                "last": "Sagacious",
+                "level": 5,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "skills": {
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "333e_2"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Xi-Fido",
+            "officer": {
+                "first": "Umber",
+                "gender": "MALE",
+                "last": "Superlative",
+                "level": 5,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "skills": {
+                    "helmsmanship": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "333e_3"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Xi-Fido",
+            "variantId": "333e_3"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Qoph-Bella",
+            "variantId": "333e_5"
+        },
+        {
+            "cr": 0.85,
+            "name": "DSS Qoph-Bella",
+            "officer": {
+                "first": "Ochre",
+                "gender": "FEMALE",
+                "last": "Ascendant",
+                "level": 5,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "333e_6"
+        },
+        {
+            "cr": 0.85,
+            "name": "DSS Erroll-Shi",
+            "officer": {
+                "first": "Amber",
+                "gender": "FEMALE",
+                "last": "Terminal",
+                "level": 5,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "impact_mitigation": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "333e_7"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Xi-Fido",
+            "variantId": "333e_8"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Aleph-Angel",
+            "variantId": "333e_9"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Zeta-Molly",
+            "variantId": "333e_10"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Rikard-Ba",
+            "variantId": "333e_11"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Heth-November",
+            "variantId": "333e_12"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Qoph-Bella",
+            "officer": {
+                "first": "Orange",
+                "gender": "MALE",
+                "last": "Sagacious",
+                "level": 5,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "skills": {
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "333e_13"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Qoph-Bella",
+            "variantId": "333e_13"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Sigma-Prince",
+            "variantId": "333e_15"
+        },
+        {
+            "cr": 0.85,
+            "name": "DSS Waw-Romeo",
+            "officer": {
+                "first": "Celadon",
+                "gender": "MALE",
+                "last": "Optimum",
+                "level": 5,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "damage_control": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "333e_16"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Aleph-Angel",
+            "officer": {
+                "first": "Sienna",
+                "gender": "MALE",
+                "last": "Splendorous",
+                "level": 5,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "skills": {
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "333e_17"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Xi-Fido",
+            "variantId": "333e_18"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Theta-Rusty",
+            "variantId": "333e_19"
+        },
+        {
+            "cr": 0.7,
+            "name": "DSS Res-Sophie",
+            "variantId": "333e_20"
+        },
+        {
+            "cr": 0.85,
+            "name": "DSS Thunder-Liu",
+            "officer": {
+                "first": "Vermillion",
+                "gender": "FEMALE",
+                "last": "Unthinkable",
+                "level": 5,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "point_defense": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "333e_21"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [
+        {
+            "displayName": "Safeguard",
+            "fluxCapacitors": 46,
+            "fluxVents": 50,
+            "hullId": "SKR_keep_default_D",
+            "hullMods": [
+                "turretgyros",
+                "advancedshieldemitter",
+                "auxiliarythrusters",
+                "fluxbreakers",
+                "missleracks",
+                "insulatedengine",
+                "eccm",
+                "armoredweapons",
+                "SKR_shield"
+            ],
+            "permaMods": [
+                "faulty_grid",
+                "damaged_deck"
+            ],
+            "variantId": "333e_0",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0003": "locust",
+                        "WS0004": "locust"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "SKR_canister",
+                        "WS0002": "SKR_glutton"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0012": "pilum",
+                        "WS0018": "heatseeker",
+                        "WS0019": "heatseeker",
+                        "WS0020": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0009": "sabotpod",
+                        "WS0010": "sabotpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "mark9",
+                        "WS0006": "hellbore",
+                        "WS0007": "hellbore",
+                        "WS0008": "mjolnir",
+                        "WS0034": "mjolnir"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0016": "shredder",
+                        "WS0017": "shredder"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0011": "flak",
+                        "WS0013": "heavymg",
+                        "WS0014": "flak",
+                        "WS0015": "heavymg",
+                        "WS0021": "lightmg",
+                        "WS0022": "lightmg",
+                        "WS0023": "lightdualmg",
+                        "WS0024": "lightmg",
+                        "WS0025": "lightmg",
+                        "WS0026": "lightdualmg",
+                        "WS0027": "lightdualmg",
+                        "WS0028": "lightmg",
+                        "WS0029": "lightdualmg",
+                        "WS0030": "lightdualmg",
+                        "WS0031": "mininglaser",
+                        "WS0032": "lightmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 11,
+            "hullId": "rampart_default_D",
+            "hullMods": [
+                "armoredweapons",
+                "insulatedengine",
+                "dedicated_targeting_core"
+            ],
+            "permaMods": [
+                "degraded_engines",
+                "damaged_mounts",
+                "comp_structure"
+            ],
+            "variantId": "333e_1",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hephag"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "squall"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "arbalest",
+                        "WS 004": "arbalest"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "devastator"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 16,
+            "hullId": "rampart_default_D",
+            "hullMods": [
+                "armoredweapons",
+                "insulatedengine",
+                "fluxbreakers",
+                "unstable_injector"
+            ],
+            "permaMods": [
+                "erratic_injector",
+                "comp_armor",
+                "glitched_sensors"
+            ],
+            "sMods": ["dedicated_targeting_core"],
+            "variantId": "333e_2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hellbore"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "cyclone"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "devastator"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 10,
+            "hullId": "rampart_default_D",
+            "hullMods": [
+                "armoredweapons",
+                "insulatedengine",
+                "dedicated_targeting_core"
+            ],
+            "permaMods": ["degraded_engines"],
+            "variantId": "333e_3",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hellbore"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "hurricane"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "arbalest",
+                        "WS 004": "arbalest"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "devastator"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 18,
+            "hullId": "rampart_default_D",
+            "hullMods": [
+                "armoredweapons",
+                "insulatedengine",
+                "dedicated_targeting_core"
+            ],
+            "permaMods": [
+                "comp_armor",
+                "degraded_engines",
+                "glitched_sensors"
+            ],
+            "sMods": ["ecm"],
+            "variantId": "333e_5",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hephag"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "hammerrack"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "hveldriver"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "devastator"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 13,
+            "hullId": "berserker_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "comp_armor",
+                "degraded_engines",
+                "glitched_sensors"
+            ],
+            "sMods": ["fluxbreakers"],
+            "variantId": "333e_6",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "hveldriver",
+                        "WS 005": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "lightag"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightmortar",
+                        "WS 002": "lightmortar",
+                        "WS 006": "lightmortar"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 7,
+            "fluxVents": 15,
+            "hullId": "berserker_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "comp_armor",
+                "erratic_injector"
+            ],
+            "variantId": "333e_7",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightmortar",
+                        "WS 002": "lightmortar",
+                        "WS 006": "lightmortar",
+                        "WS 008": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heavymg",
+                        "WS 005": "heavymg",
+                        "WS 007": "heavymg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Siege",
+            "fluxCapacitors": 7,
+            "fluxVents": 6,
+            "hullId": "bastillon_default_D",
+            "hullMods": [
+                "turretgyros",
+                "armoredweapons"
+            ],
+            "permaMods": ["degraded_engines"],
+            "variantId": "333e_8",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightdualmg",
+                        "WS 002": "lightdualmg",
+                        "WS 004": "lightdualmg",
+                        "WS 008": "lightdualmg",
+                        "WS 014": "lightmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "mininglaser",
+                        "WS 006": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "vulcan",
+                        "WS 007": "vulcan",
+                        "WS 015": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Siege",
+            "fluxCapacitors": 12,
+            "fluxVents": 8,
+            "hullId": "bastillon_default_D",
+            "hullMods": ["turretgyros"],
+            "permaMods": [
+                "degraded_engines",
+                "damaged_mounts",
+                "comp_structure"
+            ],
+            "variantId": "333e_9",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan",
+                        "WS 003": "vulcan",
+                        "WS 004": "vulcan",
+                        "WS 005": "vulcan",
+                        "WS 008": "vulcan"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "lightmg",
+                        "WS 007": "lightmg",
+                        "WS 014": "lightmg",
+                        "WS 015": "lightmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Fire Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 5,
+            "hullId": "sentry_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "erratic_injector",
+                "comp_armor",
+                "glitched_sensors"
+            ],
+            "sMods": ["fluxbreakers"],
+            "variantId": "333e_10",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heatseeker"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "swarmer"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "SKR_accelMissileRack"}
+                }
+            ]
+        },
+        {
+            "displayName": "PD",
+            "fluxCapacitors": 9,
+            "fluxVents": 8,
+            "hullId": "defender_default_D",
+            "hullMods": [],
+            "permaMods": ["comp_hull"],
+            "variantId": "333e_11",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightmg",
+                        "WS 002": "lightmg",
+                        "WS 003": "lightmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Defense",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "warden_default_D",
+            "hullMods": [],
+            "permaMods": ["comp_structure"],
+            "sMods": ["fluxdistributor"],
+            "variantId": "333e_12",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "shredder"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "lightmortar"}
+                }
+            ]
+        },
+        {
+            "displayName": "Defense",
+            "fluxCapacitors": 8,
+            "fluxVents": 10,
+            "hullId": "warden_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "comp_armor",
+                "degraded_engines",
+                "glitched_sensors"
+            ],
+            "sMods": ["fluxbreakers"],
+            "variantId": "333e_13",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "lightmortar"}
+                }
+            ]
+        },
+        {
+            "displayName": "Fire Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 2,
+            "hullId": "sentry_default_D",
+            "hullMods": ["fluxbreakers"],
+            "permaMods": [
+                "fragile_subsystems",
+                "degraded_engines",
+                "erratic_injector"
+            ],
+            "variantId": "333e_15",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "heatseeker",
+                        "WS 003": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "annihilator"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 6,
+            "hullId": "picket_default_D",
+            "hullMods": [],
+            "permaMods": ["fragile_subsystems"],
+            "sMods": ["armoredweapons"],
+            "variantId": "333e_16",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "lightmg",
+                    "WS 002": "lightmg",
+                    "WS 003": "lightmg"
+                }
+            }]
+        },
+        {
+            "displayName": "Fire Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 5,
+            "hullId": "sentry_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "degraded_engines",
+                "damaged_mounts",
+                "comp_structure"
+            ],
+            "variantId": "333e_17",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "swarmer",
+                        "WS 003": "swarmer"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "annihilator"}
+                }
+            ]
+        },
+        {
+            "displayName": "PD",
+            "fluxCapacitors": 5,
+            "fluxVents": 6,
+            "hullId": "defender_default_D",
+            "hullMods": ["armoredweapons"],
+            "permaMods": ["degraded_engines"],
+            "variantId": "333e_18",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightdualmg",
+                        "WS 004": "lightmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 003": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 3,
+            "hullId": "picket_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "comp_armor",
+                "fragile_subsystems",
+                "degraded_engines"
+            ],
+            "sMods": ["fluxbreakers"],
+            "variantId": "333e_19",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "vulcan",
+                    "WS 002": "vulcan",
+                    "WS 003": "vulcan"
+                }
+            }]
+        },
+        {
+            "displayName": "PD",
+            "fluxCapacitors": 3,
+            "fluxVents": 9,
+            "hullId": "defender_default_D",
+            "hullMods": ["insulatedengine"],
+            "permaMods": [
+                "comp_hull",
+                "degraded_engines"
+            ],
+            "sMods": ["fluxbreakers"],
+            "variantId": "333e_20",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightdualmg",
+                        "WS 002": "lightmg",
+                        "WS 003": "lightmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Fire Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 5,
+            "hullId": "sentry_default_D",
+            "hullMods": [],
+            "permaMods": ["damaged_mounts"],
+            "sMods": ["fluxdistributor"],
+            "variantId": "333e_21",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "swarmer",
+                        "WS 003": "swarmer"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "annihilator"}
+                }
+            ]
+        }
+    ]
+}

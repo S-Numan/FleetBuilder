@@ -1,0 +1,1174 @@
+{
+    "aggression_doctrine": 3,
+    "factionID": "remnant",
+    "fleetName": "AI abomination",
+    "members": [
+        {
+            "cr": 0.85,
+            "isFlagship": true,
+            "name": "Hull 001",
+            "officer": {
+                "first": "Cerise",
+                "gender": "FEMALE",
+                "last": "Unthinkable",
+                "level": 7,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "coordinated_maneuvers": 1,
+                    "damage_control": 2,
+                    "flux_regulation": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 1,
+                    "polarized_armor": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "SKR_balisong_overdrive"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Serendipity",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "brilliant_Standard"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Blueshift",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "rampart_Standard"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Avarus",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "rampart_Standard"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Starfarer",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "fulgent_Assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Tycoon",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "fulgent_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Glory of the Stars",
+            "variantId": "scintilla_Strike"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Dark Matters",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "scintilla_Support"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Long Haul",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2
+                }
+            },
+            "variantId": "fulgent_Support"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Zeta-Molly",
+            "variantId": "scintilla_Strike"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Psi-Duke",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2
+                }
+            },
+            "variantId": "berserker_Assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Kosmonaut",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "berserker_Assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Gold Fortune",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2
+                }
+            },
+            "variantId": "berserker_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Florus-Jiu",
+            "variantId": "bastillon_Standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Interstellar Rain",
+            "variantId": "bastillon_Standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Expedition",
+            "variantId": "bastillon_Standard"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Spacefarer",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2
+                }
+            },
+            "variantId": "glimmer_Support"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Theta-Rusty",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "glimmer_Support"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Prime Lavish",
+            "variantId": "lumen_Standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Bright Future",
+            "variantId": "lumen_Standard"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Apologies To Goddard",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "lumen_Standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Cosmosis",
+            "variantId": "glimmer_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Prime Lavish",
+            "variantId": "glimmer_Assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Arising Hyperbolic",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "glimmer_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Serendipity",
+            "variantId": "lumen_Standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Kosmonaut",
+            "variantId": "glimmer_Assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Expedition",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2
+                }
+            },
+            "variantId": "picket_Assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Epsilon-Lucy",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "picket_Assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Fortunate Cloud",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2
+                }
+            },
+            "variantId": "picket_Assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Gegenschein",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "warden_Defense"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Gold Line",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "warden_Defense"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Phi-Rex",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "warden_Defense"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Thunder-Liu",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "defender_PD"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Venusian",
+            "variantId": "defender_PD"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Tycoon",
+            "variantId": "defender_PD"
+        },
+        {
+            "cr": 0.85,
+            "name": "TTDS Redshift",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "sentry_FS"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Antares Bright",
+            "variantId": "sentry_FS"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTDS Solstice",
+            "variantId": "sentry_FS"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [
+        {
+            "displayName": "Overdrive",
+            "fluxCapacitors": 9,
+            "fluxVents": 30,
+            "hullId": "SKR_balisong",
+            "hullMods": [
+                "targetingunit",
+                "fluxbreakers",
+                "magazines"
+            ],
+            "moduleVariants": {
+                "MODULE_LEFT": {
+                    "displayName": "Overdrive",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "SKR_balisongLeft",
+                    "hullMods": [],
+                    "variantId": "SKR_balisongLeft_overdrive",
+                    "weaponGroups": []
+                },
+                "MODULE_RIGHT": {
+                    "displayName": "Overdrive",
+                    "fluxCapacitors": 0,
+                    "fluxVents": 0,
+                    "hullId": "SKR_balisongRight",
+                    "hullMods": [],
+                    "variantId": "SKR_balisongRight_overdrive",
+                    "weaponGroups": []
+                }
+            },
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit",
+                "always_recoverable"
+            ],
+            "variantId": "SKR_balisong_overdrive",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "LEFT": "SKR_balisongPulse",
+                        "RIGHT": "SKR_balisongPulse"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"MAIN1": "heavyblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"MAIN2": "ionpulser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "phasebeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "pdburst"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 8,
+            "fluxVents": 30,
+            "hullId": "brilliant",
+            "hullMods": ["targetingunit"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "brilliant_Standard",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {"WS 000": "plasma"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "sabotpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "hveldriver",
+                        "WS 006": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heavyburst",
+                        "WS 002": "pdburst",
+                        "WS 003": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 15,
+            "hullId": "rampart",
+            "hullMods": [
+                "armoredweapons",
+                "insulatedengine",
+                "dedicated_targeting_core"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "rampart_Standard",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "devastator"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hephag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "arbalest",
+                        "WS 004": "arbalest"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "hammerrack"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 11,
+            "fluxVents": 20,
+            "hullId": "fulgent",
+            "hullMods": [
+                "targetingunit",
+                "hardenedshieldemitter"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "fulgent_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "phasebeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 009": "sabot",
+                        "WS 010": "sabot"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "ioncannon",
+                        "WS 002": "ioncannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "pulselaser",
+                        "WS 004": "pulselaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "pdlaser",
+                        "WS 006": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 8,
+            "fluxVents": 13,
+            "hullId": "scintilla",
+            "hullMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "scintilla_Strike",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {"WS 006": "typhoon"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 007": "sabot",
+                        "WS 008": "sabot"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "taclaser",
+                        "WS 001": "taclaser",
+                        "WS 002": "pdlaser",
+                        "WS 003": "pdlaser"
+                    }
+                }
+            ],
+            "wings": [
+                "lux_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 12,
+            "fluxVents": 20,
+            "hullId": "scintilla",
+            "hullMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "scintilla_Support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {"WS 006": "pilum"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 007": "heatseeker",
+                        "WS 008": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "lrpdlaser",
+                        "WS 001": "lrpdlaser",
+                        "WS 002": "pdlaser",
+                        "WS 003": "pdlaser"
+                    }
+                }
+            ],
+            "wings": [
+                "spark_wing",
+                "spark_wing"
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "fulgent",
+            "hullMods": [
+                "missleracks",
+                "hardenedshieldemitter"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "fulgent_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "ionpulser"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "typhoon",
+                        "WS 004": "typhoon"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 009": "sabot",
+                        "WS 010": "sabot"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "ioncannon",
+                        "WS 002": "ioncannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "pdlaser",
+                        "WS 006": "pdlaser",
+                        "WS 007": "pdlaser",
+                        "WS 008": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 7,
+            "fluxVents": 15,
+            "hullId": "berserker",
+            "hullMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "berserker_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heavymg",
+                        "WS 005": "heavymg",
+                        "WS 007": "heavymg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightmortar",
+                        "WS 002": "lightmortar",
+                        "WS 006": "lightmortar",
+                        "WS 008": "lightmortar"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Siege",
+            "fluxCapacitors": 8,
+            "fluxVents": 6,
+            "hullId": "bastillon",
+            "hullMods": ["turretgyros"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "bastillon_Standard",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "vulcan",
+                    "WS 002": "lightdualmg",
+                    "WS 003": "lightdualmg",
+                    "WS 004": "vulcan",
+                    "WS 005": "vulcan",
+                    "WS 006": "lightdualmg",
+                    "WS 007": "lightdualmg",
+                    "WS 008": "vulcan",
+                    "WS 014": "lightmg",
+                    "WS 015": "lightmg"
+                }
+            }]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "glimmer",
+            "hullMods": ["advancedoptics"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "glimmer_Support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "gravitonbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "taclaser",
+                        "WS 003": "taclaser",
+                        "WS 004": "taclaser",
+                        "WS 005": "taclaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 7,
+            "fluxVents": 10,
+            "hullId": "lumen",
+            "hullMods": ["fluxbreakers"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "lumen_Standard",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {"WS 008": "atropos_single"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "swarmer"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "irpulse"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "ioncannon"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 4,
+            "fluxVents": 10,
+            "hullId": "glimmer",
+            "hullMods": ["unstable_injector"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "glimmer_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "ionpulser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "irpulse",
+                        "WS 003": "irpulse",
+                        "WS 004": "irpulse",
+                        "WS 005": "irpulse"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 3,
+            "hullId": "picket",
+            "hullMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "picket_Assault",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "vulcan",
+                    "WS 002": "vulcan",
+                    "WS 003": "vulcan"
+                }
+            }]
+        },
+        {
+            "displayName": "Defense",
+            "fluxCapacitors": 8,
+            "fluxVents": 10,
+            "hullId": "warden",
+            "hullMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "warden_Defense",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "shredder"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "lightag"}
+                }
+            ]
+        },
+        {
+            "displayName": "PD",
+            "fluxCapacitors": 6,
+            "fluxVents": 6,
+            "hullId": "defender",
+            "hullMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "defender_PD",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "vulcan",
+                    "WS 002": "lightdualmg",
+                    "WS 003": "lightdualmg",
+                    "WS 004": "vulcan"
+                }
+            }]
+        },
+        {
+            "displayName": "Fire Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 5,
+            "hullId": "sentry",
+            "hullMods": [],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "sentry_FS",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {"WS 001": "annihilator"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "swarmer",
+                        "WS 003": "swarmer"
+                    }
+                }
+            ]
+        }
+    ]
+}

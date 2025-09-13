@@ -1,0 +1,339 @@
+{
+    "aggression_doctrine": 2,
+    "factionID": "tritachyon",
+    "fleetName": "Unconspicuous Tri-Tachyon Fleet",
+    "members": [
+        {
+            "cr": 0.85,
+            "isFlagship": true,
+            "name": "TTS Gold Line",
+            "officer": {
+                "first": "Maud",
+                "gender": "FEMALE",
+                "last": "Belley",
+                "level": 3,
+                "memKeys": {"voice": "business"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "specialAgent",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 1
+                }
+            },
+            "variantId": "SKR_medusa_striker"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Hidesato",
+            "variantId": "shrike_Attack"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS All Of Our Hopes",
+            "variantId": "buffalo_tritachyon_Standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Nunet",
+            "officer": {
+                "first": "Callisto",
+                "gender": "FEMALE",
+                "last": "Katun",
+                "level": 2,
+                "memKeys": {"voice": "business"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait34.png",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2
+                }
+            },
+            "variantId": "SKR_augur_support"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Third Moon Of Mars",
+            "variantId": "SKR_augur_standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Mjollnir",
+            "variantId": "SKR_augur_assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Red Dwarf",
+            "officer": {
+                "first": "Second",
+                "gender": "FEMALE",
+                "last": "Qadri",
+                "level": 1,
+                "memKeys": {"voice": "business"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait32.png",
+                "skills": {"field_modulation": 2}
+            },
+            "variantId": "SKR_augur_harasser"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [
+        {
+            "displayName": "Striker",
+            "fluxCapacitors": 0,
+            "fluxVents": 22,
+            "hullId": "medusa",
+            "hullMods": ["magazines"],
+            "sMods": ["hardenedshieldemitter"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit",
+                "always_recoverable"
+            ],
+            "variantId": "SKR_medusa_striker",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "amblaster",
+                        "WS 003": "amblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "lightneedler",
+                        "WS 009": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "ionpulser",
+                        "WS 007": "ionpulser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdlaser",
+                        "WS 004": "pdlaser",
+                        "WS 005": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 11,
+            "fluxVents": 20,
+            "hullId": "shrike",
+            "hullMods": ["unstable_injector"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "shrike_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavyblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "sabotpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "irpulse",
+                        "WS 001": "ioncannon",
+                        "WS 002": "irpulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "pdlaser",
+                        "WS 007": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 8,
+            "fluxVents": 8,
+            "hullId": "buffalo_tritachyon",
+            "hullMods": ["auxiliarythrusters"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "buffalo_tritachyon_Standard",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {"WS 001": "lrpdlaser"}
+            }]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 6,
+            "hullId": "SKR_augur",
+            "hullMods": [
+                "pointdefenseai",
+                "hardened_subsystems",
+                "hardenedshieldemitter"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_augur_support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "pdburst"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "pdburst",
+                        "WS 003": "pdburst"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0010": "heatseeker"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 3,
+            "hullId": "SKR_augur",
+            "hullMods": [
+                "missleracks",
+                "advancedshieldemitter",
+                "magazines"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_augur_standard",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "irpulse"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0010": "sabot"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "pdburst",
+                        "WS 003": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 10,
+            "hullId": "SKR_augur",
+            "hullMods": [
+                "safetyoverrides",
+                "hardened_subsystems"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_augur_assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0010": "swarmer"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "pdlaser",
+                        "WS 003": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Harasser",
+            "fluxCapacitors": 7,
+            "fluxVents": 10,
+            "hullId": "SKR_augur",
+            "hullMods": [
+                "hardened_subsystems",
+                "fluxbreakers",
+                "missleracks"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_augur_harasser",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "ioncannon"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0010": "breach"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "taclaser",
+                        "WS 003": "taclaser"
+                    }
+                }
+            ]
+        }
+    ]
+}

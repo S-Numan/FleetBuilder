@@ -26,8 +26,8 @@ import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.ui.popUpUI.PopUpUIDialog
-import fleetBuilder.util.ClipboardUtil.getClipboardJson
-import fleetBuilder.util.ClipboardUtil.setClipboardText
+import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
+import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DialogUtil.initPopUpUI
 import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.variants.LoadoutManager.importShipLoadout

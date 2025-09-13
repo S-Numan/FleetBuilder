@@ -6,7 +6,6 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.config.FBTxt
-import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.config.ModSettings.getDefaultExcludeVariantTags
 import fleetBuilder.persistence.fleet.JSONFleet.extractFleetDataFromJson
@@ -18,11 +17,12 @@ import fleetBuilder.persistence.variant.CompressedVariant.saveVariantToCompStrin
 import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.persistence.variant.JSONVariant.saveVariantToJson
 import fleetBuilder.persistence.variant.VariantSettings
-import fleetBuilder.util.ClipboardUtil.cleanJsonStringInput
-import fleetBuilder.util.ClipboardUtil.getClipboardJSONFileContents
-import fleetBuilder.util.ClipboardUtil.getClipboardTextSafe
-import fleetBuilder.util.ClipboardUtil.setClipboardText
-import fleetBuilder.util.DisplayMessage.showMessage
+import fleetBuilder.util.lib.ClipboardUtil.cleanJsonStringInput
+import fleetBuilder.util.lib.ClipboardUtil.getClipboardJSONFileContents
+import fleetBuilder.util.lib.ClipboardUtil.getClipboardTextSafe
+import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
+import fleetBuilder.util.FBMisc.extractDataFromString
+import fleetBuilder.util.FBMisc.getJSONFromStringSafe
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import fleetBuilder.variants.VariantLib
 import org.json.JSONObject
@@ -31,7 +31,7 @@ import java.awt.Color
 
 object ClipboardMisc {
 
-    fun saveVariantToClipboard(variant: ShipVariantAPI, compress: Boolean = false) {
+    fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false) {
         if (variant.hasHullMod(commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return
@@ -40,7 +40,7 @@ object ClipboardMisc {
         val variantToSave = variant.clone()
         variantToSave.hullVariantId = VariantLib.makeVariantID(variantToSave)
 
-        if (compress) {
+        if (!shift) {
             val comp = saveVariantToCompString(
                 variantToSave,
                 VariantSettings().apply {
@@ -61,13 +61,13 @@ object ClipboardMisc {
         }
     }
 
-    fun saveMemberToClipboard(member: FleetMemberAPI, compress: Boolean = false) {
+    fun saveMemberToClipboard(member: FleetMemberAPI, shift: Boolean = false) {
         if (member.variant.hasHullMod(commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return
         }
 
-        if (compress) {
+        if (shift) {
             //val comp = saveMemberToCompString(member)
             //setClipboardText(comp)
             //DisplayMessage.showMessage("Member compressed and copied to clipboard")
@@ -96,53 +96,8 @@ object ClipboardMisc {
 
     fun extractDataFromClipboard(): Any? {
         val contents = getClipboardJSONFileContents()
-        var clipboardText = contents ?: getClipboardTextSafe() ?: return null
+        val clipboardText = contents ?: getClipboardTextSafe() ?: return null
 
-        if (clipboardText.isEmpty()) return null
-
-        if (clipboardText.startsWithJsonBracket()) {
-            clipboardText = cleanJsonStringInput(clipboardText)
-
-            val json = try {
-                JSONObject(clipboardText)
-            } catch (_: Exception) {
-                null
-            } ?: return null
-
-            return when {
-                json.has("skills") -> {
-                    // Officer
-                    extractPersonDataFromJson(json)
-                }
-
-                json.has("variant") || json.has("officer") -> {
-                    // Fleet member
-                    extractMemberDataFromJson(json)
-                }
-
-                json.has("hullId") -> {
-                    // Variant
-                    extractVariantDataFromJson(json)
-                }
-
-                json.has("members") -> {
-                    // Fleet
-                    extractFleetDataFromJson(json)
-                }
-
-                else -> {
-                    null
-                }
-            }
-
-
-        } else {
-            val data = extractVariantDataFromCompString(clipboardText)
-            if (data != null) {
-                return data
-            }
-        }
-
-        return null
+        return extractDataFromString(clipboardText)
     }
 }

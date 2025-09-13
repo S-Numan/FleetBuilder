@@ -1,0 +1,424 @@
+{
+    "aggression_doctrine": 2,
+    "factionID": "tritachyon",
+    "fleetName": "Guarded Tri-Tachyon Fleet",
+    "members": [
+        {
+            "cr": 0.7,
+            "isFlagship": true,
+            "name": "TTS Re",
+            "officer": {
+                "first": "Lina",
+                "gender": "FEMALE",
+                "last": "Aziza",
+                "level": 5,
+                "memKeys": {"voice": "business"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "post": "specialAgent",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "flux_regulation": 1,
+                    "impact_mitigation": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "aurora_Balanced"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Ekibiogami",
+            "variantId": "medusa_Attack"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Forgive Us Enos",
+            "variantId": "medusa_Attack"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Duamutef",
+            "variantId": "buffalo_tritachyon_Standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Forgive Us Enos",
+            "variantId": "buffalo_tritachyon_Standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Bright Spark",
+            "officer": {
+                "first": "Soyuz",
+                "gender": "FEMALE",
+                "last": "Zaniah",
+                "level": 1,
+                "memKeys": {"voice": "business"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "skills": {"energy_weapon_mastery": 2}
+            },
+            "variantId": "SKR_endymion_support"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Butsudan",
+            "variantId": "SKR_endymion_assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Ekibiogami",
+            "variantId": "SKR_endymion_harasser"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Inmutef",
+            "officer": {
+                "first": "Hera",
+                "gender": "FEMALE",
+                "last": "Locke",
+                "level": 3,
+                "memKeys": {"voice": "business"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate09.png",
+                "skills": {
+                    "damage_control": 2,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 1
+                }
+            },
+            "variantId": "SKR_endymion_standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "TTS Stellar Profits",
+            "variantId": "dram_Light"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [
+        {
+            "displayName": "Balanced",
+            "fluxCapacitors": 15,
+            "fluxVents": 16,
+            "hullId": "aurora",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "targetingunit",
+                "missleracks"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "aurora_Balanced",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "typhoon"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 010": "harpoon",
+                        "WS 011": "harpoon",
+                        "WS 012": "harpoon",
+                        "WS 013": "harpoon"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "sabotpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "ionbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdlaser",
+                        "WS 002": "pdlaser",
+                        "WS 003": "pdburst",
+                        "WS 004": "pdburst",
+                        "WS 005": "pdburst"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "heavyblaster"}
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 10,
+            "fluxVents": 20,
+            "hullId": "medusa",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "fluxbreakers"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "medusa_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "railgun",
+                        "WS 009": "railgun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "heavyblaster",
+                        "WS 007": "heavyblaster"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "irpulse",
+                        "WS 003": "irpulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdlaser",
+                        "WS 004": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 8,
+            "fluxVents": 8,
+            "hullId": "buffalo_tritachyon",
+            "hullMods": ["auxiliarythrusters"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "buffalo_tritachyon_Standard",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {"WS 001": "lrpdlaser"}
+            }]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_endymion",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "magazines"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_endymion_support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "ionpulser",
+                        "WS 004": "ionpulser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 005": "heatseeker",
+                        "WS 006": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lrpdlaser",
+                        "WS 002": "lrpdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 3,
+            "fluxVents": 10,
+            "hullId": "SKR_endymion",
+            "hullMods": [
+                "safetyoverrides",
+                "hardened_subsystems"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_endymion_assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 005": "reaper",
+                        "WS 006": "reaper"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavyblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "SKR_ravager"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdlaser",
+                        "WS 002": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Harasser",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_endymion",
+            "hullMods": ["missleracks"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_endymion_harasser",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "phasebeam",
+                        "WS 004": "phasebeam"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 005": "sabot",
+                        "WS 006": "sabot"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdburst",
+                        "WS 002": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 3,
+            "fluxVents": 10,
+            "hullId": "SKR_endymion",
+            "hullMods": [
+                "fluxbreakers",
+                "hardened_subsystems",
+                "hardenedshieldemitter"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_endymion_standard",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "lightneedler",
+                        "WS 006": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "pulselaser",
+                        "WS 004": "pulselaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdlaser",
+                        "WS 002": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "hullId": "dram",
+            "hullMods": ["missile_autoloader"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "dram_Light",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {"WS 003": "harpoon"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan"
+                    }
+                }
+            ]
+        }
+    ]
+}

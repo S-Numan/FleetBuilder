@@ -29,6 +29,7 @@ import fleetBuilder.util.FBMisc.handleRefitCopy
 import fleetBuilder.util.FBMisc.handleRefitPaste
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
+import fleetBuilder.util.lib.ClipboardUtil
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching

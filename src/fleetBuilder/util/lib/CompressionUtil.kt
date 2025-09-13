@@ -1,6 +1,6 @@
-package fleetBuilder.util
+package fleetBuilder.util.lib
 
-import java.util.*
+import java.util.Base64
 import java.util.zip.Deflater
 import java.util.zip.Inflater
 
@@ -37,7 +37,7 @@ object CompressionUtil {
         return base64
     }
 
-    fun decompressData(input: String): String {
+    fun decompressString(input: String): String {
         val compressed = Base64.getDecoder().decode(input)
         val fullOutput = mutableListOf<ByteArray>()
         var result: ByteArray

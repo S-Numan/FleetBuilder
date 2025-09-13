@@ -1,0 +1,677 @@
+{
+    "aggression_doctrine": 2,
+    "factionID": "persean",
+    "fleetName": "Mercenary Force",
+    "members": [
+        {
+            "cr": 0.7,
+            "name": "PLS Kay",
+            "variantId": "9dcb1_0"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Prosperity",
+            "officer": {
+                "first": "Eugenia",
+                "gender": "FEMALE",
+                "last": "Dahr",
+                "level": 4,
+                "memKeys": {"voice": "official"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait21.png",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "missile_specialization": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "9dcb1_1"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Bedivere",
+            "officer": {
+                "first": "Titus",
+                "gender": "MALE",
+                "last": "Kobayashi",
+                "level": 4,
+                "memKeys": {"voice": "business"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait35.png",
+                "skills": {
+                    "damage_control": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "9dcb1_2"
+        },
+        {
+            "cr": 0.85,
+            "isFlagship": true,
+            "name": "SDS Deadeye",
+            "officer": {
+                "first": "Enki",
+                "gender": "MALE",
+                "last": "Matawak",
+                "level": 4,
+                "memKeys": {"voice": "business"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait25.png",
+                "post": "mercenary",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "officer_training": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "SKR_marksman_elite"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Argea",
+            "officer": {
+                "first": "Lynn",
+                "gender": "FEMALE",
+                "last": "Imran",
+                "level": 5,
+                "memKeys": {"voice": "business"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait28.png",
+                "skills": {
+                    "helmsmanship": 1,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "9dcb1_3"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Bright Future",
+            "variantId": "9dcb1_4"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Caradoc",
+            "officer": {
+                "first": "Bogdan",
+                "gender": "MALE",
+                "last": "Oberon",
+                "level": 5,
+                "memKeys": {"voice": "soldier"},
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait26.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "damage_control": 1,
+                    "gunnery_implants": 2,
+                    "missile_specialization": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "9dcb1_5"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Chiron",
+            "variantId": "9dcb1_6"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Segwarides",
+            "variantId": "9dcb1_7"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Lancelot",
+            "variantId": "9dcb1_8"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Fusion Flash",
+            "variantId": "9dcb1_9"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Kardashevian",
+            "variantId": "9dcb1_10"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Caradoc",
+            "variantId": "9dcb1_11"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Ion Rose",
+            "variantId": "9dcb1_12"
+        },
+        {
+            "cr": 0.7,
+            "name": "PLS Lucan",
+            "variantId": "9dcb1_13"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [
+        {
+            "displayName": "DEM Escort",
+            "fluxCapacitors": 12,
+            "fluxVents": 9,
+            "hullId": "champion_default_D",
+            "hullMods": [
+                "pointdefenseai",
+                "magazines",
+                "targetingunit",
+                "advancedoptics"
+            ],
+            "permaMods": [
+                "faulty_grid",
+                "damaged_mounts",
+                "degraded_shields"
+            ],
+            "variantId": "9dcb1_0",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "phasebeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "hydra"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "gravitonbeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "pdburst",
+                        "WS 001": "pdburst",
+                        "WS 002": "pdlaser",
+                        "WS 003": "pdburst",
+                        "WS 004": "pdburst",
+                        "WS 005": "pdburst"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "lrpdlaser",
+                        "WS 011": "lrpdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 13,
+            "hullId": "eagle_default_D",
+            "hullMods": [
+                "targetingunit",
+                "magazines",
+                "missile_autoloader"
+            ],
+            "permaMods": ["comp_hull"],
+            "variantId": "9dcb1_1",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "heavyac",
+                        "WS 008": "heavyac"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "SKR_stepMissilesRack",
+                        "WS 002": "SKR_stepMissilesRack"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 013": "heavymauler"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "ionbeam",
+                        "WS 006": "ionbeam",
+                        "WS 009": "ionbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "pdlaser",
+                        "WS 004": "pdlaser",
+                        "WS 010": "pdburst",
+                        "WS 011": "pdburst",
+                        "WS 012": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "DEM",
+            "fluxCapacitors": 15,
+            "fluxVents": 20,
+            "hullId": "hammerhead_default_D",
+            "hullMods": [
+                "missleracks",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "degraded_shields",
+                "glitched_sensors"
+            ],
+            "variantId": "9dcb1_2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heavyac",
+                        "WS 002": "heavyac"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "gorgon",
+                        "WS 004": "gorgon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "lightmg"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "pdlaser",
+                        "WS 006": "pdlaser",
+                        "WS 007": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Elite",
+            "fluxCapacitors": 0,
+            "fluxVents": 2,
+            "hullId": "SKR_marksman",
+            "hullMods": ["safetyoverrides"],
+            "sMods": [
+                "missleracks",
+                "hardened_subsystems"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit",
+                "always_recoverable"
+            ],
+            "variantId": "SKR_marksman_elite",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_executioner"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "sabotpod",
+                        "WS0003": "sabotpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "railgun",
+                        "WS0005": "railgun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 13,
+            "fluxVents": 20,
+            "hullId": "SKR_marksman_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": [
+                "degraded_shields",
+                "faulty_auto",
+                "glitched_sensors"
+            ],
+            "variantId": "9dcb1_3",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_executioner"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "heavyac",
+                        "WS0003": "heavyac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "lightmg",
+                        "WS0005": "lightmg",
+                        "WS0006": "lightmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 9,
+            "fluxVents": 8,
+            "hullId": "buffalo_default_D",
+            "hullMods": ["auxiliarythrusters"],
+            "permaMods": ["comp_storage"],
+            "variantId": "9dcb1_4",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {"WS 001": "pdlaser"}
+            }]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 2,
+            "fluxVents": 10,
+            "hullId": "brawler_default_D",
+            "hullMods": [
+                "fluxbreakers",
+                "insulatedengine"
+            ],
+            "permaMods": [
+                "faulty_auto",
+                "comp_armor"
+            ],
+            "sMods": ["missleracks"],
+            "variantId": "9dcb1_5",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heavymauler",
+                        "WS 002": "heavymauler"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "gazer"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "gorgon"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 7,
+            "fluxVents": 8,
+            "hullId": "vigilance_default_D",
+            "hullMods": [
+                "extendedshieldemitter",
+                "hardenedshieldemitter"
+            ],
+            "permaMods": [
+                "erratic_injector",
+                "degraded_engines",
+                "fragile_subsystems"
+            ],
+            "sMods": ["missleracks"],
+            "variantId": "9dcb1_6",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavymauler"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "gazerpod"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 7,
+            "fluxVents": 0,
+            "hullId": "vigilance_default_D",
+            "hullMods": [
+                "missleracks",
+                "extendedshieldemitter",
+                "hardenedshieldemitter"
+            ],
+            "permaMods": [
+                "faulty_grid",
+                "comp_hull"
+            ],
+            "variantId": "9dcb1_7",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavymauler"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "gazerpod"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 6,
+            "fluxVents": 8,
+            "hullId": "vigilance_default_D",
+            "hullMods": [
+                "extendedshieldemitter",
+                "hardenedshieldemitter"
+            ],
+            "permaMods": ["degraded_life_support"],
+            "sMods": ["missleracks"],
+            "variantId": "9dcb1_8",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavymauler"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "gorgonpod"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 4,
+            "fluxVents": 4,
+            "hullId": "vigilance_default_D",
+            "hullMods": [
+                "missleracks",
+                "eccm",
+                "extendedshieldemitter"
+            ],
+            "permaMods": [
+                "degraded_engines",
+                "comp_structure"
+            ],
+            "variantId": "9dcb1_9",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "gorgonpod"}
+                }
+            ]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 10,
+            "fluxVents": 2,
+            "hullId": "dram_default_D",
+            "hullMods": ["missile_autoloader"],
+            "permaMods": ["erratic_injector"],
+            "variantId": "9dcb1_10",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightmg",
+                        "WS 002": "lightmg"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "gorgon"}
+                }
+            ]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 8,
+            "fluxVents": 0,
+            "hullId": "dram_default_D",
+            "hullMods": ["missile_autoloader"],
+            "permaMods": [
+                "degraded_drive_field",
+                "increased_maintenance"
+            ],
+            "variantId": "9dcb1_11",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightdualmg",
+                        "WS 002": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "gorgon"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 8,
+            "fluxVents": 6,
+            "hullId": "mercury_default_D",
+            "hullMods": [],
+            "permaMods": ["increased_maintenance"],
+            "variantId": "9dcb1_12",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lrpdlaser",
+                        "WS 002": "lrpdlaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 8,
+            "hullId": "mercury_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "comp_storage",
+                "increased_maintenance"
+            ],
+            "variantId": "9dcb1_13",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "pdlaser",
+                        "WS 003": "pdlaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lightmg"}
+                }
+            ]
+        }
+    ]
+}

@@ -52,11 +52,13 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
 // Extension to get the effective hull ID
 fun ShipHullSpecAPI.getEffectiveHullId(): String {
     return if (isCompatibleWithBase) {//If the ship's variants are mostly compatible with the variant's of the base hull.
-        //The commented out below had issues when a hull was a _d variant of an alternate skin hull. It failed to get the effective hull.
-        //if (!dParentHullId.isNullOrEmpty() && dParentHullId != hullId)//If is DHull
-        //    dParentHullId//Get D Parent Hull
-        //else
-        baseHullId//Otherwise, get de base hull
+        if (dParentHull != null && dParentHullId != hullId) { //If is DHull
+            if (dParentHull.isCompatibleWithBase)
+                dParentHull.baseHullId
+            else
+                dParentHullId
+        } else
+            baseHullId//Otherwise, get de base hull
     } else
         hullId
 }
@@ -107,6 +109,7 @@ fun ShipVariantAPI.allSMods(): Set<String> {
     return outputSMods
 }
 
+//Gets all hullmods that are not smods, perma mods, suppressed mods, or built in mods. Just ordinary hullmods.
 fun ShipVariantAPI.getRegularHullMods(): Set<String> {
     return hullMods
         .filter { !sModdedBuiltIns.contains(it) && !sMods.contains(it) && !permaMods.contains(it) && !suppressedMods.contains(it) && !hullSpec.builtInMods.contains(it) }
