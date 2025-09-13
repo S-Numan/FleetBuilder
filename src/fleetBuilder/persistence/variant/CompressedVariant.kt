@@ -115,8 +115,9 @@ object CompressedVariant {
         val fittedWings = fields[6].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
         val hullMods = fields[7].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
         val sMods = fields[8].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
-        val permaMods = fields[9].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
-        val tags = fields.getOrNull(10)?.takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
+        val sModdedBuiltIns = fields[9].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
+        val permaMods = fields[10].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
+        val tags = fields.getOrNull(11)?.takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
 
         val weaponGroups = if (weaponGroupString.isNotBlank()) {
             weaponGroupString.split(weaponGroupSep).map { group ->
@@ -155,7 +156,7 @@ object CompressedVariant {
             hullMods = hullMods,
             permaMods = permaMods.toSet(),
             sMods = sMods.toSet(),
-            sModdedBuiltIns = emptySet(), // Not distinguishable from sMods after compression
+            sModdedBuiltIns = sModdedBuiltIns.toSet(),
             wings = fittedWings,
             weaponGroups = weaponGroups,
             moduleVariants = modules,
@@ -270,7 +271,8 @@ object CompressedVariant {
         parts += weaponGroupString
         parts += data.wings.joinToString(sep)
         parts += data.hullMods.joinToString(sep)
-        parts += (data.sMods + data.sModdedBuiltIns).toSet().joinToString(sep)
+        parts += data.sMods.joinToString(sep)
+        parts += data.sModdedBuiltIns.joinToString(sep)
         parts += data.permaMods.joinToString(sep)
         parts += data.tags.joinToString(sep)
 
