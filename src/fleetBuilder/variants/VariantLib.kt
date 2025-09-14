@@ -312,14 +312,14 @@ object VariantLib {
         }
 
         if (!options.permaMods) {
-            variant1.permaMods.forEach {
+            variant1.permaMods.toList().forEach {
                 variant1.completelyRemoveMod(it)
             }
-            variant2.permaMods.forEach {
+            variant2.permaMods.toList().forEach {
                 variant2.completelyRemoveMod(it)
             }
         }
-        
+
         val variantModsEqual = hullModSetsEqual(variant1.getRegularHullMods(), variant2.getRegularHullMods()) &&
                 hullModSetsEqual(variant1.sModdedBuiltIns, variant2.sModdedBuiltIns) &&
                 hullModSetsEqual(variant1.sMods, variant2.sMods) &&
