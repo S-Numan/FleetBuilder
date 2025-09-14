@@ -48,7 +48,7 @@ object CompressedVariant {
             fullData = try {
                 CompressionUtil.decompressString(compressedData)
             } catch (e: Exception) {
-                showError("Error decompressing variant data", e)
+                showError("Error decompressing variant data", compressedData, e)
                 null
             }
             if (fullData.isNullOrBlank()) return null
