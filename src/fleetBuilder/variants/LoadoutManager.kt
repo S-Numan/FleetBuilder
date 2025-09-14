@@ -9,9 +9,12 @@ import fleetBuilder.config.ModSettings.FLEETDIR
 import fleetBuilder.config.ModSettings.PACKDIR
 import fleetBuilder.config.ModSettings.defaultPrefix
 import fleetBuilder.config.ModSettings.importPrefix
+import fleetBuilder.persistence.variant.DataVariant
 import fleetBuilder.persistence.variant.JSONVariant.getVariantFromJson
 import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSpec
+import fleetBuilder.util.ClipboardMisc.extractDataFromClipboard
+import fleetBuilder.util.FBMisc.extractDataFromString
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
 import org.json.JSONArray
@@ -108,24 +111,31 @@ object LoadoutManager {
                     val missing = MissingElements()
 
                     if (Global.getSettings().fileExistsInCommon("$dirPath$prefix/$shipPath")) {
-                        val variantJson: JSONObject
+                        val variantString: String
                         try {
-                            variantJson = Global.getSettings().readJSONFromCommon("$dirPath$prefix/$shipPath", false)
+                            variantString = Global.getSettings().readTextFileFromCommon("$dirPath$prefix/$shipPath")
                         } catch (e: Exception) {
                             Global.getLogger(this.javaClass).error(
-                                "Failed to read ship variant JSON at /saves/common/$dirPath$prefix/$shipPath\n",
+                                "Failed to read ship variant at /saves/common/$dirPath$prefix/$shipPath\n",
                                 e
                             )
                             continue
                         }
-
-                        if (variantJson.optString("hullId", "") !in VariantLib.getHullIDSet()) // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
-                            continue // Skip it if so
-
-                        variant = getVariantFromJson(variantJson, missing = missing)
-                        if (missing.hullIds.isNotEmpty()) // Extra check for safety
+                        val tempData = extractDataFromString(variantString)
+                        if (tempData == null) {
+                            Global.getLogger(this.javaClass).error("Failed to get ship variant at /saves/common/$dirPath$prefix/$shipPath\n")
                             continue
+                        } else if (tempData is DataVariant.ParsedVariantData) {
+                            if (tempData.hullId !in VariantLib.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
+                                || tempData.moduleVariants.any { it.value.hullId !in VariantLib.getHullIDSet() } // Also check hullIds from modules
+                            )
+                                continue // Skip it if so
 
+                            variant = DataVariant.buildVariantFull(tempData, missing = missing)
+                        } else {
+                            Global.getLogger(this.javaClass).error("Ship variant was not of data type ParsedVariantData at /saves/common/$dirPath$prefix/$shipPath\nHow?")
+                            continue
+                        }
                     } else {//Failed to find ship at specific path.
                         Global.getLogger(this.javaClass)
                             .warn("shipPath in path directory /saves/common/$dirPath$prefix linked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location")

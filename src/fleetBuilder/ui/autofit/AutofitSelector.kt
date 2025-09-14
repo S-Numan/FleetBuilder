@@ -201,6 +201,7 @@ internal object AutofitSelector {
                     if (event.isMouseDownEvent) {
                         hasClicked = true
                         onClickFunctions.forEach { it(event) }
+                        event.consume()
                     }
                     if (event.isMouseUpEvent) {
                         if (hasClicked) {

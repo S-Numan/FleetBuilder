@@ -107,9 +107,11 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
                 try {
                     Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", jsonString)
                 } catch (e: Exception) {
+                    Global.getLogger(this.javaClass).error("FleetBuilder: Backup Save failed.")
                     //DisplayMessage.showError("FleetBuilder: Backup Save failed.", e)
                 }
             } else {
+                Global.getLogger(this.javaClass).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
                 //DisplayMessage.showMessage("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.", Color.YELLOW)
             }
         }

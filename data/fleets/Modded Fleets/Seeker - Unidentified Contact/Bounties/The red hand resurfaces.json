@@ -1,0 +1,2142 @@
+{
+    "aggression_doctrine": 4,
+    "factionID": "pirates",
+    "fleetName": "Avatar of Vengeance's Armada",
+    "members": [
+        {
+            "cr": 0.96,
+            "isFlagship": true,
+            "name": "Red Hand",
+            "officer": {
+                "first": "Sharkey",
+                "gender": "FEMALE",
+                "last": "Batox",
+                "level": 6,
+                "memKeys": {"voice": "spacer"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "coordinated_maneuvers": 1,
+                    "crew_training": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "SKR_cassowaryRH_assault"
+        },
+        {
+            "cr": 0.81,
+            "name": "Itzli",
+            "officer": {
+                "first": "Nessus",
+                "gender": "MALE",
+                "last": "Oberon",
+                "level": 4,
+                "memKeys": {"voice": "soldier"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate10.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 1,
+                    "ordnance_expert": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "SKR_tumbleweed_p_standard"
+        },
+        {
+            "cr": 0.81,
+            "name": "Leucetios",
+            "variantId": "SKR_halligan_p_standard"
+        },
+        {
+            "cr": 0.81,
+            "name": "Hydra",
+            "variantId": "a7205_0"
+        },
+        {
+            "cr": 0.81,
+            "name": "Xilonen",
+            "variantId": "SKR_halligan_p_standard"
+        },
+        {
+            "cr": 0.81,
+            "name": "Perfect Hatred",
+            "variantId": "a7205_1"
+        },
+        {
+            "cr": 0.81,
+            "name": "Ogyruan",
+            "officer": {
+                "first": "Rage",
+                "gender": "MALE",
+                "last": "Pinard",
+                "level": 5,
+                "memKeys": {"voice": "soldier"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait18.png",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "a7205_2"
+        },
+        {
+            "cr": 0.81,
+            "name": "Wash Me",
+            "variantId": "a7205_3"
+        },
+        {
+            "cr": 0.85,
+            "name": "Andraste",
+            "officer": {
+                "first": "Opeyemi",
+                "gender": "MALE",
+                "last": "Woodard",
+                "level": 5,
+                "memKeys": {"voice": "spacer"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate10.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "field_modulation": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "a7205_4"
+        },
+        {
+            "cr": 0.7,
+            "name": "Mayahuel",
+            "officer": {
+                "first": "Frost",
+                "gender": "FEMALE",
+                "last": "Moise",
+                "level": 4,
+                "memKeys": {"voice": "spacer"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate01.png",
+                "skills": {
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "a7205_5"
+        },
+        {
+            "cr": 0.85,
+            "name": "Behemoth",
+            "officer": {
+                "first": "Automatic",
+                "gender": "MALE",
+                "last": "Frye",
+                "level": 4,
+                "memKeys": {"voice": "soldier"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate13.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1
+                }
+            },
+            "variantId": "a7205_6"
+        },
+        {
+            "cr": 0.81,
+            "name": "Tlachtga",
+            "officer": {
+                "first": "Chase",
+                "gender": "FEMALE",
+                "last": "California",
+                "level": 5,
+                "memKeys": {"voice": "soldier"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait29.png",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "field_modulation": 1,
+                    "impact_mitigation": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "a7205_7"
+        },
+        {
+            "cr": 0.81,
+            "name": "Scrivener",
+            "variantId": "SKR_adze_p_assault"
+        },
+        {
+            "cr": 0.81,
+            "name": "Corb",
+            "variantId": "SKR_adze_p_assault"
+        },
+        {
+            "cr": 0.81,
+            "name": "Atlacoya",
+            "variantId": "a7205_8"
+        },
+        {
+            "cr": 0.81,
+            "name": "Better Luck Next Time",
+            "variantId": "a7205_9"
+        },
+        {
+            "cr": 0.81,
+            "name": "Werewolf",
+            "variantId": "a7205_10"
+        },
+        {
+            "cr": 0.81,
+            "name": "Quetzalcoatl",
+            "officer": {
+                "first": "Wade",
+                "gender": "MALE",
+                "last": "Toghrol",
+                "level": 5,
+                "memKeys": {"voice": "spacer"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "skills": {
+                    "damage_control": 1,
+                    "field_modulation": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "a7205_11"
+        },
+        {
+            "cr": 0.81,
+            "name": "Cochimetl",
+            "variantId": "a7205_12"
+        },
+        {
+            "cr": 0.7,
+            "name": "Tsiolkovsky's Vision",
+            "variantId": "a7205_13"
+        },
+        {
+            "cr": 0.7,
+            "name": "Red Dwarf",
+            "variantId": "a7205_14"
+        },
+        {
+            "cr": 0.7,
+            "name": "Bormanico",
+            "variantId": "a7205_15"
+        },
+        {
+            "cr": 0.81,
+            "name": "Blast Tyrant",
+            "variantId": "a7205_16"
+        },
+        {
+            "cr": 0.81,
+            "name": "Ciucoatl",
+            "variantId": "SKR_malet_p_assault"
+        },
+        {
+            "cr": 0.81,
+            "name": "Finn",
+            "variantId": "SKR_malet_p_assault"
+        },
+        {
+            "cr": 0.81,
+            "name": "Just A Laugh",
+            "variantId": "SKR_malet_p_assault"
+        },
+        {
+            "cr": 0.81,
+            "name": "Brightwitch",
+            "variantId": "a7205_17"
+        },
+        {
+            "cr": 0.81,
+            "name": "Itzpapalotl",
+            "officer": {
+                "first": "Bur",
+                "gender": "MALE",
+                "last": "Arighax",
+                "level": 5,
+                "memKeys": {"voice": "spacer"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait40.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "a7205_18"
+        },
+        {
+            "cr": 0.81,
+            "name": "Damona",
+            "variantId": "a7205_19"
+        },
+        {
+            "cr": 0.81,
+            "name": "Here A-viking",
+            "variantId": "a7205_20"
+        },
+        {
+            "cr": 0.7,
+            "name": "Dwyn",
+            "variantId": "a7205_21"
+        },
+        {
+            "cr": 0.7,
+            "name": "Azhi Damaeters",
+            "variantId": "a7205_22"
+        },
+        {
+            "cr": 0.7,
+            "name": "Hydra",
+            "variantId": "a7205_23"
+        },
+        {
+            "cr": 0.7,
+            "name": "Ullr",
+            "variantId": "a7205_24"
+        },
+        {
+            "cr": 0.7,
+            "name": "Mixcoatl",
+            "officer": {
+                "first": "Summer",
+                "gender": "FEMALE",
+                "last": "Golden",
+                "level": 4,
+                "memKeys": {"voice": "spacer"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate22.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 2
+                }
+            },
+            "variantId": "a7205_25"
+        },
+        {
+            "cr": 0.81,
+            "name": "Xipe Totec",
+            "variantId": "a7205_26"
+        },
+        {
+            "cr": 0.7,
+            "name": "Norn",
+            "variantId": "a7205_27"
+        },
+        {
+            "cr": 0.96,
+            "name": "Tarasque",
+            "officer": {
+                "first": "Ward",
+                "gender": "MALE",
+                "last": "Surax",
+                "level": 5,
+                "memKeys": {"voice": "soldier"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait18.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "a7205_28"
+        },
+        {
+            "cr": 0.85,
+            "name": "Borvo",
+            "officer": {
+                "first": "Qucha",
+                "gender": "FEMALE",
+                "last": "Pyramus",
+                "level": 4,
+                "memKeys": {"voice": "soldier"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait39.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "a7205_29"
+        },
+        {
+            "cr": 0.81,
+            "name": "Voidreaper",
+            "variantId": "a7205_30"
+        },
+        {
+            "cr": 0.7,
+            "name": "Centeotl",
+            "variantId": "a7205_31"
+        },
+        {
+            "cr": 0.7,
+            "name": "Ciuteoteo",
+            "variantId": "a7205_32"
+        },
+        {
+            "cr": 0.7,
+            "name": "Gunnar",
+            "variantId": "a7205_33"
+        },
+        {
+            "cr": 0.7,
+            "name": "Voidrover",
+            "variantId": "a7205_34"
+        },
+        {
+            "cr": 0.7,
+            "name": "Chandragone Per",
+            "variantId": "a7205_35"
+        },
+        {
+            "cr": 0.7,
+            "name": "Zaratan",
+            "variantId": "a7205_36"
+        },
+        {
+            "cr": 0.7,
+            "name": "Ymir",
+            "variantId": "a7205_37"
+        },
+        {
+            "cr": 0.7,
+            "name": "Opochtli",
+            "variantId": "a7205_38"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 22,
+            "fluxVents": 50,
+            "hullId": "SKR_cassowaryRH",
+            "hullMods": ["targetingunit"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit",
+                "always_recoverable"
+            ],
+            "variantId": "SKR_cassowaryRH_assault",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0007": "harpoonpod",
+                        "WS0008": "harpoonpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "mark9",
+                        "WS0004": "mark9"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "heavymortar",
+                        "WS0006": "heavymortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0009": "lrpdlaser",
+                        "WS0010": "lrpdlaser",
+                        "WS0011": "lrpdlaser",
+                        "WS0012": "lrpdlaser",
+                        "WS0013": "lrpdlaser",
+                        "WS0014": "lrpdlaser",
+                        "WS0015": "lrpdlaser",
+                        "WS0016": "lrpdlaser",
+                        "WS0017": "lrpdlaser"
+                    }
+                }
+            ],
+            "wings": [
+                "hoplon_wing",
+                "hoplon_wing",
+                "hoplon_wing",
+                "hoplon_wing"
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 21,
+            "fluxVents": 30,
+            "hullId": "SKR_tumbleweed_pirate",
+            "hullMods": ["heavyarmor"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_tumbleweed_p_standard",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "hellbore"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0004": "sabotpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "lightdualac",
+                        "WS0003": "lightdualac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0007": "lrpdlaser",
+                        "WS0008": "lrpdlaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "vulcan",
+                        "WS0006": "vulcan",
+                        "WS0009": "vulcan",
+                        "WS0010": "vulcan"
+                    }
+                }
+            ],
+            "wings": ["talon_wing"]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 27,
+            "hullId": "SKR_halligan_pirate",
+            "hullMods": ["fluxbreakers"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_halligan_p_standard",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0009": "swarmer",
+                        "WS0010": "swarmer",
+                        "WS0011": "swarmer",
+                        "WS0012": "swarmer",
+                        "WS0013": "swarmer",
+                        "WS0014": "swarmer"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "heavymortar",
+                        "WS0002": "heavymortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "heavyac",
+                        "WS0006": "heavyac",
+                        "WS0015": "railgun",
+                        "WS0016": "railgun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "SKR_minigun",
+                        "WS0004": "SKR_minigun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0007": "dualflak",
+                        "WS0017": "vulcan",
+                        "WS0018": "vulcan",
+                        "WS0019": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 13,
+            "fluxVents": 30,
+            "hullId": "SKR_halligan_pirate_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": [
+                "faulty_auto",
+                "degraded_shields",
+                "degraded_life_support"
+            ],
+            "variantId": "a7205_0",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "heavymortar",
+                        "WS0002": "heavymortar"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0009": "heatseeker",
+                        "WS0010": "heatseeker",
+                        "WS0011": "heatseeker",
+                        "WS0012": "heatseeker",
+                        "WS0013": "heatseeker",
+                        "WS0014": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "arbalest",
+                        "WS0004": "arbalest"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "SKR_minigun"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0015": "lightdualmg",
+                        "WS0017": "lightdualmg",
+                        "WS0018": "lightdualmg",
+                        "WS0019": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "vulcan",
+                        "WS0006": "vulcan",
+                        "WS0016": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 0,
+            "fluxVents": 20,
+            "hullId": "eradicator_pirates_default_D",
+            "hullMods": [
+                "targetingunit",
+                "missleracks",
+                "armoredweapons",
+                "unstable_injector"
+            ],
+            "permaMods": ["faulty_auto"],
+            "variantId": "a7205_1",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "arbalest"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "annihilator",
+                        "WS 001": "annihilator",
+                        "WS 002": "annihilator",
+                        "WS 003": "annihilator",
+                        "WS 004": "annihilator"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "heavymortar"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 011": "lightmortar"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 010": "lightac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "flak",
+                        "WS 008": "vulcan",
+                        "WS 009": "vulcan",
+                        "WS 012": "vulcan"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "lightdualmg",
+                        "WS 014": "lightdualmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "eradicator_pirates_default_D",
+            "hullMods": [
+                "targetingunit",
+                "missleracks",
+                "armoredweapons",
+                "unstable_injector",
+                "extendedshieldemitter",
+                "hardenedshieldemitter"
+            ],
+            "permaMods": [
+                "increased_maintenance",
+                "degraded_shields",
+                "degraded_life_support"
+            ],
+            "variantId": "a7205_2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "hammer_single",
+                        "WS 001": "hammer",
+                        "WS 002": "hammer_single",
+                        "WS 003": "hammer_single",
+                        "WS 004": "hammer"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "heavymortar"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 011": "lightag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 010": "lightac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "heavymg",
+                        "WS 008": "lightmg",
+                        "WS 009": "lightdualmg",
+                        "WS 012": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "vulcan",
+                        "WS 014": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 18,
+            "fluxVents": 0,
+            "hullId": "eradicator_pirates_default_D",
+            "hullMods": [
+                "safetyoverrides",
+                "auxiliarythrusters",
+                "shield_shunt",
+                "armoredweapons"
+            ],
+            "permaMods": [
+                "degraded_engines",
+                "degraded_shields"
+            ],
+            "variantId": "a7205_3",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "chaingun"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "hammer_single",
+                        "WS 001": "hammer_single",
+                        "WS 002": "hammer_single",
+                        "WS 003": "hammer",
+                        "WS 004": "reaper"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "shredder",
+                        "WS 007": "shredder"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "vulcan",
+                        "WS 011": "vulcan",
+                        "WS 012": "vulcan"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "lightdualmg",
+                        "WS 010": "lightmg",
+                        "WS 013": "lightmg",
+                        "WS 014": "lightdualmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Pirate",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "colossus3_default_D",
+            "hullMods": [
+                "insulatedengine",
+                "stabilizedshieldemitter"
+            ],
+            "permaMods": [
+                "erratic_injector",
+                "glitched_sensors",
+                "faulty_grid"
+            ],
+            "variantId": "a7205_4",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 015": "lightmortar",
+                        "WS 016": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "lightag",
+                        "WS 014": "lightag"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 011": "lightac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "mininglaser",
+                        "WS 002": "mininglaser",
+                        "WS 012": "mininglaser"
+                    }
+                }
+            ],
+            "wings": [
+                "broadsword_wing",
+                "broadsword_wing"
+            ]
+        },
+        {
+            "displayName": "Pirate",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "colossus3_default_D",
+            "hullMods": ["insulatedengine"],
+            "permaMods": ["degraded_shields"],
+            "variantId": "a7205_5",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 015": "lightag",
+                        "WS 016": "lightag"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "lightmortar",
+                        "WS 014": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 011": "lightdualac",
+                        "WS 012": "lightdualac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "mininglaser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lightdualmg"}
+                }
+            ],
+            "wings": [
+                "broadsword_wing",
+                "broadsword_wing"
+            ]
+        },
+        {
+            "displayName": "Pirate",
+            "fluxCapacitors": 0,
+            "fluxVents": 8,
+            "hullId": "colossus3_default_D",
+            "hullMods": ["insulatedengine"],
+            "permaMods": [
+                "comp_armor",
+                "glitched_sensors"
+            ],
+            "variantId": "a7205_6",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "lightmortar",
+                        "WS 014": "lightmortar",
+                        "WS 015": "lightmortar",
+                        "WS 016": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 011": "lightac",
+                        "WS 012": "lightac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightmg",
+                        "WS 002": "lightmg",
+                        "WS 003": "lightmg",
+                        "WS 004": "lightmg",
+                        "WS 009": "lightmg",
+                        "WS 010": "lightmg"
+                    }
+                }
+            ],
+            "wings": [
+                "talon_wing",
+                "talon_wing"
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 0,
+            "fluxVents": 6,
+            "hullId": "enforcer_d_pirates_default_D",
+            "hullMods": [
+                "heavyarmor",
+                "fluxdistributor",
+                "fluxcoil",
+                "targetingunit",
+                "missleracks"
+            ],
+            "permaMods": [
+                "fragile_subsystems",
+                "comp_hull"
+            ],
+            "variantId": "a7205_7",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heavyac",
+                        "WS 005": "heavyac"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 006": "hammer",
+                        "WS 007": "hammer_single",
+                        "WS 008": "hammer_single",
+                        "WS 009": "hammer"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavymortar"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "heavymg",
+                        "WS 004": "heavymg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 4,
+            "hullId": "SKR_adze_pirate",
+            "hullMods": ["safetyoverrides"],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_adze_p_assault",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "chaingun"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "heavymg",
+                        "WS0003": "heavymg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0008": "vulcan",
+                        "WS0009": "vulcan",
+                        "WS0010": "vulcan",
+                        "WS0011": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 5,
+            "fluxVents": 20,
+            "hullId": "mule_d_pirates_default_D",
+            "hullMods": [
+                "heavyarmor",
+                "targetingunit",
+                "eccm"
+            ],
+            "permaMods": [
+                "comp_structure",
+                "faulty_auto",
+                "damaged_mounts"
+            ],
+            "variantId": "a7205_8",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavymortar"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "swarmer",
+                        "WS 002": "swarmer"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "lightdualmg",
+                        "WS 006": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "mininglaser"}
+                }
+            ]
+        },
+        {
+            "displayName": "Smuggler",
+            "fluxCapacitors": 6,
+            "fluxVents": 20,
+            "hullId": "mule_d_pirates_default_D",
+            "hullMods": [
+                "augmentedengines",
+                "frontemitter",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "increased_maintenance",
+                "faulty_auto",
+                "comp_structure"
+            ],
+            "variantId": "a7205_9",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heatseeker"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "swarmer"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavyac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "lightmg",
+                        "WS 005": "lightmg",
+                        "WS 006": "lightmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 17,
+            "fluxVents": 20,
+            "hullId": "mule_default_D",
+            "hullMods": ["missleracks"],
+            "permaMods": ["faulty_auto"],
+            "sMods": ["heavyarmor"],
+            "variantId": "a7205_10",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "swarmer",
+                        "WS 002": "swarmer"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "lightdualmg",
+                        "WS 005": "lightdualmg",
+                        "WS 006": "lightdualmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 20,
+            "fluxVents": 20,
+            "hullId": "mule_default_D",
+            "hullMods": ["heavyarmor"],
+            "permaMods": [
+                "glitched_sensors",
+                "comp_hull",
+                "degraded_engines"
+            ],
+            "variantId": "a7205_11",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "heatseeker",
+                        "WS 002": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "lightmg",
+                        "WS 005": "lightmg",
+                        "WS 006": "lightmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 0,
+            "fluxVents": 16,
+            "hullId": "shrike_pirates_default_D",
+            "hullMods": [
+                "targetingunit",
+                "fluxbreakers"
+            ],
+            "permaMods": [
+                "glitched_sensors",
+                "fragile_subsystems",
+                "comp_armor"
+            ],
+            "sMods": ["unstable_injector"],
+            "variantId": "a7205_12",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "miningblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "harpoonpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "ioncannon",
+                        "WS 002": "ioncannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lightdualac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "lrpdlaser",
+                        "WS 007": "lrpdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 6,
+            "fluxVents": 20,
+            "hullId": "buffalo2_default_D",
+            "hullMods": ["reinforcedhull"],
+            "permaMods": [
+                "comp_armor",
+                "damaged_mounts",
+                "glitched_sensors"
+            ],
+            "variantId": "a7205_13",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "salamanderpod"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "swarmer",
+                        "WS 005": "swarmer",
+                        "WS 006": "swarmer"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "irpulse"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightdualmg",
+                        "WS 003": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lrpdlaser"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "phaeton_default_D",
+            "hullMods": [
+                "heavyarmor",
+                "targetingunit",
+                "stabilizedshieldemitter"
+            ],
+            "permaMods": [
+                "degraded_drive_field",
+                "increased_maintenance",
+                "erratic_injector"
+            ],
+            "variantId": "a7205_14",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "vulcan",
+                    "WS 002": "vulcan",
+                    "WS 003": "vulcan",
+                    "WS 004": "vulcan"
+                }
+            }]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 7,
+            "fluxVents": 10,
+            "hullId": "nebula_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": [
+                "increased_maintenance",
+                "comp_storage",
+                "erratic_injector"
+            ],
+            "variantId": "a7205_15",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "vulcan",
+                        "WS 003": "vulcan",
+                        "WS 004": "vulcan"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lightmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 0,
+            "fluxVents": 3,
+            "hullId": "vanguard_pirates_default_D",
+            "hullMods": [
+                "armoredweapons",
+                "heavyarmor",
+                "missleracks",
+                "fluxbreakers",
+                "insulatedengine"
+            ],
+            "permaMods": [
+                "degraded_engines",
+                "increased_maintenance",
+                "faulty_auto"
+            ],
+            "variantId": "a7205_16",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "sabot_single",
+                        "WS 002": "sabot_single"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "SKR_stepMissilesRack"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "lightac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "lightag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "lightdualac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "lightdualmg",
+                        "WS 004": "lightdualmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 3,
+            "hullId": "SKR_malet_pirate",
+            "hullMods": [
+                "safetyoverrides",
+                "hardened_subsystems"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "SKR_malet_p_assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "chaingun"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "reaper",
+                        "WS0003": "reaper"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "lightdualmg",
+                        "WS0005": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "lightmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Shielded",
+            "fluxCapacitors": 9,
+            "fluxVents": 10,
+            "hullId": "cerberus_d_pirates_default_D",
+            "hullMods": [
+                "blast_doors",
+                "frontshield",
+                "fluxdistributor"
+            ],
+            "permaMods": ["degraded_engines"],
+            "variantId": "a7205_17",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "arbalest"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightmortar"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "cerberus_d_pirates_default_D",
+            "hullMods": [
+                "fluxdistributor",
+                "fluxcoil",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "comp_hull",
+                "damaged_mounts"
+            ],
+            "sMods": ["blast_doors"],
+            "variantId": "a7205_18",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "arbalest"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightmortar"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Shielded",
+            "fluxCapacitors": 5,
+            "fluxVents": 10,
+            "hullId": "cerberus_d_pirates_default_D",
+            "hullMods": [
+                "blast_doors",
+                "frontshield",
+                "armoredweapons"
+            ],
+            "permaMods": [
+                "erratic_injector",
+                "comp_hull"
+            ],
+            "variantId": "a7205_19",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "heavyac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightdualmg",
+                        "WS 002": "lightmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 7,
+            "fluxVents": 10,
+            "hullId": "wolf_d_pirates_default_D",
+            "hullMods": ["fluxdistributor"],
+            "permaMods": ["damaged_mounts"],
+            "variantId": "a7205_20",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "pulselaser"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 005": "annihilator",
+                        "WS 006": "annihilator"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "ioncannon"}
+                }
+            ]
+        },
+        {
+            "displayName": "Frontier",
+            "fluxCapacitors": 10,
+            "fluxVents": 7,
+            "hullId": "shepherd_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "comp_hull",
+                "degraded_shields",
+                "damaged_mounts"
+            ],
+            "variantId": "a7205_21",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "lightmg"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "swarmer"}
+                }
+            ]
+        },
+        {
+            "displayName": "Frontier",
+            "fluxCapacitors": 10,
+            "fluxVents": 7,
+            "hullId": "shepherd_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "damaged_deck",
+                "degraded_life_support"
+            ],
+            "variantId": "a7205_22",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "lightmg"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "swarmer"}
+                }
+            ]
+        },
+        {
+            "displayName": "Raider",
+            "fluxCapacitors": 10,
+            "fluxVents": 6,
+            "hullId": "kite_pirates_default_D",
+            "hullMods": [],
+            "permaMods": [
+                "faulty_auto",
+                "degraded_shields",
+                "degraded_life_support"
+            ],
+            "variantId": "a7205_23",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "swarmer"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hammer"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Raider",
+            "fluxCapacitors": 10,
+            "fluxVents": 7,
+            "hullId": "kite_pirates_default_D",
+            "hullMods": [],
+            "permaMods": ["erratic_injector"],
+            "variantId": "a7205_24",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "swarmer"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hammer"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 6,
+            "fluxVents": 6,
+            "hullId": "kite_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": ["degraded_shields"],
+            "variantId": "a7205_25",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightmg"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "heatseeker",
+                        "WS 002": "heatseeker"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 0,
+            "fluxVents": 7,
+            "hullId": "hound_d_pirates_default_D",
+            "hullMods": [
+                "safetyoverrides",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "glitched_sensors",
+                "damaged_mounts",
+                "erratic_injector"
+            ],
+            "variantId": "a7205_26",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavymortar"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "lightdualmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Raider",
+            "fluxCapacitors": 9,
+            "fluxVents": 5,
+            "hullId": "kite_pirates_default_D",
+            "hullMods": ["armoredweapons"],
+            "permaMods": ["comp_hull"],
+            "variantId": "a7205_27",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heatseeker"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hammer_single"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 0,
+            "fluxVents": 9,
+            "hullId": "hound_d_pirates_default_D",
+            "hullMods": ["safetyoverrides"],
+            "permaMods": ["comp_structure"],
+            "variantId": "a7205_28",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "chaingun"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 6,
+            "fluxVents": 10,
+            "hullId": "kite_default_D",
+            "hullMods": [],
+            "permaMods": ["damaged_mounts"],
+            "sMods": ["targetingunit"],
+            "variantId": "a7205_29",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "swarmer"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heatseeker"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 6,
+            "fluxVents": 10,
+            "hullId": "hound_default_D",
+            "hullMods": [
+                "auxiliarythrusters",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "fragile_subsystems",
+                "degraded_life_support"
+            ],
+            "variantId": "a7205_30",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "chaingun"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 1,
+            "fluxVents": 9,
+            "hullId": "hermes_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": [
+                "degraded_drive_field",
+                "comp_storage"
+            ],
+            "variantId": "a7205_31",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "lightdualmg",
+                    "WS 002": "lightdualmg",
+                    "WS 003": "lightmg"
+                }
+            }]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "hullId": "dram_default_D",
+            "hullMods": [
+                "missile_autoloader",
+                "armoredweapons"
+            ],
+            "permaMods": ["comp_storage"],
+            "variantId": "a7205_32",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "vulcan"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "sabot_single"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lightmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 8,
+            "fluxVents": 0,
+            "hullId": "dram_default_D",
+            "hullMods": [
+                "missile_autoloader",
+                "targetingunit"
+            ],
+            "permaMods": [
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "variantId": "a7205_33",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightdualmg",
+                        "WS 002": "lightmg"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "sabot_single"}
+                }
+            ]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 8,
+            "fluxVents": 0,
+            "hullId": "dram_default_D",
+            "hullMods": ["missile_autoloader"],
+            "permaMods": [
+                "erratic_injector",
+                "degraded_drive_field",
+                "increased_maintenance"
+            ],
+            "variantId": "a7205_34",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightdualmg",
+                        "WS 002": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "harpoon"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 5,
+            "fluxVents": 8,
+            "hullId": "mercury_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": [
+                "erratic_injector",
+                "increased_maintenance"
+            ],
+            "variantId": "a7205_35",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdlaser",
+                        "WS 002": "pdlaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lrpdlaser"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 7,
+            "fluxVents": 6,
+            "hullId": "kite_default_D",
+            "hullMods": [],
+            "permaMods": ["faulty_grid"],
+            "variantId": "a7205_36",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heatseeker"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "sabot"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualac"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 4,
+            "fluxVents": 6,
+            "hullId": "kite_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": ["glitched_sensors"],
+            "variantId": "a7205_37",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heatseeker"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "atropos"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualac"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 5,
+            "fluxVents": 8,
+            "hullId": "mercury_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": [
+                "degraded_drive_field",
+                "comp_storage",
+                "increased_maintenance"
+            ],
+            "variantId": "a7205_38",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdlaser",
+                        "WS 002": "pdlaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "vulcan"}
+                }
+            ]
+        }
+    ]
+}

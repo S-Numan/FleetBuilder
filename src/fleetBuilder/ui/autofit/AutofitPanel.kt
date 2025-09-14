@@ -687,7 +687,7 @@ internal object AutofitPanel {
         var equalDefault = compareVariantContents(
             variant,
             baseVariant,
-            CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true)
+            CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true, wings = true)
         )
         var outline = true
 
@@ -702,7 +702,7 @@ internal object AutofitPanel {
             if (compareVariantContents(
                     variant,
                     baseVariantClone,
-                    CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true)
+                    CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true, wings = true)
                 )
             ) {
                 equalDefault = true
@@ -1142,7 +1142,11 @@ internal object AutofitPanel {
             }
 
             if (ModSettings.showDebug) {
-                tooltip.addPara("\n\nDEBUG: VariantId = ${variant.hullVariantId}", 2f)
+                tooltip.addPara("\n\nDEBUG: VariantID = ${variant.hullVariantId}", 2f)
+                tooltip.addPara("DEBUG: HullID = ${variant.hullSpec.hullId}", 2f)
+                tooltip.addPara("DEBUG: Compatible with base = ${variant.hullSpec.isCompatibleWithBase}", 2f)
+                tooltip.addPara("DEBUG: BaseHullID = ${variant.hullSpec.baseHullId}", 2f)
+                tooltip.addPara("DEBUG: DParentHullID = ${variant.hullSpec.dParentHullId}", 2f)
                 tooltip.addPara("\nDEBUG: Tags = ${variant.tags}", 2f)
                 /*tooltip.addPara("\n\nDEBUG: WeaponGroups: ", 2f)
                 for (weaponGroup in variant.weaponGroups.withIndex()) {

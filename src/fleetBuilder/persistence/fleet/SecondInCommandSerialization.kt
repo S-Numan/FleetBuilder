@@ -7,6 +7,7 @@ import fleetBuilder.persistence.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.persistence.person.DataPerson.validateAndCleanPersonData
 import fleetBuilder.persistence.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.persistence.person.JSONPerson.savePersonToJson
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.variants.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
@@ -167,8 +168,11 @@ object SecondInCommandSerialization {
             activeSkillIDs.forEach { scOfficer.addSkill(it) }
             scOfficer.increaseLevel(level - scOfficer.getCurrentLevel())
             scOfficer.skillPoints = skillPoints
-            scOfficer.set("experiencePoints", experiencePoints)
-
+            try {
+                scOfficer.set("experiencePoints", experiencePoints)
+            } catch (_: Exception) {
+                DisplayMessage.showError("Failed to set Second In Command experience points")
+            }
 
             storedData.addOfficerToFleet(scOfficer)
             if (assignedSlot != null)

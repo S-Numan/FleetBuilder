@@ -12,6 +12,7 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
+import fleetBuilder.util.getRegularHullMods
 import fleetBuilder.variants.LoadoutManager.getAnyVariantsForHullspec
 
 object VariantLib {
@@ -141,6 +142,7 @@ object VariantLib {
         val hiddenHullMods: Boolean = true,
         val dMods: Boolean = true,
         val sMods: Boolean = true,
+        val permaMods: Boolean = true,
         val modules: Boolean = true,
         val tags: Boolean = true,
         val hull: Boolean = true,
@@ -158,6 +160,7 @@ object VariantLib {
                 hiddenHullMods: Boolean = false,
                 dMods: Boolean = false,
                 sMods: Boolean = false,
+                permaMods: Boolean = false,
                 modules: Boolean = false,
                 tags: Boolean = false,
                 hull: Boolean = false,
@@ -165,7 +168,7 @@ object VariantLib {
                 useEffectiveHull: Boolean = false,
             ) = CompareOptions(
                 flux = flux, weapons = weapons, weaponGroups = weaponGroups, wings = wings, hullMods = hullMods, builtInHullMods = builtInHullMods, hiddenHullMods = hiddenHullMods,
-                dMods = dMods, sMods = sMods, modules = modules, tags = tags, hull = hull, convertSModsToRegular = convertSModsToRegular, useEffectiveHull = useEffectiveHull
+                dMods = dMods, sMods = sMods, permaMods = permaMods, modules = modules, tags = tags, hull = hull, convertSModsToRegular = convertSModsToRegular, useEffectiveHull = useEffectiveHull
             )
         }
     }
@@ -287,35 +290,40 @@ object VariantLib {
             return filterMods(set1) == filterMods(set2)
         }
 
+        if (!options.builtInHullMods) {
+            val toRemove1 = variant1.hullSpec.builtInMods.filter { it !in allDMods }
+            val toRemove2 = variant2.hullSpec.builtInMods.filter { it !in allDMods }
+
+            toRemove1.forEach {
+                variant1.completelyRemoveMod(it)
+            }
+
+            toRemove2.forEach {
+                variant2.completelyRemoveMod(it)
+            }
+        } else {
+            if (!hullModSetsEqual(variant1.hullSpec.builtInMods.toSet(), variant2.hullSpec.builtInMods.toSet()))
+                return false
+        }
+
         if (!options.sMods || options.convertSModsToRegular) {
             processSModsForComparison(variant1, options.convertSModsToRegular)
             processSModsForComparison(variant2, options.convertSModsToRegular)
         }
 
-        val variant1HullMods = variant1.hullMods.toMutableSet()
-        val variant2HullMods = variant2.hullMods.toMutableSet()
-
-        if (!options.builtInHullMods) {
-            val toRemove1 = variant1HullMods.filter { it in variant1.hullSpec.builtInMods && it !in allDMods }
-            val toRemove2 = variant2HullMods.filter { it in variant2.hullSpec.builtInMods && it !in allDMods }
-
-            toRemove1.forEach { modId ->
-                variant1.sMods.remove(modId)
-                variant1.sModdedBuiltIns.remove(modId)
-                variant1HullMods.remove(modId)
+        if (!options.permaMods) {
+            variant1.permaMods.forEach {
+                variant1.completelyRemoveMod(it)
             }
-
-            toRemove2.forEach { modId ->
-                variant2.sMods.remove(modId)
-                variant2.sModdedBuiltIns.remove(modId)
-                variant2HullMods.remove(modId)
+            variant2.permaMods.forEach {
+                variant2.completelyRemoveMod(it)
             }
         }
-
-        val variantModsEqual = hullModSetsEqual(variant1HullMods, variant2HullMods) &&
+        
+        val variantModsEqual = hullModSetsEqual(variant1.getRegularHullMods(), variant2.getRegularHullMods()) &&
+                hullModSetsEqual(variant1.sModdedBuiltIns, variant2.sModdedBuiltIns) &&
                 hullModSetsEqual(variant1.sMods, variant2.sMods) &&
                 hullModSetsEqual(variant1.permaMods, variant2.permaMods) &&
-                hullModSetsEqual(variant1.sModdedBuiltIns, variant2.sModdedBuiltIns) &&
                 hullModSetsEqual(variant1.suppressedMods, variant2.suppressedMods)
 
         return variantModsEqual

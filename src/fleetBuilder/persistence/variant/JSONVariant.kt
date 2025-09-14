@@ -197,15 +197,17 @@ object JSONVariant {
         jsonVariant.put("fluxCapacitors", data.fluxCapacitors)
         jsonVariant.put("fluxVents", data.fluxVents)
         jsonVariant.put("hullMods", JSONArray(data.hullMods))
-        jsonVariant.put("permaMods", JSONArray(data.permaMods))
-        jsonVariant.put("sMods", JSONArray(data.sMods))
+
+        if (data.permaMods.isNotEmpty())
+            jsonVariant.put("permaMods", JSONArray(data.permaMods))
+        if (data.sMods.isNotEmpty())
+            jsonVariant.put("sMods", JSONArray(data.sMods))
+        if (data.sModdedBuiltIns.isNotEmpty())
+            jsonVariant.put("sModdedBuiltIns", JSONArray(data.sModdedBuiltIns))
 
         if (data.tags.isNotEmpty())
             jsonVariant.put("tags", JSONArray(data.tags))
 
-
-        if (data.sModdedBuiltIns.isNotEmpty())
-            jsonVariant.put("sModdedBuiltIns", JSONArray(data.sModdedBuiltIns))
 
         if (data.wings.isNotEmpty())
             jsonVariant.put("wings", JSONArray(data.wings))

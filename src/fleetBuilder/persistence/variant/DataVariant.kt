@@ -14,6 +14,8 @@ import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 
 object DataVariant {
+
+    // Hullmods sets do not contain duplicates. A hullmod will only be in the single set that is relevant to it. E.G, an SMod will only be in the sMods set and nowhere else.
     data class ParsedVariantData(
         val hullId: String,
         val variantId: String = "",

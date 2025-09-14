@@ -1,0 +1,2985 @@
+{
+    "aggression_doctrine": 4,
+    "factionID": "plague",
+    "fleetName": "Cataclysm's retinue",
+    "members": [
+        {
+            "cr": 0.85,
+            "isFlagship": true,
+            "name": "Cataclysm",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Cataclysm",
+                "last": "Cataclysm",
+                "level": 14,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueD.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "electronic_warfare": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "flux_regulation": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "polarized_armor": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "SKR_cataclysm_1"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Lambda-Jake",
+            "variantId": "SKR_guru_assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Waw-Romeo",
+            "variantId": "SKR_zealot_assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Taw-Maggie",
+            "officer": {
+                "first": "Gunmetal",
+                "gender": "FEMALE",
+                "last": "Exalted",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 2,
+                    "point_defense": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "SKR_fanatic_assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Qoph-Bella",
+            "variantId": "SKR_fanatic_standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Puma-Er",
+            "officer": {
+                "first": "Ebony",
+                "gender": "MALE",
+                "last": "Supreme",
+                "level": 5,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "gunnery_implants": 2,
+                    "impact_mitigation": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                }
+            },
+            "variantId": "SKR_fanatic_support"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Iota-Rocky",
+            "officer": {
+                "first": "Icterine",
+                "gender": "MALE",
+                "last": "Radiant",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "SKR_cultist_support"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Pistol-Ling",
+            "variantId": "SKR_cultist_assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Kappa-Dusker",
+            "officer": {
+                "first": "Rose",
+                "gender": "MALE",
+                "last": "Velocious",
+                "level": 5,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "SKR_cultist_standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Daleth-Tucker",
+            "variantId": "SKR_doctrinaire_assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Puma-Er",
+            "variantId": "SKR_doctrinaire_support"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Omnicron-Echo",
+            "variantId": "SKR_doctrinaire_standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Tau-Queen",
+            "variantId": "SKR_devotee_support"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Gimel-Lucky",
+            "variantId": "SKR_devotee_standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Puma-Er",
+            "officer": {
+                "first": "Infrared",
+                "gender": "FEMALE",
+                "last": "Prevailing",
+                "level": 5,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "damage_control": 1,
+                    "helmsmanship": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "SKR_devotee_assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Gimel-Lucky",
+            "officer": {
+                "first": "Chartreuse",
+                "gender": "MALE",
+                "last": "Glorious",
+                "level": 5,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "impact_mitigation": 2,
+                    "missile_specialization": 1,
+                    "point_defense": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "SKR_follower_standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Aladdin-San",
+            "variantId": "SKR_follower_assault"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Eta-Daisy",
+            "officer": {
+                "first": "Brown",
+                "gender": "MALE",
+                "last": "Supreme",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "SKR_follower_support"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Lambda-Jake",
+            "officer": {
+                "first": "Aquamarine",
+                "gender": "MALE",
+                "last": "Superlative",
+                "level": 5,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "gunnery_implants": 2,
+                    "missile_specialization": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "SKR_believer_support"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Mu-Buddy",
+            "variantId": "SKR_believer_standard"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Zayin-Uniform",
+            "officer": {
+                "first": "Russet",
+                "gender": "FEMALE",
+                "last": "Ancient",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 1,
+                    "polarized_armor": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "SKR_believer_assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "######",
+            "officer": {
+                "first": "Cataclysm",
+                "last": "Unknown",
+                "level": 2,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "post": "patrolCommander",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "ordnance_expert": 1
+                }
+            },
+            "variantId": "34f3_0"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Lamedh-Bear",
+            "variantId": "34f3_1"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Xi-Fido",
+            "officer": {
+                "first": "Indigo",
+                "gender": "FEMALE",
+                "last": "Draconian",
+                "level": 3,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "ordnance_expert": 1
+                }
+            },
+            "variantId": "34f3_2"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Kappa-Dusker",
+            "variantId": "34f3_3"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Yodh-Whiskey",
+            "officer": {
+                "first": "Celadon",
+                "gender": "MALE",
+                "last": "Superlative",
+                "level": 3,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 2,
+                    "ordnance_expert": 1
+                }
+            },
+            "variantId": "34f3_3"
+        },
+        {
+            "cr": 1,
+            "name": "XXX Heth-November",
+            "officer": {
+                "first": "Crimson",
+                "gender": "MALE",
+                "last": "Prevailing",
+                "level": 5,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "350e_0"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Delta-Max",
+            "variantId": "350e_1"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Eta-Daisy",
+            "variantId": "350e_2"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Sigma-Prince",
+            "variantId": "350e_3"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Taw-Maggie",
+            "variantId": "350e_4"
+        },
+        {
+            "cr": 1,
+            "name": "######",
+            "officer": {
+                "first": "Cataclysm",
+                "last": "Unknown",
+                "level": 5,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "post": "patrolCommander",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "crew_training": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1,
+                    "polarized_armor": 2
+                }
+            },
+            "variantId": "350e_5"
+        },
+        {
+            "cr": 1,
+            "name": "XXX Taw-Maggie",
+            "officer": {
+                "first": "Viridian",
+                "gender": "FEMALE",
+                "last": "Infinite",
+                "level": 5,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "350e_6"
+        },
+        {
+            "cr": 1,
+            "name": "XXX Kappa-Dusker",
+            "officer": {
+                "first": "Violet",
+                "gender": "FEMALE",
+                "last": "Radiant",
+                "level": 3,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1
+                }
+            },
+            "variantId": "350e_7"
+        },
+        {
+            "cr": 0.7,
+            "name": "######",
+            "officer": {
+                "first": "Cataclysm",
+                "last": "Unknown",
+                "level": 2,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "post": "patrolCommander",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "gunnery_implants": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "3552_0"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Kaph-Zulu",
+            "variantId": "3552_1"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Waw-Romeo",
+            "officer": {
+                "first": "Turquoise",
+                "gender": "FEMALE",
+                "last": "Terminal",
+                "level": 2,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2
+                }
+            },
+            "variantId": "3552_2"
+        },
+        {
+            "cr": 0.7,
+            "name": "XXX Chi-Prince",
+            "variantId": "3552_3"
+        },
+        {
+            "cr": 0.85,
+            "name": "######",
+            "officer": {
+                "first": "Cataclysm",
+                "last": "Unknown",
+                "level": 5,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "post": "patrolCommander",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "crew_training": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 2
+                }
+            },
+            "variantId": "356b_0"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Vesta-Qi",
+            "officer": {
+                "first": "Umber",
+                "gender": "MALE",
+                "last": "Palatial",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "damage_control": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "356b_1"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Upsilon-Duchess",
+            "variantId": "356b_2"
+        },
+        {
+            "cr": 1,
+            "name": "XXX Ismael-Wu",
+            "officer": {
+                "first": "Amber",
+                "gender": "MALE",
+                "last": "Optimal",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "point_defense": 1,
+                    "polarized_armor": 2
+                }
+            },
+            "variantId": "356b_3"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Phi-Rex",
+            "officer": {
+                "first": "Jade",
+                "gender": "MALE",
+                "last": "Unequaled",
+                "level": 5,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "damage_control": 2,
+                    "field_modulation": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 2,
+                    "polarized_armor": 1
+                }
+            },
+            "variantId": "356b_4"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Eta-Daisy",
+            "officer": {
+                "first": "Saffron",
+                "gender": "FEMALE",
+                "last": "Paramount",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "point_defense": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "356b_5"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Upsilon-Duchess",
+            "variantId": "356b_6"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Chi-Prince",
+            "variantId": "356b_7"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Daleth-Tucker",
+            "variantId": "356b_8"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Xi-Fido",
+            "variantId": "356b_9"
+        },
+        {
+            "cr": 1,
+            "name": "XXX Yodh-Whiskey",
+            "officer": {
+                "first": "Saffron",
+                "gender": "MALE",
+                "last": "Terminal",
+                "level": 5,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "356b_10"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Kaph-Zulu",
+            "variantId": "356b_11"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Tau-Queen",
+            "variantId": "356b_12"
+        },
+        {
+            "cr": 0.85,
+            "name": "XXX Gimel-Lucky",
+            "officer": {
+                "first": "Maroon",
+                "gender": "MALE",
+                "last": "Radiant",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/SEEKER/portraits/SKR_plagueCultist.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "damage_control": 1,
+                    "field_modulation": 1,
+                    "impact_mitigation": 2,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "356b_13"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [
+        {
+            "displayName": "End Times",
+            "fluxCapacitors": 14,
+            "fluxVents": 50,
+            "hullId": "SKR_cataclysm",
+            "hullMods": ["turretgyros"],
+            "moduleVariants": {
+                "M_FL": {
+                    "displayName": "Basic",
+                    "fluxCapacitors": 4,
+                    "fluxVents": 20,
+                    "hullId": "SKR_cataclysm_FL",
+                    "hullMods": [
+                        "turretgyros",
+                        "fluxbreakers"
+                    ],
+                    "variantId": "SKR_cataclysm_FL_1",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0006": "SKR_lightspark",
+                                "WS0007": "SKR_lightspark",
+                                "WS0008": "SKR_lightspark"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0002": "SKR_assaultRevolver"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0001": "SKR_intercept"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0004": "SKR_burstPulse"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0003": "SKR_pdGrenade",
+                                "WS0005": "SKR_pdCharger"
+                            }
+                        }
+                    ]
+                },
+                "M_FR": {
+                    "displayName": "Basic",
+                    "fluxCapacitors": 4,
+                    "fluxVents": 20,
+                    "hullId": "SKR_cataclysm_FR",
+                    "hullMods": [
+                        "turretgyros",
+                        "fluxbreakers"
+                    ],
+                    "variantId": "SKR_cataclysm_FR_1",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0006": "SKR_lightspark",
+                                "WS0007": "SKR_lightspark",
+                                "WS0008": "SKR_lightspark"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0002": "SKR_assaultRevolver"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0001": "SKR_intercept"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0004": "SKR_burstPulse"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0003": "SKR_pdGrenade",
+                                "WS0005": "SKR_pdCharger"
+                            }
+                        }
+                    ]
+                },
+                "M_ML": {
+                    "displayName": "Basic",
+                    "fluxCapacitors": 4,
+                    "fluxVents": 20,
+                    "hullId": "SKR_cataclysm_ML",
+                    "hullMods": [
+                        "turretgyros",
+                        "fluxbreakers"
+                    ],
+                    "variantId": "SKR_cataclysm_ML_1",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0006": "SKR_lightspark",
+                                "WS0007": "SKR_lightspark",
+                                "WS0008": "SKR_lightspark"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0002": "SKR_assaultRevolver"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0001": "SKR_intercept"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0004": "SKR_burstPulse"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0003": "SKR_pdGrenade",
+                                "WS0005": "SKR_pdCharger"
+                            }
+                        }
+                    ]
+                },
+                "M_MR": {
+                    "displayName": "Basic",
+                    "fluxCapacitors": 4,
+                    "fluxVents": 20,
+                    "hullId": "SKR_cataclysm_MR",
+                    "hullMods": [
+                        "turretgyros",
+                        "fluxbreakers"
+                    ],
+                    "variantId": "SKR_cataclysm_MR_1",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0006": "SKR_lightspark",
+                                "WS0007": "SKR_lightspark",
+                                "WS0008": "SKR_lightspark"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0002": "SKR_assaultRevolver"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0001": "SKR_intercept"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0004": "SKR_burstPulse"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0003": "SKR_pdGrenade",
+                                "WS0005": "SKR_pdCharger"
+                            }
+                        }
+                    ]
+                },
+                "M_RL": {
+                    "displayName": "Basic",
+                    "fluxCapacitors": 4,
+                    "fluxVents": 20,
+                    "hullId": "SKR_cataclysm_RL",
+                    "hullMods": [
+                        "turretgyros",
+                        "fluxbreakers"
+                    ],
+                    "variantId": "SKR_cataclysm_RL_1",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0006": "SKR_lightspark",
+                                "WS0007": "SKR_lightspark",
+                                "WS0008": "SKR_lightspark"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0002": "SKR_assaultRevolver"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0001": "SKR_intercept"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0004": "SKR_burstPulse"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0003": "SKR_pdGrenade",
+                                "WS0005": "SKR_pdCharger"
+                            }
+                        }
+                    ]
+                },
+                "M_RR": {
+                    "displayName": "Basic",
+                    "fluxCapacitors": 4,
+                    "fluxVents": 20,
+                    "hullId": "SKR_cataclysm_RR",
+                    "hullMods": [
+                        "turretgyros",
+                        "fluxbreakers"
+                    ],
+                    "variantId": "SKR_cataclysm_RR_1",
+                    "weaponGroups": [
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0006": "SKR_lightspark",
+                                "WS0007": "SKR_lightspark",
+                                "WS0008": "SKR_lightspark"
+                            }
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0002": "SKR_assaultRevolver"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0001": "SKR_intercept"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {"WS0004": "SKR_burstPulse"}
+                        },
+                        {
+                            "autofire": true,
+                            "mode": "LINKED",
+                            "weapons": {
+                                "WS0003": "SKR_pdGrenade",
+                                "WS0005": "SKR_pdCharger"
+                            }
+                        }
+                    ]
+                }
+            },
+            "variantId": "SKR_cataclysm_1",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "SKR_fauchard"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "SKR_dainsleif",
+                        "WS0002": "SKR_dainsleif",
+                        "WS0004": "SKR_dainsleif"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "ARRAY": "SKR_tusk",
+                        "WS0005": "SKR_heavyLightstreak",
+                        "WS0006": "SKR_heavyLightstreak",
+                        "WS0007": "SKR_lightstreak"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0008": "SKR_hvBlaster",
+                        "WS0009": "SKR_hvBlaster",
+                        "WS0010": "SKR_hvBlaster",
+                        "WS0011": "SKR_hvBlaster"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0012": "SKR_pdCharger",
+                        "WS0013": "SKR_pdGrenade",
+                        "WS0014": "SKR_pdGrenade",
+                        "WS0015": "SKR_pdCharger",
+                        "WS0016": "SKR_pdCharger",
+                        "WS0017": "SKR_pdCharger",
+                        "WS0018": "SKR_pdCharger",
+                        "WS0019": "SKR_pdGrenade",
+                        "WS0020": "SKR_pdGrenade",
+                        "WS0021": "SKR_pdCharger",
+                        "WS0022": "SKR_pdCharger",
+                        "WS0023": "SKR_pdCharger"
+                    }
+                }
+            ],
+            "wings": [
+                "SKR_beetle_wing",
+                "SKR_pillbug_wing",
+                "SKR_fireant_wing",
+                "SKR_fireant_wing"
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 11,
+            "fluxVents": 30,
+            "hullId": "SKR_guru",
+            "hullMods": [],
+            "variantId": "SKR_guru_assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0008": "SKR_lightspark",
+                        "WS0009": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0006": "SKR_lightspark",
+                        "WS0007": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "plasma"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_hvBlaster",
+                        "WS0003": "SKR_hvBlaster",
+                        "WS0004": "SKR_burstPulse",
+                        "WS0005": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0010": "SKR_pdGrenade",
+                        "WS0011": "SKR_pdGrenade"
+                    }
+                }
+            ],
+            "wings": [
+                "SKR_beetle_wing",
+                "SKR_beetle_wing"
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 30,
+            "hullId": "SKR_zealot",
+            "hullMods": [
+                "safetyoverrides",
+                "hardened_subsystems"
+            ],
+            "variantId": "SKR_zealot_assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "amblaster",
+                        "WS0003": "amblaster"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0006": "SKR_lightspark",
+                        "WS0007": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "chaingun"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "heavymg",
+                        "WS0005": "heavymg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0008": "SKR_pdCharger",
+                        "WS0009": "SKR_pdCharger",
+                        "WS0010": "SKR_pdCharger",
+                        "WS0011": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 15,
+            "fluxVents": 20,
+            "hullId": "SKR_fanatic",
+            "hullMods": [],
+            "variantId": "SKR_fanatic_assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "plasma"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "SKR_burstPulse",
+                        "WS0007": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_pdCharger",
+                        "WS0003": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 7,
+            "fluxVents": 20,
+            "hullId": "SKR_fanatic",
+            "hullMods": ["hardenedshieldemitter"],
+            "variantId": "SKR_fanatic_standard",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_dainsleif"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0006": "SKR_lightspark",
+                        "WS0007": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_pdCharger",
+                        "WS0003": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 0,
+            "fluxVents": 19,
+            "hullId": "SKR_fanatic",
+            "hullMods": [
+                "targetingunit",
+                "advancedoptics"
+            ],
+            "variantId": "SKR_fanatic_support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_fauchard"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "SKR_pdGrenade",
+                        "WS0007": "SKR_pdGrenade"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_pdCharger",
+                        "WS0003": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 14,
+            "fluxVents": 20,
+            "hullId": "SKR_cultist",
+            "hullMods": [
+                "targetingunit",
+                "eccm"
+            ],
+            "variantId": "SKR_cultist_support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0004": "amblaster",
+                        "WS0005": "amblaster"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "pilum",
+                        "WS0003": "pilum"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_intercept"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "SKR_pdCharger",
+                        "WS0007": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 19,
+            "fluxVents": 20,
+            "hullId": "SKR_cultist",
+            "hullMods": [],
+            "variantId": "SKR_cultist_assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_assaultRevolver"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "SKR_lightstreak",
+                        "WS0003": "SKR_lightstreak"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "lightneedler",
+                        "WS0005": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "SKR_pdCharger",
+                        "WS0007": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 9,
+            "fluxVents": 20,
+            "hullId": "SKR_cultist",
+            "hullMods": [
+                "fluxbreakers",
+                "missleracks"
+            ],
+            "variantId": "SKR_cultist_standard",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_hvBlaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "harpoonpod",
+                        "WS0003": "harpoonpod"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0004": "SKR_lightspark",
+                        "WS0005": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "SKR_pdCharger",
+                        "WS0007": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 12,
+            "fluxVents": 20,
+            "hullId": "SKR_doctrinaire",
+            "hullMods": [],
+            "variantId": "SKR_doctrinaire_assault",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "SKR_intercept",
+                        "WS0006": "SKR_intercept"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "SKR_lightspark",
+                        "WS0002": "SKR_lightspark",
+                        "WS0003": "SKR_lightspark",
+                        "WS0004": "SKR_lightspark"
+                    }
+                }
+            ],
+            "wings": ["SKR_beetle_wing"]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 20,
+            "fluxVents": 20,
+            "hullId": "SKR_doctrinaire",
+            "hullMods": [],
+            "variantId": "SKR_doctrinaire_support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "SKR_intercept",
+                        "WS0006": "SKR_intercept"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "SKR_pdCharger",
+                        "WS0002": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "SKR_pdGrenade",
+                        "WS0004": "SKR_pdGrenade"
+                    }
+                }
+            ],
+            "wings": ["SKR_fireant_wing"]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 17,
+            "fluxVents": 20,
+            "hullId": "SKR_doctrinaire",
+            "hullMods": [
+                "targetingunit",
+                "magazines"
+            ],
+            "variantId": "SKR_doctrinaire_standard",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "SKR_burstPulse",
+                        "WS0002": "SKR_burstPulse",
+                        "WS0003": "SKR_burstPulse",
+                        "WS0004": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "flak",
+                        "WS0006": "flak"
+                    }
+                }
+            ],
+            "wings": ["SKR_pillbug_wing"]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 7,
+            "fluxVents": 10,
+            "hullId": "SKR_devotee",
+            "hullMods": [
+                "eccm",
+                "extendedshieldemitter",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "SKR_devotee_support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_tusk_medium"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "SKR_lightspark",
+                        "WS0003": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_pdGrenade",
+                        "WS0005": "SKR_pdGrenade"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 4,
+            "fluxVents": 10,
+            "hullId": "SKR_devotee",
+            "hullMods": [
+                "pointdefenseai",
+                "advancedoptics",
+                "targetingunit"
+            ],
+            "variantId": "SKR_devotee_standard",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_pdCharger",
+                        "WS0003": "SKR_pdCharger",
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_tusk_medium"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 7,
+            "fluxVents": 10,
+            "hullId": "SKR_devotee",
+            "hullMods": [
+                "stabilizedshieldemitter",
+                "hardenedshieldemitter",
+                "extendedshieldemitter"
+            ],
+            "variantId": "SKR_devotee_assault",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_burstPulse",
+                        "WS0003": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_tusk_medium"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_follower",
+            "hullMods": [],
+            "variantId": "SKR_follower_standard",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0005": "SKR_lightspark",
+                        "WS0006": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "SKR_burstPulse",
+                        "WS0002": "SKR_burstPulse",
+                        "WS0003": "SKR_burstPulse",
+                        "WS0004": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "SKR_pdCharger"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 1,
+            "fluxVents": 10,
+            "hullId": "SKR_follower",
+            "hullMods": ["safetyoverrides"],
+            "variantId": "SKR_follower_assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0005": "sabot",
+                        "WS0006": "sabot"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "lightneedler",
+                        "WS0002": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "lightag",
+                        "WS0004": "lightag"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "SKR_pdGrenade"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 7,
+            "fluxVents": 10,
+            "hullId": "SKR_follower",
+            "hullMods": ["hardenedshieldemitter"],
+            "variantId": "SKR_follower_support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "railgun",
+                        "WS0002": "railgun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0005": "heatseeker",
+                        "WS0006": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "ioncannon",
+                        "WS0004": "ioncannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "SKR_pdCharger"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 9,
+            "fluxVents": 10,
+            "hullId": "SKR_believer",
+            "hullMods": [
+                "auxiliarythrusters",
+                "fluxbreakers"
+            ],
+            "variantId": "SKR_believer_support",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "ionbeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "SKR_lightstreak"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "SKR_pdCharger"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 9,
+            "fluxVents": 10,
+            "hullId": "SKR_believer",
+            "hullMods": [
+                "auxiliarythrusters",
+                "magazines"
+            ],
+            "variantId": "SKR_believer_standard",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_intercept"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "SKR_lightstreak"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "SKR_pdGrenade"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_believer",
+            "hullMods": [
+                "magazines",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "SKR_believer_assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_hvBlaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "breachpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "SKR_pdCharger"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 1,
+            "fluxVents": 20,
+            "hullId": "SKR_cultist",
+            "hullMods": [
+                "armoredweapons",
+                "missleracks",
+                "eccm"
+            ],
+            "sMods": [
+                "fluxdistributor",
+                "fluxcoil"
+            ],
+            "variantId": "34f3_0",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "heavymortar"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "SKR_lightstreak",
+                        "WS0003": "SKR_lightstreak"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "railgun",
+                        "WS0005": "railgun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "SKR_pdCharger",
+                        "WS0007": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 8,
+            "hullId": "SKR_devotee",
+            "hullMods": [
+                "extendedshieldemitter",
+                "hardenedshieldemitter",
+                "fluxdistributor",
+                "fluxcoil"
+            ],
+            "sMods": ["eccm"],
+            "variantId": "34f3_1",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_tusk_medium"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "atropos",
+                        "WS0003": "atropos"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_believer",
+            "hullMods": [
+                "magazines",
+                "fluxdistributor",
+                "fluxcoil"
+            ],
+            "sMods": [
+                "auxiliarythrusters",
+                "blast_doors"
+            ],
+            "variantId": "34f3_2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_intercept"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "sabotpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "lightdualmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_believer",
+            "hullMods": [
+                "auxiliarythrusters",
+                "fluxbreakers"
+            ],
+            "variantId": "34f3_3",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "ionbeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "SKR_lightstreak"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "SKR_pdCharger"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 17,
+            "fluxVents": 30,
+            "hullId": "SKR_guru",
+            "hullMods": [],
+            "sMods": ["targetingunit"],
+            "variantId": "350e_0",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_fauchard"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0008": "heatseeker",
+                        "WS0009": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger",
+                        "WS0007": "SKR_pdCharger",
+                        "WS0010": "SKR_pdCharger",
+                        "WS0011": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_intercept",
+                        "WS0003": "SKR_intercept"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "SKR_pdGrenade"}
+                }
+            ],
+            "wings": [
+                "SKR_beetle_wing",
+                "SKR_beetle_wing"
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 22,
+            "fluxVents": 30,
+            "hullId": "SKR_zealot",
+            "hullMods": ["fluxdistributor"],
+            "sMods": ["missleracks"],
+            "variantId": "350e_1",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "ionpulser",
+                        "WS0003": "ionpulser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "SKR_lightstreak",
+                        "WS0006": "SKR_lightstreak",
+                        "WS0007": "SKR_lightstreak"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_assaultRevolver",
+                        "WS0005": "SKR_assaultRevolver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0009": "SKR_pdCharger",
+                        "WS0010": "SKR_pdCharger",
+                        "WS0011": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0008": "SKR_pdGrenade"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 30,
+            "fluxVents": 30,
+            "hullId": "SKR_zealot",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "fluxdistributor",
+                "fluxcoil"
+            ],
+            "sMods": ["targetingunit"],
+            "variantId": "350e_2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "pulselaser",
+                        "WS0003": "pulselaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "pilum",
+                        "WS0006": "pilum",
+                        "WS0007": "pilum"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_intercept",
+                        "WS0005": "SKR_intercept"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0008": "pdlaser",
+                        "WS0009": "pdlaser",
+                        "WS0010": "pdlaser",
+                        "WS0011": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 7,
+            "fluxVents": 20,
+            "hullId": "SKR_fanatic",
+            "hullMods": ["hardenedshieldemitter"],
+            "variantId": "350e_3",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_dainsleif"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0006": "SKR_lightspark",
+                        "WS0007": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_pdCharger",
+                        "WS0003": "SKR_pdCharger",
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 20,
+            "fluxVents": 20,
+            "hullId": "SKR_cultist",
+            "hullMods": [
+                "targetingunit",
+                "eccm",
+                "blast_doors",
+                "fluxdistributor"
+            ],
+            "sMods": ["reinforcedhull"],
+            "variantId": "350e_4",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "salamanderpod",
+                        "WS0003": "salamanderpod"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0004": "reaper",
+                        "WS0005": "reaper"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_intercept"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "pdlaser",
+                        "WS0007": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 10,
+            "fluxVents": 20,
+            "hullId": "SKR_doctrinaire",
+            "hullMods": ["armoredweapons"],
+            "sMods": ["fluxdistributor"],
+            "variantId": "350e_5",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "SKR_intercept",
+                        "WS0006": "SKR_intercept"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "SKR_lightspark",
+                        "WS0002": "SKR_lightspark",
+                        "WS0003": "SKR_lightspark",
+                        "WS0004": "SKR_lightspark"
+                    }
+                }
+            ],
+            "wings": ["SKR_fireant_wing"]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 9,
+            "hullId": "SKR_devotee",
+            "hullMods": [
+                "extendedshieldemitter",
+                "hardenedshieldemitter",
+                "reinforcedhull",
+                "blast_doors",
+                "fluxdistributor",
+                "fluxcoil"
+            ],
+            "sMods": ["eccm"],
+            "variantId": "350e_6",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_tusk_medium"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "hammer",
+                        "WS0003": "hammer"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "lightmg",
+                        "WS0005": "lightmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_follower",
+            "hullMods": [
+                "reinforcedhull",
+                "fluxdistributor"
+            ],
+            "sMods": ["hardenedshieldemitter"],
+            "variantId": "350e_7",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "railgun"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0005": "heatseeker",
+                        "WS0006": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "SKR_burstPulse",
+                        "WS0004": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "lightdualac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "SKR_pdGrenade"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 15,
+            "fluxVents": 20,
+            "hullId": "SKR_cultist",
+            "hullMods": ["armoredweapons"],
+            "sMods": ["fluxdistributor"],
+            "variantId": "3552_0",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_assaultRevolver"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "SKR_lightstreak",
+                        "WS0003": "SKR_lightstreak"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "railgun",
+                        "WS0005": "railgun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "SKR_pdCharger",
+                        "WS0007": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 16,
+            "fluxVents": 20,
+            "hullId": "SKR_doctrinaire",
+            "hullMods": [],
+            "variantId": "3552_1",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "SKR_intercept",
+                        "WS0006": "SKR_intercept"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "SKR_lightspark",
+                        "WS0002": "SKR_lightspark",
+                        "WS0003": "SKR_lightspark",
+                        "WS0004": "SKR_lightspark"
+                    }
+                }
+            ],
+            "wings": ["SKR_fireant_wing"]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_devotee",
+            "hullMods": [
+                "targetingunit",
+                "reinforcedhull"
+            ],
+            "variantId": "3552_2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_pdCharger",
+                        "WS0003": "SKR_pdCharger",
+                        "WS0004": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_tusk_medium"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0005": "SKR_pdGrenade"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 9,
+            "hullId": "SKR_follower",
+            "hullMods": [
+                "fluxdistributor",
+                "fluxcoil"
+            ],
+            "sMods": ["hardenedshieldemitter"],
+            "variantId": "3552_3",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "railgun",
+                        "WS0002": "railgun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0005": "heatseeker",
+                        "WS0006": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "SKR_burstPulse",
+                        "WS0004": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "pdburst"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 7,
+            "fluxVents": 30,
+            "hullId": "SKR_guru",
+            "hullMods": [],
+            "sMods": ["fluxdistributor"],
+            "variantId": "356b_0",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0008": "SKR_lightspark",
+                        "WS0009": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0006": "SKR_lightspark",
+                        "WS0007": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_fauchard"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_hvBlaster",
+                        "WS0003": "SKR_hvBlaster"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_burstPulse",
+                        "WS0005": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0010": "SKR_pdCharger",
+                        "WS0011": "SKR_pdCharger"
+                    }
+                }
+            ],
+            "wings": [
+                "SKR_beetle_wing",
+                "SKR_beetle_wing"
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 12,
+            "fluxVents": 30,
+            "hullId": "SKR_guru",
+            "hullMods": ["fluxbreakers"],
+            "sMods": ["expanded_deck_crew"],
+            "variantId": "356b_1",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "mjolnir"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0008": "harpoon",
+                        "WS0009": "harpoon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_assaultRevolver",
+                        "WS0003": "SKR_assaultRevolver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger",
+                        "WS0006": "SKR_pdCharger",
+                        "WS0007": "SKR_pdCharger",
+                        "WS0010": "SKR_pdCharger",
+                        "WS0011": "SKR_pdCharger"
+                    }
+                }
+            ],
+            "wings": [
+                "SKR_beetle_wing",
+                "SKR_beetle_wing"
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 14,
+            "fluxVents": 30,
+            "hullId": "SKR_guru",
+            "hullMods": ["armoredweapons"],
+            "sMods": [
+                "fluxdistributor",
+                "fluxcoil"
+            ],
+            "variantId": "356b_2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0008": "SKR_lightspark",
+                        "WS0009": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0006": "SKR_lightspark",
+                        "WS0007": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "mjolnir"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "heavyblaster",
+                        "WS0003": "heavyblaster",
+                        "WS0004": "SKR_burstPulse",
+                        "WS0005": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0010": "SKR_pdCharger",
+                        "WS0011": "SKR_pdCharger"
+                    }
+                }
+            ],
+            "wings": [
+                "SKR_pillbug_wing",
+                "SKR_pillbug_wing"
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 12,
+            "fluxVents": 30,
+            "hullId": "SKR_guru",
+            "hullMods": ["fluxbreakers"],
+            "sMods": ["expanded_deck_crew"],
+            "variantId": "356b_3",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0009": "sabot_single"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0008": "harpoon_single"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_fauchard"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_assaultRevolver",
+                        "WS0003": "SKR_assaultRevolver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger",
+                        "WS0006": "SKR_pdCharger",
+                        "WS0007": "SKR_pdCharger",
+                        "WS0011": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0010": "SKR_pdGrenade"}
+                }
+            ],
+            "wings": [
+                "SKR_beetle_wing",
+                "SKR_beetle_wing"
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 30,
+            "fluxVents": 25,
+            "hullId": "SKR_zealot",
+            "hullMods": [
+                "fluxdistributor",
+                "fluxcoil"
+            ],
+            "sMods": ["missleracks"],
+            "variantId": "356b_4",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "ionpulser"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "SKR_lightstreak",
+                        "WS0006": "SKR_lightstreak",
+                        "WS0007": "SKR_lightstreak"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "phasebeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_assaultRevolver",
+                        "WS0005": "SKR_assaultRevolver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0008": "pdlaser",
+                        "WS0009": "pdlaser",
+                        "WS0010": "pdlaser",
+                        "WS0011": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 30,
+            "fluxVents": 30,
+            "hullId": "SKR_zealot",
+            "hullMods": [],
+            "sMods": ["missleracks"],
+            "variantId": "356b_5",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "heavyblaster",
+                        "WS0003": "heavyblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0001": "SKR_lightstreak",
+                        "WS0006": "SKR_lightstreak",
+                        "WS0007": "SKR_lightstreak"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "SKR_assaultRevolver",
+                        "WS0005": "SKR_assaultRevolver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0008": "SKR_pdCharger",
+                        "WS0009": "SKR_pdCharger",
+                        "WS0010": "SKR_pdCharger",
+                        "WS0011": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 13,
+            "fluxVents": 20,
+            "hullId": "SKR_fanatic",
+            "hullMods": ["armoredweapons"],
+            "sMods": [
+                "targetingunit",
+                "fluxdistributor"
+            ],
+            "variantId": "356b_6",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "mjolnir"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_pdCharger",
+                        "WS0003": "SKR_pdCharger",
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger",
+                        "WS0006": "SKR_pdCharger",
+                        "WS0007": "SKR_pdCharger"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 17,
+            "fluxVents": 20,
+            "hullId": "SKR_fanatic",
+            "hullMods": [],
+            "sMods": ["targetingunit"],
+            "variantId": "356b_7",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_fauchard"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "SKR_pdCharger",
+                        "WS0003": "SKR_pdCharger",
+                        "WS0004": "SKR_pdCharger",
+                        "WS0005": "SKR_pdCharger"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "SKR_pdGrenade",
+                        "WS0007": "SKR_pdGrenade"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_devotee",
+            "hullMods": [
+                "extendedshieldemitter",
+                "hardenedshieldemitter"
+            ],
+            "sMods": ["eccm"],
+            "variantId": "356b_8",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_tusk_medium"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "SKR_lightspark",
+                        "WS0003": "SKR_lightspark"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0005": "SKR_pdCharger"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0004": "SKR_pdGrenade"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_follower",
+            "hullMods": [
+                "fluxcoil",
+                "armoredweapons"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "fluxdistributor"
+            ],
+            "variantId": "356b_9",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "railgun",
+                        "WS0002": "railgun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0005": "heatseeker",
+                        "WS0006": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "SKR_burstPulse",
+                        "WS0004": "SKR_burstPulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "pdburst"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 4,
+            "fluxVents": 10,
+            "hullId": "SKR_follower",
+            "hullMods": [
+                "safetyoverrides",
+                "armoredweapons"
+            ],
+            "sMods": ["fluxdistributor"],
+            "variantId": "356b_10",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "railgun",
+                        "WS0002": "railgun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0005": "harpoon",
+                        "WS0006": "harpoon"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "lightmortar",
+                        "WS0004": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "SKR_pdCharger"}
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_believer",
+            "hullMods": [
+                "magazines",
+                "fluxcoil"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "fluxdistributor"
+            ],
+            "variantId": "356b_11",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "pulselaser"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "SKR_lightstreak"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "SKR_pdCharger"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "SKR_believer",
+            "hullMods": [
+                "auxiliarythrusters",
+                "magazines",
+                "blast_doors"
+            ],
+            "variantId": "356b_12",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_intercept"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "sabotpod"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "SKR_pdGrenade"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 8,
+            "fluxVents": 10,
+            "hullId": "SKR_believer",
+            "hullMods": [
+                "magazines",
+                "fluxdistributor"
+            ],
+            "sMods": ["auxiliarythrusters"],
+            "variantId": "356b_13",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_intercept"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0002": "SKR_lightstreak"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0003": "SKR_pdCharger"}
+                }
+            ]
+        }
+    ]
+}

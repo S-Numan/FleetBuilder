@@ -1,0 +1,1493 @@
+{
+    "aggression_doctrine": 5,
+    "factionID": "luddic_path",
+    "fleetName": "Luddic Path's Reclamation Unit",
+    "members": [
+        {
+            "cr": 0.7,
+            "name": "Damnation-to-sin",
+            "variantId": "legion_Assault"
+        },
+        {
+            "cr": 0.85,
+            "isFlagship": true,
+            "name": "PLS Key to the Domain",
+            "officer": {
+                "first": "Campion",
+                "gender": "MALE",
+                "last": "Batax",
+                "level": 6,
+                "memKeys": {"voice": "soldier"},
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_luddic05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "flux_regulation": 1,
+                    "gunnery_implants": 1,
+                    "officer_training": 1,
+                    "polarized_armor": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "SKR_trailblazer_combat"
+        },
+        {
+            "cr": 0.7,
+            "name": "Zulif",
+            "officer": {
+                "first": "Future",
+                "gender": "FEMALE",
+                "last": "Frohock",
+                "level": 5,
+                "memKeys": {"voice": "faithful"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic14.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 1,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2
+                }
+            },
+            "variantId": "dominator_Support"
+        },
+        {
+            "cr": 0.7,
+            "name": "Rewards Of Devotion",
+            "officer": {
+                "first": "Makepeace",
+                "gender": "FEMALE",
+                "last": "Borax",
+                "level": 4,
+                "memKeys": {"voice": "pather"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait29.png",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "impact_mitigation": 1,
+                    "point_defense": 1,
+                    "polarized_armor": 1
+                }
+            },
+            "variantId": "dominator_Assault"
+        },
+        {
+            "cr": 0.7,
+            "name": "Cherubim",
+            "variantId": "ab3cf_0"
+        },
+        {
+            "cr": 0.7,
+            "name": "Torment",
+            "officer": {
+                "first": "Promise",
+                "gender": "FEMALE",
+                "last": "Wintergreen",
+                "level": 5,
+                "memKeys": {"voice": "pather"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic01.png",
+                "skills": {
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 1,
+                    "polarized_armor": 1
+                }
+            },
+            "variantId": "ab3cf_1"
+        },
+        {
+            "cr": 0.7,
+            "name": "Hashmallim",
+            "officer": {
+                "first": "Obedience",
+                "gender": "FEMALE",
+                "last": "Pine",
+                "level": 4,
+                "memKeys": {"voice": "pather"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic08.png",
+                "skills": {
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "point_defense": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "ab3cf_2"
+        },
+        {
+            "cr": 0.7,
+            "name": "Cleansing Light",
+            "variantId": "ab3cf_3"
+        },
+        {
+            "cr": 0.7,
+            "name": "Hashmallim",
+            "variantId": "ab3cf_4"
+        },
+        {
+            "cr": 0.7,
+            "name": "Seraphim",
+            "officer": {
+                "first": "Genat",
+                "gender": "FEMALE",
+                "last": "Warad",
+                "level": 4,
+                "memKeys": {"voice": "faithful"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic08.png",
+                "skills": {
+                    "impact_mitigation": 1,
+                    "missile_specialization": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1
+                }
+            },
+            "variantId": "ab3cf_5"
+        },
+        {
+            "cr": 0.7,
+            "name": "Crusade",
+            "variantId": "ab3cf_6"
+        },
+        {
+            "cr": 0.7,
+            "name": "Burnt Offering",
+            "officer": {
+                "first": "Vittoria",
+                "gender": "FEMALE",
+                "last": "Chinax",
+                "level": 4,
+                "memKeys": {"voice": "soldier"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait27.png",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 2,
+                    "point_defense": 1,
+                    "polarized_armor": 1
+                }
+            },
+            "variantId": "ab3cf_7"
+        },
+        {
+            "cr": 0.7,
+            "name": "Cast Down The Idols",
+            "variantId": "ab3cf_8"
+        },
+        {
+            "cr": 0.7,
+            "name": "Crusade",
+            "variantId": "ab3cf_9"
+        },
+        {
+            "cr": 0.7,
+            "name": "Azazel",
+            "officer": {
+                "first": "Zala",
+                "gender": "FEMALE",
+                "last": "Lara",
+                "level": 4,
+                "memKeys": {"voice": "pather"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic10.png",
+                "skills": {
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "ab3cf_10"
+        },
+        {
+            "cr": 0.7,
+            "name": "Seraphim",
+            "variantId": "ab3cf_11"
+        },
+        {
+            "cr": 0.7,
+            "name": "Servant Of War",
+            "variantId": "ab3cf_12"
+        },
+        {
+            "cr": 0.85,
+            "name": "Hayot Ha Kodesh",
+            "officer": {
+                "first": "Zada",
+                "gender": "MALE",
+                "last": "Chagax",
+                "level": 5,
+                "memKeys": {"voice": "pather"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic04.png",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "ab3cf_13"
+        },
+        {
+            "cr": 0.7,
+            "name": "Final Redemption",
+            "officer": {
+                "first": "Raymond",
+                "gender": "MALE",
+                "last": "Wintergreen",
+                "level": 4,
+                "memKeys": {"voice": "pather"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 1,
+                    "polarized_armor": 1
+                }
+            },
+            "variantId": "ab3cf_14"
+        },
+        {
+            "cr": 0.7,
+            "name": "Elohim",
+            "variantId": "ab3cf_15"
+        },
+        {
+            "cr": 0.7,
+            "name": "Hayot Ha Kodesh",
+            "variantId": "ab3cf_16"
+        },
+        {
+            "cr": 0.7,
+            "name": "Cleansing Light",
+            "variantId": "ab3cf_17"
+        },
+        {
+            "cr": 0.7,
+            "name": "Final Redemption",
+            "officer": {
+                "first": "Valeri",
+                "gender": "FEMALE",
+                "last": "Chive",
+                "level": 5,
+                "memKeys": {"voice": "soldier"},
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_luddic07.png",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "damage_control": 1,
+                    "gunnery_implants": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "ab3cf_18"
+        },
+        {
+            "cr": 0.7,
+            "name": "Flagellant",
+            "variantId": "ab3cf_19"
+        },
+        {
+            "cr": 0.7,
+            "name": "Zealot",
+            "variantId": "ab3cf_20"
+        },
+        {
+            "cr": 0.7,
+            "name": "Holy Battle",
+            "variantId": "ab3cf_21"
+        },
+        {
+            "cr": 0.7,
+            "name": "Ishim",
+            "variantId": "ab3cf_22"
+        },
+        {
+            "cr": 0.7,
+            "name": "Star Ark",
+            "variantId": "ab3cf_23"
+        },
+        {
+            "cr": 0.7,
+            "name": "Hashmallim",
+            "variantId": "ab3cf_24"
+        },
+        {
+            "cr": 0.7,
+            "name": "Inferno",
+            "variantId": "ab3cf_23"
+        },
+        {
+            "cr": 0.7,
+            "name": "Elohim",
+            "variantId": "ab3cf_26"
+        },
+        {
+            "cr": 0.7,
+            "name": "Crusade",
+            "variantId": "ab3cf_27"
+        }
+    ],
+    "mod_info": [{
+        "mod_id": "SEEKER",
+        "mod_name": "Seeker - Unidentified Contact",
+        "mod_version": "0.6.5-1"
+    }],
+    "variants": [
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 0,
+            "fluxVents": 39,
+            "hullId": "legion",
+            "hullMods": [
+                "heavyarmor",
+                "missleracks",
+                "armoredweapons",
+                "autorepair",
+                "dedicated_targeting_core"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "legion_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "mark9"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "typhoon",
+                        "WS 003": "typhoon",
+                        "WS 004": "typhoon",
+                        "WS 005": "typhoon",
+                        "WS 007": "typhoon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hephag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 018": "vulcan",
+                        "WS 019": "vulcan",
+                        "WS 020": "vulcan",
+                        "WS 021": "vulcan"
+                    }
+                }
+            ],
+            "wings": [
+                "broadsword_wing",
+                "broadsword_wing",
+                "broadsword_wing",
+                "broadsword_wing"
+            ]
+        },
+        {
+            "displayName": "Combat",
+            "fluxCapacitors": 0,
+            "fluxVents": 15,
+            "hullId": "SKR_trailblazer",
+            "hullMods": [
+                "fluxbreakers",
+                "hardenedshieldemitter"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit",
+                "always_recoverable"
+            ],
+            "variantId": "SKR_trailblazer_combat",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "SKR_drill"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "lightag",
+                        "WS0003": "lightag"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "railgun",
+                        "WS0005": "railgun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0006": "pdburst",
+                        "WS0007": "pdburst",
+                        "WS0008": "pdburst",
+                        "WS0009": "pdburst"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0010": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 14,
+            "fluxVents": 30,
+            "hullId": "dominator",
+            "hullMods": [
+                "dedicated_targeting_core",
+                "fluxdistributor"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "dominator_Support",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 012": "gauss",
+                        "WS 013": "gauss"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 014": "pilum",
+                        "WS 015": "pilum",
+                        "WS 016": "pilum"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "lightag",
+                        "WS 005": "lightag"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "lightneedler"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan",
+                        "WS 006": "vulcan",
+                        "WS 007": "vulcan",
+                        "WS 008": "vulcan",
+                        "WS 009": "vulcan",
+                        "WS 010": "flak",
+                        "WS 011": "flak"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Assault",
+            "fluxCapacitors": 15,
+            "fluxVents": 30,
+            "hullId": "dominator",
+            "hullMods": [
+                "heavyarmor",
+                "dedicated_targeting_core"
+            ],
+            "tags": [
+                "variant_always_retain_smods_on_salvage",
+                "no_autofit"
+            ],
+            "variantId": "dominator_Assault",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 012": "mark9"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 014": "typhoon",
+                        "WS 015": "typhoon",
+                        "WS 016": "typhoon"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 013": "hephag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan",
+                        "WS 003": "vulcan",
+                        "WS 004": "vulcan",
+                        "WS 005": "vulcan",
+                        "WS 006": "vulcan",
+                        "WS 007": "vulcan",
+                        "WS 008": "vulcan",
+                        "WS 009": "vulcan",
+                        "WS 010": "flak",
+                        "WS 011": "flak"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 32,
+            "fluxVents": 35,
+            "hullId": "SKR_halligan_pather",
+            "hullMods": ["ill_advised"],
+            "sMods": ["fluxbreakers"],
+            "variantId": "ab3cf_0",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0001": "lightac",
+                        "WS0002": "lightac"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0009": "heatseeker",
+                        "WS0010": "heatseeker",
+                        "WS0011": "heatseeker",
+                        "WS0012": "heatseeker",
+                        "WS0013": "heatseeker",
+                        "WS0014": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0003": "miningblaster",
+                        "WS0004": "miningblaster"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0005": "heavymortar",
+                        "WS0006": "heavymortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "flak"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0015": "lightmg",
+                        "WS0016": "lightmg",
+                        "WS0017": "lightmg",
+                        "WS0018": "lightmg",
+                        "WS0019": "lightmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 6,
+            "fluxVents": 0,
+            "hullId": "eradicator",
+            "hullMods": [
+                "safetyoverrides",
+                "auxiliarythrusters",
+                "shield_shunt",
+                "armoredweapons"
+            ],
+            "variantId": "ab3cf_1",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "chaingun"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "atropos",
+                        "WS 001": "atropos_single",
+                        "WS 002": "atropos_single",
+                        "WS 003": "atropos",
+                        "WS 004": "atropos_single"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "heavyac",
+                        "WS 007": "heavyac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "lightdualmg",
+                        "WS 009": "lightdualmg",
+                        "WS 011": "lightdualmg",
+                        "WS 012": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "vulcan",
+                        "WS 013": "vulcan",
+                        "WS 014": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Pather",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "colossus2",
+            "hullMods": [
+                "insulatedengine",
+                "targetingunit",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 011": "lightag",
+                        "WS 015": "lightag",
+                        "WS 016": "lightag"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 017": "hammerrack"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "lightac",
+                        "WS 014": "lightac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 012": "lightmortar"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightmg",
+                        "WS 002": "lightmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Pather",
+            "fluxCapacitors": 0,
+            "fluxVents": 7,
+            "hullId": "colossus2",
+            "hullMods": [
+                "insulatedengine",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_3",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 011": "lightmortar",
+                        "WS 012": "lightmortar",
+                        "WS 015": "lightmortar",
+                        "WS 016": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 017": "hammerrack"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "lightac",
+                        "WS 014": "lightac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightmg",
+                        "WS 003": "lightdualmg",
+                        "WS 004": "lightdualmg",
+                        "WS 009": "lightmg",
+                        "WS 010": "lightmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 0,
+            "fluxVents": 5,
+            "hullId": "hammerhead",
+            "hullMods": [
+                "safetyoverrides",
+                "fluxdistributor",
+                "targetingunit",
+                "missleracks"
+            ],
+            "variantId": "ab3cf_4",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavymortar"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "atropos",
+                        "WS 004": "atropos"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heavymg"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "lrpdlaser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "lightdualmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 2,
+            "fluxVents": 10,
+            "hullId": "hammerhead",
+            "hullMods": [
+                "safetyoverrides",
+                "fluxdistributor",
+                "heavyarmor"
+            ],
+            "variantId": "ab3cf_5",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "atropos_single",
+                        "WS 004": "atropos_single"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "chaingun"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "vulcan",
+                        "WS 006": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Overdriven",
+            "fluxCapacitors": 13,
+            "fluxVents": 25,
+            "hullId": "enforcer",
+            "hullMods": ["safetyoverrides"],
+            "variantId": "ab3cf_6",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "arbalest",
+                        "WS 004": "arbalest"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 006": "annihilator",
+                        "WS 007": "annihilator",
+                        "WS 008": "annihilator",
+                        "WS 009": "annihilator"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "chaingun"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 19,
+            "fluxVents": 19,
+            "hullId": "mule",
+            "hullMods": ["heavyarmor"],
+            "variantId": "ab3cf_7",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "heatseeker",
+                        "WS 002": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "vulcan",
+                        "WS 006": "vulcan"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "lightmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 1,
+            "fluxVents": 25,
+            "hullId": "SKR_adze_pather",
+            "hullMods": [
+                "targetingunit",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_8",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0007": "swarmer"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "heatseeker"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "heavyac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0002": "lightmortar",
+                        "WS0003": "lightmortar",
+                        "WS0009": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0008": "lightag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0011": "vulcan"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0010": "lightdualmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "nebula",
+            "hullMods": [],
+            "variantId": "ab3cf_9",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "lightdualmg",
+                    "WS 002": "lightdualmg",
+                    "WS 003": "lightdualmg",
+                    "WS 004": "lightdualmg"
+                }
+            }]
+        },
+        {
+            "displayName": "Raider",
+            "fluxCapacitors": 5,
+            "fluxVents": 15,
+            "hullId": "brawler_pather",
+            "hullMods": [
+                "unstable_injector",
+                "fluxbreakers",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_10",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "chaingun",
+                        "WS 002": "chaingun"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "hammer_single",
+                        "WS 004": "hammer_single"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 10,
+            "fluxVents": 4,
+            "hullId": "gremlin_luddic_path",
+            "hullMods": [
+                "missleracks",
+                "targetingunit",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_11",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "lightmortar",
+                        "WS 001": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "reaper",
+                        "WS 003": "atropos"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 14,
+            "fluxVents": 5,
+            "hullId": "gremlin_luddic_path",
+            "hullMods": [
+                "missleracks",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_12",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "lightmortar",
+                        "WS 001": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "reaper",
+                        "WS 003": "reaper"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Strike",
+            "fluxCapacitors": 10,
+            "fluxVents": 4,
+            "hullId": "gremlin_luddic_path",
+            "hullMods": [
+                "missleracks",
+                "armoredweapons",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_13",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "lightmortar",
+                        "WS 001": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "atropos",
+                        "WS 003": "atropos"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Outdated",
+            "fluxCapacitors": 1,
+            "fluxVents": 6,
+            "hullId": "SKR_malet_pather",
+            "hullMods": [
+                "heavyarmor",
+                "reinforcedhull",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_14",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS0001": "heavyac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS0002": "atropos",
+                        "WS0003": "atropos"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS0004": "lightdualac",
+                        "WS0005": "lightdualac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS0006": "vulcan"}
+                }
+            ]
+        },
+        {
+            "displayName": "Raider",
+            "fluxCapacitors": 10,
+            "fluxVents": 15,
+            "hullId": "lasher_pather",
+            "hullMods": [
+                "armoredweapons",
+                "blast_doors",
+                "ill_advised"
+            ],
+            "sMods": ["targetingunit"],
+            "variantId": "ab3cf_15",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightmortar",
+                        "WS 003": "lightmortar"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "atropos",
+                        "WS 004": "atropos"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "lightdualac"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "vulcan",
+                        "WS 006": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Frontier",
+            "fluxCapacitors": 8,
+            "fluxVents": 5,
+            "hullId": "shepherd",
+            "hullMods": ["armoredweapons"],
+            "variantId": "ab3cf_16",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "vulcan"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "heatseeker"}
+                }
+            ]
+        },
+        {
+            "displayName": "Support",
+            "fluxCapacitors": 9,
+            "fluxVents": 5,
+            "hullId": "kite_default_D",
+            "hullMods": [],
+            "permaMods": ["degraded_engines"],
+            "variantId": "ab3cf_17",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualmg"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "heatseeker",
+                        "WS 002": "heatseeker"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Attack",
+            "fluxCapacitors": 8,
+            "fluxVents": 8,
+            "hullId": "hound_luddic_path",
+            "hullMods": [
+                "fluxdistributor",
+                "armoredweapons",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_18",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "chaingun"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "lightdualac"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 6,
+            "fluxVents": 4,
+            "hullId": "kite_default_D",
+            "hullMods": ["targetingunit"],
+            "permaMods": ["degraded_shields"],
+            "variantId": "ab3cf_19",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heatseeker"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "breach"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualac"}
+                }
+            ]
+        },
+        {
+            "displayName": "Raider",
+            "fluxCapacitors": 0,
+            "fluxVents": 15,
+            "hullId": "kite_luddic_path",
+            "hullMods": ["ill_advised"],
+            "sMods": ["fluxdistributor"],
+            "variantId": "ab3cf_20",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heatseeker"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "reaper"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualac"}
+                }
+            ]
+        },
+        {
+            "displayName": "Raider",
+            "fluxCapacitors": 6,
+            "fluxVents": 6,
+            "hullId": "kite_luddic_path",
+            "hullMods": [
+                "targetingunit",
+                "ill_advised"
+            ],
+            "variantId": "ab3cf_21",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "swarmer"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "hammer_single"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualac"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 6,
+            "fluxVents": 5,
+            "hullId": "hermes",
+            "hullMods": ["armoredweapons"],
+            "variantId": "ab3cf_22",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "lightdualmg"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 003": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "hullId": "dram",
+            "hullMods": ["missile_autoloader"],
+            "variantId": "ab3cf_23",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "sabot"}
+                }
+            ]
+        },
+        {
+            "displayName": "Light",
+            "fluxCapacitors": 5,
+            "fluxVents": 0,
+            "hullId": "dram",
+            "hullMods": [
+                "missile_autoloader",
+                "targetingunit"
+            ],
+            "variantId": "ab3cf_24",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "vulcan"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "harpoon"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "lightdualmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 0,
+            "fluxVents": 13,
+            "hullId": "kite",
+            "hullMods": [],
+            "sMods": ["fluxdistributor"],
+            "variantId": "ab3cf_26",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "heatseeker"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "sabot"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualac"}
+                }
+            ]
+        },
+        {
+            "displayName": "Standard",
+            "fluxCapacitors": 9,
+            "fluxVents": 6,
+            "hullId": "kite",
+            "hullMods": [],
+            "variantId": "ab3cf_27",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualac"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "harpoon_single",
+                        "WS 002": "heatseeker"
+                    }
+                }
+            ]
+        }
+    ]
+}

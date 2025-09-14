@@ -3,8 +3,7 @@ package fleetBuilder.variants
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.persistence.variant.JSONVariant.getVariantFromJson
-import fleetBuilder.persistence.variant.JSONVariant.saveVariantToJson
+import fleetBuilder.persistence.variant.CompressedVariant
 import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.getEffectiveHullId
@@ -125,10 +124,10 @@ class ShipDirectory(
         else
             variantToSave.hullVariantId = makeVariantID(inputVariant)
 
-        val json = saveVariantToJson(variantToSave, settings)
+        val comp = CompressedVariant.saveVariantToCompString(variantToSave, settings, includePrepend = false)
 
-        //Ensures the JSON is readable, and uses the saved version of the variant to guarantee consistency across game restarts.
-        val savedVariant = getVariantFromJson(json)
+        //Ensures end result is readable, and uses the saved version of the variant to guarantee consistency across game restarts.
+        val savedVariant = CompressedVariant.getVariantFromCompString(comp)
 
         val shipPath = "${savedVariant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"
 
@@ -170,7 +169,7 @@ class ShipDirectory(
         }
         // Save the variant file
         if (editVariantFile)
-            Global.getSettings().writeJSONToCommon("$dir$shipPath", json, false)
+            Global.getSettings().writeTextFileToCommon("$dir$shipPath", comp)
 
         // Add the variant to this class
         shipPaths[savedVariant.hullVariantId] = shipPath

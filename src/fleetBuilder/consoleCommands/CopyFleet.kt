@@ -15,7 +15,7 @@ import fleetBuilder.persistence.member.DataMember.buildMember
 import fleetBuilder.persistence.member.DataMember.copyMember
 import fleetBuilder.persistence.member.DataMember.getMemberDataFromMember
 import fleetBuilder.persistence.person.DataPerson.copyPerson
-import fleetBuilder.util.ClipboardUtil
+import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.ReflectionMisc
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.Console
