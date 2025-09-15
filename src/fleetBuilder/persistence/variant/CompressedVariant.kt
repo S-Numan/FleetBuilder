@@ -45,13 +45,11 @@ object CompressedVariant {
             // Extract the compressed portion after the second metaSep
             val compressedData = comp.substring(metaIndexEnd + 1)
 
-            fullData = try {
-                CompressionUtil.decompressString(compressedData)
-            } catch (e: Exception) {
-                showError("Error decompressing variant data", compressedData, e)
-                null
+            fullData = CompressionUtil.decompressString(compressedData)
+            if (fullData.isNullOrBlank()) {
+                showError("Error decompressing variant data", "Error decompressing variant data\n$compressedData")
+                return null
             }
-            if (fullData.isNullOrBlank()) return null
         } else if (metaVersion == "V0") { // Non compressed
             fullData = comp.substring(metaIndexEnd + 1)
         } else {

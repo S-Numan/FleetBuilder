@@ -37,32 +37,35 @@ object CompressionUtil {
         return base64
     }
 
-    fun decompressString(input: String): String {
-        val compressed = Base64.getDecoder().decode(input)
-        val fullOutput = mutableListOf<ByteArray>()
-        var result: ByteArray
-        val decompresser = Inflater()
-        decompresser.setInput(compressed)
-        var resultLength: Int
+    fun decompressString(input: String): String? {
+        try {
+            val compressed = Base64.getDecoder().decode(input)
+            val fullOutput = mutableListOf<ByteArray>()
+            var result: ByteArray
+            val decompresser = Inflater()
+            decompresser.setInput(compressed)
+            var resultLength: Int
 
-        while (true) {
-            result = ByteArray(BLOCK_SIZE)
-            resultLength = decompresser.inflate(result)
-            if (resultLength == BLOCK_SIZE) {
-                fullOutput.add(result)
-            } else {
-                break
+            while (true) {
+                result = ByteArray(BLOCK_SIZE)
+                resultLength = decompresser.inflate(result)
+                if (resultLength == BLOCK_SIZE) {
+                    fullOutput.add(result)
+                } else {
+                    break
+                }
             }
-        }
-        decompresser.end()
+            decompresser.end()
 
-        val builder = StringBuilder()
-        for (bytes in fullOutput) {
-            builder.append(String(bytes, Charsets.UTF_8))
-        }
-        builder.append(String(result, 0, resultLength, Charsets.UTF_8))
+            val builder = StringBuilder()
+            for (bytes in fullOutput) {
+                builder.append(String(bytes, Charsets.UTF_8))
+            }
+            builder.append(String(result, 0, resultLength, Charsets.UTF_8))
 
-        return builder.toString()
+            return builder.toString()
+        } catch (_: Exception) {
+            return null
+        }
     }
-
 }
