@@ -45,13 +45,11 @@ object CompressedVariant {
             // Extract the compressed portion after the second metaSep
             val compressedData = comp.substring(metaIndexEnd + 1)
 
-            fullData = try {
-                CompressionUtil.decompressString(compressedData)
-            } catch (e: Exception) {
-                showError("Error decompressing variant data", compressedData, e)
-                null
+            fullData = CompressionUtil.decompressString(compressedData)
+            if (fullData.isNullOrBlank()) {
+                showError("Error decompressing variant data", "Error decompressing variant data\n$compressedData")
+                return null
             }
-            if (fullData.isNullOrBlank()) return null
         } else if (metaVersion == "V0") { // Non compressed
             fullData = comp.substring(metaIndexEnd + 1)
         } else {
@@ -67,7 +65,12 @@ object CompressedVariant {
         }
 
         val modInfoBulk = fullData.substring(0, firstFieldSep)
-        val modInfos = modInfoBulk.split(fieldSep)
+
+        // Split by separator first
+        val parts = modInfoBulk.split(sep)
+
+        // Group every 3 parts together and join back with separator
+        val modInfos = parts.chunked(3).map { it.joinToString(sep) }
 
         val gameMods: Set<GameModInfo> = modInfos
             .mapNotNull { mod ->
@@ -224,7 +227,7 @@ object CompressedVariant {
                 requiredMods = "Mods Used: "
 
                 for (mod in addedModIds) {
-                    addedModDetails += "${mod.first}$sep${mod.second}$sep${mod.third}$fieldSep"
+                    addedModDetails += "${mod.first}$sep${mod.second}$sep${mod.third}$sep"
                     requiredMods += "(${mod.second}) $sep "
                 }
                 requiredMods = requiredMods.dropLast(3)
