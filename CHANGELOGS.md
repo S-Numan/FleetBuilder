@@ -1,3 +1,6 @@
+## 1.23.2
+- Fix saving variants with more than one mod involved.
+
 ## 1.23.0
 - Autofit highlight and outline now pays attention to wings too. It previously did not.
 - Fix the incorrect autofit hull showing up in some cases
