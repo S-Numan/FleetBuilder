@@ -209,18 +209,22 @@ object VariantLib {
             variant1.weaponGroups.forEachIndexed { i, g1 ->
                 val g2 = variant2.weaponGroups[i]
 
-                val slots1 = g1?.slots ?: emptyList()
-                val slots2 = g2?.slots ?: emptyList()
+                // Safely get slots lists or empty lists. Exclude slots without weapons
+                val slots1 = g1?.slots.orEmpty()
+                    .filter { variant1.getWeaponId(it) != null }
+
+                val slots2 = g2?.slots.orEmpty()
+                    .filter { variant2.getWeaponId(it) != null }
 
                 // both empty? skip
                 if (slots1.isEmpty() && slots2.isEmpty()) return@forEachIndexed
 
-                // mismatch in slots
-                if (!slotsMatch(slots1, slots2)) return false
-
-                // other property checks
+                // property checks
                 if (g1?.type != g2?.type) return false
                 if (g1?.isAutofireOnByDefault != g2?.isAutofireOnByDefault) return false
+                
+                // mismatch in slots
+                if (!slotsMatch(slots1, slots2)) return false
             }
         }
         if (options.weapons) {
