@@ -179,7 +179,7 @@ object LoadoutManager {
                 }
             }
 
-            val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, shipEntries, description = description, name = name)
+            val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, name = name, description = description, shipEntries)
 
             shipDirectories.add(shipDirectory)
 
@@ -313,7 +313,7 @@ object LoadoutManager {
 
     fun getVariantSourceShipDirectory(variant: ShipVariantAPI): ShipDirectory? {
         for (dir in shipDirectories) {
-            if (variant.hullVariantId.startsWith(dir.prefix)) {
+            if (variant.hullVariantId.startsWith(dir.prefix + "_")) {
                 return dir
             }
         }
@@ -340,7 +340,7 @@ object LoadoutManager {
     fun getLoadoutVariant(variantId: String): ShipVariantAPI? {
         return shipDirectories
             .firstNotNullOfOrNull { shipDir ->
-                if (!variantId.startsWith("${shipDir.prefix}_")) return@firstNotNullOfOrNull null
+                if (!variantId.startsWith(shipDir.prefix + "_")) return@firstNotNullOfOrNull null
                 shipDir.getShip(variantId)
             }
     }
@@ -371,24 +371,22 @@ object LoadoutManager {
         ) ?: ""
     }
 
-    fun deleteLoadoutVariant(variantId: String) {
-        for (shipDir in shipDirectories) {
-            shipDir.removeShip(variantId)
-        }
+    fun deleteLoadoutVariant(variantId: String, prefix: String = ModSettings.defaultPrefix) {
+        getShipDirectoryWithPrefix(prefix)?.removeShip(variantId)
     }
 
     fun importShipLoadout(variant: ShipVariantAPI, missing: MissingElements): Boolean {
         //variantToSave.hullVariantId = makeVariantID(saveVariant)
 
-        val loadoutExists = doesLoadoutExist(variant)
+        if (doesLoadoutExistAnywhere(variant))
+            return true
 
-        if (!loadoutExists)
-            saveLoadoutVariant(variant, defaultPrefix, missing, tagAsImport = true)
+        saveLoadoutVariant(variant, defaultPrefix, missing, tagAsImport = true)
 
-        return loadoutExists
+        return false
     }
 
-    fun doesLoadoutExist(variant: ShipVariantAPI): Boolean {
+    fun doesLoadoutExistAnywhere(variant: ShipVariantAPI): Boolean {
         var loadoutExists = false
         val hullspecVariants = getLoadoutVariantsForHullspec(variant.hullSpec)
         for (hullspecVariant in hullspecVariants) {

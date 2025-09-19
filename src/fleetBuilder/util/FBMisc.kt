@@ -43,7 +43,7 @@ import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.variants.GameModInfo
-import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
+import fleetBuilder.variants.LoadoutManager.doesLoadoutExistAnywhere
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
@@ -144,7 +144,7 @@ object FBMisc {
         }
 
 
-        val loadoutExists = doesLoadoutExist(variant)
+        val loadoutExists = doesLoadoutExistAnywhere(variant)
 
         if (!loadoutExists) {
             Dialogs.createImportLoadoutDialog(variant, missing)
