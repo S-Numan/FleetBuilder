@@ -8,12 +8,9 @@ import fleetBuilder.config.ModSettings.DIRECTORYCONFIGNAME
 import fleetBuilder.config.ModSettings.FLEETDIR
 import fleetBuilder.config.ModSettings.PACKDIR
 import fleetBuilder.config.ModSettings.defaultPrefix
-import fleetBuilder.config.ModSettings.importPrefix
 import fleetBuilder.persistence.variant.DataVariant
-import fleetBuilder.persistence.variant.JSONVariant.getVariantFromJson
 import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSpec
-import fleetBuilder.util.ClipboardMisc.extractDataFromClipboard
 import fleetBuilder.util.FBMisc.extractDataFromString
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
@@ -41,17 +38,22 @@ object LoadoutManager {
         Global.getSettings().writeTextFileToCommon("$FLEETDIR/deleteme", ".")
         Global.getSettings().deleteTextFileFromCommon("$FLEETDIR/deleteme")
 
-        // Ensure import exists
-        if (!Global.getSettings().fileExistsInCommon("$PACKDIR$importPrefix/$DIRECTORYCONFIGNAME")) {
-            val json = JSONObject()
-            json.put("description", "Imported Loadout")
-            Global.getSettings().writeJSONToCommon("$PACKDIR$importPrefix/$DIRECTORYCONFIGNAME", json, false)
-        }
         // Ensure default exists
         if (!Global.getSettings().fileExistsInCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME")) {
             val json = JSONObject()
             json.put("description", "Default Loadout")
+            json.put("name", "Default")
             Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", json, false)
+        } else { // Handle Legacy
+            try {
+                val dfJSON = Global.getSettings().readJSONFromCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", false)
+                if (!dfJSON.has("name")) {
+                    dfJSON.put("name", "Default")
+                    Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", dfJSON, false)
+                }
+            } catch (e: Exception) {
+                Global.getLogger(this.javaClass).error("Failed to read default loadout directory at /saves/common/$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME\n", e)
+            }
         }
 
         shipDirectories.clear()
@@ -59,6 +61,22 @@ object LoadoutManager {
         // Load all prefixed ship directories
         generatePrefixes().forEach { prefix ->
             loadShipDirectory(PACKDIR, prefix)
+        }
+
+        // Import all import directory variants into default directory, then remove import directory.
+        val importDirectory = shipDirectories.find { it.prefix == "IN" }
+        val defaultDirectory = shipDirectories.find { it.prefix == defaultPrefix }
+        if (importDirectory != null && defaultDirectory != null) {
+            Global.getLogger(this.javaClass).info("Importing IN directory variants into $defaultPrefix directory")
+
+            importDirectory.getRawShipEntries().forEach { (_, entry) ->
+                defaultDirectory.addShip(entry.copy(isImport = true))
+            }
+
+            shipDirectories.remove(importDirectory)
+            Global.getSettings().deleteTextFileFromCommon("${PACKDIR}IN/$DIRECTORYCONFIGNAME")
+
+            Global.getLogger(this.javaClass).info("Deleting IN directory")
         }
     }
 
@@ -76,12 +94,9 @@ object LoadoutManager {
         return try {
             upgradeLegacyShipPaths(directory, configFilePath)
 
-            val ships = mutableMapOf<String, ShipVariantAPI>()
-            val shipPaths = mutableMapOf<String, String>()
-            val shipMissings = mutableMapOf<String, MissingElements>()
-            val shipTimeSaved = mutableMapOf<String, Date>()
-            val shipIndexInEffectiveMenu = mutableMapOf<String, Int>()
+            val shipEntries = mutableMapOf<String, ShipEntry>()
 
+            val name = directory.optString("name", prefix)
             val description = directory.optString("description", "$prefix Loadout")
 
             directory.optJSONArray("shipPaths")?.let { shipJsonPaths ->
@@ -102,12 +117,14 @@ object LoadoutManager {
 
                     val parsedEffectiveIndex = shipJson.optInt("desiredIndexInMenu", -1)
 
+                    val parsedIsImport = shipJson.optBoolean("isImport", false)
+
                     // Check for duplicate ship path
                     if (!seenPaths.add(shipPath)) {
                         throw Error("Duplicate ship path detected: \"$shipPath\" in \"/saves/common/$configFilePath\"\nRemove the duplicates to continue.")
                     }
 
-                    var variant: ShipVariantAPI
+                    var data: DataVariant.ParsedVariantData? = null
                     val missing = MissingElements()
 
                     if (Global.getSettings().fileExistsInCommon("$dirPath$prefix/$shipPath")) {
@@ -126,12 +143,7 @@ object LoadoutManager {
                             Global.getLogger(this.javaClass).error("Failed to get ship variant at /saves/common/$dirPath$prefix/$shipPath\n")
                             continue
                         } else if (tempData is DataVariant.ParsedVariantData) {
-                            if (tempData.hullId !in VariantLib.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
-                                || tempData.moduleVariants.any { it.value.hullId !in VariantLib.getHullIDSet() } // Also check hullIds from modules
-                            )
-                                continue // Skip it if so
-
-                            variant = DataVariant.buildVariantFull(tempData, missing = missing)
+                            data = tempData
                         } else {
                             Global.getLogger(this.javaClass).error("Ship variant was not of data type ParsedVariantData at /saves/common/$dirPath$prefix/$shipPath\nHow?")
                             continue
@@ -144,33 +156,40 @@ object LoadoutManager {
                         continue
                     }
 
-                    if (ships.containsKey(variant.hullVariantId)) {
+                    if (shipEntries.containsKey(data.variantId)) {
                         throw Error(
                             "Duplicate variant ID in ships directory $prefix\n" +
                                     "Ship path 1: $dirPath$prefix/$shipPath\n" +
-                                    "Ship path 2: $dirPath$prefix/${shipPaths[variant.hullVariantId]}\n" +
+                                    "Ship path 2: $dirPath$prefix/${shipEntries[data.variantId]?.path}\n" +
                                     "The variantID must be changed on one or the other, or one must be removed."
                         )
                     }
 
-                    shipPaths[variant.hullVariantId] = shipPath
-                    ships[variant.hullVariantId] = variant
-                    shipMissings[variant.hullVariantId] = missing
-                    shipTimeSaved[variant.hullVariantId] = parsedDate
-                    shipIndexInEffectiveMenu[variant.hullVariantId] = parsedEffectiveIndex
+                    if (data.hullId !in VariantLib.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
+                        || data.moduleVariants.any { it.value.hullId !in VariantLib.getHullIDSet() } // Also check hullIds from modules
+                    ) {
+                        shipEntries[data.variantId] = ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport)
+                    } else {
+                        val variant = DataVariant.buildVariantFull(data, missing = missing)
+                        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport)
+                    }
                 }
             }
 
-            val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, ships, shipPaths, shipMissings, shipTimeSaved, shipIndexInEffectiveMenu, description)
+            val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, shipEntries, description = description, name = name)
 
             shipDirectories.add(shipDirectory)
 
             // Assure indexes aren't missing
-            shipDirectory.getAllVariants().toList().forEach { variant ->
+            shipDirectory.getRawShipEntries().map { it.value.variant }.forEach { variant ->
+                if (variant == null) return@forEach
+
                 fun remakeShip() {
                     val missing = shipDirectory.getShipMissings(variant.hullVariantId) ?: return
+                    val isImport = shipDirectory.isShipImported(variant.hullVariantId)
                     shipDirectory.removeShip(variant.hullVariantId, editVariantFile = false)
-                    shipDirectory.addShip(variant, missing, editVariantFile = false, setVariantID = variant.hullVariantId)
+                    shipDirectory.addShip(variant, missing, editVariantFile = false, tagAsImport = isImport)
+                    Global.getLogger(this.javaClass).warn("Rebuilding variant ${variant.hullVariantId} to add new index, as index was missing")
                 }
 
                 val thisIndex = shipDirectory.getShipIndexInMenu(variant.hullVariantId)
@@ -271,7 +290,7 @@ object LoadoutManager {
                 autofitSpecs.add(
                     AutofitSpec(
                         variant,
-                        description = it.getDescription(),
+                        description = it.getDescription(variant.hullVariantId),
                         source = it,
                         missing = missing,
                         desiredIndexInMenu = index + indexOffset
@@ -286,12 +305,7 @@ object LoadoutManager {
     }
 
     fun getShipDirectoryWithPrefix(prefix: String): ShipDirectory? {
-        for (dir in shipDirectories) {
-            if (dir.prefix == prefix) {
-                return dir
-            }
-        }
-        return null
+        return shipDirectories.firstOrNull { it.prefix == prefix }
     }
 
     fun getVariantSourceShipDirectory(variant: ShipVariantAPI): ShipDirectory? {
@@ -342,13 +356,15 @@ object LoadoutManager {
         prefix: String = ModSettings.defaultPrefix,
         missingFromVariant: MissingElements = MissingElements(),
         settings: VariantSettings = VariantSettings(),
-        desiredIndexInMenu: Int = -1
+        desiredIndexInMenu: Int = -1,
+        tagAsImport: Boolean = false,
     ): String {
         return getShipDirectoryWithPrefix(prefix)?.addShip(
             variant,
             missingFromVariant,
             settings,
-            desiredIndexInMenu
+            desiredIndexInMenu,
+            tagAsImport = tagAsImport
         ) ?: ""
     }
 
@@ -364,7 +380,7 @@ object LoadoutManager {
         val loadoutExists = doesLoadoutExist(variant)
 
         if (!loadoutExists)
-            saveLoadoutVariant(variant, importPrefix, missing)
+            saveLoadoutVariant(variant, defaultPrefix, missing, tagAsImport = true)
 
         return loadoutExists
     }

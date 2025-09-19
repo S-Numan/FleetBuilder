@@ -4,68 +4,88 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.persistence.variant.CompressedVariant
+import fleetBuilder.persistence.variant.CompressedVariant.extractVariantDataFromCompString
+import fleetBuilder.persistence.variant.DataVariant
+import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-//TODO, make a data class to handle each of these maps. A single map should link to each of these
+data class ShipEntry(
+    val variant: ShipVariantAPI?,
+    val variantData: DataVariant.ParsedVariantData,
+    val path: String,
+    val missingElements: MissingElements,
+    val timeSaved: Date,
+    val indexInMenu: Int,
+    val isImport: Boolean
+)
 
 class ShipDirectory(
     val dir: String,
     val configPath: String,
     val prefix: String,
-    private val ships: MutableMap<String, ShipVariantAPI>,
-    private val shipPaths: MutableMap<String, String>,
-    private val shipMissings: MutableMap<String, MissingElements>,
-    private val shipTimeSaved: MutableMap<String, Date>,
-    private val shipIndexInMenu: MutableMap<String, Int>,
+    private val shipEntries: MutableMap<String, ShipEntry>,
     private val description: String,
+    private val name: String,
 ) {
-    fun getAllVariants(): Collection<ShipVariantAPI> {
-        return ships.values
+    fun getName(): String {
+        return name
     }
 
     fun getDescription(): String {
         return description
     }
 
-    fun getShip(variantId: String): ShipVariantAPI? {
-        val baseId = stripPrefix(variantId)
-        return ships[baseId]?.let { cloneWithPrefix(it) }
+    fun getDescription(variantId: String): String {
+        return description + if (isShipImported(variantId)) " (i)" else ""
     }
 
-    fun getShipMissingAnything(variantId: String): Boolean {
-        return shipMissings[stripPrefix(variantId)]?.hasMissing() ?: true
+    fun getRawShipEntries(): Map<String, ShipEntry> {
+        return shipEntries
+    }
+
+    fun getShip(variantId: String): ShipVariantAPI? {
+        return shipEntries[stripPrefix(variantId)]?.variant?.let { cloneWithPrefix(it) }
     }
 
     fun getShipMissings(variantId: String): MissingElements? {
-        return shipMissings[stripPrefix(variantId)]
+        return shipEntries[stripPrefix(variantId)]?.missingElements
     }
 
     fun getShipIndexInMenu(variantId: String): Int {
-        return shipIndexInMenu[stripPrefix(variantId)] ?: -1
+        return shipEntries[stripPrefix(variantId)]?.indexInMenu ?: -1
     }
 
     fun getShips(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         val hullId = hullSpec.getEffectiveHullId()
 
-        return ships.values
-            .filter { it.hullSpec.getEffectiveHullId() == hullId }
+        return shipEntries.values
+            .filter { it.variant != null && it.variant.hullSpec.getEffectiveHullId() == hullId }
             .map { original ->
-                cloneWithPrefix(original)
+                cloneWithPrefix(original.variant!!)
             }
     }
 
+    fun isShipImported(variantId: String): Boolean {
+        return shipEntries[stripPrefix(variantId)]?.isImport ?: false
+    }
+
     fun getShipPath(variantId: String): String? {
-        return shipPaths[stripPrefix(variantId)]
+        return shipEntries[stripPrefix(variantId)]?.path
+    }
+
+    fun getShipData(variantId: String): DataVariant.ParsedVariantData? {
+        return shipEntries[stripPrefix(variantId)]?.variantData
     }
 
     fun containsShip(variantId: String): Boolean {
-        return ships.contains(stripPrefix(variantId))
+        return shipEntries.contains(stripPrefix(variantId))
     }
 
     fun removeShip(
@@ -100,11 +120,7 @@ class ShipDirectory(
             Global.getSettings().deleteTextFileFromCommon("$dir$shipPath")
 
         // Remove the variant from this class
-        ships.remove(variantId)
-        shipPaths.remove(variantId)
-        shipMissings.remove(variantId)
-        shipTimeSaved.remove(variantId)
-        shipIndexInMenu.remove(variantId)
+        shipEntries.remove(variantId)
     }
 
     fun addShip(
@@ -114,71 +130,102 @@ class ShipDirectory(
         inputDesiredIndexInMenu: Int = -1,
         editDirectoryFile: Boolean = true,
         editVariantFile: Boolean = true,
-        setVariantID: String? = null
+        tagAsImport: Boolean = false
     ): String {
         val currentTime = Date()
 
         val variantToSave = inputVariant.clone()
-        if (setVariantID != null)
-            variantToSave.hullVariantId = setVariantID
-        else
-            variantToSave.hullVariantId = makeVariantID(inputVariant)
+
+        variantToSave.hullVariantId = makeVariantID(variantToSave)
+
 
         val comp = CompressedVariant.saveVariantToCompString(variantToSave, settings, includePrepend = false)
 
         //Ensures end result is readable, and uses the saved version of the variant to guarantee consistency across game restarts.
-        val savedVariant = CompressedVariant.getVariantFromCompString(comp)
+        val parsedVariant = extractVariantDataFromCompString(comp) ?: run {
+            DisplayMessage.showError("Failed to save variant", "Failed to extract variant data from comp string after just saving: $comp")
+            return ""
+        }
+
+        val savedVariant = buildVariantFull(parsedVariant)
+
 
         val shipPath = "${savedVariant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"
-
-        if (containsShip(savedVariant.hullVariantId)) {
-            DisplayMessage.showError("The variantID of ${savedVariant.hullVariantId} already exists in the directory of prefix $prefix . Replacing existing variant.")
-        }
 
         val newIndex = if (inputDesiredIndexInMenu < 0)
             LoadoutManager.getHighestIndexInEffectiveMenu(variantToSave.hullSpec) + 1
         else
             inputDesiredIndexInMenu
 
-        // Save the updated directory
-        if (editDirectoryFile) {
-
-            // Read the ship directory JSON
-            val shipDirJson = Global.getSettings().readJSONFromCommon(configPath, false)
-            val shipPathsJson = shipDirJson.optJSONArray("shipPaths") ?: JSONArray()
-
-            // Add the new ship path
-            if (containsAndRemoveShipName(shipPathsJson, shipPath))
-                DisplayMessage.showError("$shipPath already exists in JSONArray when adding ship. The old file with be overwritten.")
-
-
-            val shipPathJson = JSONObject()
-            shipPathJson.put("shipPath", shipPath)
-
-            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-            val timeString = formatter.format(currentTime)
-            shipPathJson.put("modifyTime", timeString)
-
-            shipPathJson.put("desiredIndexInMenu", newIndex)
-
-            shipPathsJson.put(shipPathJson)
-
-            shipDirJson.put("shipPaths", shipPathsJson)
-
-            Global.getSettings().writeJSONToCommon(configPath, shipDirJson, false)
+        if (containsShip(savedVariant.hullVariantId)) {
+            DisplayMessage.showError("The variantID of ${savedVariant.hullVariantId} already exists in the directory of prefix $prefix . Replacing existing variant.")
         }
+
+        // Save the updated directory
+        if (editDirectoryFile)
+            updateDirectory(shipPath, currentTime, newIndex, tagAsImport)
         // Save the variant file
         if (editVariantFile)
             Global.getSettings().writeTextFileToCommon("$dir$shipPath", comp)
 
+        val shipEntry = ShipEntry(savedVariant, parsedVariant, shipPath, missingFromVariant, currentTime, newIndex, tagAsImport)
+
         // Add the variant to this class
-        shipPaths[savedVariant.hullVariantId] = shipPath
-        ships[savedVariant.hullVariantId] = savedVariant
-        shipMissings[savedVariant.hullVariantId] = missingFromVariant
-        shipTimeSaved[savedVariant.hullVariantId] = currentTime
-        shipIndexInMenu[savedVariant.hullVariantId] = newIndex
+        shipEntries[savedVariant.hullVariantId] = shipEntry
 
         return "${prefix}_${savedVariant.hullVariantId}"
+    }
+
+    fun addShip(shipEntry: ShipEntry) {
+        val variantID = makeVariantID(shipEntry.variantData.hullId, shipEntry.variantData.displayName)
+
+        val data = shipEntry.variantData.copy(variantId = variantID)
+        val variant = shipEntry.variant?.clone()
+        if (variant != null)
+            variant.hullVariantId = variantID
+
+        val comp = CompressedVariant.saveVariantToCompString(data, includePrepend = false)
+
+        val shipPath = "${shipEntry.path.substringBefore("/")}/${data.variantId}"
+
+        updateDirectory(shipPath, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport)
+        Global.getSettings().writeTextFileToCommon("$dir${shipPath}", comp)
+
+        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, shipEntry.missingElements, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport)
+    }
+
+    private fun updateDirectory(
+        shipPath: String,
+        currentTime: Date,
+        newIndex: Int,
+        tagAsImport: Boolean
+    ) {
+        // Read the ship directory JSON
+        val shipDirJson = Global.getSettings().readJSONFromCommon(configPath, false)
+        val shipPathsJson = shipDirJson.optJSONArray("shipPaths") ?: JSONArray()
+
+        // Add the new ship path
+        if (containsAndRemoveShipName(shipPathsJson, shipPath))
+            DisplayMessage.showError("$shipPath already exists in JSONArray when adding ship. The old file with be overwritten.")
+
+
+        val shipPathJson = JSONObject()
+        shipPathJson.put("shipPath", shipPath)
+
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+        val timeString = formatter.format(currentTime)
+        shipPathJson.put("modifyTime", timeString)
+
+        shipPathJson.put("desiredIndexInMenu", newIndex)
+
+        if (tagAsImport)
+            shipPathJson.put("isImport", true)
+
+        shipPathsJson.put(shipPathJson)
+
+        shipDirJson.put("shipPaths", shipPathsJson)
+
+        Global.getSettings().writeJSONToCommon(configPath, shipDirJson, false)
     }
 
     fun getHullSpecIndexes(
@@ -188,7 +235,11 @@ class ShipDirectory(
     }
 
     fun makeVariantID(variant: ShipVariantAPI): String {
-        var newVariantId = VariantLib.makeVariantID(variant)
+        return makeVariantID(variant.hullSpec.getCompatibleDLessHullId(), variant.displayName)
+    }
+
+    fun makeVariantID(hullId: String, displayName: String): String {
+        var newVariantId = VariantLib.makeVariantID(hullId, displayName)
 
         var iterate = 0
         // Ensure the variant ID is unique

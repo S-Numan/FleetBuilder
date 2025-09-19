@@ -1,3 +1,9 @@
+## 1.24.0
+- Internally moved all imported (CTRL + V'ed in) variants.
+### Technical
+- Refactored autofit variant storage handling.
+- Removed the IN prefix. Migrating all contents to the DF prefix.
+
 ## 1.23.2
 - Fix saving variants with more than one mod involved.
 

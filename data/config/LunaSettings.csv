@@ -153,4 +153,3 @@ prefixHeader,Prefix Header,Header,Prefixes,,,,,Dev Options
 prefixText,Prefix Text Field,Text,"Prefixes do not accept anything other than one or two characters, A to Z
 Must restart game to apply",,,,,Dev Options
 defaultPrefix,Default Prefix,String,DF,,Default prefix that loadouts are saved to.,,,Dev Options
-importPrefix,Import Prefix,String,IN,,Default prefix that loadouts are imported,,,Dev Options

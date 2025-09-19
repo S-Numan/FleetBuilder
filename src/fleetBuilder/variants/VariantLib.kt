@@ -342,7 +342,11 @@ object VariantLib {
 
     fun makeVariantID(variant: ShipVariantAPI): String {
         val hullId = variant.hullSpec.getCompatibleDLessHullId()
-        val cleanName = variant.displayName
+        return makeVariantID(hullId, variant.displayName)
+    }
+
+    fun makeVariantID(hullId: String, displayName: String): String {
+        val cleanName = displayName
             .replace(" ", "_")                       // replace spaces with underscores
             .replace(Regex("[^A-Za-z0-9_-]"), "")   // remove anything not a-z, A-Z, 0-9, dash, or underscore
             .trim('.')                                          // remove leading/trailing dots

@@ -616,12 +616,13 @@ internal object AutofitPanel {
                             ?: return@onClickReleaseNoInitClick
                     }
 
+                    val isImport = shipDirectory.isShipImported(equalVariant.hullVariantId)
+
                     shipDirectory.removeShip(equalVariant.hullVariantId, editVariantFile = false)
                     shipVariantID = shipDirectory.addShip(
                         equalVariant, missing,
                         inputDesiredIndexInMenu = indexInMenu,
-                        setVariantID = equalVariant.hullVariantId.removePrefix(shipDirectory.prefix + "_"),
-                        editVariantFile = false, settings = settings
+                        editVariantFile = false, settings = settings, tagAsImport = isImport
                     )
 
                     deleteSelector(selectorPlugins.firstOrNull {
@@ -643,7 +644,7 @@ internal object AutofitPanel {
 
                 // Remake the new selector
                 selectorPlugin.noClickFader = false
-                selectorPlugin.autofitSpec = autofitPlugin.draggedAutofitSpec!!.copy(variant = shipDirectory.getShip(shipVariantID)!!, source = shipDirectory, desiredIndexInMenu = indexInMenu, description = shipDirectory.getDescription())
+                selectorPlugin.autofitSpec = autofitPlugin.draggedAutofitSpec!!.copy(variant = shipDirectory.getShip(shipVariantID)!!, source = shipDirectory, desiredIndexInMenu = indexInMenu, description = shipDirectory.getDescription(shipVariantID))
                 createAutofitSelectorChildren(
                     selectorPlugin.autofitSpec!!,
                     selectorWidth,
