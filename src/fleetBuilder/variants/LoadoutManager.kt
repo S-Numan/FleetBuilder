@@ -37,6 +37,8 @@ object LoadoutManager {
         //Make directories
         Global.getSettings().writeTextFileToCommon("$FLEETDIR/deleteme", ".")
         Global.getSettings().deleteTextFileFromCommon("$FLEETDIR/deleteme")
+        Global.getSettings().writeTextFileToCommon("${PACKDIR}IN/deleteme", ".")
+        Global.getSettings().deleteTextFileFromCommon("${PACKDIR}IN/deleteme")
 
         // Ensure default exists
         if (!Global.getSettings().fileExistsInCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME")) {
@@ -55,6 +57,7 @@ object LoadoutManager {
                 Global.getLogger(this.javaClass).error("Failed to read default loadout directory at /saves/common/$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME\n", e)
             }
         }
+
 
         shipDirectories.clear()
 
