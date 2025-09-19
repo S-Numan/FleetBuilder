@@ -43,7 +43,7 @@ class ShipDirectory(
     }
 
     fun getDescription(variantId: String): String {
-        return description + if (isShipImported(variantId)) " (i)" else ""
+        return description + if (isShipImported(variantId)) " (I)" else ""
     }
 
     fun getRawShipEntries(): Map<String, ShipEntry> {
