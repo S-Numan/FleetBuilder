@@ -1,5 +1,6 @@
 ## 1.24.0
 - Internally moved all imported (CTRL + V'ed in) variants.
+- Variant comparison now ignores weapon group slots without weapons.
 ### Technical
 - Refactored autofit variant storage handling.
 - Removed the IN prefix. Migrating all contents to the DF prefix.

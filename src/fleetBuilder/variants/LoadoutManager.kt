@@ -191,7 +191,11 @@ object LoadoutManager {
                     val missing = shipDirectory.getShipMissings(variant.hullVariantId) ?: return
                     val isImport = shipDirectory.isShipImported(variant.hullVariantId)
                     shipDirectory.removeShip(variant.hullVariantId, editVariantFile = false)
-                    shipDirectory.addShip(variant, missing, editVariantFile = false, tagAsImport = isImport)
+                    shipDirectory.addShip(
+                        variant,
+                        setVariantID = variant.hullVariantId,
+                        missingFromVariant = missing, editVariantFile = false, tagAsImport = isImport
+                    )
                     Global.getLogger(this.javaClass).warn("Rebuilding variant ${variant.hullVariantId} to add new index, as index was missing")
                 }
 
