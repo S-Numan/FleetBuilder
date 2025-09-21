@@ -13,7 +13,7 @@ import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.getRegularHullMods
-import fleetBuilder.variants.LoadoutManager.getAnyVariantsForHullspec
+import fleetBuilder.variants.LoadoutManager.getVariantSourceShipDirectory
 
 object VariantLib {
 
@@ -96,12 +96,17 @@ object VariantLib {
         return effectiveVariantMap[hullSpec.getEffectiveHullId()].orEmpty()
     }
 
+    //Is this needed? - Numan
     fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
 
         //Here sets the variant ID after a variant is saved.
 
         val idIfNone = makeVariantID(member.variant)
-        val possibleVariants = getAnyVariantsForHullspec(member.hullSpec)
+
+        val dir = getVariantSourceShipDirectory(member.variant)
+
+        val possibleVariants =
+            dir?.getShips(member.hullSpec) ?: getCoreVariantsForEffectiveHullspec(member.hullSpec)
 
         val matchingVariant = possibleVariants.find { candidate ->
             compareVariantContents(candidate, member.variant, CompareOptions(tags = false))
@@ -222,7 +227,7 @@ object VariantLib {
                 // property checks
                 if (g1?.type != g2?.type) return false
                 if (g1?.isAutofireOnByDefault != g2?.isAutofireOnByDefault) return false
-                
+
                 // mismatch in slots
                 if (!slotsMatch(slots1, slots2)) return false
             }

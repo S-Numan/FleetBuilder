@@ -18,6 +18,7 @@ import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.FBTxt
+import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.fleet.DataFleet
 import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.persistence.fleet.FleetSettings
@@ -490,7 +491,7 @@ object Dialogs {
 
         dialog.onConfirm {
 
-            importShipLoadout(variant, missing)
+            importShipLoadout(ModSettings.defaultPrefix, variant, missing)
 
             DisplayMessage.showMessage(
                 " Loadout imported for hull: $loadoutBaseHullName",

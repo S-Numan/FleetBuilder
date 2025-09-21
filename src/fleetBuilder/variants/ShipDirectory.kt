@@ -3,6 +3,7 @@ package fleetBuilder.variants
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.variant.CompressedVariant
 import fleetBuilder.persistence.variant.CompressedVariant.extractVariantDataFromCompString
 import fleetBuilder.persistence.variant.DataVariant
@@ -151,7 +152,7 @@ class ShipDirectory(
         val shipPath = "${savedVariant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"
 
         val newIndex = if (inputDesiredIndexInMenu < 0)
-            LoadoutManager.getHighestIndexInEffectiveMenu(variantToSave.hullSpec) + 1
+            LoadoutManager.getHighestIndexInEffectiveMenu(ModSettings.defaultPrefix, variantToSave.hullSpec) + 1
         else
             inputDesiredIndexInMenu
 
