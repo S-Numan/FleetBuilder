@@ -321,8 +321,10 @@ object DataVariant {
     fun buildVariant(
         data: ParsedVariantData
     ): ShipVariantAPI {
-        val hullSpec = Global.getSettings().getHullSpec(data.hullId)
-        val loadout = Global.getSettings().createEmptyVariant(hullSpec.hullId, hullSpec)
+        val settings = Global.getSettings()
+        
+        val hullSpec = settings.getHullSpec(data.hullId)
+        val loadout = settings.createEmptyVariant(hullSpec.hullId, hullSpec)
 
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
