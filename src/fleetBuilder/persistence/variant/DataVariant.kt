@@ -225,8 +225,6 @@ object DataVariant {
         data: ParsedVariantData,
         missing: MissingElements = MissingElements(),
     ): ParsedVariantData {
-        val settingsAPI = Global.getSettings()
-
         // --- Hull ID ---
         val validHullId = if (data.hullId in VariantLib.getHullIDSet()) {
             data.hullId
