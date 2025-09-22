@@ -180,7 +180,7 @@ open class PopUpUI : CustomUIPanelPlugin {
 
     fun forceDismiss() {
         parent!!.removeComponent(panel)
-        onExit()
+        applyExitScript()
     }
 
     fun forceDismissNoExit() {
@@ -189,7 +189,7 @@ open class PopUpUI : CustomUIPanelPlugin {
 
     private var exitCallback: (() -> Unit)? = null
 
-    open fun onExit() {
+    open fun applyExitScript() {
         if (messageDialog != null)
             messageDialog!!.invoke("dismiss", 0)
 

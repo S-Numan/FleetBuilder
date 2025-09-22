@@ -26,11 +26,14 @@ import fleetBuilder.ui.CargoAutoManageUIPlugin
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
+import fleetBuilder.ui.popUpUI.BasePopUpUI
+import fleetBuilder.ui.popUpUI.PopUpUI
 import fleetBuilder.ui.popUpUI.PopUpUIDialog
 import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DialogUtil.initPopUpUI
 import fleetBuilder.util.DisplayMessage.showMessage
+import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
@@ -41,6 +44,7 @@ import org.lazywizard.lazylib.MathUtils
 import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
+import starficz.addTooltip
 import starficz.findChildWithMethod
 import starficz.getChildrenCopy
 import starficz.onClick
@@ -452,14 +456,15 @@ object Dialogs {
         val loadoutBaseHullName = baseHullSpec.hullName
             ?: return
 
-        val dialog = PopUpUIDialog("Import loadout", addCancelButton = true, addConfirmButton = true)
-        dialog.confirmButtonName = "Import"
-        dialog.confirmAndCancelAlignment = Alignment.MID
+        val dialog = BasePopUpUI()
+        dialog.headerTitle = "Import Loadout"
 
         //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
 
         val shipPreviewWidth = 375f
         val popUpHeight = 490f
+
+        dialog.createContentForDialog()
 
         dialog.addParagraph(
             loadoutBaseHullName,
@@ -488,7 +493,6 @@ object Dialogs {
 
         dialog.addCustom(tempPanel)
 
-
         dialog.onConfirm {
 
             importShipLoadout(ModSettings.defaultPrefix, variant, missing)
@@ -501,6 +505,14 @@ object Dialogs {
         }
 
         initPopUpUI(dialog, shipPreviewWidth, popUpHeight)
+
+        dialog.confirmButtonName = "Import"
+        dialog.confirmAndCancelAlignment = Alignment.MID
+        dialog.createConfirmAndCancelSection()
+
+        dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 200f) { tooltip ->
+            tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.getName()} (${ModSettings.defaultPrefix}) directory", 0f)
+        }
     }
 
     fun createSaveTransferDialog() {

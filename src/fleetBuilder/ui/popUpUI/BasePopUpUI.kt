@@ -57,20 +57,33 @@ open class BasePopUpUI() : PopUpUI() {
         }
     }
 
+    private var confirmCallback: (() -> Unit)? = null
+    private var cancelCallback: (() -> Unit)? = null
+
+    fun onConfirm(callback: () -> Unit) {
+        confirmCallback = callback
+    }
+
+    fun onCancel(callback: () -> Unit) {
+        cancelCallback = callback
+    }
+
     open fun applyConfirmScript() {
+        confirmCallback?.invoke()
     }
 
     open fun applyCancelScript() {
+        cancelCallback?.invoke()
     }
 
-    fun generateConfirmButton(tooltip: TooltipMakerAPI): ButtonAPI {
+    private fun generateConfirmButton(tooltip: TooltipMakerAPI): ButtonAPI {
         val button = tooltip.addButton(confirmButtonName, "confirm", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, 160f, 25f, 0f)
         button.setShortcut(Keyboard.KEY_G, true)
         confirmButton = button
         return button
     }
 
-    fun generateCancelButton(tooltip: TooltipMakerAPI): ButtonAPI {
+    private fun generateCancelButton(tooltip: TooltipMakerAPI): ButtonAPI {
         val button = tooltip.addButton(cancelButtonName, "cancel", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, buttonConfirmWidth, 25f, 0f)
         button.setShortcut(Keyboard.KEY_ESCAPE, true)
         cancelButton = button
@@ -141,7 +154,11 @@ open class BasePopUpUI() : PopUpUI() {
         closeButton?.onClick { forceDismiss() }
     }
 
-    open fun createContentForDialog() {
+    open fun createContentForDialog() { // TODO, remove this
+
+    }
+
+    val createContentForDialog: () -> Unit = {
 
     }
 

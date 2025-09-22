@@ -4,7 +4,7 @@ import com.fs.starfarer.api.ui.*
 import starficz.onClick
 import java.awt.Color
 
-//This class is awful, please don't use it.
+//This class is awful, do not use it
 
 open class PopUpUIDialog(
     override var headerTitle: String? = null,
@@ -51,9 +51,36 @@ open class PopUpUIDialog(
     val textFieldRefs: MutableMap<String, TextFieldAPI> = mutableMapOf()
     private val previousTextValues = mutableMapOf<String, String>()
 
-    private var confirmCallback: ((Map<String, Any>) -> Unit)? = null
-    private var cancelCallback: ((Map<String, Any>) -> Unit)? = null
-    private var exitCallback: ((Map<String, Any>) -> Unit)? = null
+    private var confirmCallbackX: ((Map<String, Any>) -> Unit)? = null
+    private var cancelCallbackX: ((Map<String, Any>) -> Unit)? = null
+    private var exitCallbackX: ((Map<String, Any>) -> Unit)? = null
+
+    fun onConfirm(callback: (Map<String, Any>) -> Unit) {
+        confirmCallbackX = callback
+    }
+
+    fun onCancel(callback: (Map<String, Any>) -> Unit) {
+        cancelCallbackX = callback
+    }
+
+    fun onExit(callback: (Map<String, Any>) -> Unit) {
+        exitCallbackX = callback
+    }
+
+    override fun applyExitScript() {
+        super.applyExitScript()
+        exitCallbackX?.invoke(collectFieldStates())
+    }
+
+    override fun applyConfirmScript() {
+        super.applyConfirmScript()
+        confirmCallbackX?.invoke(collectFieldStates())
+    }
+
+    override fun applyCancelScript() {
+        super.applyCancelScript()
+        cancelCallbackX?.invoke(collectFieldStates())
+    }
 
     fun addToggle(
         label: String,
@@ -147,23 +174,6 @@ open class PopUpUIDialog(
         highlightWords: Array<String> = emptyArray()
     ) {
         entries.add(ParagraphEntry(text, alignment, font, highlights, highlightWords))
-    }
-
-    fun onConfirm(callback: (Map<String, Any>) -> Unit) {
-        confirmCallback = callback
-    }
-
-    fun onCancel(callback: (Map<String, Any>) -> Unit) {
-        cancelCallback = callback
-    }
-
-    fun onExit(callback: (Map<String, Any>) -> Unit) {
-        exitCallback = callback
-    }
-
-    override fun onExit() {
-        super.onExit()
-        exitCallback?.invoke(collectFieldStates())
     }
 
     val buttonHeight = 24f
@@ -266,14 +276,6 @@ open class PopUpUIDialog(
                 }
             }
         }
-    }
-
-    override fun applyConfirmScript() {
-        confirmCallback?.invoke(collectFieldStates())
-    }
-
-    override fun applyCancelScript() {
-        cancelCallback?.invoke(collectFieldStates())
     }
 
     private fun collectFieldStates(): Map<String, Any> {
