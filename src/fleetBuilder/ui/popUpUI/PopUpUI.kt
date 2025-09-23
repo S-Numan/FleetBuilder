@@ -87,39 +87,6 @@ open class PopUpUI : CustomUIPanelPlugin {
     open fun createUI() {
     }
 
-    override fun renderBelow(alphaMult: Float) {
-        val renderer = TiledTextureRenderer(panelBackground.getTextureId())
-        if (isDialog) {
-            blackBackground.setSize(getCoreUI()!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
-            blackBackground.setColor(Color.black)
-            blackBackground.setAlphaMult(0.6f)
-            blackBackground.renderAtCenter(getCoreUI()!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
-            renderer.renderTiledTexture(
-                panel.getPosition().getX(),
-                panel.getPosition().getY(), panel.getPosition().getWidth(),
-                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
-                panelBackground.getTextureHeight(), (frames / limit) * 0.9f, Color.BLACK
-            )
-        } else {
-            renderer.renderTiledTexture(
-                panel.getPosition().getX(),
-                panel.getPosition().getY(), panel.getPosition().getWidth(),
-                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
-                panelBackground.getTextureHeight(), (frames / limit), panelBackground.getColor()
-            )
-        }
-        if (isDialog) {
-            renderBorders()
-        } else {
-            rendererBorder.render(alphaMult)
-        }
-
-    }
-
-    override fun render(alphaMult: Float) {
-    }
-
-    var firstAdvance = false
     override fun advance(amount: Float) {
         if (frames <= limit) {
             frames++
@@ -190,8 +157,8 @@ open class PopUpUI : CustomUIPanelPlugin {
     private var exitCallback: (() -> Unit)? = null
 
     open fun applyExitScript() {
-        if (messageDialog != null)
-            messageDialog!!.invoke("dismiss", 0)
+        if (dummyDialog != null)
+            dummyDialog!!.invoke("dismiss", 0)
 
         exitCallback?.invoke()
     }
@@ -203,17 +170,49 @@ open class PopUpUI : CustomUIPanelPlugin {
     override fun buttonPressed(buttonId: Any) {
     }
 
-    var messageDialog: UIPanelAPI? = null
+    var dummyDialog: UIPanelAPI? = null
     fun makeDummyDialog(ui: CampaignUIAPI) {
         ui.showMessageDialog("FleetBuilder Placeholder Dialog")
         val screenPanel = ui.get("screenPanel") as? UIPanelAPI
-        messageDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
-        if (messageDialog != null) {
-            messageDialog!!.invoke("setOpacity", 0f)
-            messageDialog!!.invoke("setBackgroundDimAmount", 0f)
-            messageDialog!!.invoke("setAbsorbOutsideEvents", false)
-            messageDialog!!.invoke("makeOptionInstant", 0)
+        dummyDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
+        if (dummyDialog != null) {
+            dummyDialog!!.invoke("setOpacity", 0f)
+            dummyDialog!!.invoke("setBackgroundDimAmount", 0f)
+            dummyDialog!!.invoke("setAbsorbOutsideEvents", false)
+            dummyDialog!!.invoke("makeOptionInstant", 0)
         }
+    }
+
+    override fun render(alphaMult: Float) {
+    }
+
+    override fun renderBelow(alphaMult: Float) {
+        val renderer = TiledTextureRenderer(panelBackground.getTextureId())
+        if (isDialog) {
+            blackBackground.setSize(getCoreUI()!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
+            blackBackground.setColor(Color.black)
+            blackBackground.setAlphaMult(0.6f)
+            blackBackground.renderAtCenter(getCoreUI()!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
+            renderer.renderTiledTexture(
+                panel.getPosition().getX(),
+                panel.getPosition().getY(), panel.getPosition().getWidth(),
+                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
+                panelBackground.getTextureHeight(), (frames / limit) * 0.9f, Color.BLACK
+            )
+        } else {
+            renderer.renderTiledTexture(
+                panel.getPosition().getX(),
+                panel.getPosition().getY(), panel.getPosition().getWidth(),
+                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
+                panelBackground.getTextureHeight(), (frames / limit), panelBackground.getColor()
+            )
+        }
+        if (isDialog) {
+            renderBorders()
+        } else {
+            rendererBorder.render(alphaMult)
+        }
+
     }
 
     fun renderBorders() {
@@ -265,8 +264,6 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     companion object {
-        var buttonConfirmWidth: Float = 160f
-
         fun startStencilWithYPad(panel: CustomPanelAPI, yPad: Float) {
             GL11.glClearStencil(0)
             GL11.glStencilMask(0xff)

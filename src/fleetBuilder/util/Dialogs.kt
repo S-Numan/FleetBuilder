@@ -40,6 +40,7 @@ import org.histidine.chatter.combat.ChatterCombatPlugin
 import org.lazywizard.lazylib.MathUtils
 import starficz.addTooltip
 import starficz.onClick
+import starficz.width
 import java.awt.Color
 
 
@@ -446,20 +447,9 @@ object Dialogs {
         val loadoutBaseHullName = baseHullSpec.hullName
             ?: return
 
-        val dialog = BasePopUpUI()
-        dialog.headerTitle = "Import Loadout"
+        val dialog = BasePopUpUI(headerTitle = "Import Loadout")
 
-        //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
-
-        val shipPreviewWidth = 375f
-        val popUpHeight = 490f
-
-        dialog.onCreateUI {
-            //TODO, standardize
-            val buttonWidth = dialog.panel.position.width - (dialog.x * 2)
-            val ui = dialog.panel.createUIElement(buttonWidth, dialog.panel.position.height, false)
-            ui.addSpacer(0f).position.inTL(0f, 0f)
-            //TODO, standardize
+        dialog.onCreateUI(375f, 490f) { ui ->
 
             ui.setParaFont(Fonts.ORBITRON_24AABOLD)
             ui.addPara(
@@ -470,9 +460,9 @@ object Dialogs {
             ).setAlignment(Alignment.MID)
 
 
-            val height = shipPreviewWidth - (dialog.x * 2)
+            val height = dialog.panel.width - (dialog.x * 2)
 
-            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, height, null)
+            val tempPanel = Global.getSettings().createCustom(dialog.panel.width, height, null)
             val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
 
             val selectorPanel = AutofitSelector.createAutofitSelector(
@@ -491,17 +481,11 @@ object Dialogs {
             ui.addCustom(tempPanel, 0f)
 
 
-            //TODO, standardize
-            dialog.panel.addUIElement(ui).inTL(dialog.x, dialog.y)
+            dialog.setupConfirmCancelSection(confirmText = "Import", alignment = Alignment.MID)
 
-            dialog.confirmButtonName = "Import"
-            dialog.confirmAndCancelAlignment = Alignment.MID
-            dialog.createConfirmAndCancelSection()
-
-            dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 200f) { tooltip ->
+            dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 600f) { tooltip ->
                 tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.getName()} (${ModSettings.defaultPrefix}) directory", 0f)
             }
-            //TODO, standardize
         }
 
         dialog.onConfirm {
@@ -513,8 +497,6 @@ object Dialogs {
                 Misc.getHighlightColor()
             )
         }
-
-        initPopUpUI(dialog, shipPreviewWidth, popUpHeight)
     }
 
     fun createSaveTransferDialog() {

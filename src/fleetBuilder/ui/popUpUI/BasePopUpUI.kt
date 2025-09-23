@@ -3,14 +3,16 @@ package fleetBuilder.ui.popUpUI
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.util.DialogUtil.initPopUpUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import starficz.onClick
 import java.awt.Color
 
-
-open class BasePopUpUI() : PopUpUI() {
+open class BasePopUpUI(
     open var headerTitle: String? = null
+) : PopUpUI() {
+
     override var x = 15f
     override var y = 45f
 
@@ -18,12 +20,13 @@ open class BasePopUpUI() : PopUpUI() {
     var cancelButton: ButtonAPI? = null
     var closeButton: ButtonAPI? = null
 
-    var confirmButtonName: String = "Confirm"
-    var cancelButtonName: String = "Cancel"
+    var confirmCancelButtonWidth: Float = 160f
 
     var doesConfirmForceDismiss: Boolean = true
     var doesCancelForceDismiss: Boolean = true
-    var confirmAndCancelAlignment: Alignment = Alignment.RMID
+
+    var confirmButtonShortcut = Keyboard.KEY_G
+    var cancelButtonShortcut = Keyboard.KEY_ESCAPE
 
     override fun createUI() {
         createHeader()
@@ -31,10 +34,36 @@ open class BasePopUpUI() : PopUpUI() {
         createUICallback?.invoke()
     }
 
-    private var createUICallback: (() -> Unit)? = null
-    fun onCreateUI(callback: () -> Unit) {
-        createUICallback = callback
+    fun createStandardContentArea(): TooltipMakerAPI {
+        val buttonWidth = panel.position.width - (x * 2)
+        val ui = panel.createUIElement(buttonWidth, panel.position.height, false)
+        ui.addSpacer(0f).position.inTL(0f, 0f)
+        return ui
     }
+
+    fun addContentArea(ui: TooltipMakerAPI) {
+        panel.addUIElement(ui).inTL(x, y)
+    }
+
+    private var createUICallback: (() -> Unit)? = null
+    fun onCreateUI(
+        width: Float = Global.getSettings().screenWidth / 2,
+        height: Float = Global.getSettings().screenHeight / 2,
+        callback: (TooltipMakerAPI) -> Unit
+    ) {
+        // store a callback
+        createUICallback = {
+            // build the UI once here
+            val ui = createStandardContentArea()
+            // run the user code
+            callback(ui)
+            // add UI automatically afterward
+            addContentArea(ui)
+        }
+
+        initPopUpUI(this, width, height)
+    }
+
 
     override fun renderBelow(alphaMult: Float) {
         super.renderBelow(alphaMult)
@@ -81,34 +110,23 @@ open class BasePopUpUI() : PopUpUI() {
         cancelCallback?.invoke()
     }
 
-    private fun generateConfirmButton(tooltip: TooltipMakerAPI): ButtonAPI {
-        val button = tooltip.addButton(confirmButtonName, "confirm", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, 160f, 25f, 0f)
-        button.setShortcut(Keyboard.KEY_G, true)
-        confirmButton = button
-        return button
-    }
-
-    private fun generateCancelButton(tooltip: TooltipMakerAPI): ButtonAPI {
-        val button = tooltip.addButton(cancelButtonName, "cancel", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, buttonConfirmWidth, 25f, 0f)
-        button.setShortcut(Keyboard.KEY_ESCAPE, true)
-        cancelButton = button
-        return button
-    }
-
-    fun createConfirmAndCancelSection(
+    fun setupConfirmCancelSection(
         addConfirmButton: Boolean = true,
         addCancelButton: Boolean = true,
+        alignment: Alignment = Alignment.RMID,
+        confirmText: String = "Confirm",
+        cancelText: String = "Cancel",
     ) {
-        val totalWidth = this@BasePopUpUI.panel.position.width
+        val totalWidth = panel.position.width
         val tooltip = panel.createUIElement(totalWidth, 25f, false)
         tooltip.setButtonFontOrbitron20()
 
         val spacing = 10f
-        val totalButtonWidth = (if (addConfirmButton) buttonConfirmWidth else 0f) +
-                (if (addCancelButton) buttonConfirmWidth else 0f) +
+        val totalButtonWidth = (if (addConfirmButton) confirmCancelButtonWidth else 0f) +
+                (if (addCancelButton) confirmCancelButtonWidth else 0f) +
                 (if (addConfirmButton && addCancelButton) spacing else 0f)
 
-        val startX = when (confirmAndCancelAlignment) {
+        val startX = when (alignment) {
             Alignment.LMID -> 0f
             Alignment.MID -> (totalWidth - totalButtonWidth) / 2f
             Alignment.RMID -> totalWidth - totalButtonWidth
@@ -117,17 +135,23 @@ open class BasePopUpUI() : PopUpUI() {
 
         var xPos = startX
         if (addConfirmButton) {
-            generateConfirmButton(tooltip)
-            confirmButton!!.position.inTL(xPos, 0f)
-            xPos += buttonConfirmWidth + spacing
+            val button = tooltip.addButton(confirmText, "confirm", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, 160f, 25f, 0f)
+            button.setShortcut(confirmButtonShortcut, true)
+            button.position.inTL(xPos, 0f)
+            xPos += confirmCancelButtonWidth + spacing
+
+            confirmButton = button
         }
         if (addCancelButton) {
-            generateCancelButton(tooltip)
-            cancelButton!!.position.inTL(xPos, 0f)
+            val button = tooltip.addButton(cancelText, "cancel", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, confirmCancelButtonWidth, 25f, 0f)
+            button.setShortcut(cancelButtonShortcut, true)
+            button.position.inTL(xPos, 0f)
+
+            cancelButton = button
         }
 
         val bottom = originalSizeY
-        val alignX = when (confirmAndCancelAlignment) {
+        val alignX = when (alignment) {
             Alignment.LMID -> x
             Alignment.MID -> 0f
             Alignment.RMID -> -x
@@ -183,7 +207,6 @@ open class BasePopUpUI() : PopUpUI() {
     val auxYPad = 10f
     var headerTooltip: TooltipMakerAPI? = null
     fun createHeader() {
-
         if (headerTitle != null) {
             headerTooltip = panel.createUIElement(panel.position.width - (x * 2), 20f, false)
             headerTooltip!!.setParaFont(Fonts.ORBITRON_20AABOLD)
