@@ -14,8 +14,6 @@ import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
-import com.fs.starfarer.api.ui.UIComponentAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
@@ -27,8 +25,7 @@ import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.ui.popUpUI.BasePopUpUI
-import fleetBuilder.ui.popUpUI.PopUpUI
-import fleetBuilder.ui.popUpUI.PopUpUIDialog
+import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
 import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DialogUtil.initPopUpUI
@@ -41,14 +38,8 @@ import fleetBuilder.variants.reportMissingElementsIfAny
 import org.histidine.chatter.ChatterDataManager
 import org.histidine.chatter.combat.ChatterCombatPlugin
 import org.lazywizard.lazylib.MathUtils
-import starficz.ReflectionUtils.get
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
 import starficz.addTooltip
-import starficz.findChildWithMethod
-import starficz.getChildrenCopy
 import starficz.onClick
-import starficz.parent
 import java.awt.Color
 
 
@@ -451,8 +442,7 @@ object Dialogs {
         variant: ShipVariantAPI,
         missing: MissingElements
     ) {
-        val baseHullSpec = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }
-            ?: return
+        val baseHullSpec = variant.hullSpec.getEffectiveHull()
         val loadoutBaseHullName = baseHullSpec.hullName
             ?: return
 
@@ -464,37 +454,57 @@ object Dialogs {
         val shipPreviewWidth = 375f
         val popUpHeight = 490f
 
-        dialog.createContentForDialog()
+        dialog.onCreateUI {
+            //TODO, standardize
+            val buttonWidth = dialog.panel.position.width - (dialog.x * 2)
+            val ui = dialog.panel.createUIElement(buttonWidth, dialog.panel.position.height, false)
+            ui.addSpacer(0f).position.inTL(0f, 0f)
+            //TODO, standardize
 
-        dialog.addParagraph(
-            loadoutBaseHullName,
-            alignment = Alignment.MID,
-            font = Fonts.ORBITRON_24AABOLD,
-            highlights = arrayOf(Color.YELLOW),
-            highlightWords = arrayOf(loadoutBaseHullName)
-        )
+            ui.setParaFont(Fonts.ORBITRON_24AABOLD)
+            ui.addPara(
+                loadoutBaseHullName,
+                0f,
+                arrayOf(Color.YELLOW),
+                *arrayOf(loadoutBaseHullName)
+            ).setAlignment(Alignment.MID)
 
-        val height = shipPreviewWidth - (dialog.x * 2)
 
-        val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, height, null)
-        val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
+            val height = shipPreviewWidth - (dialog.x * 2)
 
-        val selectorPanel = AutofitSelector.createAutofitSelector(
-            autofitSpec = AutofitSpec(variant, null),
-            height,
-            addDescription = false,
-            centerTitle = true
-        )
+            val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, height, null)
+            val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
 
-        tempTMAPI.addComponent(selectorPanel)
-        AutofitPanel.makeTooltip(selectorPanel, variant)
+            val selectorPanel = AutofitSelector.createAutofitSelector(
+                autofitSpec = AutofitSpec(variant, null),
+                height,
+                addDescription = false,
+                centerTitle = true
+            )
 
-        tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
+            tempTMAPI.addComponent(selectorPanel)
+            AutofitPanel.makeTooltip(selectorPanel, variant)
 
-        dialog.addCustom(tempPanel)
+            tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
+
+
+            ui.addCustom(tempPanel, 0f)
+
+
+            //TODO, standardize
+            dialog.panel.addUIElement(ui).inTL(dialog.x, dialog.y)
+
+            dialog.confirmButtonName = "Import"
+            dialog.confirmAndCancelAlignment = Alignment.MID
+            dialog.createConfirmAndCancelSection()
+
+            dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 200f) { tooltip ->
+                tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.getName()} (${ModSettings.defaultPrefix}) directory", 0f)
+            }
+            //TODO, standardize
+        }
 
         dialog.onConfirm {
-
             importShipLoadout(ModSettings.defaultPrefix, variant, missing)
 
             DisplayMessage.showMessage(
@@ -505,14 +515,6 @@ object Dialogs {
         }
 
         initPopUpUI(dialog, shipPreviewWidth, popUpHeight)
-
-        dialog.confirmButtonName = "Import"
-        dialog.confirmAndCancelAlignment = Alignment.MID
-        dialog.createConfirmAndCancelSection()
-
-        dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 200f) { tooltip ->
-            tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.getName()} (${ModSettings.defaultPrefix}) directory", 0f)
-        }
     }
 
     fun createSaveTransferDialog() {

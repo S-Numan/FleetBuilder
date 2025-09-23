@@ -20,7 +20,7 @@ import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSelector.AutofitSelectorPlugin.ComparisonStatus
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
-import fleetBuilder.ui.popUpUI.PopUpUIDialog
+import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.variants.LoadoutManager

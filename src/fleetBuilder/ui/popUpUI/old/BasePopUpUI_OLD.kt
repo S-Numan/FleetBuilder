@@ -1,4 +1,4 @@
-package fleetBuilder.ui.popUpUI
+package fleetBuilder.ui.popUpUI.old
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
@@ -9,7 +9,7 @@ import starficz.onClick
 import java.awt.Color
 
 
-open class BasePopUpUI() : PopUpUI() {
+open class BasePopUpUI_OLD() : PopUpUI_OLD() {
     open var headerTitle: String? = null
     override var x = 15f
     override var y = 45f
@@ -28,12 +28,7 @@ open class BasePopUpUI() : PopUpUI() {
     override fun createUI() {
         createHeader()
 
-        createUICallback?.invoke()
-    }
-
-    private var createUICallback: (() -> Unit)? = null
-    fun onCreateUI(callback: () -> Unit) {
-        createUICallback = callback
+        createContentForDialog()
     }
 
     override fun renderBelow(alphaMult: Float) {
@@ -62,33 +57,20 @@ open class BasePopUpUI() : PopUpUI() {
         }
     }
 
-    private var confirmCallback: (() -> Unit)? = null
-    private var cancelCallback: (() -> Unit)? = null
-
-    fun onConfirm(callback: () -> Unit) {
-        confirmCallback = callback
-    }
-
-    fun onCancel(callback: () -> Unit) {
-        cancelCallback = callback
-    }
-
     open fun applyConfirmScript() {
-        confirmCallback?.invoke()
     }
 
     open fun applyCancelScript() {
-        cancelCallback?.invoke()
     }
 
-    private fun generateConfirmButton(tooltip: TooltipMakerAPI): ButtonAPI {
+    fun generateConfirmButton(tooltip: TooltipMakerAPI): ButtonAPI {
         val button = tooltip.addButton(confirmButtonName, "confirm", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, 160f, 25f, 0f)
         button.setShortcut(Keyboard.KEY_G, true)
         confirmButton = button
         return button
     }
 
-    private fun generateCancelButton(tooltip: TooltipMakerAPI): ButtonAPI {
+    fun generateCancelButton(tooltip: TooltipMakerAPI): ButtonAPI {
         val button = tooltip.addButton(cancelButtonName, "cancel", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, buttonConfirmWidth, 25f, 0f)
         button.setShortcut(Keyboard.KEY_ESCAPE, true)
         cancelButton = button
@@ -99,7 +81,7 @@ open class BasePopUpUI() : PopUpUI() {
         addConfirmButton: Boolean = true,
         addCancelButton: Boolean = true,
     ) {
-        val totalWidth = this@BasePopUpUI.panel.position.width
+        val totalWidth = this@BasePopUpUI_OLD.panel.position.width
         val tooltip = panel.createUIElement(totalWidth, 25f, false)
         tooltip.setButtonFontOrbitron20()
 
@@ -157,6 +139,10 @@ open class BasePopUpUI() : PopUpUI() {
         panel.addUIElement(ui).inTR(x / 2, x / 2 - 4f)
 
         closeButton?.onClick { forceDismiss() }
+    }
+
+    open fun createContentForDialog() {
+
     }
 
     fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color?) {
