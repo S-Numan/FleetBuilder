@@ -54,9 +54,6 @@ open class PopUpUI : CustomUIPanelPlugin {
     open var x: Float = 0f
     open var y: Float = 0f
 
-    override fun positionChanged(position: PositionAPI?) {
-    }
-
     fun init(
         insertPanel: CustomPanelAPI,
         x: Float,
@@ -169,9 +166,6 @@ open class PopUpUI : CustomUIPanelPlugin {
         exitCallback = callback
     }
 
-    override fun buttonPressed(buttonId: Any) {
-    }
-
     var placeholderDialog: UIPanelAPI? = null
     fun makeDummyDialog(ui: CampaignUIAPI) {
         //Open a dialog to prevent input from most other mods
@@ -189,6 +183,13 @@ open class PopUpUI : CustomUIPanelPlugin {
                 placeholderDialog!!.invoke("makeOptionInstant", 0)
             }
         }
+
+    }
+
+    override fun positionChanged(position: PositionAPI?) {
+    }
+
+    override fun buttonPressed(buttonId: Any?) {
     }
 
     override fun render(alphaMult: Float) {

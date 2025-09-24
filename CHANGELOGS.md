@@ -1,9 +1,11 @@
 ## 1.24.0
-- Internally moved all imported (CTRL + V'ed in) variants.
+- Patch to fix CTRL + V pasting with the new ConsoleCommands 4.0
 - Variant comparison now ignores weapon group slots without weapons.
+- Internally moved all imported (CTRL + V'ed in) variants.
 ### Technical
 - Refactored autofit variant storage handling.
 - Removed the IN prefix. Migrating all contents to the DF prefix.
+- Custom autofit now only accesses variants within the default prefix.
 
 ## 1.23.2
 - Fix saving variants with more than one mod involved.

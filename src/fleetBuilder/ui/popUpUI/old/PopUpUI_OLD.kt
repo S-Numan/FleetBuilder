@@ -202,7 +202,7 @@ open class PopUpUI_OLD : CustomUIPanelPlugin {
         exitCallback = callback
     }
 
-    override fun buttonPressed(buttonId: Any) {
+    override fun buttonPressed(buttonId: Any?) {
     }
 
     var messageDialog: UIPanelAPI? = null
