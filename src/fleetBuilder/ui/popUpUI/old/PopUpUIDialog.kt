@@ -1,8 +1,9 @@
-package fleetBuilder.ui.popUpUI
+package fleetBuilder.ui.popUpUI.old
 
 import com.fs.starfarer.api.ui.*
 import starficz.onClick
 import java.awt.Color
+import kotlin.collections.iterator
 
 //This class is awful, please don't use it.
 
@@ -11,7 +12,7 @@ open class PopUpUIDialog(
     val addConfirmButton: Boolean = false,
     val addCancelButton: Boolean = false,
     val addCloseButton: Boolean = false,
-) : BasePopUpUI() {
+) : BasePopUpUI_OLD() {
 
     private sealed class Entry
     private class ToggleEntry(
@@ -188,7 +189,7 @@ open class PopUpUIDialog(
                 is ToggleEntry -> {
 
                     val checkbox = ui.addCheckbox(
-                        ui.computeStringWidth(entry.label) + 28f,
+                        ui.computeStringWidth(entry.label) + buttonHeight + 4f,
                         buttonHeight,
                         entry.label,
                         null,

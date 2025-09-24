@@ -49,24 +49,32 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
     return list
 }
 
-// Extension to get the effective hull ID
-fun ShipHullSpecAPI.getEffectiveHullId(): String {
-    return if (isCompatibleWithBase) {//If the ship's variants are mostly compatible with the variant's of the base hull.
-        if (dParentHull != null && dParentHullId != hullId) { //If is DHull
+// Extension to get the effective hull
+fun ShipHullSpecAPI.getEffectiveHull(): ShipHullSpecAPI {
+    return if (isCompatibleWithBase) {//If the hull is mostly compatible from an loadout perspective with a
+        if (dParentHull != null) {
             if (dParentHull.isCompatibleWithBase)
-                dParentHull.baseHullId
+                dParentHull.baseHull ?: dParentHull
             else
-                dParentHullId
-        } else
-            baseHullId//Otherwise, get de base hull
+                dParentHull
+        } else baseHull ?: this
     } else
-        hullId
+        this
+}
+
+fun ShipHullSpecAPI.getEffectiveHullId(): String {
+    return this.getEffectiveHull().hullId
+}
+
+fun ShipHullSpecAPI.getCompatibleDLessHull(): ShipHullSpecAPI {
+    return if (isCompatibleWithBase && dParentHull != null)
+        dParentHull
+    else
+        this
 }
 
 fun ShipHullSpecAPI.getCompatibleDLessHullId(): String {
-    return if (isCompatibleWithBase && !dParentHullId.isNullOrEmpty())
-        dParentHullId
-    else hullId
+    return this.getCompatibleDLessHull().hullId
 }
 
 fun ShipVariantAPI.completelyRemoveMod(modId: String) {

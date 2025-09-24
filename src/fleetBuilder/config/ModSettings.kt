@@ -108,8 +108,6 @@ object ModSettings {
 
     var defaultPrefix = "DF"
 
-    var importPrefix = "IN"
-
     var backupSave = true
 
     var fleetClipboardHotkeyHandler = true

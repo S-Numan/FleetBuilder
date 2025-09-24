@@ -13,7 +13,7 @@ import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.getRegularHullMods
-import fleetBuilder.variants.LoadoutManager.getAnyVariantsForHullspec
+import fleetBuilder.variants.LoadoutManager.getVariantSourceShipDirectory
 
 object VariantLib {
 
@@ -96,12 +96,17 @@ object VariantLib {
         return effectiveVariantMap[hullSpec.getEffectiveHullId()].orEmpty()
     }
 
+    //Is this needed? - Numan
     fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
 
         //Here sets the variant ID after a variant is saved.
 
         val idIfNone = makeVariantID(member.variant)
-        val possibleVariants = getAnyVariantsForHullspec(member.hullSpec)
+
+        val dir = getVariantSourceShipDirectory(member.variant)
+
+        val possibleVariants =
+            dir?.getShips(member.hullSpec) ?: getCoreVariantsForEffectiveHullspec(member.hullSpec)
 
         val matchingVariant = possibleVariants.find { candidate ->
             compareVariantContents(candidate, member.variant, CompareOptions(tags = false))
@@ -209,18 +214,22 @@ object VariantLib {
             variant1.weaponGroups.forEachIndexed { i, g1 ->
                 val g2 = variant2.weaponGroups[i]
 
-                val slots1 = g1?.slots ?: emptyList()
-                val slots2 = g2?.slots ?: emptyList()
+                // Safely get slots lists or empty lists. Exclude slots without weapons
+                val slots1 = g1?.slots.orEmpty()
+                    .filter { variant1.getWeaponId(it) != null }
+
+                val slots2 = g2?.slots.orEmpty()
+                    .filter { variant2.getWeaponId(it) != null }
 
                 // both empty? skip
                 if (slots1.isEmpty() && slots2.isEmpty()) return@forEachIndexed
 
-                // mismatch in slots
-                if (!slotsMatch(slots1, slots2)) return false
-
-                // other property checks
+                // property checks
                 if (g1?.type != g2?.type) return false
                 if (g1?.isAutofireOnByDefault != g2?.isAutofireOnByDefault) return false
+
+                // mismatch in slots
+                if (!slotsMatch(slots1, slots2)) return false
             }
         }
         if (options.weapons) {
@@ -342,7 +351,11 @@ object VariantLib {
 
     fun makeVariantID(variant: ShipVariantAPI): String {
         val hullId = variant.hullSpec.getCompatibleDLessHullId()
-        val cleanName = variant.displayName
+        return makeVariantID(hullId, variant.displayName)
+    }
+
+    fun makeVariantID(hullId: String, displayName: String): String {
+        val cleanName = displayName
             .replace(" ", "_")                       // replace spaces with underscores
             .replace(Regex("[^A-Za-z0-9_-]"), "")   // remove anything not a-z, A-Z, 0-9, dash, or underscore
             .trim('.')                                          // remove leading/trailing dots

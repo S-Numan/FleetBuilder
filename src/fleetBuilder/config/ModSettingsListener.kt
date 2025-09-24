@@ -12,7 +12,6 @@ import fleetBuilder.config.ModSettings.dontForceClearSMods
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.config.ModSettings.fleetScreenFilter
 import fleetBuilder.config.ModSettings.forceAutofit
-import fleetBuilder.config.ModSettings.importPrefix
 import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.modPickerFilter
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
@@ -50,12 +49,8 @@ internal class ModSettingsListener : LunaSettingsListener {
 
         val _defaultPrefix = getString(modID, "defaultPrefix")!!
 
-        val _importPrefix = getString(modID, "importPrefix")!!
-
         if (generatePrefixes().contains(_defaultPrefix))
             defaultPrefix = _defaultPrefix
-        if (generatePrefixes().contains(_importPrefix))
-            importPrefix = _importPrefix
 
     }
 

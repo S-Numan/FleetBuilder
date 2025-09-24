@@ -14,10 +14,9 @@ import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
-import com.fs.starfarer.api.ui.UIComponentAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.FBTxt
+import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.fleet.DataFleet
 import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.persistence.fleet.FleetSettings
@@ -25,11 +24,13 @@ import fleetBuilder.ui.CargoAutoManageUIPlugin
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
-import fleetBuilder.ui.popUpUI.PopUpUIDialog
+import fleetBuilder.ui.popUpUI.BasePopUpUI
+import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
 import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DialogUtil.initPopUpUI
 import fleetBuilder.util.DisplayMessage.showMessage
+import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
@@ -37,13 +38,9 @@ import fleetBuilder.variants.reportMissingElementsIfAny
 import org.histidine.chatter.ChatterDataManager
 import org.histidine.chatter.combat.ChatterCombatPlugin
 import org.lazywizard.lazylib.MathUtils
-import starficz.ReflectionUtils.get
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
-import starficz.findChildWithMethod
-import starficz.getChildrenCopy
+import starficz.addTooltip
 import starficz.onClick
-import starficz.parent
+import starficz.width
 import java.awt.Color
 
 
@@ -216,72 +213,85 @@ object Dialogs {
         sector: SectorAPI,
         data: DataFleet.ParsedFleetData,
         validatedData: DataFleet.ParsedFleetData,
-        ui: CampaignUIAPI
+        uiaaaaRemoveMe: CampaignUIAPI
     ) {
-        val dialog = PopUpUIDialog("Spawn Fleet in Campaign", addConfirmButton = true, addCancelButton = true)
-        dialog.confirmButtonName = "Spawn Fleet"
+        val dialog = BasePopUpUI("Spawn Fleet in Campaign")
 
-        val memberCount = validatedData.members.size
-        val officerCount = validatedData.members.count { it.personData != null }
-        dialog.addParagraph(
-            "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
-                    if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else ""
-        )
+        val buttonHeight = 24f
 
-        val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
-        if (missingHullCount > 0)
-            dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
+        dialog.onCreateUI(500f, 350f) { ui ->
 
-
-        dialog.addPadding(8f)
-
-        dialog.addToggle("Include Officers", default = true)
-        dialog.addToggle("Include Commander as Commander", default = true)
-        dialog.addToggle("Include Commander as Officer", default = true)
-        dialog.addToggle("Set Aggression Doctrine", default = true)
-        dialog.addPadding(dialog.buttonHeight / 2)
-        dialog.addToggle("Set Faction to Pirate", default = true)
-        dialog.addToggle("Fight To The Last", default = true)
-        dialog.addPadding(dialog.buttonHeight / 2)
-        dialog.addToggle("Repair and Set Max CR", default = true)
-        dialog.addToggle("Exclude Ships From Missing Mods", default = true)
-
-        dialog.onConfirm { fields ->
-
-            val settings = FleetSettings()
-            settings.includeAggression = fields["Set Aggression Doctrine"] as Boolean
-            settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
-            settings.includeCommanderSetFlagship = fields["Include Commander as Commander"] as Boolean
-            settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
-            settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
-            val repairAndSetMaxCR = fields["Repair and Set Max CR"] as Boolean
-            val setFactionToPirates = (fields["Set Faction to Pirate"] as Boolean)
-
-            val missing = MissingElements()
-            val fleet = createCampaignFleetFromData(
-                if (setFactionToPirates) data.copy(factionID = Factions.PIRATES) else data,
-                true, settings = settings, missing = missing
+            val memberCount = validatedData.members.size
+            val officerCount = validatedData.members.count { it.personData != null }
+            ui.addPara(
+                "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
+                        if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else "",
+                0f
             )
+            val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
+            if (missingHullCount > 0)
+                ui.addPara("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods", 0f)
 
-            reportMissingElementsIfAny(missing)
 
-            if (repairAndSetMaxCR)
-                FBMisc.fullFleetRepair(fleet.fleetData)
+            ui.addSpacer(8f)
+            fun addToggle(name: String, isChecked: Boolean = false): ButtonAPI {
+                val checkbox = ui.addCheckbox(
+                    ui.computeStringWidth(name) + buttonHeight + 4f,
+                    buttonHeight,
+                    name,
+                    null,
+                    ButtonAPI.UICheckboxSize.SMALL,
+                    0f,
+                )
+                checkbox.isChecked = isChecked
 
-            sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
-            Global.getSector().campaignUI.showInteractionDialog(fleet)
-            if (fields["Fight To The Last"] as Boolean)
-                fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
+                return checkbox
+            }
 
-            showMessage("Fleet from clipboard added to campaign")
+            val includeOfficers = addToggle("Include Officers", true)
+            val includeCommanderAsCommander = addToggle("Include Commander as Commander", true)
+            val includeCommanderAsOfficer = addToggle("Include Commander as Officer", true)
+            val setAggressionDoctrine = addToggle("Set Aggression Doctrine", true)
+            ui.addSpacer(buttonHeight / 2)
+            val setFactionToPirates = addToggle("Set Faction to Pirate", true)
+            val fightToTheLast = addToggle("Fight To The Last", true)
+            ui.addSpacer(buttonHeight / 2)
+            val repairAndSetMaxCR = addToggle("Repair and Set Max CR", true)
+            val excludeMissingShips = addToggle("Exclude Ships From Missing Mods", true)
+
+            dialog.setupConfirmCancelSection(confirmText = "Spawn Fleet")
+
+            dialog.onConfirm {
+
+                val settings = FleetSettings()
+                settings.includeAggression = setAggressionDoctrine.isChecked
+                settings.memberSettings.includeOfficer = includeOfficers.isChecked
+                settings.includeCommanderSetFlagship = includeCommanderAsCommander.isChecked
+                settings.includeCommanderAsOfficer = includeCommanderAsOfficer.isChecked
+                settings.excludeMembersWithMissingHullSpec = excludeMissingShips.isChecked
+                val repairAndSetMaxCR = repairAndSetMaxCR.isChecked
+                val setFactionToPirates = setFactionToPirates.isChecked
+
+                val missing = MissingElements()
+                val fleet = createCampaignFleetFromData(
+                    if (setFactionToPirates) data.copy(factionID = Factions.PIRATES) else data,
+                    true, settings = settings, missing = missing
+                )
+
+                reportMissingElementsIfAny(missing)
+
+                if (repairAndSetMaxCR)
+                    FBMisc.fullFleetRepair(fleet.fleetData)
+
+                sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
+                Global.getSector().campaignUI.showInteractionDialog(fleet)
+                if (fightToTheLast.isChecked)
+                    fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
+
+                showMessage("Fleet from clipboard added to campaign")
+            }
         }
 
-        // Hack to prevent Nexerelin version check from opening
-        if (Global.getSettings().modManager.isModEnabled("nexerelin")) {
-            dialog.makeDummyDialog(ui)
-        }
-
-        initPopUpUI(dialog, 500f, 350f)
     }
 
     fun createOfficerCreatorDialog() {
@@ -446,51 +456,53 @@ object Dialogs {
         variant: ShipVariantAPI,
         missing: MissingElements
     ) {
-        val baseHullSpec = Global.getSettings().allShipHullSpecs.find { it.hullId == variant.hullSpec.getEffectiveHullId() }
-            ?: return
+        val baseHullSpec = variant.hullSpec.getEffectiveHull()
         val loadoutBaseHullName = baseHullSpec.hullName
             ?: return
 
-        val dialog = PopUpUIDialog("Import loadout", addCancelButton = true, addConfirmButton = true)
-        dialog.confirmButtonName = "Import"
-        dialog.confirmAndCancelAlignment = Alignment.MID
+        val dialog = BasePopUpUI(headerTitle = "Import Loadout")
 
-        //val selectorPanel = Global.getSettings().createCustom(250f, 250f, plugin)
+        dialog.onCreateUI(375f, 490f) { ui ->
 
-        val shipPreviewWidth = 375f
-        val popUpHeight = 490f
+            ui.setParaFont(Fonts.ORBITRON_24AABOLD)
+            ui.addPara(
+                loadoutBaseHullName,
+                0f,
+                arrayOf(Color.YELLOW),
+                *arrayOf(loadoutBaseHullName)
+            ).setAlignment(Alignment.MID)
 
-        dialog.addParagraph(
-            loadoutBaseHullName,
-            alignment = Alignment.MID,
-            font = Fonts.ORBITRON_24AABOLD,
-            highlights = arrayOf(Color.YELLOW),
-            highlightWords = arrayOf(loadoutBaseHullName)
-        )
 
-        val height = shipPreviewWidth - (dialog.x * 2)
+            val height = dialog.panel.width - (dialog.x * 2)
 
-        val tempPanel = Global.getSettings().createCustom(shipPreviewWidth, height, null)
-        val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
+            val tempPanel = Global.getSettings().createCustom(dialog.panel.width, height, null)
+            val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
 
-        val selectorPanel = AutofitSelector.createAutofitSelector(
-            autofitSpec = AutofitSpec(variant, null),
-            height,
-            addDescription = false,
-            centerTitle = true
-        )
+            val selectorPanel = AutofitSelector.createAutofitSelector(
+                autofitSpec = AutofitSpec(variant, null),
+                height,
+                addDescription = false,
+                centerTitle = true
+            )
 
-        tempTMAPI.addComponent(selectorPanel)
-        AutofitPanel.makeTooltip(selectorPanel, variant)
+            tempTMAPI.addComponent(selectorPanel)
+            AutofitPanel.makeTooltip(selectorPanel, variant)
 
-        tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
+            tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
 
-        dialog.addCustom(tempPanel)
 
+            ui.addCustom(tempPanel, 0f)
+
+
+            dialog.setupConfirmCancelSection(confirmText = "Import", alignment = Alignment.MID)
+
+            dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 600f) { tooltip ->
+                tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.getName()} (${ModSettings.defaultPrefix}) directory", 0f)
+            }
+        }
 
         dialog.onConfirm {
-
-            importShipLoadout(variant, missing)
+            importShipLoadout(ModSettings.defaultPrefix, variant, missing)
 
             DisplayMessage.showMessage(
                 " Loadout imported for hull: $loadoutBaseHullName",
@@ -498,8 +510,6 @@ object Dialogs {
                 Misc.getHighlightColor()
             )
         }
-
-        initPopUpUI(dialog, shipPreviewWidth, popUpHeight)
     }
 
     fun createSaveTransferDialog() {

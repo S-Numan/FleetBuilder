@@ -2,6 +2,7 @@ package fleetBuilder.util.lib
 
 import fleetBuilder.util.FBMisc
 import org.json.JSONObject
+import org.lwjgl.Sys
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.StringSelection
@@ -11,12 +12,13 @@ import java.io.FileReader
 object ClipboardUtil {
     fun getClipboardTextSafe(): String? {
         return try {
-            val contents = Toolkit.getDefaultToolkit().systemClipboard.getContents(null)// systemClipboard.getContents is really slow
+            /*val contents = Toolkit.getDefaultToolkit().systemClipboard.getContents(null)// systemClipboard.getContents is really slow
             if (contents?.isDataFlavorSupported(DataFlavor.stringFlavor) == true) {
                 contents.getTransferData(DataFlavor.stringFlavor) as? String
             } else {
                 null
-            }
+            }*/
+            Sys.getClipboard()
         } catch (_: Exception) {
             null
         }

@@ -20,7 +20,7 @@ import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSelector.AutofitSelectorPlugin.ComparisonStatus
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
-import fleetBuilder.ui.popUpUI.PopUpUIDialog
+import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.variants.LoadoutManager
@@ -219,9 +219,10 @@ internal object AutofitPanel {
         // Get loadout specs
         val loadoutEffectiveHullAutofitSpecs =
             getLoadoutAutofitSpecsForShip(
+                ModSettings.defaultPrefix,
                 (baseVariant as ShipVariantAPI).hullSpec,
                 coreEffectiveHullAutofitSpecs.size
-            ).values.flatten()
+            )
 
         // Combine core (with nulls) + loadout specs
         val combinedSpecs: List<AutofitSpec?> = coreEffectiveHullAutofitSpecs + loadoutEffectiveHullAutofitSpecs
@@ -600,7 +601,7 @@ internal object AutofitPanel {
                     }
                 }
 
-                val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant) }
+                val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(ModSettings.defaultPrefix, draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant) }
 
                 val shipVariantID: String
                 if (equalVariant != null) { // Variant already exists?
@@ -616,12 +617,15 @@ internal object AutofitPanel {
                             ?: return@onClickReleaseNoInitClick
                     }
 
+                    val isImport = shipDirectory.isShipImported(equalVariant.hullVariantId)
+
                     shipDirectory.removeShip(equalVariant.hullVariantId, editVariantFile = false)
                     shipVariantID = shipDirectory.addShip(
-                        equalVariant, missing,
-                        inputDesiredIndexInMenu = indexInMenu,
+                        equalVariant,
                         setVariantID = equalVariant.hullVariantId.removePrefix(shipDirectory.prefix + "_"),
-                        editVariantFile = false, settings = settings
+                        missingFromVariant = missing,
+                        inputDesiredIndexInMenu = indexInMenu,
+                        editVariantFile = false, settings = settings, tagAsImport = isImport
                     )
 
                     deleteSelector(selectorPlugins.firstOrNull {
@@ -643,7 +647,7 @@ internal object AutofitPanel {
 
                 // Remake the new selector
                 selectorPlugin.noClickFader = false
-                selectorPlugin.autofitSpec = autofitPlugin.draggedAutofitSpec!!.copy(variant = shipDirectory.getShip(shipVariantID)!!, source = shipDirectory, desiredIndexInMenu = indexInMenu, description = shipDirectory.getDescription())
+                selectorPlugin.autofitSpec = autofitPlugin.draggedAutofitSpec!!.copy(variant = shipDirectory.getShip(shipVariantID)!!, source = shipDirectory, desiredIndexInMenu = indexInMenu, description = shipDirectory.getDescription(shipVariantID))
                 createAutofitSelectorChildren(
                     selectorPlugin.autofitSpec!!,
                     selectorWidth,
@@ -842,7 +846,7 @@ internal object AutofitPanel {
         removeVariantButton.xAlignOffset = selectorPanel.right - removeVariantButton.right
         removeVariantButton.yAlignOffset = selectorPanel.top - removeVariantButton.top
         removeVariantButton.onClick {
-            deleteLoadoutVariant(newSpec.variant.hullVariantId)
+            deleteLoadoutVariant(ModSettings.defaultPrefix, newSpec.variant.hullVariantId)
             //selectorPanel.parent?.removeComponent(selectorPanel)
             //selectorPanel.opacity = 0f
             val selectorPlugin = selectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin

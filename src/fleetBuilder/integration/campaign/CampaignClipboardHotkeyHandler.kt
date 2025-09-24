@@ -243,7 +243,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         val data = ClipboardMisc.extractDataFromClipboard() ?: run {
             //DisplayMessage.showMessage(FBTxt.txt("no_valid_data_in_clipboard"), Color.YELLOW)
-            event.consume()
+            //event.consume()
             return
         }
 

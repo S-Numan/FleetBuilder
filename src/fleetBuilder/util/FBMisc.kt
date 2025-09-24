@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.FBTxt
+import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
 import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.CommanderShuttle.playerShuttleExists
@@ -144,7 +145,7 @@ object FBMisc {
         }
 
 
-        val loadoutExists = doesLoadoutExist(variant)
+        val loadoutExists = doesLoadoutExist(ModSettings.defaultPrefix, variant)
 
         if (!loadoutExists) {
             Dialogs.createImportLoadoutDialog(variant, missing)
