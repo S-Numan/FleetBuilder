@@ -3,12 +3,14 @@ package fleetBuilder.ui.popUpUI
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
+import com.fs.starfarer.api.campaign.InteractionDialogAPI
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.FBMisc.isMouseWithinBounds
+import fleetBuilder.util.PlaceholderDialog
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
@@ -157,8 +159,8 @@ open class PopUpUI : CustomUIPanelPlugin {
     private var exitCallback: (() -> Unit)? = null
 
     open fun applyExitScript() {
-        if (dummyDialog != null)
-            dummyDialog!!.invoke("dismiss", 0)
+        if (placeholderDialog != null)
+            placeholderDialog!!.invoke("dismiss", 0)
 
         exitCallback?.invoke()
     }
@@ -170,16 +172,22 @@ open class PopUpUI : CustomUIPanelPlugin {
     override fun buttonPressed(buttonId: Any) {
     }
 
-    var dummyDialog: UIPanelAPI? = null
+    var placeholderDialog: UIPanelAPI? = null
     fun makeDummyDialog(ui: CampaignUIAPI) {
-        ui.showMessageDialog("FleetBuilder Placeholder Dialog")
-        val screenPanel = ui.get("screenPanel") as? UIPanelAPI
-        dummyDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
-        if (dummyDialog != null) {
-            dummyDialog!!.invoke("setOpacity", 0f)
-            dummyDialog!!.invoke("setBackgroundDimAmount", 0f)
-            dummyDialog!!.invoke("setAbsorbOutsideEvents", false)
-            dummyDialog!!.invoke("makeOptionInstant", 0)
+        //Open a dialog to prevent input from most other mods
+        if (Global.getSettings().isInCampaignState && !ui.isShowingDialog) {
+            //ui.showInteractionDialog(PlaceholderDialog(), Global.getSector().playerFleet) // While this also works, it hides the campaign UI.
+            //placeholderDialog = ui.currentInteractionDialog
+
+            ui.showMessageDialog("FleetBuilder Placeholder Dialog")
+            val screenPanel = ui.get("screenPanel") as? UIPanelAPI
+            placeholderDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
+            if (placeholderDialog != null) {
+                placeholderDialog!!.invoke("setOpacity", 0f)
+                placeholderDialog!!.invoke("setBackgroundDimAmount", 0f)
+                placeholderDialog!!.invoke("setAbsorbOutsideEvents", false)
+                placeholderDialog!!.invoke("makeOptionInstant", 0)
+            }
         }
     }
 

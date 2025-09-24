@@ -61,6 +61,9 @@ open class BasePopUpUI(
             addContentArea(ui)
         }
 
+        if (Global.getSector()?.campaignUI != null)
+            makeDummyDialog(Global.getSector().campaignUI)
+
         initPopUpUI(this, width, height)
     }
 

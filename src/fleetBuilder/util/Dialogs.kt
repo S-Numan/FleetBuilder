@@ -213,72 +213,85 @@ object Dialogs {
         sector: SectorAPI,
         data: DataFleet.ParsedFleetData,
         validatedData: DataFleet.ParsedFleetData,
-        ui: CampaignUIAPI
+        uiaaaaRemoveMe: CampaignUIAPI
     ) {
-        val dialog = PopUpUIDialog("Spawn Fleet in Campaign", addConfirmButton = true, addCancelButton = true)
-        dialog.confirmButtonName = "Spawn Fleet"
+        val dialog = BasePopUpUI("Spawn Fleet in Campaign")
 
-        val memberCount = validatedData.members.size
-        val officerCount = validatedData.members.count { it.personData != null }
-        dialog.addParagraph(
-            "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
-                    if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else ""
-        )
+        val buttonHeight = 24f
 
-        val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
-        if (missingHullCount > 0)
-            dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
+        dialog.onCreateUI(500f, 350f) { ui ->
 
-
-        dialog.addPadding(8f)
-
-        dialog.addToggle("Include Officers", default = true)
-        dialog.addToggle("Include Commander as Commander", default = true)
-        dialog.addToggle("Include Commander as Officer", default = true)
-        dialog.addToggle("Set Aggression Doctrine", default = true)
-        dialog.addPadding(dialog.buttonHeight / 2)
-        dialog.addToggle("Set Faction to Pirate", default = true)
-        dialog.addToggle("Fight To The Last", default = true)
-        dialog.addPadding(dialog.buttonHeight / 2)
-        dialog.addToggle("Repair and Set Max CR", default = true)
-        dialog.addToggle("Exclude Ships From Missing Mods", default = true)
-
-        dialog.onConfirm { fields ->
-
-            val settings = FleetSettings()
-            settings.includeAggression = fields["Set Aggression Doctrine"] as Boolean
-            settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
-            settings.includeCommanderSetFlagship = fields["Include Commander as Commander"] as Boolean
-            settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
-            settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
-            val repairAndSetMaxCR = fields["Repair and Set Max CR"] as Boolean
-            val setFactionToPirates = (fields["Set Faction to Pirate"] as Boolean)
-
-            val missing = MissingElements()
-            val fleet = createCampaignFleetFromData(
-                if (setFactionToPirates) data.copy(factionID = Factions.PIRATES) else data,
-                true, settings = settings, missing = missing
+            val memberCount = validatedData.members.size
+            val officerCount = validatedData.members.count { it.personData != null }
+            ui.addPara(
+                "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
+                        if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else "",
+                0f
             )
+            val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
+            if (missingHullCount > 0)
+                ui.addPara("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods", 0f)
 
-            reportMissingElementsIfAny(missing)
 
-            if (repairAndSetMaxCR)
-                FBMisc.fullFleetRepair(fleet.fleetData)
+            ui.addSpacer(8f)
+            fun addToggle(name: String, isChecked: Boolean = false): ButtonAPI {
+                val checkbox = ui.addCheckbox(
+                    ui.computeStringWidth(name) + buttonHeight + 4f,
+                    buttonHeight,
+                    name,
+                    null,
+                    ButtonAPI.UICheckboxSize.SMALL,
+                    0f,
+                )
+                checkbox.isChecked = isChecked
 
-            sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
-            Global.getSector().campaignUI.showInteractionDialog(fleet)
-            if (fields["Fight To The Last"] as Boolean)
-                fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
+                return checkbox
+            }
 
-            showMessage("Fleet from clipboard added to campaign")
+            val includeOfficers = addToggle("Include Officers", true)
+            val includeCommanderAsCommander = addToggle("Include Commander as Commander", true)
+            val includeCommanderAsOfficer = addToggle("Include Commander as Officer", true)
+            val setAggressionDoctrine = addToggle("Set Aggression Doctrine", true)
+            ui.addSpacer(buttonHeight / 2)
+            val setFactionToPirates = addToggle("Set Faction to Pirate", true)
+            val fightToTheLast = addToggle("Fight To The Last", true)
+            ui.addSpacer(buttonHeight / 2)
+            val repairAndSetMaxCR = addToggle("Repair and Set Max CR", true)
+            val excludeMissingShips = addToggle("Exclude Ships From Missing Mods", true)
+
+            dialog.setupConfirmCancelSection(confirmText = "Spawn Fleet")
+
+            dialog.onConfirm {
+
+                val settings = FleetSettings()
+                settings.includeAggression = setAggressionDoctrine.isChecked
+                settings.memberSettings.includeOfficer = includeOfficers.isChecked
+                settings.includeCommanderSetFlagship = includeCommanderAsCommander.isChecked
+                settings.includeCommanderAsOfficer = includeCommanderAsOfficer.isChecked
+                settings.excludeMembersWithMissingHullSpec = excludeMissingShips.isChecked
+                val repairAndSetMaxCR = repairAndSetMaxCR.isChecked
+                val setFactionToPirates = setFactionToPirates.isChecked
+
+                val missing = MissingElements()
+                val fleet = createCampaignFleetFromData(
+                    if (setFactionToPirates) data.copy(factionID = Factions.PIRATES) else data,
+                    true, settings = settings, missing = missing
+                )
+
+                reportMissingElementsIfAny(missing)
+
+                if (repairAndSetMaxCR)
+                    FBMisc.fullFleetRepair(fleet.fleetData)
+
+                sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
+                Global.getSector().campaignUI.showInteractionDialog(fleet)
+                if (fightToTheLast.isChecked)
+                    fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
+
+                showMessage("Fleet from clipboard added to campaign")
+            }
         }
 
-        // Hack to prevent Nexerelin version check from opening
-        if (Global.getSettings().modManager.isModEnabled("nexerelin")) {
-            dialog.makeDummyDialog(ui)
-        }
-
-        initPopUpUI(dialog, 500f, 350f)
     }
 
     fun createOfficerCreatorDialog() {

@@ -189,7 +189,7 @@ open class PopUpUIDialog(
                 is ToggleEntry -> {
 
                     val checkbox = ui.addCheckbox(
-                        ui.computeStringWidth(entry.label) + 28f,
+                        ui.computeStringWidth(entry.label) + buttonHeight + 4f,
                         buttonHeight,
                         entry.label,
                         null,
