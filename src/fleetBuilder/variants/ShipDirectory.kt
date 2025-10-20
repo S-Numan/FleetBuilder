@@ -51,15 +51,12 @@ class ShipDirectory(
         return shipEntries
     }
 
-    fun getShipEntry(inputVariantId: String): ShipEntry? {
-        val variantId = inputVariantId
+    fun getShipEntry(variantId: String): ShipEntry? {
         val entry = shipEntries[variantId] ?: return null
 
-        val prefixedId = variantId.prependPrefix()
-
         return entry.copy(
-            variant = entry.variant?.clone()?.apply { hullVariantId = prefixedId },
-            variantData = entry.variantData.copy(variantId = prefixedId)
+            variant = entry.variant?.clone(),
+            variantData = entry.variantData
         )
     }
 
@@ -171,7 +168,7 @@ class ShipDirectory(
         // Add the variant to this class
         shipEntries[savedVariant.hullVariantId] = shipEntry
 
-        return savedVariant.hullVariantId.prependPrefix()
+        return savedVariant.hullVariantId
     }
 
     fun addShip(shipEntry: ShipEntry) {
@@ -268,6 +265,6 @@ class ShipDirectory(
     //private fun ShipVariantAPI.cloneWithPrefix() =
     //    clone().apply { hullVariantId = hullVariantId.prependPrefix() }
 
-    private fun String.prependPrefix() =
-        fullPrefix + this
+    //private fun String.prependPrefix() =
+    //    fullPrefix + this
 }

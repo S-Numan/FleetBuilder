@@ -622,7 +622,7 @@ internal object AutofitPanel {
                     shipDirectory.removeShip(equalVariant.hullVariantId, editVariantFile = false)
                     shipVariantID = shipDirectory.addShip(
                         equalVariant,
-                        setVariantID = equalVariant.hullVariantId.removePrefix(shipDirectory.prefix + "_"),
+                        setVariantID = equalVariant.hullVariantId,
                         missingFromVariant = missing,
                         inputDesiredIndexInMenu = indexInMenu,
                         editVariantFile = false, settings = settings, tagAsImport = isImport
