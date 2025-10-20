@@ -174,6 +174,7 @@ object LoadoutManager {
                         shipEntries[data.variantId] = ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport)
                     } else {
                         val variant = DataVariant.buildVariantFull(data, missing = missing)
+                        variant.addTag("#PREFIX_$prefix")
                         shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport)
                     }
                 }
@@ -315,11 +316,11 @@ object LoadoutManager {
     }
 
     fun getVariantSourceShipDirectory(variant: ShipVariantAPI): ShipDirectory? {
-        for (dir in shipDirectories) {
-            if (variant.hullVariantId.startsWith(dir.prefix + "_")) {
-                return dir
-            }
-        }
+        val sourceTag = variant.tags.firstOrNull { it.startsWith("#PREFIX_") }?.substringAfter("_")
+
+        if (sourceTag != null)
+            return getShipDirectoryWithPrefix(sourceTag)
+
         return null
     }
 
