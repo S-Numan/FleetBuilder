@@ -1,0 +1,201 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "boss",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Guardian 1 (T)",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "guardian_boss"
+        },
+        {
+            "cr": 1,
+            "name": "Guardian 2 (T)",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "guardian_boss"
+        },
+        {
+            "cr": 1,
+            "name": "Guardian 3 (T)",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "guardian_boss"
+        },
+        {
+            "cr": 1,
+            "name": "Guardian 4 (T)",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "guardian_boss"
+        }
+    ],
+    "variants": [{
+        "displayName": "Boss",
+        "fluxCapacitors": 37,
+        "fluxVents": 50,
+        "hullId": "guardian",
+        "hullMods": [
+            "advancedshieldemitter",
+            "eccm",
+            "fluxbreakers",
+            "hardenedshieldemitter",
+            "heavyarmor",
+            "reinforcedhull",
+            "shrouded_thunderhead",
+            "stabilizedshieldemitter"
+        ],
+        "sMods": [
+            "autorepair",
+            "extendedshieldemitter",
+            "magazines"
+        ],
+        "variantId": "guardian_boss",
+        "weaponGroups": [
+            {
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 007": "multineedler",
+                    "WS 008": "multineedler"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 006": "locust",
+                    "WS 009": "locust",
+                    "WS 014": "lightdualmg"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 010": "harpoon",
+                    "WS 011": "harpoon",
+                    "WS 015": "lightdualmg"
+                }
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {"WS 020": "guardian"}
+            },
+            {
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 002": "heavymg",
+                    "WS 003": "heavymg",
+                    "WS 012": "lightdualmg",
+                    "WS 013": "lightdualmg",
+                    "WS 016": "lightdualmg",
+                    "WS 017": "lightdualmg",
+                    "WS 018": "lightdualmg",
+                    "WS 019": "lightdualmg"
+                }
+            }
+        ]
+    }]
+}

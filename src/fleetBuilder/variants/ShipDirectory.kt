@@ -24,31 +24,32 @@ data class ShipEntry(
     val missingElements: MissingElements,
     val timeSaved: Date,
     val indexInMenu: Int,
-    val isImport: Boolean
+    val isImport: Boolean,
+    val dir: ShipDirectory,
 )
 
 class ShipDirectory(
     val dir: String,
     val configPath: String,
     val prefix: String,
-    private val name: String,
-    private val description: String,
-    private val shipEntries: MutableMap<String, ShipEntry>,
+    val name: String,
+    val description: String,
 ) {
-    fun getName(): String {
-        return name
+    private var shipEntries: MutableMap<String, ShipEntry> = mutableMapOf()
+    fun getRawShipEntries(): Map<String, ShipEntry> {
+        return shipEntries
     }
 
-    fun getDescription(): String {
-        return description
+    fun setRawShipEntry(variantId: String, entry: ShipEntry) {
+        shipEntries[variantId] = entry
+    }
+
+    fun containsShip(variantId: String): Boolean {
+        return shipEntries.containsKey(variantId)
     }
 
     fun getDescription(variantId: String): String {
         return description + if (isShipImported(variantId)) " (I)" else ""
-    }
-
-    fun getRawShipEntries(): Map<String, ShipEntry> {
-        return shipEntries
     }
 
     fun getShipEntry(variantId: String): ShipEntry? {
@@ -64,14 +65,6 @@ class ShipDirectory(
         return shipEntries[variantId]?.variant?.clone()
     }
 
-    fun getShipMissings(variantId: String): MissingElements? {
-        return shipEntries[variantId]?.missingElements
-    }
-
-    fun getShipIndexInMenu(variantId: String): Int {
-        return shipEntries[variantId]?.indexInMenu ?: -1
-    }
-
     fun getShips(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         val hullId = hullSpec.getEffectiveHullId()
 
@@ -80,20 +73,12 @@ class ShipDirectory(
             .map { it.variant!!.clone() }
     }
 
+    fun getShipIndexInMenu(variantId: String): Int {
+        return shipEntries[variantId]?.indexInMenu ?: -1
+    }
+
     fun isShipImported(variantId: String): Boolean {
         return shipEntries[variantId]?.isImport ?: false
-    }
-
-    fun getShipPath(variantId: String): String? {
-        return shipEntries[variantId]?.path
-    }
-
-    fun getShipData(variantId: String): DataVariant.ParsedVariantData? {
-        return shipEntries[variantId]?.variantData
-    }
-
-    fun containsShip(variantId: String): Boolean {
-        return shipEntries.containsKey(variantId)
     }
 
     fun removeShip(
@@ -163,7 +148,7 @@ class ShipDirectory(
             Global.getSettings().writeTextFileToCommon("$dir$shipPath", comp)
 
         savedVariant.addTag("#PREFIX_$prefix")
-        val shipEntry = ShipEntry(savedVariant, parsedVariant, shipPath, missingFromVariant, currentTime, newIndex, tagAsImport)
+        val shipEntry = ShipEntry(savedVariant, parsedVariant, shipPath, missingFromVariant, currentTime, newIndex, tagAsImport, this)
 
         // Add the variant to this class
         shipEntries[savedVariant.hullVariantId] = shipEntry
@@ -184,9 +169,9 @@ class ShipDirectory(
         updateDirectory(shipPath, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport)
         Global.getSettings().writeTextFileToCommon("$dir${shipPath}", comp)
 
-        variant?.tags?.forEach { if (it.startsWith("#PREFIX_")) variant.removeTag(it) }
+        variant?.tags?.toList()?.forEach { if (it.startsWith("#PREFIX_")) variant.removeTag(it) }
         variant?.addTag("#PREFIX_$prefix")
-        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, shipEntry.missingElements, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport)
+        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, shipEntry.missingElements, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport, this)
     }
 
     private fun updateShipDirectoryJson(modify: (JSONArray) -> Unit) {
@@ -260,7 +245,7 @@ class ShipDirectory(
         return false
     }
 
-    private val fullPrefix = "${prefix}_"
+    //private val fullPrefix = "${prefix}_"
     //private fun String.stripPrefix() = removePrefix(fullPrefix)
     //private fun ShipVariantAPI.cloneWithPrefix() =
     //    clone().apply { hullVariantId = hullVariantId.prependPrefix() }

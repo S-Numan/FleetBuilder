@@ -1,0 +1,449 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "GTZ_GAMERKILL",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Monitor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_monitor"
+        },
+        {
+            "cr": 0.95,
+            "name": "Brawler (Shrouded/Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Gamerkill_Brawler"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Radiant (Shrouded)",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "missile_specialization": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Gamerkill_radiant"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "monitor",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "solar_shielding"
+            ],
+            "sMods": [
+                "fluxbreakers",
+                "fluxdistributor",
+                "frontemitter"
+            ],
+            "variantId": "Gamerkill_monitor",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "flak",
+                        "WS 002": "flak"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "mininglaser",
+                        "WS 004": "mininglaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "brawler_tritachyon",
+            "hullMods": [
+                "hardened_subsystems",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "eccm",
+                "extendedshieldemitter",
+                "fragment_swarm"
+            ],
+            "variantId": "Gamerkill_Brawler",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "ALTERNATING",
+                "weapons": {
+                    "WS 001": "assaying_rift",
+                    "WS 002": "assaying_rift",
+                    "WS 003": "unstable_fragment",
+                    "WS 004": "unstable_fragment"
+                }
+            }]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 4,
+            "fluxVents": 30,
+            "hullId": "anubis",
+            "hullMods": [
+                "converted_hangar",
+                "defensive_targeting_array",
+                "pointdefenseai",
+                "targetingunit"
+            ],
+            "sMods": [
+                "fluxbreakers",
+                "high_scatter_amp",
+                "magazines"
+            ],
+            "variantId": "Gamerkill_anubis",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "gravitonbeam",
+                        "WS 004": "gravitonbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 001": "guardian",
+                        "WS 002": "guardian"
+                    }
+                }
+            ],
+            "wings": [
+                "longbow_wing",
+                "longbow_wing"
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 1,
+            "fluxVents": 50,
+            "hullId": "radiant",
+            "hullMods": [
+                "advancedshieldemitter",
+                "fluxbreakers",
+                "frontemitter",
+                "hardenedshieldemitter",
+                "shrouded_thunderhead",
+                "stabilizedshieldemitter"
+            ],
+            "sMods": [
+                "autorepair",
+                "magazines",
+                "shrouded_mantle"
+            ],
+            "variantId": "Gamerkill_radiant",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "autopulse",
+                        "WS 001": "autopulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "abyssal_glare"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "locust",
+                        "WS 004": "locust",
+                        "WS 016": "mininglaser",
+                        "WS 017": "mininglaser",
+                        "WS 018": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "irpulse",
+                        "WS 014": "irpulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 005": "sabotpod",
+                        "WS 006": "sabotpod",
+                        "WS 007": "sabotpod",
+                        "WS 008": "sabotpod",
+                        "WS 009": "mininglaser",
+                        "WS 010": "mininglaser",
+                        "WS 011": "mininglaser"
+                    }
+                }
+            ]
+        }
+    ]
+}

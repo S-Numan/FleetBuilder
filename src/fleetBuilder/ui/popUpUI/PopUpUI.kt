@@ -10,7 +10,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.FBMisc.isMouseWithinBounds
-import fleetBuilder.util.PlaceholderDialog
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11

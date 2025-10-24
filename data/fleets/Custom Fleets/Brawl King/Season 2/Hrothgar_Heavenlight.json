@@ -1,0 +1,541 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Hrothgar_Heavenlight",
+    "members": [
+        {
+            "cr": 0.85,
+            "name": "Prometheus Mk2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Prom_1_Hrothgar"
+        },
+        {
+            "cr": 0.85,
+            "name": "Prometheus Mk2 (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Prom_2_Hrothgar"
+        },
+        {
+            "cr": 0.8,
+            "name": "Venture P 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "venture_p_Hrothgar"
+        },
+        {
+            "cr": 0.8,
+            "name": "Venture P 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "venture_p_Hrothgar"
+        },
+        {
+            "cr": 0.8,
+            "name": "Venture P 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "venture_p_Hrothgar"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis (Shrouded)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "anubis_Hrothgar"
+        },
+        {
+            "cr": 1,
+            "name": "Condor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Condor_Hrothgar"
+        },
+        {
+            "cr": 1,
+            "name": "Condor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Condor_Hrothgar"
+        },
+        {
+            "cr": 1,
+            "name": "Condor 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Condor_Hrothgar"
+        },
+        {
+            "cr": 1,
+            "name": "Condor 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Condor_Hrothgar"
+        },
+        {
+            "cr": 1,
+            "name": "Condor 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Condor_Hrothgar"
+        },
+        {
+            "cr": 1,
+            "name": "Condor 6",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "point_defense": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Condor_Hrothgar"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 50,
+            "fluxVents": 50,
+            "hullId": "prometheus2",
+            "hullMods": [
+                "targetingunit",
+                "fluxdistributor"
+            ],
+            "sMods": [
+                "armoredweapons",
+                "turretgyros",
+                "fluxbreakers"
+            ],
+            "variantId": "Prom_1_Hrothgar",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 019": "pilum"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 032": "hephag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 031": "hephag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "heavyac",
+                        "WS 005": "heavyac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "vulcan",
+                        "WS 003": "vulcan",
+                        "WS 006": "vulcan",
+                        "WS 012": "vulcan",
+                        "WS 014": "vulcan",
+                        "WS 015": "vulcan"
+                    }
+                }
+            ],
+            "wings": [
+                "talon_wing",
+                "talon_wing"
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 47,
+            "fluxVents": 43,
+            "hullId": "prometheus2",
+            "hullMods": [
+                "targetingunit",
+                "fluxdistributor"
+            ],
+            "sMods": [
+                "armoredweapons",
+                "turretgyros",
+                "fluxbreakers"
+            ],
+            "variantId": "Prom_2_Hrothgar",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 019": "pilum"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 032": "neoferric_quadcoil"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 031": "neoferric_quadcoil"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "heavy_mass_driver",
+                        "WS 005": "heavy_mass_driver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "vulcan",
+                        "WS 003": "vulcan",
+                        "WS 006": "vulcan",
+                        "WS 012": "vulcan",
+                        "WS 014": "vulcan",
+                        "WS 015": "vulcan"
+                    }
+                }
+            ],
+            "wings": [
+                "talon_wing",
+                "talon_wing"
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 18,
+            "fluxVents": 22,
+            "hullId": "venture_p",
+            "hullMods": ["comp_storage"],
+            "sMods": [
+                "escort_package",
+                "hardenedshieldemitter",
+                "targetingunit"
+            ],
+            "variantId": "venture_p_Hrothgar",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "locust"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "swarmer",
+                        "WS 007": "swarmer"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "hveldriver",
+                        "WS 006": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "flak",
+                        "WS 003": "flak"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "gravitonbeam"}
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 30,
+            "fluxVents": 30,
+            "hullId": "anubis",
+            "hullMods": [
+                "fluxdistributor",
+                "turretgyros"
+            ],
+            "sMods": [
+                "advancedoptics",
+                "targetingunit",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "anubis_Hrothgar",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "abyssal_glare",
+                        "WS 002": "abyssal_glare"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "gazerpod",
+                        "WS 004": "gazerpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavyburst"}
+                }
+            ],
+            "wings": ["wasp_wing"]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "condor",
+            "hullMods": [],
+            "sMods": [
+                "expanded_deck_crew",
+                "unstable_injector",
+                "fluxcoil"
+            ],
+            "variantId": "Condor_Hrothgar",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "mininglaser",
+                        "WS 002": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "swarmer"}
+                }
+            ],
+            "wings": [
+                "trident_wing",
+                "trident_wing"
+            ]
+        }
+    ]
+}

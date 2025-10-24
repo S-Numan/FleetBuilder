@@ -497,7 +497,7 @@ object Dialogs {
             dialog.setupConfirmCancelSection(confirmText = "Import", alignment = Alignment.MID)
 
             dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 600f) { tooltip ->
-                tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.getName()} (${ModSettings.defaultPrefix}) directory", 0f)
+                tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.name} (${ModSettings.defaultPrefix}) directory", 0f)
             }
         }
 
@@ -532,7 +532,7 @@ object Dialogs {
 
             val buttonWidth = dialog.panel.position.width - (dialog.x * 2)
             val buttonHeight = 24f
-            
+
             // Map option → checkbox
             val checkboxes = mutableMapOf<SaveOption, ButtonAPI>()
 

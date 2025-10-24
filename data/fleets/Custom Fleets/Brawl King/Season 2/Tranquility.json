@@ -1,0 +1,384 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Tranquility",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Afflictor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Tranquility_afflictor_Attack"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Tranquility_afflictor_Attack"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Tranquility_anubis_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Tranquility_anubis_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Tranquility_afflictor_Attack"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Tranquility_afflictor_Attack"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Tranquility_afflictor_Attack"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Tranquility_anubis_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Tranquility_anubis_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Tranquility_anubis_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 6",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Tranquility_anubis_Overdriven"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor 6",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Tranquility_afflictor_Attack"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 15,
+            "fluxVents": 0,
+            "hullId": "afflictor",
+            "hullMods": [
+                "autorepair",
+                "targetingunit",
+                "reinforcedhull",
+                "fluxbreakers"
+            ],
+            "sMods": [
+                "adaptive_coils",
+                "hardened_subsystems",
+                "pointdefenseai"
+            ],
+            "variantId": "Tranquility_afflictor_Attack",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightneedler",
+                        "WS 004": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "lrpdlaser"}
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 33,
+            "fluxVents": 0,
+            "hullId": "anubis",
+            "hullMods": [
+                "safetyoverrides",
+                "stabilizedshieldemitter"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "hardened_subsystems",
+                "high_scatter_amp"
+            ],
+            "variantId": "Tranquility_anubis_Overdriven",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "gigacannon"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 002": "guardian"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heavymg",
+                        "WS 004": "heavymg"
+                    }
+                }
+            ],
+            "wings": ["talon_wing"]
+        }
+    ]
+}

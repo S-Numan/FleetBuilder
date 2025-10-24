@@ -1,0 +1,592 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Ymfah",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Prometheus (S/T)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Ymfah_Prom"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis (S)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Ymfah_Anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Fulgent (S)",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Ymfah_FulgentShr"
+        },
+        {
+            "cr": 1,
+            "name": "Fulgent 1",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Ymfah_Fulgent"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab (S)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Ymfah_Scarab"
+        },
+        {
+            "cr": 1,
+            "name": "Grendel 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Ymfah_Grendel"
+        },
+        {
+            "cr": 1,
+            "name": "Grendel 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Ymfah_Grendel"
+        },
+        {
+            "cr": 1,
+            "name": "Grendel 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Ymfah_Grendel"
+        },
+        {
+            "cr": 1,
+            "name": "Grendel 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "field_modulation": 1,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Ymfah_GrendelSO"
+        },
+        {
+            "cr": 1,
+            "name": "Grendel 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "field_modulation": 1,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Ymfah_GrendelSO"
+        },
+        {
+            "cr": 1,
+            "name": "Fulgent 2",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Ymfah_Fulgent"
+        },
+        {
+            "cr": 1,
+            "name": "Centurion",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2
+                }
+            },
+            "variantId": "Ymfah_Centurion"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 40,
+            "hullId": "prometheus2",
+            "hullMods": [
+                "advancedoptics",
+                "armoredweapons",
+                "militarized_subsystems"
+            ],
+            "sMods": [
+                "heavyarmor",
+                "targetingunit",
+                "turretgyros"
+            ],
+            "variantId": "Ymfah_Prom",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 031": "abyssal_glare",
+                        "WS 032": "abyssal_glare"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 019": "locust"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "heavy_mass_driver",
+                        "WS 005": "heavy_mass_driver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "mininglaser",
+                        "WS 003": "mininglaser",
+                        "WS 006": "mininglaser",
+                        "WS 012": "mininglaser",
+                        "WS 013": "mininglaser",
+                        "WS 014": "mininglaser",
+                        "WS 015": "mininglaser",
+                        "WS 016": "mininglaser"
+                    }
+                }
+            ],
+            "wings": [
+                "sarissa_wing",
+                "sarissa_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 32,
+            "fluxVents": 35,
+            "hullId": "anubis",
+            "hullMods": [
+                "frontemitter",
+                "safetyoverrides",
+                "shrouded_lens",
+                "stabilizedshieldemitter"
+            ],
+            "sMods": [
+                "hardened_subsystems",
+                "hardenedshieldemitter",
+                "shrouded_thunderhead"
+            ],
+            "variantId": "Ymfah_Anubis",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "chaingun"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "heavymg"}
+                }
+            ],
+            "wings": ["sarissa_wing"]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 0,
+            "fluxVents": 23,
+            "hullId": "fulgent",
+            "hullMods": [
+                "extendedshieldemitter",
+                "stabilizedshieldemitter",
+                "targetingunit"
+            ],
+            "sMods": [
+                "escort_package",
+                "frontemitter",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "Ymfah_FulgentShr",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "rift_lightning",
+                        "WS 004": "rift_lightning"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "inimical_emanation",
+                        "WS 006": "inimical_emanation"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 25,
+            "fluxVents": 6,
+            "hullId": "fulgent",
+            "hullMods": [
+                "extendedshieldemitter",
+                "frontemitter",
+                "stabilizedshieldemitter",
+                "targetingunit"
+            ],
+            "sMods": [
+                "escort_package",
+                "hardenedshieldemitter",
+                "pointdefenseai"
+            ],
+            "variantId": "Ymfah_Fulgent",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "ioncannon",
+                        "WS 001": "irpulse",
+                        "WS 002": "ioncannon"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "breachpod",
+                        "WS 004": "breachpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "irpulse",
+                        "WS 006": "irpulse"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 15,
+            "fluxVents": 15,
+            "hullId": "scarab",
+            "hullMods": [
+                "frontemitter",
+                "high_scatter_amp",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "hardened_subsystems",
+                "hardenedshieldemitter",
+                "shrouded_thunderhead"
+            ],
+            "variantId": "Ymfah_Scarab",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "mininglaser",
+                    "WS 005": "mininglaser",
+                    "WS 010": "mininglaser"
+                }
+            }]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 35,
+            "fluxVents": 20,
+            "hullId": "grendel",
+            "hullMods": ["phase_anchor"],
+            "sMods": [
+                "armoredweapons",
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "variantId": "Ymfah_Grendel",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 010": "hveldriver",
+                    "WS 011": "hveldriver",
+                    "WS 012": "hveldriver",
+                    "WS 013": "hveldriver",
+                    "WS 014": "hveldriver"
+                }
+            }]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 31,
+            "fluxVents": 0,
+            "hullId": "grendel",
+            "hullMods": [
+                "armoredweapons",
+                "hardened_subsystems",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "auxiliarythrusters",
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "variantId": "Ymfah_GrendelSO",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "chaingun",
+                        "WS 012": "chaingun",
+                        "WS 014": "chaingun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 011": "heavymg",
+                        "WS 013": "heavymg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 15,
+            "fluxVents": 6,
+            "hullId": "centurion",
+            "hullMods": [
+                "frontemitter",
+                "heavyarmor",
+                "stabilizedshieldemitter",
+                "targetingunit"
+            ],
+            "sMods": [
+                "advancedoptics",
+                "hardenedshieldemitter",
+                "pointdefenseai"
+            ],
+            "variantId": "Ymfah_Centurion",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "taclaser",
+                    "WS 002": "taclaser",
+                    "WS 004": "taclaser",
+                    "WS 005": "taclaser"
+                }
+            }]
+        }
+    ]
+}

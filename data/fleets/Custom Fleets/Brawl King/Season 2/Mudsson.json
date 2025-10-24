@@ -1,0 +1,654 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Mudsson",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Legion (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 1,
+                    "damage_control": 2,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1
+                }
+            },
+            "variantId": "Mud_Legion"
+        },
+        {
+            "cr": 1,
+            "name": "Grendel",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Mud_Grendel"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis (Shrouded)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Mud_anubisShr"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Mud_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Scintilla (Threat)",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Mud_scintillaThreat"
+        },
+        {
+            "cr": 1,
+            "name": "Scintilla 1",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Mud_scintilla"
+        },
+        {
+            "cr": 1,
+            "name": "Scintilla 2",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Mud_scintilla"
+        },
+        {
+            "cr": 1,
+            "name": "Omen (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Mud_omenThreat"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Mud_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Mud_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2
+                }
+            },
+            "variantId": "Mud_afflictor"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2
+                }
+            },
+            "variantId": "Mud_afflictor"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 55,
+            "hullId": "legion",
+            "hullMods": [
+                "expanded_deck_crew",
+                "fragment_swarm"
+            ],
+            "sMods": [
+                "ballistic_rangefinder",
+                "secondary_fabricator",
+                "targetingunit"
+            ],
+            "variantId": "Mud_Legion",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "swarm_launcher",
+                        "WS 007": "swarm_launcher"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "neoferric_quadcoil",
+                        "WS 001": "hellbore"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 018": "railgun",
+                        "WS 019": "railgun",
+                        "WS 020": "railgun",
+                        "WS 021": "railgun"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "dualflak",
+                        "WS 003": "dualflak",
+                        "WS 005": "dualflak"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "mininglaser",
+                        "WS 009": "mininglaser"
+                    }
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing",
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 35,
+            "fluxVents": 0,
+            "hullId": "grendel",
+            "hullMods": [
+                "safetyoverrides",
+                "turretgyros"
+            ],
+            "sMods": [
+                "armoredweapons",
+                "hardened_subsystems",
+                "heavyarmor"
+            ],
+            "variantId": "Mud_Grendel",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "heavymg",
+                        "WS 011": "chaingun",
+                        "WS 012": "dualflak",
+                        "WS 013": "chaingun",
+                        "WS 014": "heavymg"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 007": "sabot",
+                        "WS 008": "sabot",
+                        "WS 009": "sabot"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 1,
+            "fluxVents": 35,
+            "hullId": "anubis",
+            "hullMods": [
+                "extendedshieldemitter",
+                "frontemitter"
+            ],
+            "sMods": [
+                "converted_hangar",
+                "magazines",
+                "shrouded_thunderhead"
+            ],
+            "variantId": "Mud_anubisShr",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 002": "guardian"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "abyssal_glare"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "phasecl",
+                        "WS 004": "phasecl"
+                    }
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 34,
+            "fluxVents": 0,
+            "hullId": "anubis",
+            "hullMods": [
+                "extendedshieldemitter",
+                "targetingunit"
+            ],
+            "sMods": [
+                "converted_hangar",
+                "frontemitter",
+                "magazines"
+            ],
+            "variantId": "Mud_anubis",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "phasecl",
+                        "WS 004": "phasecl"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 002": "guardian"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "gigacannon"}
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 0,
+            "fluxVents": 3,
+            "hullId": "scintilla",
+            "hullMods": [
+                "expanded_deck_crew",
+                "fragment_swarm"
+            ],
+            "sMods": [
+                "fragment_coordinator",
+                "frontemitter",
+                "secondary_fabricator"
+            ],
+            "variantId": "Mud_scintillaThreat",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 007": "seeker_fragment",
+                        "WS 008": "seeker_fragment"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "swarm_launcher"}
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "scintilla",
+            "hullMods": [
+                "autorepair",
+                "extendedshieldemitter",
+                "stabilizedshieldemitter",
+                "unstable_injector"
+            ],
+            "sMods": [
+                "eccm",
+                "expanded_deck_crew",
+                "frontemitter"
+            ],
+            "variantId": "Mud_scintilla",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {"WS 006": "pilum"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 007": "heatseeker",
+                        "WS 008": "heatseeker"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "lrpdlaser",
+                        "WS 001": "lrpdlaser"
+                    }
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 15,
+            "fluxVents": 2,
+            "hullId": "omen",
+            "hullMods": [
+                "fragment_swarm",
+                "hardenedshieldemitter"
+            ],
+            "sMods": [
+                "autorepair",
+                "fluxcoil",
+                "secondary_fabricator"
+            ],
+            "variantId": "Mud_omenThreat",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {"WS 003": "seeker_fragment"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 12,
+            "fluxVents": 15,
+            "hullId": "monitor",
+            "hullMods": ["autorepair"],
+            "sMods": [
+                "fluxdistributor",
+                "frontemitter",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "Mud_monitor",
+            "weaponGroups": [{
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "flak",
+                    "WS 002": "flak"
+                }
+            }]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 15,
+            "fluxVents": 11,
+            "hullId": "afflictor",
+            "hullMods": [],
+            "sMods": [
+                "adaptive_coils",
+                "hardened_subsystems",
+                "pointdefenseai"
+            ],
+            "variantId": "Mud_afflictor",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "lightneedler",
+                        "WS 002": "lightneedler",
+                        "WS 004": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightag"}
+                }
+            ]
+        }
+    ]
+}

@@ -11,9 +11,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.persistence.fleet.FleetSettings
 import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
-import fleetBuilder.persistence.member.DataMember.buildMember
 import fleetBuilder.persistence.member.DataMember.copyMember
-import fleetBuilder.persistence.member.DataMember.getMemberDataFromMember
 import fleetBuilder.persistence.person.DataPerson.copyPerson
 import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.ReflectionMisc
@@ -133,6 +131,8 @@ class CopyFleet : BaseCommand {
                     }
                     fleet.fleetData
                 }
+
+            fleetData.fleet.setFaction(Factions.NEUTRAL)
 
             var aggression: Int
 

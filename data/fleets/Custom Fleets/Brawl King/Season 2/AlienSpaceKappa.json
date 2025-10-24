@@ -1,0 +1,429 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "IroncladLion",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Hammerhead",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "IronClad_hammerhead"
+        },
+        {
+            "cr": 1,
+            "name": "Onslaught 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "IronClad_onslaught"
+        },
+        {
+            "cr": 1,
+            "name": "Onslaught 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "gunnery_implants": 1,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 1,
+                    "polarized_armor": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "IronClad_onslaught"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "IronClad_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "IronClad_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "IronClad_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "IronClad_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "IronClad_anubis"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 17,
+            "fluxVents": 20,
+            "hullId": "hammerhead",
+            "hullMods": ["targetingunit"],
+            "sMods": [
+                "fluxdistributor",
+                "hardenedshieldemitter",
+                "missleracks"
+            ],
+            "variantId": "IronClad_hammerhead",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "hveldriver",
+                        "WS 002": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "harpoon",
+                        "WS 004": "harpoon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "lightdualac",
+                        "WS 006": "lightdualac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "pdlaser",
+                        "WS 008": "pdlaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 2,
+            "fluxVents": 50,
+            "hullId": "onslaught_xiv",
+            "hullMods": [
+                "armoredweapons",
+                "autorepair",
+                "auxiliarythrusters",
+                "fluxbreakers",
+                "heavyarmor",
+                "magazines",
+                "targetingunit"
+            ],
+            "sMods": [
+                "fluxdistributor",
+                "shield_shunt",
+                "turretgyros"
+            ],
+            "variantId": "IronClad_onslaught",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 016": "tpc",
+                        "WS 017": "tpc"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 021": "typhoon",
+                        "WS 022": "typhoon",
+                        "WS 023": "typhoon",
+                        "WS 024": "typhoon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 019": "mjolnir"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 018": "mark9",
+                        "WS 020": "mark9"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 012": "heavymortar",
+                        "WS 013": "heavymortar"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "hveldriver",
+                        "WS 003": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "vulcan",
+                        "WS 004": "vulcan",
+                        "WS 005": "vulcan",
+                        "WS 006": "vulcan",
+                        "WS 007": "dualflak",
+                        "WS 008": "vulcan",
+                        "WS 009": "vulcan",
+                        "WS 010": "flak",
+                        "WS 011": "flak",
+                        "WS 014": "flak",
+                        "WS 015": "flak"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 7,
+            "fluxVents": 30,
+            "hullId": "anubis",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "targetingunit"
+            ],
+            "sMods": [
+                "converted_hangar",
+                "fluxdistributor",
+                "magazines"
+            ],
+            "variantId": "IronClad_anubis",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "gravitonbeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "typhoon"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 001": "guardian",
+                        "WS 002": "guardian"
+                    }
+                }
+            ],
+            "wings": [
+                "dagger_wing",
+                "longbow_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 7,
+            "hullId": "monitor",
+            "hullMods": [
+                "fluxbreakers",
+                "hardened_subsystems",
+                "hardenedshieldemitter",
+                "targetingunit"
+            ],
+            "sMods": [
+                "eccm",
+                "ecm",
+                "nav_relay"
+            ],
+            "variantId": "IronClad_monitor",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "flak",
+                        "WS 002": "flak"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 003": "heatseeker",
+                        "WS 004": "heatseeker"
+                    }
+                }
+            ]
+        }
+    ]
+}

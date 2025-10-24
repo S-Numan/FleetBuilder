@@ -460,7 +460,7 @@ internal object AutofitPanel {
             applySModsButton = addToggleButton(
                 label = "Apply SMods",
                 memoryKey = "\$FBA_applySMods",
-                tooltipText = "Spend story points to apply SMods to your ship. If S-mods are installed, the autofit cannot be undone.",
+                tooltipText = "Spend story points to apply SMods to your ship.\n\nIf S-mods are installed, the autofit cannot be undone.",
                 default = false
             )
         }
@@ -608,13 +608,19 @@ internal object AutofitPanel {
 
                     Global.getSoundPlayer().playUISound("ui_button_pressed", 0.94f, 1f)
 
-                    var missing = shipDirectory.getShipMissings(equalVariant.hullVariantId)
+                    val missing = shipDirectory.getShipEntry(equalVariant.hullVariantId)?.missingElements
                     if (missing == null) {
-                        //equalVariant exists, but not from this shipDirectory
-                        shipDirectory = LoadoutManager.getVariantSourceShipDirectory(equalVariant)
-                            ?: return@onClickReleaseNoInitClick
-                        missing = shipDirectory.getShipMissings(equalVariant.hullVariantId)
-                            ?: return@onClickReleaseNoInitClick
+                        val newShipDirectory = LoadoutManager.getVariantSourceShipDirectory(equalVariant)
+                        if (newShipDirectory != null) {//equalVariant exists, but not from this shipDirectory
+                            //shipDirectory = newShipDirectory
+                            //missing = shipDirectory.getShipEntry(equalVariant.hullVariantId)?.missingElements
+                            //    ?: return@onClickReleaseNoInitClick
+                            DisplayMessage.showError("ERROR. Cross ShipDirectory UI is no longer implemented.")
+                            return@onClickReleaseNoInitClick
+                        } else {
+                            DisplayMessage.showError("ERROR. Could not find variant, but variant already existed?")
+                            return@onClickReleaseNoInitClick
+                        }
                     }
 
                     val isImport = shipDirectory.isShipImported(equalVariant.hullVariantId)

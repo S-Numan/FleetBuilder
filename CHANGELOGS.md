@@ -1,3 +1,8 @@
+## 1.25.0
+- Tags starting with the hash character '#' will now not be saved when saving a variant or officer.
+- Fix Copy Fleet command failing to save titlescreen mission commanders.
+- A long list of other small backend changes and simplifications I cannot remember.
+
 ## 1.24.0
 - Patch to fix CTRL + V pasting with the new ConsoleCommands 4.0
 - Variant comparison now ignores weapon group slots without weapons.

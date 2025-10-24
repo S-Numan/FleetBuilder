@@ -1,0 +1,541 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Jaydee8652",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Radiant (Shrouded)",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "radiant_jdp_radiant"
+        },
+        {
+            "cr": 1,
+            "name": "Heron (Shrouded/Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "timid",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "heron_jdp_heron"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "anubis_jdp_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "anubis_jdp_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "anubis_jdp_anubis"
+        },
+        {
+            "cr": 0.85,
+            "name": "Buffalo MK2 (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "timid",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "buffalo2_jdp_buffalo2"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "omen_jdp_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "omen_jdp_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "omen_jdp_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "omen_jdp_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "afflictor_d_pirates_jdp_afflictor"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab (Shrouded)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "scarab_jdp_scarab"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 31,
+            "fluxVents": 55,
+            "hullId": "radiant",
+            "hullMods": ["frontemitter"],
+            "sMods": [
+                "advancedoptics",
+                "shrouded_mantle",
+                "targetingunit"
+            ],
+            "variantId": "radiant_jdp_radiant",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "abyssal_glare",
+                        "WS 001": "abyssal_glare",
+                        "WS 002": "abyssal_glare",
+                        "WS 003": "abyssal_glare",
+                        "WS 004": "abyssal_glare"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "assaying_rift",
+                        "WS 006": "assaying_rift",
+                        "WS 007": "assaying_rift",
+                        "WS 008": "assaying_rift"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Timid",
+            "fluxCapacitors": 0,
+            "fluxVents": 8,
+            "hullId": "heron",
+            "hullMods": [
+                "fragment_swarm",
+                "frontemitter"
+            ],
+            "sMods": [
+                "eccm",
+                "fragment_coordinator",
+                "secondary_fabricator"
+            ],
+            "variantId": "heron_jdp_heron",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "inimical_emanation"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "swarm_launcher"}
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 23,
+            "fluxVents": 35,
+            "hullId": "anubis",
+            "hullMods": [
+                "frontemitter",
+                "hardenedshieldemitter",
+                "pointdefenseai",
+                "stabilizedshieldemitter"
+            ],
+            "sMods": [
+                "fluxdistributor",
+                "magazines",
+                "targetingunit"
+            ],
+            "variantId": "anubis_jdp_anubis",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "heavyneedler"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "irautolance"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 002": "guardian"
+                    }
+                }
+            ],
+            "wings": ["flash_wing"]
+        },
+        {
+            "displayName": "Timid",
+            "fluxCapacitors": 0,
+            "fluxVents": 5,
+            "hullId": "buffalo2",
+            "hullMods": [
+                "fragment_swarm",
+                "frontshield"
+            ],
+            "sMods": [
+                "converted_hangar",
+                "fragment_coordinator",
+                "secondary_fabricator"
+            ],
+            "variantId": "buffalo2_jdp_buffalo2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "pdburst"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "kinetic_fragments",
+                        "WS 005": "kinetic_fragments",
+                        "WS 006": "kinetic_fragments"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "swarm_launcher"}
+                }
+            ],
+            "wings": ["wasp_wing"]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 3,
+            "fluxVents": 15,
+            "hullId": "omen",
+            "hullMods": [
+                "magazines",
+                "missile_autoloader"
+            ],
+            "sMods": [
+                "fluxdistributor",
+                "hardenedshieldemitter",
+                "stabilizedshieldemitter"
+            ],
+            "variantId": "omen_jdp_omen",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "reaper"}
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 5,
+            "hullId": "afflictor_d_pirates",
+            "hullMods": ["phase_anchor"],
+            "sMods": [
+                "fluxdistributor",
+                "hardened_subsystems",
+                "magazines"
+            ],
+            "variantId": "afflictor_d_pirates_jdp_afflictor",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightneedler",
+                        "WS 003": "lightneedler"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 13,
+            "hullId": "scarab",
+            "hullMods": [
+                "frontemitter",
+                "shrouded_thunderhead",
+                "targetingunit"
+            ],
+            "sMods": [
+                "armoredweapons",
+                "high_scatter_amp",
+                "magazines"
+            ],
+            "variantId": "scarab_jdp_scarab",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdburst",
+                        "WS 005": "pdburst",
+                        "WS 010": "pdburst"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "pdburst",
+                        "WS 003": "pdburst"
+                    }
+                }
+            ]
+        }
+    ]
+}
