@@ -296,10 +296,12 @@ object PlayerSaveUtil {
         }
 
         if (handleCargo && compiled.cargo != null) {
+            cargo.clear()
             cargo.addAll(compiled.cargo)
         }
 
         if (handleCredits && compiled.cargo != null) {
+            cargo.credits.set(0f)
             cargo.credits.add(compiled.cargo!!.credits.get())
         }
 
@@ -316,14 +318,24 @@ object PlayerSaveUtil {
         }
 
         if (handleKnownHullmods && compiled.hullMods != null) {
+            sector.characterData.hullMods.toList().forEach {
+                val spec = runCatching { Global.getSettings().getHullModSpec(it) }.getOrNull()
+                if (spec != null && !spec.isAlwaysUnlocked && !spec.isHidden && !spec.isHiddenEverywhere) {
+                    sector.characterData.removeHullMod(spec.id)
+                }
+            }
+
             val sector = Global.getSector()
             for (modId in compiled.hullMods!!) {
-                sector.playerFaction.addKnownHullMod(modId)
+                //sector.playerFaction.addKnownHullMod(modId)
                 sector.characterData.addHullMod(modId)
             }
         }
 
         if (handleKnownBlueprints) {
+            sector.playerFaction.knownShips.clear()
+            sector.playerFaction.knownFighters.clear()
+            sector.playerFaction.knownWeapons.clear()
             for (id in compiled.shipBlueprints) {
                 sector.playerFaction.addKnownShip(id, true)
             }
