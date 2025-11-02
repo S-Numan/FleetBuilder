@@ -472,12 +472,26 @@ object PlayerSaveUtil {
                     val bar = bars.getOrNull(barIndex)
                     val slot = bar?.getOrNull(slotIndex)
 
-                    val abilitySpec = runCatching { Global.getSettings().getAbilitySpec(savedSlot.abilityId) }.getOrNull()
-                    val hyperspaceAbilitySpec = runCatching { Global.getSettings().getAbilitySpec(savedSlot.inHyperAbilityId) }.getOrNull()
+                    fun convertMissing(id: String?): String? {
+                        if (id == null)
+                            return null
+                        val spec = runCatching { Global.getSettings().getAbilitySpec(id) }.getOrNull()
+                        return if (spec != null)
+                            spec.id
+                        else {
+                            when (id) {
+                                "SKR_emergency_burn" -> convertMissing(Abilities.EMERGENCY_BURN)
+                                "SKR_sustained_burn" -> convertMissing(Abilities.SUSTAINED_BURN)
+                                "SKR_neutrino_detector" -> convertMissing(Abilities.GRAVITIC_SCAN)
+                                "SKR_remote_survey" -> convertMissing(Abilities.REMOTE_SURVEY)
+                                else -> null
+                            }
+                        }
+                    }
 
                     slot?.apply {
-                        abilityId = abilitySpec?.id
-                        inHyperAbilityId = hyperspaceAbilitySpec?.id
+                        abilityId = convertMissing(savedSlot.abilityId)
+                        inHyperAbilityId = convertMissing(savedSlot.inHyperAbilityId)
                     }
                 }
             }
