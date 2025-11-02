@@ -105,7 +105,8 @@ Hold Shift or Alt to multiply the added value by 10
 Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,Misc
 storeOfficersInCargo,Store Officers In Cargo,Boolean,false,,"Officers stay with their ships when putting a ship in storage, thus removing them from your fleet.
 Upon retrieving the ship from storage, the officer returns to your fleet as its pilot.",,,Misc
-unassignPlayer,Unassign Player,Boolean,false,,Remove your player officer with a right click: (places them in a command shuttle that can't fight or be copied) (Commander bonus still applies),,,Misc
+unassignPlayer,Unassign Player,Boolean,false,,"Remove your player officer with a right click: (places them in a command shuttle that can't fight or be copied) (Commander bonus still applies)
+This is enabled by default if Cheats are enabled.",,,Misc
 modPickerFilter,Mod Picker Filter,Boolean,false,,"Functions the same as the Fleet Filter, but for the hull mod picker.",,,Misc
 cargoAutoManager,Enable Cargo Auto Manager,Boolean,true,,"Right click a storage submarket to pull up the Cargo Auto Manager.
 
