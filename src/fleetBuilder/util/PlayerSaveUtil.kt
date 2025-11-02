@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.impl.campaign.ids.Factions
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
+import com.fs.starfarer.api.impl.campaign.ids.Abilities
+import com.fs.starfarer.campaign.CampaignUIPersistentData
 import fleetBuilder.config.FBTxt
 import fleetBuilder.persistence.cargo.CargoSerialization.getCargoFromJson
 import fleetBuilder.persistence.cargo.CargoSerialization.saveCargoToJson
@@ -22,8 +22,15 @@ import fleetBuilder.variants.MissingElementsExtended
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
+import starficz.ReflectionUtils.invoke
 
 object PlayerSaveUtil {
+
+    data class AbilityPair(
+        var abilityId: String? = null,
+        var inHyperAbilityId: String? = null
+    )
+
     //TODO, an option that enables grabbing things from your markets. Items in storage, ships in storage, items in industries. Then putting it all in an abandoned station somewhere in the new sector on load.
     fun createPlayerSaveJson(
         handleCargo: Boolean = true,
@@ -33,7 +40,8 @@ object PlayerSaveUtil {
         handleFleet: Boolean = true,
         handleCredits: Boolean = true,
         handleKnownHullmods: Boolean = true,
-        handleOfficers: Boolean = true
+        handleOfficers: Boolean = true,
+        handleAbilityBar: Boolean = true,
     ): JSONObject {
         val json = JSONObject()
         val sector = Global.getSector()
@@ -89,6 +97,67 @@ object PlayerSaveUtil {
             json.put("knownHullMods", JSONArray(hullMods))
         }
 
+        if (handleAbilityBar) {
+            val bars: Array<Array<CampaignUIPersistentData.AbilitySlot>> = try {
+                @Suppress("UNCHECKED_CAST")
+                Global.getSector().uiData.abilitySlotsAPI.invoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
+            } catch (e: Exception) {
+                DisplayMessage.showError("Failed to save Ability Bar")
+                emptyArray()
+            }
+
+            val savedBars = List(bars.size) { List(10) { AbilityPair() } }
+
+            bars.forEachIndexed { barIndex, bar ->
+                bar.forEach { slot ->
+                    if (slot.slotId >= 10) return@forEach
+                    savedBars[barIndex][slot.slotId].apply {
+                        if (!slot.abilityId.isNullOrEmpty()) abilityId = slot.abilityId
+                        if (!slot.inHyperAbilityId.isNullOrEmpty()) inHyperAbilityId = slot.inHyperAbilityId
+                    }
+                }
+            }
+
+
+            fun convertSavedBarsToJson(savedBars: List<List<AbilityPair>>): JSONArray {
+                val barsJson = JSONArray()
+
+                savedBars.forEachIndexed { barIndex, bar ->
+                    val barObject = JSONObject()
+                    barObject.put("barIndex", barIndex)
+
+                    val slotsJson = JSONArray()
+                    bar.forEachIndexed { slotId, pair ->
+                        if (!pair.abilityId.isNullOrEmpty() || !pair.inHyperAbilityId.isNullOrEmpty()) {
+                            val slotArray = JSONArray().apply {
+                                put(pair.abilityId ?: "")
+                                put(pair.inHyperAbilityId ?: "")
+                            }
+
+                            val slotObject = JSONObject().apply {
+                                put("slotId", slotId)
+                                put("values", slotArray)
+                            }
+
+                            slotsJson.put(slotObject)
+                        }
+                    }
+
+                    // Only add the bar if it has non-empty slots
+                    if (slotsJson.length() > 0) {
+                        barObject.put("slots", slotsJson)
+                        barsJson.put(barObject)
+                    }
+                }
+
+                return barsJson
+            }
+
+
+
+            json.put("abilityBars", convertSavedBarsToJson(savedBars))
+        }
+
         return json
     }
 
@@ -101,7 +170,8 @@ object PlayerSaveUtil {
         var shipBlueprints: List<String> = listOf(),
         var fighterBlueprints: List<String> = listOf(),
         var weaponBlueprints: List<String> = listOf(),
-        var hullMods: List<String>? = null
+        var hullMods: List<String>? = null,
+        var abilityBars: List<List<AbilityPair>>? = null,
     ) {
         fun isEmpty(): Boolean {
             return fleet == null &&
@@ -112,7 +182,8 @@ object PlayerSaveUtil {
                     shipBlueprints.isEmpty() &&
                     fighterBlueprints.isEmpty() &&
                     weaponBlueprints.isEmpty() &&
-                    (hullMods == null || hullMods!!.isEmpty())
+                    (hullMods == null || hullMods!!.isEmpty()) &&
+                    abilityBars == null
         }
     }
 
@@ -262,6 +333,45 @@ object PlayerSaveUtil {
             compiled.weaponBlueprints = weaponBlueprints
         }
 
+        if (json.has("abilityBars")) {
+            try {
+                fun convertJsonToSavedBars(
+                    barsJson: JSONArray,
+                    barCount: Int = 5,
+                    slotCount: Int = 10
+                ): List<List<AbilityPair>> {
+                    // Initialize a blank savedBars structure
+                    val savedBars = MutableList(barCount) { MutableList(slotCount) { AbilityPair() } }
+
+                    for (i in 0 until barsJson.length()) {
+                        val barObject = barsJson.getJSONObject(i)
+                        val barIndex = barObject.getInt("barIndex")
+                        val slotsArray = barObject.optJSONArray("slots") ?: continue
+
+                        for (j in 0 until slotsArray.length()) {
+                            val slotObject = slotsArray.getJSONObject(j)
+                            val slotId = slotObject.getInt("slotId")
+                            val values = slotObject.getJSONArray("values")
+
+                            val abilityId = values.optString(0, null).takeIf { it.isNotEmpty() }
+                            val inHyperAbilityId = values.optString(1, null).takeIf { it.isNotEmpty() }
+
+                            // Reconstruct AbilityPair in the same position
+                            savedBars[barIndex][slotId] = AbilityPair(abilityId, inHyperAbilityId)
+                        }
+                    }
+
+                    return savedBars
+                }
+
+                val savedBars = convertJsonToSavedBars(json.optJSONArray("abilityBars") ?: JSONArray())
+
+                compiled.abilityBars = savedBars
+            } catch (e: Exception) {
+                showError(FBTxt.txt("failed_to_load_ability_bars"), e)
+            }
+        }
+
         return compiled to missing
     }
 
@@ -274,7 +384,8 @@ object PlayerSaveUtil {
         handleFleet: Boolean = true,
         handleCredits: Boolean = true,
         handleKnownHullmods: Boolean = true,
-        handleOfficers: Boolean = true
+        handleOfficers: Boolean = true,
+        handleAbilityBar: Boolean = true,
     ) {
         val sector = Global.getSector()
 
@@ -346,6 +457,31 @@ object PlayerSaveUtil {
                 sector.playerFaction.addKnownWeapon(id, true)
             }
         }
+
+        if (handleAbilityBar) {
+            val bars: Array<Array<CampaignUIPersistentData.AbilitySlot>> = try {
+                @Suppress("UNCHECKED_CAST")
+                Global.getSector().uiData.abilitySlotsAPI.invoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
+            } catch (e: Exception) {
+                showError(FBTxt.txt("failed_to_load_ability_bars"), e)
+                emptyArray()
+            }
+
+            compiled.abilityBars?.forEachIndexed { barIndex, savedBar ->
+                savedBar.forEachIndexed { slotIndex, savedSlot ->
+                    val bar = bars.getOrNull(barIndex)
+                    val slot = bar?.getOrNull(slotIndex)
+
+                    val abilitySpec = runCatching { Global.getSettings().getAbilitySpec(savedSlot.abilityId) }.getOrNull()
+                    val hyperspaceAbilitySpec = runCatching { Global.getSettings().getAbilitySpec(savedSlot.inHyperAbilityId) }.getOrNull()
+
+                    slot?.apply {
+                        abilityId = abilitySpec?.id
+                        inHyperAbilityId = hyperspaceAbilitySpec?.id
+                    }
+                }
+            }
+        }
     }
 
     fun loadPlayerSaveJson(
@@ -357,7 +493,8 @@ object PlayerSaveUtil {
         handleFleet: Boolean = true,
         handleCredits: Boolean = true,
         handleKnownHullmods: Boolean = true,
-        handleOfficers: Boolean = true
+        handleOfficers: Boolean = true,
+        handleAbilityBar: Boolean = true,
     ): MissingElements {
         val (compiled, missing) = compilePlayerSaveJson(json)
 
@@ -370,7 +507,8 @@ object PlayerSaveUtil {
             handleFleet,
             handleCredits,
             handleKnownHullmods,
-            handleOfficers
+            handleOfficers,
+            handleAbilityBar
         )
 
         return missing

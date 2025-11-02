@@ -521,14 +521,15 @@ object Dialogs {
         OFFICERS("Include Officers", true),
         REPUTATION("Include Reputation", true),
         CARGO("Include Cargo", true),
-        CREDITS("Include Credits", true);
+        CREDITS("Include Credits", true),
+        ABILITYBAR("Include Ability Bar", true);
     }
 
 
     fun createSaveTransferDialog() {
         val dialog = BasePopUpUI(headerTitle = "Save Transfer")
 
-        dialog.onCreateUI(300f, 360f) { ui ->
+        dialog.onCreateUI(300f, 384f) { ui ->
 
             val buttonWidth = dialog.panel.position.width - (dialog.x * 2)
             val buttonHeight = 24f
@@ -574,7 +575,8 @@ object Dialogs {
                     handleFleet = isEnabled(SaveOption.FLEET),
                     handleCredits = isEnabled(SaveOption.CREDITS),
                     handleKnownHullmods = isEnabled(SaveOption.HULLMODS),
-                    handleOfficers = isEnabled(SaveOption.OFFICERS)
+                    handleOfficers = isEnabled(SaveOption.OFFICERS),
+                    handleAbilityBar = isEnabled(SaveOption.ABILITYBAR)
                 )
 
                 setClipboardText(json.toString(4))
@@ -612,7 +614,8 @@ object Dialogs {
                     handleFleet = isEnabled(SaveOption.FLEET),
                     handleCredits = isEnabled(SaveOption.CREDITS),
                     handleKnownHullmods = isEnabled(SaveOption.HULLMODS),
-                    handleOfficers = isEnabled(SaveOption.OFFICERS)
+                    handleOfficers = isEnabled(SaveOption.OFFICERS),
+                    handleAbilityBar = isEnabled(SaveOption.ABILITYBAR)
                 )
 
                 DisplayMessage.showMessage("Save loaded from clipboard")
