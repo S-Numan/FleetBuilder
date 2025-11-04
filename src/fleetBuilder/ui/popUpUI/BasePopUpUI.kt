@@ -7,6 +7,7 @@ import fleetBuilder.util.DialogUtil.initPopUpUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import starficz.onClick
+import starficz.width
 import java.awt.Color
 
 open class BasePopUpUI(
@@ -45,6 +46,9 @@ open class BasePopUpUI(
         panel.addUIElement(ui).inTL(x, y)
     }
 
+    var bufferedWidth = 0f
+    var bufferedHeight = 0f
+
     private var createUICallback: (() -> Unit)? = null
     fun onCreateUI(
         width: Float = Global.getSettings().screenWidth / 2,
@@ -55,6 +59,8 @@ open class BasePopUpUI(
         createUICallback = {
             // build the UI once here
             val ui = createStandardContentArea()
+            bufferedWidth = panel.position.width - (x * 2)
+            bufferedHeight = panel.width - (y * 2)
             // run the user code
             callback(ui)
             // add UI automatically afterward
