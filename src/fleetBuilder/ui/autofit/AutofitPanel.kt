@@ -20,6 +20,7 @@ import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSelector.AutofitSelectorPlugin.ComparisonStatus
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
+import fleetBuilder.ui.popUpUI.BasePopUpUI
 import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
@@ -533,17 +534,15 @@ internal object AutofitPanel {
                     if (sModsToApply.isEmpty())
                         return@onClickRelease
 
-                    val areYouSureDialog = PopUpUIDialog("Use Story Points to Apply SMods?", addConfirmButton = true, addCancelButton = true)
-                    areYouSureDialog.cancelButtonName = "No"
-                    areYouSureDialog.confirmButtonName = "Yes"
-                    areYouSureDialog.confirmAndCancelAlignment = Alignment.MID
-                    areYouSureDialog.addParagraph("This will consume ${sModsToApply.size} Story points and give ${bonusXpToGrant.toInt()} bonus xp", alignment = Alignment.MID)
-
-                    areYouSureDialog.onConfirm { _ ->
+                    val dialog = BasePopUpUI(headerTitle = "Use Story Points to Apply SMods")
+                    dialog.onCreateUI(450f, 110f) { ui ->
+                        ui.addPara("This will consume ${sModsToApply.size} Story points and give ${bonusXpToGrant.toInt()} bonus xp", 0f).setAlignment(Alignment.MID)
+                        dialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
+                    }
+                    dialog.onConfirm { ->
                         applyVariant(selectorPlugin.autofitSpec, true)
                     }
 
-                    DialogUtil.initPopUpUI(areYouSureDialog, 450f, 110f)
                 } else {
                     applyVariant(selectorPlugin.autofitSpec)
                 }
