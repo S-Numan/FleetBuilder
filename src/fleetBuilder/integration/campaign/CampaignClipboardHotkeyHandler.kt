@@ -348,7 +348,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                                 CommanderShuttle.removePlayerShuttle()
                         }
 
-                        ModSettings.unassignPlayer -> {
+                        ModSettings.unassignPlayer() -> {
                             CommanderShuttle.addPlayerShuttle()
                         }
 

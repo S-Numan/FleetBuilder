@@ -104,7 +104,7 @@ class CatchStoreMemberButton : CampaignInputListener {
                     ?: return@forEach
                 val captain = mouseOverMember.captain
 
-                if (captain.isPlayer && ModSettings.unassignPlayer && !mouseOverMember.variant.hasHullMod(ModSettings.commandShuttleId)) {
+                if (captain.isPlayer && ModSettings.unassignPlayer() && !mouseOverMember.variant.hasHullMod(ModSettings.commandShuttleId)) {
                     storePlayerDelay = true
                     lastStoreHoverStatus = mouseOverMember
                 } else if (ModSettings.storeOfficersInCargo)
@@ -113,7 +113,7 @@ class CatchStoreMemberButton : CampaignInputListener {
             } else if (event.isLMBDownEvent) {
                 val member = hoveringOverStore()
                 if (member != null) {
-                    if (member.captain.isPlayer && ModSettings.unassignPlayer && !member.variant.hasHullMod(ModSettings.commandShuttleId))
+                    if (member.captain.isPlayer && ModSettings.unassignPlayer() && !member.variant.hasHullMod(ModSettings.commandShuttleId))
                         storePlayerDelay = true
                     else if (ModSettings.storeOfficersInCargo)
                         storeOfficer(member.captain)

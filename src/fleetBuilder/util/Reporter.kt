@@ -22,6 +22,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
 
     companion object {
         fun setListeners() {
+            if (!Global.getSettings().isInCampaignState) return
             val sector = Global.getSector() ?: return
 
             val listeners = sector.listenerManager
@@ -49,7 +50,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
             }
 
             manageListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
-            manageListener(CatchStoreMemberButton::class.java, ModSettings.storeOfficersInCargo || ModSettings.unassignPlayer) { CatchStoreMemberButton() }
+            manageListener(CatchStoreMemberButton::class.java, ModSettings.storeOfficersInCargo || ModSettings.unassignPlayer()) { CatchStoreMemberButton() }
             manageListener(CargoAutoManagerOpener::class.java, ModSettings.cargoAutoManager) { CargoAutoManagerOpener() }
             manageListener(RemoveRefitHullmod::class.java, ModSettings.removeRefitHullmod) { RemoveRefitHullmod() }
 
@@ -129,11 +130,19 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     override fun isDone(): Boolean = false
     override fun runWhilePaused(): Boolean = true
 
-
+    private var lastDevMode: Boolean = false
     override fun advance(amount: Float) {
         if (Global.getSector().isPaused) {
             val changed = officerTracker.getChangedAssignments()
             ShipOfficerChangeEvents.notifyAll(changed)
+        }
+
+        //Detect DevMode change
+        val currentDevMode = Global.getSettings().isDevMode
+        if (lastDevMode != currentDevMode) {
+            setListeners()
+
+            lastDevMode = currentDevMode
         }
     }
 }

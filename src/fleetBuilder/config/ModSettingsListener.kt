@@ -88,19 +88,15 @@ internal class ModSettingsListener : LunaSettingsListener {
             autofitNoSModdedBuiltInWhenNotBuiltInMod = getBoolean(modID, "autofitNoSModdedBuiltInWhenNotBuiltInMod")!!
             reserveFirstFourAutofitSlots = getBoolean(modID, "reserveFirstFourAutofitSlots")!!
 
-            val cheatsEnabled = getBoolean(modID, "enableCheats")!!
-            if (cheatsEnabled)
-                unassignPlayer = true
-            else
-                unassignPlayer = getBoolean(modID, "unassignPlayer")!!
+            ModSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
 
-            setCheatsEnabled(cheatsEnabled)
-
+            ModSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
 
             if (VariantLib.Loaded())
                 LoadoutManager.loadAllDirectories()//Reload the LoadoutManager
         } else {
-            unassignPlayer = false
+            ModSettings.setUnassignPlayer(false)
+            ModSettings.setCheatsEnabled(false)
             backupSave = false
             fleetClipboardHotkeyHandler = false
             devModeCodexButtonEnabled = false
