@@ -81,6 +81,7 @@ class MissingElementsExtended : MissingElements() {
     val blueprintWeaponIds: MutableSet<String> = mutableSetOf()
     val blueprintWingIds: MutableSet<String> = mutableSetOf()
     val blueprintHullIds: MutableSet<String> = mutableSetOf()
+    val blueprintIndustryIds: MutableSet<String> = mutableSetOf()
     val hullModIdsKnown: MutableSet<String> = mutableSetOf()
     val cargoWeaponIds: MutableSet<String> = mutableSetOf()
     val cargoWingIds: MutableSet<String> = mutableSetOf()
@@ -94,6 +95,7 @@ class MissingElementsExtended : MissingElements() {
         return blueprintWeaponIds.isNotEmpty() ||
                 blueprintWingIds.isNotEmpty() ||
                 blueprintHullIds.isNotEmpty() ||
+                blueprintIndustryIds.isNotEmpty() ||
                 hullModIdsKnown.isNotEmpty() ||
                 cargoWeaponIds.isNotEmpty() ||
                 cargoWingIds.isNotEmpty() ||
@@ -106,6 +108,7 @@ class MissingElementsExtended : MissingElements() {
             blueprintWeaponIds.addAll(other.blueprintWeaponIds)
             blueprintWingIds.addAll(other.blueprintWingIds)
             blueprintHullIds.addAll(other.blueprintHullIds)
+            blueprintIndustryIds.addAll(other.blueprintIndustryIds)
             hullModIdsKnown.addAll(other.hullModIdsKnown)
             cargoWeaponIds.addAll(other.cargoWeaponIds)
             cargoWingIds.addAll(other.cargoWingIds)
@@ -120,6 +123,7 @@ class MissingElementsExtended : MissingElements() {
         printIfNotEmpty("Missing Weapon Blueprints", extra, blueprintWeaponIds)
         printIfNotEmpty("Missing Wing Blueprints", extra, blueprintWingIds)
         printIfNotEmpty("Missing Hull Blueprints", extra, blueprintHullIds)
+        printIfNotEmpty("Missing Industry Blueprints", extra, blueprintIndustryIds)
         printIfNotEmpty("Missing Hullmods Known", extra, hullModIdsKnown)
         printIfNotEmpty("Missing Weapon in Cargo", extra, cargoWeaponIds)
         printIfNotEmpty("Missing Wing in Cargo", extra, cargoWingIds)

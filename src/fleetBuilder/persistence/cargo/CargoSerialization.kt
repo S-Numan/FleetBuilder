@@ -92,6 +92,9 @@ object CargoSerialization {
                             id == "modspec" && Global.getSettings().allHullModSpecs.none { it.id == data } ->
                                 missingElements.hullModIdsKnown.add(data ?: "null")
 
+                            id == "industry_bp" && Global.getSettings().allIndustrySpecs.none { it.id == data } ->
+                                missingElements.blueprintIndustryIds.add(data ?: "null")
+
                             else -> cargo.addSpecial(SpecialItemData(id, data), size.toFloat())
                         }
                     } catch (_: Exception) {
@@ -134,7 +137,8 @@ object CargoSerialization {
                 CargoAPI.CargoItemType.SPECIAL -> {
                     val special = stack.specialDataIfSpecial ?: continue
                     obj.put("id", special.id)
-                    obj.put("data", special.data)
+                    if (special.data != null)
+                        obj.put("data", special.data)
                     grouped.getOrPut("SPECIAL") { JSONArray() }.put(obj)
                 }
 
