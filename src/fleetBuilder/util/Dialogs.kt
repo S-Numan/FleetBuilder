@@ -439,7 +439,7 @@ object Dialogs {
             val plugin = Global.getSettings().getPlugin("officerLevelUp") as? OfficerLevelupPlugin
             if (plugin != null && fields["Max XP"] as Boolean) {
                 if (maxLevel == null)
-                    maxLevel = Misc.MAX_OFFICER_LEVEL.toInt()
+                    maxLevel = 99
                 playerFleet.getOfficerData(person).addXP(plugin.getXPForLevel(maxLevel));
             }
 
