@@ -474,10 +474,12 @@ object PlayerSaveUtil {
                         if (id == null)
                             return null
                         val spec = runCatching { Global.getSettings().getAbilitySpec(id) }.getOrNull()
-                        val newID = if (spec != null)
-                            spec.id
-                        else {
-                            when (id) {
+                        var newID: String? = spec?.id ?: return null
+
+                        // Do have the ability spec in the game from this point on
+
+                        if (!Global.getSector().playerStats.fleet.abilities.contains(newID)) {
+                            newID = when (id) {
                                 "SKR_emergency_burn" -> convertMissing(Abilities.EMERGENCY_BURN)
                                 "SKR_sustained_burn" -> convertMissing(Abilities.SUSTAINED_BURN)
                                 "SKR_neutrino_detector" -> convertMissing(Abilities.GRAVITIC_SCAN)
@@ -485,7 +487,7 @@ object PlayerSaveUtil {
                                 else -> null
                             }
                         }
-                        //return newID
+
                         if (Global.getSector().playerStats.fleet.abilities.contains(newID))
                             return newID
                         return null
