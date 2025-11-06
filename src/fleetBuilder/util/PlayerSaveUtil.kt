@@ -153,8 +153,6 @@ object PlayerSaveUtil {
                 return barsJson
             }
 
-
-
             json.put("abilityBars", convertSavedBarsToJson(savedBars))
         }
 
@@ -476,7 +474,7 @@ object PlayerSaveUtil {
                         if (id == null)
                             return null
                         val spec = runCatching { Global.getSettings().getAbilitySpec(id) }.getOrNull()
-                        return if (spec != null)
+                        val newID = if (spec != null)
                             spec.id
                         else {
                             when (id) {
@@ -487,6 +485,10 @@ object PlayerSaveUtil {
                                 else -> null
                             }
                         }
+                        //return newID
+                        if (Global.getSector().playerStats.fleet.abilities.contains(newID))
+                            return newID
+                        return null
                     }
 
                     slot?.apply {
