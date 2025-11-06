@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.campaign.CampaignState
+import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CargoAutoManager
 import fleetBuilder.features.CommanderShuttle
@@ -22,7 +24,6 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
 
     companion object {
         fun setListeners() {
-            if (!Global.getSettings().isInCampaignState) return
             val sector = Global.getSector() ?: return
 
             val listeners = sector.listenerManager
