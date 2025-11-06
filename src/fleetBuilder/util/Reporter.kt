@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.campaign.CampaignState
+import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CargoAutoManager
 import fleetBuilder.features.CommanderShuttle
@@ -49,7 +51,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
             }
 
             manageListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
-            manageListener(CatchStoreMemberButton::class.java, ModSettings.storeOfficersInCargo || ModSettings.unassignPlayer) { CatchStoreMemberButton() }
+            manageListener(CatchStoreMemberButton::class.java, ModSettings.storeOfficersInCargo || ModSettings.unassignPlayer()) { CatchStoreMemberButton() }
             manageListener(CargoAutoManagerOpener::class.java, ModSettings.cargoAutoManager) { CargoAutoManagerOpener() }
             manageListener(RemoveRefitHullmod::class.java, ModSettings.removeRefitHullmod) { RemoveRefitHullmod() }
 
@@ -129,11 +131,19 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     override fun isDone(): Boolean = false
     override fun runWhilePaused(): Boolean = true
 
-
+    private var lastDevMode: Boolean = false
     override fun advance(amount: Float) {
         if (Global.getSector().isPaused) {
             val changed = officerTracker.getChangedAssignments()
             ShipOfficerChangeEvents.notifyAll(changed)
+        }
+
+        //Detect DevMode change
+        val currentDevMode = Global.getSettings().isDevMode
+        if (lastDevMode != currentDevMode) {
+            setListeners()
+
+            lastDevMode = currentDevMode
         }
     }
 }

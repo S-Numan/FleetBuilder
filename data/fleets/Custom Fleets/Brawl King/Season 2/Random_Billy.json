@@ -1,0 +1,535 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Random_Billy",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Invictus",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "impact_mitigation": 1,
+                    "polarized_armor": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "RBilly_invictus_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis (Shrouded)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "RBilly_anubis_Shrouded"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "RBilly_anubis_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "RBilly_anubis_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Astral (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "RBilly_astral"
+        },
+        {
+            "cr": 1,
+            "name": "Buffalo Mk2 (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "RBilly_buffalo2"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer 1",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "RBilly_glimmer"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer 2",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "RBilly_glimmer"
+        },
+        {
+            "cr": 1,
+            "name": "Kite (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "timid",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "RBilly_kite_luddic_path"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 0,
+            "fluxVents": 18,
+            "hullId": "invictus",
+            "hullMods": [
+                "armoredweapons",
+                "auxiliarythrusters",
+                "blast_doors",
+                "fluxbreakers",
+                "insulatedengine",
+                "magazines",
+                "solar_shielding"
+            ],
+            "sMods": [
+                "reinforcedhull",
+                "turretgyros",
+                "unstable_injector"
+            ],
+            "variantId": "RBilly_invictus_Custom",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "multineedler",
+                        "WS 009": "multineedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "locust",
+                        "WS 007": "locust"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "devastator",
+                        "WS 001": "hephag",
+                        "WS 010": "hephag",
+                        "WS 026": "devastator"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 25,
+            "fluxVents": 35,
+            "hullId": "anubis",
+            "hullMods": [
+                "shrouded_mantle",
+                "shrouded_thunderhead",
+                "stabilizedshieldemitter",
+                "targetingunit"
+            ],
+            "sMods": [
+                "advancedoptics",
+                "fluxdistributor",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "RBilly_anubis_Shrouded",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "guardian"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "jackhammer"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "jackhammer"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "abyssal_glare"}
+                }
+            ],
+            "wings": ["talon_wing"]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 27,
+            "fluxVents": 0,
+            "hullId": "anubis",
+            "hullMods": [
+                "safetyoverrides",
+                "unstable_injector"
+            ],
+            "sMods": [
+                "auxiliarythrusters",
+                "hardened_subsystems",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "RBilly_anubis_Custom",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "gigacannon"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heavymg",
+                        "WS 004": "heavymg"
+                    }
+                }
+            ],
+            "wings": ["talon_wing"]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 38,
+            "fluxVents": 0,
+            "hullId": "astral",
+            "hullMods": [
+                "fragment_coordinator",
+                "fragment_swarm",
+                "hardenedshieldemitter"
+            ],
+            "sMods": [
+                "advancedoptics",
+                "eccm",
+                "secondary_fabricator"
+            ],
+            "variantId": "RBilly_astral",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 011": "swarm_launcher"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "voltaic_discharge",
+                        "WS 008": "voltaic_discharge"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 015": "gravitonbeam",
+                        "WS 023": "ionbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 014": "heavyburst"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 013": "heavyburst"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 024": "heavyburst"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 012": "squall"}
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing",
+                "broadsword_wing",
+                "broadsword_wing",
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Cautious",
+            "fluxCapacitors": 1,
+            "fluxVents": 0,
+            "hullId": "buffalo2",
+            "hullMods": [
+                "eccm",
+                "escort_package",
+                "fragment_swarm",
+                "hardened_subsystems"
+            ],
+            "sMods": [
+                "fragment_coordinator",
+                "secondary_fabricator",
+                "unstable_injector"
+            ],
+            "variantId": "RBilly_buffalo2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "swarm_launcher"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 004": "kinetic_fragments",
+                        "WS 005": "kinetic_fragments",
+                        "WS 006": "kinetic_fragments"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 8,
+            "fluxVents": 0,
+            "hullId": "glimmer",
+            "hullMods": [
+                "extendedshieldemitter",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "hardened_subsystems",
+                "hardenedshieldemitter",
+                "magazines"
+            ],
+            "variantId": "RBilly_glimmer",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "ionpulser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "pdburst",
+                        "WS 003": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Timid",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "hullId": "kite_luddic_path",
+            "hullMods": ["fragment_swarm"],
+            "sMods": [
+                "fragment_coordinator",
+                "hardened_subsystems",
+                "secondary_fabricator"
+            ],
+            "variantId": "RBilly_kite_luddic_path",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightmg"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "seeker_fragment",
+                        "WS 002": "seeker_fragment"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -52,7 +52,7 @@ object DataPerson {
             last = person.name.last,
             gender = person.name.gender,
             portrait = person.portraitSprite,
-            tags = person.tags,
+            tags = person.tags.filterNot { it.startsWith("#") }.toSet(),
             rankId = person.rankId ?: Ranks.SPACE_LIEUTENANT,
             postId = person.postId ?: Ranks.POST_OFFICER,
             personality = person.personalityAPI.id,

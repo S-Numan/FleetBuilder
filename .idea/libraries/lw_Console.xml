@@ -1,13 +1,12 @@
 <component name="libraryTable">
   <library name="lw_Console">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../Console Commands/jars/lw_Console.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Console Commands-4.0.3/jars/lw_Console.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../Console Commands/jars/lw_Console.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../Console Commands/jars/lw_Console.jar!/" />
-      <root url="file://$PROJECT_DIR$/../Console Commands/src" />
+      <root url="file://$PROJECT_DIR$/../Console Commands-4.0.3/src" />
+      <root url="file://$PROJECT_DIR$/../Console Commands-4.0.3/src" />
     </SOURCES>
   </library>
 </component>

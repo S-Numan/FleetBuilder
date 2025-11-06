@@ -1,0 +1,491 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Pyroball",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Conquest (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "gunnery_implants": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pyroball_conquest_Threatquest"
+        },
+        {
+            "cr": 1,
+            "name": "Champion (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "gunnery_implants": 2,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pyroball_champion_Threat"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Pyroball_medusa_Threat"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperion (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pyroball_hyperion_Threat"
+        },
+        {
+            "cr": 1,
+            "name": "Heron 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pyroball_heron_Bomber"
+        },
+        {
+            "cr": 1,
+            "name": "Heron 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pyroball_heron_Bomber"
+        },
+        {
+            "cr": 1,
+            "name": "Heron 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pyroball_heron_Bomber"
+        },
+        {
+            "cr": 1,
+            "name": "Heron 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pyroball_heron_Bomber"
+        },
+        {
+            "cr": 1,
+            "name": "Sentry 1",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "sentry_DEM"
+        },
+        {
+            "cr": 1,
+            "name": "Sentry 2",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "sentry_DEM"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Cautious",
+            "fluxCapacitors": 55,
+            "fluxVents": 0,
+            "hullId": "conquest",
+            "hullMods": [
+                "ballistic_rangefinder",
+                "fragment_swarm",
+                "targetingunit"
+            ],
+            "sMods": [
+                "armoredweapons",
+                "fragment_coordinator",
+                "secondary_fabricator"
+            ],
+            "variantId": "Pyroball_conquest_Threatquest",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 013": "neoferric_quadcoil",
+                        "WS 014": "neoferric_quadcoil",
+                        "WS 017": "heavy_mass_driver",
+                        "WS 018": "heavy_mass_driver",
+                        "WS 023": "pulselaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "swarm_launcher",
+                        "WS 002": "swarm_launcher",
+                        "WS 019": "swarm_launcher",
+                        "WS 020": "swarm_launcher"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "voltaic_discharge",
+                        "WS 004": "voltaic_discharge",
+                        "WS 005": "voltaic_discharge",
+                        "WS 006": "voltaic_discharge",
+                        "WS 007": "voltaic_discharge",
+                        "WS 008": "voltaic_discharge",
+                        "WS 009": "voltaic_discharge",
+                        "WS 010": "voltaic_discharge"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 0,
+            "fluxVents": 19,
+            "hullId": "champion",
+            "hullMods": [
+                "fragment_swarm",
+                "magazines",
+                "targetingunit"
+            ],
+            "sMods": [
+                "armoredweapons",
+                "fragment_coordinator",
+                "secondary_fabricator"
+            ],
+            "variantId": "Pyroball_champion_Threat",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "heavy_mass_driver",
+                        "WS 007": "heavy_mass_driver",
+                        "WS 008": "voidblaster"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "voltaic_discharge",
+                        "WS 001": "voltaic_discharge",
+                        "WS 002": "voltaic_discharge",
+                        "WS 003": "voltaic_discharge",
+                        "WS 004": "voltaic_discharge",
+                        "WS 005": "voltaic_discharge",
+                        "WS 010": "voltaic_discharge",
+                        "WS 011": "voltaic_discharge"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "swarm_launcher"}
+                }
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 7,
+            "fluxVents": 0,
+            "hullId": "medusa",
+            "hullMods": [
+                "fragment_swarm",
+                "pointdefenseai",
+                "targetingunit",
+                "turretgyros"
+            ],
+            "sMods": [
+                "armoredweapons",
+                "fragment_coordinator",
+                "secondary_fabricator"
+            ],
+            "variantId": "Pyroball_medusa_Threat",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "voidblaster",
+                        "WS 007": "voidblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 008": "devouring_swarm",
+                        "WS 009": "devouring_swarm"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "voltaic_discharge",
+                        "WS 002": "voltaic_discharge",
+                        "WS 003": "voltaic_discharge",
+                        "WS 004": "voltaic_discharge",
+                        "WS 005": "voltaic_discharge"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 8,
+            "fluxVents": 0,
+            "hullId": "hyperion",
+            "hullMods": [
+                "fragment_swarm",
+                "magazines"
+            ],
+            "sMods": [
+                "armoredweapons",
+                "fragment_coordinator",
+                "secondary_fabricator"
+            ],
+            "variantId": "Pyroball_hyperion_Threat",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "voidblaster",
+                        "WS 002": "voidblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "voidblaster"}
+                }
+            ]
+        },
+        {
+            "displayName": "Cautious",
+            "fluxCapacitors": 12,
+            "fluxVents": 0,
+            "hullId": "heron",
+            "hullMods": [
+                "expanded_deck_crew",
+                "hardened_subsystems"
+            ],
+            "sMods": [
+                "auxiliarythrusters",
+                "extendedshieldemitter",
+                "insulatedengine"
+            ],
+            "variantId": "Pyroball_heron_Bomber",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {"WS 005": "hveldriver"}
+            }],
+            "wings": [
+                "cobra_wing",
+                "cobra_wing",
+                "cobra_wing"
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 3,
+            "fluxVents": 0,
+            "hullId": "sentry",
+            "hullMods": [],
+            "sMods": [
+                "eccm",
+                "missleracks",
+                "frontshield"
+            ],
+            "variantId": "sentry_DEM",
+            "weaponGroups": [{
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "gorgon",
+                    "WS 002": "gorgon",
+                    "WS 003": "gorgon"
+                }
+            }]
+        }
+    ]
+}

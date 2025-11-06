@@ -1,0 +1,687 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Antocora",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Pegasus",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "anto_pegasus"
+        },
+        {
+            "cr": 1,
+            "name": "Astral (Shrouded)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 1,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "anto_astral"
+        },
+        {
+            "cr": 1,
+            "name": "Rampart",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "polarized_armor": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "anto_rampart"
+        },
+        {
+            "cr": 1,
+            "name": "Drover",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "anto_drover"
+        },
+        {
+            "cr": 1,
+            "name": "Sunder",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "anto_sunder"
+        },
+        {
+            "cr": 1,
+            "name": "Buffalo (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "anto_buffalo2"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "anto_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "anto_scarab"
+        },
+        {
+            "cr": 1,
+            "name": "Scarab 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "anto_scarab"
+        },
+        {
+            "cr": 1,
+            "name": "Kite 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "anto_kite"
+        },
+        {
+            "cr": 1,
+            "name": "Kite 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "anto_kite"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 1,
+                    "gunnery_implants": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "anto_afflictor"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 11,
+            "hullId": "pegasus",
+            "hullMods": [
+                "converted_hangar",
+                "extendedshieldemitter",
+                "insulatedengine",
+                "magazines",
+                "missleracks",
+                "reinforcedhull",
+                "turretgyros",
+                "unstable_injector"
+            ],
+            "sMods": [
+                "autorepair",
+                "fluxcoil",
+                "fluxdistributor"
+            ],
+            "variantId": "anto_pegasus",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 012": "locust",
+                        "WS 013": "locust"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "cyclone",
+                        "WS 001": "cyclone"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "heavyburst",
+                        "WS 003": "heavyburst",
+                        "WS 004": "heavyburst",
+                        "WS 005": "heavyburst",
+                        "WS 006": "heavyburst",
+                        "WS 007": "heavyburst"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 014": "pdburst",
+                        "WS 015": "pdburst"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "heavyneedler",
+                        "WS 009": "heavyneedler",
+                        "WS 010": "heavyneedler"
+                    }
+                }
+            ],
+            "wings": ["wasp_wing"]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 0,
+            "fluxVents": 33,
+            "hullId": "astral",
+            "hullMods": [],
+            "sMods": [
+                "autorepair",
+                "fluxcoil",
+                "fluxdistributor"
+            ],
+            "variantId": "anto_astral",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "inimical_emanation",
+                        "WS 002": "inimical_emanation",
+                        "WS 003": "inimical_emanation",
+                        "WS 004": "inimical_emanation",
+                        "WS 005": "inimical_emanation",
+                        "WS 006": "inimical_emanation",
+                        "WS 007": "inimical_emanation",
+                        "WS 008": "inimical_emanation",
+                        "WS 013": "heavyburst",
+                        "WS 014": "heavyburst",
+                        "WS 015": "heavyburst",
+                        "WS 023": "heavyburst",
+                        "WS 024": "heavyburst"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 011": "squall",
+                        "WS 012": "squall"
+                    }
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing",
+                "flash_wing",
+                "flash_wing",
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 0,
+            "fluxVents": 29,
+            "hullId": "rampart",
+            "hullMods": ["converted_hangar"],
+            "sMods": [
+                "autorepair",
+                "fluxcoil",
+                "fluxdistributor"
+            ],
+            "variantId": "anto_rampart",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 000": "mark9",
+                    "WS 001": "mark9",
+                    "WS 002": "hellbore",
+                    "WS 003": "heavymauler",
+                    "WS 004": "heavymauler"
+                }
+            }],
+            "wings": ["wasp_wing"]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 0,
+            "fluxVents": 0,
+            "hullId": "drover",
+            "hullMods": [
+                "missleracks",
+                "targetingunit"
+            ],
+            "sMods": [
+                "eccm",
+                "fluxcoil",
+                "pointdefenseai"
+            ],
+            "variantId": "anto_drover",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "vulcan",
+                        "WS 001": "vulcan"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "sabot",
+                        "WS 003": "sabot",
+                        "WS 004": "sabot",
+                        "WS 005": "sabot"
+                    }
+                }
+            ],
+            "wings": [
+                "perdition_wing",
+                "perdition_wing"
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 3,
+            "fluxVents": 15,
+            "hullId": "sunder",
+            "hullMods": [
+                "converted_hangar",
+                "missleracks",
+                "targetingunit"
+            ],
+            "sMods": [
+                "autorepair",
+                "fluxcoil",
+                "fluxdistributor"
+            ],
+            "variantId": "anto_sunder",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "ionbeam",
+                        "WS 003": "hil",
+                        "WS 004": "ionbeam"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "sabot",
+                        "WS 005": "sabot"
+                    }
+                }
+            ],
+            "wings": ["wasp_wing"]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 5,
+            "fluxVents": 0,
+            "hullId": "buffalo2",
+            "hullMods": [
+                "fragment_coordinator",
+                "fragment_swarm",
+                "secondary_fabricator"
+            ],
+            "sMods": [
+                "auxiliarythrusters",
+                "fluxcoil",
+                "fluxdistributor"
+            ],
+            "variantId": "anto_buffalo2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "seeker_fragment",
+                        "WS 005": "seeker_fragment",
+                        "WS 006": "seeker_fragment",
+                        "WS 008": "sabotpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "pdburst",
+                        "WS 007": "pdburst"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightdualmg",
+                        "WS 003": "lightdualmg"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 0,
+            "fluxVents": 14,
+            "hullId": "monitor",
+            "hullMods": [
+                "fluxbreakers",
+                "hardenedshieldemitter",
+                "stabilizedshieldemitter",
+                "unstable_injector"
+            ],
+            "sMods": [
+                "advancedshieldemitter",
+                "fluxdistributor",
+                "frontemitter"
+            ],
+            "variantId": "anto_monitor",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "flak",
+                    "WS 002": "flak"
+                }
+            }]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 1,
+            "fluxVents": 0,
+            "hullId": "scarab",
+            "hullMods": [
+                "high_scatter_amp",
+                "safetyoverrides",
+                "unstable_injector"
+            ],
+            "sMods": [
+                "autorepair",
+                "frontemitter",
+                "magazines"
+            ],
+            "variantId": "anto_scarab",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "pdburst",
+                    "WS 002": "pdburst",
+                    "WS 003": "pdburst",
+                    "WS 005": "pdburst",
+                    "WS 010": "pdburst"
+                }
+            }]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 3,
+            "fluxVents": 0,
+            "hullId": "kite_luddic_path",
+            "hullMods": [
+                "missleracks",
+                "unstable_injector"
+            ],
+            "sMods": [
+                "auxiliarythrusters",
+                "fluxcoil",
+                "fluxdistributor"
+            ],
+            "variantId": "anto_kite",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "lightdualmg"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "hammer",
+                        "WS 002": "hammer"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 15,
+            "hullId": "afflictor_d_pirates",
+            "hullMods": [],
+            "sMods": [
+                "auxiliarythrusters",
+                "fluxcoil",
+                "fluxdistributor"
+            ],
+            "variantId": "anto_afflictor",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightneedler",
+                        "WS 003": "lightneedler"
+                    }
+                }
+            ]
+        }
+    ]
+}

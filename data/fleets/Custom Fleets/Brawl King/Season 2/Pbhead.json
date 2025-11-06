@@ -1,0 +1,570 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Pbhead",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Harbinger (Shrouded/Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Pbhead_Harb"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pbhead_MedusaSOCH"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pbhead_MedusaSOCH"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Pbhead_Monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Lumen (Threat)",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Pbhead_Lumen"
+        },
+        {
+            "cr": 1,
+            "name": "Harbinger",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Pbhead_Harbphase"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pbhead_AnubisSOhmg"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pbhead_AnubisSOhmg"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pbhead_AnubisSO"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pbhead_AnubisSO"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pbhead_AnubisSOhmg"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 6",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Pbhead_AnubisSOhmg"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 25,
+            "fluxVents": 2,
+            "hullId": "harbinger",
+            "hullMods": [
+                "autorepair",
+                "targetingunit",
+                "unstable_injector"
+            ],
+            "sMods": [
+                "fluxcoil",
+                "fluxbreakers",
+                "adaptive_coils"
+            ],
+            "variantId": "Pbhead_Harb",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "voidblaster",
+                        "WS 003": "voidblaster"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "inimical_emanation"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "mininglaser",
+                        "WS 005": "mininglaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "medusa",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "safetyoverrides",
+                "converted_hangar"
+            ],
+            "sMods": [
+                "stabilizedshieldemitter",
+                "frontemitter",
+                "extendedshieldemitter"
+            ],
+            "variantId": "Pbhead_MedusaSOCH",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "lightdualmg",
+                        "WS 009": "lightdualmg"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "mininglaser",
+                        "WS 002": "mininglaser",
+                        "WS 003": "mininglaser",
+                        "WS 004": "mininglaser",
+                        "WS 005": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "miningblaster"}
+                }
+            ],
+            "wings": ["wasp_wing"]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 10,
+            "fluxVents": 15,
+            "hullId": "monitor",
+            "hullMods": ["hardenedshieldemitter"],
+            "sMods": [
+                "stabilizedshieldemitter",
+                "frontemitter",
+                "fluxdistributor"
+            ],
+            "variantId": "Pbhead_Monitor",
+            "weaponGroups": [{
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "flak",
+                    "WS 002": "flak"
+                }
+            }]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 9,
+            "fluxVents": 0,
+            "hullId": "lumen",
+            "hullMods": [
+                "advancedoptics",
+                "fragment_swarm",
+                "extendedshieldemitter"
+            ],
+            "sMods": [
+                "stabilizedshieldemitter",
+                "frontemitter",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "Pbhead_Lumen",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "seeker_fragment"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "lrpdlaser",
+                        "WS 008": "kinetic_fragments"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 23,
+            "fluxVents": 0,
+            "hullId": "harbinger",
+            "hullMods": [
+                "autorepair",
+                "targetingunit",
+                "unstable_injector",
+                "fluxbreakers",
+                "advancedoptics"
+            ],
+            "sMods": [
+                "fluxcoil",
+                "adaptive_coils",
+                "auxiliarythrusters"
+            ],
+            "variantId": "Pbhead_Harbphase",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "mininglaser",
+                        "WS 005": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "phasebeam",
+                        "WS 002": "phasebeam",
+                        "WS 003": "phasebeam"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 0,
+            "fluxVents": 28,
+            "hullId": "anubis",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "frontemitter",
+                "high_scatter_amp",
+                "magazines"
+            ],
+            "variantId": "Pbhead_AnubisSOhmg",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavymg"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "heavymg"}
+                }
+            ],
+            "wings": ["broadsword_wing"]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 28,
+            "hullId": "anubis",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "frontemitter",
+                "high_scatter_amp",
+                "magazines"
+            ],
+            "variantId": "Pbhead_AnubisSO",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "chaingun"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "heavymg"}
+                }
+            ],
+            "wings": ["broadsword_wing"]
+        }
+    ]
+}

@@ -23,6 +23,7 @@ import kotlin.math.max
 object LoadoutManager {
 
     private val shipDirectories: MutableList<ShipDirectory> = mutableListOf()
+    fun getShipDirectories(): List<ShipDirectory> = shipDirectories
 
     fun generatePrefixes(): List<String> {
         val letters = ('A'..'Z') + ('a'..'z')
@@ -97,10 +98,10 @@ object LoadoutManager {
         return try {
             upgradeLegacyShipPaths(directory, configFilePath)
 
-            val shipEntries = mutableMapOf<String, ShipEntry>()
-
             val name = directory.optString("name", prefix)
             val description = directory.optString("description", "$prefix Loadout")
+
+            val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, name = name, description = description)
 
             directory.optJSONArray("shipPaths")?.let { shipJsonPaths ->
                 val seenPaths = mutableSetOf<String>()
@@ -159,11 +160,11 @@ object LoadoutManager {
                         continue
                     }
 
-                    if (shipEntries.containsKey(data.variantId)) {
+                    if (shipDirectory.containsShip(data.variantId)) {
                         throw Error(
                             "Duplicate variant ID in ships directory $prefix\n" +
                                     "Ship path 1: $dirPath$prefix/$shipPath\n" +
-                                    "Ship path 2: $dirPath$prefix/${shipEntries[data.variantId]?.path}\n" +
+                                    "Ship path 2: $dirPath$prefix/${shipDirectory.getShipEntry(data.variantId)?.path}\n" +
                                     "The variantID must be changed on one or the other, or one must be removed."
                         )
                     }
@@ -171,15 +172,14 @@ object LoadoutManager {
                     if (data.hullId !in VariantLib.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
                         || data.moduleVariants.any { it.value.hullId !in VariantLib.getHullIDSet() } // Also check hullIds from modules
                     ) {
-                        shipEntries[data.variantId] = ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport)
+                        shipDirectory.setRawShipEntry(data.variantId, ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     } else {
                         val variant = DataVariant.buildVariantFull(data, missing = missing)
-                        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport)
+                        variant.addTag("#PREFIX_$prefix")
+                        shipDirectory.setRawShipEntry(data.variantId, ShipEntry(variant, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     }
                 }
             }
-
-            val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, name = name, description = description, shipEntries)
 
             shipDirectories.add(shipDirectory)
 
@@ -188,7 +188,7 @@ object LoadoutManager {
                 if (variant == null) return@forEach
 
                 fun remakeShip() {
-                    val missing = shipDirectory.getShipMissings(variant.hullVariantId) ?: return
+                    val missing = shipDirectory.getShipEntry(variant.hullVariantId)?.missingElements ?: return
                     val isImport = shipDirectory.isShipImported(variant.hullVariantId)
                     shipDirectory.removeShip(variant.hullVariantId, editVariantFile = false)
                     shipDirectory.addShip(
@@ -292,7 +292,7 @@ object LoadoutManager {
 
         val ships = dir.getShips(hullSpec)
         ships.forEach { variant ->
-            val missing = dir.getShipMissings(variant.hullVariantId) ?: return@forEach
+            val missing = dir.getShipEntry(variant.hullVariantId)?.missingElements ?: return@forEach
             val index = dir.getShipIndexInMenu(variant.hullVariantId)
 
             autofitSpecs.add(
@@ -315,11 +315,11 @@ object LoadoutManager {
     }
 
     fun getVariantSourceShipDirectory(variant: ShipVariantAPI): ShipDirectory? {
-        for (dir in shipDirectories) {
-            if (variant.hullVariantId.startsWith(dir.prefix + "_")) {
-                return dir
-            }
-        }
+        val sourceTag = variant.tags.firstOrNull { it.startsWith("#PREFIX_") }?.substringAfter("_")
+
+        if (sourceTag != null)
+            return getShipDirectoryWithPrefix(sourceTag)
+
         return null
     }
 

@@ -1,0 +1,600 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Grievous69",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Invictus 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "damage_control": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "polarized_armor": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Grievous69_invictus_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Pegasus 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Grievous69_pegasus_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Fulgent (Shrouded)",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Grievous69_fulgent_Spooky"
+        },
+        {
+            "cr": 1,
+            "name": "Fulgent 1",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Grievous69_fulgent_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Fulgent 2",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Grievous69_fulgent_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Grievous69_omen_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Grievous69_omen_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Grievous69_anubis_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Grievous69_omen_Custom"
+        },
+        {
+            "cr": 1,
+            "name": "Centurion (Shrouded/Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary08.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "polarized_armor": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Grievous69_centurion_Cursed"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 3,
+            "fluxVents": 50,
+            "hullId": "invictus",
+            "hullMods": [
+                "armoredweapons",
+                "autorepair",
+                "auxiliarythrusters",
+                "converted_hangar",
+                "fluxdistributor",
+                "solar_shielding"
+            ],
+            "sMods": [
+                "fluxbreakers",
+                "reinforcedhull",
+                "turretgyros"
+            ],
+            "variantId": "Grievous69_invictus_Custom",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "mark9",
+                        "WS 009": "mark9"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "mjolnir",
+                        "WS 010": "hellbore"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "multineedler",
+                        "WS 026": "multineedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "devastator",
+                        "WS 008": "devastator"
+                    }
+                }
+            ],
+            "wings": [
+                "mining_drone_wing",
+                "mining_drone_wing"
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 24,
+            "fluxVents": 50,
+            "hullId": "pegasus",
+            "hullMods": [
+                "fluxbreakers",
+                "hardenedshieldemitter",
+                "missleracks"
+            ],
+            "sMods": [
+                "eccm",
+                "targetingunit",
+                "turretgyros"
+            ],
+            "variantId": "Grievous69_pegasus_Custom",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "hveldriver",
+                        "WS 009": "hveldriver",
+                        "WS 010": "hveldriver"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "dragonpod",
+                        "WS 001": "dragonpod",
+                        "WS 012": "dragonpod",
+                        "WS 013": "dragonpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "irautolance",
+                        "WS 003": "irautolance",
+                        "WS 006": "irautolance",
+                        "WS 007": "irautolance"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "gravitonbeam",
+                        "WS 005": "gravitonbeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 014": "pdburst",
+                        "WS 015": "pdburst",
+                        "WS 016": "pdburst",
+                        "WS 017": "pdburst"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 011": "flak"}
+                }
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 16,
+            "fluxVents": 20,
+            "hullId": "fulgent",
+            "hullMods": ["fluxdistributor"],
+            "sMods": [
+                "hardenedshieldemitter",
+                "stabilizedshieldemitter",
+                "targetingunit"
+            ],
+            "variantId": "Grievous69_fulgent_Spooky",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "rift_lightning",
+                        "WS 004": "rift_lightning"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "heavyburst"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "pdburst",
+                        "WS 006": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 15,
+            "fluxVents": 20,
+            "hullId": "fulgent",
+            "hullMods": ["fluxdistributor"],
+            "sMods": [
+                "hardenedshieldemitter",
+                "stabilizedshieldemitter",
+                "targetingunit"
+            ],
+            "variantId": "Grievous69_fulgent_Custom",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "pulselaser"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 009": "harpoon",
+                        "WS 010": "harpoon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "pulselaser",
+                        "WS 004": "pulselaser"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "ioncannon",
+                        "WS 002": "ioncannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "pdburst",
+                        "WS 006": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 10,
+            "fluxVents": 8,
+            "hullId": "omen",
+            "hullMods": [
+                "fluxbreakers",
+                "fluxcoil",
+                "stabilizedshieldemitter"
+            ],
+            "sMods": [
+                "advancedshieldemitter",
+                "frontemitter",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "Grievous69_omen_Custom",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heatseeker"}
+                }
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 26,
+            "fluxVents": 15,
+            "hullId": "anubis",
+            "hullMods": [
+                "advancedshieldemitter",
+                "fluxbreakers",
+                "fragment_swarm"
+            ],
+            "sMods": [
+                "secondary_fabricator",
+                "stabilizedshieldemitter",
+                "targetingunit"
+            ],
+            "variantId": "Grievous69_anubis_Custom",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "gigacannon"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "swarm_launcher"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 002": "guardian"
+                    }
+                }
+            ],
+            "wings": ["sarissa_wing"]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 10,
+            "hullId": "centurion",
+            "hullMods": [
+                "armoredweapons",
+                "autorepair",
+                "magazines",
+                "shield_shunt",
+                "shrouded_lens",
+                "turretgyros"
+            ],
+            "sMods": [
+                "fluxbreakers",
+                "heavyarmor",
+                "reinforcedhull"
+            ],
+            "variantId": "Grievous69_centurion_Cursed",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "voltaic_cannon",
+                        "WS 005": "voltaic_cannon"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "gorgon"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "lightneedler",
+                        "WS 002": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "mininglaser",
+                        "WS 007": "mininglaser"
+                    }
+                }
+            ]
+        }
+    ]
+}

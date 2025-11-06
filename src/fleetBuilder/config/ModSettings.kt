@@ -11,7 +11,7 @@ import org.lwjgl.input.Keyboard
 
 object ModSettings {
     fun onApplicationLoad() {
-        if (Global.getSettings().modManager.isModEnabled("lunalib"))
+        if (Global.getSettings().modManager.isModEnabled("lunalib") && !LunaSettings.hasSettingsListenerOfClass(ModSettingsListener::class.java))
             LunaSettings.addSettingsListener(ModSettingsListener())
 
         isConsoleModEnabled = Global.getSettings().modManager.isModEnabled("lw_console")
@@ -99,8 +99,6 @@ object ModSettings {
 
     var randomPastedCosmetics = true
 
-    var unassignPlayer = false
-
     var forceAutofit = false
 
     var dontForceClearDMods = false
@@ -136,6 +134,12 @@ object ModSettings {
     var autofitNoSModdedBuiltInWhenNotBuiltInMod = true
 
     var reserveFirstFourAutofitSlots = true
+
+    private var unassignPlayer = false
+    fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()
+    fun setUnassignPlayer(value: Boolean) {
+        unassignPlayer = value
+    }
 
     private var cheatsEnabled = false
     fun cheatsEnabled(): Boolean = cheatsEnabled || Global.getSettings().isDevMode

@@ -22,6 +22,7 @@ class LoadSave : BaseCommand {
     private val NO_OFFICERS = "-no-officers"
     private val NO_PLAYER = "-no-player"
     private val NO_CREDITS = "-no-credits"
+    private val NO_ABILITYBAR = "-no-abilitybar"
 
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
         if (!context.isInCampaign) {
@@ -64,7 +65,8 @@ class LoadSave : BaseCommand {
             handleFleet = !argList.contains(NO_FLEET),
             handleCredits = !argList.contains(NO_CREDITS),
             handleKnownHullmods = !argList.contains(NO_HULLMODS),
-            handleOfficers = !argList.contains(NO_OFFICERS)
+            handleOfficers = !argList.contains(NO_OFFICERS),
+            handleAbilityBar = !argList.contains(NO_ABILITYBAR),
         )
 
 

@@ -49,18 +49,110 @@ object Dialogs {
         data: DataFleet.ParsedFleetData,
         validatedData: DataFleet.ParsedFleetData,
     ) {
-        val dialog = PopUpUIDialog("Paste Fleet into Player Fleet", addCloseButton = true)
+        val buttonHeight = 24f
 
-        val memberCount = validatedData.members.size
-        val officerCount = validatedData.members.count { it.personData != null }
-        dialog.addParagraph(
-            "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
-                    if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else ""
-        )
 
-        val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
-        if (missingHullCount > 0)
-            dialog.addParagraph("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods")
+        val dialog = BasePopUpUI("Paste Fleet into Player Fleet")
+
+        dialog.onCreateUI(500f, 380f) { ui ->
+
+            val memberCount = validatedData.members.size
+            val officerCount = validatedData.members.count { it.personData != null }
+            ui.addPara(
+                "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
+                        if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else "", 0f
+            )
+
+            val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
+            if (missingHullCount > 0)
+                ui.addPara("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods", 0f)
+
+
+            ui.addSpacer(8f)
+
+            var excludeShipsFromMissing = false
+            var includeOfficers = true
+            var incCommanderAsOfficer = true
+            var setAggression = true
+            var replacePlayerWithCommander = false
+            var fulfillNeeds = true
+
+            ui.addButton("Append to Player Fleet", null, dialog.bufferedWidth, buttonHeight, 3f).onClick {
+                val playerFleet = Global.getSector().playerFleet.fleetData
+
+                val missing = MissingElements()
+                val fleet = createCampaignFleetFromData(
+                    data, false,
+                    settings = FleetSettings().apply {
+                        excludeMembersWithMissingHullSpec = excludeShipsFromMissing
+                        memberSettings.includeOfficer = includeOfficers
+                        includeCommanderAsOfficer = incCommanderAsOfficer
+                    },
+                    missing = missing
+                )
+
+                fleet.fleetData.membersListCopy.forEach { member ->
+                    playerFleet.addFleetMember(member)
+
+                    val captain = member.captain
+                    if (!captain.isDefault && !captain.isAICore) {
+                        playerFleet.addOfficer(captain)
+                    }
+                }
+
+                reportMissingElementsIfAny(missing)
+
+                if (fulfillNeeds)
+                    FBMisc.fulfillPlayerFleet()
+
+                ReflectionMisc.updateFleetPanelContents()
+
+                if (fleet.fleetData.membersListCopy.size > 1)
+                    DisplayMessage.showMessage(FBTxt.txt("members_appended_into_fleet", fleet.fleetData.membersListCopy.size))
+                else
+                    DisplayMessage.showMessage(FBTxt.txt("member_appended_into_fleet", fleet.fleetData.membersListCopy.size))
+
+                dialog.forceDismiss()
+            }
+            ui.addSpacer(24f)
+
+            ui.addButton("Replace Player Fleet", null, dialog.bufferedWidth, buttonHeight, 3f).onClick {
+                val settings = FleetSettings()
+                settings.memberSettings.includeOfficer = includeOfficers
+                settings.excludeMembersWithMissingHullSpec = excludeShipsFromMissing
+                settings.includeCommanderAsOfficer = incCommanderAsOfficer
+                settings.includeAggression = setAggression
+
+                val replaceMissing = FBMisc.replacePlayerFleetWith(
+                    data,
+                    (replacePlayerWithCommander && settings.includeCommanderAsOfficer),
+                    settings
+                )
+
+                reportMissingElementsIfAny(replaceMissing)
+
+                if (fulfillNeeds as Boolean)
+                    FBMisc.fulfillPlayerFleet()
+
+                ReflectionMisc.updateFleetPanelContents()
+
+                DisplayMessage.showMessage(FBTxt.txt("player_fleet_replaced"))
+
+                dialog.forceDismiss()
+            }
+            ui.addToggle("Set Aggression Doctrine", setAggression).onClick { setAggression = !setAggression }
+            ui.addToggle("Replace Player with Commander", replacePlayerWithCommander).onClick { replacePlayerWithCommander = !replacePlayerWithCommander }
+
+            ui.addSpacer(48f)
+            ui.addPara("Additional Settings:", 0f)
+            ui.addToggle("Include Officers", includeOfficers).onClick { includeOfficers = !includeOfficers }
+            ui.addToggle("Include Commander as Officer", incCommanderAsOfficer).onClick { incCommanderAsOfficer = !incCommanderAsOfficer }
+            ui.addToggle("Exclude Ships From Missing Mods", excludeShipsFromMissing).onClick { excludeShipsFromMissing = !excludeShipsFromMissing }
+            ui.addToggle("Fulfill cargo, fuel, crew, and repair for fleet", fulfillNeeds).onClick { fulfillNeeds = !fulfillNeeds }
+
+
+            dialog.addCloseButton()
+        }
 
         /*
                                         val tempFleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
@@ -110,86 +202,6 @@ object Dialogs {
                         custom.addUIElement(tooltip)
                         dialog.addCustom(custom)*/
 
-
-
-
-
-
-
-        dialog.addPadding(8f)
-
-        dialog.addButton("Append to Player Fleet") { fields ->
-            val playerFleet = Global.getSector().playerFleet.fleetData
-
-            val missing = MissingElements()
-            val fleet = createCampaignFleetFromData(
-                data, false,
-                settings = FleetSettings().apply {
-                    excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
-                    memberSettings.includeOfficer = fields["Include Officers"] as Boolean
-                    includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
-                },
-                missing = missing
-            )
-
-            fleet.fleetData.membersListCopy.forEach { member ->
-                playerFleet.addFleetMember(member)
-
-                val captain = member.captain
-                if (!captain.isDefault && !captain.isAICore) {
-                    playerFleet.addOfficer(captain)
-                }
-            }
-
-            reportMissingElementsIfAny(missing)
-
-            if (fields["Fulfill cargo, fuel, crew, and repair for fleet"] as Boolean)
-                FBMisc.fulfillPlayerFleet()
-
-            ReflectionMisc.updateFleetPanelContents()
-
-            if (fleet.fleetData.membersListCopy.size > 1)
-                DisplayMessage.showMessage(FBTxt.txt("members_appended_into_fleet", fleet.fleetData.membersListCopy.size))
-            else
-                DisplayMessage.showMessage(FBTxt.txt("member_appended_into_fleet", fleet.fleetData.membersListCopy.size))
-
-        }
-        dialog.addPadding(24f)
-
-        dialog.addButton("Replace Player Fleet") { fields ->
-            val settings = FleetSettings()
-            settings.memberSettings.includeOfficer = fields["Include Officers"] as Boolean
-            settings.excludeMembersWithMissingHullSpec = fields["Exclude Ships From Missing Mods"] as Boolean
-            settings.includeCommanderAsOfficer = fields["Include Commander as Officer"] as Boolean
-            settings.includeAggression = fields["Set Aggression Doctrine"] as Boolean
-
-            val replaceMissing = FBMisc.replacePlayerFleetWith(
-                data,
-                (fields["Replace Player with Commander"] as Boolean && settings.includeCommanderAsOfficer),
-                settings
-            )
-
-            reportMissingElementsIfAny(replaceMissing)
-
-            if (fields["Fulfill cargo, fuel, crew, and repair for fleet"] as Boolean)
-                FBMisc.fulfillPlayerFleet()
-
-            ReflectionMisc.updateFleetPanelContents()
-
-            DisplayMessage.showMessage(FBTxt.txt("player_fleet_replaced"))
-        }
-        dialog.addToggle("Set Aggression Doctrine", default = true)
-        dialog.addToggle("Replace Player with Commander", default = false)
-
-        dialog.addPadding(48f)
-        dialog.addParagraph("Additional Settings:")
-        dialog.addToggle("Include Officers", default = true)
-        dialog.addToggle("Include Commander as Officer", default = true)
-        dialog.addToggle("Exclude Ships From Missing Mods", default = false)
-        dialog.addToggle("Fulfill cargo, fuel, crew, and repair for fleet", default = true)
-
-
-        initPopUpUI(dialog, 500f, 380f)
     }
 
     fun openSubmarketCargoAutoManagerDialog(
@@ -200,13 +212,16 @@ object Dialogs {
     }
 
     fun createDevModeDialog() {
-        val dialog = PopUpUIDialog("Dev Options", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
-        dialog.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
+        val dialog = BasePopUpUI("Dev Options")
 
-        dialog.onExit { fields ->
-            Global.getSettings().isDevMode = fields["Toggle Dev Mode"] as Boolean
+        dialog.onCreateUI(500f, 200f) { ui ->
+            val toggleDev = ui.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
+            toggleDev.onClick {
+                Global.getSettings().isDevMode = toggleDev.isChecked
+            }
+
+            dialog.addCloseButton()
         }
-        initPopUpUI(dialog, 500f, 200f)
     }
 
     fun spawnFleetInCampaignDialog(
@@ -216,8 +231,6 @@ object Dialogs {
         uiaaaaRemoveMe: CampaignUIAPI
     ) {
         val dialog = BasePopUpUI("Spawn Fleet in Campaign")
-
-        val buttonHeight = 24f
 
         dialog.onCreateUI(500f, 350f) { ui ->
 
@@ -234,30 +247,18 @@ object Dialogs {
 
 
             ui.addSpacer(8f)
-            fun addToggle(name: String, isChecked: Boolean = false): ButtonAPI {
-                val checkbox = ui.addCheckbox(
-                    ui.computeStringWidth(name) + buttonHeight + 4f,
-                    buttonHeight,
-                    name,
-                    null,
-                    ButtonAPI.UICheckboxSize.SMALL,
-                    0f,
-                )
-                checkbox.isChecked = isChecked
 
-                return checkbox
-            }
-
-            val includeOfficers = addToggle("Include Officers", true)
-            val includeCommanderAsCommander = addToggle("Include Commander as Commander", true)
-            val includeCommanderAsOfficer = addToggle("Include Commander as Officer", true)
-            val setAggressionDoctrine = addToggle("Set Aggression Doctrine", true)
+            val buttonHeight = 24f
+            val includeOfficers = ui.addToggle("Include Officers", true)
+            val includeCommanderAsCommander = ui.addToggle("Include Commander as Commander", true)
+            val includeCommanderAsOfficer = ui.addToggle("Include Commander as Officer", true)
+            val setAggressionDoctrine = ui.addToggle("Set Aggression Doctrine", true)
             ui.addSpacer(buttonHeight / 2)
-            val setFactionToPirates = addToggle("Set Faction to Pirate", true)
-            val fightToTheLast = addToggle("Fight To The Last", true)
+            val setFactionToPirates = ui.addToggle("Set Faction to Pirate", true)
+            val fightToTheLast = ui.addToggle("Fight To The Last", true)
             ui.addSpacer(buttonHeight / 2)
-            val repairAndSetMaxCR = addToggle("Repair and Set Max CR", true)
-            val excludeMissingShips = addToggle("Exclude Ships From Missing Mods", true)
+            val repairAndSetMaxCR = ui.addToggle("Repair and Set Max CR", true)
+            val excludeMissingShips = ui.addToggle("Exclude Ships From Missing Mods", true)
 
             dialog.setupConfirmCancelSection(confirmText = "Spawn Fleet")
 
@@ -472,15 +473,12 @@ object Dialogs {
                 *arrayOf(loadoutBaseHullName)
             ).setAlignment(Alignment.MID)
 
-
-            val height = dialog.panel.width - (dialog.x * 2)
-
-            val tempPanel = Global.getSettings().createCustom(dialog.panel.width, height, null)
+            val tempPanel = Global.getSettings().createCustom(dialog.panel.width, dialog.bufferedWidth, null)
             val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
 
             val selectorPanel = AutofitSelector.createAutofitSelector(
                 autofitSpec = AutofitSpec(variant, null),
-                height,
+                dialog.bufferedWidth,
                 addDescription = false,
                 centerTitle = true
             )
@@ -497,7 +495,7 @@ object Dialogs {
             dialog.setupConfirmCancelSection(confirmText = "Import", alignment = Alignment.MID)
 
             dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 600f) { tooltip ->
-                tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.getName()} (${ModSettings.defaultPrefix}) directory", 0f)
+                tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.name} (${ModSettings.defaultPrefix}) directory", 0f)
             }
         }
 
@@ -512,73 +510,118 @@ object Dialogs {
         }
     }
 
+    // Top-level declaration — OK
+    enum class SaveOption(val displayName: String, val defaultChecked: Boolean) {
+        BLUEPRINTS("Include Blueprints", true),
+        HULLMODS("Include Hullmods", true),
+        PLAYER("Include Player", true),
+        FLEET("Include Fleet", true),
+        OFFICERS("Include Officers", true),
+        REPUTATION("Include Reputation", true),
+        CARGO("Include Cargo", true),
+        CREDITS("Include Credits", true),
+        ABILITYBAR("Include Ability Bar", true);
+    }
+
+
     fun createSaveTransferDialog() {
-        val initialDialog = PopUpUIDialog("Save Transfer", addCancelButton = false, addConfirmButton = false, addCloseButton = true)
-        initialDialog.addButton("Flip All Values", dismissOnClick = false) {
-            initialDialog.toggleRefs.values.forEach { it.isChecked = !it.isChecked }
-        }
-        initialDialog.addPadding(initialDialog.buttonHeight / 4f)
-        initialDialog.addToggle("Include Blueprints", true)
-        initialDialog.addToggle("Include Hullmods", true)
-        initialDialog.addToggle("Include Player", true)
-        initialDialog.addToggle("Include Fleet", true)
-        initialDialog.addToggle("Include Officers", true)
-        initialDialog.addToggle("Include Reputation", true)
-        initialDialog.addToggle("Include Cargo", true)
-        initialDialog.addToggle("Include Credits", true)
-        initialDialog.addPadding(initialDialog.buttonHeight)
+        val dialog = BasePopUpUI(headerTitle = "Save Transfer")
 
-        initialDialog.addButton("Copy Save To Clipboard") { fields ->
-            val json = PlayerSaveUtil.createPlayerSaveJson(
-                handleCargo = fields["Include Cargo"] as Boolean,
-                handleRelations = fields["Include Reputation"] as Boolean,
-                handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
-                handlePlayer = fields["Include Player"] as Boolean,
-                handleFleet = fields["Include Fleet"] as Boolean,
-                handleCredits = fields["Include Credits"] as Boolean,
-                handleKnownHullmods = fields["Include Hullmods"] as Boolean,
-                handleOfficers = fields["Include Officers"] as Boolean
-            )
+        dialog.onCreateUI(300f, 384f) { ui ->
 
-            setClipboardText(json.toString(4))
+            val buttonHeight = 24f
 
-            DisplayMessage.showMessage("Save copied to clipboard")
-        }
+            // Map option → checkbox
+            val checkboxes = mutableMapOf<SaveOption, ButtonAPI>()
 
-        initialDialog.addButton("Load Save From Clipboard") { fields ->
-
-            val json = getClipboardJson()
-
-            if (json == null) {
-                DisplayMessage.showMessage("Failed to read json in clipboard", Color.YELLOW)
-                return@addButton
+            fun addToggle(option: SaveOption): ButtonAPI {
+                val checkbox = ui.addCheckbox(
+                    ui.computeStringWidth(option.displayName) + buttonHeight + 4f,
+                    buttonHeight,
+                    option.displayName,
+                    null,
+                    ButtonAPI.UICheckboxSize.SMALL,
+                    0f
+                )
+                checkbox.isChecked = option.defaultChecked
+                checkboxes[option] = checkbox
+                return checkbox
             }
 
-            val (compiled, missing) = PlayerSaveUtil.compilePlayerSaveJson(json)
+            fun isEnabled(option: SaveOption): Boolean =
+                checkboxes[option]?.isChecked ?: false
 
-            if (compiled.isEmpty()) {
+            val toggles = mutableListOf<ButtonAPI>()
+            ui.addButton("Flip All Values", null, dialog.bufferedWidth, buttonHeight, 0f).onClick {
+                toggles.forEach { it.isChecked = !it.isChecked }
+            }
+            ui.addSpacer(buttonHeight / 4f)
+
+            SaveOption.entries.forEach { option ->
+                toggles.add(addToggle(option))
+            }
+
+            ui.addSpacer(buttonHeight)
+
+            ui.addButton("Copy Save To Clipboard", null, dialog.bufferedWidth, buttonHeight, 3f).onClick {
+                val json = PlayerSaveUtil.createPlayerSaveJson(
+                    handleCargo = isEnabled(SaveOption.CARGO),
+                    handleRelations = isEnabled(SaveOption.REPUTATION),
+                    handleKnownBlueprints = isEnabled(SaveOption.BLUEPRINTS),
+                    handlePlayer = isEnabled(SaveOption.PLAYER),
+                    handleFleet = isEnabled(SaveOption.FLEET),
+                    handleCredits = isEnabled(SaveOption.CREDITS),
+                    handleKnownHullmods = isEnabled(SaveOption.HULLMODS),
+                    handleOfficers = isEnabled(SaveOption.OFFICERS),
+                    handleAbilityBar = isEnabled(SaveOption.ABILITYBAR)
+                )
+
+                setClipboardText(json.toString(4))
+                DisplayMessage.showMessage("Save copied to clipboard")
+
+                dialog.forceDismiss()
+            }
+
+            ui.addButton("Load Save From Clipboard", null, dialog.bufferedWidth, buttonHeight, 3f).onClick {
+
+                val json = getClipboardJson()
+
+                if (json == null) {
+                    DisplayMessage.showMessage("Failed to read json in clipboard", Color.YELLOW)
+                    return@onClick
+                }
+
+                val (compiled, missing) = PlayerSaveUtil.compilePlayerSaveJson(json)
+
+                if (compiled.isEmpty()) {
+                    reportMissingElementsIfAny(missing)
+                    DisplayMessage.showMessage(
+                        "Could not find contents of save in clipboard. Are you sure you copied a valid save?",
+                        Color.YELLOW
+                    )
+                    return@onClick
+                }
+
+                PlayerSaveUtil.loadPlayerCompiledSave(
+                    compiled,
+                    handleCargo = isEnabled(SaveOption.CARGO),
+                    handleRelations = isEnabled(SaveOption.REPUTATION),
+                    handleKnownBlueprints = isEnabled(SaveOption.BLUEPRINTS),
+                    handlePlayer = isEnabled(SaveOption.PLAYER),
+                    handleFleet = isEnabled(SaveOption.FLEET),
+                    handleCredits = isEnabled(SaveOption.CREDITS),
+                    handleKnownHullmods = isEnabled(SaveOption.HULLMODS),
+                    handleOfficers = isEnabled(SaveOption.OFFICERS),
+                    handleAbilityBar = isEnabled(SaveOption.ABILITYBAR)
+                )
+
+                DisplayMessage.showMessage("Save loaded from clipboard")
                 reportMissingElementsIfAny(missing)
-                DisplayMessage.showMessage("Could not find contents of save in clipboard. Are you sure you copied a valid save?", Color.YELLOW)
-                return@addButton
+
+                dialog.forceDismiss()
             }
 
-            PlayerSaveUtil.loadPlayerCompiledSave(
-                compiled,
-                handleCargo = fields["Include Cargo"] as Boolean,
-                handleRelations = fields["Include Reputation"] as Boolean,
-                handleKnownBlueprints = fields["Include Blueprints"] as Boolean,
-                handlePlayer = fields["Include Player"] as Boolean,
-                handleFleet = fields["Include Fleet"] as Boolean,
-                handleCredits = fields["Include Credits"] as Boolean,
-                handleKnownHullmods = fields["Include Hullmods"] as Boolean,
-                handleOfficers = fields["Include Officers"] as Boolean
-            )
-
-            DisplayMessage.showMessage("Save loaded from clipboard")
-
-            reportMissingElementsIfAny(missing)
+            dialog.addCloseButton()
         }
-
-        initPopUpUI(initialDialog, 300f, 360f)
     }
 }

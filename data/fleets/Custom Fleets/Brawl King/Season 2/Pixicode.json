@@ -1,0 +1,451 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "PixiCode",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "5743_Anubis_Final"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "5743_Anubis_Final"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "5743_Anubis_Final"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "5743_Anubis_Final"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "5743_Anubis_Final"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 6",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "5743_Anubis_Final"
+        },
+        {
+            "cr": 0.8,
+            "name": "Medusa (Shrouded/Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "5743_Medusa_HungersForMore"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "5743_Afflictor_NeedlerP"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "5743_Afflictor_NeedlerP"
+        },
+        {
+            "cr": 0.95,
+            "name": "Kite (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_hegemony06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "5743_Kite_Bemperite"
+        },
+        {
+            "cr": 0.8,
+            "name": "Nova (Threat)",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "5743_Nova_Fragger"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 20,
+            "fluxVents": 0,
+            "hullId": "anubis",
+            "hullMods": [
+                "safetyoverrides",
+                "autorepair",
+                "pointdefenseai",
+                "hardenedshieldemitter"
+            ],
+            "sMods": [
+                "high_scatter_amp",
+                "magazines",
+                "auxiliarythrusters"
+            ],
+            "variantId": "5743_Anubis_Final",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 001": "guardian",
+                        "WS 002": "guardian"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "heavymg"}
+                }
+            ],
+            "wings": ["broadsword_wing"]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "hullId": "medusa",
+            "hullMods": [
+                "advancedshieldemitter",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "fragment_swarm",
+                "secondary_fabricator",
+                "eccm"
+            ],
+            "variantId": "5743_Medusa_HungersForMore",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "voltaic_discharge",
+                    "WS 003": "voltaic_discharge",
+                    "WS 006": "assaying_rift",
+                    "WS 007": "assaying_rift",
+                    "WS 008": "kinetic_fragments",
+                    "WS 009": "kinetic_fragments"
+                }
+            }]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 7,
+            "fluxVents": 0,
+            "hullId": "afflictor_d_pirates",
+            "hullMods": [
+                "targetingunit",
+                "phase_anchor",
+                "fluxbreakers"
+            ],
+            "sMods": [
+                "auxiliarythrusters",
+                "unstable_injector",
+                "autorepair"
+            ],
+            "variantId": "5743_Afflictor_NeedlerP",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 002": "lightneedler",
+                    "WS 003": "lightneedler"
+                }
+            }]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 7,
+            "fluxVents": 0,
+            "hullId": "kite_hegemony",
+            "hullMods": ["safetyoverrides"],
+            "sMods": [
+                "eccm",
+                "fragment_swarm",
+                "secondary_fabricator"
+            ],
+            "variantId": "5743_Kite_Bemperite",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "kinetic_fragments",
+                        "WS 003": "vulcan"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "unstable_fragment"}
+                }
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 10,
+            "fluxVents": 50,
+            "hullId": "nova",
+            "hullMods": [
+                "stabilizedshieldemitter",
+                "targetingunit",
+                "adaptiveshields",
+                "advancedshieldemitter",
+                "extendedshieldemitter",
+                "pointdefenseai"
+            ],
+            "sMods": [
+                "fragment_swarm",
+                "hardenedshieldemitter",
+                "magazines"
+            ],
+            "variantId": "5743_Nova_Fragger",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "autopulse",
+                        "WS 001": "autopulse",
+                        "WS 004": "voidblaster",
+                        "WS 006": "kinetic_fragments",
+                        "WS 007": "kinetic_fragments",
+                        "WS 008": "kinetic_fragments",
+                        "WS 009": "kinetic_fragments",
+                        "WS 010": "voltaic_discharge",
+                        "WS 011": "voltaic_discharge",
+                        "WS 012": "voltaic_discharge",
+                        "WS 013": "voltaic_discharge"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "phasebeam"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "irautolance",
+                        "WS 003": "irautolance"
+                    }
+                }
+            ]
+        }
+    ]
+}

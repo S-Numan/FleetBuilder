@@ -68,7 +68,6 @@ internal class ModSettingsListener : LunaSettingsListener {
             saveDMods = getBoolean(modID, "saveDMods")!!
             saveSMods = getBoolean(modID, "saveSMods")!!
             saveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
-            unassignPlayer = getBoolean(modID, "unassignPlayer")!!
             forceAutofit = getBoolean(modID, "forceAutofit")!!
             dontForceClearDMods = getBoolean(modID, "dontForceClearDMods")!!
             dontForceClearSMods = getBoolean(modID, "dontForceClearSMods")!!
@@ -88,12 +87,16 @@ internal class ModSettingsListener : LunaSettingsListener {
             autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
             autofitNoSModdedBuiltInWhenNotBuiltInMod = getBoolean(modID, "autofitNoSModdedBuiltInWhenNotBuiltInMod")!!
             reserveFirstFourAutofitSlots = getBoolean(modID, "reserveFirstFourAutofitSlots")!!
-            setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
+
+            ModSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
+
+            ModSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
 
             if (VariantLib.Loaded())
                 LoadoutManager.loadAllDirectories()//Reload the LoadoutManager
         } else {
-            unassignPlayer = false
+            ModSettings.setUnassignPlayer(false)
+            ModSettings.setCheatsEnabled(false)
             backupSave = false
             fleetClipboardHotkeyHandler = false
             devModeCodexButtonEnabled = false

@@ -1,0 +1,450 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Myscellanea",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Monitor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_league07.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 1,
+                    "shield_modulation": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Myscellanea_monitor_tank"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 1,
+                    "shield_modulation": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Myscellanea_monitor_tank"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 1,
+                    "shield_modulation": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Myscellanea_monitor_tank"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 1,
+                    "shield_modulation": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Myscellanea_monitor_tank"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 1,
+                    "shield_modulation": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Myscellanea_monitor_tank"
+        },
+        {
+            "cr": 1,
+            "name": "Aurora 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Myscellanea_aurora_hvb2"
+        },
+        {
+            "cr": 1,
+            "name": "Aurora 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Myscellanea_aurora_hvb2"
+        },
+        {
+            "cr": 1,
+            "name": "Aurora 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Myscellanea_aurora_hvb2"
+        },
+        {
+            "cr": 1,
+            "name": "Grendel",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Myscellanea_grendel_hmg"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Myscellanea_anubis_gc"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Myscellanea_anubis_gc"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 6",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "point_defense": 1,
+                    "shield_modulation": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Myscellanea_monitor_tank"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 4,
+            "fluxVents": 15,
+            "hullId": "monitor",
+            "hullMods": [
+                "solar_shielding",
+                "unstable_injector",
+                "frontemitter"
+            ],
+            "sMods": [
+                "stabilizedshieldemitter",
+                "hardenedshieldemitter",
+                "fluxdistributor"
+            ],
+            "variantId": "Myscellanea_monitor_tank",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "flak",
+                    "WS 002": "flak"
+                }
+            }]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 14,
+            "fluxVents": 34,
+            "hullId": "aurora",
+            "hullMods": [
+                "safetyoverrides",
+                "solar_shielding"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "stabilizedshieldemitter",
+                "frontemitter"
+            ],
+            "variantId": "Myscellanea_aurora_hvb2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 009": "heavyblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "heavyblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "heavyblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "irpulse",
+                        "WS 004": "irpulse",
+                        "WS 005": "irpulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "swarmer",
+                        "WS 011": "heatseeker",
+                        "WS 012": "swarmer",
+                        "WS 013": "swarmer"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 8,
+            "fluxVents": 7,
+            "hullId": "grendel",
+            "hullMods": [
+                "safetyoverrides",
+                "fluxbreakers"
+            ],
+            "sMods": [
+                "armoredweapons",
+                "adaptive_coils",
+                "auxiliarythrusters"
+            ],
+            "variantId": "Myscellanea_grendel_hmg",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 000": "lightdualmg",
+                    "WS 004": "lightdualmg",
+                    "WS 005": "lightdualmg",
+                    "WS 006": "lightdualmg",
+                    "WS 007": "heatseeker",
+                    "WS 008": "swarmer",
+                    "WS 009": "swarmer",
+                    "WS 010": "heavymg",
+                    "WS 011": "heavymg",
+                    "WS 012": "dualflak",
+                    "WS 013": "chaingun",
+                    "WS 014": "chaingun"
+                }
+            }]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 20,
+            "fluxVents": 7,
+            "hullId": "anubis",
+            "hullMods": ["safetyoverrides"],
+            "sMods": [
+                "frontemitter",
+                "hardened_subsystems",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "Myscellanea_anubis_gc",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 000": "gigacannon",
+                        "WS 001": "autopulse",
+                        "WS 002": "gigacannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "sabotpod",
+                        "WS 004": "sabotpod"
+                    }
+                }
+            ],
+            "wings": ["broadsword_wing"]
+        }
+    ]
+}

@@ -1,3 +1,13 @@
+## 1.25.0
+- Remove all credits/cargo/blueprints/hullmods on loading a save transfer if relevant toggle is checked. This is to effectively replace the current save, instead of the previous behavior of appending to.
+- Save Transfer now also saves and loads the contents of the ability bar.
+- An untested fix to prevent crashing when loading a save transfer with an industry_bp which the industry of no longer exists.
+- Tags starting with the hash character '#' will now not be saved when saving a variant or officer.
+- Fix Copy Fleet command failing to save titlescreen mission commanders.
+- Fix autofit failing to handle variants with variantID's starting with the same prefix as the ship directory. (E.G a variantID like (DF_DF_sunder_Hull) would cause autofit to not work right)
+- When Cheats are enabled, unassign player from ship is automatically enabled.
+- A long list of other small backend changes and simplifications I cannot remember.
+
 ## 1.24.0
 - Patch to fix CTRL + V pasting with the new ConsoleCommands 4.0
 - Variant comparison now ignores weapon group slots without weapons.

@@ -13,7 +13,6 @@ import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.getRegularHullMods
-import fleetBuilder.variants.LoadoutManager.getVariantSourceShipDirectory
 
 object VariantLib {
 
@@ -97,19 +96,36 @@ object VariantLib {
     }
 
     //Is this needed? - Numan
+    //No - Future Numan
     fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
 
         //Here sets the variant ID after a variant is saved.
 
-        val idIfNone = makeVariantID(member.variant)
+        /*val idIfNone = makeVariantID(member.variant)
 
-        val dir = getVariantSourceShipDirectory(member.variant)
+        var matchingVariant: ShipVariantAPI? = null
 
-        val possibleVariants =
-            dir?.getShips(member.hullSpec) ?: getCoreVariantsForEffectiveHullspec(member.hullSpec)
+        for (dir in LoadoutManager.getShipDirectories()) {
+            val hullspecVariants = getLoadoutVariantsForHullspec(dir.prefix, member.variant.hullSpec)
+            for (hullspecVariant in hullspecVariants) {
+                if (compareVariantContents(
+                        member.variant,
+                        hullspecVariant,
+                        CompareOptions(tags = false)
+                    )
+                ) {//If the variants are equal
+                    matchingVariant = hullspecVariant
+                    break
+                }
+            }
+            if (matchingVariant != null)
+                break
+        }
 
-        val matchingVariant = possibleVariants.find { candidate ->
-            compareVariantContents(candidate, member.variant, CompareOptions(tags = false))
+        if (matchingVariant == null) { // If not matching loadout variants
+            matchingVariant = getCoreVariantsForEffectiveHullspec(member.hullSpec).find { candidate -> // Try looking in the base game?
+                compareVariantContents(candidate, member.variant, CompareOptions(tags = false))
+            }
         }
 
         member.variant.hullVariantId = when {
@@ -121,20 +137,13 @@ object VariantLib {
                 matchingVariant.hullVariantId
             }
 
-            possibleVariants.any { it.hullVariantId == idIfNone } -> {
-                member.variant.moduleSlots.forEach { slot ->
-                    member.variant.getModuleVariant(slot).hullVariantId = "${idIfNone}_c_$slot"
-                }
-                "${idIfNone}_c"
-            }
-
             else -> {
                 member.variant.moduleSlots.forEach { slot ->
                     member.variant.getModuleVariant(slot).hullVariantId = "${idIfNone}_$slot"
                 }
                 idIfNone
             }
-        }
+        }*/
     }
 
     data class CompareOptions(
@@ -153,6 +162,7 @@ object VariantLib {
         val hull: Boolean = true,
         val convertSModsToRegular: Boolean = false,
         val useEffectiveHull: Boolean = false,
+        val compareTemporaryTags: Boolean = false,
     ) {
         companion object {
             fun allFalse(
@@ -171,9 +181,11 @@ object VariantLib {
                 hull: Boolean = false,
                 convertSModsToRegular: Boolean = false,
                 useEffectiveHull: Boolean = false,
+                compareTemporaryTags: Boolean = false,
             ) = CompareOptions(
                 flux = flux, weapons = weapons, weaponGroups = weaponGroups, wings = wings, hullMods = hullMods, builtInHullMods = builtInHullMods, hiddenHullMods = hiddenHullMods,
-                dMods = dMods, sMods = sMods, permaMods = permaMods, modules = modules, tags = tags, hull = hull, convertSModsToRegular = convertSModsToRegular, useEffectiveHull = useEffectiveHull
+                dMods = dMods, sMods = sMods, permaMods = permaMods, modules = modules, tags = tags, hull = hull, convertSModsToRegular = convertSModsToRegular, useEffectiveHull = useEffectiveHull,
+                compareTemporaryTags = compareTemporaryTags
             )
         }
     }
@@ -255,6 +267,10 @@ object VariantLib {
             ) return false
         }
         if (options.tags) {
+            if (!options.compareTemporaryTags) {
+                variant1?.tags?.toList()?.forEach { if (it.startsWith("#")) variant1.removeTag(it) }
+                variant2?.tags?.toList()?.forEach { if (it.startsWith("#")) variant2.removeTag(it) }
+            }
             if (variant1.tags.size != variant2.tags.size) return false
             for (tag in variant1.tags) {
                 if (!variant2.tags.contains(tag))

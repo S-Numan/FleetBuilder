@@ -1,0 +1,524 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Merchant",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Astral (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Merchant_Astral"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Merchant_Anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Merchant_Anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Merchant_Anubis_2"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Merchant_Monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Merchant_Monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Gemini 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "timid",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Merchant_Gemini_2"
+        },
+        {
+            "cr": 1,
+            "name": "Gemini (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "timid",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Merchant_Gemini"
+        },
+        {
+            "cr": 1,
+            "name": "Gemini 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "timid",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Merchant_Gemini_2"
+        },
+        {
+            "cr": 1,
+            "name": "Gemini 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "timid",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Merchant_Gemini_2"
+        },
+        {
+            "cr": 1,
+            "name": "Gemini 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "timid",
+                "portrait": "graphics/portraits/portrait_corporate06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Merchant_Gemini_2"
+        },
+        {
+            "cr": 1,
+            "name": "Gemini 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "timid",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 1
+                }
+            },
+            "variantId": "Merchant_Gemini_2"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 43,
+            "fluxVents": 0,
+            "hullId": "astral",
+            "hullMods": [
+                "expanded_deck_crew",
+                "fragment_coordinator",
+                "fragment_swarm"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "reinforcedhull",
+                "secondary_fabricator"
+            ],
+            "variantId": "Merchant_Astral",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 011": "swarm_launcher",
+                        "WS 012": "squall",
+                        "WS 014": "ionbeam",
+                        "WS 015": "gravitonbeam",
+                        "WS 023": "ionbeam"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "voltaic_cannon"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "voltaic_cannon"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "voltaic_cannon"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "voltaic_cannon"}
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing",
+                "flash_wing",
+                "flash_wing",
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 3,
+            "fluxVents": 0,
+            "hullId": "anubis",
+            "hullMods": [
+                "advancedoptics",
+                "magazines",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "converted_hangar",
+                "expanded_deck_crew",
+                "targetingunit"
+            ],
+            "variantId": "Merchant_Anubis",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 001": "autopulse",
+                        "WS 002": "guardian"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heavymg",
+                        "WS 004": "heavymg"
+                    }
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 0,
+            "fluxVents": 8,
+            "hullId": "anubis",
+            "hullMods": [
+                "advancedoptics",
+                "fragment_swarm",
+                "pointdefenseai",
+                "targetingunit"
+            ],
+            "sMods": [
+                "converted_hangar",
+                "expanded_deck_crew",
+                "secondary_fabricator"
+            ],
+            "variantId": "Merchant_Anubis_2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 001": "guardian",
+                        "WS 002": "guardian",
+                        "WS 003": "swarm_launcher"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "pilum"}
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 0,
+            "fluxVents": 14,
+            "hullId": "monitor",
+            "hullMods": [],
+            "sMods": [
+                "fluxdistributor",
+                "frontemitter",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "Merchant_Monitor",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "lightneedler",
+                        "WS 004": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "flak",
+                        "WS 002": "flak"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Timid",
+            "fluxCapacitors": 4,
+            "fluxVents": 0,
+            "hullId": "gemini",
+            "hullMods": [
+                "hardened_subsystems",
+                "pointdefenseai",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "eccm",
+                "expanded_deck_crew",
+                "turretgyros"
+            ],
+            "variantId": "Merchant_Gemini_2",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "flak",
+                    "WS 002": "flak",
+                    "WS 003": "pilum"
+                }
+            }],
+            "wings": ["flash_wing"]
+        },
+        {
+            "displayName": "Timid",
+            "fluxCapacitors": 1,
+            "fluxVents": 0,
+            "hullId": "gemini",
+            "hullMods": [
+                "fragment_swarm",
+                "hardened_subsystems",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "expanded_deck_crew",
+                "fragment_coordinator",
+                "secondary_fabricator"
+            ],
+            "variantId": "Merchant_Gemini",
+            "weaponGroups": [{
+                "autofire": false,
+                "mode": "LINKED",
+                "weapons": {"WS 003": "swarm_launcher"}
+            }],
+            "wings": ["flash_wing"]
+        }
+    ]
+}

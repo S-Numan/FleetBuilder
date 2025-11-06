@@ -1,0 +1,551 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "BigBrainEnergy",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Omen 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "BBE_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "BBE_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "BBE_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "BBE_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "BBE_monitor"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "BBE_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "BBE_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "BBE_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "BBE_afflictor"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "BBE_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Onslaught",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 1,
+                    "ordnance_expert": 2,
+                    "polarized_armor": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "BBE_onslaught"
+        },
+        {
+            "cr": 1,
+            "name": "Harbinger",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "BBE_harbinger"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 14,
+            "fluxVents": 0,
+            "hullId": "omen",
+            "hullMods": ["safetyoverrides"],
+            "sMods": [
+                "fluxcoil",
+                "hardenedshieldemitter",
+                "missile_autoloader"
+            ],
+            "variantId": "BBE_omen",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "reaper"}
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 0,
+            "fluxVents": 15,
+            "hullId": "monitor",
+            "hullMods": ["frontemitter"],
+            "sMods": [
+                "fluxdistributor",
+                "hardenedshieldemitter",
+                "unstable_injector"
+            ],
+            "variantId": "BBE_monitor",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "amblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "flak",
+                        "WS 002": "flak"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "lightmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 19,
+            "fluxVents": 35,
+            "hullId": "anubis",
+            "hullMods": [
+                "converted_hangar",
+                "stabilizedshieldemitter"
+            ],
+            "sMods": [
+                "autorepair",
+                "hardenedshieldemitter",
+                "targetingunit"
+            ],
+            "variantId": "BBE_anubis",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "gigacannon"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 002": "guardian"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heavymg",
+                        "WS 004": "heavymg"
+                    }
+                }
+            ],
+            "wings": [
+                "spark_wing",
+                "spark_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 11,
+            "fluxVents": 0,
+            "hullId": "afflictor",
+            "hullMods": ["phase_anchor"],
+            "sMods": [
+                "autorepair",
+                "auxiliarythrusters",
+                "fluxcoil"
+            ],
+            "variantId": "BBE_afflictor",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "amblaster",
+                        "WS 003": "amblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "lightneedler",
+                        "WS 004": "lightneedler"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 6,
+            "fluxVents": 55,
+            "hullId": "onslaught_xiv",
+            "hullMods": [
+                "adaptiveshields",
+                "armoredweapons",
+                "fluxdistributor",
+                "hardenedshieldemitter",
+                "heavyarmor",
+                "targetingunit"
+            ],
+            "sMods": [
+                "autorepair",
+                "magazines",
+                "turretgyros"
+            ],
+            "variantId": "BBE_onslaught",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 016": "tpc",
+                        "WS 017": "tpc"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 021": "gorgonpod",
+                        "WS 022": "gorgonpod",
+                        "WS 023": "gorgonpod",
+                        "WS 024": "gorgonpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 019": "hephag"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 018": "multineedler",
+                        "WS 020": "multineedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "heavyac",
+                        "WS 003": "heavyac",
+                        "WS 007": "heavyac"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "vulcan",
+                        "WS 004": "vulcan",
+                        "WS 005": "vulcan",
+                        "WS 006": "vulcan",
+                        "WS 008": "vulcan",
+                        "WS 009": "vulcan",
+                        "WS 010": "vulcan",
+                        "WS 011": "vulcan",
+                        "WS 012": "dualflak",
+                        "WS 013": "dualflak"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 25,
+            "fluxVents": 0,
+            "hullId": "harbinger",
+            "hullMods": [
+                "phase_anchor",
+                "targetingunit"
+            ],
+            "sMods": [
+                "advancedoptics",
+                "autorepair",
+                "unstable_injector"
+            ],
+            "variantId": "BBE_harbinger",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "phasebeam",
+                        "WS 002": "phasebeam",
+                        "WS 003": "phasebeam"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "pdburst",
+                        "WS 005": "pdburst"
+                    }
+                }
+            ]
+        }
+    ]
+}

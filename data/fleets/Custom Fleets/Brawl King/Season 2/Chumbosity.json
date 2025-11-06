@@ -1,0 +1,618 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "Chumbosity",
+    "members": [
+        {
+            "cr": 0.95,
+            "name": "Legion (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Chumbosity_legion_Threat"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Chumbosity_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 1,
+                    "missile_specialization": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Chumbosity_anubis"
+        },
+        {
+            "cr": 1,
+            "name": "Mora (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Chumbosity_mora_Threat"
+        },
+        {
+            "cr": 1,
+            "name": "Mora 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Chumbosity_mora"
+        },
+        {
+            "cr": 1,
+            "name": "Mora 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "impact_mitigation": 1,
+                    "missile_specialization": 2,
+                    "polarized_armor": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Chumbosity_mora"
+        },
+        {
+            "cr": 1,
+            "name": "Scintilla (Threat)",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "Chumbosity_scintilla_Threat"
+        },
+        {
+            "cr": 1,
+            "name": "Omen (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Chumbosity_omen_Threat"
+        },
+        {
+            "cr": 1,
+            "name": "Afflictor P 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_pirate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 2,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 1
+                }
+            },
+            "variantId": "Chumbosity_afflictor_d_pirates"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer 1",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Chumbosity_glimmer"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer 2",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Chumbosity_glimmer"
+        },
+        {
+            "cr": 1,
+            "name": "Glimmer 3",
+            "officer": {
+                "aicoreid": "alpha_core",
+                "first": "Alpha Core",
+                "level": 8,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai2b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "Chumbosity_glimmer"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 1,
+            "fluxVents": 20,
+            "hullId": "legion",
+            "hullMods": [
+                "armoredweapons",
+                "expanded_deck_crew",
+                "missleracks",
+                "targetingunit"
+            ],
+            "sMods": [
+                "fragment_swarm",
+                "heavyarmor",
+                "magazines"
+            ],
+            "variantId": "Chumbosity_legion_Threat",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "multineedler",
+                        "WS 001": "multineedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "gorgonpod",
+                        "WS 003": "gorgonpod",
+                        "WS 014": "mininglaser",
+                        "WS 015": "mininglaser",
+                        "WS 018": "vulcan",
+                        "WS 019": "vulcan",
+                        "WS 020": "vulcan",
+                        "WS 021": "vulcan"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "typhoon",
+                        "WS 008": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "typhoon",
+                        "WS 009": "mininglaser"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "swarm_launcher"}
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing",
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 9,
+            "fluxVents": 35,
+            "hullId": "anubis",
+            "hullMods": [
+                "eccm",
+                "high_scatter_amp",
+                "stabilizedshieldemitter",
+                "targetingunit"
+            ],
+            "sMods": [
+                "converted_hangar",
+                "frontemitter",
+                "missleracks"
+            ],
+            "variantId": "Chumbosity_anubis",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "gigacannon"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "guardian",
+                        "WS 003": "gorgonpod",
+                        "WS 004": "gorgonpod"
+                    }
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "mining_drone_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 13,
+            "hullId": "mora",
+            "hullMods": [
+                "fragment_swarm",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "dedicated_targeting_core",
+                "expanded_deck_crew",
+                "heavyarmor"
+            ],
+            "variantId": "Chumbosity_mora_Threat",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "lightneedler",
+                        "WS 007": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "salamanderpod",
+                        "WS 004": "swarm_launcher",
+                        "WS 014": "mininglaser"
+                    }
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 0,
+            "fluxVents": 7,
+            "hullId": "mora",
+            "hullMods": [
+                "eccm",
+                "expanded_deck_crew",
+                "reinforcedhull"
+            ],
+            "sMods": [
+                "dedicated_targeting_core",
+                "heavyarmor",
+                "missleracks"
+            ],
+            "variantId": "Chumbosity_mora",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "lightneedler",
+                        "WS 007": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "gorgonpod",
+                        "WS 004": "gorgonpod",
+                        "WS 014": "mininglaser"
+                    }
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 1,
+            "fluxVents": 0,
+            "hullId": "scintilla",
+            "hullMods": ["expanded_deck_crew"],
+            "sMods": [
+                "fragment_coordinator",
+                "fragment_swarm",
+                "magazines"
+            ],
+            "variantId": "Chumbosity_scintilla_Threat",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "voltaic_discharge",
+                        "WS 003": "voltaic_discharge",
+                        "WS 007": "voltaic_discharge",
+                        "WS 008": "voltaic_discharge"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "swarm_launcher"}
+                }
+            ],
+            "wings": [
+                "flash_wing",
+                "flash_wing"
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 15,
+            "fluxVents": 1,
+            "hullId": "omen",
+            "hullMods": ["fragment_swarm"],
+            "sMods": [
+                "fluxcoil",
+                "frontemitter",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "Chumbosity_omen_Threat",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "voltaic_discharge",
+                        "WS 003": "kinetic_fragments"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Reckless",
+            "fluxCapacitors": 10,
+            "fluxVents": 0,
+            "hullId": "afflictor_d_pirates",
+            "hullMods": ["adaptive_coils"],
+            "sMods": [
+                "auxiliarythrusters",
+                "fluxcoil",
+                "heavyarmor"
+            ],
+            "variantId": "Chumbosity_afflictor_d_pirates",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "amblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "lightneedler",
+                        "WS 003": "lightneedler"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 15,
+            "fluxVents": 10,
+            "hullId": "glimmer",
+            "hullMods": ["stabilizedshieldemitter"],
+            "sMods": [
+                "frontemitter",
+                "hardenedshieldemitter",
+                "unstable_injector"
+            ],
+            "variantId": "Chumbosity_glimmer",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "kineticblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "mininglaser",
+                        "WS 003": "mininglaser",
+                        "WS 004": "gorgon",
+                        "WS 005": "gorgon"
+                    }
+                }
+            ]
+        }
+    ]
+}

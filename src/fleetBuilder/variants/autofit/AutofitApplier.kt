@@ -287,7 +287,8 @@ object AutofitApplier {
 
         // Copy tags
         for (tag in from.tags) {
-            to.addTag(tag)
+            if (!tag.startsWith("#"))
+                to.addTag(tag)
         }
 
         // Copy hullmod data

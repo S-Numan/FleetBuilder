@@ -10,7 +10,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.FBMisc.isMouseWithinBounds
-import fleetBuilder.util.PlaceholderDialog
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
@@ -151,13 +150,14 @@ open class PopUpUI : CustomUIPanelPlugin {
 
     fun forceDismissNoExit() {
         parent!!.removeComponent(panel)
+
+        placeholderDialog?.invoke("dismiss", 0)
     }
 
     private var exitCallback: (() -> Unit)? = null
 
     open fun applyExitScript() {
-        if (placeholderDialog != null)
-            placeholderDialog!!.invoke("dismiss", 0)
+        placeholderDialog?.invoke("dismiss", 0)
 
         exitCallback?.invoke()
     }
@@ -173,7 +173,7 @@ open class PopUpUI : CustomUIPanelPlugin {
             //ui.showInteractionDialog(PlaceholderDialog(), Global.getSector().playerFleet) // While this also works, it hides the campaign UI.
             //placeholderDialog = ui.currentInteractionDialog
 
-            ui.showMessageDialog("FleetBuilder Placeholder Dialog")
+            ui.showMessageDialog(" ")
             val screenPanel = ui.get("screenPanel") as? UIPanelAPI
             placeholderDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
             if (placeholderDialog != null) {

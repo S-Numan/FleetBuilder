@@ -1,0 +1,384 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "SCC",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Radiant (Shrouded/Threat)",
+            "officer": {
+                "aicoreid": "beta_core",
+                "first": "Beta Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai3b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "combat_endurance": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "scc_radiant_SCC_Radiant"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "scc_anubis_Bully"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "scc_anubis_Bully"
+        },
+        {
+            "cr": 1,
+            "name": "Anubis 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "ordnance_expert": 1,
+                    "point_defense": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "scc_anubis_Bully"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "scc_medusa_Wolfpack"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "scc_medusa_Wolfpack"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "scc_medusa_Wolfpack"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "scc_medusa_Wolfpack"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 5",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "scc_medusa_Wolfpack"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 46,
+            "fluxVents": 55,
+            "hullId": "radiant",
+            "hullMods": [
+                "reinforcedhull",
+                "shrouded_mantle"
+            ],
+            "sMods": [
+                "advancedshieldemitter",
+                "magazines",
+                "stabilizedshieldemitter"
+            ],
+            "variantId": "scc_radiant_SCC_Radiant",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "autopulse",
+                        "WS 001": "autopulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "autopulse",
+                        "WS 003": "autopulse",
+                        "WS 004": "autopulse"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "voidblaster",
+                        "WS 006": "voidblaster",
+                        "WS 007": "voidblaster",
+                        "WS 008": "voidblaster"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "mininglaser",
+                        "WS 010": "mininglaser",
+                        "WS 011": "mininglaser",
+                        "WS 012": "mininglaser",
+                        "WS 013": "mininglaser",
+                        "WS 014": "mininglaser",
+                        "WS 015": "mininglaser",
+                        "WS 016": "mininglaser",
+                        "WS 017": "mininglaser",
+                        "WS 018": "mininglaser"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 6,
+            "fluxVents": 35,
+            "hullId": "anubis",
+            "hullMods": [
+                "advancedoptics",
+                "hardenedshieldemitter",
+                "targetingunit"
+            ],
+            "sMods": [
+                "advancedshieldemitter",
+                "converted_hangar",
+                "turretgyros"
+            ],
+            "variantId": "scc_anubis_Bully",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "irautolance"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "guardian",
+                        "WS 002": "guardian"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "heavymg",
+                        "WS 004": "heavymg"
+                    }
+                }
+            ],
+            "wings": [
+                "thunder_wing",
+                "thunder_wing"
+            ]
+        },
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 25,
+            "fluxVents": 12,
+            "hullId": "medusa",
+            "hullMods": ["pointdefenseai"],
+            "sMods": [
+                "extendedshieldemitter",
+                "frontemitter",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "scc_medusa_Wolfpack",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "lightneedler",
+                        "WS 009": "lightneedler"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "heavyblaster"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "ionpulser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "pdburst",
+                        "WS 003": "pdburst",
+                        "WS 005": "pdburst"
+                    }
+                }
+            ]
+        }
+    ]
+}

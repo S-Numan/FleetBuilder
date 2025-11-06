@@ -1,0 +1,541 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "GrumpyThumper",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Radiant (Threat)",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "systems_expertise": 2,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "radiant_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Eagle (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "gunnery_implants": 1,
+                    "helmsmanship": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "eagle_xiv_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Manticore 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "manticore_luddic_path_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Manticore 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "manticore_luddic_path_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Manticore 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "manticore_luddic_path_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Manticore 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "field_modulation": 1,
+                    "gunnery_implants": 1,
+                    "missile_specialization": 2,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "manticore_luddic_path_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Sunder (Shrouded/Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "sunder_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Hyperion (Shrouded/Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "ordnance_expert": 2,
+                    "systems_expertise": 1,
+                    "target_analysis": 2
+                }
+            },
+            "variantId": "hyperion_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1,
+                    "polarized_armor": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "monitor_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_pirate17.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1,
+                    "polarized_armor": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "monitor_BK2"
+        },
+        {
+            "cr": 1,
+            "name": "Monitor 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary06.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "impact_mitigation": 1,
+                    "polarized_armor": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "monitor_BK2"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 50,
+            "fluxVents": 21,
+            "hullId": "radiant",
+            "hullMods": [
+                "frontemitter",
+                "missleracks",
+                "autorepair"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "magazines",
+                "stabilizedshieldemitter"
+            ],
+            "variantId": "radiant_BK2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 000": "autopulse",
+                        "WS 001": "autopulse"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 002": "hammerrack",
+                        "WS 004": "hammerrack"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "autopulse"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "voidblaster",
+                        "WS 006": "voidblaster",
+                        "WS 007": "voidblaster",
+                        "WS 008": "voidblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 012": "voltaic_cannon",
+                        "WS 013": "voltaic_cannon",
+                        "WS 014": "voltaic_cannon",
+                        "WS 015": "voltaic_cannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 009": "pdburst",
+                        "WS 011": "pdburst",
+                        "WS 016": "pdburst",
+                        "WS 018": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 30,
+            "fluxVents": 18,
+            "hullId": "eagle_xiv",
+            "hullMods": ["missile_autoloader"],
+            "sMods": [
+                "extendedshieldemitter",
+                "hardenedshieldemitter",
+                "magazines"
+            ],
+            "variantId": "eagle_xiv_BK2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 007": "heavyac",
+                        "WS 008": "heavyac"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "ALTERNATING",
+                    "weapons": {
+                        "WS 001": "neutron_torpedo",
+                        "WS 002": "neutron_torpedo"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "voidblaster",
+                        "WS 006": "voidblaster",
+                        "WS 009": "voidblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "voltaic_cannon",
+                        "WS 012": "voltaic_cannon"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 003": "pdburst",
+                        "WS 004": "pdburst"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 20,
+            "fluxVents": 10,
+            "hullId": "manticore_luddic_path",
+            "hullMods": ["missleracks"],
+            "sMods": [
+                "eccm",
+                "hardened_subsystems",
+                "hardenedshieldemitter"
+            ],
+            "variantId": "manticore_luddic_path_BK2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 004": "heavymg",
+                        "WS 005": "heavymg"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "hammerrack"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "vulcan",
+                        "WS 002": "vulcan",
+                        "WS 003": "vulcan"
+                    }
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 14,
+            "fluxVents": 0,
+            "hullId": "sunder",
+            "hullMods": [
+                "escort_package",
+                "magazines",
+                "extendedshieldemitter"
+            ],
+            "sMods": [
+                "advancedoptics",
+                "eccm",
+                "targetingunit"
+            ],
+            "variantId": "sunder_BK2",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "abyssal_glare"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 002": "irautolance",
+                        "WS 004": "irautolance"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 006": "light_mass_driver",
+                        "WS 007": "light_mass_driver"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 008": "lightdualmg"}
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 11,
+            "fluxVents": 0,
+            "hullId": "hyperion",
+            "hullMods": [
+                "extendedshieldemitter",
+                "shrouded_mantle"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "magazines",
+                "stabilizedshieldemitter"
+            ],
+            "variantId": "hyperion_BK2",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "voidblaster",
+                        "WS 002": "voidblaster"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "heavyneedler"}
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 15,
+            "fluxVents": 10,
+            "hullId": "monitor",
+            "hullMods": ["hardenedshieldemitter"],
+            "sMods": [
+                "fluxbreakers",
+                "fluxcoil",
+                "frontemitter"
+            ],
+            "variantId": "monitor_BK2",
+            "weaponGroups": [{
+                "autofire": true,
+                "mode": "LINKED",
+                "weapons": {
+                    "WS 001": "flak",
+                    "WS 002": "flak"
+                }
+            }]
+        }
+    ]
+}

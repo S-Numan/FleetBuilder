@@ -12,6 +12,8 @@ import com.fs.starfarer.api.campaign.impl.items.WeaponBlueprintItemPlugin
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.ui.ButtonAPI
+import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.variants.VariantLib
@@ -301,3 +303,22 @@ fun PersonAPI.isGenericOfficer(): Boolean {
     }
     return !hasSkill
 }*/
+
+fun TooltipMakerAPI.addToggle(
+    name: String,
+    isChecked: Boolean = false,
+    buttonHeight: Float = 24f,
+    size: ButtonAPI.UICheckboxSize = ButtonAPI.UICheckboxSize.SMALL
+): ButtonAPI {
+    val checkbox = this.addCheckbox(
+        this.computeStringWidth(name) + buttonHeight + 4f,
+        buttonHeight,
+        name,
+        null,
+        size,
+        0f
+    )
+    checkbox.isChecked = isChecked
+
+    return checkbox
+}

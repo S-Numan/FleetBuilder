@@ -20,6 +20,7 @@ import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSelector.AutofitSelectorPlugin.ComparisonStatus
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
+import fleetBuilder.ui.popUpUI.BasePopUpUI
 import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
@@ -460,7 +461,7 @@ internal object AutofitPanel {
             applySModsButton = addToggleButton(
                 label = "Apply SMods",
                 memoryKey = "\$FBA_applySMods",
-                tooltipText = "Spend story points to apply SMods to your ship. If S-mods are installed, the autofit cannot be undone.",
+                tooltipText = "Spend story points to apply SMods to your ship.\n\nIf S-mods are installed, the autofit cannot be undone.",
                 default = false
             )
         }
@@ -533,17 +534,15 @@ internal object AutofitPanel {
                     if (sModsToApply.isEmpty())
                         return@onClickRelease
 
-                    val areYouSureDialog = PopUpUIDialog("Use Story Points to Apply SMods?", addConfirmButton = true, addCancelButton = true)
-                    areYouSureDialog.cancelButtonName = "No"
-                    areYouSureDialog.confirmButtonName = "Yes"
-                    areYouSureDialog.confirmAndCancelAlignment = Alignment.MID
-                    areYouSureDialog.addParagraph("This will consume ${sModsToApply.size} Story points and give ${bonusXpToGrant.toInt()} bonus xp", alignment = Alignment.MID)
-
-                    areYouSureDialog.onConfirm { _ ->
+                    val dialog = BasePopUpUI(headerTitle = "Use Story Points to Apply SMods")
+                    dialog.onCreateUI(450f, 110f) { ui ->
+                        ui.addPara("This will consume ${sModsToApply.size} Story points and give ${bonusXpToGrant.toInt()} bonus xp", 0f).setAlignment(Alignment.MID)
+                        dialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
+                    }
+                    dialog.onConfirm { ->
                         applyVariant(selectorPlugin.autofitSpec, true)
                     }
 
-                    DialogUtil.initPopUpUI(areYouSureDialog, 450f, 110f)
                 } else {
                     applyVariant(selectorPlugin.autofitSpec)
                 }
@@ -608,13 +607,19 @@ internal object AutofitPanel {
 
                     Global.getSoundPlayer().playUISound("ui_button_pressed", 0.94f, 1f)
 
-                    var missing = shipDirectory.getShipMissings(equalVariant.hullVariantId)
+                    val missing = shipDirectory.getShipEntry(equalVariant.hullVariantId)?.missingElements
                     if (missing == null) {
-                        //equalVariant exists, but not from this shipDirectory
-                        shipDirectory = LoadoutManager.getVariantSourceShipDirectory(equalVariant)
-                            ?: return@onClickReleaseNoInitClick
-                        missing = shipDirectory.getShipMissings(equalVariant.hullVariantId)
-                            ?: return@onClickReleaseNoInitClick
+                        val newShipDirectory = LoadoutManager.getVariantSourceShipDirectory(equalVariant)
+                        if (newShipDirectory != null) {//equalVariant exists, but not from this shipDirectory
+                            //shipDirectory = newShipDirectory
+                            //missing = shipDirectory.getShipEntry(equalVariant.hullVariantId)?.missingElements
+                            //    ?: return@onClickReleaseNoInitClick
+                            DisplayMessage.showError("ERROR. Cross ShipDirectory UI is no longer implemented.")
+                            return@onClickReleaseNoInitClick
+                        } else {
+                            DisplayMessage.showError("ERROR. Could not find variant, but variant already existed?")
+                            return@onClickReleaseNoInitClick
+                        }
                     }
 
                     val isImport = shipDirectory.isShipImported(equalVariant.hullVariantId)
@@ -622,7 +627,7 @@ internal object AutofitPanel {
                     shipDirectory.removeShip(equalVariant.hullVariantId, editVariantFile = false)
                     shipVariantID = shipDirectory.addShip(
                         equalVariant,
-                        setVariantID = equalVariant.hullVariantId.removePrefix(shipDirectory.prefix + "_"),
+                        setVariantID = equalVariant.hullVariantId,
                         missingFromVariant = missing,
                         inputDesiredIndexInMenu = indexInMenu,
                         editVariantFile = false, settings = settings, tagAsImport = isImport

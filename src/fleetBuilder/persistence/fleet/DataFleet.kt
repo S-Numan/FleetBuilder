@@ -71,7 +71,7 @@ object DataFleet {
             fleetName = campFleet?.name,
             aggression = campFleet?.faction?.doctrine?.aggression ?: -1,
             factionID = campFleet?.faction?.id,
-            commanderIfNoFlagship = fleet.commander?.let { if (it.isDefault) null else getPersonDataFromPerson(it, filterParsed = false) },
+            commanderIfNoFlagship = fleet.commander?.let { if (it.isDefault && it.stats.skillsCopy.count { skill -> skill.skill.isAdmiralSkill && skill.level > 0 } == 0) null else getPersonDataFromPerson(it, filterParsed = false) },
             members = fleet.membersListCopy.map { getMemberDataFromMember(it, filterParsed = false) },
             idleOfficers = fleet.officersCopy.mapNotNull { officerData ->
                 val person = officerData.person

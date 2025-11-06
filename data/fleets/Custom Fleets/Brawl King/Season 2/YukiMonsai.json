@@ -1,0 +1,519 @@
+{
+    "commander": {
+        "first": "",
+        "level": 1,
+        "personality": "steady",
+        "portrait": "graphics/portraits/portrait_generic_grayscale.png",
+        "post": "fleetCommander",
+        "rank": "spaceCommander",
+        "skills": {
+            "automated_ships": 1,
+            "best_of_the_best": 1,
+            "bulk_transport": 1,
+            "carrier_group": 1,
+            "containment_procedures": 1,
+            "coordinated_maneuvers": 1,
+            "crew_training": 1,
+            "cybernetic_augmentation": 1,
+            "electronic_warfare": 1,
+            "field_repairs": 1,
+            "fighter_uplink": 1,
+            "flux_regulation": 1,
+            "hull_restoration": 1,
+            "industrial_planning": 1,
+            "makeshift_equipment": 1,
+            "navigation": 1,
+            "neural_link": 1,
+            "officer_management": 1,
+            "officer_training": 1,
+            "phase_corps": 1,
+            "salvaging": 1,
+            "sensors": 1,
+            "tactical_drills": 1,
+            "wolfpack_tactics": 1
+        }
+    },
+    "factionID": "neutral",
+    "fleetName": "YukiMonsai",
+    "members": [
+        {
+            "cr": 1,
+            "name": "Omen 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_mercenary02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate01.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Omen 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "steady",
+                "portrait": "graphics/portraits/portrait_corporate02.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "damage_control": 1,
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_omen"
+        },
+        {
+            "cr": 1,
+            "name": "Tempest (Threat)",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 2,
+                    "helmsmanship": 2,
+                    "ordnance_expert": 1
+                }
+            },
+            "variantId": "YukiM_tempest"
+        },
+        {
+            "cr": 1,
+            "name": "Harbinger 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_harb"
+        },
+        {
+            "cr": 1,
+            "name": "Harbinger 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "cautious",
+                "portrait": "graphics/portraits/portrait_mercenary04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "combat_endurance": 1,
+                    "energy_weapon_mastery": 2,
+                    "field_modulation": 2,
+                    "helmsmanship": 1,
+                    "point_defense": 1,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_harb"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 1",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_mercenary05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_med"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 2",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate03.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_med"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 3",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate04.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_med"
+        },
+        {
+            "cr": 1,
+            "name": "Medusa 4",
+            "officer": {
+                "first": "Human",
+                "last": "Officer",
+                "level": 6,
+                "personality": "aggressive",
+                "portrait": "graphics/portraits/portrait_corporate05.png",
+                "post": "fleetCommander",
+                "rank": "spaceCommander",
+                "skills": {
+                    "ballistic_mastery": 1,
+                    "energy_weapon_mastery": 1,
+                    "field_modulation": 2,
+                    "gunnery_implants": 1,
+                    "helmsmanship": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_med"
+        },
+        {
+            "cr": 1,
+            "name": "Radiant (Shrouded)",
+            "officer": {
+                "aicoreid": "gamma_core",
+                "first": "Gamma Core",
+                "level": 4,
+                "personality": "reckless",
+                "portrait": "graphics/portraits/portrait_ai1b.png",
+                "rank": "spaceCaptain",
+                "skills": {
+                    "field_modulation": 2,
+                    "helmsmanship": 2,
+                    "impact_mitigation": 2,
+                    "systems_expertise": 2
+                }
+            },
+            "variantId": "YukiM_radiant"
+        }
+    ],
+    "variants": [
+        {
+            "displayName": "Steady",
+            "fluxCapacitors": 10,
+            "fluxVents": 10,
+            "hullId": "omen",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "advancedshieldemitter"
+            ],
+            "sMods": [
+                "fluxcoil",
+                "missile_autoloader",
+                "stabilizedshieldemitter"
+            ],
+            "variantId": "YukiM_omen",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "amblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "mininglaser"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "reaper"}
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 10,
+            "fluxVents": 4,
+            "hullId": "tempest",
+            "hullMods": [
+                "hardenedshieldemitter",
+                "high_scatter_amp",
+                "extendedshieldemitter"
+            ],
+            "sMods": [
+                "autorepair",
+                "fluxcoil",
+                "missile_autoloader"
+            ],
+            "variantId": "YukiM_tempest",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "phasebeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "phasebeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "neutron_torpedo"}
+                }
+            ]
+        },
+        {
+            "displayName": "Cautious",
+            "fluxCapacitors": 20,
+            "fluxVents": 5,
+            "hullId": "harbinger",
+            "hullMods": ["safetyoverrides"],
+            "sMods": [
+                "adaptive_coils",
+                "hardened_subsystems",
+                "unstable_injector"
+            ],
+            "variantId": "YukiM_harb",
+            "weaponGroups": [
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 001": "phasebeam",
+                        "WS 002": "phasebeam",
+                        "WS 003": "phasebeam"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "pdburst"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "harpoon"}
+                }
+            ]
+        },
+        {
+            "displayName": "Aggressive",
+            "fluxCapacitors": 1,
+            "fluxVents": 13,
+            "hullId": "medusa",
+            "hullMods": [
+                "frontemitter",
+                "converted_hangar",
+                "safetyoverrides"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "extendedshieldemitter",
+                "magazines"
+            ],
+            "variantId": "YukiM_med",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "pdburst"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 008": "lightdualac",
+                        "WS 009": "lightdualac"
+                    }
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 006": "heavyblaster"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 007": "phasebeam"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 005": "mininglaser"}
+                }
+            ],
+            "wings": ["talon_wing"]
+        },
+        {
+            "displayName": "Fearless",
+            "fluxCapacitors": 0,
+            "fluxVents": 30,
+            "hullId": "radiant",
+            "hullMods": [
+                "targetingunit",
+                "advancedshieldemitter",
+                "stabilizedshieldemitter",
+                "shrouded_mantle",
+                "auxiliarythrusters",
+                "eccm"
+            ],
+            "sMods": [
+                "hardenedshieldemitter",
+                "autorepair",
+                "missleracks"
+            ],
+            "variantId": "YukiM_radiant",
+            "weaponGroups": [
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 000": "gigacannon"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 005": "harpoonpod",
+                        "WS 006": "harpoonpod",
+                        "WS 007": "harpoonpod",
+                        "WS 008": "harpoonpod"
+                    }
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 003": "guardian"}
+                },
+                {
+                    "autofire": true,
+                    "mode": "LINKED",
+                    "weapons": {"WS 002": "plasma"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 001": "gigacannon"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {"WS 004": "locust"}
+                },
+                {
+                    "autofire": false,
+                    "mode": "LINKED",
+                    "weapons": {
+                        "WS 010": "pdburst",
+                        "WS 011": "pdburst",
+                        "WS 016": "pdburst",
+                        "WS 017": "pdburst"
+                    }
+                }
+            ]
+        }
+    ]
+}
