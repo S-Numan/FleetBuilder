@@ -9,24 +9,15 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.combat.entities.Ship
-import com.fs.starfarer.title.TitleScreenState
-import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
-import fleetBuilder.config.ModSettings.autofitMenuHotkey
 import fleetBuilder.ui.autofit.AutofitPanelCreator
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
-import org.lwjgl.input.Mouse
-import starficz.ReflectionUtils.getConstructorsMatching
 import starficz.ReflectionUtils.getFieldsMatching
-import starficz.ReflectionUtils.invoke
 import starficz.findChildWithMethod
 import starficz.getChildrenCopy
 import starficz.onClick
-import java.lang.invoke.MethodHandle
-import java.lang.invoke.MethodHandles
-import java.lang.invoke.MethodType
 
 internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
     companion object {
@@ -49,14 +40,14 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
         val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return
         val holographicBG = oldCoreUI.findChildWithMethod("forceFoldIn") ?: return
 
-        val refitTab = holographicBG.invoke("getCurr") as? UIPanelAPI ?: return
+        val refitTab = holographicBG.safeInvoke("getCurr") as? UIPanelAPI ?: return
 
         if (this.refitTab === refitTab)
             return
 
         val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return
         val bottomLeftPanel = refitPanel.findChildWithMethod("instantiateForSimulation") as? UIPanelAPI ?: return
-        val autofitButton = bottomLeftPanel.invoke("getManageButton") as? ButtonAPI ?: return
+        val autofitButton = bottomLeftPanel.safeInvoke("getManageButton") as? ButtonAPI ?: return
         autofitButton.setShortcut(ModSettings.autofitMenuHotkey, false)
 
         autofitButton.onClick {
@@ -65,7 +56,7 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
             else if (ModSettings.replaceVanillaAutofitButton) {
                 AutofitPanelCreator.toggleAutofitButton(refitTab, true)
             } else {
-                bottomLeftPanel.invoke("actionPerformed", null, autofitButton)
+                bottomLeftPanel.safeInvoke("actionPerformed", null, autofitButton)
             }
         }
 
@@ -78,7 +69,7 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
         val missionWidget = newCoreUI.findChildWithMethod("getMissionList") as? UIPanelAPI ?: return
         val holographicBG = missionWidget.getChildrenCopy()[1] // 2 of the same class in the tree here
 
-        val missionDetail = holographicBG.invoke("getCurr") as? UIPanelAPI ?: return
+        val missionDetail = holographicBG.safeInvoke("getCurr") as? UIPanelAPI ?: return
 
         val missionShipPreview = missionDetail.getChildrenCopy().find {
             //it.javaClass.getConstructorsMatching(numOfParams = 1, parameterTypes = arrayOf(missionDetail.javaClass)).isNotEmpty()// File access/reflection error

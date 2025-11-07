@@ -23,10 +23,11 @@ object CommanderShuttle {
 
         ShipOfficerChangeEvents.addTransientListener { change ->
             //Remove commandShuttle if was piloted by player and is no longer
-            if (change.member.variant.hasHullMod(commandShuttleId)
-                && change.previous != null && change.previous.isPlayer
+            if (change.previous != null && change.previous.isPlayer &&
+                change.member.variant?.hasHullMod(commandShuttleId) == true
             ) {
-                Global.getSector().playerFleet.fleetData.removeFleetMember(change.member)
+                val playerFleet = Global.getSector().playerFleet.fleetData
+                playerFleet?.removeFleetMember(change.member)
                 updateFleetPanelContents()
             }
         }

@@ -11,7 +11,7 @@ import fleetBuilder.util.FBMisc.getRandomPortrait
 import fleetBuilder.variants.MissingElements
 import org.histidine.chatter.ChatterDataManager
 import org.histidine.chatter.combat.ChatterCombatPlugin
-import java.util.Random
+import java.util.*
 
 object DataPerson {
     data class ParsedPersonData(

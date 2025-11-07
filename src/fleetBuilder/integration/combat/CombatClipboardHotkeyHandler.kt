@@ -25,7 +25,6 @@ import fleetBuilder.util.ReflectionMisc.getCoreUI
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.lwjgl.input.Keyboard
-import starficz.ReflectionUtils.invoke
 import starficz.findChildWithMethod
 import java.awt.Color
 
@@ -123,7 +122,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
                             //simulatorUI.invoke("õ00000", true)//Remake Codex UI to show new members
 
-                            simulatorUI.invoke("updateReserves", variantIdList, null)
+                            simulatorUI.safeInvoke("updateReserves", variantIdList, null)
 
                             /*
                             val uiFields = simulatorUI.getFieldsMatching(fieldAssignableTo = UIPanelAPI::class.java)

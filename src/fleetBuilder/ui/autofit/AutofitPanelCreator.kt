@@ -5,9 +5,9 @@ import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.util.safeInvoke
 import org.magiclib.kotlin.setAlpha
 import starficz.*
-import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
 /**
@@ -29,7 +29,7 @@ internal object AutofitPanelCreator {
 
         }*/
 
-        val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI
+        val fleetMember = refitPanel.safeInvoke("getMember") as? FleetMemberAPI
         val existingElements = hullmodsPanel.getChildrenCopy()
         if (existingElements.isEmpty()) return false // if children is empty, return
 
@@ -37,11 +37,11 @@ internal object AutofitPanelCreator {
         //    button.customData is String && button.customData == "REFIT_BUTTON"
         //}
 
-        val coreUI = refitPanel.invoke("getCoreUI") as? UIPanelAPI ?: return false
+        val coreUI = refitPanel.safeInvoke("getCoreUI") as? UIPanelAPI ?: return false
 
-        val shipDisplay = refitPanel.invoke("getShipDisplay") as? UIPanelAPI ?: return false
+        val shipDisplay = refitPanel.safeInvoke("getShipDisplay") as? UIPanelAPI ?: return false
 
-        val dialogShowing = shipDisplay.invoke("isShowingDialog") as Boolean
+        val dialogShowing = shipDisplay.safeInvoke("isShowingDialog") as Boolean
         if (dialogShowing) return false
 
         val curPaintjobPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->

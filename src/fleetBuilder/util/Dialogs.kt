@@ -26,10 +26,10 @@ import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.ui.popUpUI.BasePopUpUI
 import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
-import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
-import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
 import fleetBuilder.util.DialogUtil.initPopUpUI
 import fleetBuilder.util.DisplayMessage.showMessage
+import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
+import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.MissingElements

@@ -5,11 +5,9 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
-import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage.showError
 import fleetBuilder.util.allDMods
-import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 

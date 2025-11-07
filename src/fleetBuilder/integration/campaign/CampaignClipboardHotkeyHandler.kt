@@ -9,7 +9,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
-import com.fs.starfarer.api.ui.*
+import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
@@ -34,7 +34,6 @@ import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
 import starficz.findChildWithMethod
 import java.awt.Color
 
@@ -48,7 +47,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         //Anti nexerelin code
         if (dialogToDismiss != null && !Keyboard.isKeyDown(Keyboard.KEY_V)) {
-            dialogToDismiss!!.invoke("dismiss", 0)
+            dialogToDismiss!!.safeInvoke("dismiss", 0)
             dialogToDismiss = null
         }
 
@@ -189,11 +188,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val fleetGrid = ReflectionMisc.getFleetPanel()?.findChildWithMethod("removeItem") ?: return
 
             @Suppress("UNCHECKED_CAST")
-            val items = fleetGrid.invoke("getItems") as? List<UIPanelAPI?> ?: return
+            val items = fleetGrid.safeInvoke("getItems") as? List<UIPanelAPI?> ?: return
 
             // Collect IDs of visible members from the UI
             val visibleMemberIds = items.mapNotNull { item ->
-                (item?.invoke("getMember") as? FleetMemberAPI)?.id
+                (item?.safeInvoke("getMember") as? FleetMemberAPI)?.id
             }.toSet()
 
             // Exclude any member from the fleet that's not visible in the UI
@@ -265,10 +264,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     val screenPanel = ui.get("screenPanel") as? UIPanelAPI
                     dialogToDismiss = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
                     if (dialogToDismiss != null) {
-                        dialogToDismiss!!.invoke("setOpacity", 0f)
-                        dialogToDismiss!!.invoke("setBackgroundDimAmount", 0f)
-                        dialogToDismiss!!.invoke("setAbsorbOutsideEvents", false)
-                        dialogToDismiss!!.invoke("makeOptionInstant", 0)
+                        dialogToDismiss!!.safeInvoke("setOpacity", 0f)
+                        dialogToDismiss!!.safeInvoke("setBackgroundDimAmount", 0f)
+                        dialogToDismiss!!.safeInvoke("setAbsorbOutsideEvents", false)
+                        dialogToDismiss!!.safeInvoke("makeOptionInstant", 0)
                     }
                 }
 
@@ -283,13 +282,15 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleCaptainPickerMouseEvents(event: InputEventAPI, captainPicker: CaptainPickerDialog) {
         try {
-            val officers = captainPicker.invoke("getListOfficers")?.invoke("getItems") as? MutableList<*> ?: return
+            val officers = captainPicker.safeInvoke("getListOfficers")?.safeInvoke("getItems") as? MutableList<*>
+                ?: return
             val hoverOfficer = officers.firstNotNullOfOrNull { officer ->
-                val selector = officer?.invoke("getSelector") ?: return@firstNotNullOfOrNull null
-                val fader = selector.invoke("getMouseoverHighlightFader") as? Fader ?: return@firstNotNullOfOrNull null
+                val selector = officer?.safeInvoke("getSelector") ?: return@firstNotNullOfOrNull null
+                val fader = selector.safeInvoke("getMouseoverHighlightFader") as? Fader
+                    ?: return@firstNotNullOfOrNull null
                 if (fader.isFadingIn || fader.brightness == 1f) {
-                    val parent = selector.invoke("getParent") ?: return@firstNotNullOfOrNull null
-                    parent.invoke("getPerson") as? PersonAPI
+                    val parent = selector.safeInvoke("getParent") ?: return@firstNotNullOfOrNull null
+                    parent.safeInvoke("getPerson") as? PersonAPI
                 } else null
             } ?: return
 
@@ -309,8 +310,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val mouseOverMember = memberUI.getFieldsMatching(type = FleetMember::class.java).getOrNull(0)?.get(memberUI) as? FleetMemberAPI
                 ?: return
 
-            val portraitPanel = memberUI.invoke("getPortraitButton") ?: return
-            val fader = portraitPanel.invoke("getMouseoverHighlightFader") as? Fader ?: return
+            val portraitPanel = memberUI.safeInvoke("getPortraitButton") ?: return
+            val fader = portraitPanel.safeInvoke("getMouseoverHighlightFader") as? Fader ?: return
             val isPortraitHoveredOver = fader.isFadingIn || fader.brightness == 1f
 
             if (event.isCtrlDown && event.isLMBDownEvent) {
@@ -372,23 +373,23 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     private fun handleRefitMouseEvents(event: InputEventAPI) {
         try {
             val refitTab = ReflectionMisc.getRefitTab() ?: return
-            val refitTabChildren = refitTab.invoke("getChildrenCopy") as? MutableList<*> ?: return
+            val refitTabChildren = refitTab.safeInvoke("getChildrenCopy") as? MutableList<*> ?: return
             val thing = refitTabChildren.lastOrNull() { child ->
                 child?.getMethodsMatching("getFleetMemberIndex") != null
             } ?: return
             if (thing.getMethodsMatching("getOfficerAndCRDisplay").isEmpty()) return // The previous thing getter may get children we do not want, as it wasn't programmed good enough. I'm too lazy to fix it right now, so this is here to avoid issues.
 
-            val officerCRDisplay = thing.invoke("getOfficerAndCRDisplay") as? UIPanelAPI ?: return
-            val children = officerCRDisplay.invoke("getChildrenCopy") as? List<*> ?: return
+            val officerCRDisplay = thing.safeInvoke("getOfficerAndCRDisplay") as? UIPanelAPI ?: return
+            val children = officerCRDisplay.safeInvoke("getChildrenCopy") as? List<*> ?: return
             val officerPanel = children.firstOrNull {
                 it?.getMethodsMatching(name = "getBar")?.isEmpty() ?: true &&
                         it?.getMethodsMatching(name = "getMouseoverHighlightFader")?.isNotEmpty() ?: false
             } ?: return
 
-            val fader = officerPanel.invoke("getMouseoverHighlightFader") as? Fader ?: return
+            val fader = officerPanel.safeInvoke("getMouseoverHighlightFader") as? Fader ?: return
             if (!(fader.isFadingIn || fader.brightness == 1f)) return
 
-            val member = thing.invoke("getMember") as? FleetMemberAPI ?: return
+            val member = thing.safeInvoke("getMember") as? FleetMemberAPI ?: return
             val json = savePersonToJson(member.captain)
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))

@@ -9,7 +9,7 @@ import starficz.getChildrenCopy
 
 object DialogUtil {
     fun initPopUpUI(dialog: PopUpUI, width: Float, height: Float) {
-        val coreUI = ReflectionMisc.getCoreUI() ?: return
+        val coreUI = ReflectionMisc.getCoreUI(true) ?: return
 
         if (Global.getCurrentState() == GameState.CAMPAIGN && !Global.getSector().isPaused)
             Global.getSector().isPaused = true
@@ -37,7 +37,7 @@ object DialogUtil {
 
     //TODO, REMOVE ME WHEN POSSIBLE
     fun initPopUpUI(dialog: PopUpUI_OLD, width: Float, height: Float) {
-        val coreUI = ReflectionMisc.getCoreUI() ?: return
+        val coreUI = ReflectionMisc.getCoreUI(true) ?: return
 
         if (Global.getCurrentState() == GameState.CAMPAIGN && !Global.getSector().isPaused)
             Global.getSector().isPaused = true
@@ -65,7 +65,7 @@ object DialogUtil {
 
 
     fun isPopUpUIOpen(): Boolean {
-        ReflectionMisc.getCoreUI()?.getChildrenCopy()?.forEach { child ->
+        ReflectionMisc.getCoreUI(true)?.getChildrenCopy()?.forEach { child ->
             if (child is CustomPanelAPI && (child.plugin is PopUpUI
                         || child.plugin is PopUpUI_OLD)//TODO, REMOVE THIS LINE WHEN POSSIBLE
             ) {

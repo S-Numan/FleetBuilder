@@ -14,16 +14,11 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
-import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.getHullModBonusXP
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.util.FBMisc.spendStoryPoint
-import fleetBuilder.util.allDMods
-import fleetBuilder.util.completelyRemoveMod
-import fleetBuilder.util.getEffectiveHullId
-import fleetBuilder.util.getRegularHullMods
 import fleetBuilder.variants.VariantLib
-import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import java.util.*
 
@@ -43,7 +38,7 @@ object AutofitApplier {
         allowBlackMarket: Boolean = true,
         applySMods: Boolean = false
     ) {
-        shipDisplay.invoke("setSuppressMessages", true)
+        shipDisplay.safeInvoke("setSuppressMessages", true)
 
         var appliedSMods = false
 
@@ -223,18 +218,18 @@ object AutofitApplier {
 
         try {
             if (appliedSMods) {
-                refitPanel.invoke("saveCurrentVariant") // Prevent undo. Refunding SMods is difficult.
-                refitPanel.invoke("setEditedSinceSave", false)
+                refitPanel.safeInvoke("saveCurrentVariant") // Prevent undo. Refunding SMods is difficult.
+                refitPanel.safeInvoke("setEditedSinceSave", false)
             }
-            refitPanel.invoke("syncWithCurrentVariant")
-            shipDisplay.invoke("updateModules")
-            shipDisplay.invoke("updateButtonPositionsToZoomLevel")
-            //refitPanel.invoke("recreateUI")
+            refitPanel.safeInvoke("syncWithCurrentVariant")
+            shipDisplay.safeInvoke("updateModules")
+            shipDisplay.safeInvoke("updateButtonPositionsToZoomLevel")
+            //refitPanel.safeInvoke("recreateUI")
         } catch (e: Exception) {
             DisplayMessage.showError("ERROR: " + FBTxt.txt("failed_to_apply_variant"), e)
         }
 
-        shipDisplay.invoke("setSuppressMessages", false)
+        shipDisplay.safeInvoke("setSuppressMessages", false)
     }
 
     private fun replaceVariantWithVariant(

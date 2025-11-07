@@ -3,8 +3,8 @@ package fleetBuilder.consoleCommands.saveTransfer
 import com.fs.starfarer.api.Global
 import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
-import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.PlayerSaveUtil
+import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand

@@ -3,7 +3,6 @@ package fleetBuilder.ui.popUpUI
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
-import com.fs.starfarer.api.campaign.InteractionDialogAPI
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
@@ -11,15 +10,11 @@ import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.FBMisc.isMouseWithinBounds
 import fleetBuilder.util.ReflectionMisc.getCoreUI
+import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
+import starficz.*
 import starficz.ReflectionUtils.get
-import starficz.ReflectionUtils.invoke
-import starficz.findChildWithMethod
-import starficz.height
-import starficz.width
-import starficz.x
-import starficz.y
 import java.awt.Color
 
 //Copied and modified from AshLib
@@ -57,7 +52,7 @@ open class PopUpUI : CustomUIPanelPlugin {
         insertPanel: CustomPanelAPI,
         x: Float,
         y: Float,
-        parent: UIPanelAPI? = getCoreUI(),
+        parent: UIPanelAPI? = getCoreUI(true),
         isDialog: Boolean = true
     ) {
         this.isDialog = isDialog
@@ -151,13 +146,13 @@ open class PopUpUI : CustomUIPanelPlugin {
     fun forceDismissNoExit() {
         parent!!.removeComponent(panel)
 
-        placeholderDialog?.invoke("dismiss", 0)
+        placeholderDialog?.safeInvoke("dismiss", 0)
     }
 
     private var exitCallback: (() -> Unit)? = null
 
     open fun applyExitScript() {
-        placeholderDialog?.invoke("dismiss", 0)
+        placeholderDialog?.safeInvoke("dismiss", 0)
 
         exitCallback?.invoke()
     }
@@ -177,10 +172,10 @@ open class PopUpUI : CustomUIPanelPlugin {
             val screenPanel = ui.get("screenPanel") as? UIPanelAPI
             placeholderDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
             if (placeholderDialog != null) {
-                placeholderDialog!!.invoke("setOpacity", 0f)
-                placeholderDialog!!.invoke("setBackgroundDimAmount", 0f)
-                placeholderDialog!!.invoke("setAbsorbOutsideEvents", false)
-                placeholderDialog!!.invoke("makeOptionInstant", 0)
+                placeholderDialog!!.safeInvoke("setOpacity", 0f)
+                placeholderDialog!!.safeInvoke("setBackgroundDimAmount", 0f)
+                placeholderDialog!!.safeInvoke("setAbsorbOutsideEvents", false)
+                placeholderDialog!!.safeInvoke("makeOptionInstant", 0)
             }
         }
 
@@ -198,10 +193,10 @@ open class PopUpUI : CustomUIPanelPlugin {
     override fun renderBelow(alphaMult: Float) {
         val renderer = TiledTextureRenderer(panelBackground.getTextureId())
         if (isDialog) {
-            blackBackground.setSize(getCoreUI()!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
+            blackBackground.setSize(getCoreUI(true)!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
             blackBackground.setColor(Color.black)
             blackBackground.setAlphaMult(0.6f)
-            blackBackground.renderAtCenter(getCoreUI()!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
+            blackBackground.renderAtCenter(getCoreUI(true)!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
             renderer.renderTiledTexture(
                 panel.getPosition().getX(),
                 panel.getPosition().getY(), panel.getPosition().getWidth(),

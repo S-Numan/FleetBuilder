@@ -20,7 +20,7 @@ import com.fs.starfarer.coreui.refit.WeaponPickerDialog
 import com.fs.starfarer.loading.specs.BaseWeaponSpec
 import com.fs.starfarer.loading.specs.FighterWingSpec
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import starficz.ReflectionUtils.invoke
+import fleetBuilder.util.safeInvoke
 
 class FBPlayerAutofitDelegate(
     private val fleetMember: FleetMemberAPI,
@@ -74,7 +74,7 @@ class FBPlayerAutofitDelegate(
         //val wing = FighterPickerDialog.o(oFighter.quantity, oFighter.source, oFighter.wingSpec as FighterWingSpec, oFighter.id, oFighter.submarket as Submarket, coreUI)
 
         val oFighter = fighters.find { it.id == fighter.id }
-        shipDisplay.invoke(
+        shipDisplay.safeInvoke(
             "insertInFighterSlot", index//Fighter bay slot
             , oFighter, false//Boolean: Clear Slot
             , variant as HullVariantSpec
@@ -115,7 +115,7 @@ class FBPlayerAutofitDelegate(
         */
 
 
-        shipDisplay.invoke(
+        shipDisplay.safeInvoke(
             "clearFighterSlot", index//Fighter slot
             , variant as HullVariantSpec
         )
@@ -134,7 +134,7 @@ class FBPlayerAutofitDelegate(
         variant.addWeapon(slot.id, weapon.id)*/
 
         val oWeapon = weapons.find { it.id == weapon.id }
-        shipDisplay.invoke(
+        shipDisplay.safeInvoke(
             "insertInSlot", slot//Weapon bay slot
             , oWeapon, false//Clear slot
             , variant as HullVariantSpec
@@ -183,7 +183,7 @@ class FBPlayerAutofitDelegate(
             }
         }*/
 
-        shipDisplay.invoke(
+        shipDisplay.safeInvoke(
             "clearSlot", slot//Weapon slot
             , variant as HullVariantSpec
         )

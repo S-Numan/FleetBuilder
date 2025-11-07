@@ -22,26 +22,24 @@ import com.fs.state.AppDriver
 import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
 import starficz.findChildWithMethod
 import starficz.getChildrenCopy
 
 object ReflectionMisc {
-    fun getCoreUI(topDialog: Boolean = true): UIPanelAPI? {
+    fun getCoreUI(topDialog: Boolean = false): UIPanelAPI? {
         val state = AppDriver.getInstance().currentState
         if (state is CampaignState) {
-
-            return (state.invoke("getEncounterDialog")?.let { dialog ->
-                if (topDialog && Global.getSector().campaignUI.getActualCurrentTab() == null) {//In encounter dialog, but not looking at any tab.
+            return (state.safeInvoke("getEncounterDialog")?.let { dialog ->
+                if (topDialog && Global.getSector().campaignUI?.getActualCurrentTab() == null) {//In encounter dialog, but not looking at any tab.
                     //If you add a dialog to CoreUI and move it to the top, it will usually show in the top. Excluding this situation. Thus, in this situation we just get the screen panel instead. This can be disabled via the topDialog boolean.
-                    state.invoke("getScreenPanel") as? UIPanelAPI
+                    state.safeInvoke("getScreenPanel") as? UIPanelAPI
                 } else {
-                    dialog.invoke("getCoreUI") as? UIPanelAPI
+                    dialog.safeInvoke("getCoreUI") as? UIPanelAPI
                 }
-            } ?: state.invoke("getCore") as? UIPanelAPI)
+            } ?: state.safeInvoke("getCore") as? UIPanelAPI)
 
         } else if (state is TitleScreenState || state is CombatState) {
-            return state.invoke("getScreenPanel") as? UIPanelAPI
+            return state.safeInvoke("getScreenPanel") as? UIPanelAPI
         }
         return null
     }
@@ -58,7 +56,7 @@ object ReflectionMisc {
             val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return null
             val holographicBG = oldCoreUI.findChildWithMethod("forceFoldIn") ?: return null
 
-            return holographicBG.invoke("getCurr") as? UIPanelAPI ?: return null
+            return holographicBG.safeInvoke("getCurr") as? UIPanelAPI ?: return null
         }
     }
 
@@ -90,16 +88,16 @@ object ReflectionMisc {
     }
 
     fun getCurrentVariantInRefitTab(): ShipVariantAPI? {
-        val shipDisplay = getRefitPanel()?.invoke("getShipDisplay") as? UIPanelAPI ?: return null
-        return shipDisplay.invoke("getCurrentVariant") as? ShipVariantAPI
+        val shipDisplay = getRefitPanel()?.safeInvoke("getShipDisplay") as? UIPanelAPI ?: return null
+        return shipDisplay.safeInvoke("getCurrentVariant") as? ShipVariantAPI
     }
 
     fun getFleetTab(): UIPanelAPI? {
         val campaignState = Global.getSector().campaignUI
-        if (campaignState?.getActualCurrentTab() != CoreUITabId.FLEET)
-            return null
+        return if (campaignState?.getActualCurrentTab() != CoreUITabId.FLEET)
+            null
         else
-            return getCoreUI()?.invoke("getCurrentTab") as? UIPanelAPI
+            getCoreUI()?.safeInvoke("getCurrentTab") as? UIPanelAPI
     }
 
     fun getFleetPanel(): UIPanelAPI? {
@@ -113,11 +111,11 @@ object ReflectionMisc {
 
     fun getMemberUIHoveredInFleetTabLowerPanel(): UIPanelAPI? {
         val fleetTab = getFleetTab() ?: return null
-        val mouseOverMember = fleetTab.invoke("getMousedOverFleetMember") as? FleetMemberAPI ?: return null
+        val mouseOverMember = fleetTab.safeInvoke("getMousedOverFleetMember") as? FleetMemberAPI ?: return null
 
         val fleetPanel = getFleetPanel() ?: return null
-        val list = fleetPanel.invoke("getList") ?: return null
-        val items = list.invoke("getItems") as? List<Any?>
+        val list = fleetPanel.safeInvoke("getList") ?: return null
+        val items = list.safeInvoke("getItems") as? List<Any?>
             ?: return null//Core UI box that contains everything related to the fleet member, including the ship, officer, cr, etc. There is one for each member in your fleet.
 
         // Find UI element of which the mouse is hovering over
@@ -125,7 +123,7 @@ object ReflectionMisc {
             if (item == null) return@forEach
 
             //Get all children for this item
-            val children = item.invoke("getChildrenCopy") as? List<Any?> ?: return@forEach
+            val children = item.safeInvoke("getChildrenCopy") as? List<Any?> ?: return@forEach
 
             //Find the UI child with a portrait button
             val foundUI = children.firstOrNull { child ->
@@ -166,8 +164,8 @@ object ReflectionMisc {
             if (Global.getCurrentState() == GameState.COMBAT) {
                 //Combat F2 with ship selected, simulator ship F2.
                 if (state.getMethodsMatching("getRibbon").isNotEmpty()) {
-                    val ribbon = state.invoke("getRibbon") as? UIPanelAPI?
-                    val temp = ribbon?.invoke("getParent") as? UIPanelAPI?
+                    val ribbon = state.safeInvoke("getRibbon") as? UIPanelAPI?
+                    val temp = ribbon?.safeInvoke("getParent") as? UIPanelAPI?
                     val codex = temp?.findChildWithMethod("getCurrentSnapshot") as? CodexDialog?
                     if (codex != null) return codex
                 }
@@ -175,7 +173,7 @@ object ReflectionMisc {
             }
 
             //F2 press, and in some other places
-            val codexOverlayPanel = state.invoke("getOverlayPanelForCodex") as? UIPanelAPI?
+            val codexOverlayPanel = state.safeInvoke("getOverlayPanelForCodex") as? UIPanelAPI?
             return codexOverlayPanel?.findChildWithMethod("getCurrentSnapshot") as? CodexDialog?
         }
 
@@ -195,12 +193,12 @@ object ReflectionMisc {
         val codexDetailPanel = codex.get(type = CodexDetailPanel::class.java) ?: return null
         val codexEntry = codexDetailPanel.get(name = "plugin") ?: return null
 
-        return codexEntry.invoke("getParam")
+        return codexEntry.safeInvoke("getParam")
     }
 
     fun getCaptainPickerDialog(): CaptainPickerDialog? {
         val core = getCoreUI() ?: return null
-        val children = core.invoke("getChildrenNonCopy") as? MutableList<*> ?: return null
+        val children = core.safeInvoke("getChildrenNonCopy") as? MutableList<*> ?: return null
         return children.firstOrNull { it is CaptainPickerDialog } as? CaptainPickerDialog
     }
 
@@ -211,7 +209,7 @@ object ReflectionMisc {
         if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
             val fleetPanel = getFleetPanel() ?: return null
 
-            return fleetPanel.invoke("getFleetData") as? FleetDataAPI
+            return fleetPanel.safeInvoke("getFleetData") as? FleetDataAPI
         }
         return null
     }
@@ -273,16 +271,17 @@ object ReflectionMisc {
     }
 
     fun updateFleetPanelContents() {
-        if (Global.getSector().campaignUI.getActualCurrentTab() != CoreUITabId.FLEET) return
+        if (Global.getSector().campaignUI?.getActualCurrentTab() != CoreUITabId.FLEET) return
 
         var fleetPanel: UIPanelAPI? = null
         try {
             val fleetTab = getFleetTab()
-            if (fleetTab != null)
-                fleetPanel = fleetTab.invoke("getFleetPanel") as? UIPanelAPI
+            if (fleetTab != null) {
+                fleetPanel = fleetTab.safeInvoke(name = "getFleetPanel") as? UIPanelAPI // This is more safe
+            }
         } catch (_: Exception) {
         }
-        fleetPanel?.invoke("updateListContents")
+        fleetPanel?.safeInvoke("updateListContents")
 
         postUpdateFleetPanelCallbacks.forEach { it.invoke() }
     }

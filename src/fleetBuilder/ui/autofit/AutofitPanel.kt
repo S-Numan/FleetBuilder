@@ -21,7 +21,6 @@ import fleetBuilder.ui.autofit.AutofitSelector.AutofitSelectorPlugin.ComparisonS
 import fleetBuilder.ui.autofit.AutofitSelector.createAutofitSelectorChildren
 import fleetBuilder.ui.autofit.AutofitSelector.createShipPreview
 import fleetBuilder.ui.popUpUI.BasePopUpUI
-import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.variants.LoadoutManager
@@ -43,8 +42,6 @@ import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import starficz.*
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
 import java.awt.Color
 
 
@@ -188,10 +185,10 @@ internal object AutofitPanel {
         val scrollerTooltip = autofitPanel.createUIElement(width + 2f, height, true) // Tooltip on background panel
         scrollerTooltip.position.inTL(0f, 0f)
 
-        val baseVariant = shipDisplay.invoke("getCurrentVariant") as? HullVariantSpec
+        val baseVariant = shipDisplay.safeInvoke("getCurrentVariant") as? HullVariantSpec
             ?: return autofitPanel
-        val fleetMember = refitPanel.invoke("getMember") as? FleetMemberAPI ?: return autofitPanel
-        val ship = shipDisplay.invoke("getShip") as? ShipAPI ?: return autofitPanel
+        val fleetMember = refitPanel.safeInvoke("getMember") as? FleetMemberAPI ?: return autofitPanel
+        val ship = shipDisplay.safeInvoke("getShip") as? ShipAPI ?: return autofitPanel
         val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return autofitPanel
 
         var firstInRow: UIPanelAPI? = null
@@ -826,8 +823,8 @@ internal object AutofitPanel {
         selectorPlugin?.autofitSpec = null
         selectorPlugin?.noClickFader = true
         selectorPlugin?.selectorPanel?.clearChildren()
-        val tooltip = selectorPlugin?.selectorPanel?.invoke("getTooltip")
-        tooltip?.getMethodsMatching("removeSelf")?.getOrNull(0)?.invoke(tooltip) // Safe way to remove the tooltip
+        val tooltip = selectorPlugin?.selectorPanel?.safeInvoke("getTooltip")
+        tooltip?.safeInvoke("removeSelf")
 
         if (selectorPlugin != null)
             deHighlight(selectorPlugin)

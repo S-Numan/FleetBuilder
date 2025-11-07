@@ -4,7 +4,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.persistence.member.DataMember.buildMemberFull
 import fleetBuilder.persistence.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.persistence.person.JSONPerson.savePersonToJson
-import fleetBuilder.persistence.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.persistence.variant.JSONVariant.addVariantSourceModsToJson
 import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.persistence.variant.JSONVariant.saveVariantToJson

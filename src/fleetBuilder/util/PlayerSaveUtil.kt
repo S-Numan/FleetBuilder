@@ -22,7 +22,6 @@ import fleetBuilder.variants.MissingElementsExtended
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
-import starficz.ReflectionUtils.invoke
 
 object PlayerSaveUtil {
 
@@ -100,7 +99,7 @@ object PlayerSaveUtil {
         if (handleAbilityBar) {
             val bars: Array<Array<CampaignUIPersistentData.AbilitySlot>> = try {
                 @Suppress("UNCHECKED_CAST")
-                Global.getSector().uiData.abilitySlotsAPI.invoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
+                Global.getSector().uiData.abilitySlotsAPI.safeInvoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
             } catch (e: Exception) {
                 DisplayMessage.showError("Failed to save Ability Bar")
                 emptyArray()
@@ -459,7 +458,7 @@ object PlayerSaveUtil {
         if (handleAbilityBar) {
             val bars: Array<Array<CampaignUIPersistentData.AbilitySlot>> = try {
                 @Suppress("UNCHECKED_CAST")
-                Global.getSector().uiData.abilitySlotsAPI.invoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
+                Global.getSector().uiData.abilitySlotsAPI.safeInvoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
             } catch (e: Exception) {
                 showError(FBTxt.txt("failed_to_load_ability_bars"), e)
                 emptyArray()

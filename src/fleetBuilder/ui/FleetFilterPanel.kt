@@ -7,13 +7,9 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.allDMods
-import fleetBuilder.util.allSMods
-import fleetBuilder.util.getShipNameWithoutPrefix
+import fleetBuilder.util.*
 import org.lwjgl.input.Mouse
 import starficz.*
-import starficz.ReflectionUtils.invoke
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
 
@@ -122,7 +118,7 @@ class FleetFilterPanel(
                 val fleetPanel = ReflectionMisc.getFleetPanel() ?: return
                 //Unfocus textField if mouse is inside fleetPanel
                 if (Global.getSettings().mouseX > fleetPanel.x) {
-                    textField.invoke("releaseFocus", null)
+                    textField.safeInvoke("releaseFocus", null)
                 }
             }
         } else if (textField.text == "") {//Left focus with no input?
@@ -147,7 +143,7 @@ class FleetFilterPanel(
         val fleetGrid = fleetPanel.findChildWithMethod("removeItem") ?: return
 
         @Suppress("UNCHECKED_CAST")
-        val items = fleetGrid.invoke("getItems") as? List<UIPanelAPI?> ?: return
+        val items = fleetGrid.safeInvoke("getItems") as? List<UIPanelAPI?> ?: return
 
         val regex = Regex("""(?:[^\s"]+|"[^"]*"|'[^']*')+""")//Non-space tokens or quoted strings with "double" or 'single' quotes
         val descriptions = regex.findAll(textField.text.lowercase())
@@ -164,7 +160,7 @@ class FleetFilterPanel(
         descriptions.forEach { desc ->
             val itemsToRemove = mutableListOf<UIPanelAPI?>()
             items.forEach { item ->
-                val member = item?.invoke("getMember") as? FleetMemberAPI ?: return@forEach
+                val member = item?.safeInvoke("getMember") as? FleetMemberAPI ?: return@forEach
                 if (desc.startsWith("-")) {
                     if (member.matchesDescription(desc.removePrefix("-")))
                         itemsToRemove.add(item)
@@ -173,10 +169,10 @@ class FleetFilterPanel(
                 }
             }
 
-            itemsToRemove.forEach { fleetGrid.invoke("removeItem", it) }
+            itemsToRemove.forEach { fleetGrid.safeInvoke("removeItem", it) }
         }
 
-        fleetGrid.invoke("collapseEmptySlots")
+        fleetGrid.safeInvoke("collapseEmptySlots")
     }
 
     private fun FleetMemberAPI.matchesDescription(desc: String): Boolean {

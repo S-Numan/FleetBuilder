@@ -10,8 +10,26 @@ import org.lazywizard.console.Console
 import java.awt.Color
 
 object DisplayMessage {
-    //Short is displayed to the user, full is put in the log/console.
+
+    //Prevent error spam
+    private val recentErrors = mutableMapOf<String, Long>()
+    private const val ERROR_SPAM_INTERVAL_MS = 4000
+
     fun showError(short: String, full: String, e: Exception? = null) {
+        val now = System.currentTimeMillis()
+        val lastTime = recentErrors[short] ?: 0L
+
+        if (now - lastTime < ERROR_SPAM_INTERVAL_MS) {
+            return // Skip repeated message
+        }
+
+        recentErrors[short] = now
+
+        // Clean up old entries occasionally
+        if (recentErrors.size > 50) {
+            val cutoff = now - ERROR_SPAM_INTERVAL_MS
+            recentErrors.entries.removeIf { it.value < cutoff }
+        }
 
         showMessage(short, Color.RED)
 

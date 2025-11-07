@@ -3,21 +3,15 @@ package fleetBuilder.persistence.variant
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
-import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.persistence.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.persistence.variant.VariantMisc.getSourceModsFromVariant
 import fleetBuilder.util.FBMisc
-import fleetBuilder.util.allDMods
-import fleetBuilder.util.completelyRemoveMod
-import fleetBuilder.util.containsString
 import fleetBuilder.util.optJSONArrayToStringList
 import fleetBuilder.variants.MissingElements
-import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
 import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.collections.orEmpty
 
 object JSONVariant {
     @JvmOverloads

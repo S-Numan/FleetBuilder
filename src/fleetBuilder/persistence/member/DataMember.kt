@@ -13,7 +13,6 @@ import fleetBuilder.persistence.variant.DataVariant.buildVariant
 import fleetBuilder.persistence.variant.DataVariant.filterParsedVariantData
 import fleetBuilder.persistence.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.persistence.variant.DataVariant.validateAndCleanVariantData
-import fleetBuilder.util.roundToDecimals
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 
