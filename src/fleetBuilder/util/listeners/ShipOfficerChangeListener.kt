@@ -53,10 +53,14 @@ class ShipOfficerChangeTracker {
 
 
     fun getChangedAssignments(): List<OfficerChange> {
-        val fleet = Global.getSector().playerFleet ?: return emptyList()
+        val fleet = Global.getSector()?.playerFleet ?: return emptyList()
+        if (fleet.fleetData == null) return emptyList()
+
         changed.clear()
 
         for (member in fleet.fleetData.membersListCopy) {
+            if (member == null) continue
+
             val current = member.captain
             val previous = lastAssignments[member.id]
 

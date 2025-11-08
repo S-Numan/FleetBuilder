@@ -39,10 +39,10 @@ import fleetBuilder.persistence.variant.CompressedVariant.extractVariantDataFrom
 import fleetBuilder.persistence.variant.DataVariant
 import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
-import fleetBuilder.util.lib.ClipboardUtil.cleanJsonStringInput
 import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
+import fleetBuilder.util.lib.ClipboardUtil.cleanJsonStringInput
 import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
 import fleetBuilder.variants.MissingElements

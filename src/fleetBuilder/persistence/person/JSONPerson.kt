@@ -1,6 +1,5 @@
 package fleetBuilder.persistence.person
 
-import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
@@ -11,7 +10,6 @@ import fleetBuilder.persistence.person.DataPerson.buildPersonFull
 import fleetBuilder.persistence.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.util.FBMisc
 import fleetBuilder.variants.MissingElements
-import org.histidine.chatter.ChatterDataManager
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat

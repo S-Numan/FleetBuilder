@@ -13,14 +13,10 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CommanderShuttle
-import fleetBuilder.util.DisplayMessage
-import fleetBuilder.util.FBMisc
-import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.getActualCurrentTab
+import fleetBuilder.util.*
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.getFieldsMatching
-import starficz.ReflectionUtils.invoke
 import starficz.getChildrenCopy
 
 class CatchStoreMemberButton : CampaignInputListener {
@@ -57,12 +53,12 @@ class CatchStoreMemberButton : CampaignInputListener {
             val memberUI = ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel() ?: return null
 
             try {
-                val parent = (memberUI.invoke("getParent") as? UIPanelAPI) ?: return null
+                val parent = (memberUI.safeInvoke("getParent") as? UIPanelAPI) ?: return null
                 val firstChild = parent.getChildrenCopy().find { it.getFieldsMatching(name = "buyButton").isNotEmpty() } as? UIPanelAPI
                     ?: return null
 
                 val desiredButton = firstChild.getChildrenCopy().find { buttonChild ->
-                    val tooltip = buttonChild.invoke("getTooltip")
+                    val tooltip = buttonChild.safeInvoke("getTooltip")
                     tooltip?.getFieldsMatching(fieldAssignableTo = String::class.java)?.find {
                         val tooltipName = it.get(tooltip)
                         tooltipName == "Store"

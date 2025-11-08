@@ -24,8 +24,7 @@ import fleetBuilder.persistence.variant.DataVariant
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getErrorVariantHullID
-import java.util.Random
-import kotlin.collections.forEach
+import java.util.*
 
 object DataFleet {
     data class ParsedFleetData(

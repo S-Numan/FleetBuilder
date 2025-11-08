@@ -6,10 +6,9 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.campaign.ui.UITable
+import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Mouse
-import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
-import starficz.ReflectionUtils.invoke
 import starficz.getChildrenCopy
 
 class ModPickerFilterPanel(
@@ -76,8 +75,8 @@ class ModPickerFilterPanel(
 
         val modPickerTable = modPicker.getChildrenCopy().find { it is UITable }
 
-        val list = modPickerTable?.invoke("getList")
-        val items = list?.invoke("getItems") as? List<Any?> ?: return
+        val list = modPickerTable?.safeInvoke("getList")
+        val items = list?.safeInvoke("getItems") as? List<Any?> ?: return
 
         val regex = Regex("""(?:[^\s"]+|"[^"]*"|'[^']*')+""")//Non-space tokens or quoted strings with "double" or 'single' quotes
         val descriptions = regex.findAll(textField.text.lowercase())
@@ -95,7 +94,7 @@ class ModPickerFilterPanel(
             val itemsToRemove = mutableListOf<Any?>()
             items.forEach { item ->
                 if (item == null) return@forEach
-                val tooltip = item.invoke("getTooltip") ?: return@forEach
+                val tooltip = item.safeInvoke("getTooltip") ?: return@forEach
                 val modSpecField = tooltip.getFieldsMatching(fieldAssignableTo = HullModSpecAPI::class.java)
                 val modSpec = modSpecField.getOrNull(0)?.get(tooltip) as? HullModSpecAPI
                     ?: return@forEach
@@ -107,15 +106,15 @@ class ModPickerFilterPanel(
                     itemsToRemove.add(item)
                 }
             }
-            itemsToRemove.forEach { list.invoke("removeItem", it) }
+            itemsToRemove.forEach { list.safeInvoke("removeItem", it) }
         }
 
-        list.invoke("collapseEmptySlots")
+        list.safeInvoke("collapseEmptySlots")
     }
 
     private fun refreshUI() {
-        modPicker.invoke("createUI")
-        modPicker.invoke("restoreTags")
+        modPicker.safeInvoke("createUI")
+        modPicker.safeInvoke("restoreTags")
         parentPanel.addComponent(mainPanel)
     }
 

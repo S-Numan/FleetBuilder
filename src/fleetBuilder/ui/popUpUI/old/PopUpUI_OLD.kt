@@ -12,15 +12,11 @@ import fleetBuilder.ui.popUpUI.TiledTextureRenderer
 import fleetBuilder.ui.popUpUI.UILinesRenderer
 import fleetBuilder.util.FBMisc.isMouseWithinBounds
 import fleetBuilder.util.ReflectionMisc.getCoreUI
+import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
+import starficz.*
 import starficz.ReflectionUtils.get
-import starficz.ReflectionUtils.invoke
-import starficz.findChildWithMethod
-import starficz.height
-import starficz.width
-import starficz.x
-import starficz.y
 import java.awt.Color
 
 //Copied and modified from AshLib
@@ -61,7 +57,7 @@ open class PopUpUI_OLD : CustomUIPanelPlugin {
         insertPanel: CustomPanelAPI,
         x: Float,
         y: Float,
-        parent: UIPanelAPI? = getCoreUI(),
+        parent: UIPanelAPI? = getCoreUI(true),
         isDialog: Boolean = true
     ) {
         this.isDialog = isDialog
@@ -92,10 +88,10 @@ open class PopUpUI_OLD : CustomUIPanelPlugin {
     override fun renderBelow(alphaMult: Float) {
         val renderer = TiledTextureRenderer(panelBackground.getTextureId())
         if (isDialog) {
-            blackBackground.setSize(getCoreUI()!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
+            blackBackground.setSize(getCoreUI(true)!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
             blackBackground.setColor(Color.black)
             blackBackground.setAlphaMult(0.6f)
-            blackBackground.renderAtCenter(getCoreUI()!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
+            blackBackground.renderAtCenter(getCoreUI(true)!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
             renderer.renderTiledTexture(
                 panel.getPosition().getX(),
                 panel.getPosition().getY(), panel.getPosition().getWidth(),
@@ -193,7 +189,7 @@ open class PopUpUI_OLD : CustomUIPanelPlugin {
 
     open fun onExit() {
         if (messageDialog != null)
-            messageDialog!!.invoke("dismiss", 0)
+            messageDialog!!.safeInvoke("dismiss", 0)
 
         exitCallback?.invoke()
     }
@@ -211,10 +207,10 @@ open class PopUpUI_OLD : CustomUIPanelPlugin {
         val screenPanel = ui.get("screenPanel") as? UIPanelAPI
         messageDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
         if (messageDialog != null) {
-            messageDialog!!.invoke("setOpacity", 0f)
-            messageDialog!!.invoke("setBackgroundDimAmount", 0f)
-            messageDialog!!.invoke("setAbsorbOutsideEvents", false)
-            messageDialog!!.invoke("makeOptionInstant", 0)
+            messageDialog!!.safeInvoke("setOpacity", 0f)
+            messageDialog!!.safeInvoke("setBackgroundDimAmount", 0f)
+            messageDialog!!.safeInvoke("setAbsorbOutsideEvents", false)
+            messageDialog!!.safeInvoke("makeOptionInstant", 0)
         }
     }
 

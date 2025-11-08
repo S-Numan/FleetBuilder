@@ -20,6 +20,7 @@ import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.json.JSONArray
 import org.json.JSONObject
+import starficz.BoxedUIElement
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.getChildrenCopy
 import kotlin.math.pow
@@ -321,4 +322,25 @@ fun TooltipMakerAPI.addToggle(
     checkbox.isChecked = isChecked
 
     return checkbox
+}
+
+fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
+    val target = if (this is BoxedUIElement) this.boxedElement else this
+    val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
+    val reflectedMethods = target.getMethodsMatching(name, parameterTypes = paramTypes)
+    if (reflectedMethods.isEmpty()) {
+        DisplayMessage.showError(
+            short = "ERROR: No method found on class: ${target::class.java.name}. See console for more details.",
+            full = "No method found for name: '$name' on class: ${target::class.java.name} " +
+                    "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}"
+        )
+        return null
+    } else if (reflectedMethods.size > 1) {
+        DisplayMessage.showError(
+            short = "ERROR: No method found on class: ${target::class.java.name}. See console for more details.",
+            full = "Ambiguous method call for name: '$name' on class: ${target::class.java.name}. " +
+                    "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
+        )
+        return null
+    } else return reflectedMethods[0].invoke(target, *args)
 }

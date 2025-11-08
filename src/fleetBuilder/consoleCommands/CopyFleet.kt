@@ -13,12 +13,12 @@ import fleetBuilder.persistence.fleet.FleetSettings
 import fleetBuilder.persistence.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.persistence.member.DataMember.copyMember
 import fleetBuilder.persistence.person.DataPerson.copyPerson
-import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.lib.ClipboardUtil
+import fleetBuilder.util.safeInvoke
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.Console
 import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
 
 class CopyFleet : BaseCommand {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
@@ -98,15 +98,15 @@ class CopyFleet : BaseCommand {
         } else if (context.isInMainMenu) {
             val coreUI = ReflectionMisc.getCoreUI() ?: return BaseCommand.CommandResult.ERROR
 
-            val missionThing = (coreUI.invoke("getChildrenCopy") as List<*>).find { it?.getMethodsMatching(name = "getMissionList")?.isNotEmpty() == true }
-            val missionDetail = missionThing?.invoke("getMissionDetail") as? UIPanelAPI
+            val missionThing = (coreUI.safeInvoke("getChildrenCopy") as List<*>).find { it?.getMethodsMatching(name = "getMissionList")?.isNotEmpty() == true }
+            val missionDetail = missionThing?.safeInvoke("getMissionDetail") as? UIPanelAPI
                 ?: return BaseCommand.CommandResult.ERROR
 
-            val api = missionDetail.invoke("getPreview") as? MissionDefinitionAPI
+            val api = missionDetail.safeInvoke("getPreview") as? MissionDefinitionAPI
                 ?: return BaseCommand.CommandResult.ERROR
 
-            val fleetSidePlayer = api.invoke("getFleet", FleetSide.PLAYER)
-            val fleetSideEnemy = api.invoke("getFleet", FleetSide.ENEMY)
+            val fleetSidePlayer = api.safeInvoke("getFleet", FleetSide.PLAYER)
+            val fleetSideEnemy = api.safeInvoke("getFleet", FleetSide.ENEMY)
 
             val side = when (args.lowercase().trim()) {
                 "player" -> fleetSidePlayer

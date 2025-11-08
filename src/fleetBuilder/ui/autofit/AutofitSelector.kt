@@ -13,11 +13,11 @@ import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.integration.combat.CombatAutofitAdder
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.getEffectiveHullId
+import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import starficz.*
-import starficz.ReflectionUtils.invoke
 import java.awt.Color
 import kotlin.math.max
 
@@ -351,21 +351,21 @@ internal object AutofitSelector {
         val clonedVariant = variant.clone() as HullVariantSpec
 
         val shipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
-        shipPreview.invoke("setVariant", clonedVariant)
-        shipPreview.invoke("overrideVariant", clonedVariant)
-        shipPreview.invoke("setShowBorder", false)
+        shipPreview.safeInvoke("setVariant", clonedVariant)
+        shipPreview.safeInvoke("overrideVariant", clonedVariant)
+        shipPreview.safeInvoke("setShowBorder", false)
 
         if (!scaleDownSmallerShips)
-            shipPreview.invoke("setScaleDownSmallerShipsMagnitude", 1f)
+            shipPreview.safeInvoke("setScaleDownSmallerShipsMagnitude", 1f)
 
-        shipPreview.invoke("adjustOverlay", 0f, 0f)
+        shipPreview.safeInvoke("adjustOverlay", 0f, 0f)
         shipPreview.setSize(width, height)
 
         if (showFighters)
-            shipPreview.invoke("setShowFighters", true)
+            shipPreview.safeInvoke("setShowFighters", true)
 
         if (setSchematicMode)
-            shipPreview.invoke("setSchematicMode", true)
+            shipPreview.safeInvoke("setSchematicMode", true)
 
         //Remove this hard coded scaling code when things scale right properly in the base game.
 
@@ -396,7 +396,7 @@ internal object AutofitSelector {
 
         // Apply config
         if (config.disableScissor) {
-            shipPreview.invoke("setScissor", false)
+            shipPreview.safeInvoke("setScissor", false)
         }
 
         // Scale and set size
@@ -405,7 +405,7 @@ internal object AutofitSelector {
         shipPreview.setSize(scaledWidth, scaledHeight)
 
         // Prepare ship
-        shipPreview.invoke("prepareShip")
+        shipPreview.safeInvoke("prepareShip")
 
         // Main container panel
         val containerPanel = Global.getSettings().createCustom(width, height, null)

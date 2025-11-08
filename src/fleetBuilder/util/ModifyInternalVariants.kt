@@ -1,10 +1,8 @@
 package fleetBuilder.util
 
-import com.fs.starfarer.api.Global
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.util.DisplayMessage.showError
 import starficz.ReflectionUtils.getFieldsMatching
-import starficz.ReflectionUtils.getMethodsMatching
 
 object ModifyInternalVariants {
 

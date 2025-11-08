@@ -10,11 +10,36 @@ import org.lazywizard.console.Console
 import java.awt.Color
 
 object DisplayMessage {
-    //Short is displayed to the user, full is put in the log/console.
-    fun showError(short: String, full: String, e: Exception? = null) {
 
+    //Prevent error spam
+    private val recentErrors = mutableMapOf<String, Long>()
+    private const val ERROR_SPAM_INTERVAL_MS = 4000 // 4 seconds
+
+    fun showError(short: String, full: String, e: Exception? = null) {
+        val now = System.currentTimeMillis()
+
+        // Combine both short + full messages to uniquely identify the error
+        val key = "$short::$full"
+        val lastTime = recentErrors[key] ?: 0L
+
+        // Skip if the same error occurred recently
+        if (now - lastTime < ERROR_SPAM_INTERVAL_MS) {
+            return
+        }
+
+        // Record this error occurrence
+        recentErrors[key] = now
+
+        // Clean up stale entries occasionally
+        if (recentErrors.size > 100) {
+            val cutoff = now - ERROR_SPAM_INTERVAL_MS
+            recentErrors.entries.removeIf { it.value < cutoff }
+        }
+
+        // Show short message to player
         showMessage(short, Color.RED)
 
+        // Console or logger output
         if (isConsoleModEnabled) {
             if (e != null) {
                 Console.showException(full, e)
@@ -27,9 +52,10 @@ object DisplayMessage {
         } else {
             Global.getLogger(this.javaClass).error(full)
         }
-
+        
         Global.getSoundPlayer().playUISound("ui_selection_cleared", 1f, 1f)
     }
+
 
     fun showError(short: String, e: Exception? = null) {
         showError(short, short, e)

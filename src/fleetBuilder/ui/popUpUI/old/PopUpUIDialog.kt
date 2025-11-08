@@ -3,7 +3,6 @@ package fleetBuilder.ui.popUpUI.old
 import com.fs.starfarer.api.ui.*
 import starficz.onClick
 import java.awt.Color
-import kotlin.collections.iterator
 
 //This class is awful, please don't use it.
 

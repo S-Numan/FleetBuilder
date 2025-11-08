@@ -9,16 +9,12 @@ import fleetBuilder.persistence.CompressedMisc.weaponGroupSep
 import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
 import fleetBuilder.persistence.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.persistence.variant.VariantMisc.getSourceModsFromVariant
-import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.DisplayMessage.showError
+import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.toBinary
 import fleetBuilder.variants.GameModInfo
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.component3
-import kotlin.collections.windowed
 
 object CompressedVariant {
     @JvmOverloads

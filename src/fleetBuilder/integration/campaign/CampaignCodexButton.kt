@@ -22,7 +22,6 @@ import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
-import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import starficz.*
 

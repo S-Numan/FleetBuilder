@@ -16,9 +16,9 @@ import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
 import fleetBuilder.util.DialogUtil
 import fleetBuilder.util.Dialogs
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import starficz.*
-import starficz.ReflectionUtils.invoke
 
 //The implementation of this is extremely scuffed, I am aware.
 
@@ -522,7 +522,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                     val dataViewPanels = cargoTab.allChildsWithMethod("isInvalidDropTarget")
 
                     val allDataChildren = dataViewPanels.mapNotNull { child ->
-                        val dataView = (child.invoke("getCargoDataView") as? UIPanelAPI)
+                        val dataView = (child.safeInvoke("getCargoDataView") as? UIPanelAPI)
                             ?: return@mapNotNull null
                         dataView.getChildrenCopy()
                     }.flatten()
@@ -530,10 +530,10 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                     allDataChildren.forEach { child ->
                         //if (!FBMisc.isMouseHoveringOverComponent(child)) return@forEach // This applies even when behind another panel
 
-                        val fader = child.invoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
+                        val fader = child.safeInvoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
                         if (!fader.isFadingIn && fader.brightness != 1f) return@forEach
 
-                        val stack = child.invoke("getStack") as? CargoItemStack ?: return
+                        val stack = child.safeInvoke("getStack") as? CargoItemStack ?: return
 
                         val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
                             ?: CargoAutoManage()

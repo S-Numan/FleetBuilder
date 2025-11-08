@@ -8,24 +8,16 @@ import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings.commandShuttleId
 import fleetBuilder.config.ModSettings.getDefaultExcludeVariantTags
-import fleetBuilder.persistence.fleet.JSONFleet.extractFleetDataFromJson
-import fleetBuilder.persistence.member.JSONMember.extractMemberDataFromJson
 import fleetBuilder.persistence.member.JSONMember.saveMemberToJson
-import fleetBuilder.persistence.person.JSONPerson.extractPersonDataFromJson
-import fleetBuilder.persistence.variant.CompressedVariant.extractVariantDataFromCompString
 import fleetBuilder.persistence.variant.CompressedVariant.saveVariantToCompString
-import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.persistence.variant.JSONVariant.saveVariantToJson
 import fleetBuilder.persistence.variant.VariantSettings
-import fleetBuilder.util.lib.ClipboardUtil.cleanJsonStringInput
+import fleetBuilder.util.FBMisc.extractDataFromString
+import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import fleetBuilder.util.lib.ClipboardUtil.getClipboardJSONFileContents
 import fleetBuilder.util.lib.ClipboardUtil.getClipboardTextSafe
 import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
-import fleetBuilder.util.FBMisc.extractDataFromString
-import fleetBuilder.util.FBMisc.getJSONFromStringSafe
-import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
 import fleetBuilder.variants.VariantLib
-import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 

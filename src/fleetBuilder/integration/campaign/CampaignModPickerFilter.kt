@@ -7,7 +7,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.ui.ModPickerFilterPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
-import starficz.ReflectionUtils.invoke
+import fleetBuilder.util.safeInvoke
 import starficz.findChildWithMethod
 
 class CampaignModPickerFilter : EveryFrameScript {
@@ -41,7 +41,7 @@ class CampaignModPickerFilter : EveryFrameScript {
             return
         }
 
-        val newPermMode = modPicker.invoke("isPermMode") as Boolean
+        val newPermMode = modPicker.safeInvoke("isPermMode") as Boolean
         //On  panel appearing
         if (filterPanel == null) {
             filterPanel = ModPickerFilterPanel(200f, 30f, modPicker, modPicker)

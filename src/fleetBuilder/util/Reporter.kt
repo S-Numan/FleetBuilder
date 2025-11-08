@@ -7,8 +7,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.campaign.CampaignState
-import com.fs.state.AppDriver
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CargoAutoManager
 import fleetBuilder.features.CommanderShuttle
@@ -18,7 +16,6 @@ import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.VariantLib
-import kotlin.jvm.java
 
 class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedListener {
 
