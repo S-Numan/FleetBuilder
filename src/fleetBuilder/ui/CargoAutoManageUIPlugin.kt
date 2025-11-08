@@ -3,13 +3,12 @@ package fleetBuilder.ui
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
+import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.econ.MarketAPI
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import com.fs.starfarer.campaign.ui.trade.CargoItemStack
 import fleetBuilder.features.*
 import fleetBuilder.ui.popUpUI.PopUpUI
 import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
@@ -533,7 +532,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                         val fader = child.safeInvoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
                         if (!fader.isFadingIn && fader.brightness != 1f) return@forEach
 
-                        val stack = child.safeInvoke("getStack") as? CargoItemStack ?: return
+                        val stack = child.safeInvoke("getStack") as? CargoStackAPI ?: return@forEach
 
                         val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
                             ?: CargoAutoManage()

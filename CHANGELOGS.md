@@ -1,3 +1,6 @@
+## 1.25.4
+- Patch CargoAutoManageUIPlugin's custom cargo selection to work in Windows.
+
 ## 1.25.3
 - Sweeping safety improvements across the mod. Many things that would cause a crash now only display an error and continue on anyway. This should hopefully make any crashes much less frequent.
 - Prevent some possible error spam by preventing the same error from being displayed more than once every 4 seconds. E.G to prevent spam if an error occurs every frame.
