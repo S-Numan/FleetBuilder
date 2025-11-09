@@ -121,7 +121,7 @@ class Reporter : RefitScreenListener, EveryFrameScript, CurrentLocationChangedLi
     }
 
     override fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
-        VariantLib.reportFleetMemberVariantSaved(member, dockedAt)
+        //VariantLib.reportFleetMemberVariantSaved(member, dockedAt)
     }
 
 
