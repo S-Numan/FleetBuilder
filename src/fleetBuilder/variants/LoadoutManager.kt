@@ -24,6 +24,7 @@ object LoadoutManager {
 
     private val shipDirectories: MutableList<ShipDirectory> = mutableListOf()
     fun getShipDirectories(): List<ShipDirectory> = shipDirectories
+    fun getShipDirectoriesNotEmpty(): List<ShipDirectory> = shipDirectories.filter { it.getRawShipEntries().isNotEmpty() }
 
     fun generatePrefixes(): List<String> {
         val letters = ('A'..'Z') + ('a'..'z')
