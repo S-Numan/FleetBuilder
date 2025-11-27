@@ -8,6 +8,8 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage.showError
 import fleetBuilder.util.allDMods
+import fleetBuilder.util.createHullVariant
+import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 
@@ -109,7 +111,7 @@ object DataVariant {
             .forEach { hullMods += it }
 
         val data = ParsedVariantData(
-            hullId = variant.hullSpec.hullId,
+            hullId = variant.hullSpec.getCompatibleDLessHullId(true), //DMods are already included, get the D less ID for simplicity.
             variantId = variant.hullVariantId,
             displayName = variant.displayName,
             fluxCapacitors = variant.numFluxCapacitors,
@@ -322,7 +324,7 @@ object DataVariant {
         val settings = Global.getSettings()
 
         val hullSpec = settings.getHullSpec(data.hullId)
-        val loadout = settings.createEmptyVariant(hullSpec.hullId, hullSpec)
+        val loadout = settings.createHullVariant(hullSpec)
 
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)

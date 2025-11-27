@@ -22,6 +22,7 @@ import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.ReflectionMisc.getCodexDialog
 import fleetBuilder.util.ReflectionMisc.getCodexEntryParam
+import fleetBuilder.util.createHullVariant
 import org.lwjgl.input.Keyboard
 import starficz.*
 
@@ -205,9 +206,8 @@ class CampaignCodexButton : EveryFrameScript {
                     cargo.addSpecial(SpecialItemData("ship_bp", param.hullId), count.toFloat())
                     message = FBTxt.txt("added_blueprint_to_cargo", count, param.hullName)
                 } else {
-                    val emptyVariant =
-                        Global.getSettings().createEmptyVariant(param.hullId, param)
-                    parsedData = getVariantDataFromVariant(emptyVariant)
+                    val hullVariant = param.createHullVariant()
+                    parsedData = getVariantDataFromVariant(hullVariant)
                 }
             }
 

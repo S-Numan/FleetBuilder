@@ -1,3 +1,7 @@
+## 1.26.0
+- Fix the codex button not spawning ships with modules. Ships now spawn with modules.
+- Fix the autofit code from crashing the game if certain modules do not exist.
+
 ## 1.25.4
 - Patch CargoAutoManageUIPlugin's custom cargo selection to work in Windows.
 
