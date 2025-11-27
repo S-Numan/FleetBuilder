@@ -325,6 +325,7 @@ object DataVariant {
 
         val hullSpec = settings.getHullSpec(data.hullId)
         val loadout = settings.createHullVariant(hullSpec)
+        loadout.weaponGroups.clear()
 
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
@@ -393,9 +394,14 @@ object DataVariant {
         data.moduleVariants.forEach { (slotId, moduleData) ->
             val variant = buildVariant(moduleData)
 
-            loadout.setModuleVariant(slotId, variant)
+            if (loadout.stationModules.contains(slotId)) {
+                loadout.setModuleVariant(slotId, variant)
+            } else {
+                showError("${loadout.hullSpec.hullId} Does not contain module slot $slotId.")
+                return@forEach
+            }
 
-            try { // Can't check for what module slots the HullSpec can support, so we have to do this instead
+            try { // It's hard to check for what module slots the HullSpec can support, so do this just in case to prevent crashes further ahead.
                 loadout.moduleSlots == null
             } catch (_: Exception) {
                 showError("${loadout.hullSpec.hullId} Does not contain module slot $slotId. Removing variant to avoid crash")
