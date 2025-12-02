@@ -1,6 +1,7 @@
 package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.SettingsAPI
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
@@ -12,6 +13,7 @@ import com.fs.starfarer.api.campaign.impl.items.WeaponBlueprintItemPlugin
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
@@ -23,6 +25,7 @@ import org.json.JSONObject
 import starficz.BoxedUIElement
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.getChildrenCopy
+import java.awt.Color
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -54,7 +57,7 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
 
 // Extension to get the effective hull
 fun ShipHullSpecAPI.getEffectiveHull(): ShipHullSpecAPI {
-    return if (isCompatibleWithBase) {//If the hull is mostly compatible from an loadout perspective with a
+    return if (isCompatibleWithBase) {
         if (dParentHull != null) {
             if (dParentHull.isCompatibleWithBase)
                 dParentHull.baseHull ?: dParentHull
@@ -69,15 +72,29 @@ fun ShipHullSpecAPI.getEffectiveHullId(): String {
     return this.getEffectiveHull().hullId
 }
 
-fun ShipHullSpecAPI.getCompatibleDLessHull(): ShipHullSpecAPI {
-    return if (isCompatibleWithBase && dParentHull != null)
-        dParentHull
-    else
-        this
+fun ShipHullSpecAPI.getCompatibleDLessHull(keepDModSkin: Boolean = false): ShipHullSpecAPI {
+    if (!isDHull) return this
+
+    if (keepDModSkin && baseHull.spriteName != spriteName)
+        return this
+
+    // 0.98a
+    // Note that sometimes isCompatibleWithBase is true but dParentHull is null despite being a dmodded ship.
+    // This usually occurs on ships such as the dominator_d whereas the ship has a custom "dmodded" skin (and thus a variant json file)
+    // When isCompatibleWithBase is true and dParentHull is not null, that usually occurs with fake "dmodded" hulls where there is no custom skin nor variant json file.
+
+    if (isCompatibleWithBase) {
+        if (dParentHull != null)
+            return dParentHull
+        else if (!keepDModSkin)
+            return baseHull
+    }
+
+    return this
 }
 
-fun ShipHullSpecAPI.getCompatibleDLessHullId(): String {
-    return this.getCompatibleDLessHull().hullId
+fun ShipHullSpecAPI.getCompatibleDLessHullId(keepDModSkin: Boolean = false): String {
+    return this.getCompatibleDLessHull(keepDModSkin).hullId
 }
 
 fun ShipVariantAPI.completelyRemoveMod(modId: String) {
@@ -323,6 +340,29 @@ fun TooltipMakerAPI.addToggle(
 
     return checkbox
 }
+
+//This exists because createEmptyVariant does not create modules.
+fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
+    return run {
+        val variants = VariantLib.getVariantsFromEffectiveHullID(hull.getEffectiveHullId())
+        variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.hullId } // Exact match
+            ?: variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.getCompatibleDLessHullId() } // D less match
+            ?: variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.getEffectiveHullId() } // Effective match
+            ?: variants?.find { it.source == VariantSource.HULL } // Probably close enough
+    } ?: runCatching {
+        val emptyVariant = this.createEmptyVariant(hull.hullId, hull)
+        DisplayMessage.showMessage("Failed to find HULL variant for '${hull.hullId}' and fell back to creating an emptyVariant. This can usually be ignored.", Color.YELLOW)
+        emptyVariant
+    }.getOrNull() ?: run {
+        DisplayMessage.showError("Failed to find HULL variant for '${hull.hullId}'")
+        VariantLib.createErrorVariant("MISSINGHULLVARIANT:${hull.hullId}")
+    }
+}
+
+fun ShipHullSpecAPI.createHullVariant(): ShipVariantAPI {
+    return Global.getSettings().createHullVariant(this)
+}
+
 
 fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
     val target = if (this is BoxedUIElement) this.boxedElement else this

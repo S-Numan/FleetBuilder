@@ -8,6 +8,8 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.util.DisplayMessage.showError
 import fleetBuilder.util.allDMods
+import fleetBuilder.util.createHullVariant
+import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 
@@ -109,7 +111,7 @@ object DataVariant {
             .forEach { hullMods += it }
 
         val data = ParsedVariantData(
-            hullId = variant.hullSpec.hullId,
+            hullId = variant.hullSpec.getCompatibleDLessHullId(true), //DMods are already included, get the D less ID for simplicity.
             variantId = variant.hullVariantId,
             displayName = variant.displayName,
             fluxCapacitors = variant.numFluxCapacitors,
@@ -322,7 +324,8 @@ object DataVariant {
         val settings = Global.getSettings()
 
         val hullSpec = settings.getHullSpec(data.hullId)
-        val loadout = settings.createEmptyVariant(hullSpec.hullId, hullSpec)
+        val loadout = settings.createHullVariant(hullSpec)
+        loadout.weaponGroups.clear()
 
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
@@ -391,9 +394,14 @@ object DataVariant {
         data.moduleVariants.forEach { (slotId, moduleData) ->
             val variant = buildVariant(moduleData)
 
-            loadout.setModuleVariant(slotId, variant)
+            if (loadout.stationModules.contains(slotId)) {
+                loadout.setModuleVariant(slotId, variant)
+            } else {
+                showError("${loadout.hullSpec.hullId} Does not contain module slot $slotId.")
+                return@forEach
+            }
 
-            try { // Can't check for what module slots the HullSpec can support, so we have to do this instead
+            try { // It's hard to check for what module slots the HullSpec can support, so do this just in case to prevent crashes further ahead.
                 loadout.moduleSlots == null
             } catch (_: Exception) {
                 showError("${loadout.hullSpec.hullId} Does not contain module slot $slotId. Removing variant to avoid crash")

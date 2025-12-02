@@ -1,6 +1,5 @@
 package fleetBuilder.util
 
-import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -76,7 +75,7 @@ object ClipboardMisc {
 
         when (param) {
             is ShipHullSpecAPI -> {
-                val emptyVariant = Global.getSettings().createEmptyVariant(param.hullId, param)
+                val emptyVariant = param.createHullVariant()
                 saveVariantToClipboard(emptyVariant, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
             }
 

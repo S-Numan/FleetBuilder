@@ -1,7 +1,12 @@
 package fleetBuilder.variants
 
 import com.fs.starfarer.api.Global
+import fleetBuilder.config.ModSettings
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.DisplayMessage.showError
+import org.apache.log4j.Level
+import org.lazywizard.console.Console
+import java.awt.Color
 
 data class GameModInfo(
     val id: String,
@@ -141,6 +146,10 @@ fun reportMissingElementsIfAny(
 ) {
     val fullMessage = missingElements.getMissingElementsString()
     if (fullMessage.isNotBlank()) {
-        showError(defaultShortMessage, fullMessage)
+        DisplayMessage.showMessage(defaultShortMessage, Color.YELLOW)
+        if (ModSettings.isConsoleModEnabled)
+            Console.showMessage(fullMessage, Level.WARN)
+        else
+            Global.getLogger(MissingElements::class.java).warn(fullMessage)
     }
 }

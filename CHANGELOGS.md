@@ -1,3 +1,8 @@
+## 1.26.0
+- SaveTransfer's 'Include Ability Bar' option now also saves and loads abilities. E.G: on a new save you can get your slipsurge ability with a save transfer.
+- Fix the codex button not spawning ships with modules. Ships now spawn with modules.
+- Fix the autofit code from crashing the game if certain modules do not exist.
+
 ## 1.25.4
 - Patch CargoAutoManageUIPlugin's custom cargo selection to work in Windows.
 

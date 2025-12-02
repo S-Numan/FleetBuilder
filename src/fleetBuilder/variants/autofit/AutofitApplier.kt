@@ -43,6 +43,11 @@ object AutofitApplier {
         var appliedSMods = false
 
         try {
+            if (baseVariant.moduleSlots != loadout.moduleSlots) {
+                DisplayMessage.showError("Module slots between loadout and base variant's do not match. Stopping autofit to prevent crash.")
+                return
+            }
+
             baseVariant.source = VariantSource.REFIT
 
             val delegate = FBPlayerAutofitDelegate(
@@ -98,11 +103,11 @@ object AutofitApplier {
                 for (moduleSlot in baseVariant.moduleSlots) {
                     val baseModule = baseVariant.getModuleVariant(moduleSlot)
                     val loadoutModule = loadout.getModuleVariant(moduleSlot)
-                    if (baseModule == null) {
+                    if (baseModule == null)
                         throw Exception("base ship module was null")
-                    } else if (loadoutModule == null) {
+                    else if (loadoutModule == null)
                         throw Exception("loadout ship module was null")
-                    }
+
                     stripVaraint(baseModule, loadoutModule)
                 }
 
@@ -222,7 +227,17 @@ object AutofitApplier {
                 refitPanel.safeInvoke("setEditedSinceSave", false)
             }
             refitPanel.safeInvoke("syncWithCurrentVariant")
+
+            //try {
             shipDisplay.safeInvoke("updateModules")
+            /*} catch (e: Exception) {
+                DisplayMessage.showError("ERROR: " + FBTxt.txt("failed_to_apply_variant_update_modules"), e)
+                baseVariant.stationModules.forEach { (slot, variantID) ->
+                    //val moduleVariant = Global.getSettings().getVariant(variantID)
+                    //baseVariant.setModuleVariant(slot, null)
+                }
+            }*/
+
             shipDisplay.safeInvoke("updateButtonPositionsToZoomLevel")
             //refitPanel.safeInvoke("recreateUI")
         } catch (e: Exception) {
@@ -355,8 +370,10 @@ object AutofitApplier {
         to.setVariantDisplayName(from.displayName)
 
         for (slot in from.moduleSlots) {
-            val toVariant = to.getModuleVariant(slot)
-            val fromVariant = from.getModuleVariant(slot)
+            val toVariant = runCatching { to.getModuleVariant(slot) }.getOrNull()
+            val fromVariant = runCatching { from.getModuleVariant(slot) }.getOrNull()
+            if (toVariant == null || fromVariant == null)
+                continue
 
             replaceVariantWithVariant(
                 toVariant,

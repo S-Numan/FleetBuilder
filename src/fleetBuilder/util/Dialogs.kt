@@ -511,16 +511,16 @@ object Dialogs {
     }
 
     // Top-level declaration — OK
-    enum class SaveOption(val displayName: String, val defaultChecked: Boolean) {
+    enum class SaveOption(val displayName: String, val defaultChecked: Boolean, val tooltip: String = "") {
         BLUEPRINTS("Include Blueprints", true),
         HULLMODS("Include Hullmods", true),
-        PLAYER("Include Player", true),
+        PLAYER("Include Player", true, "Includes everything seen in the Character tab."),
+        REPUTATION("Include Reputation", true),
         FLEET("Include Fleet", true),
         OFFICERS("Include Officers", true),
-        REPUTATION("Include Reputation", true),
         CARGO("Include Cargo", true),
         CREDITS("Include Credits", true),
-        ABILITYBAR("Include Ability Bar", true);
+        ABILITYBAR("Include Ability Bar", true, "This will also save and add abilities that aren't in your ability bar.\n\nDepending on the implementation of a modded ability, this can in rare cases cause a crash.\nIf that happens, untoggle this option.");
     }
 
 
@@ -543,6 +543,13 @@ object Dialogs {
                     ButtonAPI.UICheckboxSize.SMALL,
                     0f
                 )
+
+                if (option.tooltip.isNotEmpty()) {
+                    checkbox.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 450f) { tooltip ->
+                        tooltip.addPara(option.tooltip, 0f)
+                    }
+                }
+
                 checkbox.isChecked = option.defaultChecked
                 checkboxes[option] = checkbox
                 return checkbox

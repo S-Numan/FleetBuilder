@@ -215,7 +215,7 @@ class ShipDirectory(
     }
 
     fun makeVariantID(variant: ShipVariantAPI): String {
-        return makeVariantID(variant.hullSpec.getCompatibleDLessHullId(), variant.displayName)
+        return makeVariantID(variant.hullSpec.getCompatibleDLessHullId(true), variant.displayName)
     }
 
     fun makeVariantID(hullId: String, displayName: String): String {
