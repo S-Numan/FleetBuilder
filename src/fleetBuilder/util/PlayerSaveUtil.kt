@@ -99,7 +99,7 @@ object PlayerSaveUtil {
         if (handleAbilityBar) {
             val bars: Array<Array<CampaignUIPersistentData.AbilitySlot>> = try {
                 @Suppress("UNCHECKED_CAST")
-                Global.getSector().uiData.abilitySlotsAPI.safeInvoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
+                sector.uiData.abilitySlotsAPI.safeInvoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
             } catch (e: Exception) {
                 DisplayMessage.showError("Failed to save Ability Bar")
                 emptyArray()
@@ -153,6 +153,8 @@ object PlayerSaveUtil {
             }
 
             json.put("abilityBars", convertSavedBarsToJson(savedBars))
+
+            json.put("abilities", JSONArray(sector.characterData.abilities))
         }
 
         return json
@@ -169,18 +171,20 @@ object PlayerSaveUtil {
         var weaponBlueprints: List<String> = listOf(),
         var hullMods: List<String>? = null,
         var abilityBars: List<List<AbilityPair>>? = null,
+        var abilities: List<String>? = null,
     ) {
         fun isEmpty(): Boolean {
             return fleet == null &&
                     aggressionDoctrine == -1 &&
                     player == null &&
                     cargo == null &&
-                    (relations == null || relations!!.isEmpty()) &&
+                    relations.isNullOrEmpty() &&
                     shipBlueprints.isEmpty() &&
                     fighterBlueprints.isEmpty() &&
                     weaponBlueprints.isEmpty() &&
-                    (hullMods == null || hullMods!!.isEmpty()) &&
-                    abilityBars == null
+                    hullMods.isNullOrEmpty() &&
+                    abilityBars.isNullOrEmpty() &&
+                    abilities.isNullOrEmpty()
         }
     }
 
@@ -330,6 +334,10 @@ object PlayerSaveUtil {
             compiled.weaponBlueprints = weaponBlueprints
         }
 
+        if (json.has("abilities")) {
+            compiled.abilities = json.optJSONArrayToStringList("abilities")
+        }
+
         if (json.has("abilityBars")) {
             try {
                 fun convertJsonToSavedBars(
@@ -456,9 +464,17 @@ object PlayerSaveUtil {
         }
 
         if (handleAbilityBar) {
+
+            compiled.abilities?.forEach { id ->
+                val spec = runCatching { Global.getSettings().getAbilitySpec(id) }.getOrNull() ?: return@forEach
+
+                if (!sector.characterData.abilities.contains(spec.id))
+                    sector.characterData.addAbility(spec.id)
+            }
+
             val bars: Array<Array<CampaignUIPersistentData.AbilitySlot>> = try {
                 @Suppress("UNCHECKED_CAST")
-                Global.getSector().uiData.abilitySlotsAPI.safeInvoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
+                sector.uiData.abilitySlotsAPI.safeInvoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
             } catch (e: Exception) {
                 showError(FBTxt.txt("failed_to_load_ability_bars"), e)
                 emptyArray()
@@ -475,9 +491,10 @@ object PlayerSaveUtil {
                         val spec = runCatching { Global.getSettings().getAbilitySpec(id) }.getOrNull()
                         var newID: String? = spec?.id ?: return null
 
-                        // Do have the ability spec in the game from this point on
+                        // The ability spec is in the game from this point on
 
-                        if (!Global.getSector().playerStats.fleet.abilities.contains(newID)) {
+                        val isAbilityUnlocked = sector.playerFleet.abilities.contains(newID) || sector.characterData.abilities.contains(newID) || sector.playerStats.grantedAbilityIds.contains(newID)
+                        if (!isAbilityUnlocked) {
                             newID = when (id) {
                                 "SKR_emergency_burn" -> convertMissing(Abilities.EMERGENCY_BURN)
                                 "SKR_sustained_burn" -> convertMissing(Abilities.SUSTAINED_BURN)
@@ -487,7 +504,7 @@ object PlayerSaveUtil {
                             }
                         }
 
-                        if (Global.getSector().playerStats.fleet.abilities.contains(newID))
+                        if (isAbilityUnlocked)
                             return newID
                         return null
                     }
