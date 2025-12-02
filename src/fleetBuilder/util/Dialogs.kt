@@ -520,7 +520,7 @@ object Dialogs {
         OFFICERS("Include Officers", true),
         CARGO("Include Cargo", true),
         CREDITS("Include Credits", true),
-        ABILITYBAR("Include Ability Bar", true, "If an ability is not unlocked when loading, it will be skipped.");
+        ABILITYBAR("Include Ability Bar", true, "This will also save and add abilities that aren't in your ability bar.\n\nDepending on the implementation of a modded ability, this can in rare cases cause a crash.\nIf that happens, untoggle this option.");
     }
 
 

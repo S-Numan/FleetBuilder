@@ -468,7 +468,9 @@ object PlayerSaveUtil {
             compiled.abilities?.forEach { id ->
                 val spec = runCatching { Global.getSettings().getAbilitySpec(id) }.getOrNull() ?: return@forEach
 
-                if (!sector.characterData.abilities.contains(spec.id))
+                if (!sector.characterData.abilities.contains(spec.id)
+                    && spec.id != "rat_exoship_management"
+                ) // Will cause a crash if the player controllable exoship is not present
                     sector.characterData.addAbility(spec.id)
             }
 
