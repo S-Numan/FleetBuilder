@@ -1154,6 +1154,7 @@ internal object AutofitPanel {
                 tooltip.addPara("DEBUG: BaseHullID = ${variant.hullSpec.baseHullId}", 2f)
                 tooltip.addPara("DEBUG: DParentHullID = ${variant.hullSpec.dParentHullId}", 2f)
                 tooltip.addPara("\nDEBUG: Tags = ${variant.tags}", 2f)
+                tooltip.addPara("\nDEBUG: SModdedBuiltIns = ${variant.sModdedBuiltIns}", 2f)
                 /*tooltip.addPara("\n\nDEBUG: WeaponGroups: ", 2f)
                 for (weaponGroup in variant.weaponGroups.withIndex()) {
                     tooltip.addPara(
