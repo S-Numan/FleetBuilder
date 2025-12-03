@@ -20,8 +20,10 @@ import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getAllDMods
+import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
+import org.lazywizard.console.Console
 import starficz.BoxedUIElement
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.getChildrenCopy
@@ -344,14 +346,18 @@ fun TooltipMakerAPI.addToggle(
 //This exists because createEmptyVariant does not create modules.
 fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
     return run {
-        val variants = VariantLib.getVariantsFromEffectiveHullID(hull.getEffectiveHullId())
+        val effectiveHullID = hull.getEffectiveHullId()
+        val variants = VariantLib.getVariantsFromEffectiveHullID(effectiveHullID)
         variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.hullId } // Exact match
             ?: variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.getCompatibleDLessHullId() } // D less match
-            ?: variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.getEffectiveHullId() } // Effective match
+            ?: variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == effectiveHullID } // Effective match
             ?: variants?.find { it.source == VariantSource.HULL } // Probably close enough
     } ?: runCatching {
         val emptyVariant = this.createEmptyVariant(hull.hullId, hull)
-        DisplayMessage.showMessage("Failed to find HULL variant for '${hull.hullId}' and fell back to createEmptyVariant. This can usually be ignored.", Color.YELLOW)
+        DisplayMessage.logMessage(
+            "Failed to find HULL variant for '${hull.hullId}' and fell back to createEmptyVariant. This can usually be ignored." +
+                    "However, ships may spawn without modules which can crash the game in certain circumstances", Level.WARN, this.javaClass
+        )
         emptyVariant
     }.getOrNull() ?: run {
         DisplayMessage.showError("Failed to find HULL variant for '${hull.hullId}'")
