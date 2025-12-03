@@ -351,7 +351,7 @@ fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
             ?: variants?.find { it.source == VariantSource.HULL } // Probably close enough
     } ?: runCatching {
         val emptyVariant = this.createEmptyVariant(hull.hullId, hull)
-        DisplayMessage.showMessage("Failed to find HULL variant for '${hull.hullId}' and fell back to creating an emptyVariant. This can usually be ignored.", Color.YELLOW)
+        DisplayMessage.showMessage("Failed to find HULL variant for '${hull.hullId}' and fell back to createEmptyVariant. This can usually be ignored.", Color.YELLOW)
         emptyVariant
     }.getOrNull() ?: run {
         DisplayMessage.showError("Failed to find HULL variant for '${hull.hullId}'")
