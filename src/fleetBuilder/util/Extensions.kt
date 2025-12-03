@@ -348,10 +348,17 @@ fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
     return run {
         val effectiveHullID = hull.getEffectiveHullId()
         val variants = VariantLib.getVariantsFromEffectiveHullID(effectiveHullID)
-        variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.hullId } // Exact match
-            ?: variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.getCompatibleDLessHullId() } // D less match
-            ?: variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == effectiveHullID } // Effective match
-            ?: variants?.find { it.source == VariantSource.HULL } // Probably close enough
+
+        val exactId = hull.hullId
+        val dLessId = hull.getCompatibleDLessHullId()
+
+        variants?.filter { it.source == VariantSource.HULL } // Filter out non hull variants
+            ?.let { hullVariants ->
+                hullVariants.find { it.hullSpec.hullId == exactId }          // Exact match
+                    ?: hullVariants.find { it.hullSpec.hullId == dLessId }   // D-less match
+                    ?: hullVariants.find { it.hullSpec.hullId == effectiveHullID } // Effective match
+                    ?: hullVariants.firstOrNull()                            // Cannot find a good enough match, just go for whatever
+            }
     } ?: runCatching {
         val emptyVariant = this.createEmptyVariant(hull.hullId, hull)
         DisplayMessage.logMessage(
