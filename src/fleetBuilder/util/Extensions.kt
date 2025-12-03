@@ -86,8 +86,8 @@ fun ShipHullSpecAPI.getCompatibleDLessHull(keepDModSkin: Boolean = false): ShipH
     if (isCompatibleWithBase) {
         if (dParentHull != null)
             return dParentHull
-        else if (!keepDModSkin)
-            return baseHull ?: this
+        else if (!keepDModSkin && baseHull != null)
+            return baseHull
     }
 
     return this
