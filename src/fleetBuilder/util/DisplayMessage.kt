@@ -3,8 +3,10 @@ package fleetBuilder.util
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.isConsoleModEnabled
 import fleetBuilder.integration.combat.DrawMessageInTitle
+import fleetBuilder.variants.MissingElements
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
 import java.awt.Color
@@ -52,7 +54,7 @@ object DisplayMessage {
         } else {
             Global.getLogger(this.javaClass).error(full)
         }
-        
+
         Global.getSoundPlayer().playUISound("ui_selection_cleared", 1f, 1f)
     }
 
@@ -106,6 +108,21 @@ object DisplayMessage {
 
     fun showMessage(short: String, highlight: String, highlightColor: Color = Misc.getHighlightColor()) {
         showMessage(short, null, highlight, highlightColor)
+    }
+
+    fun logMessage(message: String, level: Level, javaClass: Class<*>) {
+        if (ModSettings.isConsoleModEnabled)
+            Console.showMessage(message, level)
+        else if (level == Level.WARN)
+            Global.getLogger(javaClass).warn(message)
+        else if (level == Level.ERROR)
+            Global.getLogger(javaClass).error(message)
+        else if (level == Level.DEBUG)
+            Global.getLogger(javaClass).debug(message)
+        else if (level == Level.INFO)
+            Global.getLogger(javaClass).info(message)
+        else if (level == Level.FATAL)
+            Global.getLogger(javaClass).fatal(message)
     }
     /*
     val stackTrace = Exception().stackTrace

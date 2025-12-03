@@ -147,9 +147,6 @@ fun reportMissingElementsIfAny(
     val fullMessage = missingElements.getMissingElementsString()
     if (fullMessage.isNotBlank()) {
         DisplayMessage.showMessage(defaultShortMessage, Color.YELLOW)
-        if (ModSettings.isConsoleModEnabled)
-            Console.showMessage(fullMessage, Level.WARN)
-        else
-            Global.getLogger(MissingElements::class.java).warn(fullMessage)
+        DisplayMessage.logMessage(fullMessage, Level.WARN, MissingElements::class.java)
     }
 }
