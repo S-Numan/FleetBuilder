@@ -75,7 +75,7 @@ fun ShipHullSpecAPI.getEffectiveHullId(): String {
 fun ShipHullSpecAPI.getCompatibleDLessHull(keepDModSkin: Boolean = false): ShipHullSpecAPI {
     if (!isDHull) return this
 
-    if (keepDModSkin && baseHull.spriteName != spriteName)
+    if (keepDModSkin && (baseHull != null && baseHull.spriteName != spriteName))
         return this
 
     // 0.98a
@@ -87,7 +87,7 @@ fun ShipHullSpecAPI.getCompatibleDLessHull(keepDModSkin: Boolean = false): ShipH
         if (dParentHull != null)
             return dParentHull
         else if (!keepDModSkin)
-            return baseHull
+            return baseHull ?: this
     }
 
     return this
