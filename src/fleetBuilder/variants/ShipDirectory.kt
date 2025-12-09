@@ -175,7 +175,13 @@ class ShipDirectory(
     }
 
     private fun updateShipDirectoryJson(modify: (JSONArray) -> Unit) {
-        val shipDirJson = Global.getSettings().readJSONFromCommon(configPath, false)
+        val shipDirJson = try {
+            Global.getSettings().readJSONFromCommon(configPath, false)
+        } catch (e: Exception) {
+            DisplayMessage.showError("Failed to update ship directory. File was likely changed during runtime!", "Failed to update ship directory. File was likely changed during runtime!\nFailed to read ship directory at /saves/common/$configPath\n", e)
+            return
+        }
+
         val shipPathsJson = shipDirJson.optJSONArray("shipPaths") ?: JSONArray()
         modify(shipPathsJson)
         shipDirJson.put("shipPaths", shipPathsJson)

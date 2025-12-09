@@ -43,11 +43,15 @@ object LoadoutManager {
         Global.getSettings().deleteTextFileFromCommon("${PACKDIR}IN/deleteme")
 
         // Ensure default exists
-        if (!Global.getSettings().fileExistsInCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME")) {
+        fun setupDefaultDirectory() {
             val json = JSONObject()
             json.put("description", "Default Loadout")
             json.put("name", "Default")
             Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", json, false)
+        }
+
+        if (!Global.getSettings().fileExistsInCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME")) {
+            setupDefaultDirectory()
         } else { // Handle Legacy
             try {
                 val dfJSON = Global.getSettings().readJSONFromCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", false)
@@ -57,6 +61,12 @@ object LoadoutManager {
                 }
             } catch (e: Exception) {
                 Global.getLogger(this.javaClass).error("Failed to read default loadout directory at /saves/common/$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME\n", e)
+                Global.getLogger(this.javaClass).warn("Making new loadout directory. Appending old directory with -CORRUPT if possible.\n")
+                val oldFile = runCatching { Global.getSettings().readTextFileFromCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME") }.getOrNull()
+                if (oldFile != null)
+                    Global.getSettings().writeTextFileToCommon("$PACKDIR$defaultPrefix/${DIRECTORYCONFIGNAME}-CORRUPT", oldFile)
+
+                setupDefaultDirectory()
             }
         }
 
@@ -92,7 +102,12 @@ object LoadoutManager {
         if (Global.getSettings().fileExistsInCommon(configFilePath)) {
             if (shipDirectories.any { it.dir + it.prefix == "$dirPath$prefix" })
                 throw Error("Loadout pack name conflict.\nThe prefix '$prefix' is already taken. You must rename the folder '/saves/common/$dirPath$prefix' to something other than '$prefix', as '$prefix' is already in use")
-            directory = Global.getSettings().readJSONFromCommon(configFilePath, false)
+            try {
+                directory = Global.getSettings().readJSONFromCommon(configFilePath, false)
+            } catch (e: Exception) {
+                Global.getLogger(this.javaClass).error("Failed to read loadout directory at /saves/common/$configFilePath\n", e)
+                return null
+            }
         } else
             return null
 
