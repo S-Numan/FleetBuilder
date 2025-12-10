@@ -182,7 +182,7 @@ fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
 }
 
 val String.toBinary: Int
-    get() = if (this.equals("TRUE", ignoreCase = true)) 1 else 0
+    get() = if (this.equals("TRUE", ignoreCase = true) || this == "1") 1 else 0
 
 fun CargoStackAPI.moveStack(to: CargoAPI, inputAmount: Float = -1f) {
     if (!this.isNull && this.cargo !== to && inputAmount != 0f) {
@@ -329,15 +329,17 @@ fun TooltipMakerAPI.addToggle(
     name: String,
     isChecked: Boolean = false,
     buttonHeight: Float = 24f,
-    size: ButtonAPI.UICheckboxSize = ButtonAPI.UICheckboxSize.SMALL
+    size: ButtonAPI.UICheckboxSize = ButtonAPI.UICheckboxSize.SMALL,
+    data: Any? = null,
+    pad: Float = 0f,
 ): ButtonAPI {
     val checkbox = this.addCheckbox(
         this.computeStringWidth(name) + buttonHeight + 4f,
         buttonHeight,
         name,
-        null,
+        data,
         size,
-        0f
+        pad
     )
     checkbox.isChecked = isChecked
 
