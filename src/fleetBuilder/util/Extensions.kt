@@ -21,14 +21,11 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.apache.log4j.Level
-import org.apache.log4j.lf5.LogLevel
 import org.json.JSONArray
 import org.json.JSONObject
-import org.lazywizard.console.Console
 import starficz.BoxedUIElement
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.getChildrenCopy
-import java.awt.Color
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -100,6 +97,7 @@ fun ShipHullSpecAPI.getCompatibleDLessHullId(keepDModSkin: Boolean = false): Str
     return this.getCompatibleDLessHull(keepDModSkin).hullId
 }
 
+// Use this to be extra sure a hullmod was completely removed.
 fun ShipVariantAPI.completelyRemoveMod(modId: String) {
     sModdedBuiltIns.remove(modId)
     suppressedMods.remove(modId)
@@ -119,6 +117,7 @@ fun ShipVariantAPI.isEquivalentTo(
     )
 }
 
+//Get all dMods in the variant
 fun ShipVariantAPI.allDMods(): Set<String> {
     val allDMods = getAllDMods()
     val dMods = mutableSetOf<String>()
@@ -129,6 +128,7 @@ fun ShipVariantAPI.allDMods(): Set<String> {
     return dMods
 }
 
+//Get all sMods and sModdedBuiltIns in the variant
 fun ShipVariantAPI.allSMods(): Set<String> {
     val outputSMods = mutableSetOf<String>()
     for (mod in sMods) {
