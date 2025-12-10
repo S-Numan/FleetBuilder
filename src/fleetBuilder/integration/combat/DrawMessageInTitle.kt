@@ -49,7 +49,16 @@ class DrawMessageInTitle : EveryFrameCombatPlugin {
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         val state = AppDriver.getInstance().currentState
-        if (state !is TitleScreenState) return
+        if (state !is TitleScreenState) {
+            if (toDraw != null) {
+                currentMessage = null
+                toDraw = null
+                messageQueue.clear()
+                messageTimer = 0f
+                fadingOut = false
+            }
+            return
+        }
 
         if (!init) {
             doInit()
