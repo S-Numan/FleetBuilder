@@ -110,7 +110,8 @@ object DisplayMessage {
         showMessage(short, null, highlight, highlightColor)
     }
 
-    fun logMessage(message: String, level: Level, javaClass: Class<*>) {
+    fun logMessage(message: String, level: Level, inputJavaClass: Class<*>? = null) {
+        val javaClass = inputJavaClass ?: this.javaClass
         if (ModSettings.isConsoleModEnabled)
             Console.showMessage(message, level)
         else if (level == Level.WARN)
