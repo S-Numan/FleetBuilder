@@ -49,7 +49,7 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
         if (value != null) {
             list.add(value)
         } else {
-            Global.getLogger(this.javaClass).warn("Invalid string at index $i in '$fieldName'")
+            DisplayMessage.logMessage("Invalid string at index $i in '$fieldName'", Level.WARN, this.javaClass)
         }
     }
     return list
