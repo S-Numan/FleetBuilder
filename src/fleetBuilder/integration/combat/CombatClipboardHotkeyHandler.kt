@@ -34,7 +34,6 @@ import kotlin.math.atan2
 
 internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
-    var initSimTest = false
     override fun processInputPreCoreControls(
         amount: Float,
         events: List<InputEventAPI>
@@ -77,7 +76,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 if (data is DataVariant.ParsedVariantData || data is DataMember.ParsedMemberData) {
                                     //
                                 } else {
-                                    DisplayMessage.showMessage(FBTxt.txt("no_valid_data_in_clipboard"), Color.YELLOW)
+                                    DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_member_variant"), Color.YELLOW)
                                     event.consume()
                                     continue
                                 }

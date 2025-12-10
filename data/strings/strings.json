@@ -60,6 +60,7 @@
 
   "data_valid_but_not_fleet_member_variant_person":"Data valid, but was not fleet, member, variant, or officer data",
   "data_valid_but_no_campaign_paste":"Data valid, but not fleet, member, or variant data. You cannot paste this into the campaign.",
+  "data_valid_but_no_member_variant":"Data valid, but not member, or variant data.",
   "campaign_officer_spawn":"Officer manifests, immediately regrets not being a ship. Try pasting the officer in your fleet screen next time.",
   "fleet_was_empty_when_pasting":"Fleet was empty when pasting",
   "could_not_find_hullid_when_member":"Could not find hullId '%s' when pasting member",
