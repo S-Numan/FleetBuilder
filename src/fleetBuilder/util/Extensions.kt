@@ -395,7 +395,7 @@ fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
         return null
     } else if (reflectedMethods.size > 1) {
         DisplayMessage.showError(
-            short = "ERROR: No method found on class: ${target::class.java.name}. See console for more details.",
+            short = "ERROR: Ambiguous method call on class: ${target::class.java.name}. See console for more details.",
             full = "Ambiguous method call for name: '$name' on class: ${target::class.java.name}. " +
                     "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
         )
