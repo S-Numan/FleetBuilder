@@ -21,6 +21,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.apache.log4j.Level
+import org.apache.log4j.lf5.LogLevel
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.console.Console
@@ -353,11 +354,15 @@ fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
         val dLessId = hull.getCompatibleDLessHullId()
 
         variants?.filter { it.source == VariantSource.HULL } // Filter out non hull variants
+            ?.takeIf { it.isNotEmpty() }
             ?.let { hullVariants ->
                 hullVariants.find { it.hullSpec.hullId == exactId }          // Exact match
                     ?: hullVariants.find { it.hullSpec.hullId == dLessId }   // D-less match
                     ?: hullVariants.find { it.hullSpec.hullId == effectiveHullID } // Effective match
-                    ?: hullVariants.firstOrNull()                            // Cannot find a good enough match, just go for whatever
+                    ?: run {
+                        DisplayMessage.logMessage("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'", Level.WARN, this.javaClass)
+                        hullVariants.firstOrNull()// Cannot find a good enough match, just go for whatever
+                    }
             }
     } ?: runCatching {
         val emptyVariant = this.createEmptyVariant(hull.hullId, hull)
