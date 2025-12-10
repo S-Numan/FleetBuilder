@@ -9,6 +9,7 @@ import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.SharedUnlockData
+import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.mission.FleetSide
@@ -109,14 +110,20 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 return
                             }
 
-                            if (!ModSettings.cheatsEnabled() && member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX)) {
-                                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. It is hidden in the codex which suggests it cannot be simulated.", Color.YELLOW)
-                                return
+                            if (!ModSettings.cheatsEnabled()) {
+                                if (member.hullSpec.hasTag("codex_unlockable")) {
+                                    if (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId)) {
+                                        DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. The player is not aware of this hull.", Color.YELLOW)
+                                        return
+                                    }
+                                } else if (member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
+                                    || member.variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.variant.hasTag(Tags.HIDE_IN_CODEX)
+                                ) {
+                                    DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. It is hidden in the codex which suggests it cannot be simulated.", Color.YELLOW)
+                                    return
+                                }
                             }
-                            if (!ModSettings.cheatsEnabled() && member.hullSpec.hasTag("codex_unlockable") && !SharedUnlockData.get().isPlayerAwareOfShip(member.hullId)) {
-                                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. The player is not aware of this hull.", Color.YELLOW)
-                                return
-                            }
+
 
                             reportMissingElementsIfAny(missing)
 
