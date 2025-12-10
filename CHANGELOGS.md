@@ -1,7 +1,9 @@
 ## 1.26.2
+- Can now CTRL + V copied ships into combat. Can do so freely in a simulator, but require cheats or devmode on to do so in regular combat.
 - Fix crash that may occur on game launch if your loadout directory json is malformed.
 - Fix crash if you remove or malform the loadout directory json while the game is running.
 - Prevent titlescreen messages from sticking around after leaving the titlescreen.
+- Fix pasting a variant/member into combat opening the import loadout dialog.
 
 ## 1.26.1
 - Fix crash that may occur on save game. return value of "ShipHullSpecAPI.getBaseHull()" is null.

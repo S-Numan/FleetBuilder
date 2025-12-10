@@ -186,7 +186,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
                             event.consume()
                         } else if (event.eventValue == Keyboard.KEY_V) {
-                            if (!ReflectionMisc.isCodexOpen() && !DialogUtil.isPopUpUIOpen())
+                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtil.isPopUpUIOpen())
                                 if (handleRefitPaste())
                                     event.consume()
 
