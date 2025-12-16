@@ -52,6 +52,7 @@ import java.awt.Color
  */
 internal object AutofitPanel {
     private const val BACKGROUND_ALPHA = 0.7f
+    var currentPrefix = ModSettings.defaultPrefix
 
     internal class AutofitPanelPlugin(private val refitTab: UIPanelAPI) : BaseCustomUIPanelPlugin() {
         lateinit var autofitPanel: CustomPanelAPI
@@ -176,7 +177,6 @@ internal object AutofitPanel {
         refitTab: UIPanelAPI, refitPanel: UIPanelAPI, shipDisplay: UIPanelAPI, coreUI: CoreUIAPI,
         width: Float, height: Float
     ): CustomPanelAPI {
-
         val autofitPlugin = AutofitPanelPlugin(refitTab)
         val autofitPanel = Global.getSettings().createCustom(width, height, autofitPlugin)// Background Panel
         autofitPlugin.autofitPanel = autofitPanel
@@ -184,6 +184,11 @@ internal object AutofitPanel {
         // borders are drawn outside of panel, so +2 needed to lineup scrollbar with border
         val scrollerTooltip = autofitPanel.createUIElement(width + 2f, height, true) // Tooltip on background panel
         scrollerTooltip.position.inTL(0f, 0f)
+
+        val currentShipDirectory = LoadoutManager.getShipDirectoryWithPrefix(currentPrefix) ?: run {
+            DisplayMessage.showError("Failed to get ship directory object")
+            return autofitPanel
+        }
 
         val baseVariant = shipDisplay.safeInvoke("getCurrentVariant") as? HullVariantSpec
             ?: return autofitPanel
@@ -202,22 +207,25 @@ internal object AutofitPanel {
 
         val selectorPlugins = mutableListOf<AutofitSelector.AutofitSelectorPlugin>()
 
-        // Determine minimum reserved slots for core specs
-        val minCoreSlots = if (ModSettings.reserveFirstFourAutofitSlots) 4 else 0
+        var coreEffectiveHullAutofitSpecs: MutableList<AutofitSpec?> = mutableListOf()
+        if (currentPrefix == ModSettings.defaultPrefix) { // Only add core goal autofits if default prefix
+            // Get core specs and convert to mutable list
+            coreEffectiveHullAutofitSpecs =
+                getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec).toMutableList()
 
-        // Get core specs and convert to mutable list
-        val coreEffectiveHullAutofitSpecs: MutableList<AutofitSpec?> =
-            getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec).toMutableList()
+            // Determine minimum reserved slots for core specs
+            val minCoreSlots = if (ModSettings.reserveFirstFourAutofitSlots) 4 else 0
 
-        // Pad with nulls if fewer than minCoreSlots
-        while (coreEffectiveHullAutofitSpecs.size < minCoreSlots) {
-            coreEffectiveHullAutofitSpecs.add(null)
+            // Pad with nulls if fewer than minCoreSlots
+            while (coreEffectiveHullAutofitSpecs.size < minCoreSlots) {
+                coreEffectiveHullAutofitSpecs.add(null)
+            }
         }
 
         // Get loadout specs
         val loadoutEffectiveHullAutofitSpecs =
             getLoadoutAutofitSpecsForShip(
-                ModSettings.defaultPrefix,
+                currentPrefix,
                 (baseVariant as ShipVariantAPI).hullSpec,
                 coreEffectiveHullAutofitSpecs.size
             )
@@ -353,6 +361,42 @@ internal object AutofitPanel {
             label.position.inTL((baseVariantPanel.width - label.computeTextWidth(label.text)) / 2f, 0f)
         }
 
+        //TODO, re-add this later with fixes
+        /*
+                val nonEmptyShipDirectories = LoadoutManager.getShipDirectoriesNotEmpty()
+                if (nonEmptyShipDirectories.size > 1) { // If more than one ship directories with ships is present
+
+                    val prefixChangerContainerPanel = baseVariantPanel.createUIElement(baseVariantPanel.width, descriptorHeight - topPad, false)
+                    baseVariantPanel.addUIElement(prefixChangerContainerPanel)
+                    with(prefixChangerContainerPanel) {
+                        position.inTL(0f, topPad - position.height)
+                        setButtonFontOrbitron20()
+                        //TODO, this should be a drop down. A downwards ^ should be on the right to indicate that.
+                        val currentPrefixButton = addButton(
+                            currentShipDirectory.name, null, Misc.getButtonTextColor(), Misc.getDarkPlayerColor(), Alignment.LMID, CutStyle.NONE,
+                            position.width - position.height * 4f, position.height, 0f
+                        )
+                        currentPrefixButton.position.inTL(0f, -topPad - 1f)
+                        currentPrefixButton.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 400f) { tooltip ->
+                            tooltip.addPara("Click to change or create a new ship directory.\n\nShip directories can be considered to be like different folders that hold all your autofit variants.", 0f)
+                        }
+                        currentPrefixButton.onClick {
+
+                        }
+                        /*
+                            setButtonFontOrbitron20()
+                            val currentPrefixButton = addButton(currentPrefixObj.name, null, Misc.getButtonTextColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.NONE, position.width - position.height * 5, position.height, 0f)
+                            currentPrefixButton.position.inTL(addPrefixButton.width, -topPad - 1f)
+                            currentPrefixButton.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) { tooltip ->
+                                tooltip.addPara("Shows current ship directory.\nClick to change.\nThink of different ship directories as different folders for all your ship variants.", 0f)
+                            }
+                            currentPrefixButton.onClick {
+
+                            }*/
+                    }
+                }
+        */
+
         // Create base selector panel
         val baseVariantSelectorPanel = AutofitSelector.createAutofitSelector(
             AutofitSpec(baseVariant, null),
@@ -377,15 +421,17 @@ internal object AutofitPanel {
         // Create area for toggle buttons under the selector
         val toggleButtonsElement = baseVariantPanel.createUIElement(
             baseVariantPanel.width - 4f, // padding so it doesn't touch edges
-            baseVariantPanel.height - baseVariantSelectorPanel.height,
-            false
+            baseVariantPanel.height - baseVariantSelectorPanel.height - descriptorHeight - topPad * 4 - 4f,
+            true
         )
 
-        // Position just below the selector
-        toggleButtonsElement.position.inTL(2f, descriptorHeight + baseVariantSelectorPanel.height + 4f)
+        baseVariantPanel.addPara("Click and drag to an empty slot to save", yPad = baseVariantSelectorPanel.height + descriptorHeight + 2f)
 
-        toggleButtonsElement.addPara("Click and drag to an empty slot to save", 0f)
-        toggleButtonsElement.addSpacer(12f)
+        // Position just below the selector
+        toggleButtonsElement.position.inTL(2f, descriptorHeight + baseVariantSelectorPanel.height + 4f + 20f)
+
+        //toggleButtonsElement.addPara("Click and drag to an empty slot to save", 0f)
+        //toggleButtonsElement.addSpacer(12f)
 
         val checkboxHeight = 24f
         val checkboxPad = 4f
@@ -465,8 +511,6 @@ internal object AutofitPanel {
 
         // Add the buttons element to the panel
         baseVariantPanel.addUIElement(toggleButtonsElement)
-
-
 
         autofitPanel.addComponent(baseVariantPanel)
 
@@ -570,7 +614,7 @@ internal object AutofitPanel {
                 if (autofitPlugin.draggedAutofitSpec!!.source == null) {
                     settings = ModSettings.getConfiguredVariantSettings()
 
-                    shipDirectory = LoadoutManager.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)
+                    shipDirectory = LoadoutManager.getShipDirectoryWithPrefix(currentPrefix)
 
                 } else {
                     settings = VariantSettings().apply {
@@ -581,7 +625,7 @@ internal object AutofitPanel {
                 }
 
                 if (shipDirectory == null) {
-                    DisplayMessage.showError("Could not find ship directory with prefix ${ModSettings.defaultPrefix}")
+                    DisplayMessage.showError("Could not find ship directory with prefix $currentPrefix")
                     return@onClickReleaseNoInitClick
                 }
 
@@ -597,7 +641,7 @@ internal object AutofitPanel {
                     }
                 }
 
-                val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(ModSettings.defaultPrefix, draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant) }
+                val equalVariant = LoadoutManager.getLoadoutVariantsForHullspec(currentPrefix, draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant) }
 
                 val shipVariantID: String
                 if (equalVariant != null) { // Variant already exists?
@@ -848,7 +892,7 @@ internal object AutofitPanel {
         removeVariantButton.xAlignOffset = selectorPanel.right - removeVariantButton.right
         removeVariantButton.yAlignOffset = selectorPanel.top - removeVariantButton.top
         removeVariantButton.onClick {
-            deleteLoadoutVariant(ModSettings.defaultPrefix, newSpec.variant.hullVariantId)
+            deleteLoadoutVariant(currentPrefix, newSpec.variant.hullVariantId)
             //selectorPanel.parent?.removeComponent(selectorPanel)
             //selectorPanel.opacity = 0f
             val selectorPlugin = selectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
@@ -860,7 +904,8 @@ internal object AutofitPanel {
     fun makeTooltip(
         selectorPanel: CustomPanelAPI,
         variant: ShipVariantAPI,
-        missingFromVariant: MissingElements? = null
+        missingFromVariant: MissingElements? = null,
+        location: TooltipMakerAPI.TooltipLocation = TooltipMakerAPI.TooltipLocation.RIGHT,
     ) {
         val allDMods = getAllDMods()
         val sizeOrder = mapOf(
@@ -876,7 +921,7 @@ internal object AutofitPanel {
             350f
         }
 
-        selectorPanel.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, width) { tooltip ->
+        selectorPanel.addTooltip(location, width) { tooltip ->
             tooltip.addTitle(variant.displayName + " Variant")
 
 

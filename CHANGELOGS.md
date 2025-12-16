@@ -4,6 +4,7 @@
 - Fix crash if you remove or malform the loadout directory json while the game is running.
 - Prevent titlescreen messages from sticking around after leaving the titlescreen.
 - Fix pasting a variant/member into combat opening the import loadout dialog.
+- Add scrollbar to autofit options.
 
 ## 1.26.1
 - Fix crash that may occur on save game. return value of "ShipHullSpecAPI.getBaseHull()" is null.
