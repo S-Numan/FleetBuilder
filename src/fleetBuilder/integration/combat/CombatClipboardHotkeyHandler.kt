@@ -66,131 +66,9 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                         }
                         val engine = Global.getCombatEngine() ?: return
                         if (engine.isSimulation || (Global.getCurrentState() == GameState.COMBAT && ModSettings.cheatsEnabled())) {
-                            if (ReflectionMisc.isCodexOpen() || engine.combatUI.isShowingCommandUI)
-                                return
-
-                            var element: Any? = null
-
-                            if (event.eventValue == Keyboard.KEY_V) {
-                                val data = ClipboardMisc.extractDataFromClipboard() ?: return
-                                if (data is DataVariant.ParsedVariantData || data is DataMember.ParsedMemberData) {
-                                    //
-                                } else {
-                                    DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_member_variant"), Color.YELLOW)
-                                    event.consume()
-                                    continue
-                                }
-
-                                element = data
-                            }
-
-                            val missing = MissingElements()
-                            var member: FleetMemberAPI? = null
-
-                            when (element) {
-                                is DataVariant.ParsedVariantData -> {
-                                    val variant = buildVariantFull(element, missing = missing)
-                                    member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variant)
-                                    member.crewComposition.addCrew(member.neededCrew)
-                                    member.repairTracker.cr = 0.7f
-                                }
-
-                                is DataMember.ParsedMemberData -> {
-                                    if (element.variantData != null)
-                                        member = buildMemberFull(element, missing = missing)
-                                    member!!.crewComposition.addCrew(member.neededCrew)
-                                }
-                            }
-                            if (member == null)
-                                return
-
-                            if (missing.hullIds.isNotEmpty()) {
-                                DisplayMessage.showError("Could not find HullSpec with ID '${missing.hullIds.first()}'")
-                                return
-                            }
-
-                            if (!ModSettings.cheatsEnabled()) {
-                                if (member.hullSpec.hasTag("codex_unlockable")) {
-                                    if (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId)) {
-                                        DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. The player is not aware of this hull.", Color.YELLOW)
-                                        return
-                                    }
-                                } else if (member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
-                                    || member.variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.variant.hasTag(Tags.HIDE_IN_CODEX)
-                                ) {
-                                    DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. It is hidden in the codex which suggests it cannot be simulated.", Color.YELLOW)
-                                    return
-                                }
-                            }
-
-
-                            reportMissingElementsIfAny(missing)
-
-                            val viewport = engine.viewport ?: return
-                            val sx = Mouse.getX().toFloat()
-                            val sy = Mouse.getY().toFloat()
-                            val worldX = viewport.convertScreenXToWorldX(sx)
-                            val worldY = viewport.convertScreenYToWorldY(sy)
-                            val loc = Vector2f(worldX, worldY)
-
-                            fun spawnAt(
-                                engine: CombatEngineAPI,
-                                member: FleetMemberAPI,
-                                side: FleetSide,
-                                loc: Vector2f
-                            ) {
-                                val fm = engine.getFleetManager(side)
-
-                                var facing: Float
-
-                                // Player ship location
-                                //val player = engine.playerShip
-                                //if (player == null) {
-                                facing = -90f
-                                /*} else {
-                                    val px = player.location.x
-                                    val py = player.location.y
-
-                                    // Angle from spawn location → player ship
-                                    facing = Vector2f.sub(
-                                        Vector2f(px, py),
-                                        loc,
-                                        null
-                                    ).let { vec ->
-                                        Math.toDegrees(atan2(vec.y.toDouble(), vec.x.toDouble())).toFloat()
-                                    }
-                                }*/
-
-                                // Spawn with that facing direction
-                                member.owner = side.ordinal
-                                val cr = member.repairTracker.cr
-
-                                val suppress: Boolean = engine.getFleetManager(side).isSuppressDeploymentMessages
-                                engine.getFleetManager(side).isSuppressDeploymentMessages = true
-
-                                val ship = fm.spawnFleetMember(member, loc, facing, 0f)
-
-                                engine.getFleetManager(side).isSuppressDeploymentMessages = suppress
-
-                                ship.crAtDeployment = cr
-                                ship.currentCR = cr
-                                ship.owner = member.owner
-                                ship.shipAI.forceCircumstanceEvaluation()
-
-                                /*engine.addFloatingText(
-                                    loc,
-                                    "Spawned: ${member.hullSpec.hullName}",
-                                    18f,
-                                    Color.CYAN,
-                                    ship,
-                                    0f,
-                                    0f
-                                )*/
-                            }
-
-                            spawnAt(engine, member, FleetSide.ENEMY, loc)
-
+                            //pasteShipIntoCombat(engine, event)
                             event.consume()
+                            continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
                             if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtil.isPopUpUIOpen())
                                 if (handleRefitPaste())
@@ -225,4 +103,131 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
     }
 
+    private fun pasteShipIntoCombat(
+        engine: CombatEngineAPI,
+        event: InputEventAPI
+    ) {
+        if (ReflectionMisc.isCodexOpen() || engine.combatUI.isShowingCommandUI)
+            return
+
+        var element: Any? = null
+
+        if (event.eventValue == Keyboard.KEY_V) {
+            val data = ClipboardMisc.extractDataFromClipboard() ?: return
+            if (data is DataVariant.ParsedVariantData || data is DataMember.ParsedMemberData) {
+                //
+            } else {
+                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_member_variant"), Color.YELLOW)
+                return
+            }
+
+            element = data
+        }
+
+        val missing = MissingElements()
+        var member: FleetMemberAPI? = null
+
+        when (element) {
+            is DataVariant.ParsedVariantData -> {
+                val variant = buildVariantFull(element, missing = missing)
+                member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variant)
+                member.crewComposition.addCrew(member.neededCrew)
+                member.repairTracker.cr = 0.7f
+            }
+
+            is DataMember.ParsedMemberData -> {
+                if (element.variantData != null)
+                    member = buildMemberFull(element, missing = missing)
+                member!!.crewComposition.addCrew(member.neededCrew)
+            }
+        }
+        if (member == null)
+            return
+
+        if (missing.hullIds.isNotEmpty()) {
+            DisplayMessage.showError("Could not find HullSpec with ID '${missing.hullIds.first()}'")
+            return
+        }
+
+        if (!ModSettings.cheatsEnabled()) {
+            if (member.hullSpec.hasTag("codex_unlockable")) {
+                if (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId)) {
+                    DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. The player is not aware of this hull.", Color.YELLOW)
+                    return
+                }
+            } else if (member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
+                || member.variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.variant.hasTag(Tags.HIDE_IN_CODEX)
+            ) {
+                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. It is hidden in the codex which suggests it cannot be simulated.", Color.YELLOW)
+                return
+            }
+        }
+
+
+        reportMissingElementsIfAny(missing)
+
+        val viewport = engine.viewport ?: return
+        val sx = Mouse.getX().toFloat()
+        val sy = Mouse.getY().toFloat()
+        val worldX = viewport.convertScreenXToWorldX(sx)
+        val worldY = viewport.convertScreenYToWorldY(sy)
+        val loc = Vector2f(worldX, worldY)
+
+        fun spawnAt(
+            engine: CombatEngineAPI,
+            member: FleetMemberAPI,
+            side: FleetSide,
+            loc: Vector2f
+        ) {
+            val fm = engine.getFleetManager(side)
+
+            var facing: Float
+
+            // Player ship location
+            //val player = engine.playerShip
+            //if (player == null) {
+            facing = -90f
+            /*} else {
+                                        val px = player.location.x
+                                        val py = player.location.y
+
+                                        // Angle from spawn location → player ship
+                                        facing = Vector2f.sub(
+                                            Vector2f(px, py),
+                                            loc,
+                                            null
+                                        ).let { vec ->
+                                            Math.toDegrees(atan2(vec.y.toDouble(), vec.x.toDouble())).toFloat()
+                                        }
+                                    }*/
+
+            // Spawn with that facing direction
+            member.owner = side.ordinal
+            val cr = member.repairTracker.cr
+
+            val suppress: Boolean = engine.getFleetManager(side).isSuppressDeploymentMessages
+            engine.getFleetManager(side).isSuppressDeploymentMessages = true
+
+            val ship = fm.spawnFleetMember(member, loc, facing, 0f)
+
+            engine.getFleetManager(side).isSuppressDeploymentMessages = suppress
+
+            ship.crAtDeployment = cr
+            ship.currentCR = cr
+            ship.owner = member.owner
+            ship.shipAI.forceCircumstanceEvaluation()
+
+            /*engine.addFloatingText(
+                                        loc,
+                                        "Spawned: ${member.hullSpec.hullName}",
+                                        18f,
+                                        Color.CYAN,
+                                        ship,
+                                        0f,
+                                        0f
+                                    )*/
+        }
+
+        spawnAt(engine, member, FleetSide.ENEMY, loc)
+    }
 }
