@@ -6,10 +6,12 @@ import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
+import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.campaign.impl.items.ModSpecItemPlugin
 import com.fs.starfarer.api.campaign.impl.items.MultiBlueprintItemPlugin
 import com.fs.starfarer.api.campaign.impl.items.ShipBlueprintItemPlugin
 import com.fs.starfarer.api.campaign.impl.items.WeaponBlueprintItemPlugin
+import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -403,4 +405,8 @@ fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
         )
         return null
     } else return reflectedMethods[0].invoke(target, *args)
+}
+
+fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> {
+    return this.officersCopy.map { it.person }.filter { this.getMemberWithCaptain(it) == null }
 }

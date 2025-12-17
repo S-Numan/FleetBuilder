@@ -28,3 +28,5 @@ Unlocks all hullmods.
 Puts all weapons and wings in the Abandoned Terraforming Platform in the Corvus system.
 Teleports player fleet to the Abandoned Terraforming Platform in the Corvus system."
 CopyFleet,fleetBuilder.consoleCommands.CopyFleet,"cheat,fleetbuilder",copyfleet <”player” or ”enemy”>,Arg ‘player’ or ‘enemy’ In combat or when looking at a mission to choose what side you want to copy
+,,,,
+RemoveIdleOfficers,fleetBuilder.consoleCommands.RemoveIdleOfficers,"cheat,campaign,fleetbuilder",removeidleofficers,Removes all officers in your fleet which are not currently captaining any ship.
