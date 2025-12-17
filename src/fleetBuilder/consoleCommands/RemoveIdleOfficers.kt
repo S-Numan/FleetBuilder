@@ -12,14 +12,15 @@ class RemoveIdleOfficers : BaseCommand {
             Console.showMessage(CommonStrings.ERROR_CAMPAIGN_ONLY)
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
-        
+
         val fleet = Global.getSector()?.playerFleet?.fleetData ?: return BaseCommand.CommandResult.ERROR
 
         val idleOfficers = fleet.getUnassignedOfficers()
 
         var count = 0
         idleOfficers.forEach {
-            fleet.removeOfficer(it)
+            if (!it.isPlayer) // I don't think this is possible, but just in case it is
+                fleet.removeOfficer(it)
             count++
         }
 
