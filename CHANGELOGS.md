@@ -1,10 +1,13 @@
 ## 1.26.2
+- No longer pause the game after exiting a dialog in the campaign. Also don't show 'Game Paused' which may overwrite another message the dialog may show on closing.
 - Added ConsoleCommand RemoveIdleOfficers which removes all officers in your fleet which are currently not captaining any ship.
-- Fix crash that may occur on game launch if your loadout directory json is malformed.
+- Fix crash that may occur on game launch if your loadout directory json is malformed. Also show dialog on game start informing user of issue.
 - Fix crash if you remove or malform the loadout directory json while the game is running.
 - Prevent titlescreen messages from sticking around after leaving the titlescreen.
 - Fix pasting a variant/member into combat opening the import loadout dialog.
 - Add a scrollbar to the autofit options which will only show if there is not enough space to display all of the options.
+### Technical
+- Dialogs can now be made before the game has started completely, and will be shown once the game has started.
 
 ## 1.26.1
 - Fix crash that may occur on save game. return value of "ShipHullSpecAPI.getBaseHull()" is null.

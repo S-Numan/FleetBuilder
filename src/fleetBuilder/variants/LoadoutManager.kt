@@ -11,11 +11,14 @@ import fleetBuilder.config.ModSettings.defaultPrefix
 import fleetBuilder.persistence.variant.DataVariant
 import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSpec
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.FBMisc.extractDataFromString
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
+import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
+import java.awt.Color
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.max
@@ -60,11 +63,22 @@ object LoadoutManager {
                     Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", dfJSON, false)
                 }
             } catch (e: Exception) {
-                Global.getLogger(this.javaClass).error("Failed to read default loadout directory at /saves/common/$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME\n", e)
-                Global.getLogger(this.javaClass).warn("Making new loadout directory. Appending old directory with -CORRUPT if possible.\n")
+                var message = "Failed to read default loadout directory at /saves/common/$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME\n" +
+                        "All previous loadouts are unable to be accessed.\n" +
+                        "Making a new loadout directory to prevent autofit functionality from failing\n"
+
                 val oldFile = runCatching { Global.getSettings().readTextFileFromCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME") }.getOrNull()
-                if (oldFile != null)
+                if (!oldFile.isNullOrBlank()) {
+                    message += "Appending old loadout directory with -CORRUPT\n" +
+                            "Consider fixing the formatting in the -CORRUPT file and replacing the the non -CORRUPT file with it\n"
+
                     Global.getSettings().writeTextFileToCommon("$PACKDIR$defaultPrefix/${DIRECTORYCONFIGNAME}-CORRUPT", oldFile)
+                }
+
+                message += "\n\n${e.toString()}"
+
+                DisplayMessage.dialogMessage("Failed to read the default loadout directory", message)
+                DisplayMessage.logMessage(message, Level.ERROR)
 
                 setupDefaultDirectory()
             }

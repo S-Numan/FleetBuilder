@@ -3,7 +3,7 @@ package fleetBuilder.ui.popUpUI
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.DialogUtil.initPopUpUI
+import fleetBuilder.util.DialogUtil.Companion.initPopUpUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import starficz.onClick
@@ -66,9 +66,6 @@ open class BasePopUpUI(
             // add UI automatically afterward
             addContentArea(ui)
         }
-
-        if (Global.getSector()?.campaignUI != null)
-            makeDummyDialog(Global.getSector().campaignUI)
 
         initPopUpUI(this, width, height)
     }

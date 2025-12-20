@@ -75,6 +75,9 @@ open class PopUpUI : CustomUIPanelPlugin {
             quitWithEscKey = false
             setMaxSize()
         }
+
+        if (Global.getSector()?.campaignUI != null)
+            makeDummyDialog(Global.getSector().campaignUI)
     }
 
     open fun createUI() {

@@ -15,8 +15,8 @@ import java.util.List;
 public class UILinesRenderer implements CustomUIPanelPlugin {
     ArrayList<CustomPanelAPI> panels = new ArrayList<>();
     public SpriteAPI box = Global.getSettings().getSprite("FleetBuilder", "white_square");
-    public Color boxColor = Misc.getDarkPlayerColor();
-    Color progression = Misc.getBrightPlayerColor();
+    public Color boxColor = Global.getSettings().getDarkPlayerColor();
+    Color progression = Global.getSettings().getBrightPlayerColor();
 
     public void setPanels(ArrayList<CustomPanelAPI> panels) {
         this.panels = panels;

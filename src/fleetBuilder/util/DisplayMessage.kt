@@ -2,10 +2,12 @@ package fleetBuilder.util
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.isConsoleModEnabled
 import fleetBuilder.integration.combat.DrawMessageInTitle
+import fleetBuilder.ui.popUpUI.BasePopUpUI
 import fleetBuilder.variants.MissingElements
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
@@ -17,6 +19,7 @@ object DisplayMessage {
     private val recentErrors = mutableMapOf<String, Long>()
     private const val ERROR_SPAM_INTERVAL_MS = 4000 // 4 seconds
 
+    @JvmOverloads
     fun showError(short: String, full: String, e: Exception? = null) {
         val now = System.currentTimeMillis()
 
@@ -58,11 +61,12 @@ object DisplayMessage {
         Global.getSoundPlayer().playUISound("ui_selection_cleared", 1f, 1f)
     }
 
-
+    @JvmOverloads
     fun showError(short: String, e: Exception? = null) {
         showError(short, short, e)
     }
 
+    @JvmOverloads
     fun showMessage(short: String, color: Color?, highlight: String, highlightColor: Color = Misc.getHighlightColor()) {
         var defaultColor = color
 
@@ -102,14 +106,17 @@ object DisplayMessage {
         }
     }
 
+    @JvmOverloads
     fun showMessage(short: String, color: Color? = null) {
         showMessage(short, color, "")
     }
 
+    @JvmOverloads
     fun showMessage(short: String, highlight: String, highlightColor: Color = Misc.getHighlightColor()) {
         showMessage(short, null, highlight, highlightColor)
     }
 
+    @JvmOverloads
     fun logMessage(message: String, level: Level, inputJavaClass: Class<*>? = null) {
         val javaClass = inputJavaClass ?: this.javaClass
         if (ModSettings.isConsoleModEnabled)
@@ -133,4 +140,20 @@ object DisplayMessage {
         }
         Global.getLogger(this.javaClass).error("\n" + stackTraceString)
      */
+
+    /*fun dialogMessage(inputDialog: BasePopUpUI) {
+
+    }*/
+
+    @JvmOverloads
+    fun dialogMessage(title: String, message: String, messageColor: Color = Misc.getTextColor()) {
+        val dialog = BasePopUpUI(headerTitle = title)
+        dialog.quitWithEscKey = false
+
+        dialog.onCreateUI(800f, 400f) { ui ->
+            ui.addPara(message, messageColor, 0f)
+
+            dialog.setupConfirmCancelSection(confirmText = "Confirm", alignment = Alignment.MID, addCancelButton = false)
+        }
+    }
 }
