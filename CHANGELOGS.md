@@ -1,6 +1,7 @@
 ## 1.26.2
 - No longer pause the game after exiting a dialog in the campaign. Also don't show 'Game Paused' which may overwrite another message the dialog may show on closing.
 - Added ConsoleCommand RemoveIdleOfficers which removes all officers in your fleet which are currently not captaining any ship.
+- Added a Misc setting to stop error messages from being shown at the top of the screen if it is true.
 - Fix crash that may occur on game launch if your loadout directory json is malformed. Also show dialog on game start informing user of issue.
 - Fix crash if you remove or malform a loadout directory json while the game is running.
 - Prevent titlescreen messages from sticking around after leaving the titlescreen.

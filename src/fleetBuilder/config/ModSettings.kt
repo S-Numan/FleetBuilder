@@ -108,6 +108,8 @@ object ModSettings {
 
     var backupSave = true
 
+    var hideErrorMessages = false
+
     var fleetClipboardHotkeyHandler = true
 
     var devModeCodexButtonEnabled = true

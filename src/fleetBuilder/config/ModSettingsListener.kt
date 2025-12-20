@@ -12,6 +12,7 @@ import fleetBuilder.config.ModSettings.dontForceClearSMods
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.config.ModSettings.fleetScreenFilter
 import fleetBuilder.config.ModSettings.forceAutofit
+import fleetBuilder.config.ModSettings.hideErrorMessages
 import fleetBuilder.config.ModSettings.modID
 import fleetBuilder.config.ModSettings.modPickerFilter
 import fleetBuilder.config.ModSettings.randomPastedCosmetics
@@ -70,6 +71,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             dontForceClearSMods = getBoolean(modID, "dontForceClearSMods")!!
             randomPastedCosmetics = getBoolean(modID, "randomPastedCosmetics")!!
             backupSave = getBoolean(modID, "backupSave")!!
+            hideErrorMessages = getBoolean(modID, "hideErrorMessages")!!
             fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
             devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
             fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!

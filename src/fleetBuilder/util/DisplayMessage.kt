@@ -41,9 +41,6 @@ object DisplayMessage {
             recentErrors.entries.removeIf { it.value < cutoff }
         }
 
-        // Show short message to player
-        showMessage(short, Color.RED)
-
         // Console or logger output
         if (isConsoleModEnabled) {
             if (e != null) {
@@ -58,7 +55,12 @@ object DisplayMessage {
             Global.getLogger(this.javaClass).error(full)
         }
 
-        Global.getSoundPlayer().playUISound("ui_selection_cleared", 1f, 1f)
+        // Show short message to player
+        if (!ModSettings.hideErrorMessages) {
+            showMessage(short, Color.RED)
+
+            Global.getSoundPlayer().playUISound("ui_selection_cleared", 1f, 1f)
+        }
     }
 
     @JvmOverloads
