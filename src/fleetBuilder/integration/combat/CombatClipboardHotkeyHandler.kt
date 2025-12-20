@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.mission.FleetSide
+import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
 import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
@@ -31,6 +32,8 @@ import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector2f
 import java.awt.Color
 import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
@@ -66,7 +69,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                         }
                         val engine = Global.getCombatEngine() ?: return
                         if (engine.isSimulation || (Global.getCurrentState() == GameState.COMBAT && ModSettings.cheatsEnabled())) {
-                            //pasteShipIntoCombat(engine, event)
+                            pasteShipIntoCombat(engine, event)
                             event.consume()
                             continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
@@ -101,6 +104,80 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
     @Deprecated("Deprecated in Java")
     override fun init(engine: CombatEngineAPI?) {
 
+    }
+
+    fun isPositionFree(engine: CombatEngineAPI, x: Float, y: Float, radius: Float): Boolean {
+        for (ship in engine.ships) {
+            //if (ship.isPhased) continue
+
+            val dx = ship.location.x - x
+            val dy = ship.location.y - y
+            val distanceSquared = dx * dx + dy * dy
+            val minDistance = ship.collisionRadius + radius
+
+            if (distanceSquared < minDistance * minDistance) {
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
+     * Finds a free location near a target point where a ship of the given radius could spawn.
+     *
+     * It first tries the starting location and then searches in an expanding spiral.
+     *
+     * @param engine Combat engine
+     * @param x Target X
+     * @param y Target Y
+     * @param radius Collision radius of the ship
+     * @param maxAttempts Maximum positions to check
+     * @param stepDistance Distance to step out each spiral iteration
+     * @return Vector2f of a free location, or null if none found
+     */
+    fun findFreeSpawnLocation(
+        engine: CombatEngineAPI,
+        x: Float,
+        y: Float,
+        radius: Float,
+        maxAttempts: Int = 1000,
+        stepDistance: Float = 20f
+    ): Vector2f? {
+        // Try the original point first
+        if (isPositionFree(engine, x, y, radius)) return Vector2f(x, y)
+
+        var attempt = 0
+        val angleStep = Math.PI / 6.0  // 30 degrees
+        var distance = stepDistance
+
+        while (attempt < maxAttempts) {
+            val angle = angleStep * attempt
+            val nx = x + (cos(angle) * distance).toFloat()
+            val ny = y + (sin(angle) * distance).toFloat()
+
+            if (isPositionFree(engine, nx, ny, radius)) return Vector2f(nx, ny)
+
+            // Increase distance slightly every full rotation
+            if (attempt % 12 == 0) { // 12 steps ~ 360 degrees
+                distance += stepDistance
+            }
+
+            attempt++
+        }
+
+        // No free spot found
+        return null
+    }
+
+    fun getDeployedFleetPoints(engine: CombatEngineAPI, side: FleetSide): Float {
+        val manager = engine.getFleetManager(side)
+        var total = 0f
+
+        for (member in manager.deployedCopy) {
+            total += member.fleetPointCost.toFloat()
+        }
+
+        return total
     }
 
     private fun pasteShipIntoCombat(
@@ -149,6 +226,13 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
             return
         }
 
+        val viewport = engine.viewport ?: return
+        val sx = Mouse.getX().toFloat()
+        val sy = Mouse.getY().toFloat()
+        val worldX = viewport.convertScreenXToWorldX(sx)
+        val worldY = viewport.convertScreenYToWorldY(sy)
+        var loc = Vector2f(worldX, worldY)
+
         if (!ModSettings.cheatsEnabled()) {
             if (member.hullSpec.hasTag("codex_unlockable")) {
                 if (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId)) {
@@ -160,18 +244,19 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
             ) {
                 DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. It is hidden in the codex which suggests it cannot be simulated.", Color.YELLOW)
                 return
+            } else if (getDeployedFleetPoints(engine, FleetSide.ENEMY) + member.deployCost > Global.getSettings().battleSize / 2f * 1.2f) {
+                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. Would exceed Fleet Point limit.", Color.YELLOW)
+                return
+            }
+        }
+        if (!isPositionFree(engine, loc.x, loc.y, member.hullSpec.collisionRadius / 2f)) {
+            loc = findFreeSpawnLocation(engine, loc.x, loc.y, member.hullSpec.collisionRadius) ?: run {
+                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. Cannot find free location.", Color.YELLOW)
+                return
             }
         }
 
-
         reportMissingElementsIfAny(missing)
-
-        val viewport = engine.viewport ?: return
-        val sx = Mouse.getX().toFloat()
-        val sy = Mouse.getY().toFloat()
-        val worldX = viewport.convertScreenXToWorldX(sx)
-        val worldY = viewport.convertScreenYToWorldY(sy)
-        val loc = Vector2f(worldX, worldY)
 
         fun spawnAt(
             engine: CombatEngineAPI,

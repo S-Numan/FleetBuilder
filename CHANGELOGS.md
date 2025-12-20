@@ -1,4 +1,5 @@
 ## 1.26.2
+- CTRL + V in combat to paste the copied variant/member into combat. Requires cheats to be on if in regular combat, but can mostly do it freely in the simulator with some exceptions (E.G: ships you wouldn't be able to simulate anyway).
 - No longer pause the game after exiting a dialog in the campaign. Also don't show 'Game Paused' which may overwrite another message the dialog may show on closing.
 - Added ConsoleCommand RemoveIdleOfficers which removes all officers in your fleet which are currently not captaining any ship.
 - Added a Misc setting to stop error messages from being shown at the top of the screen if it is true.
