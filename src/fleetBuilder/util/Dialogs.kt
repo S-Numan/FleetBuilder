@@ -25,8 +25,6 @@ import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec
 import fleetBuilder.ui.popUpUI.BasePopUpUI
-import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
-import fleetBuilder.util.DialogUtil.Companion.initPopUpUI
 import fleetBuilder.util.DisplayMessage.showMessage
 import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
 import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
@@ -35,8 +33,6 @@ import fleetBuilder.variants.LoadoutManager.importShipLoadout
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.reportMissingElementsIfAny
-import org.histidine.chatter.ChatterDataManager
-import org.histidine.chatter.combat.ChatterCombatPlugin
 import org.lazywizard.lazylib.MathUtils
 import starficz.addTooltip
 import starficz.onClick
@@ -131,7 +127,7 @@ object Dialogs {
 
                 reportMissingElementsIfAny(replaceMissing)
 
-                if (fulfillNeeds as Boolean)
+                if (fulfillNeeds)
                     FBMisc.fulfillPlayerFleet()
 
                 ReflectionMisc.updateFleetPanelContents()
@@ -297,7 +293,7 @@ object Dialogs {
 
     fun createOfficerCreatorDialog() {
         val width = 500f
-        var height = 348f
+        val height = 348f
 
         var officerSkillCount = 0
 
@@ -307,150 +303,79 @@ object Dialogs {
                 officerSkillCount += 1
         }
 
-        val initialDialog = PopUpUIDialog("Add Officer to Fleet", addCancelButton = true, addConfirmButton = true)
-        initialDialog.confirmButtonName = "Create"
 
-        initialDialog.addParagraph("Max Level")
-        initialDialog.addClampedNumericField("MaxLevel", officerSkillCount)
-        initialDialog.addParagraph("Max Elite Skills")
-        initialDialog.addClampedNumericField("MaxElite", officerSkillCount)
+        val initialDialog = BasePopUpUI(headerTitle = "Add Officer to Fleet")
 
-        initialDialog.addPadding(initialDialog.buttonHeight / 3)
-        initialDialog.addToggle("Max XP", default = true)
-        initialDialog.addToggle("Max Skill Picks Per Level", default = true)
+        val buttonHeight = 24f
 
-        initialDialog.addPadding(8f)
-        initialDialog.addParagraph("Personality")
+        initialDialog.onCreateUI(width, height) { ui ->
+            ui.addPara("Max Level", 0f)
+            val maxLevel = ui.addNumericTextField(initialDialog.bufferedWidth, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
+            ui.addPara("Max Elite Skills", 0f)
+            val maxEliteSkills = ui.addNumericTextField(initialDialog.bufferedWidth, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
+            ui.addSpacer(buttonHeight / 3)
+            val maxXP = ui.addToggle("Max XP", isChecked = true)
+            val maxSkillPicksPerLevel = ui.addToggle("Max Skill Picks Per Level", isChecked = true)
 
-        var personality = "Steady"
-        initialDialog.addRadioGroup(
-            listOf("Timid", "Cautious", "Steady", "Aggressive", "Reckless"), personality
-        ) { select ->
-            personality = select
-        }
+            ui.addSpacer(8f)
+            ui.addPara("Personality", 0f)
 
-        var combatChatterCharID: String? = null
+            var currentPersonality = "steady"
+            val internalPersonalities = listOf("timid", "cautious", "steady", "aggressive", "reckless")
+            val externalPersonalities = internalPersonalities.map { FBTxt.txt(it) }
+            val toggles = internalPersonalities.indices.map { index ->
+                val internalName = internalPersonalities[index]
+                val externalName = externalPersonalities.getOrNull(index) ?: "ERROR"
 
-        if (Global.getSettings().modManager.isModEnabled("chatter")) {
-
-            initialDialog.addPadding(initialDialog.buttonHeight / 3)
-            initialDialog.addButton("Choose Combat Chatter Character", dismissOnClick = false) {
-                val dialog = PopUpUIDialog(
-                    "Choose Combat Chatter Character",
-                    addCancelButton = true,
-                    addConfirmButton = true
+                ui.addToggle(
+                    name = externalName,
+                    data = internalName,
+                    isChecked = internalName == currentPersonality
                 )
+            }
 
-                val characters = ChatterDataManager.CHARACTERS
-
-                val dialogWidth = 500f
-                val dialogHeight = 800f
-
-                val panel = Global.getSettings().createCustom(
-                    dialogWidth - dialog.x * 2,
-                    dialogHeight - dialog.y * 2,
-                    null
-                )
-                val inner = panel.createUIElement(
-                    dialogWidth - dialog.x * 2,
-                    dialogHeight - dialog.y * 2,
-                    true
-                )
-
-                fun addRadioGroup(
-                    parent: TooltipMakerAPI,
-                    options: List<Pair<String, String>>, // (id, label)
-                    defaultId: String = options.first().first,
-                    onChanged: (String) -> Unit
-                ) {
-                    val checkboxes = mutableMapOf<String, ButtonAPI>()
-
-                    for ((id, label) in options) {
-                        val checkbox = parent.addCheckbox(
-                            parent.computeStringWidth(label) + 28f,
-                            dialog.buttonHeight,
-                            label,
-                            id,
-                            ButtonAPI.UICheckboxSize.SMALL,
-                            0f
-                        )
-
-                        checkbox.isChecked = id == defaultId
-                        checkbox.setClickable(id != defaultId)
-                        checkboxes[id] = checkbox
-
-                        checkbox.onClick {
-                            if (checkbox.isChecked) {
-                                for ((_id, otherBox) in checkboxes) {
-                                    val isSelected = _id == id
-                                    otherBox.isChecked = isSelected
-                                    otherBox.setClickable(!isSelected)
-                                }
-                                onChanged(id)
-                            }
-                        }
-                    }
+            toggles.forEach { toggle ->
+                toggle.onClick {
+                    currentPersonality = toggle.customData as String
+                    toggles.forEach { it.isChecked = it.customData == currentPersonality }
                 }
+            }
 
-                addRadioGroup(
-                    inner,
-                    characters
-                        .sortedBy { it.name.lowercase() }
-                        .map { it.id to it.name },
-                    "none"
-                ) { selectedId ->
-                    combatChatterCharID = selectedId
+            initialDialog.setupConfirmCancelSection(confirmText = "Create")
+
+            initialDialog.onConfirm {
+                var maxLevelValue = maxLevel.getText().toIntOrNull()
+                val maxEliteSkillsValue = maxEliteSkills.getText().toIntOrNull()
+
+                val playerFleet = Global.getSector().playerFleet.fleetData
+
+                val person = OfficerManagerEvent.createOfficer(
+                    Global.getSector().playerFaction, 1, SkillPickPreference.ANY,
+                    false, null, false, false, -1, MathUtils.getRandom()
+                )
+                person.stats.skillsCopy.forEach { person.stats.setSkillLevel(it.skill.id, 0f) }
+                person.stats.level = 0
+
+                person.setPersonality(currentPersonality.lowercase());
+
+                if (maxSkillPicksPerLevel.isChecked)
+                    person.memoryWithoutUpdate.set("\$officerSkillPicksPerLevel", officerSkillCount)
+                if (maxLevelValue != null)
+                    person.memoryWithoutUpdate.set("\$officerMaxLevel", maxLevelValue)
+                if (maxEliteSkillsValue != null)
+                    person.memoryWithoutUpdate.set("\$officerMaxEliteSkills", maxEliteSkillsValue)
+
+                playerFleet.addOfficer(person);
+
+                val plugin = Global.getSettings().getPlugin("officerLevelUp") as? OfficerLevelupPlugin
+                if (plugin != null && maxXP.isChecked) {
+                    if (maxLevelValue == null)
+                        maxLevelValue = 99
+                    playerFleet.getOfficerData(person).addXP(plugin.getXPForLevel(maxLevelValue));
                 }
-
-                panel.addUIElement(inner).inTL(0f, 0f)
-                dialog.addCustom(panel)
-                initPopUpUI(dialog, dialogWidth, dialogHeight)
-            }
-            height += initialDialog.buttonHeight * 3
-        }
-
-
-        initialDialog.onConfirm { fields ->
-            var maxLevel = (fields["MaxLevel"] as String).toIntOrNull()
-            val maxElite = (fields["MaxElite"] as String).toIntOrNull()
-
-            val playerFleet = Global.getSector().playerFleet.fleetData
-
-
-            val person = OfficerManagerEvent.createOfficer(
-                Global.getSector().playerFaction, 1, SkillPickPreference.ANY,
-                false, null, false, false, -1, MathUtils.getRandom()
-            )
-            person.stats.skillsCopy.forEach { person.stats.setSkillLevel(it.skill.id, 0f) }
-            person.stats.level = 0
-
-            person.setPersonality(personality.lowercase());
-
-            if (fields["Max Skill Picks Per Level"] as Boolean)
-                person.memoryWithoutUpdate.set("\$officerSkillPicksPerLevel", officerSkillCount)
-            if (maxLevel != null)
-                person.memoryWithoutUpdate.set("\$officerMaxLevel", maxLevel)
-            if (maxElite != null)
-                person.memoryWithoutUpdate.set("\$officerMaxEliteSkills", maxElite)
-
-            playerFleet.addOfficer(person);
-
-            val plugin = Global.getSettings().getPlugin("officerLevelUp") as? OfficerLevelupPlugin
-            if (plugin != null && fields["Max XP"] as Boolean) {
-                if (maxLevel == null)
-                    maxLevel = 99
-                playerFleet.getOfficerData(person).addXP(plugin.getXPForLevel(maxLevel));
-            }
-
-            if (combatChatterCharID != null && combatChatterCharID != "none") {
-                ChatterDataManager.saveCharacter(person, combatChatterCharID)
-                val plugin = ChatterCombatPlugin.getInstance()
-                plugin?.setCharacterForOfficer(person, combatChatterCharID)
             }
         }
-
-        initPopUpUI(initialDialog, width, height)
     }
 
     fun createImportLoadoutDialog(

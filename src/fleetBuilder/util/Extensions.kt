@@ -17,9 +17,11 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.ui.ButtonAPI
+import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.util.lib.ObservedTextField
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.apache.log4j.Level
@@ -28,6 +30,7 @@ import org.json.JSONObject
 import starficz.BoxedUIElement
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.getChildrenCopy
+import starficz.onClick
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -327,27 +330,6 @@ fun PersonAPI.isGenericOfficer(): Boolean {
     return !hasSkill
 }*/
 
-fun TooltipMakerAPI.addToggle(
-    name: String,
-    isChecked: Boolean = false,
-    buttonHeight: Float = 24f,
-    size: ButtonAPI.UICheckboxSize = ButtonAPI.UICheckboxSize.SMALL,
-    data: Any? = null,
-    pad: Float = 0f,
-): ButtonAPI {
-    val checkbox = this.addCheckbox(
-        this.computeStringWidth(name) + buttonHeight + 4f,
-        buttonHeight,
-        name,
-        data,
-        size,
-        pad
-    )
-    checkbox.isChecked = isChecked
-
-    return checkbox
-}
-
 //This exists because createEmptyVariant does not create modules.
 fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
     return run {
@@ -409,4 +391,82 @@ fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
 
 fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> {
     return this.officersCopy.map { it.person }.filter { this.getMemberWithCaptain(it) == null }
+}
+
+fun TooltipMakerAPI.addToggle(
+    name: String,
+    isChecked: Boolean = false,
+    buttonHeight: Float = 24f,
+    size: ButtonAPI.UICheckboxSize = ButtonAPI.UICheckboxSize.SMALL,
+    data: Any? = null,
+    pad: Float = 0f,
+    onClick: (Boolean) -> Unit = {}
+): ButtonAPI {
+    val checkbox = this.addCheckbox(
+        this.computeStringWidth(name) + buttonHeight + 4f,
+        buttonHeight,
+        name,
+        data,
+        size,
+        pad
+    )
+    checkbox.isChecked = isChecked
+
+    checkbox.onClick { onClick(checkbox.isChecked) }
+
+    return checkbox
+}
+
+fun TooltipMakerAPI.addNumericTextField(
+    width: Float,
+    height: Float,
+    font: String = Fonts.DEFAULT_SMALL,
+    initialValue: Int? = null,
+    maxValue: Int = Int.MAX_VALUE,
+    allowEmpty: Boolean = true,
+    pad: Float = 0f,
+    onValueChanged: (String) -> Unit = {}
+): ObservedTextField {
+
+    val observedText = ObservedTextField(
+        width = width,
+        height = height,
+        font = font,
+        pad = pad,
+        initialText = initialValue.toString(),
+    )
+    observedText.onTextChanged { rawValue ->
+
+        /*val cleanedValue = rawValue.replace("\\D+".toRegex(), "")
+        if(cleanedValue.isEmpty()) {
+            observedText.textField.text = ""
+            observedText.lastText = ""
+            return@onTextChanged
+        }
+        val numericValue = cleanedValue.toIntOrNull() ?: return@onTextChanged
+        val sanitizedValue = numericValue.coerceAtMost(maxValue)*/
+
+        val sanitizedValue = rawValue
+            .filter { it.isDigit() }
+            .toIntOrNull()
+            ?.coerceAtMost(maxValue)
+
+        val sanitizedText: String =
+            sanitizedValue?.toString()
+                ?: if (allowEmpty) {
+                    ""
+                } else {
+                    0.coerceAtMost(maxValue).toString()
+                }
+
+        if (sanitizedText != rawValue) {
+            observedText.textField.text = sanitizedText
+            observedText.lastText = sanitizedText
+        }
+
+        onValueChanged(sanitizedText)
+    }
+
+    addCustom(observedText.component, 0f)
+    return observedText
 }

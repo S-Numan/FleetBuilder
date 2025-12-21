@@ -96,6 +96,12 @@
   "enable_cheats_to_use_officer_creator":"Enable cheats in %s settings to unlock officer creation functionality",
   "enable_cheats_to_use_paste":"Enable cheats in %s settings to unlock paste functionality",
 
+  "timid": "Timid",
+  "cautious": "Cautious",
+  "steady": "Steady",
+  "aggressive": "Aggressive",
+  "reckless": "Reckless",
+
 
 
 
