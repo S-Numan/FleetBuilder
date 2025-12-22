@@ -96,11 +96,52 @@
   "enable_cheats_to_use_officer_creator":"Enable cheats in %s settings to unlock officer creation functionality",
   "enable_cheats_to_use_paste":"Enable cheats in %s settings to unlock paste functionality",
 
+  "paste_fleet_into_player_fleet":"Paste Fleet into Player Fleet",
+  "replace_player_fleet":"Replace Player Fleet",
+  "append_to_player_fleet":"Append to Player Fleet",
+  "set_aggression_doctrine":"Set Aggression Doctrine",
+  "replace_player_with_commander":"Replace Player with Commander",
+  "additional_settings":"Additional Settings:",
+  "include_officers":"Include Officers",
+  "include_commander_as_officer":"Include Commander as Officer",
+  "exclude_ships_from_missing_mods":"Exclude Ships From Missing Mods",
+  "fulfill_fleet_needs":"Fulfill cargo, fuel, crew, and repair for fleet",
+
+  "spawn_fleet_in_campaign":"Spawn Fleet in Campaign",
+  "include_commander_as_commander":"Include Commander as Commander",
+  "spawn_fleet":"Spawn Fleet",
+  "set_faction_to_pirate":"Set Faction to Pirate",
+  "fight_to_the_last":"Fight To The Last",
+  "repair_and_set_max_cr":"Repair and Set Max CR",
+
+  "save_transfer":"Save Transfer",
+  "include_blueprints":"Include Blueprints",
+  "include_hullmods":"Include Hullmods",
+  "include_player":"Include Player",
+  "include_player_tooltip":"Includes everything seen in the Character tab",
+  "include_reputation":"Include Reputation",
+  "include_fleet":"Include Fleet",
+  #"include_officers":"Include Officers",
+  "include_cargo":"Include Cargo",
+  "include_credits":"Include Credits",
+  "include_abilitybar":"Include Ability Bar",
+  "include_abilitybar_tooltip":"This will also save and add abilities that aren't in your ability bar.\n\nDepending on the implementation of a modded ability, this can in rare cases cause a crash.\nIf that happens, untoggle this option.",
+  "flip_all_values":"Flip All Values",
+  "copy_save_to_clipboard":"Copy Save To Clipboard",
+  "save_copied_to_clipboard":"Save copied to clipboard",
+  "load_save_from_clipboard":"Load Save From Clipboard",
+  "save_loaded_from_clipboard":"Save loaded from clipboard",
+  "failed_to_find_save_in_clipboard":"Could not find contents of save in clipboard. Are you sure you copied a valid save?",
+
+
   "timid": "Timid",
   "cautious": "Cautious",
   "steady": "Steady",
   "aggressive": "Aggressive",
   "reckless": "Reckless",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+
 
 
 

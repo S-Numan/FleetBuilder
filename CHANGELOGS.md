@@ -8,8 +8,10 @@
 - Prevent titlescreen messages from sticking around after leaving the titlescreen.
 - Fix pasting a variant/member into combat opening the import loadout dialog.
 - Add a scrollbar to the autofit options which will only show if there is not enough space to display all of the options.
+- Further translation support, although still not finished.
 ### Technical
 - Dialogs can now be made before the game has started completely, and will be shown once the game has started.
+- Removed the old PopUpUI code and finished refactoring a few dialogs to use the newer code. (This took many hours ...)
 
 ## 1.26.1
 - Fix crash that may occur on save game. return value of "ShipHullSpecAPI.getBaseHull()" is null.

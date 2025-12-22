@@ -155,7 +155,7 @@ object DisplayMessage {
         dialog.onCreateUI(800f, 400f) { ui ->
             ui.addPara(message, messageColor, 0f)
 
-            dialog.setupConfirmCancelSection(confirmText = "Confirm", alignment = Alignment.MID, addCancelButton = false)
+            dialog.setupConfirmCancelSection(alignment = Alignment.MID, addCancelButton = false)
         }
     }
 }

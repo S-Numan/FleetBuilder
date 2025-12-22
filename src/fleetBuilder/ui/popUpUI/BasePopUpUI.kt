@@ -3,6 +3,7 @@ package fleetBuilder.ui.popUpUI
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.config.FBTxt
 import fleetBuilder.util.DialogUtil.Companion.initPopUpUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
@@ -123,8 +124,8 @@ open class BasePopUpUI(
         addConfirmButton: Boolean = true,
         addCancelButton: Boolean = true,
         alignment: Alignment = Alignment.RMID,
-        confirmText: String = "Confirm",
-        cancelText: String = "Cancel",
+        confirmText: String = FBTxt.txt("confirm"),
+        cancelText: String = FBTxt.txt("cancel"),
     ) {
         val totalWidth = panel.position.width
         val tooltip = panel.createUIElement(totalWidth, 25f, false)
