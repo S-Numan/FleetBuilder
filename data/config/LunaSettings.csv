@@ -120,6 +120,11 @@ Cheats must be enabled.",,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave -backup” in the console to load it.",,,Misc
+hideErrorMessages,Hide Error Messages,Boolean,false,,"If true, stops showing error message at the top of the screen.",,,Misc
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
 variantHeader,Variant Header,Header,Variant Saving Settings,,,,,Misc
 variantTextField,Variant Text Field,Text,"The settings below apply when saving/copying a variant alone.
 They do not apply when saving/copying anything else that may contain a variant, such as a fleet member or an entire fleet.",,,,,Misc
@@ -131,11 +136,6 @@ Enable the setting ‘Show Hidden HullMods’ in the ‘Autofit Menu’ tab and 
 ,,,,,,,,
 memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
 fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,

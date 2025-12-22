@@ -274,7 +274,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
 
             } else
-                campaignPaste(sector, data, ui)
+                campaignPaste(sector, data)
         }
 
         event.consume()

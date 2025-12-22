@@ -11,11 +11,14 @@ import fleetBuilder.config.ModSettings.defaultPrefix
 import fleetBuilder.persistence.variant.DataVariant
 import fleetBuilder.persistence.variant.VariantSettings
 import fleetBuilder.ui.autofit.AutofitSpec
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.FBMisc.extractDataFromString
 import fleetBuilder.variants.VariantLib.compareVariantContents
 import fleetBuilder.variants.VariantLib.getCoreVariantsForEffectiveHullspec
+import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
+import java.awt.Color
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.max
@@ -34,6 +37,13 @@ object LoadoutManager {
         }
     }
 
+    private fun setupDefaultDirectory() {
+        val json = JSONObject()
+        json.put("description", "Default Loadout")
+        json.put("name", "Default")
+        Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", json, false)
+    }
+
     fun loadAllDirectories() {
 
         //Make directories
@@ -43,23 +53,10 @@ object LoadoutManager {
         Global.getSettings().deleteTextFileFromCommon("${PACKDIR}IN/deleteme")
 
         // Ensure default exists
-        if (!Global.getSettings().fileExistsInCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME")) {
-            val json = JSONObject()
-            json.put("description", "Default Loadout")
-            json.put("name", "Default")
-            Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", json, false)
-        } else { // Handle Legacy
-            try {
-                val dfJSON = Global.getSettings().readJSONFromCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", false)
-                if (!dfJSON.has("name")) {
-                    dfJSON.put("name", "Default")
-                    Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", dfJSON, false)
-                }
-            } catch (e: Exception) {
-                Global.getLogger(this.javaClass).error("Failed to read default loadout directory at /saves/common/$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME\n", e)
-            }
-        }
 
+        if (!Global.getSettings().fileExistsInCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME")) {
+            setupDefaultDirectory()
+        }
 
         shipDirectories.clear()
 
@@ -88,13 +85,60 @@ object LoadoutManager {
     fun loadShipDirectory(dirPath: String, prefix: String): ShipDirectory? {
 
         val configFilePath = "$dirPath$prefix/$DIRECTORYCONFIGNAME"
-        val directory: JSONObject
-        if (Global.getSettings().fileExistsInCommon(configFilePath)) {
-            if (shipDirectories.any { it.dir + it.prefix == "$dirPath$prefix" })
-                throw Error("Loadout pack name conflict.\nThe prefix '$prefix' is already taken. You must rename the folder '/saves/common/$dirPath$prefix' to something other than '$prefix', as '$prefix' is already in use")
-            directory = Global.getSettings().readJSONFromCommon(configFilePath, false)
-        } else
+        if (!Global.getSettings().fileExistsInCommon(configFilePath)) {
             return null
+        }
+
+        if (shipDirectories.any { it.dir + it.prefix == "$dirPath$prefix" }) {
+            throw Error(
+                "Loadout pack name conflict.\n" +
+                        "The prefix '$prefix' is already taken. You must rename the folder " +
+                        "'/saves/common/$dirPath$prefix' to something other than '$prefix', as '$prefix' is already in use"
+            )
+        }
+
+        val directory: JSONObject = try {
+            Global.getSettings().readJSONFromCommon(configFilePath, false)
+        } catch (e: Exception) {
+            var _directory: JSONObject? = null
+
+            val message = buildString {
+                appendLine("Failed to read '$prefix' loadout directory at /saves/common/$configFilePath")
+                appendLine("All previous loadouts in this loadout directory are unable to be accessed.")
+
+                if (prefix == defaultPrefix) {
+                    appendLine("A new loadout directory will be made to prevent autofit functionality from failing.")
+
+                    val oldFile = runCatching { Global.getSettings().readTextFileFromCommon(configFilePath) }.getOrNull()
+
+                    if (!oldFile.isNullOrBlank()) {
+                        appendLine("Appending old loadout directory with -CORRUPT")
+                        appendLine("Consider fixing the formatting in the -CORRUPT file and replacing the non -CORRUPT file with it.")
+
+                        Global.getSettings().writeTextFileToCommon("$configFilePath-CORRUPT", oldFile)
+                    }
+
+                    setupDefaultDirectory()
+
+                    _directory = runCatching { Global.getSettings().readJSONFromCommon(configFilePath, false) }.getOrNull()
+                        ?: return null // Safety check
+                } else {
+                    appendLine("Loadout directory will remain inaccessible until the issue is resolved.")
+                }
+
+                appendLine()
+                appendLine()
+                appendLine(e.toString())
+            }
+
+            DisplayMessage.dialogMessage(
+                "Failed to read the $prefix loadout directory",
+                message
+            )
+            DisplayMessage.logMessage(message, Level.ERROR)
+
+            _directory ?: return null
+        }
 
         return try {
             upgradeLegacyShipPaths(directory, configFilePath)

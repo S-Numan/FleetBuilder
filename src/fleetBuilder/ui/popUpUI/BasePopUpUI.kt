@@ -3,7 +3,8 @@ package fleetBuilder.ui.popUpUI
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.DialogUtil.initPopUpUI
+import fleetBuilder.config.FBTxt
+import fleetBuilder.util.DialogUtil.Companion.initPopUpUI
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import starficz.onClick
@@ -53,24 +54,24 @@ open class BasePopUpUI(
     fun onCreateUI(
         width: Float = Global.getSettings().screenWidth / 2,
         height: Float = Global.getSettings().screenHeight / 2,
+        parent: UIPanelAPI? = null,
+        x: Float? = null,
+        y: Float? = null,
         callback: (TooltipMakerAPI) -> Unit
     ) {
         // store a callback
         createUICallback = {
             // build the UI once here
             val ui = createStandardContentArea()
-            bufferedWidth = panel.position.width - (x * 2)
-            bufferedHeight = panel.width - (y * 2)
+            bufferedWidth = panel.position.width - (this.x * 2)
+            bufferedHeight = panel.width - (this.y * 2)
             // run the user code
             callback(ui)
             // add UI automatically afterward
             addContentArea(ui)
         }
 
-        if (Global.getSector()?.campaignUI != null)
-            makeDummyDialog(Global.getSector().campaignUI)
-
-        initPopUpUI(this, width, height)
+        initPopUpUI(this, x = x, y = y, width = width, height = height, parent = parent)
     }
 
 
@@ -123,8 +124,8 @@ open class BasePopUpUI(
         addConfirmButton: Boolean = true,
         addCancelButton: Boolean = true,
         alignment: Alignment = Alignment.RMID,
-        confirmText: String = "Confirm",
-        cancelText: String = "Cancel",
+        confirmText: String = FBTxt.txt("confirm"),
+        cancelText: String = FBTxt.txt("cancel"),
     ) {
         val totalWidth = panel.position.width
         val tooltip = panel.createUIElement(totalWidth, 25f, false)

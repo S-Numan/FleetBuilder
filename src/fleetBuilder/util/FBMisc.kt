@@ -475,8 +475,7 @@ object FBMisc {
 
     fun campaignPaste(
         sector: SectorAPI,
-        data: Any,
-        ui: CampaignUIAPI
+        data: Any
     ): Boolean {
         var newData = data
         if (newData !is DataFleet.ParsedFleetData) {
@@ -514,7 +513,7 @@ object FBMisc {
             return false
         }
 
-        Dialogs.spawnFleetInCampaignDialog(sector, newData as DataFleet.ParsedFleetData, validatedData, ui)
+        Dialogs.spawnFleetInCampaignDialog(sector, newData as DataFleet.ParsedFleetData, validatedData)
 
         return true
     }

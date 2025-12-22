@@ -11,11 +11,11 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.features.*
+import fleetBuilder.ui.popUpUI.BasePopUpUI
 import fleetBuilder.ui.popUpUI.PopUpUI
-import fleetBuilder.ui.popUpUI.old.PopUpUIDialog
-import fleetBuilder.util.DialogUtil
 import fleetBuilder.util.Dialogs
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.addToggle
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import starficz.*
@@ -34,7 +34,7 @@ class CargoAutoManageUIPlugin(
     private var panel: CustomPanelAPI
     fun getPanel() = panel
 
-    private val dialog: PopUpUIDialog
+    private val dialog: BasePopUpUI
     private val market: MarketAPI
     private val scrollerTooltip: TooltipMakerAPI
 
@@ -79,6 +79,8 @@ class CargoAutoManageUIPlugin(
         cargoRows.removeAt(index)
     }
 
+    var interactToggle: ButtonAPI? = null
+    var leaveToggle: ButtonAPI? = null
     fun createCargoAutoManage(): CargoAutoManage {
         val itemAutoManages = mutableListOf<ItemAutoManage>()
 
@@ -99,8 +101,8 @@ class CargoAutoManageUIPlugin(
         }
 
         return CargoAutoManage(
-            dialog.fieldStates["Apply when player fleet interacts with this station"]?.value as Boolean,
-            dialog.fieldStates["Apply when the player fleet leaves this station"]?.value as Boolean,
+            interactToggle?.isChecked ?: false,
+            leaveToggle?.isChecked ?: false,
             itemAutoManages
         )
     }
@@ -216,45 +218,8 @@ class CargoAutoManageUIPlugin(
         val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
             ?: CargoAutoManage()
 
-        dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
-
-        dialog.addButton("Reset Settings", dismissOnClick = false) { _ ->
-
-            val areYouSureDialog = PopUpUIDialog("Are you sure?", addConfirmButton = true, addCancelButton = true)
-            areYouSureDialog.cancelButtonName = "No"
-            areYouSureDialog.confirmButtonName = "Yes"
-            areYouSureDialog.confirmAndCancelAlignment = Alignment.MID
-
-            areYouSureDialog.onConfirm { _ ->
-                dialog.forceDismissNoExit()
-
-                unsetCargoAutoManage(selectedSubmarket)
-
-                Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
-            }
-
-            DialogUtil.initPopUpUI(areYouSureDialog, 380f, 80f)
-        }
-
-        dialog.addToggle(
-            "Apply when player fleet interacts with this station", default = cargoAutoManage.applyOnInteraction
-        )
-        dialog.addToggle(
-            "Apply when the player fleet leaves this station", default = cargoAutoManage.applyOnLeave
-        )
-
-        dialog.addPadding(dialog.buttonHeight)
-
-        dialog.onExit { fields ->
-            val cargoAutoManage = createCargoAutoManage()
-
-            if (cargoAutoManage.isDefault()) {//If the cargo is default
-                unsetCargoAutoManage(selectedSubmarket)
-            } else {
-                saveCargoAutoManage(selectedSubmarket, cargoAutoManage)
-            }
-        }
-
+        //dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
+        dialog = BasePopUpUI(selectedSubmarket.name.replace("\n", " "))
 
         val headerHeight = 24f
         val rowHeight = 48f
@@ -321,8 +286,7 @@ class CargoAutoManageUIPlugin(
             cargoItemSelector.init(
                 panelAPI,
                 Global.getSettings().mouseX.toFloat(),
-                Global.getSettings().mouseY.toFloat(),
-                isDialog = false
+                Global.getSettings().mouseY.toFloat()
             )
             panelAPI.addPara("Click a cargo item to select it. Right click to cancel.")
             cargoItemSelector.quitWithEscKey = true
@@ -337,11 +301,50 @@ class CargoAutoManageUIPlugin(
         panel.addUIElement(scrollerTooltip).inTL(0f, 0f)
 
 
+        dialog.onCreateUI(width, height) { ui ->
+            dialog.addCloseButton()
 
+            val buttonHeight = 24f
 
-        dialog.addCustom(panel)
+            ui.addButton("Reset Settings", null, dialog.bufferedWidth, buttonHeight, 0f).onClick {
 
-        DialogUtil.initPopUpUI(dialog, width, height)
+                val areYouSureDialog = BasePopUpUI(headerTitle = "Are you sure?")
+
+                areYouSureDialog.onCreateUI(380f, 80f) { _ ->
+                    areYouSureDialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
+                }
+
+                areYouSureDialog.onConfirm {
+                    dialog.forceDismissNoExit()
+
+                    unsetCargoAutoManage(selectedSubmarket)
+
+                    Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
+                }
+            }
+
+            interactToggle = ui.addToggle(
+                "Apply when player fleet interacts with this station", isChecked = cargoAutoManage.applyOnInteraction
+            )
+            leaveToggle = ui.addToggle(
+                "Apply when the player fleet leaves this station", isChecked = cargoAutoManage.applyOnLeave
+            )
+
+            ui.addSpacer(buttonHeight)
+
+            ui.addComponent(panel).inTL(0f, ui.heightSoFar)
+        }
+
+        dialog.onExit {
+            val cargoAutoManage = createCargoAutoManage()
+
+            if (cargoAutoManage.isDefault()) {//If the cargo is default
+                unsetCargoAutoManage(selectedSubmarket)
+            } else {
+                saveCargoAutoManage(selectedSubmarket, cargoAutoManage)
+            }
+        }
+
         if (instantUp)
             dialog.setMaxSize()
     }
@@ -481,6 +484,7 @@ class CargoAutoManageUIPlugin(
 }
 
 class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketAPI) : PopUpUI() {
+    override var isDialog = false
     override fun advance(amount: Float) {
         val panelWidth = this.panel.position.width
         val panelHeight = this.panel.position.height

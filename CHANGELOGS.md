@@ -1,3 +1,18 @@
+## 1.27.0
+- CTRL + V in combat to paste the copied variant/member into combat. This requires cheats to be on if in regular combat, but you can mostly do it freely in the simulator with only some exceptions (E.G: ships you wouldn't be able to simulate anyway).
+- No longer pause the game after exiting a dialog in the campaign if you were not originally paused.
+- Added ConsoleCommand RemoveIdleOfficers which removes all officers in your fleet which are currently not captaining any ship.
+- Added a Misc setting to stop error messages from being shown at the top of the screen if it is true.
+- Fix crash that may occur on game launch if your loadout directory json is malformed. Also show dialog on game start informing user of issue.
+- Fix crash if you remove or malform a loadout directory json while the game is running.
+- Prevent titlescreen messages from sticking around after leaving the titlescreen.
+- Fix pasting a variant/member into combat opening the import loadout dialog.
+- Add a scrollbar to the autofit options which will only show if there is not enough space to display all of the options.
+- Further translation support, although still not finished.
+### Technical
+- Dialogs can now be made before the game has started completely, and will be shown once the game has started.
+- Removed the old PopUpUI code and finished refactoring a few dialogs to use the newer code. (This took many hours ...)
+
 ## 1.26.1
 - Fix crash that may occur on save game. return value of "ShipHullSpecAPI.getBaseHull()" is null.
 

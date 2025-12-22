@@ -6,26 +6,31 @@ import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
+import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.campaign.impl.items.ModSpecItemPlugin
 import com.fs.starfarer.api.campaign.impl.items.MultiBlueprintItemPlugin
 import com.fs.starfarer.api.campaign.impl.items.ShipBlueprintItemPlugin
 import com.fs.starfarer.api.campaign.impl.items.WeaponBlueprintItemPlugin
+import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.ui.ButtonAPI
+import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.util.lib.ObservedTextField
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getAllDMods
+import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
 import starficz.BoxedUIElement
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.getChildrenCopy
-import java.awt.Color
+import starficz.onClick
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -49,7 +54,7 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
         if (value != null) {
             list.add(value)
         } else {
-            Global.getLogger(this.javaClass).warn("Invalid string at index $i in '$fieldName'")
+            DisplayMessage.logMessage("Invalid string at index $i in '$fieldName'", Level.WARN, this.javaClass)
         }
     }
     return list
@@ -86,8 +91,8 @@ fun ShipHullSpecAPI.getCompatibleDLessHull(keepDModSkin: Boolean = false): ShipH
     if (isCompatibleWithBase) {
         if (dParentHull != null)
             return dParentHull
-        else if (!keepDModSkin)
-            return baseHull ?: this
+        else if (!keepDModSkin && baseHull != null)
+            return baseHull
     }
 
     return this
@@ -97,6 +102,7 @@ fun ShipHullSpecAPI.getCompatibleDLessHullId(keepDModSkin: Boolean = false): Str
     return this.getCompatibleDLessHull(keepDModSkin).hullId
 }
 
+// Use this to be extra sure a hullmod was completely removed.
 fun ShipVariantAPI.completelyRemoveMod(modId: String) {
     sModdedBuiltIns.remove(modId)
     suppressedMods.remove(modId)
@@ -116,6 +122,7 @@ fun ShipVariantAPI.isEquivalentTo(
     )
 }
 
+//Get all dMods in the variant
 fun ShipVariantAPI.allDMods(): Set<String> {
     val allDMods = getAllDMods()
     val dMods = mutableSetOf<String>()
@@ -126,6 +133,7 @@ fun ShipVariantAPI.allDMods(): Set<String> {
     return dMods
 }
 
+//Get all sMods and sModdedBuiltIns in the variant
 fun ShipVariantAPI.allSMods(): Set<String> {
     val outputSMods = mutableSetOf<String>()
     for (mod in sMods) {
@@ -179,7 +187,7 @@ fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
 }
 
 val String.toBinary: Int
-    get() = if (this.equals("TRUE", ignoreCase = true)) 1 else 0
+    get() = if (this.equals("TRUE", ignoreCase = true) || this == "1") 1 else 0
 
 fun CargoStackAPI.moveStack(to: CargoAPI, inputAmount: Float = -1f) {
     if (!this.isNull && this.cargo !== to && inputAmount != 0f) {
@@ -322,36 +330,32 @@ fun PersonAPI.isGenericOfficer(): Boolean {
     return !hasSkill
 }*/
 
-fun TooltipMakerAPI.addToggle(
-    name: String,
-    isChecked: Boolean = false,
-    buttonHeight: Float = 24f,
-    size: ButtonAPI.UICheckboxSize = ButtonAPI.UICheckboxSize.SMALL
-): ButtonAPI {
-    val checkbox = this.addCheckbox(
-        this.computeStringWidth(name) + buttonHeight + 4f,
-        buttonHeight,
-        name,
-        null,
-        size,
-        0f
-    )
-    checkbox.isChecked = isChecked
-
-    return checkbox
-}
-
 //This exists because createEmptyVariant does not create modules.
 fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
     return run {
-        val variants = VariantLib.getVariantsFromEffectiveHullID(hull.getEffectiveHullId())
-        variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.hullId } // Exact match
-            ?: variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.getCompatibleDLessHullId() } // D less match
-            ?: variants?.find { it.source == VariantSource.HULL && it.hullSpec.hullId == hull.getEffectiveHullId() } // Effective match
-            ?: variants?.find { it.source == VariantSource.HULL } // Probably close enough
+        val effectiveHullID = hull.getEffectiveHullId()
+        val variants = VariantLib.getVariantsFromEffectiveHullID(effectiveHullID)
+
+        val exactId = hull.hullId
+        val dLessId = hull.getCompatibleDLessHullId()
+
+        variants?.filter { it.source == VariantSource.HULL } // Filter out non hull variants
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { hullVariants ->
+                hullVariants.find { it.hullSpec.hullId == exactId }          // Exact match
+                    ?: hullVariants.find { it.hullSpec.hullId == dLessId }   // D-less match
+                    ?: hullVariants.find { it.hullSpec.hullId == effectiveHullID } // Effective match
+                    ?: run {
+                        DisplayMessage.logMessage("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'", Level.WARN, this.javaClass)
+                        hullVariants.firstOrNull()// Cannot find a good enough match, just go for whatever
+                    }
+            }
     } ?: runCatching {
         val emptyVariant = this.createEmptyVariant(hull.hullId, hull)
-        DisplayMessage.showMessage("Failed to find HULL variant for '${hull.hullId}' and fell back to creating an emptyVariant. This can usually be ignored.", Color.YELLOW)
+        DisplayMessage.logMessage(
+            "Failed to find HULL variant for '${hull.hullId}' and fell back to createEmptyVariant. This can usually be ignored." +
+                    "However, ships may spawn without modules which can crash the game in certain circumstances", Level.WARN, this.javaClass
+        )
         emptyVariant
     }.getOrNull() ?: run {
         DisplayMessage.showError("Failed to find HULL variant for '${hull.hullId}'")
@@ -377,10 +381,92 @@ fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
         return null
     } else if (reflectedMethods.size > 1) {
         DisplayMessage.showError(
-            short = "ERROR: No method found on class: ${target::class.java.name}. See console for more details.",
+            short = "ERROR: Ambiguous method call on class: ${target::class.java.name}. See console for more details.",
             full = "Ambiguous method call for name: '$name' on class: ${target::class.java.name}. " +
                     "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
         )
         return null
     } else return reflectedMethods[0].invoke(target, *args)
+}
+
+fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> {
+    return this.officersCopy.map { it.person }.filter { this.getMemberWithCaptain(it) == null }
+}
+
+fun TooltipMakerAPI.addToggle(
+    name: String,
+    isChecked: Boolean = false,
+    buttonHeight: Float = 24f,
+    size: ButtonAPI.UICheckboxSize = ButtonAPI.UICheckboxSize.SMALL,
+    data: Any? = null,
+    pad: Float = 0f,
+    onClick: (Boolean) -> Unit = {}
+): ButtonAPI {
+    val checkbox = this.addCheckbox(
+        this.computeStringWidth(name) + buttonHeight + 4f,
+        buttonHeight,
+        name,
+        data,
+        size,
+        pad
+    )
+    checkbox.isChecked = isChecked
+
+    checkbox.onClick { onClick(checkbox.isChecked) }
+
+    return checkbox
+}
+
+fun TooltipMakerAPI.addNumericTextField(
+    width: Float,
+    height: Float,
+    font: String = Fonts.DEFAULT_SMALL,
+    initialValue: Int? = null,
+    maxValue: Int = Int.MAX_VALUE,
+    allowEmpty: Boolean = true,
+    pad: Float = 0f,
+    onValueChanged: (String) -> Unit = {}
+): ObservedTextField {
+
+    val observedText = ObservedTextField(
+        width = width,
+        height = height,
+        font = font,
+        pad = pad,
+        initialText = initialValue.toString(),
+    )
+    observedText.onTextChanged { rawValue ->
+
+        /*val cleanedValue = rawValue.replace("\\D+".toRegex(), "")
+        if(cleanedValue.isEmpty()) {
+            observedText.textField.text = ""
+            observedText.lastText = ""
+            return@onTextChanged
+        }
+        val numericValue = cleanedValue.toIntOrNull() ?: return@onTextChanged
+        val sanitizedValue = numericValue.coerceAtMost(maxValue)*/
+
+        val sanitizedValue = rawValue
+            .filter { it.isDigit() }
+            .toIntOrNull()
+            ?.coerceAtMost(maxValue)
+
+        val sanitizedText: String =
+            sanitizedValue?.toString()
+                ?: if (allowEmpty) {
+                    ""
+                } else {
+                    0.coerceAtMost(maxValue).toString()
+                }
+
+        if (sanitizedText != rawValue) {
+            observedText.textField.text = sanitizedText
+            observedText.lastText = sanitizedText
+        }
+
+        onValueChanged(sanitizedText)
+    }
+
+    addCustom(observedText.component, 0f)
+    return observedText
 }
