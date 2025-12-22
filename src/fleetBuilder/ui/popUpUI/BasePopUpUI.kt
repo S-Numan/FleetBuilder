@@ -53,21 +53,24 @@ open class BasePopUpUI(
     fun onCreateUI(
         width: Float = Global.getSettings().screenWidth / 2,
         height: Float = Global.getSettings().screenHeight / 2,
+        parent: UIPanelAPI? = null,
+        x: Float? = null,
+        y: Float? = null,
         callback: (TooltipMakerAPI) -> Unit
     ) {
         // store a callback
         createUICallback = {
             // build the UI once here
             val ui = createStandardContentArea()
-            bufferedWidth = panel.position.width - (x * 2)
-            bufferedHeight = panel.width - (y * 2)
+            bufferedWidth = panel.position.width - (this.x * 2)
+            bufferedHeight = panel.width - (this.y * 2)
             // run the user code
             callback(ui)
             // add UI automatically afterward
             addContentArea(ui)
         }
 
-        initPopUpUI(this, width, height)
+        initPopUpUI(this, x = x, y = y, width = width, height = height, parent = parent)
     }
 
 

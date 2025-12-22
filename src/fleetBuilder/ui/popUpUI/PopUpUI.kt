@@ -20,31 +20,31 @@ import java.awt.Color
 //Copied and modified from AshLib
 
 open class PopUpUI : CustomUIPanelPlugin {
-    var limit: Int = 5
-    var totalFrames: Float = 0f
-    var attemptedExit: Boolean = false
+    open var limit: Int = 5
+    open var totalFrames: Float = 0f
+    open var attemptedExit: Boolean = false
 
-    var blackBackground: SpriteAPI = Global.getSettings().getSprite("FleetBuilder", "white_square")
-    var borders: SpriteAPI = Global.getSettings().getSprite("FleetBuilder", "white_square")
-    var panelBackground: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_center")
-    var bot: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot")
-    var top: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top")
-    var left: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_left")
-    var right: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_right")
-    var topLeft: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top_left")
-    var topRight: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top_right")
-    var bottomLeft: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot_left")
-    var bottomRight: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot_right")
-    var parent: UIPanelAPI? = null
-    var frames: Float = 0f
-    lateinit var panel: CustomPanelAPI
-    var rendererBorder: UILinesRenderer = UILinesRenderer(0f)
-    var isDialog: Boolean = true
-    var quitWithEscKey: Boolean = true
+    open var blackBackground: SpriteAPI = Global.getSettings().getSprite("FleetBuilder", "white_square")
+    open var borders: SpriteAPI = Global.getSettings().getSprite("FleetBuilder", "white_square")
+    open var panelBackground: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_center")
+    open var bot: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot")
+    open var top: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top")
+    open var left: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_left")
+    open var right: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_right")
+    open var topLeft: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top_left")
+    open var topRight: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top_right")
+    open var bottomLeft: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot_left")
+    open var bottomRight: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot_right")
+    open var parent: UIPanelAPI? = null
+    open var frames: Float = 0f
+    open lateinit var panel: CustomPanelAPI
+    open var rendererBorder: UILinesRenderer = UILinesRenderer(0f)
+    open var isDialog: Boolean = true
+    open var quitWithEscKey: Boolean = true
 
-    var reachedMaxHeight: Boolean = false
-    var originalSizeX: Float = 0f
-    var originalSizeY: Float = 0f
+    open var reachedMaxHeight: Boolean = false
+    open var originalSizeX: Float = 0f
+    open var originalSizeY: Float = 0f
     open var x: Float = 0f
     open var y: Float = 0f
 
@@ -52,11 +52,8 @@ open class PopUpUI : CustomUIPanelPlugin {
         insertPanel: CustomPanelAPI,
         x: Float,
         y: Float,
-        parent: UIPanelAPI? = getCoreUI(true),
-        isDialog: Boolean = true
+        parent: UIPanelAPI? = getCoreUI(true)
     ) {
-        this.isDialog = isDialog
-
         panel = insertPanel
 
         this.parent = parent

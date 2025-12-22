@@ -17,115 +17,115 @@ import java.awt.Color
 import java.awt.event.InputEvent
 
 // UIComponentAPI extensions that expose UIComponent fields/methods
-internal var UIComponentAPI.fader: Fader?
+var UIComponentAPI.fader: Fader?
     get() = invoke("getFader") as Fader?
     set(fader) {
         invoke("setFader", fader)
     }
 
-internal var UIComponentAPI.opacity: Float
+var UIComponentAPI.opacity: Float
     get() = invoke("getOpacity") as Float
     set(alpha) {
         invoke("setOpacity", alpha)
     }
 
-internal var UIComponentAPI.parent: UIPanelAPI?
+var UIComponentAPI.parent: UIPanelAPI?
     get() = invoke("getParent") as UIPanelAPI?
     set(parent) {
         invoke("setParent", parent)
     }
 
-internal fun UIComponentAPI.setMouseOverPad(pad1: Float, pad2: Float, pad3: Float, pad4: Float) {
+fun UIComponentAPI.setMouseOverPad(pad1: Float, pad2: Float, pad3: Float, pad4: Float) {
     invoke("setMouseOverPad", pad1, pad2, pad3, pad4)
 }
 
-internal val UIComponentAPI.mouseoverHighlightFader: Fader?
+val UIComponentAPI.mouseoverHighlightFader: Fader?
     get() = invoke("getMouseoverHighlightFader") as Fader?
 
-internal val UIComponentAPI.topAncestor: UIPanelAPI?
+val UIComponentAPI.topAncestor: UIPanelAPI?
     get() = invoke("findTopAncestor") as UIPanelAPI?
 
-internal fun UIComponentAPI.setTooltipOffsetFromCenter(xPad: Float, yPad: Float) {
+fun UIComponentAPI.setTooltipOffsetFromCenter(xPad: Float, yPad: Float) {
     invoke("setTooltipOffsetFromCenter", xPad, yPad)
 }
 
-internal fun UIComponentAPI.setTooltipPositionRelativeToAnchor(xPad: Float, yPad: Float, anchor: UIComponentAPI) {
+fun UIComponentAPI.setTooltipPositionRelativeToAnchor(xPad: Float, yPad: Float, anchor: UIComponentAPI) {
     invoke("setTooltipPositionRelativeToAnchor", xPad, yPad, anchor)
 }
 
-internal fun UIComponentAPI.setSlideData(xOffset: Float, yOffset: Float, durationIn: Float, durationOut: Float) {
+fun UIComponentAPI.setSlideData(xOffset: Float, yOffset: Float, durationIn: Float, durationOut: Float) {
     invoke("setSlideData", xOffset, yOffset, durationIn, durationOut)
 }
 
-internal fun UIComponentAPI.slideIn() {
+fun UIComponentAPI.slideIn() {
     invoke("slideIn")
 }
 
-internal fun UIComponentAPI.slideOut() {
+fun UIComponentAPI.slideOut() {
     invoke("slideOut")
 }
 
-internal fun UIComponentAPI.forceSlideIn() {
+fun UIComponentAPI.forceSlideIn() {
     invoke("forceSlideIn")
 }
 
-internal fun UIComponentAPI.forceSlideOut() {
+fun UIComponentAPI.forceSlideOut() {
     invoke("forceSlideOut")
 }
 
-internal val UIComponentAPI.sliding: Boolean
+val UIComponentAPI.sliding: Boolean
     get() = invoke("isSliding") as Boolean
 
-internal val UIComponentAPI.slidIn: Boolean
+val UIComponentAPI.slidIn: Boolean
     get() = invoke("isSlidIn") as Boolean
 
-internal val UIComponentAPI.slidOut: Boolean
+val UIComponentAPI.slidOut: Boolean
     get() = invoke("isSlidOut") as Boolean
 
-internal val UIComponentAPI.slidingIn: Boolean
+val UIComponentAPI.slidingIn: Boolean
     get() = invoke("isSlidingIn") as Boolean
 
-internal var UIComponentAPI.enabled: Boolean
+var UIComponentAPI.enabled: Boolean
     get() = invoke("isEnabled") as Boolean
     set(enabled) {
         invoke("setEnabled", enabled)
     }
 
-internal var UIComponentAPI.width
+var UIComponentAPI.width
     get() = position.width
     set(width) {
         position.setSize(width, position.height)
     }
 
-internal var UIComponentAPI.height
+var UIComponentAPI.height
     get() = position.height
     set(height) {
         position.setSize(position.width, height)
     }
 
-internal fun UIComponentAPI.setSize(width: Float, height: Float) {
+fun UIComponentAPI.setSize(width: Float, height: Float) {
     position.setSize(width, height)
 }
 
-internal val UIComponentAPI.x
+val UIComponentAPI.x
     get() = position.x
 
-internal val UIComponentAPI.y
+val UIComponentAPI.y
     get() = position.y
 
-internal val UIComponentAPI.left
+val UIComponentAPI.left
     get() = x
 
-internal val UIComponentAPI.bottom
+val UIComponentAPI.bottom
     get() = y
 
-internal val UIComponentAPI.top
+val UIComponentAPI.top
     get() = y + height
 
-internal val UIComponentAPI.right
+val UIComponentAPI.right
     get() = x + width
 
-internal fun UIComponentAPI.setLocation(x: Float, y: Float) {
+fun UIComponentAPI.setLocation(x: Float, y: Float) {
     position.setLocation(x, y)
 }
 
@@ -138,58 +138,58 @@ fun UIComponentAPI.setAbsoluteLocation(x: Float, y: Float) {
     yAlignOffset += (y - position.y)
 }
 
-internal val UIComponentAPI.centerX
+val UIComponentAPI.centerX
     get() = position.centerX
 
-internal val UIComponentAPI.centerY
+val UIComponentAPI.centerY
     get() = position.centerY
 
-internal var UIComponentAPI.xAlignOffset: Float
+var UIComponentAPI.xAlignOffset: Float
     get() = position.invoke("getXAlignOffset") as Float
     set(xOffset) {
         position.setXAlignOffset(xOffset)
     }
 
-internal var UIComponentAPI.yAlignOffset: Float
+var UIComponentAPI.yAlignOffset: Float
     get() = position.invoke("getYAlignOffset") as Float
     set(yOffset) {
         position.setYAlignOffset(yOffset)
     }
 
 
-internal fun UIComponentAPI.anchorInTopLeftOfParent(xPad: Float = 0f, yPad: Float = 0f) {
+fun UIComponentAPI.anchorInTopLeftOfParent(xPad: Float = 0f, yPad: Float = 0f) {
     this.position.inTL(xPad, yPad)
 }
 
-internal fun UIComponentAPI.anchorInTopRightOfParent(xPad: Float = 0f, yPad: Float = 0f) {
+fun UIComponentAPI.anchorInTopRightOfParent(xPad: Float = 0f, yPad: Float = 0f) {
     this.position.inTR(xPad, yPad)
 }
 
-internal fun UIComponentAPI.anchorInTopMiddleOfParent(yPad: Float = 0f) {
+fun UIComponentAPI.anchorInTopMiddleOfParent(yPad: Float = 0f) {
     this.position.inTMid(yPad)
 }
 
-internal fun UIComponentAPI.anchorInBottomLeftOfParent(xPad: Float = 0f, yPad: Float = 0f) {
+fun UIComponentAPI.anchorInBottomLeftOfParent(xPad: Float = 0f, yPad: Float = 0f) {
     this.position.inBL(xPad, yPad)
 }
 
-internal fun UIComponentAPI.anchorInBottomMiddleOfParent(yPad: Float = 0f) {
+fun UIComponentAPI.anchorInBottomMiddleOfParent(yPad: Float = 0f) {
     this.position.inBMid(yPad)
 }
 
-internal fun UIComponentAPI.anchorInBottomRightOfParent(xPad: Float = 0f, yPad: Float = 0f) {
+fun UIComponentAPI.anchorInBottomRightOfParent(xPad: Float = 0f, yPad: Float = 0f) {
     this.position.inBR(xPad, yPad)
 }
 
-internal fun UIComponentAPI.anchorInLeftMiddleOfParent(xPad: Float = 0f) {
+fun UIComponentAPI.anchorInLeftMiddleOfParent(xPad: Float = 0f) {
     this.position.inLMid(xPad)
 }
 
-internal fun UIComponentAPI.anchorInRightMiddleOfParent(xPad: Float = 0f) {
+fun UIComponentAPI.anchorInRightMiddleOfParent(xPad: Float = 0f) {
     this.position.inRMid(xPad)
 }
 
-internal fun UIComponentAPI.anchorInCenterOfParent() {
+fun UIComponentAPI.anchorInCenterOfParent() {
     val floatType = Float::class.javaPrimitiveType!!
     val paramTypes: Array<Class<*>?> = arrayOf(
         this.position.javaClass,  // First parameter type
@@ -200,58 +200,58 @@ internal fun UIComponentAPI.anchorInCenterOfParent() {
         .invoke(this.position, null, 0.5f, 0.5f, -0.5f, -0.5f, 0f, 0f)
 }
 
-internal val UIPanelAPI.previousComponent
+val UIPanelAPI.previousComponent
     get() = getChildrenCopy().lastOrNull()
 
-internal fun UIComponentAPI.anchorRightOfPreviousMatchingTop(padding: Float = 0f) {
+fun UIComponentAPI.anchorRightOfPreviousMatchingTop(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.rightOfTop(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorLeftOfPreviousMatchingTop(padding: Float = 0f) {
+fun UIComponentAPI.anchorLeftOfPreviousMatchingTop(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.leftOfTop(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorLeftOfPreviousMatchingMid(padding: Float = 0f) {
+fun UIComponentAPI.anchorLeftOfPreviousMatchingMid(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.leftOfMid(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorLeftOfPreviousMatchingBottom(padding: Float = 0f) {
+fun UIComponentAPI.anchorLeftOfPreviousMatchingBottom(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.leftOfBottom(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorRightOfPreviousMatchingMid(padding: Float = 0f) {
+fun UIComponentAPI.anchorRightOfPreviousMatchingMid(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.rightOfMid(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorRightOfPreviousMatchingBottom(padding: Float = 0f) {
+fun UIComponentAPI.anchorRightOfPreviousMatchingBottom(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.rightOfBottom(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorAbovePreviousMatchingLeft(padding: Float = 0f) {
+fun UIComponentAPI.anchorAbovePreviousMatchingLeft(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.aboveLeft(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorAbovePreviousMatchingMid(padding: Float = 0f) {
+fun UIComponentAPI.anchorAbovePreviousMatchingMid(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.aboveMid(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorAbovePreviousMatchingRight(padding: Float = 0f) {
+fun UIComponentAPI.anchorAbovePreviousMatchingRight(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.aboveRight(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorBelowPreviousMatchingLeft(padding: Float = 0f) {
+fun UIComponentAPI.anchorBelowPreviousMatchingLeft(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.belowLeft(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorBelowPreviousMatchingMid(padding: Float = 0f) {
+fun UIComponentAPI.anchorBelowPreviousMatchingMid(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.belowMid(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorBelowPreviousMatchingRight(padding: Float = 0f) {
+fun UIComponentAPI.anchorBelowPreviousMatchingRight(padding: Float = 0f) {
     parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.belowRight(it, padding) }
 }
 
-internal fun UIComponentAPI.anchorToPreviousMatchingCenter(xPad: Float = 0f, yPad: Float = 0f) {
+fun UIComponentAPI.anchorToPreviousMatchingCenter(xPad: Float = 0f, yPad: Float = 0f) {
     val parent = this.parent ?: return;
     val children = parent.getChildrenCopy(); if (children.size <= 1) return
     val anchor = children.dropLast(1).lastOrNull()
@@ -297,15 +297,15 @@ fun UIComponentAPI.addTooltip(
 
 
 // UIPanelAPI extensions that expose UIPanel methods
-internal fun UIPanelAPI.getChildrenCopy(): List<UIComponentAPI> {
+fun UIPanelAPI.getChildrenCopy(): List<UIComponentAPI> {
     return invoke("getChildrenCopy") as List<UIComponentAPI>
 }
 
-internal fun UIPanelAPI.getChildrenNonCopy(): List<UIComponentAPI> {
+fun UIPanelAPI.getChildrenNonCopy(): List<UIComponentAPI> {
     return invoke("getChildrenNonCopy") as List<UIComponentAPI>
 }
 
-internal fun UIPanelAPI.findChildWithMethod(methodName: String): UIComponentAPI? {
+fun UIPanelAPI.findChildWithMethod(methodName: String): UIComponentAPI? {
     return getChildrenCopy().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
 }
 
@@ -498,7 +498,7 @@ fun UIPanelAPI.addLabelledValue(
     return BoxedUIImage(labelledValue)
 }
 
-internal fun UIPanelAPI.addTextField(width: Float, height: Float, font: Font): TextFieldAPI {
+fun UIPanelAPI.addTextField(width: Float, height: Float, font: Font): TextFieldAPI {
     val tempPanel = Global.getSettings().createCustom(width, height, null)
     val tempTMAPI = tempPanel.createUIElement(width, height, false)
     val textField = tempTMAPI.addTextField(width, height, getFontPath(font), 0f)
@@ -580,7 +580,7 @@ fun UIPanelAPI.addCheckbox(
 // CustomPanelAPI implements the same Listener that a ButtonAPI requires,
 // A CustomPanel then happens to trigger its CustomUIPanelPlugin buttonPressed() method
 // thus we can map our functions into a CustomUIPanelPlugin, and have them be triggered
-internal class ButtonListener(button: ButtonAPI) : BaseCustomUIPanelPlugin() {
+class ButtonListener(button: ButtonAPI) : BaseCustomUIPanelPlugin() {
     private val onClickFunctions = mutableListOf<() -> Unit>()
 
     init {
@@ -602,7 +602,7 @@ internal class ButtonListener(button: ButtonAPI) : BaseCustomUIPanelPlugin() {
 }
 
 // Extension function for ButtonAPI
-internal fun ButtonAPI.onClick(function: () -> Unit) {
+fun ButtonAPI.onClick(function: () -> Unit) {
     // Use reflection to check if this button already has a listener
     val existingListener = invoke("getListener")
     if (existingListener is CustomPanelAPI && existingListener.plugin is ButtonListener) {
@@ -651,6 +651,6 @@ internal val ExtendableCustomUIPanelPlugin.xAlignOffset
 internal val ExtendableCustomUIPanelPlugin.yAlignOffset
     get() = customPanel.yAlignOffset
 
-internal fun CustomPanelAPI.setPlugin(plugin: CustomUIPanelPlugin) {
+fun CustomPanelAPI.setPlugin(plugin: CustomUIPanelPlugin) {
     set(value = plugin)
 }
