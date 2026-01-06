@@ -17,7 +17,7 @@ import starficz.*
 import starficz.ReflectionUtils.get
 import java.awt.Color
 
-//Copied and modified from AshLib
+//Copied and heavily modified from AshLib
 
 open class PopUpUI : CustomUIPanelPlugin {
     open val limit: Int = 5
@@ -199,64 +199,6 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     override fun renderBelow(alphaMult: Float) {
-        fun renderTiledTexture(
-            textureId: Int,
-            x: Float,
-            y: Float,
-            width: Float,
-            height: Float,
-            tileWidth: Float,
-            tileHeight: Float,
-            alphaMult: Float,
-            color: Color
-        ) {
-            if (textureId == 0) {
-                DisplayMessage.showError("Error: Invalid texture ID.")
-                return
-            }
-
-            GL11.glEnable(GL11.GL_TEXTURE_2D)
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId)
-
-            // Enable blending for alpha transparency
-            GL11.glEnable(GL11.GL_BLEND)
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-
-            // Set the texture to repeat
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT)
-
-            // Set nearest neighbor filtering to preserve the lines
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
-
-            // Calculate texture repeat factors based on the panel's size and the texture's tile size
-            val uMax: Float = width / tileWidth // Repeat in the X direction
-            val vMax: Float = height / tileHeight // Repeat in the Y direction
-
-            // Set color with alpha transparency
-            GL11.glColor4f(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), alphaMult)
-
-            // Render the panel with tiling
-            GL11.glBegin(GL11.GL_QUADS)
-            GL11.glTexCoord2f(0f, 0f)
-            GL11.glVertex2f(x, y) // Bottom-left
-            GL11.glTexCoord2f(uMax, 0f)
-            GL11.glVertex2f(x + width, y) // Bottom-right
-            GL11.glTexCoord2f(uMax, vMax)
-            GL11.glVertex2f(x + width, y + height) // Top-right
-            GL11.glTexCoord2f(0f, vMax)
-            GL11.glVertex2f(x, y + height) // Top-left
-            GL11.glEnd()
-
-            // Reset color to fully opaque to avoid affecting other renders
-            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
-
-            // Disable blending and textures
-            GL11.glDisable(GL11.GL_BLEND)
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
-        }
-
         if (isDialog) {
             blackBackground.setSize(getCoreUI(true)!!.width, getCoreUI()!!.height)
             blackBackground.color = Color.black
@@ -297,39 +239,39 @@ open class PopUpUI : CustomUIPanelPlugin {
         left.setSize(16f, 16f)
         right.setSize(16f, 16f)
 
-        top.setAlphaMult(currAlpha)
-        bot.setAlphaMult(currAlpha)
-        topLeft.setAlphaMult(currAlpha)
-        topRight.setAlphaMult(currAlpha)
-        bottomLeft.setAlphaMult(currAlpha)
-        bottomRight.setAlphaMult(currAlpha)
-        left.setAlphaMult(currAlpha)
-        right.setAlphaMult(currAlpha)
+        top.alphaMult = currAlpha
+        bot.alphaMult = currAlpha
+        topLeft.alphaMult = currAlpha
+        topRight.alphaMult = currAlpha
+        bottomLeft.alphaMult = currAlpha
+        bottomRight.alphaMult = currAlpha
+        left.alphaMult = currAlpha
+        right.alphaMult = currAlpha
 
-        val rightX = panel.getPosition().getX() + panel.getPosition().getWidth() - 16
-        val botX = panel.getPosition().getY() + 16
+        //val rightX = panel.getPosition().getX() + panel.getPosition().getWidth() - 16
+        val botX = panel.y + 16
         startStencilWithXPad(panel, 8f)
         run {
             var i = leftX
-            while (i <= panel.getPosition().getX() + panel.getPosition().getWidth()) {
-                top.renderAtCenter(i, panel.getPosition().getY() + panel.getPosition().getHeight())
-                bot.renderAtCenter(i, panel.getPosition().getY())
-                i += top.getWidth()
+            while (i <= panel.x + panel.width) {
+                top.renderAtCenter(i, panel.y + panel.height)
+                bot.renderAtCenter(i, panel.y)
+                i += top.width
             }
         }
         endStencil()
         startStencilWithYPad(panel, 8f)
         var i = botX
-        while (i <= panel.getPosition().getY() + panel.getPosition().getHeight()) {
-            left.renderAtCenter(panel.getPosition().getX(), i)
-            right.renderAtCenter(panel.getPosition().getX() + panel.getPosition().getWidth(), i)
-            i += top.getWidth()
+        while (i <= panel.y + panel.height) {
+            left.renderAtCenter(panel.x, i)
+            right.renderAtCenter(panel.x + panel.width, i)
+            i += top.width
         }
         endStencil()
-        topLeft.renderAtCenter(leftX - 16, panel.getPosition().getY() + panel.getPosition().getHeight())
-        topRight.renderAtCenter(panel.getPosition().getX() + panel.getPosition().getWidth(), panel.getPosition().getY() + panel.getPosition().getHeight())
-        bottomLeft.renderAtCenter(leftX - 16, panel.getPosition().getY())
-        bottomRight.renderAtCenter(panel.getPosition().getX() + panel.getPosition().getWidth(), panel.getPosition().getY())
+        topLeft.renderAtCenter(leftX - 16, panel.y + panel.height)
+        topRight.renderAtCenter(panel.x + panel.width, panel.y + panel.height)
+        bottomLeft.renderAtCenter(leftX - 16, panel.y)
+        bottomRight.renderAtCenter(panel.x + panel.width, panel.y)
     }
 
     companion object {
@@ -399,6 +341,64 @@ open class PopUpUI : CustomUIPanelPlugin {
 
         fun endStencil() {
             GL11.glDisable(GL11.GL_STENCIL_TEST)
+        }
+
+        fun renderTiledTexture(
+            textureId: Int,
+            x: Float,
+            y: Float,
+            width: Float,
+            height: Float,
+            tileWidth: Float,
+            tileHeight: Float,
+            alphaMult: Float,
+            color: Color
+        ) {
+            if (textureId == 0) {
+                DisplayMessage.showError("Error: Invalid texture ID.")
+                return
+            }
+
+            GL11.glEnable(GL11.GL_TEXTURE_2D)
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId)
+
+            // Enable blending for alpha transparency
+            GL11.glEnable(GL11.GL_BLEND)
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+
+            // Set the texture to repeat
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT)
+
+            // Set nearest neighbor filtering to preserve the lines
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+
+            // Calculate texture repeat factors based on the panel's size and the texture's tile size
+            val uMax: Float = width / tileWidth // Repeat in the X direction
+            val vMax: Float = height / tileHeight // Repeat in the Y direction
+
+            // Set color with alpha transparency
+            GL11.glColor4f(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), alphaMult)
+
+            // Render the panel with tiling
+            GL11.glBegin(GL11.GL_QUADS)
+            GL11.glTexCoord2f(0f, 0f)
+            GL11.glVertex2f(x, y) // Bottom-left
+            GL11.glTexCoord2f(uMax, 0f)
+            GL11.glVertex2f(x + width, y) // Bottom-right
+            GL11.glTexCoord2f(uMax, vMax)
+            GL11.glVertex2f(x + width, y + height) // Top-right
+            GL11.glTexCoord2f(0f, vMax)
+            GL11.glVertex2f(x, y + height) // Top-left
+            GL11.glEnd()
+
+            // Reset color to fully opaque to avoid affecting other renders
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
+
+            // Disable blending and textures
+            GL11.glDisable(GL11.GL_BLEND)
+            GL11.glDisable(GL11.GL_TEXTURE_2D)
         }
     }
 }
