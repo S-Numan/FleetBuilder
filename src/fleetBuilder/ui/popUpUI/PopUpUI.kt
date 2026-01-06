@@ -8,6 +8,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.FBMisc.isMouseWithinBounds
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import fleetBuilder.util.safeInvoke
@@ -20,33 +21,38 @@ import java.awt.Color
 //Copied and modified from AshLib
 
 open class PopUpUI : CustomUIPanelPlugin {
-    open var limit: Int = 5
-    open var totalFrames: Float = 0f
-    open var attemptedExit: Boolean = false
+    open val limit: Int = 5
 
-    open var blackBackground: SpriteAPI = Global.getSettings().getSprite("FleetBuilder", "white_square")
-    open var borders: SpriteAPI = Global.getSettings().getSprite("FleetBuilder", "white_square")
-    open var panelBackground: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_center")
-    open var bot: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot")
-    open var top: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top")
-    open var left: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_left")
-    open var right: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_right")
-    open var topLeft: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top_left")
-    open var topRight: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top_right")
-    open var bottomLeft: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot_left")
-    open var bottomRight: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot_right")
-    open var parent: UIPanelAPI? = null
     open var frames: Float = 0f
-    open lateinit var panel: CustomPanelAPI
-    open var rendererBorder: UILinesRenderer = UILinesRenderer(0f)
-    open var isDialog: Boolean = true
-    open var quitWithEscKey: Boolean = true
-
+    open var attemptedExit: Boolean = false
     open var reachedMaxHeight: Boolean = false
     open var originalSizeX: Float = 0f
     open var originalSizeY: Float = 0f
     open var x: Float = 0f
     open var y: Float = 0f
+
+    open lateinit var parent: UIPanelAPI
+    open lateinit var panel: CustomPanelAPI
+    open var isDialog: Boolean = true
+    open var quitWithEscKey: Boolean = true
+
+    open val rendererBorder: UILinesRenderer = UILinesRenderer(0f)
+
+    private val settings = Global.getSettings()
+
+    private fun sprite(cat: String, id: String) =
+        settings.getSprite(cat, id)
+
+    open val blackBackground = sprite("FleetBuilder", "white_square")
+    open val panelBackground = sprite("ui", "panel00_center")
+    open val bot = sprite("ui", "panel00_bot")
+    open val top = sprite("ui", "panel00_top")
+    open val left = sprite("ui", "panel00_left")
+    open val right = sprite("ui", "panel00_right")
+    open val topLeft = sprite("ui", "panel00_top_left")
+    open val topRight = sprite("ui", "panel00_top_right")
+    open val bottomLeft = sprite("ui", "panel00_bot_left")
+    open val bottomRight = sprite("ui", "panel00_bot_right")
 
     fun init(
         insertPanel: CustomPanelAPI,
@@ -56,14 +62,17 @@ open class PopUpUI : CustomUIPanelPlugin {
     ) {
         panel = insertPanel
 
-        this.parent = parent
+        this.parent = parent ?: run {
+            DisplayMessage.showError("parent was null when creating dialog")
+            return
+        }
 
         originalSizeX = panel.position.width
         originalSizeY = panel.position.height
 
         panel.position.setSize(16f, 16f)
 
-        parent!!.addComponent(panel).inTL(x, parent.position.height - y)
+        parent.addComponent(panel).inTL(x, parent.position.height - y)
         parent.bringComponentToTop(panel)
 
         rendererBorder.setPanel(panel)
@@ -139,12 +148,12 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     fun forceDismiss() {
-        parent!!.removeComponent(panel)
+        parent.removeComponent(panel)
         applyExitScript()
     }
 
     fun forceDismissNoExit() {
-        parent!!.removeComponent(panel)
+        parent.removeComponent(panel)
 
         placeholderDialog?.safeInvoke("dismiss", 0)
     }
