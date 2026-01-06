@@ -30,7 +30,6 @@ object PlayerSaveUtil {
         var inHyperAbilityId: String? = null
     )
 
-    //TODO, an option that enables grabbing things from your markets. Items in storage, ships in storage, items in industries. Then putting it all in an abandoned station somewhere in the new sector on load.
     fun createPlayerSaveJson(
         handleCargo: Boolean = true,
         handleRelations: Boolean = true,
