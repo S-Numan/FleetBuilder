@@ -3,7 +3,6 @@ package fleetBuilder.ui.popUpUI
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
-import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
@@ -200,32 +199,89 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     override fun renderBelow(alphaMult: Float) {
-        val renderer = TiledTextureRenderer(panelBackground.getTextureId())
-        if (isDialog) {
-            blackBackground.setSize(getCoreUI(true)!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
-            blackBackground.setColor(Color.black)
-            blackBackground.setAlphaMult(0.6f)
-            blackBackground.renderAtCenter(getCoreUI(true)!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
-            renderer.renderTiledTexture(
-                panel.getPosition().getX(),
-                panel.getPosition().getY(), panel.getPosition().getWidth(),
-                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
-                panelBackground.getTextureHeight(), (frames / limit) * 0.9f, Color.BLACK
-            )
-        } else {
-            renderer.renderTiledTexture(
-                panel.getPosition().getX(),
-                panel.getPosition().getY(), panel.getPosition().getWidth(),
-                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
-                panelBackground.getTextureHeight(), (frames / limit), panelBackground.getColor()
-            )
-        }
-        if (isDialog) {
-            renderBorders()
-        } else {
-            rendererBorder.render(alphaMult)
+        fun renderTiledTexture(
+            textureId: Int,
+            x: Float,
+            y: Float,
+            width: Float,
+            height: Float,
+            tileWidth: Float,
+            tileHeight: Float,
+            alphaMult: Float,
+            color: Color
+        ) {
+            if (textureId == 0) {
+                DisplayMessage.showError("Error: Invalid texture ID.")
+                return
+            }
+
+            GL11.glEnable(GL11.GL_TEXTURE_2D)
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId)
+
+            // Enable blending for alpha transparency
+            GL11.glEnable(GL11.GL_BLEND)
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+
+            // Set the texture to repeat
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT)
+
+            // Set nearest neighbor filtering to preserve the lines
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+
+            // Calculate texture repeat factors based on the panel's size and the texture's tile size
+            val uMax: Float = width / tileWidth // Repeat in the X direction
+            val vMax: Float = height / tileHeight // Repeat in the Y direction
+
+            // Set color with alpha transparency
+            GL11.glColor4f(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), alphaMult)
+
+            // Render the panel with tiling
+            GL11.glBegin(GL11.GL_QUADS)
+            GL11.glTexCoord2f(0f, 0f)
+            GL11.glVertex2f(x, y) // Bottom-left
+            GL11.glTexCoord2f(uMax, 0f)
+            GL11.glVertex2f(x + width, y) // Bottom-right
+            GL11.glTexCoord2f(uMax, vMax)
+            GL11.glVertex2f(x + width, y + height) // Top-right
+            GL11.glTexCoord2f(0f, vMax)
+            GL11.glVertex2f(x, y + height) // Top-left
+            GL11.glEnd()
+
+            // Reset color to fully opaque to avoid affecting other renders
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
+
+            // Disable blending and textures
+            GL11.glDisable(GL11.GL_BLEND)
+            GL11.glDisable(GL11.GL_TEXTURE_2D)
         }
 
+        if (isDialog) {
+            blackBackground.setSize(getCoreUI(true)!!.width, getCoreUI()!!.height)
+            blackBackground.color = Color.black
+            blackBackground.alphaMult = 0.6f
+            blackBackground.renderAtCenter(getCoreUI(true)!!.centerX, getCoreUI()!!.centerY)
+            renderTiledTexture(
+                panelBackground.textureId,
+                panel.x,
+                panel.y, panel.width,
+                panel.height, panelBackground.textureWidth,
+                panelBackground.textureHeight, (frames / limit) * 0.9f, Color.BLACK
+            )
+
+            renderBorders()
+        } else {
+            renderTiledTexture(
+                panelBackground.textureId,
+                panel.x,
+                panel.y, panel.width,
+                panel.height, panelBackground.textureWidth,
+                panelBackground.textureHeight, (frames / limit), panelBackground.color
+            )
+
+            rendererBorder.render(alphaMult)
+        }
     }
 
     fun renderBorders() {
