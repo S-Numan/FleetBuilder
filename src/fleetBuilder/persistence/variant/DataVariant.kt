@@ -326,9 +326,9 @@ object DataVariant {
 
         val hullSpec = settings.getHullSpec(data.hullId)
         val loadout = settings.createHullVariant(hullSpec)
-        loadout.source = VariantSource.REFIT
         loadout.weaponGroups.clear()
 
+        loadout.source = VariantSource.REFIT
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
