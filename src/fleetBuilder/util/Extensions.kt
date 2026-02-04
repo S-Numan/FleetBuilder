@@ -324,7 +324,8 @@ fun PersonAPI.isGenericOfficer(): Boolean {
     return !hasSkill
 }*/
 
-//This exists because createEmptyVariant does not create modules.
+// This exists because createEmptyVariant does not create modules.
+// Remember to change the source of the variant to VariantSource.REFIT if you don't want the variant to be forgotten between save games.
 fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
     return run {
         val effectiveHullID = hull.getEffectiveHullId()
