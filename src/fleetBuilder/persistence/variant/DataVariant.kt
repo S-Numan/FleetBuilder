@@ -2,6 +2,7 @@ package fleetBuilder.persistence.variant
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
@@ -325,6 +326,7 @@ object DataVariant {
 
         val hullSpec = settings.getHullSpec(data.hullId)
         val loadout = settings.createHullVariant(hullSpec)
+        loadout.source = VariantSource.REFIT
         loadout.weaponGroups.clear()
 
         loadout.hullVariantId = data.variantId
@@ -402,7 +404,8 @@ object DataVariant {
             }
 
             try { // It's hard to check for what module slots the HullSpec can support, so do this just in case to prevent crashes further ahead.
-                loadout.moduleSlots == null
+                @SuppressWarnings
+                loadout.moduleSlots == null // This isn't meant to be used, it is only meant to check for a crash by accessing loadout.moduleSlots
             } catch (_: Exception) {
                 showError("${loadout.hullSpec.hullId} Does not contain module slot $slotId. Removing variant to avoid crash")
                 return VariantLib.createErrorVariant("BAD_MODULE_SLOT:{$slotId}")

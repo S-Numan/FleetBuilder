@@ -120,7 +120,8 @@ Cheats must be enabled.",,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave -backup” in the console to load it.",,,Misc
-hideErrorMessages,Hide Error Messages,Boolean,false,,"If true, stops showing error message at the top of the screen.",,,Misc
+hideErrorMessages,Hide Error Messages,Boolean,false,,"If true, prevents error messages from appearing at the top of the screen.
+Error messages will still appear in the console and logs.",,,Misc
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,

@@ -309,12 +309,6 @@ fun String.startsWithJsonBracket(): Boolean {
     return false
 }
 
-
-//For optimization purposes
-internal fun UIPanelAPI.findChildWithMethodReversed(methodName: String): UIComponentAPI? {
-    return getChildrenCopy().asReversed().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
-}
-
 //internal fun UIPanelAPI.findChildWithField(fieldName: String): UIComponentAPI? {
 //    return getChildrenCopy().find { it.getFieldsMatching(name = fieldName).isNotEmpty() }
 //}
@@ -330,7 +324,8 @@ fun PersonAPI.isGenericOfficer(): Boolean {
     return !hasSkill
 }*/
 
-//This exists because createEmptyVariant does not create modules.
+// This exists because createEmptyVariant does not create modules.
+// Remember to change the source of the variant to VariantSource.REFIT if you don't want the variant to be forgotten between save games.
 fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
     return run {
         val effectiveHullID = hull.getEffectiveHullId()
@@ -368,7 +363,7 @@ fun ShipHullSpecAPI.createHullVariant(): ShipVariantAPI {
 }
 
 
-fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
+internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
     val target = if (this is BoxedUIElement) this.boxedElement else this
     val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
     val reflectedMethods = target.getMethodsMatching(name, parameterTypes = paramTypes)
@@ -387,6 +382,11 @@ fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
         )
         return null
     } else return reflectedMethods[0].invoke(target, *args)
+}
+
+//For optimization purposes
+internal fun UIPanelAPI.findChildWithMethodReversed(methodName: String): UIComponentAPI? {
+    return getChildrenCopy().asReversed().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
 }
 
 fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> {

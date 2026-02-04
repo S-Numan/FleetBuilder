@@ -48,9 +48,6 @@ object DisplayMessage {
             } else {
                 Console.showMessage(full, Level.ERROR)
             }
-
-            //CampaignEngine.getInstance().campaignUI.messageList.messages.forEach { message -> }//TODO, remove console message in bottom left messages.
-            //Global.getSector().campaignUI.messageDisplay.removeMessage(short)
         } else {
             Global.getLogger(this.javaClass).error(full)
         }

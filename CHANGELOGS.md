@@ -1,3 +1,7 @@
+## 1.27.1
+- Fix copy pasted variants loading improperly after saving and loading a game.
+- Minor internal tweaks.
+
 ## 1.27.0
 - CTRL + V in combat to paste the copied variant/member into combat. This requires cheats to be on if in regular combat, but you can mostly do it freely in the simulator with only some exceptions (E.G: ships you wouldn't be able to simulate anyway).
 - No longer pause the game after exiting a dialog in the campaign if you were not originally paused.

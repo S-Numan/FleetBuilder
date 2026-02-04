@@ -43,12 +43,6 @@ class DialogUtil : EveryFrameCombatPlugin {
             return false
         }
 
-        private fun prependDialogToShow(dialog: PopUpUI, width: Float, height: Float) {
-            dialogsToShow.add(0, Triple(dialog, width, height))
-        }
-
-        private val dialogsToShow: MutableList<Triple<PopUpUI, Float, Float>> = mutableListOf()
-
         private fun initDialog(
             coreUI: UIPanelAPI,
             dialog: PopUpUI,
@@ -72,6 +66,12 @@ class DialogUtil : EveryFrameCombatPlugin {
                 parent ?: coreUI
             )
         }
+
+        private fun prependDialogToShow(dialog: PopUpUI, width: Float, height: Float) {
+            dialogsToShow.add(0, Triple(dialog, width, height))
+        }
+
+        private val dialogsToShow: MutableList<Triple<PopUpUI, Float, Float>> = mutableListOf()
     }
 
     override fun advance(

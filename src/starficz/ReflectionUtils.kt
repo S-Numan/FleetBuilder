@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap
 // Credits to Lukas04 for his ReflectionUtils, Lyravega, Float, and Andylizi for the original idea.
 
 /**
- * An internal reflection utility designed specifically for Starsector modding.
+ * A reflection utility designed specifically for Starsector modding.
  *
  * This object provides functions to find and interact with fields, methods, and constructors
  * in potentially obfuscated code. It circumvents classloader restrictions on using `java.lang.reflect`
@@ -251,19 +251,24 @@ internal object ReflectionUtils {
     @JvmSynthetic
     @JvmName("ExtensionGet")
     fun Any.get(name: String? = null, type: Class<*>? = null, searchSuperclass: Boolean = false): Any? {
-        val target = if (this is BoxedUIElement) this.boxedElement else this
-        val reflectedFields = target.getFieldsMatching(name, fieldAssignableTo = type, searchSuperclass = searchSuperclass)
+        val reflectedFields = this.getFieldsMatching(name, fieldAssignableTo = type, searchSuperclass = searchSuperclass)
         if (reflectedFields.isEmpty())
             throw IllegalArgumentException(
-                "No field found for name: '${name ?: "<any>"}' on class: ${target::class.java.name} " +
+                "No field found for name: '${name ?: "<any>"}' on class: ${this::class.java.name} " +
                         "that is assignable to type: '${type?.name ?: "<any>"}'."
             )
         else if (reflectedFields.size > 1)
             throw IllegalArgumentException(
-                "Ambiguous fields with name: '${name ?: "<any>"}' on class ${target::class.java.name} " +
+                "Ambiguous fields with name: '${name ?: "<any>"}' on class ${this::class.java.name} " +
                         "assignable to type: '${type?.name ?: "<any>"}'. Multiple fields match."
             )
-        else return reflectedFields[0].get(target)
+        else return reflectedFields[0].get(this)
+    }
+
+    @JvmSynthetic
+    @JvmName("ExtensionDirectGet")
+    fun Any.get(reflectedField: ReflectedField): Any? {
+        return reflectedField.get(this)
     }
 
     /**
@@ -309,20 +314,25 @@ internal object ReflectionUtils {
     @JvmSynthetic
     @JvmName("ExtensionSet")
     fun Any.set(name: String? = null, value: Any?, searchSuperclass: Boolean = false) {
-        val target = if (this is BoxedUIElement) this.boxedElement else this
         val valueType = value?.let { it::class.javaPrimitiveType ?: it::class.java }
-        val reflectedFields = target.getFieldsMatching(name, fieldAccepts = valueType, searchSuperclass = searchSuperclass)
+        val reflectedFields = this.getFieldsMatching(name, fieldAccepts = valueType, searchSuperclass = searchSuperclass)
         if (reflectedFields.isEmpty())
             throw IllegalArgumentException(
-                "No field found for name: '${name ?: "<any>"}' on class: ${target::class.java.name} " +
+                "No field found for name: '${name ?: "<any>"}' on class: ${this::class.java.name} " +
                         "that accepts type: '${valueType?.name ?: "null"}'."
             )
         else if (reflectedFields.size > 1)
             throw IllegalArgumentException(
-                "Ambiguous fields with name: '${name ?: "<any>"}' on class: ${target::class.java.name} " +
+                "Ambiguous fields with name: '${name ?: "<any>"}' on class: ${this::class.java.name} " +
                         "accepting type: '${valueType?.name ?: "null"}'. Multiple fields match."
             )
-        else return reflectedFields[0].set(target, value)
+        else return reflectedFields[0].set(this, value)
+    }
+
+    @JvmSynthetic
+    @JvmName("ExtensionDirectSet")
+    fun Any.set(reflectedField: ReflectedField, value: Any?) {
+        reflectedField.set(this, value)
     }
 
     private fun getAllFields(clazz: Class<*>): Set<Any> {
@@ -694,20 +704,25 @@ internal object ReflectionUtils {
     @JvmSynthetic
     @JvmName("ExtensionInvoke")
     fun Any.invoke(name: String? = null, vararg args: Any?): Any? {
-        val target = if (this is BoxedUIElement) this.boxedElement else this
         val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
-        val reflectedMethods = target.getMethodsMatching(name, parameterTypes = paramTypes)
+        val reflectedMethods = this.getMethodsMatching(name, parameterTypes = paramTypes)
         if (reflectedMethods.isEmpty())
             throw IllegalArgumentException(
-                "No method found for name: '$name' on class: ${target::class.java.name} " +
+                "No method found for name: '$name' on class: ${this::class.java.name} " +
                         "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}"
             )
         else if (reflectedMethods.size > 1)
             throw IllegalArgumentException(
-                "Ambiguous method call for name: '$name' on class: ${target::class.java.name}. " +
+                "Ambiguous method call for name: '$name' on class: ${this::class.java.name}. " +
                         "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
             )
-        else return reflectedMethods[0].invoke(target, *args)
+        else return reflectedMethods[0].invoke(this, *args)
+    }
+
+    @JvmSynthetic
+    @JvmName("ExtensionDirectInvoke")
+    fun Any.invoke(reflectedMethod: ReflectedMethod, vararg args: Any?): Any? {
+        return reflectedMethod.invoke(this, *args)
     }
 
     /**
@@ -1095,11 +1110,13 @@ internal object ReflectionUtils {
             numOfParams = numOfParams,
             parameterTypes = parameterTypes
         )
+
+        val accessibleConstructors: Set<Any> = this.declaredConstructors.toSet()
         return ReflectedConstructorsCache.getOrPut(cacheKey) {
-            (this.declaredConstructors.toSet() as Set<Any>).filter { constructor ->
+            accessibleConstructors.filter { constructor ->
                 // Get actual parameters
                 @Suppress("UNCHECKED_CAST")
-                val actualParamTypes = getConstructorParametersHandle.invoke(constructor) as Array<Class<*>> // Example handle
+                val actualParamTypes = getConstructorParametersHandle.invoke(constructor) as Array<Class<*>>
 
                 // Check num of params
                 if (numOfParams != null && numOfParams != actualParamTypes.size) return@filter false
@@ -1117,6 +1134,7 @@ internal object ReflectionUtils {
                 return@filter true
             }.map { ReflectedConstructor(it) }
         }
+
     }
 
 
@@ -1141,9 +1159,8 @@ internal object ReflectionUtils {
          * @return The value of the field. Primitive types will be boxed. Returns `null` if the field value is `null`.
          */
         fun get(instance: Any?): Any? {
-            val target = if (instance is BoxedUIElement) instance.boxedElement else instance
             setFieldAccessibleHandle.invoke(field, true)
-            return getFieldHandle.invoke(field, target)
+            return getFieldHandle.invoke(field, instance)
         }
 
         /**
@@ -1154,9 +1171,8 @@ internal object ReflectionUtils {
          * @param value The new value to assign to the field.
          */
         fun set(instance: Any?, value: Any?) {
-            val target = if (instance is BoxedUIElement) instance.boxedElement else instance
             setFieldAccessibleHandle.invoke(field, true)
-            setFieldHandle.invoke(field, target, value)
+            setFieldHandle.invoke(field, instance, value)
         }
     }
 
@@ -1186,9 +1202,8 @@ internal object ReflectionUtils {
          *         has a `void` return type or explicitly returns `null`.
          */
         fun invoke(instance: Any?, vararg arguments: Any?): Any? {
-            val target = if (instance is BoxedUIElement) instance.boxedElement else instance
             setMethodAccessibleHandle.invoke(method, true)
-            return invokeMethodHandle.invoke(method, target, arguments)
+            return invokeMethodHandle.invoke(method, instance, arguments)
         }
     }
 

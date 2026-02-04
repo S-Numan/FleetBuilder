@@ -3,11 +3,11 @@ package fleetBuilder.ui.popUpUI
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
-import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.util.DisplayMessage
 import fleetBuilder.util.FBMisc.isMouseWithinBounds
 import fleetBuilder.util.ReflectionMisc.getCoreUI
 import fleetBuilder.util.safeInvoke
@@ -17,36 +17,41 @@ import starficz.*
 import starficz.ReflectionUtils.get
 import java.awt.Color
 
-//Copied and modified from AshLib
+//Copied and heavily modified from AshLib
 
 open class PopUpUI : CustomUIPanelPlugin {
-    open var limit: Int = 5
-    open var totalFrames: Float = 0f
-    open var attemptedExit: Boolean = false
+    open val limit: Int = 5
 
-    open var blackBackground: SpriteAPI = Global.getSettings().getSprite("FleetBuilder", "white_square")
-    open var borders: SpriteAPI = Global.getSettings().getSprite("FleetBuilder", "white_square")
-    open var panelBackground: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_center")
-    open var bot: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot")
-    open var top: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top")
-    open var left: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_left")
-    open var right: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_right")
-    open var topLeft: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top_left")
-    open var topRight: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_top_right")
-    open var bottomLeft: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot_left")
-    open var bottomRight: SpriteAPI = Global.getSettings().getSprite("ui", "panel00_bot_right")
-    open var parent: UIPanelAPI? = null
     open var frames: Float = 0f
-    open lateinit var panel: CustomPanelAPI
-    open var rendererBorder: UILinesRenderer = UILinesRenderer(0f)
-    open var isDialog: Boolean = true
-    open var quitWithEscKey: Boolean = true
-
+    open var attemptedExit: Boolean = false
     open var reachedMaxHeight: Boolean = false
     open var originalSizeX: Float = 0f
     open var originalSizeY: Float = 0f
     open var x: Float = 0f
     open var y: Float = 0f
+
+    open lateinit var parent: UIPanelAPI
+    open lateinit var panel: CustomPanelAPI
+    open var isDialog: Boolean = true
+    open var quitWithEscKey: Boolean = true
+
+    open val rendererBorder: UILinesRenderer = UILinesRenderer(0f)
+
+    private val settings = Global.getSettings()
+
+    private fun sprite(cat: String, id: String) =
+        settings.getSprite(cat, id)
+
+    open val blackBackground = sprite("FleetBuilder", "white_square")
+    open val panelBackground = sprite("ui", "panel00_center")
+    open val bot = sprite("ui", "panel00_bot")
+    open val top = sprite("ui", "panel00_top")
+    open val left = sprite("ui", "panel00_left")
+    open val right = sprite("ui", "panel00_right")
+    open val topLeft = sprite("ui", "panel00_top_left")
+    open val topRight = sprite("ui", "panel00_top_right")
+    open val bottomLeft = sprite("ui", "panel00_bot_left")
+    open val bottomRight = sprite("ui", "panel00_bot_right")
 
     fun init(
         insertPanel: CustomPanelAPI,
@@ -56,14 +61,17 @@ open class PopUpUI : CustomUIPanelPlugin {
     ) {
         panel = insertPanel
 
-        this.parent = parent
+        this.parent = parent ?: run {
+            DisplayMessage.showError("parent was null when creating dialog")
+            return
+        }
 
         originalSizeX = panel.position.width
         originalSizeY = panel.position.height
 
         panel.position.setSize(16f, 16f)
 
-        parent!!.addComponent(panel).inTL(x, parent.position.height - y)
+        parent.addComponent(panel).inTL(x, parent.position.height - y)
         parent.bringComponentToTop(panel)
 
         rendererBorder.setPanel(panel)
@@ -139,12 +147,12 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     fun forceDismiss() {
-        parent!!.removeComponent(panel)
+        parent.removeComponent(panel)
         applyExitScript()
     }
 
     fun forceDismissNoExit() {
-        parent!!.removeComponent(panel)
+        parent.removeComponent(panel)
 
         placeholderDialog?.safeInvoke("dismiss", 0)
     }
@@ -191,32 +199,31 @@ open class PopUpUI : CustomUIPanelPlugin {
     }
 
     override fun renderBelow(alphaMult: Float) {
-        val renderer = TiledTextureRenderer(panelBackground.getTextureId())
         if (isDialog) {
-            blackBackground.setSize(getCoreUI(true)!!.getPosition().getWidth(), getCoreUI()!!.getPosition().getHeight())
-            blackBackground.setColor(Color.black)
-            blackBackground.setAlphaMult(0.6f)
-            blackBackground.renderAtCenter(getCoreUI(true)!!.getPosition().getCenterX(), getCoreUI()!!.getPosition().getCenterY())
-            renderer.renderTiledTexture(
-                panel.getPosition().getX(),
-                panel.getPosition().getY(), panel.getPosition().getWidth(),
-                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
-                panelBackground.getTextureHeight(), (frames / limit) * 0.9f, Color.BLACK
+            blackBackground.setSize(getCoreUI(true)!!.width, getCoreUI()!!.height)
+            blackBackground.color = Color.black
+            blackBackground.alphaMult = 0.6f
+            blackBackground.renderAtCenter(getCoreUI(true)!!.centerX, getCoreUI()!!.centerY)
+            renderTiledTexture(
+                panelBackground.textureId,
+                panel.x,
+                panel.y, panel.width,
+                panel.height, panelBackground.textureWidth,
+                panelBackground.textureHeight, (frames / limit) * 0.9f, Color.BLACK
             )
-        } else {
-            renderer.renderTiledTexture(
-                panel.getPosition().getX(),
-                panel.getPosition().getY(), panel.getPosition().getWidth(),
-                panel.getPosition().getHeight(), panelBackground.getTextureWidth(),
-                panelBackground.getTextureHeight(), (frames / limit), panelBackground.getColor()
-            )
-        }
-        if (isDialog) {
+
             renderBorders()
         } else {
+            renderTiledTexture(
+                panelBackground.textureId,
+                panel.x,
+                panel.y, panel.width,
+                panel.height, panelBackground.textureWidth,
+                panelBackground.textureHeight, (frames / limit), panelBackground.color
+            )
+
             rendererBorder.render(alphaMult)
         }
-
     }
 
     fun renderBorders() {
@@ -232,39 +239,39 @@ open class PopUpUI : CustomUIPanelPlugin {
         left.setSize(16f, 16f)
         right.setSize(16f, 16f)
 
-        top.setAlphaMult(currAlpha)
-        bot.setAlphaMult(currAlpha)
-        topLeft.setAlphaMult(currAlpha)
-        topRight.setAlphaMult(currAlpha)
-        bottomLeft.setAlphaMult(currAlpha)
-        bottomRight.setAlphaMult(currAlpha)
-        left.setAlphaMult(currAlpha)
-        right.setAlphaMult(currAlpha)
+        top.alphaMult = currAlpha
+        bot.alphaMult = currAlpha
+        topLeft.alphaMult = currAlpha
+        topRight.alphaMult = currAlpha
+        bottomLeft.alphaMult = currAlpha
+        bottomRight.alphaMult = currAlpha
+        left.alphaMult = currAlpha
+        right.alphaMult = currAlpha
 
-        val rightX = panel.getPosition().getX() + panel.getPosition().getWidth() - 16
-        val botX = panel.getPosition().getY() + 16
+        //val rightX = panel.getPosition().getX() + panel.getPosition().getWidth() - 16
+        val botX = panel.y + 16
         startStencilWithXPad(panel, 8f)
         run {
             var i = leftX
-            while (i <= panel.getPosition().getX() + panel.getPosition().getWidth()) {
-                top.renderAtCenter(i, panel.getPosition().getY() + panel.getPosition().getHeight())
-                bot.renderAtCenter(i, panel.getPosition().getY())
-                i += top.getWidth()
+            while (i <= panel.x + panel.width) {
+                top.renderAtCenter(i, panel.y + panel.height)
+                bot.renderAtCenter(i, panel.y)
+                i += top.width
             }
         }
         endStencil()
         startStencilWithYPad(panel, 8f)
         var i = botX
-        while (i <= panel.getPosition().getY() + panel.getPosition().getHeight()) {
-            left.renderAtCenter(panel.getPosition().getX(), i)
-            right.renderAtCenter(panel.getPosition().getX() + panel.getPosition().getWidth(), i)
-            i += top.getWidth()
+        while (i <= panel.y + panel.height) {
+            left.renderAtCenter(panel.x, i)
+            right.renderAtCenter(panel.x + panel.width, i)
+            i += top.width
         }
         endStencil()
-        topLeft.renderAtCenter(leftX - 16, panel.getPosition().getY() + panel.getPosition().getHeight())
-        topRight.renderAtCenter(panel.getPosition().getX() + panel.getPosition().getWidth(), panel.getPosition().getY() + panel.getPosition().getHeight())
-        bottomLeft.renderAtCenter(leftX - 16, panel.getPosition().getY())
-        bottomRight.renderAtCenter(panel.getPosition().getX() + panel.getPosition().getWidth(), panel.getPosition().getY())
+        topLeft.renderAtCenter(leftX - 16, panel.y + panel.height)
+        topRight.renderAtCenter(panel.x + panel.width, panel.y + panel.height)
+        bottomLeft.renderAtCenter(leftX - 16, panel.y)
+        bottomRight.renderAtCenter(panel.x + panel.width, panel.y)
     }
 
     companion object {
@@ -334,6 +341,64 @@ open class PopUpUI : CustomUIPanelPlugin {
 
         fun endStencil() {
             GL11.glDisable(GL11.GL_STENCIL_TEST)
+        }
+
+        fun renderTiledTexture(
+            textureId: Int,
+            x: Float,
+            y: Float,
+            width: Float,
+            height: Float,
+            tileWidth: Float,
+            tileHeight: Float,
+            alphaMult: Float,
+            color: Color
+        ) {
+            if (textureId == 0) {
+                DisplayMessage.showError("Error: Invalid texture ID.")
+                return
+            }
+
+            GL11.glEnable(GL11.GL_TEXTURE_2D)
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId)
+
+            // Enable blending for alpha transparency
+            GL11.glEnable(GL11.GL_BLEND)
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+
+            // Set the texture to repeat
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT)
+
+            // Set nearest neighbor filtering to preserve the lines
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+
+            // Calculate texture repeat factors based on the panel's size and the texture's tile size
+            val uMax: Float = width / tileWidth // Repeat in the X direction
+            val vMax: Float = height / tileHeight // Repeat in the Y direction
+
+            // Set color with alpha transparency
+            GL11.glColor4f(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), alphaMult)
+
+            // Render the panel with tiling
+            GL11.glBegin(GL11.GL_QUADS)
+            GL11.glTexCoord2f(0f, 0f)
+            GL11.glVertex2f(x, y) // Bottom-left
+            GL11.glTexCoord2f(uMax, 0f)
+            GL11.glVertex2f(x + width, y) // Bottom-right
+            GL11.glTexCoord2f(uMax, vMax)
+            GL11.glVertex2f(x + width, y + height) // Top-right
+            GL11.glTexCoord2f(0f, vMax)
+            GL11.glVertex2f(x, y + height) // Top-left
+            GL11.glEnd()
+
+            // Reset color to fully opaque to avoid affecting other renders
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
+
+            // Disable blending and textures
+            GL11.glDisable(GL11.GL_BLEND)
+            GL11.glDisable(GL11.GL_TEXTURE_2D)
         }
     }
 }
