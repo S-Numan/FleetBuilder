@@ -92,6 +92,10 @@ object ReflectionMisc {
         return shipDisplay.safeInvoke("getCurrentVariant") as? ShipVariantAPI
     }
 
+    fun getCurrentMemberInRefitTab(): FleetMemberAPI? {
+        return getRefitPanel()?.safeInvoke("getMember") as? FleetMemberAPI
+    }
+
     fun getFleetTab(): UIPanelAPI? {
         val campaignState = Global.getSector().campaignUI
         return if (campaignState?.getActualCurrentTab() != CoreUITabId.FLEET)
