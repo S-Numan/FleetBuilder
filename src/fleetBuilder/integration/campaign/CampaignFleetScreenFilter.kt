@@ -5,8 +5,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.ui.FleetFilterPanel
-import fleetBuilder.ui.FleetFilterPanel.Companion.removePreviousIfAny
+import fleetBuilder.ui.filterPanels.FleetFilterPanel
+import fleetBuilder.ui.filterPanels.FleetFilterPanel.Companion.removePreviousIfAny
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import starficz.getChildrenCopy

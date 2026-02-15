@@ -4,7 +4,7 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.ui.ModPickerFilterPanel
+import fleetBuilder.ui.filterPanels.ModPickerFilterPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
