@@ -21,7 +21,7 @@ import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.util.lib.ObservedTextField
+import fleetBuilder.ui.misc.ObservedTextField
 import fleetBuilder.variants.VariantLib
 import fleetBuilder.variants.VariantLib.getAllDMods
 import org.apache.log4j.Level

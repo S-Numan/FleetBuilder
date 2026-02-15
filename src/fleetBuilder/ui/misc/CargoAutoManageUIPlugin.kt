@@ -1,4 +1,4 @@
-package fleetBuilder.ui
+package fleetBuilder.ui.misc
 
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
@@ -19,6 +19,7 @@ import fleetBuilder.util.addToggle
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import starficz.*
+import kotlin.text.iterator
 
 //The implementation of this is extremely scuffed, I am aware.
 

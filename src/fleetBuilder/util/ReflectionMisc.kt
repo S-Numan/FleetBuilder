@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
+import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -87,9 +88,12 @@ object ReflectionMisc {
         return desiredChild?.findChildWithMethod("removeNotApplicableMods") as? ModWidget
     }
 
+    fun getShipDisplayInRefitTab(): UIPanelAPI? {
+        return getRefitPanel()?.safeInvoke("getShipDisplay") as? UIPanelAPI
+    }
+
     fun getCurrentVariantInRefitTab(): ShipVariantAPI? {
-        val shipDisplay = getRefitPanel()?.safeInvoke("getShipDisplay") as? UIPanelAPI ?: return null
-        return shipDisplay.safeInvoke("getCurrentVariant") as? ShipVariantAPI
+        return getShipDisplayInRefitTab()?.safeInvoke("getCurrentVariant") as? ShipVariantAPI
     }
 
     fun getCurrentMemberInRefitTab(): FleetMemberAPI? {

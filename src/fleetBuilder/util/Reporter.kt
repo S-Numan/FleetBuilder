@@ -11,6 +11,11 @@ import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CargoAutoManager
 import fleetBuilder.features.CommanderShuttle
 import fleetBuilder.integration.campaign.*
+import fleetBuilder.integration.campaign.ui.CampaignAutofitAdder
+import fleetBuilder.integration.campaign.ui.CampaignCodexButton
+import fleetBuilder.integration.campaign.ui.CampaignFleetScreenFilter
+import fleetBuilder.integration.campaign.ui.CampaignModPickerFilter
+import fleetBuilder.integration.campaign.ui.CargoAutoManagerOpener
 import fleetBuilder.integration.save.MakeSaveRemovable
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker

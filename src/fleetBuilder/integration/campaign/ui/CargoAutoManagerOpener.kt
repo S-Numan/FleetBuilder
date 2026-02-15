@@ -1,4 +1,4 @@
-package fleetBuilder.integration.campaign
+package fleetBuilder.integration.campaign.ui
 
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global

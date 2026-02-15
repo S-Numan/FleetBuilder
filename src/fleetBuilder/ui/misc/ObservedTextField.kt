@@ -1,4 +1,4 @@
-package fleetBuilder.util.lib
+package fleetBuilder.ui.misc
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin

@@ -19,7 +19,7 @@ import fleetBuilder.config.ModSettings
 import fleetBuilder.persistence.fleet.DataFleet
 import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.persistence.fleet.FleetSettings
-import fleetBuilder.ui.CargoAutoManageUIPlugin
+import fleetBuilder.ui.misc.CargoAutoManageUIPlugin
 import fleetBuilder.ui.autofit.AutofitPanel
 import fleetBuilder.ui.autofit.AutofitSelector
 import fleetBuilder.ui.autofit.AutofitSpec

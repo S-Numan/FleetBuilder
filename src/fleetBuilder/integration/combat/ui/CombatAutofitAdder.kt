@@ -1,5 +1,4 @@
-package fleetBuilder.integration.combat
-
+package fleetBuilder.integration.combat.ui
 
 import MagicLib.ReflectionUtilsExtra
 import com.fs.starfarer.api.GameState
