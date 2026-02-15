@@ -1,4 +1,4 @@
-package fleetBuilder.util
+package fleetBuilder
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
@@ -10,13 +10,17 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.config.ModSettings
 import fleetBuilder.features.CargoAutoManager
 import fleetBuilder.features.CommanderShuttle
-import fleetBuilder.integration.campaign.*
-import fleetBuilder.integration.campaign.ui.CampaignAutofitAdder
-import fleetBuilder.integration.campaign.ui.CampaignCodexButton
-import fleetBuilder.integration.campaign.ui.CampaignFleetScreenFilter
-import fleetBuilder.integration.campaign.ui.CampaignModPickerFilter
-import fleetBuilder.integration.campaign.ui.CargoAutoManagerOpener
+import fleetBuilder.integration.campaign.injection.CampaignCodexButton
+import fleetBuilder.integration.campaign.injection.CampaignFleetScreenFilter
+import fleetBuilder.integration.campaign.injection.CampaignModPickerFilter
+import fleetBuilder.integration.campaign.listener.CampaignAutofitAdder
+import fleetBuilder.integration.campaign.listener.CampaignClipboardHotkeyHandler
+import fleetBuilder.integration.campaign.listener.CargoAutoManagerOpener
+import fleetBuilder.integration.campaign.listener.CatchStoreMemberButton
+import fleetBuilder.integration.campaign.listener.RemoveRefitHullmod
+import fleetBuilder.integration.campaign.listener.UnstoreOfficersInCargo
 import fleetBuilder.integration.save.MakeSaveRemovable
+import fleetBuilder.util.PlayerSaveUtil
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.variants.LoadoutManager

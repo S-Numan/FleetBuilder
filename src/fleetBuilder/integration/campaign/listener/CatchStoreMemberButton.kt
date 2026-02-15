@@ -1,4 +1,4 @@
-package fleetBuilder.integration.campaign
+package fleetBuilder.integration.campaign.listener
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId

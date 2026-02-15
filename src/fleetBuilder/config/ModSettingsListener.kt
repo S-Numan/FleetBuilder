@@ -30,7 +30,7 @@ import fleetBuilder.config.ModSettings.showCoreNonGoalVariants
 import fleetBuilder.config.ModSettings.showDebug
 import fleetBuilder.config.ModSettings.showHiddenModsInTooltip
 import fleetBuilder.config.ModSettings.storeOfficersInCargo
-import fleetBuilder.util.Reporter
+import fleetBuilder.Reporter
 import fleetBuilder.variants.LoadoutManager
 import fleetBuilder.variants.LoadoutManager.generatePrefixes
 import fleetBuilder.variants.VariantLib

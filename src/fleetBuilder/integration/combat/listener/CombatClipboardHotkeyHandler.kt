@@ -1,4 +1,4 @@
-package fleetBuilder.integration.combat
+package fleetBuilder.integration.combat.listener
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
@@ -13,25 +13,22 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.mission.FleetSide
-import com.fs.starfarer.api.util.Misc
 import fleetBuilder.config.FBTxt
 import fleetBuilder.config.ModSettings
-import fleetBuilder.config.ModSettings.fleetClipboardHotkeyHandler
 import fleetBuilder.persistence.member.DataMember
-import fleetBuilder.persistence.member.DataMember.buildMemberFull
 import fleetBuilder.persistence.variant.DataVariant
-import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
-import fleetBuilder.util.*
-import fleetBuilder.util.FBMisc.handleRefitCopy
-import fleetBuilder.util.FBMisc.handleRefitPaste
-import fleetBuilder.util.ReflectionMisc.getCodexDialog
+import fleetBuilder.util.ClipboardMisc
+import fleetBuilder.util.DialogUtil
+import fleetBuilder.util.Dialogs
+import fleetBuilder.util.DisplayMessage
+import fleetBuilder.util.FBMisc
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.variants.MissingElements
 import fleetBuilder.variants.reportMissingElementsIfAny
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector2f
 import java.awt.Color
-import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -41,7 +38,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
         amount: Float,
         events: List<InputEventAPI>
     ) {
-        if (!fleetClipboardHotkeyHandler) return
+        if (!ModSettings.fleetClipboardHotkeyHandler) return
 
         for (event in events) {
             if (event.isConsumed) continue
@@ -49,20 +46,20 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                 if (event.isCtrlDown) {
                     if (event.eventValue == Keyboard.KEY_C) {
                         try {
-                            val codex = getCodexDialog()
+                            val codex = ReflectionMisc.getCodexDialog()
 
                             if (codex != null) {
                                 ClipboardMisc.codexEntryToClipboard(codex)
                                 event.consume(); continue
                             }
-                            if (handleRefitCopy(event.isShiftDown))
+                            if (FBMisc.handleRefitCopy(event.isShiftDown))
                                 event.consume()
 
                         } catch (e: Exception) {
                             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
-                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.isPopUpUIOpen() && !ReflectionMisc.isCodexOpen()) {
+                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.Companion.isPopUpUIOpen() && !ReflectionMisc.isCodexOpen()) {
                             Dialogs.createDevModeDialog()
                             event.consume()
                             continue
@@ -73,8 +70,8 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             event.consume()
                             continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
-                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtil.isPopUpUIOpen())
-                                if (handleRefitPaste())
+                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtil.Companion.isPopUpUIOpen())
+                                if (FBMisc.handleRefitPaste())
                                     event.consume()
 
                             continue
@@ -206,7 +203,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
         when (element) {
             is DataVariant.ParsedVariantData -> {
-                val variant = buildVariantFull(element, missing = missing)
+                val variant = DataVariant.buildVariantFull(element, missing = missing)
                 member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variant)
                 member.crewComposition.addCrew(member.neededCrew)
                 member.repairTracker.cr = 0.7f
@@ -214,7 +211,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
             is DataMember.ParsedMemberData -> {
                 if (element.variantData != null)
-                    member = buildMemberFull(element, missing = missing)
+                    member = DataMember.buildMemberFull(element, missing = missing)
                 member!!.crewComposition.addCrew(member.neededCrew)
             }
         }

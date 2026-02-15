@@ -1,4 +1,4 @@
-package fleetBuilder.integration.campaign.ui
+package fleetBuilder.integration.campaign.listener
 
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
@@ -12,7 +12,11 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.util.*
+import fleetBuilder.util.DialogUtil
+import fleetBuilder.util.Dialogs
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.getActualCurrentTab
+import fleetBuilder.util.safeInvoke
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.findChildWithMethod
 import starficz.getChildrenCopy
@@ -34,7 +38,7 @@ class CargoAutoManagerOpener : CampaignInputListener {
     }
 
     private fun handleCargoMouseEvents(event: InputEventAPI, sector: SectorAPI) {
-        if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
+        if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtil.Companion.isPopUpUIOpen()) return
 
         val cargoTab = ReflectionMisc.getCargoTab() ?: return
 

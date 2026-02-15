@@ -1,4 +1,4 @@
-package fleetBuilder.integration.campaign
+package fleetBuilder.integration.campaign.listener
 
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
@@ -333,7 +333,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             } else if (isPortraitHoveredOver && mouseOverMember.captain.isPlayer) {
                 //Hovering over player portrait
 
-                val isShuttle = mouseOverMember.variant.hasHullMod(ModSettings.commandShuttleId)
+                val isShuttle = mouseOverMember.variant.hasHullMod(commandShuttleId)
 
                 if (event.isLMBDownEvent && isShuttle) { // Eat attempt to open captain picker dialog for shuttle. The shuttle is player only
                     event.consume()

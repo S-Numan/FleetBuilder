@@ -10,7 +10,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.integration.combat.ui.CombatAutofitAdder
+import fleetBuilder.integration.combat.listener.CombatAutofitAdder
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.safeInvoke
