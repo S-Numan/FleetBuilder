@@ -1,9 +1,9 @@
 {
 	"plugins":{
-		"CombatAutofitAdder":"fleetBuilder.integration.combat.listener.CombatAutofitAdder",
-		"DrawMessageInTitle":"fleetBuilder.integration.combat.DrawMessageInTitle",
-		"DialogUtil":"fleetBuilder.util.DialogUtil",
-		"CombatClipboardHotkeyHandler":"fleetBuilder.integration.combat.listener.CombatClipboardHotkeyHandler",
+		"CombatAutofitAdder":"fleetBuilder.features.autofit.listener.CombatAutofitAdder",
+		"DrawMessageInTitle":"fleetBuilder.core.displayMessages.DrawMessageInTitle",
+		"DialogUtil":"fleetBuilder.ui.popup.DialogUtil",
+		"CombatClipboardHotkeyHandler":"fleetBuilder.features.hotkeyHandler.CombatClipboardHotkeyHandler",
 	},
 
 	"graphics":{

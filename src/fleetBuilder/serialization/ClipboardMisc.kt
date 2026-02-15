@@ -1,0 +1,93 @@
+package fleetBuilder.serialization
+
+import com.fs.starfarer.api.combat.ShipHullSpecAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.codex2.CodexDialog
+import fleetBuilder.core.ModSettings
+import fleetBuilder.serialization.member.JSONMember
+import fleetBuilder.serialization.variant.CompressedVariant
+import fleetBuilder.serialization.variant.JSONVariant
+import fleetBuilder.serialization.variant.VariantSettings
+import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.util.FBMisc
+import fleetBuilder.util.FBTxt
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.createHullVariant
+import fleetBuilder.util.lib.ClipboardUtil
+import fleetBuilder.util.VariantLib
+import org.lwjgl.input.Keyboard
+import java.awt.Color
+
+object ClipboardMisc {
+
+    fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false) {
+        if (variant.hasHullMod(ModSettings.commandShuttleId)) {
+            DisplayMessages.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
+            return
+        }
+
+        val variantToSave = variant.clone()
+        variantToSave.hullVariantId = VariantLib.makeVariantID(variantToSave)
+
+        if (!shift) {
+            val comp = CompressedVariant.saveVariantToCompString(
+                variantToSave,
+                VariantSettings().apply {
+                    excludeTagsWithID = ModSettings.getDefaultExcludeVariantTags()
+                }
+            )
+            ClipboardUtil.setClipboardText(comp)
+            DisplayMessages.showMessage(FBTxt.txt("compressed_variant_copied_to_clipboard"))
+        } else {
+            val json = JSONVariant.saveVariantToJson(
+                variantToSave,
+                VariantSettings().apply {
+                    excludeTagsWithID = ModSettings.getDefaultExcludeVariantTags()
+                }
+            )
+            ClipboardUtil.setClipboardText(json.toString(4))
+            DisplayMessages.showMessage(FBTxt.txt("variant_copied_to_clipboard"))
+        }
+    }
+
+    fun saveMemberToClipboard(member: FleetMemberAPI, shift: Boolean = false) {
+        if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
+            DisplayMessages.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
+            return
+        }
+
+        if (shift) {
+            //val comp = saveMemberToCompString(member)
+            //setClipboardText(comp)
+            //DisplayMessage.showMessage("Member compressed and copied to clipboard")
+            DisplayMessages.showMessage("Copying the compressed member is currently unimplemented. Please avoid holding shift.", Color.YELLOW)
+        } else {
+            val json = JSONMember.saveMemberToJson(member)
+            ClipboardUtil.setClipboardText(json.toString(4))
+            DisplayMessages.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
+        }
+    }
+
+    fun codexEntryToClipboard(codex: CodexDialog) {
+        val param = ReflectionMisc.getCodexEntryParam(codex) ?: return
+
+        when (param) {
+            is ShipHullSpecAPI -> {
+                val emptyVariant = param.createHullVariant()
+                saveVariantToClipboard(emptyVariant, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            }
+
+            is FleetMemberAPI -> {
+                saveMemberToClipboard(param, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+            }
+        }
+    }
+
+    fun extractDataFromClipboard(): Any? {
+        val contents = ClipboardUtil.getClipboardJSONFileContents()
+        val clipboardText = contents ?: ClipboardUtil.getClipboardTextSafe() ?: return null
+
+        return FBMisc.extractDataFromString(clipboardText)
+    }
+}

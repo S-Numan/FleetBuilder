@@ -21,9 +21,9 @@ import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.ui.misc.ObservedTextField
-import fleetBuilder.variants.VariantLib
-import fleetBuilder.variants.VariantLib.getAllDMods
+import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.ui.common.ObservedTextField
+import fleetBuilder.util.VariantLib.getAllDMods
 import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
@@ -54,7 +54,7 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
         if (value != null) {
             list.add(value)
         } else {
-            DisplayMessage.logMessage("Invalid string at index $i in '$fieldName'", Level.WARN, this.javaClass)
+            DisplayMessages.logMessage("Invalid string at index $i in '$fieldName'", Level.WARN, this.javaClass)
         }
     }
     return list
@@ -344,19 +344,19 @@ fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
                     ?: hullVariants.find { it.hullSpec.hullId == dLessId }   // D-less match
                     ?: hullVariants.find { it.hullSpec.hullId == effectiveHullID } // Effective match
                     ?: run {
-                        DisplayMessage.logMessage("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'", Level.WARN, this.javaClass)
+                        DisplayMessages.logMessage("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'", Level.WARN, this.javaClass)
                         hullVariants.firstOrNull()// Cannot find a good enough match, just go for whatever
                     }
             }
     } ?: runCatching {
         val emptyVariant = this.createEmptyVariant(hull.hullId, hull)
-        DisplayMessage.logMessage(
+        DisplayMessages.logMessage(
             "Failed to find HULL variant for '${hull.hullId}' and fell back to createEmptyVariant. This can usually be ignored." +
                     "However, ships may spawn without modules which can crash the game in certain circumstances", Level.WARN, this.javaClass
         )
         emptyVariant
     }.getOrNull() ?: run {
-        DisplayMessage.showError("Failed to find HULL variant for '${hull.hullId}'")
+        DisplayMessages.showError("Failed to find HULL variant for '${hull.hullId}'")
         VariantLib.createErrorVariant("MISSINGHULLVARIANT:${hull.hullId}")
     }
 }
@@ -371,14 +371,14 @@ internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
     val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
     val reflectedMethods = target.getMethodsMatching(name, parameterTypes = paramTypes)
     if (reflectedMethods.isEmpty()) {
-        DisplayMessage.showError(
+        DisplayMessages.showError(
             short = "ERROR: No method found on class: ${target::class.java.name}. See console for more details.",
             full = "No method found for name: '$name' on class: ${target::class.java.name} " +
                     "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}"
         )
         return null
     } else if (reflectedMethods.size > 1) {
-        DisplayMessage.showError(
+        DisplayMessages.showError(
             short = "ERROR: Ambiguous method call on class: ${target::class.java.name}. See console for more details.",
             full = "Ambiguous method call for name: '$name' on class: ${target::class.java.name}. " +
                     "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
