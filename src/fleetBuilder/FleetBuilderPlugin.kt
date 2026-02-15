@@ -1,6 +1,7 @@
+package fleetBuilder
+
 import com.fs.starfarer.api.BaseModPlugin
 import com.fs.starfarer.api.Global
-import fleetBuilder.Reporter
 
 class FleetBuilderPlugin : BaseModPlugin() {
     val reporter = Reporter()
