@@ -120,7 +120,9 @@ object DataPerson {
             memKeys = filteredMemory,
             xp = if (settings.handleXpAndPoints) data.xp else 0,
             bonusXp = if (settings.handleXpAndPoints) data.bonusXp else 0,
-            points = if (settings.handleXpAndPoints) data.points else 0
+            points = if (settings.handleXpAndPoints) data.points else 0,
+            rankId = if (settings.handleRankAndPost) data.rankId else Ranks.SPACE_LIEUTENANT,
+            postId = if (settings.handleRankAndPost) data.postId else Ranks.POST_OFFICER,
         )
     }
 

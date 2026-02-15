@@ -138,8 +138,8 @@ Enable the setting ‘Show Hidden HullMods’ in the ‘Autofit Menu’ tab and 
 memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
 fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
 ,,,,,,,,
-,,,,,,,,
-,,,,,,,,
+personHeader,Person Header,Header,Person Saving Settings,,,,,Misc
+#handleRankAndPost,Handle Rank And Post,Boolean,false,,If false: do not include rank and post when saving or loading a PersonAPI,,,Misc
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
