@@ -189,6 +189,9 @@ fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
 val String.toBinary: Int
     get() = if (this.equals("TRUE", ignoreCase = true) || this == "1") 1 else 0
 
+val String.toBoolean: Boolean
+    get() = this.toBinary == 1
+
 fun CargoStackAPI.moveStack(to: CargoAPI, inputAmount: Float = -1f) {
     if (!this.isNull && this.cargo !== to && inputAmount != 0f) {
         val moveAmount = minOf(if (inputAmount == -1f) this.size else inputAmount, this.size)
