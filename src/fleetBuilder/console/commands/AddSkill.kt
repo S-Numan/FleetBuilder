@@ -1,7 +1,6 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.toBoolean
