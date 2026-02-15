@@ -5,11 +5,11 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 
 data class CargoAutoManage(
     var applyOnInteraction: Boolean = true,
-    var applyOnLeave: Boolean = true,
+    var applyOnLeave: Boolean = false,
     val autoManageItems: MutableList<ItemAutoManage> = mutableListOf()
 ) {
     fun isDefault(): Boolean {
-        if (!applyOnInteraction || !applyOnLeave || autoManageItems.isNotEmpty()) return false
+        if (!applyOnInteraction || applyOnLeave || autoManageItems.isNotEmpty()) return false
         return true
     }
 }
@@ -58,7 +58,7 @@ fun loadCargoAutoManage(submarket: SubmarketAPI): CargoAutoManage? {
     val stored = market.memoryWithoutUpdate.get("\$FBC_${submarket.specId}") as? Map<*, *> ?: return null
 
     val applyOnInteraction = stored["applyOnInteraction"] as? Boolean ?: true
-    val applyOnLeave = stored["applyOnLeave"] as? Boolean ?: true
+    val applyOnLeave = stored["applyOnLeave"] as? Boolean ?: false
 
     val autoManageItems = (stored["autoManageItems"] as? List<*>)?.mapNotNull { raw ->
         (raw as? Map<*, *>)?.let { m ->
