@@ -30,7 +30,12 @@ Teleports player fleet to the Abandoned Terraforming Platform in the Corvus syst
 CopyFleet,fleetBuilder.console.commands.CopyFleet,"cheat,fleetbuilder",copyfleet <”player” or ”enemy”>,Arg ‘player’ or ‘enemy’ In combat or when looking at a mission to choose what side you want to copy
 ,,,,
 RemoveIdleOfficers,fleetBuilder.console.commands.RemoveIdleOfficers,"cheat,campaign,fleetbuilder",removeidleofficers,Removes all officers in your fleet which are not currently captaining any ship.
+,,,,
+,,,,
 AddSkill,fleetBuilder.console.commands.AddSkill,"cheat,campaign,fleetbuilder",addskill <skill_ID> [optionalIsElite],"Adds the specified skill to the officer assigned to the ship you are viewing in the refit screen.
 Set isElite to true to add the skill as an elite skill."
+RemoveSkill,fleetBuilder.console.commands.RemoveSkill,"cheat,campaign,fleetbuilder",removeskill <skill_ID>,Removes the specified skill from the officer assigned to the ship you are viewing in the refit screen.
+,,,,
+,,,,
 AddHullMod,fleetBuilder.console.commands.AddHullMod,"cheat,campaign,fleetbuilder",addhullmod <hullmod_ID> [optionalIsPerma] [OptionalIsSMod],"Adds the specified hullmod to the ship viewed in the refit screen.
 Set isPerma and isSMod to true or false to add the hullmod as described."
