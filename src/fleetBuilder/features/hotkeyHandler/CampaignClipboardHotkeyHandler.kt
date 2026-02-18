@@ -42,6 +42,97 @@ import java.awt.Color
 
 
 internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
+
+    companion object {
+        fun handleInteractionCopy(ui: CampaignUIAPI, isAltDown: Boolean): Boolean {
+            val interaction = ui.currentInteractionDialog
+            val plugin = interaction?.plugin
+            val battle = (plugin?.context as? FleetEncounterContext)?.battle
+            val fleet = if (battle != null && !isAltDown) {
+                battle.nonPlayerCombined
+            } else {
+                interaction?.interactionTarget as? CampaignFleetAPI
+            }
+
+            fleet?.let { fleetToCopy ->
+                val json = saveFleetToJson(
+                    fleetToCopy,
+                    FleetSettings().apply {
+                        memberSettings.personSettings.handleXpAndPoints = false
+                    }
+                )
+
+                ClipboardUtil.setClipboardText(json.toString(4))
+                DisplayMessages.showMessage(
+                    if (!isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1) {
+                        FBTxt.txt("copied_interaction_fleet_with_supporting_to_clipboard")
+                    } else {
+                        FBTxt.txt("copied_interaction_fleet_to_clipboard")
+                    }
+                )
+                return true
+            }
+            return false
+        }
+
+        fun handleUIFleetCopy(sector: SectorAPI): Boolean {
+            val playerFleet = sector.playerFleet.fleetData
+
+            val settings = FleetSettings()
+            settings.includeIdleOfficers = false
+
+            var fleetToCopy: FleetDataAPI? = null
+            var uiShowsSubmarketFleet = false
+
+            try {
+                fleetToCopy = getViewedFleetInFleetPanel() ?: playerFleet
+                if (fleetToCopy !== playerFleet)
+                    uiShowsSubmarketFleet = true
+
+                val fleetGrid = ReflectionMisc.getFleetPanel()?.findChildWithMethod("removeItem") ?: return false
+
+                @Suppress("UNCHECKED_CAST")
+                val items = fleetGrid.safeInvoke("getItems") as? List<UIPanelAPI?> ?: return false
+
+                // Collect IDs of visible members from the UI
+                val visibleMemberIds = items.mapNotNull { item ->
+                    (item?.safeInvoke("getMember") as? FleetMemberAPI)?.id
+                }.toSet()
+
+                // Exclude any member from the fleet that's not visible in the UI
+                fleetToCopy.membersListCopy.forEach { member ->
+                    if (member.id !in visibleMemberIds) {
+                        settings.excludeMembersWithID.add(member.id)
+                    }
+                }
+            } catch (e: Exception) {
+                DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+                return false
+            }
+            if (fleetToCopy == null) {
+                DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName))
+                return false
+            }
+
+            val json = saveFleetToJson(fleetToCopy, settings)
+            ClipboardUtil.setClipboardText(json.toString(4))
+            val txt =
+                if (settings.excludeMembersWithID.isEmpty()) {
+                    if (!uiShowsSubmarketFleet)
+                        FBTxt.txt("copied_entire_fleet_to_clipboard")
+                    else
+                        FBTxt.txt("copied_entire_submarket_to_clipboard")
+                } else {
+                    if (!uiShowsSubmarketFleet)
+                        FBTxt.txt("copied_visible_fleet_to_clipboard")
+                    else
+                        FBTxt.txt("copied_visible_submarket_to_clipboard")
+                }
+            DisplayMessages.showMessage(txt)
+            return true
+        }
+    }
+
     override fun getListenerInputPriority(): Int = 1
 
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
@@ -135,9 +226,9 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val codex = ReflectionMisc.getCodexDialog()
             when {
                 codex != null -> handleCodexCopy(event, codex)
-                ui.getActualCurrentTab() == CoreUITabId.FLEET -> handleFleetCopy(event, sector)
+                ui.getActualCurrentTab() == CoreUITabId.FLEET -> if (handleUIFleetCopy(sector)) event.consume()
                 ui.getActualCurrentTab() == CoreUITabId.REFIT -> if (handleRefitCopy(event.isShiftDown)) event.consume()
-                ui.currentInteractionDialog != null -> handleInteractionCopy(event, ui)
+                ui.currentInteractionDialog != null -> if (handleInteractionCopy(ui, event.isAltDown)) event.consume()
             }
         } catch (e: Exception) {
             DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
@@ -146,92 +237,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleCodexCopy(event: InputEventAPI, codex: CodexDialog) {
         ClipboardMisc.codexEntryToClipboard(codex)
-        event.consume()
-    }
-
-    private fun handleInteractionCopy(event: InputEventAPI, ui: CampaignUIAPI) {
-        val interaction = ui.currentInteractionDialog
-        val plugin = interaction?.plugin
-        val battle = (plugin?.context as? FleetEncounterContext)?.battle
-        val fleet = if (battle != null && !event.isAltDown) {
-            battle.nonPlayerCombined
-        } else {
-            interaction?.interactionTarget as? CampaignFleetAPI
-        }
-
-        fleet?.let { fleetToCopy ->
-            val json = saveFleetToJson(
-                fleetToCopy,
-                FleetSettings().apply {
-                    memberSettings.personSettings.handleXpAndPoints = false
-                }
-            )
-
-            ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessages.showMessage(
-                if (!event.isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1) {
-                    FBTxt.txt("copied_interaction_fleet_with_supporting_to_clipboard")
-                } else {
-                    FBTxt.txt("copied_interaction_fleet_to_clipboard")
-                }
-            )
-            event.consume()
-        }
-    }
-
-    private fun handleFleetCopy(event: InputEventAPI, sector: SectorAPI) {
-        val playerFleet = sector.playerFleet.fleetData
-
-        val settings = FleetSettings()
-        settings.includeIdleOfficers = false
-
-        var fleetToCopy: FleetDataAPI? = null
-        var uiShowsSubmarketFleet = false
-
-        try {
-            fleetToCopy = getViewedFleetInFleetPanel() ?: playerFleet
-            if (fleetToCopy !== playerFleet)
-                uiShowsSubmarketFleet = true
-
-            val fleetGrid = ReflectionMisc.getFleetPanel()?.findChildWithMethod("removeItem") ?: return
-
-            @Suppress("UNCHECKED_CAST")
-            val items = fleetGrid.safeInvoke("getItems") as? List<UIPanelAPI?> ?: return
-
-            // Collect IDs of visible members from the UI
-            val visibleMemberIds = items.mapNotNull { item ->
-                (item?.safeInvoke("getMember") as? FleetMemberAPI)?.id
-            }.toSet()
-
-            // Exclude any member from the fleet that's not visible in the UI
-            fleetToCopy.membersListCopy.forEach { member ->
-                if (member.id !in visibleMemberIds) {
-                    settings.excludeMembersWithID.add(member.id)
-                }
-            }
-        } catch (e: Exception) {
-            DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
-        }
-        if (fleetToCopy == null) {
-            DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName))
-            return
-        }
-
-        val json = saveFleetToJson(fleetToCopy, settings)
-        ClipboardUtil.setClipboardText(json.toString(4))
-        val txt =
-            if (settings.excludeMembersWithID.isEmpty()) {
-                if (!uiShowsSubmarketFleet)
-                    FBTxt.txt("copied_entire_fleet_to_clipboard")
-                else
-                    FBTxt.txt("copied_entire_submarket_to_clipboard")
-            } else {
-                if (!uiShowsSubmarketFleet)
-                    FBTxt.txt("copied_visible_fleet_to_clipboard")
-                else
-                    FBTxt.txt("copied_visible_submarket_to_clipboard")
-            }
-        DisplayMessages.showMessage(txt)
         event.consume()
     }
 

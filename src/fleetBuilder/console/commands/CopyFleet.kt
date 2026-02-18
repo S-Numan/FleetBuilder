@@ -1,6 +1,7 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
@@ -9,11 +10,13 @@ import com.fs.starfarer.api.mission.FleetSide
 import com.fs.starfarer.api.mission.MissionDefinitionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
+import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember.copyMember
 import fleetBuilder.serialization.person.DataPerson.copyPerson
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.safeInvoke
 import org.lazywizard.console.BaseCommand
@@ -22,6 +25,9 @@ import starficz.ReflectionUtils.getMethodsMatching
 
 class CopyFleet : BaseCommand {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
+        val sector = Global.getSector() ?: return BaseCommand.CommandResult.ERROR
+        val ui = sector.campaignUI ?: return BaseCommand.CommandResult.ERROR
+
         if (context.isInCombat) {
             val engine = Global.getCombatEngine()
 
@@ -162,9 +168,25 @@ class CopyFleet : BaseCommand {
             Console.showMessage("Copied to clipboard")
 
             return BaseCommand.CommandResult.SUCCESS
+        } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
+            if (CampaignClipboardHotkeyHandler.handleUIFleetCopy(sector)) {
+                Console.showMessage("Copied fleet in UI to clipboard")
+                return BaseCommand.CommandResult.SUCCESS
+            } else {
+                Console.showMessage("Failed to copy fleet in UI to clipboard")
+                return BaseCommand.CommandResult.ERROR
+            }
+        } else if (ui.currentInteractionDialog != null) {
+            if (CampaignClipboardHotkeyHandler.handleInteractionCopy(ui, false)) {
+                Console.showMessage("Copied interaction fleet to clipboard")
+                return BaseCommand.CommandResult.SUCCESS
+            } else {
+                Console.showMessage("Failed to copy interaction fleet to clipboard")
+                return BaseCommand.CommandResult.ERROR
+            }
+        } else {
+            Console.showMessage("Context not supported")
+            return BaseCommand.CommandResult.WRONG_CONTEXT
         }
-
-        Console.showMessage("Context not supported")
-        return BaseCommand.CommandResult.WRONG_CONTEXT
     }
 }
