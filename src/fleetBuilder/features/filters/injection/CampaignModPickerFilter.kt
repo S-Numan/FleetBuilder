@@ -33,7 +33,7 @@ class CampaignModPickerFilter : EveryFrameScript {
             return
         }
 
-        val coreUI = ReflectionMisc.getCoreUI() ?: return
+        val coreUI = ReflectionMisc.getCoreUI() as? UIPanelAPI ?: return
         val modPicker = coreUI.findChildWithMethod("canInstallGivenMarket") as? UIPanelAPI
         if (modPicker == null) {
             filterPanel = null

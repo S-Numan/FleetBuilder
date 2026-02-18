@@ -30,12 +30,12 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
         if (Global.getCurrentState() != GameState.TITLE)
             return
 
-        val newCoreUI = ReflectionMisc.getCoreUI() ?: return
-        cacheShipPreviewClass(newCoreUI)
+        val screenPanel = ReflectionMisc.getScreenPanel() ?: return
+        cacheShipPreviewClass(screenPanel)
 
         if (!ModSettings.autofitMenuEnabled) return
 
-        val delegateChild = newCoreUI.findChildWithMethod("dismiss") as? UIPanelAPI ?: return
+        val delegateChild = screenPanel.findChildWithMethod("dismiss") as? UIPanelAPI ?: return
         val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return
         val holographicBG = oldCoreUI.findChildWithMethod("forceFoldIn") ?: return
 
@@ -62,10 +62,10 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
         this.refitTab = refitTab
     }
 
-    private fun cacheShipPreviewClass(newCoreUI: UIPanelAPI) {
+    private fun cacheShipPreviewClass(screenPanel: UIPanelAPI) {
         if (SHIP_PREVIEW_CLASS != null) return
 
-        val missionWidget = newCoreUI.findChildWithMethod("getMissionList") as? UIPanelAPI ?: return
+        val missionWidget = screenPanel.findChildWithMethod("getMissionList") as? UIPanelAPI ?: return
         val holographicBG = missionWidget.getChildrenCopy()[1] // 2 of the same class in the tree here
 
         val missionDetail = holographicBG.safeInvoke("getCurr") as? UIPanelAPI ?: return

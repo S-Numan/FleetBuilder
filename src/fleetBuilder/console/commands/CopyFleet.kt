@@ -96,9 +96,9 @@ class CopyFleet : BaseCommand {
 
             return BaseCommand.CommandResult.SUCCESS
         } else if (context.isInMainMenu) {
-            val coreUI = ReflectionMisc.getCoreUI() ?: return BaseCommand.CommandResult.ERROR
+            val screenPanel = ReflectionMisc.getScreenPanel() ?: return BaseCommand.CommandResult.ERROR
 
-            val missionThing = (coreUI.safeInvoke("getChildrenCopy") as List<*>).find { it?.getMethodsMatching(name = "getMissionList")?.isNotEmpty() == true }
+            val missionThing = (screenPanel.safeInvoke("getChildrenCopy") as List<*>).find { it?.getMethodsMatching(name = "getMissionList")?.isNotEmpty() == true }
             val missionDetail = missionThing?.safeInvoke("getMissionDetail") as? UIPanelAPI
                 ?: return BaseCommand.CommandResult.ERROR
 

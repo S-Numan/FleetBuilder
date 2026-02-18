@@ -2,10 +2,10 @@ package fleetBuilder.util
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
-import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -27,33 +27,34 @@ import starficz.findChildWithMethod
 import starficz.getChildrenCopy
 
 object ReflectionMisc {
-    fun getCoreUI(topDialog: Boolean = false): UIPanelAPI? {
+
+    fun getScreenPanel(): UIPanelAPI? {
+        val state = AppDriver.getInstance().currentState
+        return state.safeInvoke("getScreenPanel") as? UIPanelAPI
+    }
+
+    fun getCoreUI(): CoreUIAPI? {
         val state = AppDriver.getInstance().currentState
         if (state is CampaignState) {
             return (state.safeInvoke("getEncounterDialog")?.let { dialog ->
-                if (topDialog && Global.getSector().campaignUI?.getActualCurrentTab() == null) {//In encounter dialog, but not looking at any tab.
-                    //If you add a dialog to CoreUI and move it to the top, it will usually show in the top. Excluding this situation. Thus, in this situation we just get the screen panel instead. This can be disabled via the topDialog boolean.
-                    state.safeInvoke("getScreenPanel") as? UIPanelAPI
-                } else {
-                    dialog.safeInvoke("getCoreUI") as? UIPanelAPI
-                }
-            } ?: state.safeInvoke("getCore") as? UIPanelAPI)
-
-        } else if (state is TitleScreenState || state is CombatState) {
-            return state.safeInvoke("getScreenPanel") as? UIPanelAPI
-        }
+                dialog.safeInvoke("getCoreUI") as? CoreUIAPI
+            } ?: Global.getSector().campaignUI?.safeGet("core") as? CoreUIAPI
+            ?: state.safeInvoke("getCore") as? CoreUIAPI)
+        }// else if (state is TitleScreenState || state is CombatState) {
+        //  return null
+        //  }
         return null
     }
 
     fun getBorderContainer(): UIPanelAPI? {
-        return getCoreUI()?.findChildWithMethod("setBorderInsetLeft") as? UIPanelAPI
+        return (getCoreUI() as? UIPanelAPI)?.findChildWithMethod("setBorderInsetLeft") as? UIPanelAPI
     }
 
     fun getRefitTab(): UIPanelAPI? {
         if (Global.getCurrentState() == GameState.CAMPAIGN) {
             return getBorderContainer()?.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
         } else {
-            val delegateChild = getCoreUI()?.findChildWithMethod("dismiss") as? UIPanelAPI ?: return null
+            val delegateChild = getScreenPanel()?.findChildWithMethod("dismiss") as? UIPanelAPI ?: return null
             val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return null
             val holographicBG = oldCoreUI.findChildWithMethod("forceFoldIn") ?: return null
 
@@ -157,8 +158,8 @@ object ReflectionMisc {
         if (Global.getSettings().isShowingCodex) return true
 
         if (Global.getCurrentState() == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
-            val coreUI = getCoreUI()
-            if (coreUI?.findChildWithMethodReversed("getCurrentSnapshot") is CodexDialog) {
+            val coreUI = getCoreUI() as? UIPanelAPI ?: return false
+            if (coreUI.findChildWithMethodReversed("getCurrentSnapshot") is CodexDialog) {
                 return true
             }
         }
@@ -166,13 +167,14 @@ object ReflectionMisc {
     }
 
     fun getCodexDialog(): CodexDialog? {
-        val state = AppDriver.getInstance().currentState
+        val appState = AppDriver.getInstance().currentState
+        val gameState = Global.getCurrentState()
 
         if (Global.getSettings().isShowingCodex) { //isShowingCodex does not work in all cases as of 0.98
-            if (Global.getCurrentState() == GameState.COMBAT) {
+            if (gameState == GameState.COMBAT) {
                 //Combat F2 with ship selected, simulator ship F2.
-                if (state.getMethodsMatching("getRibbon").isNotEmpty()) {
-                    val ribbon = state.safeInvoke("getRibbon") as? UIPanelAPI?
+                if (appState.getMethodsMatching("getRibbon").isNotEmpty()) {
+                    val ribbon = appState.safeInvoke("getRibbon") as? UIPanelAPI?
                     val temp = ribbon?.safeInvoke("getParent") as? UIPanelAPI?
                     val codex = temp?.findChildWithMethod("getCurrentSnapshot") as? CodexDialog?
                     if (codex != null) return codex
@@ -181,16 +183,23 @@ object ReflectionMisc {
             }
 
             //F2 press, and in some other places
-            val codexOverlayPanel = state.safeInvoke("getOverlayPanelForCodex") as? UIPanelAPI?
+            val codexOverlayPanel = appState.safeInvoke("getOverlayPanelForCodex") as? UIPanelAPI?
             return codexOverlayPanel?.findChildWithMethod("getCurrentSnapshot") as? CodexDialog?
         }
 
         //settingsCodex is false despite codex being open
-        if ((Global.getCurrentState() == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) || Global.getCurrentState() == GameState.TITLE) {
+        if ((gameState == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) || gameState == GameState.TITLE) {
+
             //F2 while hovering over ship or ship question mark press in the fleet screen. NOT hover over question mark and press F2, that is handled differently for some reason.
-            //Also clicking a ship in the title-screen missions to see its codex entry.
-            val coreUI = getCoreUI()
-            return coreUI?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog?
+            val coreUI = getCoreUI() as? UIPanelAPI
+
+            val codex = coreUI?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog
+            if (codex != null) return codex
+
+            //Check for the codex that opens when clicking a ship in the title-screen missions.
+            if (Global.getCurrentState() == GameState.TITLE) {
+                return (getScreenPanel()?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog)
+            }
 
         }
 

@@ -1,3 +1,7 @@
+## 1.28.0
+- Fix crash when opening the dev dialog in when the refit screen hullmod adding dialog is open.
+- Fix failed fleet copy when FleetMemberAPI name is null for some reason
+
 ## 1.27.1
 - Fix copy pasted variants loading improperly after saving and loading a game.
 - Minor internal tweaks.

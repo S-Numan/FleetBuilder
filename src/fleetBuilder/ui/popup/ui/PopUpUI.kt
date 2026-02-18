@@ -13,14 +13,8 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
+import starficz.*
 import starficz.ReflectionUtils.get
-import starficz.centerX
-import starficz.centerY
-import starficz.findChildWithMethod
-import starficz.height
-import starficz.width
-import starficz.x
-import starficz.y
 import java.awt.Color
 
 //Copied and heavily modified from AshLib
@@ -63,7 +57,7 @@ open class PopUpUI : CustomUIPanelPlugin {
         insertPanel: CustomPanelAPI,
         x: Float,
         y: Float,
-        parent: UIPanelAPI? = ReflectionMisc.getCoreUI(true)
+        parent: UIPanelAPI? = ReflectionMisc.getScreenPanel()
     ) {
         panel = insertPanel
 
@@ -206,10 +200,10 @@ open class PopUpUI : CustomUIPanelPlugin {
 
     override fun renderBelow(alphaMult: Float) {
         if (isDialog) {
-            blackBackground.setSize(ReflectionMisc.getCoreUI(true)!!.width, ReflectionMisc.getCoreUI()!!.height)
+            blackBackground.setSize(ReflectionMisc.getScreenPanel()!!.width, ReflectionMisc.getScreenPanel()!!.height)
             blackBackground.color = Color.black
             blackBackground.alphaMult = 0.6f
-            blackBackground.renderAtCenter(ReflectionMisc.getCoreUI(true)!!.centerX, ReflectionMisc.getCoreUI()!!.centerY)
+            blackBackground.renderAtCenter(ReflectionMisc.getScreenPanel()!!.centerX, ReflectionMisc.getScreenPanel()!!.centerY)
             renderTiledTexture(
                 panelBackground.textureId,
                 panel.x,

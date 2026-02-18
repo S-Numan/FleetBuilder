@@ -26,16 +26,16 @@ class DialogUtil : EveryFrameCombatPlugin {
             if (gameState == null) {
                 prependDialogToShow(dialog, width, height) // To create a dialog before the game has fully booted up, so it is shown on start
             } else {
-                val coreUI = ReflectionMisc.getCoreUI(true) ?: return
+                val screenPanel = ReflectionMisc.getScreenPanel() ?: return
 
-                initDialog(coreUI, x = x, y = y, width = width, height = height, dialog = dialog, parent = parent)
+                initDialog(screenPanel, x = x, y = y, width = width, height = height, dialog = dialog, parent = parent)
             }
         }
 
         fun isPopUpUIOpen(): Boolean {
             if (dialogsToShow.isNotEmpty()) return true
 
-            ReflectionMisc.getCoreUI(true)?.getChildrenCopy()?.forEach { child ->
+            ReflectionMisc.getScreenPanel()?.getChildrenCopy()?.forEach { child ->
                 if (child is CustomPanelAPI && (child.plugin is PopUpUI)
                 ) {
                     return true
@@ -80,11 +80,11 @@ class DialogUtil : EveryFrameCombatPlugin {
         events: List<InputEventAPI?>?
     ) {
         if (dialogsToShow.isNotEmpty()) {
-            val coreUI = ReflectionMisc.getCoreUI(true) ?: return
+            val screenPanel = ReflectionMisc.getScreenPanel() ?: return
 
             val (dialog, width, height) = dialogsToShow.removeAt(dialogsToShow.size - 1)
 
-            initDialog(coreUI, dialog, width, height)
+            initDialog(screenPanel, dialog, width, height)
         }
     }
 

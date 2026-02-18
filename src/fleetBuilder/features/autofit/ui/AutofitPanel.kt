@@ -163,9 +163,9 @@ internal object AutofitPanel {
             if (draggedPanel == null)
                 draggedPanel = AutofitSelector.createShipPreview(draggedAutofitSpec!!.variant, selectorWidth, selectorWidth)
 
-            val coreUI = ReflectionMisc.getCoreUI() ?: return
-            if (coreUI.getChildrenCopy().find { it === draggedPanel } == null)
-                coreUI.addComponent(draggedPanel)
+            val screenPanel = ReflectionMisc.getScreenPanel() ?: return
+            if (screenPanel.getChildrenCopy().find { it === draggedPanel } == null)
+                screenPanel.addComponent(draggedPanel)
 
             draggedPanel!!.position.setXAlignOffset(Global.getSettings().mouseX.toFloat() - draggedPanel!!.width / 2f)
             draggedPanel!!.position.setYAlignOffset(Global.getSettings().mouseY.toFloat() - draggedPanel!!.height / 2f)

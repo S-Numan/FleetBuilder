@@ -45,8 +45,8 @@ class RemoveRefitHullmod : CampaignInputListener {
     }
 
     private fun handleRefitRemoveHullMod(event: InputEventAPI) {
-        val coreUI = ReflectionMisc.getCoreUI() ?: return
-        val isAutofitPanelOpen = coreUI
+        val screenPanel = ReflectionMisc.getScreenPanel() ?: return
+        val isAutofitPanelOpen = screenPanel
             .getChildrenCopy()
             .filterIsInstance<CustomPanelAPI>()
             .any { it.plugin is AutofitPanel.AutofitPanelPlugin }
