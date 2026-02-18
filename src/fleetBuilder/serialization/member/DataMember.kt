@@ -44,7 +44,7 @@ object DataMember {
         val data = ParsedMemberData(
             variantData = getVariantDataFromVariant(member.variant, filterParsed = false),
             personData = if (member.captain != null && !member.captain.isDefault && settings.includeOfficer) getPersonDataFromPerson(member.captain, filterParsed = false) else null,
-            shipName = member.shipName,
+            shipName = member.shipName ?: "",
             cr = member.repairTracker.cr,
             isMothballed = member.repairTracker.isMothballed,
             isFlagship = member.isFlagship,
