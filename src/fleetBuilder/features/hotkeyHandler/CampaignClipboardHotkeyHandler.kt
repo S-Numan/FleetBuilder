@@ -105,15 +105,20 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
 
-        val captainPicker = ReflectionMisc.getCaptainPickerDialog()
-        if (captainPicker != null) {
-            if (event.isCtrlDown && event.isLMBDownEvent)
-                handleCaptainPickerMouseEvents(event, captainPicker)
-        } else if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
-            if (event.isCtrlDown && event.isLMBDownEvent)
-                handleRefitMouseEvents(event)
-        } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-            handleFleetMouseEvents(event, sector)
+        val tab = ui.getActualCurrentTab() ?: return
+        val isCtrlLmb = event.isCtrlDown && event.isLMBDownEvent
+
+        if (tab == CoreUITabId.REFIT || tab == CoreUITabId.FLEET) {
+            val captainPicker = ReflectionMisc.getCaptainPickerDialog()
+            if (captainPicker != null) {
+                if (isCtrlLmb)
+                    handleCaptainPickerMouseEvents(event, captainPicker)
+            } else if (tab == CoreUITabId.REFIT) {
+                if (isCtrlLmb)
+                    handleRefitMouseEvents(event)
+            } else { // FLEET
+                handleFleetMouseEvents(event, sector)
+            }
         }
     }
 
