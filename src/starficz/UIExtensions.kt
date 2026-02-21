@@ -5,16 +5,20 @@ import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
+import com.fs.starfarer.api.combat.ShipAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.fleet.FleetMemberStatusAPI
+import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation
-import com.fs.starfarer.ui.B
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
-import com.fs.starfarer.util.`super`
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import starficz.ReflectionUtils.set
 import java.awt.Color
-import java.awt.event.InputEvent
+import starficz.Anchor.AnchorData
+import starficz.Anchor.AnchorReference
 
 // UIComponentAPI extensions that expose UIComponent fields/methods
 var UIComponentAPI.fader: Fader?
@@ -157,108 +161,33 @@ var UIComponentAPI.yAlignOffset: Float
     }
 
 
-fun UIComponentAPI.anchorInTopLeftOfParent(xPad: Float = 0f, yPad: Float = 0f) {
-    this.position.inTL(xPad, yPad)
-}
-
-fun UIComponentAPI.anchorInTopRightOfParent(xPad: Float = 0f, yPad: Float = 0f) {
-    this.position.inTR(xPad, yPad)
-}
-
-fun UIComponentAPI.anchorInTopMiddleOfParent(yPad: Float = 0f) {
-    this.position.inTMid(yPad)
-}
-
-fun UIComponentAPI.anchorInBottomLeftOfParent(xPad: Float = 0f, yPad: Float = 0f) {
-    this.position.inBL(xPad, yPad)
-}
-
-fun UIComponentAPI.anchorInBottomMiddleOfParent(yPad: Float = 0f) {
-    this.position.inBMid(yPad)
-}
-
-fun UIComponentAPI.anchorInBottomRightOfParent(xPad: Float = 0f, yPad: Float = 0f) {
-    this.position.inBR(xPad, yPad)
-}
-
-fun UIComponentAPI.anchorInLeftMiddleOfParent(xPad: Float = 0f) {
-    this.position.inLMid(xPad)
-}
-
-fun UIComponentAPI.anchorInRightMiddleOfParent(xPad: Float = 0f) {
-    this.position.inRMid(xPad)
-}
-
-fun UIComponentAPI.anchorInCenterOfParent() {
+fun UIComponentAPI.applyAnchor(anchor: AnchorData) {
     val floatType = Float::class.javaPrimitiveType!!
-    val paramTypes: Array<Class<*>?> = arrayOf(
-        this.position.javaClass,  // First parameter type
+    val paramTypes = listOf<Class<*>?>(
+        this.position::class.java,
         floatType, floatType, floatType, floatType, floatType, floatType
-    )
+    ).toTypedArray()
+
+    val anchorPosition = when (anchor.reference) {
+        is AnchorReference.Parent -> null
+        is AnchorReference.Previous -> {
+            parent?.children?.dropLast(1)?.lastOrNull()?.position
+                ?: throw Error("Previous Component does not exist!")
+        }
+
+        is AnchorReference.Sibling -> anchor.reference.component.position
+    }
 
     this.position.getMethodsMatching("relativeTo", parameterTypes = paramTypes)[0]
-        .invoke(this.position, null, 0.5f, 0.5f, -0.5f, -0.5f, 0f, 0f)
+        .invoke(
+            this.position, anchorPosition, anchor.refAnchorX, anchor.refAnchorY,
+            anchor.targetAnchorX, anchor.targetAnchorY, anchor.offsetX, anchor.offsetY
+        )
 }
 
-val UIPanelAPI.previousComponent
-    get() = getChildrenCopy().lastOrNull()
+val UIPanelAPI.lastComponent
+    get() = children.lastOrNull()
 
-fun UIComponentAPI.anchorRightOfPreviousMatchingTop(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.rightOfTop(it, padding) }
-}
-
-fun UIComponentAPI.anchorLeftOfPreviousMatchingTop(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.leftOfTop(it, padding) }
-}
-
-fun UIComponentAPI.anchorLeftOfPreviousMatchingMid(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.leftOfMid(it, padding) }
-}
-
-fun UIComponentAPI.anchorLeftOfPreviousMatchingBottom(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.leftOfBottom(it, padding) }
-}
-
-fun UIComponentAPI.anchorRightOfPreviousMatchingMid(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.rightOfMid(it, padding) }
-}
-
-fun UIComponentAPI.anchorRightOfPreviousMatchingBottom(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.rightOfBottom(it, padding) }
-}
-
-fun UIComponentAPI.anchorAbovePreviousMatchingLeft(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.aboveLeft(it, padding) }
-}
-
-fun UIComponentAPI.anchorAbovePreviousMatchingMid(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.aboveMid(it, padding) }
-}
-
-fun UIComponentAPI.anchorAbovePreviousMatchingRight(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.aboveRight(it, padding) }
-}
-
-fun UIComponentAPI.anchorBelowPreviousMatchingLeft(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.belowLeft(it, padding) }
-}
-
-fun UIComponentAPI.anchorBelowPreviousMatchingMid(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.belowMid(it, padding) }
-}
-
-fun UIComponentAPI.anchorBelowPreviousMatchingRight(padding: Float = 0f) {
-    parent?.getChildrenCopy()?.dropLast(1)?.lastOrNull()?.let { this.position.belowRight(it, padding) }
-}
-
-fun UIComponentAPI.anchorToPreviousMatchingCenter(xPad: Float = 0f, yPad: Float = 0f) {
-    val parent = this.parent ?: return;
-    val children = parent.getChildrenCopy(); if (children.size <= 1) return
-    val anchor = children.dropLast(1).lastOrNull()
-    anchor?.let { nonNullAnchor ->
-        this.position.invoke("relativeTo", nonNullAnchor, 0.5f, 0.5f, -0.5f, -0.5f, xPad, yPad)
-    }
-}
 
 fun UIComponentAPI.addTooltip(
     location: TooltipLocation,
@@ -305,12 +234,19 @@ fun UIPanelAPI.getChildrenNonCopy(): List<UIComponentAPI> {
     return invoke("getChildrenNonCopy") as List<UIComponentAPI>
 }
 
-fun UIPanelAPI.findChildWithMethod(methodName: String): UIComponentAPI? {
-    return getChildrenCopy().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
+val UIPanelAPI.children get() = this.getChildrenCopy()
+
+fun UIPanelAPI.findChildWithMethod(
+    name: String? = null,
+    returnType: Class<*>? = null,
+    numOfParams: Int? = null,
+    parameterTypes: Array<Class<*>?>? = null
+): UIComponentAPI? {
+    return children.find { it.getMethodsMatching(name, returnType, numOfParams, parameterTypes).isNotEmpty() }
 }
 
-internal fun UIPanelAPI.allChildsWithMethod(methodName: String): List<UIComponentAPI> {
-    return getChildrenCopy().filter { it.getMethodsMatching(name = methodName).isNotEmpty() }
+fun UIPanelAPI.allChildrenWithMethod(methodName: String): List<UIComponentAPI> {
+    return children.filter { it.getMethodsMatching(name = methodName).isNotEmpty() }
 }
 
 internal fun UIPanelAPI.clearChildren() {
@@ -319,6 +255,54 @@ internal fun UIPanelAPI.clearChildren() {
 
 // Abstract base class for Boxed vanilla elements to fix vanilla jank / things with no API's (like images)
 abstract class BoxedUIElement(val boxedElement: UIComponentAPI)
+
+class BoxedScrollPanel(val scrollPanel: ScrollPanelAPI) : BoxedUIElement(scrollPanel as UIComponentAPI),
+    ScrollPanelAPI by scrollPanel {
+    var isLeftScrollbar
+        get() = scrollPanel.invoke("isLeftScrollbar") as Boolean
+        set(isLeftScrollbar) {
+            scrollPanel.invoke("setLeftScrollbar", isLeftScrollbar)
+        }
+    var renderShadows
+        get() = (!(scrollPanel.invoke("isDoNotRenderShadows") as Boolean))
+        set(renderShadows) {
+            scrollPanel.invoke("setDoNotRenderShadows", !renderShadows)
+        }
+    var maxShadowHeight
+        get() = scrollPanel.invoke("getMaxShadowHeight") as Float
+        set(maxShadowHeight) {
+            scrollPanel.invoke("setMaxShadowHeight", maxShadowHeight)
+        }
+    var scrollWidgetColor
+        get() = scrollPanel.invoke("getScrollWidgetColor") as Color
+        set(scrollWidgetColor) {
+            scrollPanel.invoke("setScrollWidgetColor", scrollWidgetColor)
+        }
+    var scrollRailColor
+        get() = scrollPanel.invoke("getScrollRailColor") as Color
+        set(scrollRailColor) {
+            scrollPanel.invoke("setScrollRailColor", scrollRailColor)
+        }
+    val contentContainer
+        get() = scrollPanel.invoke("getContentContainer") as UIPanelAPI
+
+    fun addToOverlay(uiComponent: UIComponentAPI) {
+        scrollPanel.invoke("addToOverlay", uiComponent)
+    }
+
+    fun removeFromOverlay(uiComponent: UIComponentAPI) {
+        scrollPanel.invoke("removeFromOverlay", uiComponent)
+    }
+
+    fun setContentSize(width: Float, height: Float) {
+        scrollPanel.invoke("setContentSize", width, height)
+    }
+
+    fun setUseSimpleShadows(simpleShadows: Boolean) {
+        scrollPanel.invoke("setUseSimpleShadows", simpleShadows)
+    }
+
+}
 
 class BoxedUILabel(val uiLabel: LabelAPI) : BoxedUIElement(uiLabel as UIComponentAPI),
     UIComponentAPI by (uiLabel as UIComponentAPI), LabelAPI by uiLabel {
@@ -339,36 +323,43 @@ class BoxedUILabel(val uiLabel: LabelAPI) : BoxedUIElement(uiLabel as UIComponen
 }
 
 class BoxedUIImage(val uiImage: UIComponentAPI) : BoxedUIElement(uiImage), UIComponentAPI by uiImage {
-    var spriteName = uiImage.invoke("getSpriteName") as String
+    var spriteName
+        get() = uiImage.invoke("getSpriteName") as String
         set(newSpriteName) {
             uiImage.invoke("setSprite", newSpriteName, true)
         }
-    var sprite = uiImage.invoke("getSprite") as Sprite
+    var sprite
+        get() = uiImage.invoke("getSprite") as Sprite
         set(newSprite) {
             uiImage.invoke("setSprite", newSprite, true)
         }
 
-    var borderColor = uiImage.invoke("getBorderColor") as Color
+    var borderColor
+        get() = uiImage.invoke("getBorderColor") as Color
         set(newColor) {
             uiImage.invoke("setBorderColor", newColor, true)
         }
 
-    var outline = uiImage.invoke("isWithOutline") as Boolean
+    var outline
+        get() = uiImage.invoke("isWithOutline") as Boolean
         set(withOutline) {
             uiImage.invoke("setWithOutline", withOutline)
         }
 
-    var textureClamp = uiImage.invoke("isTexClamp") as Boolean
+    var textureClamp
+        get() = uiImage.invoke("isTexClamp") as Boolean
         set(texClamp) {
             uiImage.invoke("setTexClamp", texClamp)
         }
 
-    var forceNoRounding = uiImage.invoke("isForceNoRounding") as Boolean
+    var forceNoRounding
+        get() = uiImage.invoke("isForceNoRounding") as Boolean
         set(noRounding) {
             uiImage.invoke("setForceNoRounding", noRounding)
         }
 
-    val originalAspectRatio = uiImage.invoke("getOriginalAR") as Float
+    val originalAspectRatio
+        get() = uiImage.invoke("getOriginalAR") as Float
 
     fun setStretch(stretch: Boolean) {
         uiImage.invoke("setStretch", stretch)
@@ -392,59 +383,203 @@ class BoxedUIImage(val uiImage: UIComponentAPI) : BoxedUIElement(uiImage), UICom
 }
 
 class BoxedUISliderBar(val uiBar: UIPanelAPI) : BoxedUIElement(uiBar), UIComponentAPI by uiBar {
-    var bonusColor = uiBar.invoke("getBonusColor") as Color
+    var bonusColor
+        get() = uiBar.invoke("getBonusColor") as Color
         set(color) {
             uiBar.invoke("setBonusColor", color)
         }
 
-    var widgetColor = uiBar.invoke("getWidgetColor") as Color
+    var widgetColor
+        get() = uiBar.invoke("getWidgetColor") as Color
         set(color) {
             uiBar.invoke("setWidgetColor", color)
         }
 
-    var barColor = uiBar.invoke("getBarColor") as Color
+    var barColor
+        get() = uiBar.invoke("getBarColor") as Color
         set(color) {
             uiBar.invoke("setBarColor", color)
         }
 
-    var numSubivisions = uiBar.invoke("getNumSubivisions") as Int
+    var numSubivisions
+        get() = uiBar.invoke("getNumSubivisions") as Int
         set(amount) {
             uiBar.invoke("setNumSubivisions", amount)
         }
 
-    var roundingIncrement = uiBar.invoke("getRoundingIncrement") as Int
+    var roundingIncrement
+        get() = uiBar.invoke("getRoundingIncrement") as Int
         set(amount) {
             uiBar.invoke("setRoundingIncrement", amount)
         }
 
-    var rangeMax = uiBar.invoke("getRangeMax") as Float
+    var rangeMax
+        get() = uiBar.invoke("getRangeMax") as Float
         set(amount) {
             uiBar.invoke("setRangeMax", amount)
         }
 
-    var rangeMin = uiBar.invoke("getRangeMin") as Float
+    var rangeMin
+        get() = uiBar.invoke("getRangeMin") as Float
         set(amount) {
             uiBar.invoke("setRangeMin", amount)
         }
 
-    var bonusAmount = uiBar.invoke("getBonusAmount") as Float
+    var bonusAmount
+        get() = uiBar.invoke("getBonusAmount") as Float
         set(amount) {
             uiBar.invoke("setBonusAmount", amount)
         }
 
-    var progress = uiBar.invoke("getProgress") as Float
+    var progress
+        get() = uiBar.invoke("getProgress") as Float
         set(amount) {
             uiBar.invoke("setProgress", amount)
         }
 
-    var showNotchOnIfBelowProgress = uiBar.invoke("getShowNotchOnIfBelowProgress") as Float
+    var showNotchOnIfBelowProgress
+        get() = uiBar.invoke("getShowNotchOnIfBelowProgress") as Float
         set(amount) {
             uiBar.invoke("setShowNotchOnIfBelowProgress", amount)
         }
 
-    val isShowNoText = uiBar.invoke("isShowNoText") as Boolean
+    val isShowNoText
+        get() = uiBar.invoke("isShowNoText") as Boolean
 
-    val textLabel = BoxedUILabel(uiBar.invoke("getValue") as LabelAPI)
+    val textLabel
+        get() = BoxedUILabel(uiBar.invoke("getValue") as LabelAPI)
+}
+
+/**
+ * A Boxed representation of a vanilla UI Ship Preview. Generates ShipAPI's on use.
+ * For performance reasons, try and call cleanupShips when hidden.
+ */
+class BoxedUIShipPreview(val uiShipPreview: UIPanelAPI) : BoxedUIElement(uiShipPreview),
+    UIComponentAPI by uiShipPreview {
+    internal companion object {
+        var SHIP_PREVIEW_CLASS: Class<*>? = null
+        var FLEETMEMBER_CONSTRUCTOR: ReflectionUtils.ReflectedConstructor? = null
+        var ENUM_CONSTRUCTOR: ReflectionUtils.ReflectedConstructor? = null
+        var ENUM_ARRAY: Array<*>? = null
+    }
+
+    enum class Style {
+        NONE,
+        NORMAL,
+        MINI
+    }
+
+    fun getShips(): Array<ShipAPI> {
+        uiShipPreview.invoke("prepareShip")
+        return uiShipPreview.invoke("getShips") as Array<ShipAPI>
+    }
+
+    fun cleanupShips() {
+        uiShipPreview.invoke("cleanup")
+    }
+
+    var showFighters
+        get() = uiShipPreview.invoke("isShowFighters") as Boolean
+        set(show) {
+            uiShipPreview.invoke("setShowFighters", show)
+        }
+
+    var showDestroyedFighters
+        get() = uiShipPreview.invoke("isShowDestroyedFighters") as Boolean
+        set(show) {
+            uiShipPreview.invoke("setShowDestroyedFighters", show)
+        }
+
+    var highlightBrightness
+        get() = uiShipPreview.invoke("getHighlightBrightness") as Float
+        set(brightness) {
+            uiShipPreview.invoke("setHighlightBrightness", brightness)
+        }
+
+    fun highlight() {
+        uiShipPreview.invoke("highlight")
+    }
+
+    fun unhighlight() {
+        uiShipPreview.invoke("unhighlight")
+    }
+
+    fun getHighlightFader(): Fader = uiShipPreview.invoke("getHighlight") as Fader
+
+    var borderColor
+        get() = uiShipPreview.invoke("getBorderColor") as Color
+        set(show) {
+            uiShipPreview.invoke("setBorderColor", show)
+        }
+
+    fun setShowBorder(show: Boolean) {
+        uiShipPreview.invoke("setShowBorder", show)
+    }
+
+    fun setBorderNewStyle(newStyle: Boolean) {
+        uiShipPreview.invoke("setShowNewBorder", newStyle)
+    }
+
+    var variant
+        get() = uiShipPreview.invoke("getVariant") as ShipVariantAPI?
+        set(variant) {
+            uiShipPreview.invoke("setVariant", variant)
+        }
+
+    fun setVariant(variant: ShipVariantAPI, title: String? = null, subtitle: String? = null) {
+        uiShipPreview.invoke("setVariant", variant, title, subtitle)
+    }
+
+    fun updateWithStatus(fleetMember: FleetMemberAPI, fleetStatus: FleetMemberStatusAPI) {
+        uiShipPreview.invoke("updateWithStatus", fleetMember, fleetStatus)
+    }
+
+    fun setWingSpec(fighterWingSpec: FighterWingSpecAPI) {
+        uiShipPreview.invoke("setWingSpec", fighterWingSpec)
+    }
+
+    fun setScaleDownSmallerShipsMagnitude(mag: Float) {
+        uiShipPreview.invoke("setScaleDownSmallerShipsMagnitude", mag)
+    }
+
+    fun adjustOverlay(scanlineAlpha: Float, tintAlpha: Float) {
+        uiShipPreview.invoke("adjustOverlay", scanlineAlpha, tintAlpha)
+    }
+
+    fun makeLookDisabled() {
+        uiShipPreview.invoke("makeLookDisabled")
+    }
+
+    fun setLabelColor(color: Color) {
+        uiShipPreview.invoke("setLabelColor", color)
+    }
+
+    fun hideLabels() {
+        uiShipPreview.invoke("hideLabels")
+    }
+}
+
+fun UIPanelAPI.addShipPreview(
+    width: Float, height: Float,
+    fleetMember: FleetMemberAPI? = null,
+    style: BoxedUIShipPreview.Style = BoxedUIShipPreview.Style.NORMAL,
+    color: Color = Global.getSettings().getColor("textFriendColor")
+): BoxedUIShipPreview {
+    val enum = BoxedUIShipPreview.ENUM_ARRAY!!.find { it!!.invoke("name") == style.name }
+    val shipPreview = if (fleetMember != null) {
+        BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(fleetMember)
+    } else {
+        BoxedUIShipPreview.ENUM_CONSTRUCTOR!!.newInstance(enum, color)
+    } as UIPanelAPI
+    val boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
+
+    shipPreview.setSize(width, height)
+    boxedUIShipPreview.setBorderNewStyle(true)
+    boxedUIShipPreview.setShowBorder(false)
+    boxedUIShipPreview.adjustOverlay(0f, 0f)
+    this.addComponent(shipPreview)
+
+    return boxedUIShipPreview
 }
 
 fun UIPanelAPI.addPara(
@@ -477,8 +612,8 @@ fun UIPanelAPI.addImage(imageSpritePath: String, width: Float, height: Float): B
     val tempPanel = Global.getSettings().createCustom(width, height, null)
     val tempTMAPI = tempPanel.createUIElement(width, height, false)
     tempTMAPI.addImage(imageSpritePath, width, height, 0f)
-    val tempTMAPIsUIPanel = tempTMAPI.getChildrenCopy()[0] as UIPanelAPI
-    val image = tempTMAPIsUIPanel.getChildrenCopy()[0]
+    val tempTMAPIsUIPanel = tempTMAPI.children[0] as UIPanelAPI
+    val image = tempTMAPIsUIPanel.children[0]
 
     this.addComponent(image)
     return BoxedUIImage(image)
@@ -557,8 +692,9 @@ fun UIPanelAPI.addAreaCheckbox(
 }
 
 fun UIPanelAPI.addCheckbox(
-    width: Float, height: Float, text: String, data: Any?, font: Font = Font.INSIGNIA_15,
-    color: Color, size: ButtonAPI.UICheckboxSize? = ButtonAPI.UICheckboxSize.SMALL, flag: Flag? = null
+    width: Float, height: Float, text: String? = null, data: Any? = null,
+    font: Font = Font.INSIGNIA_15, color: Color = Global.getSettings().basePlayerColor,
+    size: ButtonAPI.UICheckboxSize? = ButtonAPI.UICheckboxSize.SMALL, flag: Flag? = null
 ): ButtonAPI {
     // make a button in a temp panel/element
     val tempPanel = Global.getSettings().createCustom(width, height, null)

@@ -522,7 +522,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                     event.consume()
 
                     val cargoTab = ReflectionMisc.getCargoTab() ?: continue
-                    val dataViewPanels = cargoTab.allChildsWithMethod("isInvalidDropTarget")
+                    val dataViewPanels = cargoTab.allChildrenWithMethod("isInvalidDropTarget")
 
                     val allDataChildren = dataViewPanels.mapNotNull { child ->
                         val dataView = (child.safeInvoke("getCargoDataView") as? UIPanelAPI)

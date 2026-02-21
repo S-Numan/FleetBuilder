@@ -8,7 +8,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessages.DisplayMessages
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.UIUtils
 import org.lwjgl.opengl.GL11
 import starficz.*
@@ -23,7 +22,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     open lateinit var parent: UIPanelAPI
     open lateinit var panel: CustomPanelAPI
 
-    open var consumeInnerMouseInputs: Boolean = true
+    open var consumeMouseEvents: Boolean = true
 
     open var createUIOnInit: Boolean = true
 
@@ -76,7 +75,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
 
             val hovers = UIUtils.isMouseWithinBounds(panel.x, panel.y, panel.width, panel.height)
 
-            if (hovers && consumeInnerMouseInputs && event.isMouseEvent)
+            if (hovers && consumeMouseEvents && event.isMouseEvent)
                 event.consume()
         }
     }
