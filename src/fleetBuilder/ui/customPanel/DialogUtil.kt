@@ -1,6 +1,5 @@
 package fleetBuilder.ui.customPanel
 
-import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
@@ -28,7 +27,17 @@ class DialogUtil : EveryFrameCombatPlugin {
             } else {
                 val screenPanel = ReflectionMisc.getScreenPanel() ?: return
 
-                initDialog(screenPanel, x = x, y = y, width = width, height = height, dialog = dialog, parent = parent)
+                dialog.init(
+                    width = width,
+                    height = height,
+                    x = x
+                        ?: parent?.let { parent.position.centerX - width / 2 }
+                        ?: (screenPanel.position.centerX - width / 2),
+                    y = y
+                        ?: parent?.let { parent.position.centerY - height / 2 }
+                        ?: (screenPanel.position.centerY + height / 2),
+                    parent ?: screenPanel
+                )
             }
         }
 
@@ -44,31 +53,7 @@ class DialogUtil : EveryFrameCombatPlugin {
             return false
         }
 
-        private fun initDialog(
-            coreUI: UIPanelAPI,
-            dialog: PopUpPanel,
-            width: Float,
-            height: Float,
-            parent: UIPanelAPI? = null,
-            x: Float? = null,
-            y: Float? = null
-        ) {
-            //if (Global.getCurrentState() == GameState.CAMPAIGN && !Global.getSector().isPaused)
-            //    Global.getSector().isPaused = true
-
-            if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
-                Global.getCombatEngine().isPaused = true
-
-            dialog.init(
-                width,
-                height,
-                x ?: (coreUI.position.centerX - width / 2),
-                y ?: (coreUI.position.centerY + height / 2),
-                parent ?: coreUI
-            )
-        }
-
-        private fun prependDialogToShow(dialog: PopUpPanel, width: Float, height: Float) {
+        fun prependDialogToShow(dialog: PopUpPanel, width: Float, height: Float) {
             dialogsToShow.add(0, Triple(dialog, width, height))
         }
 
@@ -79,12 +64,12 @@ class DialogUtil : EveryFrameCombatPlugin {
         amount: Float,
         events: List<InputEventAPI?>?
     ) {
-        if (dialogsToShow.isNotEmpty()) {
+        if (dialogsToShow.isNotEmpty() && !isPopUpUIOpen()) {
             val screenPanel = ReflectionMisc.getScreenPanel() ?: return
 
             val (dialog, width, height) = dialogsToShow.removeAt(dialogsToShow.size - 1)
 
-            initDialog(screenPanel, dialog, width, height)
+            initPopUpUI(dialog, width, height, screenPanel)
         }
     }
 

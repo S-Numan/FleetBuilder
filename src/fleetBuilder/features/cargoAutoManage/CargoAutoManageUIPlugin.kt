@@ -227,7 +227,7 @@ class CargoAutoManageUIPlugin(
         val spacing = 10f
         //val entireRowHeight = rowHeight + spacing
 
-        panel = Global.getSettings().createCustom(width - dialog.x * 2, height - (dialog.y * 2) - 100f, this)
+        panel = Global.getSettings().createCustom(width - dialog.layoutOffsetX * 2, height - (dialog.layoutOffsetY * 2) - 100f, this)
 
         // Create main UI container
         scrollerTooltip = panel.createUIElement(panel.width, panel.height, true)

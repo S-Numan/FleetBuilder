@@ -1,10 +1,17 @@
 package fleetBuilder.ui.customPanel.common
 
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.ui.customPanel.DialogUtil
+import fleetBuilder.util.FBMisc.endStencil
+import fleetBuilder.util.FBMisc.renderTiledTexture
+import fleetBuilder.util.FBMisc.startStencilWithXPad
+import fleetBuilder.util.FBMisc.startStencilWithYPad
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
@@ -19,12 +26,12 @@ import starficz.y
 import java.awt.Color
 
 open class PopUpPanel : CustomUIPanel() {
-    override var createUIOnInit = false
-
-    open var originalSizeX: Float = 0f // Unset before init
-    open var originalSizeY: Float = 0f // Unset before init
-    open val framesToOpen: Int = 5
+    open var originalWidth: Float = 0f // Unset before init
+    open var originalHeight: Float = 0f // Unset before init
+    open var framesToOpen: Int = 5
     open var currentFrame: Float = 0f
+
+    open var consumeAllInput: Boolean = true
 
     open var quitWithEscKey: Boolean = true
 
@@ -59,12 +66,18 @@ open class PopUpPanel : CustomUIPanel() {
         y: Float,
         parent: UIPanelAPI?
     ): CustomPanelAPI {
-        originalSizeX = width
-        originalSizeY = height
+        originalWidth = width
+        originalHeight = height
         super.init(width, height, x, y, parent)
 
         if (Global.getSector()?.campaignUI != null)
             makeDummyDialog(Global.getSector().campaignUI)
+
+        //if (Global.getCurrentState() == GameState.CAMPAIGN && !Global.getSector().isPaused)
+        //    Global.getSector().isPaused = true
+
+        if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
+            Global.getCombatEngine().isPaused = true
 
         return panel
     }
@@ -107,7 +120,7 @@ open class PopUpPanel : CustomUIPanel() {
             currentFrame++
             val progress = currentFrame / framesToOpen
             if (currentFrame < framesToOpen && !reachedMaxHeight) {
-                panel.position.setSize(originalSizeX, originalSizeY * progress)
+                panel.position.setSize(originalWidth, originalHeight * progress)
                 currAlpha = currentFrame / framesToOpen
             } else if (currentFrame >= framesToOpen && !reachedMaxHeight) {
                 setMaxSize()
@@ -137,16 +150,55 @@ open class PopUpPanel : CustomUIPanel() {
                         break
                     } else if (event.isKeyDownEvent) {
                         attemptedExit = true
+                        event.consume()
                     }
                 }
             }
-            event.consume()
+            if (consumeAllInput)
+                event.consume()
         }
+    }
+
+    fun createStandardContentArea(): TooltipMakerAPI {
+        val buttonWidth = panel.position.width - (layoutOffsetX * 2)
+        val ui = panel.createUIElement(buttonWidth, panel.position.height, false)
+        ui.addSpacer(0f).position.inTL(0f, 0f)
+        return ui
+    }
+
+    var bufferedWidth = 0f
+    var bufferedHeight = 0f
+
+    override fun createUI() {
+        createUICallback?.invoke()
+    }
+
+    private var createUICallback: (() -> Unit)? = null
+    open fun onCreateUI(
+        width: Float = Global.getSettings().screenWidth / 2,
+        height: Float = Global.getSettings().screenHeight / 2,
+        parent: UIPanelAPI? = null,
+        x: Float? = null,
+        y: Float? = null,
+        callback: (TooltipMakerAPI) -> Unit
+    ) {
+        // store a callback
+        createUICallback = {
+            // build the UI once here
+            val ui = createStandardContentArea()
+            bufferedWidth = panel.width - (layoutOffsetX * 2)
+            bufferedHeight = panel.height - (layoutOffsetY * 2)
+            // run the user code
+            callback(ui)
+            // add UI automatically afterward
+            panel.addUIElement(ui).inTL(x!!, y!!)
+        }
+        DialogUtil.Companion.initPopUpUI(this, x = x, y = y, width = width, height = height, parent = parent)
     }
 
     fun setMaxSize() {
         reachedMaxHeight = true
-        panel.position.setSize(originalSizeX, originalSizeY)
+        panel.position.setSize(originalWidth, originalHeight)
         currAlpha = 1f
         createUI()
     }
