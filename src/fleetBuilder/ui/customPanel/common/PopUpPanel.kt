@@ -52,6 +52,9 @@ open class PopUpPanel : ComposableUIPanel() {
         if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
             Global.getCombatEngine().isPaused = true
 
+        if (elapsed >= openDuration)
+            setMaxSize()
+
         return panel
     }
 
