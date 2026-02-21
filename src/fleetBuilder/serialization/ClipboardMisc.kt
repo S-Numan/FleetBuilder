@@ -10,6 +10,7 @@ import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.serialization.SerializationUtils.extractDataFromString
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
@@ -88,6 +89,6 @@ object ClipboardMisc {
         val contents = ClipboardUtil.getClipboardJSONFileContents()
         val clipboardText = contents ?: ClipboardUtil.getClipboardTextSafe() ?: return null
 
-        return FBMisc.extractDataFromString(clipboardText)
+        return extractDataFromString(clipboardText)
     }
 }

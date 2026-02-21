@@ -12,6 +12,7 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.features.autofit.listener.CombatAutofitAdder
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.UIUtils
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Mouse
@@ -259,7 +260,7 @@ internal object AutofitSelector {
 
         var mouseUp = false
         override fun advance(amount: Float) {
-            if (!FBMisc.isMouseHoveringOverComponent(selectorPanel)) {
+            if (!UIUtils.isMouseHoveringOverComponent(selectorPanel)) {
                 if (hasClicked && !Mouse.isButtonDown(0)) {
                     if (mouseUp) {
                         onClickReleaseOutsideFunctions.forEach { it() }

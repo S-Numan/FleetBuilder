@@ -132,9 +132,9 @@ internal object AutofitPanel {
                     draggedPanel?.parent?.removeComponent(draggedPanel!!)
                     event.consume()
                 } else if ((
-                            FBMisc.isMouseHoveringOverComponent(autofitPanel, 8f) ||
-                                    (baseVariantPanel != null && FBMisc.isMouseHoveringOverComponent(baseVariantPanel!!, 8f)) ||
-                                    !FBMisc.isMouseWithinBounds(refitTab.x, refitTab.y, refitTab.width, refitTab.height) // block if outside tab
+                            UIUtils.isMouseHoveringOverComponent(autofitPanel, 8f) ||
+                                    (baseVariantPanel != null && UIUtils.isMouseHoveringOverComponent(baseVariantPanel!!, 8f)) ||
+                                    !UIUtils.isMouseWithinBounds(refitTab.x, refitTab.y, refitTab.width, refitTab.height) // block if outside tab
                             ) && (
                             event.isKeyboardEvent ||
                                     event.isMouseMoveEvent ||

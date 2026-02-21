@@ -14,41 +14,34 @@ import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Stats
-import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.ModSettings.randomPastedCosmetics
+import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessages.DisplayMessages.showMessage
+import fleetBuilder.core.shipDirectory.ShipDirectoryService.doesLoadoutExist
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.playerShuttleExists
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.removePlayerShuttle
 import fleetBuilder.features.hotkeyHandler.Dialogs
 import fleetBuilder.serialization.ClipboardMisc
+import fleetBuilder.serialization.GameModInfo
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.serialization.fleet.DataFleet.validateAndCleanFleetData
 import fleetBuilder.serialization.fleet.FleetSettings
-import fleetBuilder.serialization.fleet.JSONFleet.extractFleetDataFromJson
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.DataMember.buildMemberFull
-import fleetBuilder.serialization.member.JSONMember.extractMemberDataFromJson
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
-import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
-import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString
+import fleetBuilder.serialization.reportMissingElementsIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
-import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
-import fleetBuilder.core.displayMessages.DisplayMessages.showMessage
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
-import fleetBuilder.util.lib.ClipboardUtil.cleanJsonStringInput
-import fleetBuilder.core.shipDirectory.ShipDirectoryService.doesLoadoutExist
-import fleetBuilder.core.displayMessages.DisplayMessages
-import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.serialization.MissingElements
-import fleetBuilder.serialization.reportMissingElementsIfAny
 import org.json.JSONObject
 import org.magiclib.kotlin.getBuildInBonusXP
 import org.magiclib.kotlin.getOPCost
@@ -59,63 +52,6 @@ import kotlin.math.min
 
 
 object FBMisc {
-
-    fun extractDataFromString(text: String): Any? {
-        if (text.isEmpty()) return null
-
-        if (text.startsWithJsonBracket()) {
-            val json = getJSONFromStringSafe(text) ?: return null
-
-            return when {
-                json.has("skills") -> {
-                    // Officer
-                    extractPersonDataFromJson(json)
-                }
-
-                json.has("variant") || json.has("officer") -> {
-                    // Fleet member
-                    extractMemberDataFromJson(json)
-                }
-
-                json.has("hullId") -> {
-                    // Variant
-                    extractVariantDataFromJson(json)
-                }
-
-                json.has("members") -> {
-                    // Fleet
-                    extractFleetDataFromJson(json)
-                }
-
-                else -> {
-                    null
-                }
-            }
-
-
-        } else {
-            val data = extractVariantDataFromCompString(text)
-            if (data != null) {
-                return data
-            }
-        }
-
-        return null
-    }
-
-    fun getJSONFromStringSafe(inputText: String): JSONObject? {
-        var text = inputText
-        text = cleanJsonStringInput(text)
-
-        if (text.isEmpty()) return null
-
-        return try {
-            JSONObject(text)
-        } catch (_: Exception) {
-            null
-        }
-    }
-
     fun handleRefitCopy(isShiftDown: Boolean): Boolean {
         val baseVariant = ReflectionMisc.getCurrentVariantInRefitTab() ?: return false
 
@@ -456,23 +392,6 @@ object FBMisc {
             repairs.cr = max(repairs.cr, repairs.maxCR)
             member.setStatUpdateNeeded(true)
         }
-    }
-
-    fun isMouseHoveringOverComponent(component: UIComponentAPI, pad: Float = 0f): Boolean {
-        val x = component.position.x - pad
-        val y = component.position.y - pad
-        val width = component.position.width + pad * 2
-        val height = component.position.height + pad * 2
-
-        return isMouseWithinBounds(x, y, width, height)
-    }
-
-    fun isMouseWithinBounds(x: Float, y: Float, width: Float, height: Float): Boolean {
-        val mouseX = Global.getSettings().mouseX
-        val mouseY = Global.getSettings().mouseY
-
-        return mouseX >= x && mouseX <= x + width &&
-                mouseY >= y && mouseY <= y + height
     }
 
     fun campaignPaste(

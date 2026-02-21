@@ -9,6 +9,7 @@ import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessages.DisplayMessages
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.UIUtils
 import org.lwjgl.opengl.GL11
 import starficz.*
 import java.awt.Color
@@ -73,7 +74,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
         for (event in events) {
             if (event.isConsumed) continue
 
-            val hovers = FBMisc.isMouseWithinBounds(panel.x, panel.y, panel.width, panel.height)
+            val hovers = UIUtils.isMouseWithinBounds(panel.x, panel.y, panel.width, panel.height)
 
             if (hovers && consumeInnerMouseInputs && event.isMouseEvent)
                 event.consume()

@@ -2,10 +2,10 @@ package fleetBuilder.serialization.variant
 
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
-import fleetBuilder.serialization.CompressedMisc.fieldSep
-import fleetBuilder.serialization.CompressedMisc.metaSep
-import fleetBuilder.serialization.CompressedMisc.sep
-import fleetBuilder.serialization.CompressedMisc.weaponGroupSep
+import fleetBuilder.serialization.SerializationUtils.fieldSep
+import fleetBuilder.serialization.SerializationUtils.metaSep
+import fleetBuilder.serialization.SerializationUtils.sep
+import fleetBuilder.serialization.SerializationUtils.weaponGroupSep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.serialization.variant.VariantMisc.getSourceModsFromVariant

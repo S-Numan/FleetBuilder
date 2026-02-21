@@ -66,7 +66,7 @@ class CatchStoreMemberButton : CampaignInputListener {
                     } != null
                 } ?: return null
 
-                if (FBMisc.isMouseHoveringOverComponent(desiredButton)) {
+                if (UIUtils.isMouseHoveringOverComponent(desiredButton)) {
                     return memberUI.getFieldsMatching(type = FleetMember::class.java).getOrNull(0)?.get(memberUI) as? FleetMemberAPI
                 }
 

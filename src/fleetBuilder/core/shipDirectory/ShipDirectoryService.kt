@@ -12,8 +12,8 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.core.displayMessages.DisplayMessages
-import fleetBuilder.util.FBMisc.extractDataFromString
 import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.SerializationUtils.extractDataFromString
 import fleetBuilder.util.VariantLib
 import fleetBuilder.util.VariantLib.compareVariantContents
 import fleetBuilder.util.VariantLib.getCoreVariantsForEffectiveHullspec
