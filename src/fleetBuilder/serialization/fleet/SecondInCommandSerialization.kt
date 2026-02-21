@@ -7,7 +7,7 @@ import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.serialization.person.DataPerson.validateAndCleanPersonData
 import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
@@ -171,7 +171,7 @@ object SecondInCommandSerialization {
             try {
                 scOfficer.set("experiencePoints", experiencePoints)
             } catch (_: Exception) {
-                DisplayMessages.showError("Failed to set Second In Command experience points")
+                DisplayMessage.showError("Failed to set Second In Command experience points")
             }
 
             storedData.addOfficerToFleet(scOfficer)

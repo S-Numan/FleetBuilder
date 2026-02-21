@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.*
 
 class CargoAutoManager : EveryFrameScript {
@@ -42,7 +42,7 @@ class CargoAutoManager : EveryFrameScript {
             }
 
             if (changeOccured)
-                DisplayMessages.showMessage(FBTxt.txt("cargo_auto_manage_message"))
+                DisplayMessage.showMessage(FBTxt.txt("cargo_auto_manage_message"))
 
         } else if (market == null && interactionMarket != null) { // Market Leave
             var changeOccured = false
@@ -61,7 +61,7 @@ class CargoAutoManager : EveryFrameScript {
             interactionMarket = market
 
             if (changeOccured && ModSettings.reportCargoAutoManagerChanges)
-                DisplayMessages.showMessage(FBTxt.txt("cargo_auto_manage_message"))
+                DisplayMessage.showMessage(FBTxt.txt("cargo_auto_manage_message"))
         }
 
 

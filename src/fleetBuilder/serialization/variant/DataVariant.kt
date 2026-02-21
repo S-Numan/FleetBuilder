@@ -7,7 +7,7 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
-import fleetBuilder.core.displayMessages.DisplayMessages.showError
+import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.createHullVariant
 import fleetBuilder.util.getCompatibleDLessHullId

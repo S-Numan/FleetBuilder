@@ -1,4 +1,4 @@
-package fleetBuilder.core.displayMessages
+package fleetBuilder.core.displayMessage
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
@@ -10,7 +10,7 @@ import org.apache.log4j.Level
 import org.lazywizard.console.Console
 import java.awt.Color
 
-object DisplayMessages {
+object DisplayMessage {
 
     //Prevent error spam
     private val recentErrors = mutableMapOf<String, Long>()

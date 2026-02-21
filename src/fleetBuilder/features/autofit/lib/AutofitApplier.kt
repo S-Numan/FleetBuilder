@@ -14,7 +14,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.getHullModBonusXP
 import fleetBuilder.util.FBMisc.sModHandlerTemp
@@ -45,7 +45,7 @@ object AutofitApplier {
 
         try {
             if (baseVariant.moduleSlots != loadout.moduleSlots) {
-                DisplayMessages.showError("Module slots between loadout and base variant's do not match. Stopping autofit to prevent crash.")
+                DisplayMessage.showError("Module slots between loadout and base variant's do not match. Stopping autofit to prevent crash.")
                 return
             }
 
@@ -177,7 +177,7 @@ object AutofitApplier {
                                 if (!itemManager.isRequiredItemAvailable(it, ship.fleetMember, baseVariant, market)) {
                                     sModsToApply.remove(it)
                                     bonusXpToGrant -= getHullModBonusXP(baseVariant, it)
-                                    DisplayMessages.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
+                                    DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
                                     return@forEach
                                 }
 
@@ -209,7 +209,7 @@ object AutofitApplier {
 
                     if (auto.creditCost > 0) {
                         val creditString = Misc.getDGSCredits(auto.creditCost.toFloat())
-                        DisplayMessages.showMessage(
+                        DisplayMessage.showMessage(
                             FBTxt.txt("autofit_confirmed_purchased", creditString),
                             creditString, Misc.getHighlightColor()
                         )
@@ -218,7 +218,7 @@ object AutofitApplier {
 
             }
         } catch (e: Exception) {
-            DisplayMessages.showError(FBTxt.txt("failed_to_apply_variant"), e)
+            DisplayMessage.showError(FBTxt.txt("failed_to_apply_variant"), e)
             //e.printStackTrace()
         }
 
@@ -242,7 +242,7 @@ object AutofitApplier {
             shipDisplay.safeInvoke("updateButtonPositionsToZoomLevel")
             //refitPanel.safeInvoke("recreateUI")
         } catch (e: Exception) {
-            DisplayMessages.showError("ERROR: " + FBTxt.txt("failed_to_apply_variant"), e)
+            DisplayMessage.showError("ERROR: " + FBTxt.txt("failed_to_apply_variant"), e)
         }
 
         shipDisplay.safeInvoke("setSuppressMessages", false)
@@ -255,7 +255,7 @@ object AutofitApplier {
         dontForceClearSMods: Boolean = false
     ) {
         if (to.hullSpec.getEffectiveHullId() != from.hullSpec.getEffectiveHullId()) {
-            DisplayMessages.showError("Replace Variant With Variant failed. Base hulls '${to.hullSpec.getEffectiveHullId()}' and '${from.hullSpec.getEffectiveHullId()}' do not match.")
+            DisplayMessage.showError("Replace Variant With Variant failed. Base hulls '${to.hullSpec.getEffectiveHullId()}' and '${from.hullSpec.getEffectiveHullId()}' do not match.")
             return
         }
         to.clear()

@@ -22,7 +22,7 @@ import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl
 import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import java.awt.Color
 
 class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
@@ -70,7 +70,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
                         || (interactionDialog.interactionTarget != null && interactionDialog.interactionTarget.customPlugin is GateEntityPlugin)
                     ) {
                         interactionDialog.dismiss()
-                        DisplayMessages.showMessage(FBTxt.txt("no_command_shuttle_jump_alone"), Color.YELLOW)
+                        DisplayMessage.showMessage(FBTxt.txt("no_command_shuttle_jump_alone"), Color.YELLOW)
                     }
                     //val pods = Misc.addCargoPods(playerFleet.containingLocation, playerFleet.location)
                     //pods.cargo.addFuel(playerFleet.cargo.fuel)
@@ -92,7 +92,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
             Global.getSector().currentLocation = prevLocationSetter
 
             playerFleet.setLocation(0f, 0f)
-            DisplayMessages.showMessage(FBTxt.txt("no_command_shuttle_jump_alone") + "...", Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("no_command_shuttle_jump_alone") + "...", Color.YELLOW)
 
             prevLocationSetter = null
         }
@@ -155,7 +155,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
                 if (transaction.creditValue > 0) {
                     val message = FBTxt.txt("command_shuttle_transfer_message", transaction.creditValue.toInt())
                     Global.getSector().playerFleet.cargo.credits.subtract(transaction.creditValue)
-                    DisplayMessages.showMessage(message, Color.YELLOW)
+                    DisplayMessage.showMessage(message, Color.YELLOW)
                 }
             }
         }

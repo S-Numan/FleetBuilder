@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElementsExtended
 import org.json.JSONArray
 import org.json.JSONObject
@@ -38,7 +38,7 @@ object CargoSerialization {
             }
 
             else -> {
-                DisplayMessages.showError("Unsupported cargo JSON format")
+                DisplayMessage.showError("Unsupported cargo JSON format")
             }
         }
 

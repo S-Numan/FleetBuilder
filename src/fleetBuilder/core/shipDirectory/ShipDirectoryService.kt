@@ -11,7 +11,7 @@ import fleetBuilder.core.ModSettings.defaultPrefix
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.features.autofit.ui.AutofitSpec
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.SerializationUtils.extractDataFromString
 import fleetBuilder.util.VariantLib
@@ -132,11 +132,11 @@ object ShipDirectoryService {
                 appendLine(e.toString())
             }
 
-            DisplayMessages.dialogMessage(
+            DisplayMessage.dialogMessage(
                 "Failed to read the $prefix loadout directory",
                 message
             )
-            DisplayMessages.logMessage(message, Level.ERROR)
+            DisplayMessage.logMessage(message, Level.ERROR)
 
             _directory ?: return null
         }

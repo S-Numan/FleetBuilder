@@ -21,7 +21,7 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManageUIPlugin
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.ui.customPanel.common.BasePopUpPanel
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBTxt
 import fleetBuilder.serialization.PlayerSaveUtil
@@ -104,9 +104,9 @@ object Dialogs {
                 ReflectionMisc.updateFleetPanelContents()
 
                 if (fleet.fleetData.membersListCopy.size > 1)
-                    DisplayMessages.showMessage(FBTxt.txt("members_appended_into_fleet", fleet.fleetData.membersListCopy.size))
+                    DisplayMessage.showMessage(FBTxt.txt("members_appended_into_fleet", fleet.fleetData.membersListCopy.size))
                 else
-                    DisplayMessages.showMessage(FBTxt.txt("member_appended_into_fleet", fleet.fleetData.membersListCopy.size))
+                    DisplayMessage.showMessage(FBTxt.txt("member_appended_into_fleet", fleet.fleetData.membersListCopy.size))
 
                 dialog.forceDismiss()
             }
@@ -132,7 +132,7 @@ object Dialogs {
 
                 ReflectionMisc.updateFleetPanelContents()
 
-                DisplayMessages.showMessage(FBTxt.txt("player_fleet_replaced"))
+                DisplayMessage.showMessage(FBTxt.txt("player_fleet_replaced"))
 
                 dialog.forceDismiss()
             }
@@ -284,7 +284,7 @@ object Dialogs {
                 if (fightToTheLast.isChecked)
                     fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
 
-                DisplayMessages.showMessage("Fleet from clipboard added to campaign")
+                DisplayMessage.showMessage("Fleet from clipboard added to campaign")
             }
         }
 
@@ -426,7 +426,7 @@ object Dialogs {
         dialog.onConfirm {
             ShipDirectoryService.importShipLoadout(ModSettings.defaultPrefix, variant, missing)
 
-            DisplayMessages.showMessage(
+            DisplayMessage.showMessage(
                 " Loadout imported for hull: $loadoutBaseHullName",
                 variant.hullSpec.hullId,
                 Misc.getHighlightColor()
@@ -508,7 +508,7 @@ object Dialogs {
                 )
 
                 ClipboardUtil.setClipboardText(json.toString(4))
-                DisplayMessages.showMessage(FBTxt.txt("save_copied_to_clipboard"))
+                DisplayMessage.showMessage(FBTxt.txt("save_copied_to_clipboard"))
 
                 dialog.forceDismiss()
             }
@@ -518,7 +518,7 @@ object Dialogs {
                 val json = ClipboardUtil.getClipboardJson()
 
                 if (json == null) {
-                    DisplayMessages.showMessage(FBTxt.txt("failed_to_read_json_in_clipboard"), Color.YELLOW)
+                    DisplayMessage.showMessage(FBTxt.txt("failed_to_read_json_in_clipboard"), Color.YELLOW)
                     return@onClick
                 }
 
@@ -526,7 +526,7 @@ object Dialogs {
 
                 if (compiled.isEmpty()) {
                     reportMissingElementsIfAny(missing)
-                    DisplayMessages.showMessage(
+                    DisplayMessage.showMessage(
                         FBTxt.txt("failed_to_find_save_in_clipboard"),
                         Color.YELLOW
                     )
@@ -546,7 +546,7 @@ object Dialogs {
                     handleAbilityBar = isEnabled(SaveOption.ABILITYBAR)
                 )
 
-                DisplayMessages.showMessage(FBTxt.txt("save_loaded_from_clipboard"))
+                DisplayMessage.showMessage(FBTxt.txt("save_loaded_from_clipboard"))
                 reportMissingElementsIfAny(missing)
 
                 dialog.forceDismiss()

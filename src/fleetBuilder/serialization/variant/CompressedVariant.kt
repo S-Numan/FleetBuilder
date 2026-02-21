@@ -9,7 +9,7 @@ import fleetBuilder.serialization.SerializationUtils.weaponGroupSep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.serialization.variant.VariantMisc.getSourceModsFromVariant
-import fleetBuilder.core.displayMessages.DisplayMessages.showError
+import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.toBinary
 import fleetBuilder.serialization.GameModInfo

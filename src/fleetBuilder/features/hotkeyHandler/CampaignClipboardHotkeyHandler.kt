@@ -17,7 +17,7 @@ import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.ModSettings.commandShuttleId
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.JSONMember.saveMemberToJson
@@ -63,7 +63,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 )
 
                 ClipboardUtil.setClipboardText(json.toString(4))
-                DisplayMessages.showMessage(
+                DisplayMessage.showMessage(
                     if (!isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1) {
                         FBTxt.txt("copied_interaction_fleet_with_supporting_to_clipboard")
                     } else {
@@ -106,11 +106,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     }
                 }
             } catch (e: Exception) {
-                DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+                DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
                 return false
             }
             if (fleetToCopy == null) {
-                DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName))
+                DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName))
                 return false
             }
 
@@ -128,7 +128,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     else
                         FBTxt.txt("copied_visible_submarket_to_clipboard")
                 }
-            DisplayMessages.showMessage(txt)
+            DisplayMessage.showMessage(txt)
             return true
         }
     }
@@ -185,7 +185,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             event.consume()
 
             if (!ModSettings.cheatsEnabled()) {
-                DisplayMessages.showMessage(FBTxt.txt("enable_cheats_to_use_officer_creator", ModSettings.modName), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_officer_creator", ModSettings.modName), Color.YELLOW)
                 return
             }
 
@@ -231,7 +231,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 ui.currentInteractionDialog != null -> if (handleInteractionCopy(ui, event.isAltDown)) event.consume()
             }
         } catch (e: Exception) {
-            DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
     }
 
@@ -261,7 +261,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
             if (!ModSettings.cheatsEnabled())
-                DisplayMessages.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
             else
                 fleetPaste(sector, data)
         } else if (
@@ -284,7 +284,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     }
                 }
 
-                DisplayMessages.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
 
             } else
                 campaignPaste(sector, data)
@@ -309,10 +309,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
             val json = savePersonToJson(hoverOfficer)
             ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessages.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
+            DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
             event.consume()
         } catch (e: Exception) {
-            DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
     }
 
@@ -331,16 +331,16 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 if (isPortraitHoveredOver) {
                     val json = savePersonToJson(mouseOverMember.captain)
                     ClipboardUtil.setClipboardText(json.toString(4))
-                    DisplayMessages.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
+                    DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
                 } else {
                     if (mouseOverMember.variant.hasHullMod(commandShuttleId)) {
-                        DisplayMessages.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
+                        DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
                         return
                     }
 
                     val json = saveMemberToJson(mouseOverMember)
                     ClipboardUtil.setClipboardText(json.toString(4))
-                    DisplayMessages.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
+                    DisplayMessage.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
                 }
                 event.consume()
             } else if (isPortraitHoveredOver && mouseOverMember.captain.isPlayer) {
@@ -357,7 +357,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     when {
                         isShuttle -> {
                             if (sector.playerFleet.fleetSizeCount == 1)
-                                DisplayMessages.showMessage(FBTxt.txt("cannot_remove_last_ship_in_fleet"), Color.YELLOW)
+                                DisplayMessage.showMessage(FBTxt.txt("cannot_remove_last_ship_in_fleet"), Color.YELLOW)
                             else
                                 CommanderShuttle.removePlayerShuttle()
                         }
@@ -367,7 +367,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                         }
 
                         else -> {
-                            DisplayMessages.showMessage(
+                            DisplayMessage.showMessage(
                                 FBTxt.txt("enable_unassign_player", ModSettings.modName),
                                 Color.YELLOW
                             )
@@ -379,7 +379,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 }
             }
         } catch (e: Exception) {
-            DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
     }
 
@@ -405,10 +405,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val member = thing.safeInvoke("getMember") as? FleetMemberAPI ?: return
             val json = savePersonToJson(member.captain)
             ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessages.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
+            DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
             event.consume()
         } catch (e: Exception) {
-            DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
     }
 

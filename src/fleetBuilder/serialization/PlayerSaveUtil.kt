@@ -11,7 +11,7 @@ import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
 import fleetBuilder.serialization.person.JSONPerson
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.optJSONArrayToStringList
@@ -98,7 +98,7 @@ object PlayerSaveUtil {
                 @Suppress("UNCHECKED_CAST")
                 sector.uiData.abilitySlotsAPI.safeInvoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
             } catch (e: Exception) {
-                DisplayMessages.showError("Failed to save Ability Bar")
+                DisplayMessage.showError("Failed to save Ability Bar")
                 emptyArray()
             }
 
@@ -204,7 +204,7 @@ object PlayerSaveUtil {
                 }
 
             } catch (e: Exception) {
-                DisplayMessages.showError(FBTxt.txt("failed_to_load_cargo"), e)
+                DisplayMessage.showError(FBTxt.txt("failed_to_load_cargo"), e)
             }
         }
 
@@ -212,7 +212,7 @@ object PlayerSaveUtil {
             try {
                 cargo.credits.add(json.optDouble("credits", 0.0).toFloat())
             } catch (e: Exception) {
-                DisplayMessages.showError(FBTxt.txt("failed_to_load_credits"), e)
+                DisplayMessage.showError(FBTxt.txt("failed_to_load_credits"), e)
             }
         }
 
@@ -232,7 +232,7 @@ object PlayerSaveUtil {
                 }
                 compiled.relations = relationsMap
             } catch (e: Exception) {
-                DisplayMessages.showError(FBTxt.txt("failed_to_load_relations"), e)
+                DisplayMessage.showError(FBTxt.txt("failed_to_load_relations"), e)
             }
         }
 
@@ -243,7 +243,7 @@ object PlayerSaveUtil {
 
                 compiled.player = loadedPlayer
             } catch (e: Exception) {
-                DisplayMessages.showError(FBTxt.txt("failed_to_load_player"), e)
+                DisplayMessage.showError(FBTxt.txt("failed_to_load_player"), e)
             }
         }
 
@@ -263,7 +263,7 @@ object PlayerSaveUtil {
 
                 compiled.fleet = fleet
             } catch (e: Exception) {
-                DisplayMessages.showError(FBTxt.txt("failed_to_load_fleet"), e)
+                DisplayMessage.showError(FBTxt.txt("failed_to_load_fleet"), e)
             }
         }
 
@@ -370,7 +370,7 @@ object PlayerSaveUtil {
 
                 compiled.abilityBars = savedBars
             } catch (e: Exception) {
-                DisplayMessages.showError(FBTxt.txt("failed_to_load_ability_bars"), e)
+                DisplayMessage.showError(FBTxt.txt("failed_to_load_ability_bars"), e)
             }
         }
 
@@ -475,7 +475,7 @@ object PlayerSaveUtil {
                 @Suppress("UNCHECKED_CAST")
                 sector.uiData.abilitySlotsAPI.safeInvoke("getSlots") as Array<Array<CampaignUIPersistentData.AbilitySlot>>
             } catch (e: Exception) {
-                DisplayMessages.showError(FBTxt.txt("failed_to_load_ability_bars"), e)
+                DisplayMessage.showError(FBTxt.txt("failed_to_load_ability_bars"), e)
                 emptyArray()
             }
 

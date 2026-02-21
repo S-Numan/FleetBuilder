@@ -32,7 +32,7 @@ import fleetBuilder.util.VariantLib.compareVariantHullMods
 import fleetBuilder.util.VariantLib.getAllDMods
 import fleetBuilder.util.VariantLib.processSModsForComparison
 import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.ui.customPanel.common.BasePopUpPanel
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
@@ -186,7 +186,7 @@ internal object AutofitPanel {
         scrollerTooltip.position.inTL(0f, 0f)
 
         val currentShipDirectory = ShipDirectoryService.getShipDirectoryWithPrefix(currentPrefix) ?: run {
-            DisplayMessages.showError("Failed to get ship directory object")
+            DisplayMessage.showError("Failed to get ship directory object")
             return autofitPanel
         }
 
@@ -599,11 +599,11 @@ internal object AutofitPanel {
 
                 if (selectorPlugin.autofitSpec != null) {
                     if (selectorPlugin.autofitSpec !== autofitPlugin.draggedAutofitSpec)
-                        DisplayMessages.showMessage("Slot already occupied", Color.YELLOW)
+                        DisplayMessage.showMessage("Slot already occupied", Color.YELLOW)
                     return@onClickReleaseNoInitClick
                 }
                 if (selectorPlugin.addXIfAutofitSpecNull) {
-                    DisplayMessages.showMessage("Slot is reserved. Hover over the slot for more details.", Color.YELLOW)
+                    DisplayMessage.showMessage("Slot is reserved. Hover over the slot for more details.", Color.YELLOW)
                     return@onClickReleaseNoInitClick
                 }
                 //Slot does not have an autofitSpec, and an autofitSpec is being dragged.
@@ -625,7 +625,7 @@ internal object AutofitPanel {
                 }
 
                 if (shipDirectory == null) {
-                    DisplayMessages.showError("Could not find ship directory with prefix $currentPrefix")
+                    DisplayMessage.showError("Could not find ship directory with prefix $currentPrefix")
                     return@onClickReleaseNoInitClick
                 }
 
@@ -655,10 +655,10 @@ internal object AutofitPanel {
                             //shipDirectory = newShipDirectory
                             //missing = shipDirectory.getShipEntry(equalVariant.hullVariantId)?.missingElements
                             //    ?: return@onClickReleaseNoInitClick
-                            DisplayMessages.showError("ERROR. Cross ShipDirectory UI is no longer implemented.")
+                            DisplayMessage.showError("ERROR. Cross ShipDirectory UI is no longer implemented.")
                             return@onClickReleaseNoInitClick
                         } else {
-                            DisplayMessages.showError("ERROR. Could not find variant, but variant already existed?")
+                            DisplayMessage.showError("ERROR. Could not find variant, but variant already existed?")
                             return@onClickReleaseNoInitClick
                         }
                     }

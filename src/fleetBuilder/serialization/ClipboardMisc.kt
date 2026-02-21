@@ -9,9 +9,8 @@ import fleetBuilder.serialization.member.JSONMember
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.SerializationUtils.extractDataFromString
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.createHullVariant
@@ -24,7 +23,7 @@ object ClipboardMisc {
 
     fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false) {
         if (variant.hasHullMod(ModSettings.commandShuttleId)) {
-            DisplayMessages.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return
         }
 
@@ -39,7 +38,7 @@ object ClipboardMisc {
                 }
             )
             ClipboardUtil.setClipboardText(comp)
-            DisplayMessages.showMessage(FBTxt.txt("compressed_variant_copied_to_clipboard"))
+            DisplayMessage.showMessage(FBTxt.txt("compressed_variant_copied_to_clipboard"))
         } else {
             val json = JSONVariant.saveVariantToJson(
                 variantToSave,
@@ -48,13 +47,13 @@ object ClipboardMisc {
                 }
             )
             ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessages.showMessage(FBTxt.txt("variant_copied_to_clipboard"))
+            DisplayMessage.showMessage(FBTxt.txt("variant_copied_to_clipboard"))
         }
     }
 
     fun saveMemberToClipboard(member: FleetMemberAPI, shift: Boolean = false) {
         if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
-            DisplayMessages.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return
         }
 
@@ -62,11 +61,11 @@ object ClipboardMisc {
             //val comp = saveMemberToCompString(member)
             //setClipboardText(comp)
             //DisplayMessage.showMessage("Member compressed and copied to clipboard")
-            DisplayMessages.showMessage("Copying the compressed member is currently unimplemented. Please avoid holding shift.", Color.YELLOW)
+            DisplayMessage.showMessage("Copying the compressed member is currently unimplemented. Please avoid holding shift.", Color.YELLOW)
         } else {
             val json = JSONMember.saveMemberToJson(member)
             ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessages.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
+            DisplayMessage.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
         }
     }
 

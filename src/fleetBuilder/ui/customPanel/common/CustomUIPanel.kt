@@ -7,7 +7,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.UIUtils
 import org.lwjgl.opengl.GL11
 import starficz.*
@@ -48,7 +48,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
         panel = Global.getSettings().createCustom(width, height, this)
 
         this.parent = parent ?: run {
-            DisplayMessages.showError("parent was null when creating dialog")
+            DisplayMessage.showError("parent was null when creating dialog")
             return panel
         }
 
@@ -201,7 +201,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
             color: Color
         ) {
             if (textureId == 0) {
-                DisplayMessages.showError("Error: Invalid texture ID.")
+                DisplayMessage.showError("Error: Invalid texture ID.")
                 return
             }
 

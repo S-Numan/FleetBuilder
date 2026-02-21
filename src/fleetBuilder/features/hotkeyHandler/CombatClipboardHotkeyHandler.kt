@@ -19,7 +19,7 @@ import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.ui.customPanel.DialogUtil
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.serialization.MissingElements
@@ -55,7 +55,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 event.consume()
 
                         } catch (e: Exception) {
-                            DisplayMessages.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
                         if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.Companion.isPopUpUIOpen() && !ReflectionMisc.isCodexOpen()) {
@@ -190,7 +190,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
             if (data is DataVariant.ParsedVariantData || data is DataMember.ParsedMemberData) {
                 //
             } else {
-                DisplayMessages.showMessage(FBTxt.txt("data_valid_but_no_member_variant"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_member_variant"), Color.YELLOW)
                 return
             }
 
@@ -218,7 +218,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
             return
 
         if (missing.hullIds.isNotEmpty()) {
-            DisplayMessages.showError("Could not find HullSpec with ID '${missing.hullIds.first()}'")
+            DisplayMessage.showError("Could not find HullSpec with ID '${missing.hullIds.first()}'")
             return
         }
 
@@ -232,22 +232,22 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
         if (!ModSettings.cheatsEnabled()) {
             if (member.hullSpec.hasTag("codex_unlockable")) {
                 if (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId)) {
-                    DisplayMessages.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. The player is not aware of this hull.", Color.YELLOW)
+                    DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. The player is not aware of this hull.", Color.YELLOW)
                     return
                 }
             } else if (member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
                 || member.variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.variant.hasTag(Tags.HIDE_IN_CODEX)
             ) {
-                DisplayMessages.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. It is hidden in the codex which suggests it cannot be simulated.", Color.YELLOW)
+                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. It is hidden in the codex which suggests it cannot be simulated.", Color.YELLOW)
                 return
             } else if (getDeployedFleetPoints(engine, FleetSide.ENEMY) + member.deployCost > Global.getSettings().battleSize / 2f * 1.2f) {
-                DisplayMessages.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. Would exceed Fleet Point limit.", Color.YELLOW)
+                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. Would exceed Fleet Point limit.", Color.YELLOW)
                 return
             }
         }
         if (!isPositionFree(engine, loc.x, loc.y, member.hullSpec.collisionRadius / 2f)) {
             loc = findFreeSpawnLocation(engine, loc.x, loc.y, member.hullSpec.collisionRadius) ?: run {
-                DisplayMessages.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. Cannot find free location.", Color.YELLOW)
+                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. Cannot find free location.", Color.YELLOW)
                 return
             }
         }

@@ -9,7 +9,7 @@ import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFr
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
@@ -125,7 +125,7 @@ class ShipDirectory(
 
         //Ensures end result is readable, and uses the saved version of the variant to guarantee consistency across game restarts.
         val parsedVariant = extractVariantDataFromCompString(comp) ?: run {
-            DisplayMessages.showError("Failed to save variant", "Failed to extract variant data from comp string after just saving: $comp")
+            DisplayMessage.showError("Failed to save variant", "Failed to extract variant data from comp string after just saving: $comp")
             return ""
         }
 
@@ -140,7 +140,7 @@ class ShipDirectory(
             inputDesiredIndexInMenu
 
         if (containsShip(savedVariant.hullVariantId))
-            DisplayMessages.showError("The variantID of ${savedVariant.hullVariantId} already exists in the directory of prefix $prefix . Replacing existing variant.")
+            DisplayMessage.showError("The variantID of ${savedVariant.hullVariantId} already exists in the directory of prefix $prefix . Replacing existing variant.")
 
         // Save the updated directory
         if (editDirectoryFile)
@@ -180,7 +180,7 @@ class ShipDirectory(
         val shipDirJson = try {
             Global.getSettings().readJSONFromCommon(configPath, false)
         } catch (e: Exception) {
-            DisplayMessages.showError("Failed to update ship directory. File was likely changed during runtime!", "Failed to update ship directory. File was likely changed during runtime!\nFailed to read ship directory at /saves/common/$configPath\n", e)
+            DisplayMessage.showError("Failed to update ship directory. File was likely changed during runtime!", "Failed to update ship directory. File was likely changed during runtime!\nFailed to read ship directory at /saves/common/$configPath\n", e)
             return
         }
 
@@ -198,7 +198,7 @@ class ShipDirectory(
     ) {
         updateShipDirectoryJson { shipPathsJson ->
             if (containsAndRemoveShipName(shipPathsJson, shipPath)) {
-                DisplayMessages.showError("$shipPath already existed in JSONArray. The old file will be overwritten.")
+                DisplayMessage.showError("$shipPath already existed in JSONArray. The old file will be overwritten.")
             }
 
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)

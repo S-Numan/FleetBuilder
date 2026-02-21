@@ -13,7 +13,7 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.*
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
@@ -71,7 +71,7 @@ class CatchStoreMemberButton : CampaignInputListener {
                 }
 
             } catch (e: Exception) {
-                DisplayMessages.showError(FBTxt.txt("failed_to_get_store_member_button"), e)
+                DisplayMessage.showError(FBTxt.txt("failed_to_get_store_member_button"), e)
             }
 
             return null

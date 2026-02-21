@@ -17,8 +17,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.ModSettings.randomPastedCosmetics
-import fleetBuilder.core.displayMessages.DisplayMessages
-import fleetBuilder.core.displayMessages.DisplayMessages.showMessage
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.displayMessage.DisplayMessage.showMessage
 import fleetBuilder.core.shipDirectory.ShipDirectoryService.doesLoadoutExist
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.playerShuttleExists
@@ -67,7 +67,7 @@ object FBMisc {
             data = data.variantData
         }
         if (data !is DataVariant.ParsedVariantData) {
-            DisplayMessages.showMessage(FBTxt.txt("data_valid_but_no_variant"), Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_variant"), Color.YELLOW)
             return true
         }
 
@@ -75,7 +75,7 @@ object FBMisc {
         val variant = buildVariantFull(data, missing = missing)
 
         if (missing.hullIds.isNotEmpty()) {
-            DisplayMessages.showMessage(
+            DisplayMessage.showMessage(
                 FBTxt.txt("failed_to_import_loadout", missing.hullIds.first()),
                 Color.YELLOW
             )
@@ -88,7 +88,7 @@ object FBMisc {
         if (!loadoutExists) {
             Dialogs.createImportLoadoutDialog(variant, missing)
         } else {
-            DisplayMessages.showMessage(
+            DisplayMessage.showMessage(
                 FBTxt.txt("loadout_already_exists", variant.hullSpec.hullId),
                 variant.hullSpec.hullName,
                 Misc.getHighlightColor()
@@ -115,20 +115,20 @@ object FBMisc {
         // Filter out SMods that are sModdedBuiltIns in the loadout, but not a built-in hullmod in the baseVariant. See Mad Rockpiper MIDAS from Roider Union for why this is done. Also, sometimes variant skins have built in hullmods that can be sModded.
         sModsToApply = sModsToApply.filterNot { it in loadout.sModdedBuiltIns && !baseVariant.hullSpec.builtInMods.contains(it) }
         if (currentSMods.count { it !in baseVariant.hullSpec.builtInMods } + sModsToApply.count { it !in loadout.hullSpec.builtInMods } > maxSMods) {
-            DisplayMessages.showMessage(FBTxt.txt("cannot_apply_smod_lack_build_in_slots"), Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_build_in_slots"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
         maxSMods = min(maxSMods, playerSPLeft)
 
         if (sModsToApply.size > maxSMods) {
-            DisplayMessages.showMessage(FBTxt.txt("cannot_apply_smod_lack_story_point"), Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_story_point"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
         var canApplySMods: List<String> = sModsToApply.filter { Global.getSector().playerFaction.knowsHullMod(it) }
 
         if (sModsToApply.size != canApplySMods.size) {
-            DisplayMessages.showMessage(FBTxt.txt("cannot_apply_smod_lack_knowledge"), Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_knowledge"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
@@ -148,20 +148,20 @@ object FBMisc {
 
         canApplySMods = sModsToApply.filter { HullModItemManager.getInstance().isRequiredItemAvailable(it, ship.fleetMember, baseVariant, Global.getSector().currentlyOpenMarket) }
         if (sModsToApply.size != canApplySMods.size) {
-            DisplayMessages.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
         canApplySMods = sModsToApply.filter { Global.getSettings().getHullModSpec(it).effect.canBeAddedOrRemovedNow(ship, Global.getSector().currentlyOpenMarket, coreUI.tradeMode) }
 
         if (sModsToApply.size != canApplySMods.size) {
-            DisplayMessages.showMessage(FBTxt.txt("cannot_apply_smod_lack_dock"), Color.YELLOW)
+            DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_dock"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
         sModsToApply.forEach { modID ->
             if (baseVariant.hullSpec.getOrdnancePoints(null) < Global.getSettings().getHullModSpec(modID).getOPCost(baseVariant.hullSize)) {
-                DisplayMessages.showMessage(FBTxt.txt("cannot_apply_smod_lack_op"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_op"), Color.YELLOW)
                 return emptyList<String>() to 0f
             }
         }
@@ -418,10 +418,10 @@ object FBMisc {
                 val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, buildVariantFull(newData as DataVariant.ParsedVariantData))
                 hackTogetherFleet(member)
             } else if (newData is DataPerson.ParsedPersonData) {
-                DisplayMessages.showMessage(FBTxt.txt("campaign_officer_spawn"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("campaign_officer_spawn"), Color.YELLOW)
                 return false
             } else {
-                DisplayMessages.showMessage(FBTxt.txt("data_valid_but_no_campaign_paste"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_campaign_paste"), Color.YELLOW)
                 return false
             }
         }
@@ -543,7 +543,7 @@ object FBMisc {
             }
 
             else -> {
-                DisplayMessages.showMessage(FBTxt.txt("data_valid_but_not_fleet_member_variant_person"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_not_fleet_member_variant_person"), Color.YELLOW)
             }
         }
 

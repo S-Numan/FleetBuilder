@@ -21,7 +21,7 @@ import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.createHullVariant
@@ -112,7 +112,7 @@ class CampaignCodexButton : EveryFrameScript {
             }
 
             if (addToFleetButton == null) {
-                DisplayMessages.showError("addToFleetButton was null when it shouldn't be.")
+                DisplayMessage.showError("addToFleetButton was null when it shouldn't be.")
                 return
             }
 
@@ -238,6 +238,6 @@ class CampaignCodexButton : EveryFrameScript {
         }
 
         if (!message.isNullOrEmpty())
-            DisplayMessages.showMessage(message)
+            DisplayMessage.showMessage(message)
     }
 }

@@ -1,4 +1,4 @@
-package fleetBuilder.core.displayMessages
+package fleetBuilder.core.displayMessage
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.CombatEngineAPI
