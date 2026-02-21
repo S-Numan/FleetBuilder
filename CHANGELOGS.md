@@ -2,6 +2,8 @@
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
+- A small overhaul to the dialog system. It will be a little different now in many ways.
+- Added an intercept to forceclosedialog from Console Commands to also close this mod's dialogs. Just in case.
 ### Technical
 - More major internal rearrangements. (It's never enough)
 

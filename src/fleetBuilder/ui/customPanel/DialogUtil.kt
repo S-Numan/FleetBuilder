@@ -7,6 +7,7 @@ import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.ui.customPanel.common.CustomUIPanel
 import fleetBuilder.ui.customPanel.common.PopUpPanel
 import fleetBuilder.util.ReflectionMisc
@@ -57,6 +58,23 @@ class DialogUtil : EveryFrameCombatPlugin {
         }
 
         private val dialogsToShow: MutableList<Triple<CustomUIPanel, Float, Float>> = mutableListOf()
+
+        fun forceCloseAllDialogs(): Boolean {
+            var closedOne = false
+            val screenPanel = ReflectionMisc.getScreenPanel()
+            screenPanel?.getChildrenCopy()?.toList()?.forEach { child ->
+                if (child is CustomPanelAPI && (child.plugin is CustomUIPanel)) {
+                    try {
+                        (child.plugin as CustomUIPanel).forceDismiss()
+                    } catch (e: Exception) {
+                        DisplayMessage.showError("Error when force dismissing dialog\n$e")
+                    }
+                    screenPanel.removeComponent(child)
+                    closedOne = true
+                }
+            }
+            return closedOne
+        }
     }
 
     override fun advance(
