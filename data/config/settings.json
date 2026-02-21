@@ -1,18 +1,17 @@
 {
-	"plugins":{
-		"CombatAutofitAdder":"fleetBuilder.features.autofit.listener.CombatAutofitAdder",
-		"DrawMessageInTitle":"fleetBuilder.core.displayMessages.DrawMessageInTitle",
-		"DialogUtil":"fleetBuilder.ui.popup.DialogUtil",
-		"CombatClipboardHotkeyHandler":"fleetBuilder.features.hotkeyHandler.CombatClipboardHotkeyHandler",
+	"plugins": {
+		"CombatAutofitAdder": "fleetBuilder.features.autofit.listener.CombatAutofitAdder",
+		"DrawMessageInTitle": "fleetBuilder.core.displayMessages.DrawMessageInTitle",
+		"DialogUtil": "fleetBuilder.ui.customPanel.DialogUtil",
+		"CombatClipboardHotkeyHandler": "fleetBuilder.features.hotkeyHandler.CombatClipboardHotkeyHandler"
 	},
-
-	"graphics":{
-		"FleetBuilder":{
-			"mission_indicator":"graphics/icons/mission_marker.png",
-			"white_square":"graphics/fx/white_square.png",
-			"different_weapon_groups":"graphics/icons/NO-WG-white.png",
-			"different_flux_stats":"graphics/icons/NO-FLUX-white.png",
-			"entity":"graphics/icons/entity.png"
+	"graphics": {
+		"FleetBuilder": {
+			"mission_indicator": "graphics/icons/mission_marker.png",
+			"white_square": "graphics/fx/white_square.png",
+			"different_weapon_groups": "graphics/icons/NO-WG-white.png",
+			"different_flux_stats": "graphics/icons/NO-FLUX-white.png",
+			"entity": "graphics/icons/entity.png"
 		}
 	}
 }
