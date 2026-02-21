@@ -18,7 +18,6 @@ import fleetBuilder.core.ModSettings.getDefaultExcludeVariantTags
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.variant.DataVariant.copyVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.ui.customPanel.`class`.BasePopUpPanel
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
@@ -34,6 +33,7 @@ import fleetBuilder.util.VariantLib.getAllDMods
 import fleetBuilder.util.VariantLib.processSModsForComparison
 import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.core.displayMessages.DisplayMessages
+import fleetBuilder.ui.customPanel.common.BasePopUpPanel
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf

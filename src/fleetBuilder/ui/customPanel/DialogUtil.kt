@@ -8,7 +8,7 @@ import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.ui.customPanel.`class`.PopUpPanel
+import fleetBuilder.ui.customPanel.common.PopUpPanel
 import fleetBuilder.util.ReflectionMisc
 import starficz.getChildrenCopy
 
