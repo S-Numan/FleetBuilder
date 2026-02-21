@@ -158,7 +158,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleKeyDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         if (!event.isCtrlDown) return
-        if (DialogUtil.isPopUpUIOpen()) return
+        if (DialogUtil.isPopUpPanelOpen()) return
 
         when (event.eventValue) {
             Keyboard.KEY_D -> handleDevModeHotkey(event, sector)
@@ -194,7 +194,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpUIOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpPanelOpen()) return
 
         val tab = ui.getActualCurrentTab() ?: return
         val isCtrlLmb = event.isCtrlDown && event.isLMBDownEvent

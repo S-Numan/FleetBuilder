@@ -16,10 +16,6 @@ import java.awt.Color
 open class BasePopUpPanel(
     open var headerTitle: String? = null
 ) : PopUpPanel() {
-
-    override var layoutOffsetX = 15f
-    override var layoutOffsetY = 45f
-
     var confirmButton: ButtonAPI? = null
     var cancelButton: ButtonAPI? = null
     var closeButton: ButtonAPI? = null
@@ -124,18 +120,18 @@ open class BasePopUpPanel(
             cancelButton = button
         }
 
-        val bottom = originalHeight
+        val bottom = goalHeight
         val alignX = when (alignment) {
-            Alignment.LMID -> layoutOffsetX
+            Alignment.LMID -> xTooltipPad
             Alignment.MID -> 0f
-            Alignment.RMID -> -layoutOffsetX
+            Alignment.RMID -> -xTooltipPad
             else -> 0f
         }
         panel.addUIElement(tooltip).inTL(alignX, bottom - 40)
     }
 
     fun addCloseButton() {
-        val buttonSize = 32f
+        val buttonSize = 33f
         val ui = panel.createUIElement(buttonSize, buttonSize, false)
 
         ui.setButtonFontOrbitron20Bold()
@@ -152,7 +148,7 @@ open class BasePopUpPanel(
         )
 
         // Position in top-right
-        panel.addUIElement(ui).inTR(layoutOffsetX / 2, layoutOffsetX / 2 - 4f)
+        panel.addUIElement(ui).inTR(7f, 2f)
 
         closeButton?.onClick { forceDismiss() }
     }
@@ -178,18 +174,19 @@ open class BasePopUpPanel(
         GL11.glPopMatrix()
     }
 
-    val auxYPad = 10f
+    override fun getYTooltipPadding(): Float {
+        return yTooltipPad + if (headerTitle != null) 30f else 0f
+    }
+
     var headerTooltip: TooltipMakerAPI? = null
     fun createHeader() {
         if (headerTitle != null) {
-            headerTooltip = panel.createUIElement(panel.position.width - (layoutOffsetX * 2), 20f, false)
+            headerTooltip = panel.createUIElement(panel.position.width - (xTooltipPad * 3f), 20f, false)
             headerTooltip!!.setParaFont(Fonts.ORBITRON_20AABOLD)
             val label = headerTooltip!!.addPara(headerTitle, Misc.getTooltipTitleAndLightHighlightColor(), 5f)
-            panel.addUIElement(headerTooltip).inTL(layoutOffsetX, auxYPad)
+            panel.addUIElement(headerTooltip).inTL(xTooltipPad * 1.5f, yTooltipPad)
             val textWidth = label.computeTextWidth(label.text)
-            label.position.setLocation(0f, 0f).inTL(((panel.position.width - (layoutOffsetX * 2)) - textWidth) / 2f, 3f)
-        } else {
-            layoutOffsetY = auxYPad
+            label.position.setLocation(0f, 0f).inTL(((panel.position.width - (xTooltipPad * 2)) - textWidth) / 2f, 3f)
         }
     }
 }

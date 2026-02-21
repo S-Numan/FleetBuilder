@@ -3,6 +3,8 @@ package fleetBuilder.features.autofit.ui
 import MagicLib.ReflectionUtilsExtra
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
+import com.fs.starfarer.api.combat.BoundsAPI
+import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
@@ -11,7 +13,6 @@ import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.features.autofit.listener.CombatAutofitAdder
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.UIUtils
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.safeInvoke
@@ -342,6 +343,99 @@ internal object AutofitSelector {
         }
     }
 
+    private fun getExactBounds(variant: ShipVariantAPI): List<BoundsAPI.SegmentAPI>? {
+        val tempShipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
+        tempShipPreview.safeInvoke("setVariant", variant)
+        tempShipPreview.safeInvoke("overrideVariant", variant)
+        tempShipPreview.safeInvoke("prepareShip")
+        val ships = tempShipPreview.safeInvoke("getShips") as Array<ShipAPI>
+        val ship = ships.getOrNull(0) ?: return null
+        return ship.exactBounds?.segments
+    }
+
+    data class BoundsDimensions(
+        val width: Float,
+        val height: Float,
+        val minX: Float,
+        val minY: Float,
+        val maxX: Float,
+        val maxY: Float
+    )
+
+    fun computeBoundsDimensions(variant: ShipVariantAPI): BoundsDimensions? {
+        val bounds = getExactBounds(variant) ?: return null
+        if (bounds.isEmpty()) return null
+
+        var minX = Float.POSITIVE_INFINITY
+        var minY = Float.POSITIVE_INFINITY
+        var maxX = Float.NEGATIVE_INFINITY
+        var maxY = Float.NEGATIVE_INFINITY
+
+        for (segment in bounds) {
+
+            val p1 = segment.p1
+            val p2 = segment.p2
+
+            // Rotate 90 degrees left: (x, y) -> (-y, x)
+            val p1x = -p1.y
+            val p1y = p1.x
+
+            val p2x = -p2.y
+            val p2y = p2.x
+
+            minX = minOf(minX, p1x, p2x)
+            minY = minOf(minY, p1y, p2y)
+            maxX = maxOf(maxX, p1x, p2x)
+            maxY = maxOf(maxY, p1y, p2y)
+        }
+
+        return BoundsDimensions(
+            width = maxX - minX,
+            height = maxY - minY,
+            minX = minX,
+            minY = minY,
+            maxX = maxX,
+            maxY = maxY
+        )
+    }
+
+    data class SpritePaddingPixels(
+        val emptyWidth: Int,
+        val emptyHeight: Int
+    )
+
+    fun computeSpritePaddingPixels(variant: ShipVariantAPI): SpritePaddingPixels? {
+        val sprite = Global.getSettings().getSprite(variant.hullSpec.spriteName)
+        val bounds = computeBoundsDimensions(variant) ?: return null
+
+        val spriteWidth = sprite.width
+        val spriteHeight = sprite.height
+
+        val halfW = spriteWidth / 2f
+        val halfH = spriteHeight / 2f
+
+        // Convert bounds from center-space to sprite-space
+        val minXSprite = bounds.minX + halfW
+        val maxXSprite = bounds.maxX + halfW
+        val minYSprite = bounds.minY + halfH
+        val maxYSprite = bounds.maxY + halfH
+
+        // Empty space on each side
+        val leftEmpty = minXSprite.toInt()
+        val rightEmpty = (spriteWidth - maxXSprite).toInt()
+        val bottomEmpty = minYSprite.toInt()
+        val topEmpty = (spriteHeight - maxYSprite).toInt()
+
+        // Total empty space dimensions
+        val emptyWidth = leftEmpty + rightEmpty
+        val emptyHeight = topEmpty + bottomEmpty
+
+        return SpritePaddingPixels(
+            emptyWidth = emptyWidth,
+            emptyHeight = emptyHeight
+        )
+    }
+
     fun createShipPreview(
         variant: ShipVariantAPI,
         width: Float, height: Float,
@@ -349,9 +443,13 @@ internal object AutofitSelector {
         showFighters: Boolean = false,
         setSchematicMode: Boolean = false,
     ): UIPanelAPI {
+        // Main container panel
+        val containerPanel = Global.getSettings().createCustom(width, height, null)
+
         val clonedVariant = variant.clone() as HullVariantSpec
 
         val shipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
+
         shipPreview.safeInvoke("setVariant", clonedVariant)
         shipPreview.safeInvoke("overrideVariant", clonedVariant)
         shipPreview.safeInvoke("setShowBorder", false)
@@ -368,6 +466,7 @@ internal object AutofitSelector {
         if (setSchematicMode)
             shipPreview.safeInvoke("setSchematicMode", true)
 
+
         //Remove this hard coded scaling code when things scale right properly in the base game.
 
         val effectiveHullId = variant.hullSpec.getEffectiveHullId()
@@ -379,6 +478,7 @@ internal object AutofitSelector {
             val disableScissor: Boolean = false
         )
 
+        //val padding = computeSpritePaddingPixels(clonedVariant)
         //val sprite = Global.getSettings().getSprite(clonedVariant.hullSpec.spriteName)
         //minOf(width / sprite.width, height / sprite.height, 1f)//See https://fractalsoftworks.com/forum/index.php?topic=33818.0 for why this cannot work as intended
 
@@ -408,9 +508,6 @@ internal object AutofitSelector {
         // Prepare ship
         shipPreview.safeInvoke("prepareShip")
 
-        // Main container panel
-        val containerPanel = Global.getSettings().createCustom(width, height, null)
-
         // Base Y offset from config
         val baseYOffset = config.yOffset
 
@@ -422,5 +519,13 @@ internal object AutofitSelector {
         containerPanel.addComponent(shipPreview).inTL(offsetX, offsetY)
 
         return containerPanel
+
+
+        //ships.getOrNull(0)?.visualBounds
+        //ships.getOrNull(0)?.getNearestPointOnBounds()
+        //ships.getOrNull(0)?.getCollisionPoint()
+        //ships.getOrNull(0)?.isPointInBounds()
+        //ships.getOrNull(0)?.exactBounds
+        //ships.getOrNull(0)?.checkCollisionVsRay()
     }
 }

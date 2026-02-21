@@ -227,7 +227,7 @@ class CargoAutoManageUIPlugin(
         val spacing = 10f
         //val entireRowHeight = rowHeight + spacing
 
-        panel = Global.getSettings().createCustom(width - dialog.layoutOffsetX * 2, height - (dialog.layoutOffsetY * 2) - 100f, this)
+        panel = Global.getSettings().createCustom(width - (dialog.getXTooltipPadding() * 2), height - (dialog.getYTooltipPadding() * 2) - 100f, this)
 
         // Create main UI container
         scrollerTooltip = panel.createUIElement(panel.width, panel.height, true)
@@ -298,7 +298,7 @@ class CargoAutoManageUIPlugin(
 
         scrollerTooltip.heightSoFar = -addCustom.yAlignOffset + addCustom.height
 
-        panel.addUIElement(scrollerTooltip).inTL(0f, 0f)
+        panel.addUIElement(scrollerTooltip).inTL(dialog.getXTooltipPadding(), 0f)
 
 
         dialog.onCreateUI(width, height) { ui ->
@@ -306,7 +306,7 @@ class CargoAutoManageUIPlugin(
 
             val buttonHeight = 24f
 
-            ui.addButton("Reset Settings", null, dialog.bufferedWidth, buttonHeight, 0f).onClick {
+            ui.addButton("Reset Settings", null, ui.width, buttonHeight, 0f).onClick {
 
                 val areYouSureDialog = BasePopUpPanel(headerTitle = "Are you sure?")
 
@@ -315,7 +315,7 @@ class CargoAutoManageUIPlugin(
                 }
 
                 areYouSureDialog.onConfirm {
-                    dialog.forceDismissNoExit()
+                    dialog.forceDismiss(false)
 
                     unsetCargoAutoManage(selectedSubmarket)
 
@@ -492,7 +492,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
         this.panel.position.setXAlignOffset(Global.getSettings().mouseX.toFloat() - panelWidth / 2f)
         this.panel.position.setYAlignOffset(Global.getSettings().mouseY.toFloat() + panelHeight + 20f - Global.getSettings().screenHeight)
 
-        parent?.bringComponentToTop(panel)
+        parent.bringComponentToTop(panel)
 
         super.advance(amount)
     }

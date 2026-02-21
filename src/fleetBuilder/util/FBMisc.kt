@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.ModSettings.randomPastedCosmetics
@@ -47,6 +48,8 @@ import org.json.JSONObject
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getBuildInBonusXP
 import org.magiclib.kotlin.getOPCost
+import starficz.ReflectionUtils.get
+import starficz.findChildWithMethod
 import java.awt.Color
 import java.util.*
 import kotlin.math.max
@@ -54,6 +57,31 @@ import kotlin.math.min
 
 
 object FBMisc {
+
+    var placeholderDialog: UIPanelAPI? = null
+    fun openCampaignDummyDialog() {
+        val ui = Global.getSector().campaignUI
+        //Open a dialog to prevent input from most other mods
+        if (ui != null && placeholderDialog == null && Global.getSettings().isInCampaignState && !ui.isShowingDialog) {
+            //ui.showInteractionDialog(PlaceholderDialog(), Global.getSector().playerFleet) // While this also works, it hides the campaign UI.
+            //placeholderDialog = ui.currentInteractionDialog
+
+            ui.showMessageDialog(" ")
+            val screenPanel = ui.get("screenPanel") as? UIPanelAPI
+            placeholderDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
+            if (placeholderDialog != null) {
+                placeholderDialog!!.safeInvoke("setOpacity", 0f)
+                placeholderDialog!!.safeInvoke("setBackgroundDimAmount", 0f)
+                placeholderDialog!!.safeInvoke("setAbsorbOutsideEvents", false)
+                placeholderDialog!!.safeInvoke("makeOptionInstant", 0)
+            }
+        }
+    }
+
+    fun closeCampaignDummyDialog() {
+        placeholderDialog?.safeInvoke("dismiss", 0)
+        placeholderDialog = null
+    }
 
     fun startStencilWithYPad(panel: CustomPanelAPI, yPad: Float) {
         GL11.glClearStencil(0)

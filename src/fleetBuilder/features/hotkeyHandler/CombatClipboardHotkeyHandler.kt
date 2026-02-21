@@ -58,7 +58,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
-                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.Companion.isPopUpUIOpen() && !ReflectionMisc.isCodexOpen()) {
+                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.Companion.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
                             Dialogs.createDevModeDialog()
                             event.consume()
                             continue
@@ -69,7 +69,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             event.consume()
                             continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
-                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtil.Companion.isPopUpUIOpen())
+                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtil.Companion.isPopUpPanelOpen())
                                 if (FBMisc.handleRefitPaste())
                                     event.consume()
 

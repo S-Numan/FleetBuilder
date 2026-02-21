@@ -38,7 +38,7 @@ class CargoAutoManagerOpener : CampaignInputListener {
     }
 
     private fun handleCargoMouseEvents(event: InputEventAPI, sector: SectorAPI) {
-        if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtil.Companion.isPopUpUIOpen()) return
+        if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtil.Companion.isPopUpPanelOpen()) return
 
         val cargoTab = ReflectionMisc.getCargoTab() ?: return
 

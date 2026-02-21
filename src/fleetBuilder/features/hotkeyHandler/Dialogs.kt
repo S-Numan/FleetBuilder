@@ -36,6 +36,7 @@ import fleetBuilder.util.VariantLib
 import fleetBuilder.serialization.reportMissingElementsIfAny
 import org.lazywizard.lazylib.MathUtils
 import starficz.addTooltip
+import starficz.height
 import starficz.onClick
 import starficz.width
 import java.awt.Color
@@ -73,7 +74,7 @@ object Dialogs {
             var replacePlayerWithCommander = false
             var fulfillNeeds = true
 
-            ui.addButton(FBTxt.txt("append_to_player_fleet"), null, dialog.bufferedWidth, buttonHeight, 3f).onClick {
+            ui.addButton(FBTxt.txt("append_to_player_fleet"), null, ui.width, buttonHeight, 3f).onClick {
                 val playerFleet = Global.getSector().playerFleet.fleetData
 
                 val missing = MissingElements()
@@ -112,7 +113,7 @@ object Dialogs {
             }
             ui.addSpacer(24f)
 
-            ui.addButton(FBTxt.txt("replace_player_fleet"), null, dialog.bufferedWidth, buttonHeight, 3f).onClick {
+            ui.addButton(FBTxt.txt("replace_player_fleet"), null, ui.width, buttonHeight, 3f).onClick {
                 val settings = FleetSettings()
                 settings.memberSettings.includeOfficer = includeOfficers
                 settings.excludeMembersWithMissingHullSpec = excludeShipsFromMissing
@@ -309,9 +310,9 @@ object Dialogs {
 
         initialDialog.onCreateUI(width, height) { ui ->
             ui.addPara("Max Level", 0f)
-            val maxLevel = ui.addNumericTextField(initialDialog.bufferedWidth, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
+            val maxLevel = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
             ui.addPara("Max Elite Skills", 0f)
-            val maxEliteSkills = ui.addNumericTextField(initialDialog.bufferedWidth, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
+            val maxEliteSkills = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
             ui.addSpacer(buttonHeight / 3)
             val maxXP = ui.addToggle("Max XP", isChecked = true)
@@ -397,17 +398,20 @@ object Dialogs {
                 *arrayOf(loadoutBaseHullName)
             ).setAlignment(Alignment.MID)
 
-            val tempPanel = Global.getSettings().createCustom(dialog.panel.width, dialog.bufferedWidth, null)
-            val tempTMAPI = tempPanel.createUIElement(tempPanel.position.width, tempPanel.position.height, false)
+            val tempPanel = Global.getSettings().createCustom(ui.width, ui.height, null)
+            val tempTMAPI = tempPanel.createUIElement(tempPanel.width, tempPanel.height, false)
 
             val selectorPanel = AutofitSelector.createAutofitSelector(
                 autofitSpec = AutofitSpec(variant, null),
-                dialog.bufferedWidth,
+                ui.width,
                 addDescription = false,
                 centerTitle = true
             )
 
-            tempTMAPI.addComponent(selectorPanel)
+            ui.addComponent(selectorPanel)
+            selectorPanel.position.inTL(0f, dialog.getYTooltipPadding() - 14f)
+
+            //tempTMAPI.addComponent(selectorPanel)
             AutofitPanel.makeTooltip(selectorPanel, variant)
 
             tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
@@ -483,7 +487,7 @@ object Dialogs {
                 checkboxes[option]?.isChecked ?: false
 
             val toggles = mutableListOf<ButtonAPI>()
-            ui.addButton(FBTxt.txt("flip_all_values"), null, dialog.bufferedWidth, buttonHeight, 0f).onClick {
+            ui.addButton(FBTxt.txt("flip_all_values"), null, ui.width, buttonHeight, 0f).onClick {
                 toggles.forEach { it.isChecked = !it.isChecked }
             }
             ui.addSpacer(buttonHeight / 4f)
@@ -494,7 +498,7 @@ object Dialogs {
 
             ui.addSpacer(buttonHeight)
 
-            ui.addButton(FBTxt.txt("copy_save_to_clipboard"), null, dialog.bufferedWidth, buttonHeight, 3f).onClick {
+            ui.addButton(FBTxt.txt("copy_save_to_clipboard"), null, ui.width, buttonHeight, 3f).onClick {
                 val json = PlayerSaveUtil.createPlayerSaveJson(
                     handleCargo = isEnabled(SaveOption.CARGO),
                     handleRelations = isEnabled(SaveOption.REPUTATION),
@@ -513,7 +517,7 @@ object Dialogs {
                 dialog.forceDismiss()
             }
 
-            ui.addButton(FBTxt.txt("load_save_from_clipboard"), null, dialog.bufferedWidth, buttonHeight, 3f).onClick {
+            ui.addButton(FBTxt.txt("load_save_from_clipboard"), null, ui.width, buttonHeight, 3f).onClick {
 
                 val json = ClipboardUtil.getClipboardJson()
 

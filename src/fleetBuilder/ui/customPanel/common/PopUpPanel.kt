@@ -2,34 +2,19 @@ package fleetBuilder.ui.customPanel.common
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.ui.customPanel.DialogUtil
-import fleetBuilder.util.FBMisc.endStencil
-import fleetBuilder.util.FBMisc.renderTiledTexture
-import fleetBuilder.util.FBMisc.startStencilWithXPad
-import fleetBuilder.util.FBMisc.startStencilWithYPad
+import fleetBuilder.util.FBMisc.closeCampaignDummyDialog
+import fleetBuilder.util.FBMisc.openCampaignDummyDialog
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
-import starficz.ReflectionUtils.get
-import starficz.centerX
-import starficz.centerY
-import starficz.findChildWithMethod
-import starficz.height
-import starficz.width
-import starficz.x
-import starficz.y
-import java.awt.Color
 
-open class PopUpPanel : CustomUIPanel() {
-    open var originalWidth: Float = 0f // Unset before init
-    open var originalHeight: Float = 0f // Unset before init
-    open var framesToOpen: Int = 5
-    open var currentFrame: Float = 0f
+open class PopUpPanel : ComposableUIPanel() {
+    open var goalWidth: Float = 0f // Unset before init
+    open var goalHeight: Float = 0f // Unset before init
+    open var openDuration = 0.1f
+    private var elapsed = 0f
 
     open var consumeAllInput: Boolean = true
 
@@ -38,40 +23,28 @@ open class PopUpPanel : CustomUIPanel() {
     open var attemptedExit: Boolean = false
     open var reachedMaxHeight: Boolean = false
 
-    open var darkenBackground: Boolean = true
+    override var backgroundAlphaMult: Float = 0.9f
+    override var dialogStyle: Boolean = true
+    override var createUIOnInit: Boolean = false
 
-    open var dialogRendering: Boolean = true
-
-    override var panelBackgroundAlphaMult: Float = 0.9f
-
-    open val blackBackground = sprite("FleetBuilder", "white_square")
-    open var blackBackgroundAlphaMult: Float = 0.6f
-    open val bot = sprite("ui", "panel00_bot")
-    open val top = sprite("ui", "panel00_top")
-    open val left = sprite("ui", "panel00_left")
-    open val right = sprite("ui", "panel00_right")
-    open val topLeft = sprite("ui", "panel00_top_left")
-    open val topRight = sprite("ui", "panel00_top_right")
-    open val bottomLeft = sprite("ui", "panel00_bot_left")
-    open val bottomRight = sprite("ui", "panel00_bot_right")
-
-    fun init(width: Float, height: Float, x: Float, y: Float): CustomPanelAPI {
-        return init(width, height, x, y, ReflectionMisc.getScreenPanel())
+    fun init(width: Float, height: Float): CustomPanelAPI {
+        val screenPanel = ReflectionMisc.getScreenPanel() ?: return panel
+        return init(width = width, height = height, xOffset = (screenPanel.position.centerX - width / 2), yOffset = (screenPanel.position.centerY - height / 2), parent = screenPanel)
     }
 
     override fun init(
         width: Float,
         height: Float,
-        x: Float,
-        y: Float,
+        xOffset: Float,
+        yOffset: Float,
         parent: UIPanelAPI?
     ): CustomPanelAPI {
-        originalWidth = width
-        originalHeight = height
-        super.init(width, height, x, y, parent)
+        goalWidth = width
+        goalHeight = height
 
-        if (Global.getSector()?.campaignUI != null)
-            makeDummyDialog(Global.getSector().campaignUI)
+        super.init(width = width, height = height, xOffset = xOffset, yOffset = yOffset, parent = parent)
+
+        openCampaignDummyDialog() // Only does so if in the campaign
 
         //if (Global.getCurrentState() == GameState.CAMPAIGN && !Global.getSector().isPaused)
         //    Global.getSector().isPaused = true
@@ -82,33 +55,8 @@ open class PopUpPanel : CustomUIPanel() {
         return panel
     }
 
-    var placeholderDialog: UIPanelAPI? = null
-    fun makeDummyDialog(ui: CampaignUIAPI) {
-        //Open a dialog to prevent input from most other mods
-        if (Global.getSettings().isInCampaignState && !ui.isShowingDialog) {
-            //ui.showInteractionDialog(PlaceholderDialog(), Global.getSector().playerFleet) // While this also works, it hides the campaign UI.
-            //placeholderDialog = ui.currentInteractionDialog
-
-            ui.showMessageDialog(" ")
-            val screenPanel = ui.get("screenPanel") as? UIPanelAPI
-            placeholderDialog = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
-            if (placeholderDialog != null) {
-                placeholderDialog!!.safeInvoke("setOpacity", 0f)
-                placeholderDialog!!.safeInvoke("setBackgroundDimAmount", 0f)
-                placeholderDialog!!.safeInvoke("setAbsorbOutsideEvents", false)
-                placeholderDialog!!.safeInvoke("makeOptionInstant", 0)
-            }
-        }
-    }
-
-    override fun forceDismissNoExit() {
-        super.forceDismissNoExit()
-
-        placeholderDialog?.safeInvoke("dismiss", 0)
-    }
-
     override fun applyExitScript() {
-        placeholderDialog?.safeInvoke("dismiss", 0)
+        closeCampaignDummyDialog()
 
         super.applyExitScript()
     }
@@ -116,13 +64,14 @@ open class PopUpPanel : CustomUIPanel() {
     override fun advance(amount: Float) {
         super.advance(amount)
 
-        if (currentFrame <= framesToOpen) {
-            currentFrame++
-            val progress = currentFrame / framesToOpen
-            if (currentFrame < framesToOpen && !reachedMaxHeight) {
-                panel.position.setSize(originalWidth, originalHeight * progress)
-                currAlpha = currentFrame / framesToOpen
-            } else if (currentFrame >= framesToOpen && !reachedMaxHeight) {
+        if (!reachedMaxHeight) {
+            elapsed += amount
+            val progress = (elapsed / openDuration).coerceIn(0f, 1f)
+            alpha = progress
+
+            panel.position?.setSize(goalWidth, goalHeight * progress)
+
+            if (progress == 1f) {
                 setMaxSize()
             }
         }
@@ -134,141 +83,35 @@ open class PopUpPanel : CustomUIPanel() {
         for (event in events) {
             if (event.isConsumed) continue
 
-            if (currentFrame >= framesToOpen - 1 && reachedMaxHeight) {
-                /*if (event.isMouseDownEvent && !isDialog) {
-                    val hovers = FBMisc.isMouseHoveringOverComponent(panelToInfluence!!)
-                    if (!hovers) {
-                        forceDismiss()
-                        event.consume()
-                    }
-                }*/
+            //if (reachedMaxHeight) {
+            /*if (event.isMouseDownEvent && !isDialog) {
+                val hovers = FBMisc.isMouseHoveringOverComponent(panelToInfluence!!)
+                if (!hovers) {
+                    forceDismiss()
+                    event.consume()
+                }
+            }*/
 
-                if (quitWithEscKey && event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
-                    if (attemptedExit) {
-                        forceDismiss()
-                        event.consume()
-                        break
-                    } else if (event.isKeyDownEvent) {
-                        attemptedExit = true
-                        event.consume()
-                    }
+            if (quitWithEscKey && event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
+                if (attemptedExit) {
+                    forceDismiss()
+                    event.consume()
+                    break
+                } else if (event.isKeyDownEvent) {
+                    attemptedExit = true
+                    event.consume()
                 }
             }
+            //}
             if (consumeAllInput)
                 event.consume()
         }
     }
 
-    fun createStandardContentArea(): TooltipMakerAPI {
-        val buttonWidth = panel.position.width - (layoutOffsetX * 2)
-        val ui = panel.createUIElement(buttonWidth, panel.position.height, false)
-        ui.addSpacer(0f).position.inTL(0f, 0f)
-        return ui
-    }
-
-    var bufferedWidth = 0f
-    var bufferedHeight = 0f
-
-    override fun createUI() {
-        createUICallback?.invoke()
-    }
-
-    private var createUICallback: (() -> Unit)? = null
-    open fun onCreateUI(
-        width: Float = Global.getSettings().screenWidth / 2,
-        height: Float = Global.getSettings().screenHeight / 2,
-        parent: UIPanelAPI? = null,
-        x: Float? = null,
-        y: Float? = null,
-        callback: (TooltipMakerAPI) -> Unit
-    ) {
-        // store a callback
-        createUICallback = {
-            // build the UI once here
-            val ui = createStandardContentArea()
-            bufferedWidth = panel.width - (layoutOffsetX * 2)
-            bufferedHeight = panel.height - (layoutOffsetY * 2)
-            // run the user code
-            callback(ui)
-            // add UI automatically afterward
-            panel.addUIElement(ui).inTL(x!!, y!!)
-        }
-        DialogUtil.Companion.initPopUpUI(this, x = x, y = y, width = width, height = height, parent = parent)
-    }
-
     fun setMaxSize() {
         reachedMaxHeight = true
-        panel.position.setSize(originalWidth, originalHeight)
-        currAlpha = 1f
+        panel.position.setSize(goalWidth, goalHeight)
+        alpha = 1f
         createUI()
-    }
-
-    override fun renderBelow(alphaMult: Float) {
-        if (darkenBackground) {
-            val screenPanel = ReflectionMisc.getScreenPanel() ?: return
-            blackBackground.setSize(screenPanel.width, screenPanel.height)
-            blackBackground.color = Color.black
-            blackBackground.alphaMult = blackBackgroundAlphaMult
-            blackBackground.renderAtCenter(ReflectionMisc.getScreenPanel()!!.centerX, ReflectionMisc.getScreenPanel()!!.centerY)
-        }
-        if (dialogRendering) {
-            renderTiledTexture(
-                panelBackground.textureId,
-                panel.x,
-                panel.y, panel.width,
-                panel.height, panelBackground.textureWidth,
-                panelBackground.textureHeight, currAlpha * panelBackgroundAlphaMult, Color.BLACK
-            )
-
-            renderBorders()
-        } else {
-            super.renderBelow(alphaMult)
-        }
-    }
-
-    fun renderBorders() {
-        val leftX = panel.position.x + 16
-        top.setSize(16f, 16f)
-        bot.setSize(16f, 16f)
-        topLeft.setSize(16f, 16f)
-        topRight.setSize(16f, 16f)
-        bottomLeft.setSize(16f, 16f)
-        bottomRight.setSize(16f, 16f)
-        left.setSize(16f, 16f)
-        right.setSize(16f, 16f)
-
-        top.alphaMult = currAlpha
-        bot.alphaMult = currAlpha
-        topLeft.alphaMult = currAlpha
-        topRight.alphaMult = currAlpha
-        bottomLeft.alphaMult = currAlpha
-        bottomRight.alphaMult = currAlpha
-        left.alphaMult = currAlpha
-        right.alphaMult = currAlpha
-
-        //val rightX = panel.getPosition().getX() + panel.getPosition().getWidth() - 16
-        val botX = panel.y + 16
-        startStencilWithXPad(panel, 8f)
-        run {
-            var i = leftX
-            while (i <= panel.x + panel.width) {
-                top.renderAtCenter(i, panel.y + panel.height)
-                bot.renderAtCenter(i, panel.y)
-                i += top.width
-            }
-        }
-        endStencil()
-        startStencilWithYPad(panel, 8f)
-        var i = botX
-        while (i <= panel.y + panel.height) {
-            left.renderAtCenter(panel.x, i)
-            right.renderAtCenter(panel.x + panel.width, i)
-            i += top.width
-        }
-        endStencil()
-        topLeft.renderAtCenter(leftX - 16, panel.y + panel.height)
-        topRight.renderAtCenter(panel.x + panel.width, panel.y + panel.height)
-        bottomLeft.renderAtCenter(leftX - 16, panel.y)
-        bottomRight.renderAtCenter(panel.x + panel.width, panel.y)
     }
 }

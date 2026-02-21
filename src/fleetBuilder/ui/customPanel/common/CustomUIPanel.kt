@@ -9,29 +9,28 @@ import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.ui.customPanel.DialogUtil
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.UIUtils
-import org.lwjgl.opengl.GL11
-import starficz.*
-import java.awt.Color
+import starficz.height
+import starficz.width
+import starficz.x
+import starficz.y
 
 //Copied and heavily modified from AshLib
 
 open class CustomUIPanel : CustomUIPanelPlugin {
-    open var layoutOffsetX: Float = 0f
-    open var layoutOffsetY: Float = 0f
-
-    open lateinit var parent: UIPanelAPI
-    open lateinit var panel: CustomPanelAPI
+    lateinit var parent: UIPanelAPI
+        protected set
+    lateinit var panel: CustomPanelAPI
+        protected set
+    lateinit var tooltip: TooltipMakerAPI
+        protected set
 
     open var consumeMouseEvents: Boolean = true
+    protected open var createUIOnInit: Boolean = true
 
-    open var createUIOnInit: Boolean = true
-
-
-    open var currAlpha: Float = 1f
+    open var alpha: Float = 1f
     open val rendererBorder: UILinesRenderer = UILinesRenderer(0f)
 
     private val settings = Global.getSettings()
@@ -39,30 +38,43 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     protected fun sprite(cat: String, id: String): SpriteAPI =
         settings.getSprite(cat, id)
 
-    open val panelBackground = sprite("ui", "panel00_center")
-    open var panelBackgroundAlphaMult: Float = 1f
+    open val background = sprite("ui", "panel00_center")
+    open var backgroundAlphaMult: Float = 1f
+
+    var isOpen = false
+        private set
 
     open fun init(
         width: Float,
         height: Float,
-        xPos: Float,
-        yPos: Float,
+        xOffset: Float,
+        yOffset: Float,
         parent: UIPanelAPI? = ReflectionMisc.getScreenPanel()
     ): CustomPanelAPI {
-        panel = Global.getSettings().createCustom(width, height, this)
+        val inputPanel = Global.getSettings().createCustom(width, height, this)
 
-        this.parent = parent ?: run {
-            DisplayMessage.showError("parent was null when creating dialog")
-            return panel
+        if (isOpen) {
+            DisplayMessage.showError("init already occurred")
+            return inputPanel
+        }
+        if (parent == null) {
+            DisplayMessage.showError("parent was null during init")
+            return inputPanel
         }
 
-        parent.addComponent(panel).inTL(xPos, parent.position.height - yPos)
+        panel = inputPanel
+
+        this.parent = parent
+
+        parent.addComponent(panel).inTL(xOffset, parent.height - yOffset)
         parent.bringComponentToTop(panel)
 
         rendererBorder.setPanel(panel)
 
         if (createUIOnInit)
             createUI()
+
+        isOpen = true
 
         return panel
     }
@@ -84,23 +96,37 @@ open class CustomUIPanel : CustomUIPanelPlugin {
         }
     }
 
-    open fun forceDismiss() {
-        parent.removeComponent(panel)
-        applyExitScript()
-    }
+    open fun forceDismiss(runExitScript: Boolean = true) {
+        if (!isOpen) return
 
-    open fun forceDismissNoExit() {
         parent.removeComponent(panel)
+        if (runExitScript)
+            applyExitScript()
+
+        isOpen = false
     }
 
     private var exitCallback: (() -> Unit)? = null
 
     open fun applyExitScript() {
         exitCallback?.invoke()
+        exitCallback = null
     }
 
     fun onExit(callback: () -> Unit) {
         exitCallback = callback
+    }
+
+    override fun renderBelow(alphaMult: Float) {
+        renderTiledTexture(
+            background.textureId,
+            panel.x,
+            panel.y, panel.width,
+            panel.height, background.textureWidth,
+            background.textureHeight, alpha * backgroundAlphaMult, background.color
+        )
+
+        rendererBorder.render(alphaMult)
     }
 
     override fun positionChanged(position: PositionAPI?) {
@@ -110,17 +136,5 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     }
 
     override fun render(alphaMult: Float) {
-    }
-
-    override fun renderBelow(alphaMult: Float) {
-        renderTiledTexture(
-            panelBackground.textureId,
-            panel.x,
-            panel.y, panel.width,
-            panel.height, panelBackground.textureWidth,
-            panelBackground.textureHeight, currAlpha * panelBackgroundAlphaMult, panelBackground.color
-        )
-
-        rendererBorder.render(alphaMult)
     }
 }

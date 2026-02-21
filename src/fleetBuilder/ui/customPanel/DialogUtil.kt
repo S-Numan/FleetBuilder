@@ -7,14 +7,15 @@ import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.ui.customPanel.common.CustomUIPanel
 import fleetBuilder.ui.customPanel.common.PopUpPanel
 import fleetBuilder.util.ReflectionMisc
 import starficz.getChildrenCopy
 
 class DialogUtil : EveryFrameCombatPlugin {
     companion object {
-        fun initPopUpUI(
-            dialog: PopUpPanel,
+        fun initDialogToShow(
+            dialog: CustomUIPanel,
             width: Float,
             height: Float,
             parent: UIPanelAPI? = null,
@@ -30,10 +31,10 @@ class DialogUtil : EveryFrameCombatPlugin {
                 dialog.init(
                     width = width,
                     height = height,
-                    x = x
+                    xOffset = x
                         ?: parent?.let { parent.position.centerX - width / 2 }
                         ?: (screenPanel.position.centerX - width / 2),
-                    y = y
+                    yOffset = y
                         ?: parent?.let { parent.position.centerY - height / 2 }
                         ?: (screenPanel.position.centerY + height / 2),
                     parent ?: screenPanel
@@ -41,9 +42,7 @@ class DialogUtil : EveryFrameCombatPlugin {
             }
         }
 
-        fun isPopUpUIOpen(): Boolean {
-            if (dialogsToShow.isNotEmpty()) return true
-
+        fun isPopUpPanelOpen(): Boolean {
             ReflectionMisc.getScreenPanel()?.getChildrenCopy()?.forEach { child ->
                 if (child is CustomPanelAPI && (child.plugin is PopUpPanel)
                 ) {
@@ -53,23 +52,23 @@ class DialogUtil : EveryFrameCombatPlugin {
             return false
         }
 
-        fun prependDialogToShow(dialog: PopUpPanel, width: Float, height: Float) {
+        fun prependDialogToShow(dialog: CustomUIPanel, width: Float, height: Float) {
             dialogsToShow.add(0, Triple(dialog, width, height))
         }
 
-        private val dialogsToShow: MutableList<Triple<PopUpPanel, Float, Float>> = mutableListOf()
+        private val dialogsToShow: MutableList<Triple<CustomUIPanel, Float, Float>> = mutableListOf()
     }
 
     override fun advance(
         amount: Float,
         events: List<InputEventAPI?>?
     ) {
-        if (dialogsToShow.isNotEmpty() && !isPopUpUIOpen()) {
+        if (dialogsToShow.isNotEmpty()) {
             val screenPanel = ReflectionMisc.getScreenPanel() ?: return
 
             val (dialog, width, height) = dialogsToShow.removeAt(dialogsToShow.size - 1)
 
-            initPopUpUI(dialog, width, height, screenPanel)
+            initDialogToShow(dialog, width, height, screenPanel)
         }
     }
 
