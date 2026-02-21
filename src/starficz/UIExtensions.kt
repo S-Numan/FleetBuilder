@@ -454,6 +454,7 @@ class BoxedUISliderBar(val uiBar: UIPanelAPI) : BoxedUIElement(uiBar), UICompone
  * A Boxed representation of a vanilla UI Ship Preview. Generates ShipAPI's on use.
  * For performance reasons, try and call cleanupShips when hidden.
  */
+/*
 class BoxedUIShipPreview(val uiShipPreview: UIPanelAPI) : BoxedUIElement(uiShipPreview),
     UIComponentAPI by uiShipPreview {
     internal companion object {
@@ -581,6 +582,7 @@ fun UIPanelAPI.addShipPreview(
 
     return boxedUIShipPreview
 }
+ */
 
 fun UIPanelAPI.addPara(
     text: String, font: Font? = null, color: Color? = null,
