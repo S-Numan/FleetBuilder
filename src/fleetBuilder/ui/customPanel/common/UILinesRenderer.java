@@ -1,4 +1,4 @@
-package fleetBuilder.ui.popup.ui;
+package fleetBuilder.ui.customPanel.common;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;

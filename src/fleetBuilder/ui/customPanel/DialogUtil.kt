@@ -1,4 +1,4 @@
-package fleetBuilder.ui.popup
+package fleetBuilder.ui.customPanel
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
@@ -8,14 +8,14 @@ import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.ui.popup.ui.PopUpUI
+import fleetBuilder.ui.customPanel.`class`.PopUpPanel
 import fleetBuilder.util.ReflectionMisc
 import starficz.getChildrenCopy
 
 class DialogUtil : EveryFrameCombatPlugin {
     companion object {
         fun initPopUpUI(
-            dialog: PopUpUI,
+            dialog: PopUpPanel,
             width: Float,
             height: Float,
             parent: UIPanelAPI? = null,
@@ -36,7 +36,7 @@ class DialogUtil : EveryFrameCombatPlugin {
             if (dialogsToShow.isNotEmpty()) return true
 
             ReflectionMisc.getScreenPanel()?.getChildrenCopy()?.forEach { child ->
-                if (child is CustomPanelAPI && (child.plugin is PopUpUI)
+                if (child is CustomPanelAPI && (child.plugin is PopUpPanel)
                 ) {
                     return true
                 }
@@ -46,7 +46,7 @@ class DialogUtil : EveryFrameCombatPlugin {
 
         private fun initDialog(
             coreUI: UIPanelAPI,
-            dialog: PopUpUI,
+            dialog: PopUpPanel,
             width: Float,
             height: Float,
             parent: UIPanelAPI? = null,
@@ -59,20 +59,20 @@ class DialogUtil : EveryFrameCombatPlugin {
             if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
                 Global.getCombatEngine().isPaused = true
 
-            val panelAPI = Global.getSettings().createCustom(width, height, dialog)
             dialog.init(
-                panelAPI,
+                width,
+                height,
                 x ?: (coreUI.position.centerX - width / 2),
                 y ?: (coreUI.position.centerY + height / 2),
                 parent ?: coreUI
             )
         }
 
-        private fun prependDialogToShow(dialog: PopUpUI, width: Float, height: Float) {
+        private fun prependDialogToShow(dialog: PopUpPanel, width: Float, height: Float) {
             dialogsToShow.add(0, Triple(dialog, width, height))
         }
 
-        private val dialogsToShow: MutableList<Triple<PopUpUI, Float, Float>> = mutableListOf()
+        private val dialogsToShow: MutableList<Triple<PopUpPanel, Float, Float>> = mutableListOf()
     }
 
     override fun advance(

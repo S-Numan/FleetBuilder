@@ -18,7 +18,7 @@ import fleetBuilder.core.ModSettings.getDefaultExcludeVariantTags
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.variant.DataVariant.copyVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.ui.popup.ui.BasePopUpUI
+import fleetBuilder.ui.customPanel.`class`.BasePopUpPanel
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
@@ -575,7 +575,7 @@ internal object AutofitPanel {
                     if (sModsToApply.isEmpty())
                         return@onClickRelease
 
-                    val dialog = BasePopUpUI(headerTitle = "Use Story Points to Apply SMods")
+                    val dialog = BasePopUpPanel(headerTitle = "Use Story Points to Apply SMods")
                     dialog.onCreateUI(450f, 110f) { ui ->
                         ui.addPara("This will consume ${sModsToApply.size} Story points and give ${bonusXpToGrant.toInt()} bonus xp", 0f).setAlignment(Alignment.MID)
                         dialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)

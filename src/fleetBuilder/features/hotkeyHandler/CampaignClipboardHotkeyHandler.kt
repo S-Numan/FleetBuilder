@@ -25,7 +25,7 @@ import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
 import fleetBuilder.util.*
 import fleetBuilder.features.hotkeyHandler.Dialogs.createDevModeDialog
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.ui.popup.DialogUtil
+import fleetBuilder.ui.customPanel.DialogUtil
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.FBMisc.handleRefitCopy

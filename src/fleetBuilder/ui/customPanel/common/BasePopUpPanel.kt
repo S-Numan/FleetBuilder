@@ -1,4 +1,4 @@
-package fleetBuilder.ui.popup.ui
+package fleetBuilder.ui.customPanel.common
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.Alignment
@@ -8,7 +8,7 @@ import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.ui.popup.DialogUtil
+import fleetBuilder.ui.customPanel.DialogUtil
 import fleetBuilder.util.FBTxt
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
@@ -16,9 +16,9 @@ import starficz.onClick
 import starficz.width
 import java.awt.Color
 
-open class BasePopUpUI(
+open class BasePopUpPanel(
     open var headerTitle: String? = null
-) : PopUpUI() {
+) : PopUpPanel() {
 
     override var x = 15f
     override var y = 45f

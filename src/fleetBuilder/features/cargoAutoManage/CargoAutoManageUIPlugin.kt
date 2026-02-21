@@ -10,9 +10,9 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.ui.popup.ui.BasePopUpUI
-import fleetBuilder.ui.popup.ui.PopUpUI
+import fleetBuilder.ui.customPanel.common.BasePopUpPanel
 import fleetBuilder.features.hotkeyHandler.Dialogs
+import fleetBuilder.ui.customPanel.common.CustomUIPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.addToggle
 import fleetBuilder.util.safeInvoke
@@ -34,7 +34,7 @@ class CargoAutoManageUIPlugin(
     private var panel: CustomPanelAPI
     fun getPanel() = panel
 
-    private val dialog: BasePopUpUI
+    private val dialog: BasePopUpPanel
     private val market: MarketAPI
     private val scrollerTooltip: TooltipMakerAPI
 
@@ -219,7 +219,7 @@ class CargoAutoManageUIPlugin(
             ?: CargoAutoManage()
 
         //dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
-        dialog = BasePopUpUI(selectedSubmarket.name.replace("\n", " "))
+        dialog = BasePopUpPanel(selectedSubmarket.name.replace("\n", " "))
 
         val headerHeight = 24f
         val rowHeight = 48f
@@ -282,14 +282,14 @@ class CargoAutoManageUIPlugin(
 
             val cargoItemSelector = CargoItemSelector(market, selectedSubmarket)
 
-            val panelAPI = Global.getSettings().createCustom(320f, 20f, cargoItemSelector)
-            cargoItemSelector.init(
-                panelAPI,
+            val panelAPI = cargoItemSelector.init(
+                320f,
+                20f,
                 Global.getSettings().mouseX.toFloat(),
-                Global.getSettings().mouseY.toFloat()
+                Global.getSettings().mouseY.toFloat(),
+                ReflectionMisc.getScreenPanel()
             )
             panelAPI.addPara("Click a cargo item to select it. Right click to cancel.")
-            cargoItemSelector.quitWithEscKey = true
 
             cargoItemSelector.onExit {
                 Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket)
@@ -308,7 +308,7 @@ class CargoAutoManageUIPlugin(
 
             ui.addButton("Reset Settings", null, dialog.bufferedWidth, buttonHeight, 0f).onClick {
 
-                val areYouSureDialog = BasePopUpUI(headerTitle = "Are you sure?")
+                val areYouSureDialog = BasePopUpPanel(headerTitle = "Are you sure?")
 
                 areYouSureDialog.onCreateUI(380f, 80f) { _ ->
                     areYouSureDialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
@@ -483,8 +483,7 @@ class CargoAutoManageUIPlugin(
     }
 }
 
-class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketAPI) : PopUpUI() {
-    override var isDialog = false
+class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketAPI) : CustomUIPanel() {
     override fun advance(amount: Float) {
         val panelWidth = this.panel.position.width
         val panelHeight = this.panel.position.height

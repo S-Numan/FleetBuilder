@@ -12,7 +12,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.ui.popup.DialogUtil
+import fleetBuilder.ui.customPanel.DialogUtil
 import fleetBuilder.features.hotkeyHandler.Dialogs
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab

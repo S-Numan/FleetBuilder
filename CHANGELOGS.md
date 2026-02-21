@@ -1,9 +1,9 @@
 ## 1.28.0
-- Fix crash when opening the dev dialog in when the refit screen hullmod adding dialog is open.
+- Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
 ### Technical
-- Another major internal change. (It's never good enough)
+- More major internal rearrangements. (It's never enough)
 
 ## 1.27.1
 - Fix copy pasted variants loading improperly after saving and loading a game.

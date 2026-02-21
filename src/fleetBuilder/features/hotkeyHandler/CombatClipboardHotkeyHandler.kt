@@ -18,7 +18,7 @@ import fleetBuilder.core.ModSettings
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.ui.popup.DialogUtil
+import fleetBuilder.ui.customPanel.DialogUtil
 import fleetBuilder.core.displayMessages.DisplayMessages
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.ReflectionMisc

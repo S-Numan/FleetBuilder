@@ -20,7 +20,7 @@ import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.features.cargoAutoManage.CargoAutoManageUIPlugin
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
-import fleetBuilder.ui.popup.ui.BasePopUpUI
+import fleetBuilder.ui.customPanel.common.BasePopUpPanel
 import fleetBuilder.core.displayMessages.DisplayMessages
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBTxt
@@ -48,7 +48,7 @@ object Dialogs {
         val buttonHeight = 24f
 
 
-        val dialog = BasePopUpUI(FBTxt.txt("paste_fleet_into_player_fleet"))
+        val dialog = BasePopUpPanel(FBTxt.txt("paste_fleet_into_player_fleet"))
 
         dialog.onCreateUI(500f, 380f) { ui ->
 
@@ -208,7 +208,7 @@ object Dialogs {
     }
 
     fun createDevModeDialog() {
-        val dialog = BasePopUpUI("Dev Options")
+        val dialog = BasePopUpPanel("Dev Options")
 
         dialog.onCreateUI(500f, 200f) { ui ->
             val toggleDev = ui.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
@@ -225,7 +225,7 @@ object Dialogs {
         data: DataFleet.ParsedFleetData,
         validatedData: DataFleet.ParsedFleetData
     ) {
-        val dialog = BasePopUpUI(FBTxt.txt("spawn_fleet_in_campaign"))
+        val dialog = BasePopUpPanel(FBTxt.txt("spawn_fleet_in_campaign"))
 
         dialog.onCreateUI(500f, 350f) { ui ->
 
@@ -303,7 +303,7 @@ object Dialogs {
         }
 
 
-        val initialDialog = BasePopUpUI(headerTitle = "Add Officer to Fleet")
+        val initialDialog = BasePopUpPanel(headerTitle = "Add Officer to Fleet")
 
         val buttonHeight = 24f
 
@@ -385,7 +385,7 @@ object Dialogs {
         val loadoutBaseHullName = baseHullSpec.hullName
             ?: return
 
-        val dialog = BasePopUpUI(headerTitle = "Import Loadout")
+        val dialog = BasePopUpPanel(headerTitle = "Import Loadout")
 
         dialog.onCreateUI(375f, 490f) { ui ->
 
@@ -449,7 +449,7 @@ object Dialogs {
 
 
     fun createSaveTransferDialog() {
-        val dialog = BasePopUpUI(headerTitle = FBTxt.txt("save_transfer"))
+        val dialog = BasePopUpPanel(headerTitle = FBTxt.txt("save_transfer"))
 
         dialog.onCreateUI(300f, 384f) { ui ->
 
