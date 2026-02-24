@@ -4,6 +4,7 @@
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
 - A small overhaul to the dialog system. It will be a little different now in many ways.
 - Added an intercept to forceclosedialog from Console Commands to also close this mod's dialogs. Just in case.
+- Increase size of onslaught in autofit UI.
 ### Technical
 - More major internal rearrangements. (It's never enough)
 
