@@ -6,6 +6,7 @@
 - Added an intercept to forceclosedialog from Console Commands to also close this mod's dialogs. Just in case.
 - Increase size of onslaught in autofit UI.
 - In the Cargo Auto Manager, the "Put" toggle is now by default toggled on for new custom inputs.
+- Autofit variant tooltip's position themselves to the left side if on the right side of the UI.
 ### Technical
 - More major internal rearrangements. (It's never enough)
 

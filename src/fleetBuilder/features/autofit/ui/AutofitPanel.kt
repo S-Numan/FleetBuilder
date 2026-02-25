@@ -297,7 +297,7 @@ internal object AutofitPanel {
 
             if (autofitSpec != null) {
                 highlightBasedOnVariant(autofitSpec.variant, baseVariant, selectorPlugin)
-                makeTooltip(selectorPanel, autofitSpec.variant, autofitSpec.missing)
+                makeTooltip(selectorPanel, autofitSpec.variant, autofitSpec.missing, if (i % selectorsPerRow >= selectorsPerRow / 2) TooltipMakerAPI.TooltipLocation.LEFT else TooltipMakerAPI.TooltipLocation.RIGHT)
 
                 if (autofitSpec.source != null) // Is this a loadout from this mod?
                     removeSelectorPanelButton(selectorPanel, autofitSpec) // Allow it to be removed
@@ -402,7 +402,8 @@ internal object AutofitPanel {
             AutofitSpec(baseVariant, null),
             containerPanelWidth - 2f, addDescription = false, centerTitle = true
         )
-        makeTooltip(baseVariantSelectorPanel, baseVariant)
+        makeTooltip(baseVariantSelectorPanel, baseVariant, location = TooltipMakerAPI.TooltipLocation.LEFT)
+
 
         val baseVariantSelectorPlugin = baseVariantSelectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
         baseVariantSelectorPlugin.isBase = true
@@ -459,7 +460,7 @@ internal object AutofitPanel {
                 default
             }
 
-            button.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 400f) { tooltip ->
+            button.addTooltip(TooltipMakerAPI.TooltipLocation.LEFT, 400f) { tooltip ->
                 tooltip.addPara(tooltipText, 0f)
             }
 
@@ -704,7 +705,10 @@ internal object AutofitPanel {
                     if (it.autofitSpec != null) highlightBasedOnVariant(it.autofitSpec!!.variant, baseVariant, it)
                     else deHighlight(it)
                 }
-                makeTooltip(selectorPlugin.selectorPanel, selectorPlugin.autofitSpec!!.variant, selectorPlugin.autofitSpec!!.missing)
+                makeTooltip(
+                    selectorPlugin.selectorPanel, selectorPlugin.autofitSpec!!.variant, selectorPlugin.autofitSpec!!.missing,
+                    if (index % selectorsPerRow >= selectorsPerRow / 2) TooltipMakerAPI.TooltipLocation.LEFT else TooltipMakerAPI.TooltipLocation.RIGHT
+                )
                 removeSelectorPanelButton(selectorPlugin.selectorPanel, selectorPlugin.autofitSpec!!) // Allow it to be removed
             }
 
@@ -906,6 +910,8 @@ internal object AutofitPanel {
         variant: ShipVariantAPI,
         missingFromVariant: MissingElements? = null,
         location: TooltipMakerAPI.TooltipLocation = TooltipMakerAPI.TooltipLocation.RIGHT,
+        margin: Float? = null,
+        width: Float = if (ModSettings.showDebug) 400f else 350f
     ) {
         val allDMods = getAllDMods()
         val sizeOrder = mapOf(
@@ -915,15 +921,8 @@ internal object AutofitPanel {
         )
         val spaces = "                    "
 
-        val width = if (ModSettings.showDebug) {
-            400f
-        } else {
-            350f
-        }
-
-        selectorPanel.addTooltip(location, width) { tooltip ->
+        selectorPanel.addTooltip(location, width, margin) { tooltip ->
             tooltip.addTitle(variant.displayName + " Variant")
-
 
             var weaponsWithSize = mutableMapOf<String, Pair<Int, WeaponAPI.WeaponSize>>()
             for (slot in variant.hullSpec.builtInWeapons) {
@@ -1191,6 +1190,7 @@ internal object AutofitPanel {
                     2f
                 )
             }
+
 
             if (ModSettings.showDebug) {
                 tooltip.addPara("\n\nDEBUG: VariantID = ${variant.hullVariantId}", 2f)
