@@ -5,6 +5,7 @@
 - A small overhaul to the dialog system. It will be a little different now in many ways.
 - Added an intercept to forceclosedialog from Console Commands to also close this mod's dialogs. Just in case.
 - Increase size of onslaught in autofit UI.
+- In the Cargo Auto Manager, the "Put" toggle is now by default toggled on for new custom inputs.
 ### Technical
 - More major internal rearrangements. (It's never enough)
 

@@ -567,7 +567,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                                 0,
                                 null,
                                 false,
-                                false,
+                                true,
                                 false
                             )
                         )
