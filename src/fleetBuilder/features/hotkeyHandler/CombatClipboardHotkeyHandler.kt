@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
@@ -58,7 +59,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
-                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.Companion.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
+                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
                             Dialogs.createDevModeDialog()
                             event.consume()
                             continue
@@ -69,7 +70,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             event.consume()
                             continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
-                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtil.Companion.isPopUpPanelOpen())
+                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtil.isPopUpPanelOpen())
                                 if (FBMisc.handleRefitPaste())
                                     event.consume()
 
@@ -230,17 +231,17 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
         var loc = Vector2f(worldX, worldY)
 
         if (!ModSettings.cheatsEnabled()) {
-            if (member.hullSpec.hasTag("codex_unlockable")) {
-                if (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId)) {
-                    DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. The player is not aware of this hull.", Color.YELLOW)
-                    return
-                }
-            } else if (member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
+            if (member.hullSpec.hasTag("codex_unlockable") && (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId))) {
+                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. The player is not aware of this hull.", Color.YELLOW)
+                return
+            }
+            if (!member.hullSpec.hasTag("codex_unlockable") && member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
                 || member.variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.variant.hasTag(Tags.HIDE_IN_CODEX)
             ) {
                 DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. It is hidden in the codex which suggests it cannot be simulated.", Color.YELLOW)
                 return
-            } else if (getDeployedFleetPoints(engine, FleetSide.ENEMY) + member.deployCost > Global.getSettings().battleSize / 2f * 1.2f) {
+            }
+            if (getDeployedFleetPoints(engine, FleetSide.ENEMY) + member.deployCost > Global.getSettings().battleSize / 2f * 1.2f) {
                 DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. Would exceed Fleet Point limit.", Color.YELLOW)
                 return
             }

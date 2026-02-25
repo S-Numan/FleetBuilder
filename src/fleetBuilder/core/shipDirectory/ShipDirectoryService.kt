@@ -14,12 +14,15 @@ import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.SerializationUtils.extractDataFromString
+import fleetBuilder.util.FBMisc.variantKnownByPlayer
 import fleetBuilder.util.VariantLib
 import fleetBuilder.util.VariantLib.compareVariantContents
 import fleetBuilder.util.VariantLib.getCoreVariantsForEffectiveHullspec
+import fleetBuilder.util.getCompatibleDLessHullId
 import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
+import org.magiclib.kotlin.getDHullId
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.max
@@ -308,7 +311,10 @@ object ShipDirectoryService {
             val shouldShow = when {
                 variant.isGoalVariant -> ModSettings.showCoreGoalVariants
                 else -> ModSettings.showCoreNonGoalVariants
-            }
+            }.and(
+                variant.hullSpec.getCompatibleDLessHullId() == hullSpec.getCompatibleDLessHullId() // If this is the hullspec the player is looking at
+                        || variantKnownByPlayer(variant)
+            ) // Or the player knows this hullspec
 
             if (shouldShow) {
                 val label = if (variant.isGoalVariant) "Goal Variant" else "Core Variant"

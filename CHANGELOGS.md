@@ -7,6 +7,7 @@
 - Increase size of onslaught in autofit UI.
 - In the Cargo Auto Manager, the "Put" toggle is now by default toggled on for new custom inputs.
 - Autofit variant tooltip's position themselves to the left side if on the right side of the UI.
+- Do not show autofit variants that the player is not aware of.
 ### Technical
 - More major internal rearrangements. (It's never enough)
 
