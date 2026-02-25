@@ -314,8 +314,8 @@ object ShipDirectoryService {
             }.and(
                 ModSettings.cheatsEnabled()
                         || variant.hullSpec.getCompatibleDLessHullId() == hullSpec.getCompatibleDLessHullId() // If this is the hullspec the player is looking at
-                        || variantKnownByPlayer(variant)
-            ) // Or the player knows this hullspec
+                        || variantKnownByPlayer(variant) // Or the player knows this hullspec
+            )
 
             if (shouldShow) {
                 val label = if (variant.isGoalVariant) "Goal Variant" else "Core Variant"
