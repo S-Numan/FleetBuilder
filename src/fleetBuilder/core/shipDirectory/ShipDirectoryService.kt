@@ -312,8 +312,8 @@ object ShipDirectoryService {
                 variant.isGoalVariant -> ModSettings.showCoreGoalVariants
                 else -> ModSettings.showCoreNonGoalVariants
             }.and(
-                ModSettings.cheatsEnabled() ||
-                        variant.hullSpec.getCompatibleDLessHullId() == hullSpec.getCompatibleDLessHullId() // If this is the hullspec the player is looking at
+                ModSettings.cheatsEnabled()
+                        || variant.hullSpec.getCompatibleDLessHullId() == hullSpec.getCompatibleDLessHullId() // If this is the hullspec the player is looking at
                         || variantKnownByPlayer(variant)
             ) // Or the player knows this hullspec
 
