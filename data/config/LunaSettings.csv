@@ -117,13 +117,13 @@ Highly configurable",,,Misc
 reportCargoAutoManagerChanges,Report Cargo Auto Manager Changes,Boolean,true,,"If true, will show a message at the top of the screen every time the Cargo Auto Manager moves your cargo on entering or leaving a market.",,,Misc
 removeRefitHullmod,Force Remove Refit Hullmod,Boolean,true,,"If true, right click a hullmod in the refit screen to remove it. This works on built in SMods, SMods, DMods, etc.
 Cheats must be enabled.",,,Misc
+autoMothballRecoveredShips,Auto Mothball Recovered Ships,Boolean,false,,"If true, when recovering a ship, mothball it.",,,Misc
+,,,,,,,,
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave -backup” in the console to load it.",,,Misc
 hideErrorMessages,Hide Error Messages,Boolean,false,,"If true, prevents error messages from appearing at the top of the screen.
 Error messages will still appear in the console and logs.",,,Misc
-,,,,,,,,
-,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 variantHeader,Variant Header,Header,Variant Saving Settings,,,,,Misc

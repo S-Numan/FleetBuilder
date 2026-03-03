@@ -133,6 +133,8 @@ object ModSettings {
 
     var removeRefitHullmod = true
 
+    var autoMothballRecoveredShips = false
+
     var autofitNoSModdedBuiltInWhenNotBuiltInMod = true
 
     var reserveFirstFourAutofitSlots = true
