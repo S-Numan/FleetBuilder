@@ -2,25 +2,15 @@ package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.SettingsAPI
-import com.fs.starfarer.api.campaign.CampaignUIAPI
-import com.fs.starfarer.api.campaign.CargoAPI
-import com.fs.starfarer.api.campaign.CargoStackAPI
-import com.fs.starfarer.api.campaign.CoreUITabId
-import com.fs.starfarer.api.campaign.FleetDataAPI
+import com.fs.starfarer.api.campaign.*
+import com.fs.starfarer.api.campaign.impl.items.BlueprintProviderItem
 import com.fs.starfarer.api.campaign.impl.items.ModSpecItemPlugin
-import com.fs.starfarer.api.campaign.impl.items.MultiBlueprintItemPlugin
-import com.fs.starfarer.api.campaign.impl.items.ShipBlueprintItemPlugin
-import com.fs.starfarer.api.campaign.impl.items.WeaponBlueprintItemPlugin
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.VariantSource
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.TooltipMakerAPI
-import com.fs.starfarer.api.ui.UIComponentAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
+import com.fs.starfarer.api.ui.*
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.ui.common.ObservedTextField
 import fleetBuilder.util.VariantLib.getAllDMods
@@ -296,7 +286,7 @@ fun CargoAPI.moveBlueprintAndModSpec(to: CargoAPI, inputAmount: Float = -1f) {
 }
 
 fun CargoStackAPI.isBlueprintOrModSpec(): Boolean {
-    return this.type == CargoAPI.CargoItemType.SPECIAL && (this.plugin is ShipBlueprintItemPlugin || this.plugin is WeaponBlueprintItemPlugin || this.plugin is MultiBlueprintItemPlugin || this.plugin is ModSpecItemPlugin)
+    return this.type == CargoAPI.CargoItemType.SPECIAL && (this.plugin is BlueprintProviderItem || this.plugin is ModSpecItemPlugin)
 }
 
 fun String.startsWithJsonBracket(): Boolean {
