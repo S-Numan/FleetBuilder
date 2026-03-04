@@ -13,7 +13,7 @@ import org.lwjgl.input.Keyboard
 open class PopUpPanel : ComposableUIPanel() {
     open var goalWidth: Float = 0f // Unset before init
     open var goalHeight: Float = 0f // Unset before init
-    open var openDuration = 0.1f
+    open var openDuration = 0.05f
     private var elapsed = 0f
 
     open var consumeAllInput: Boolean = true
