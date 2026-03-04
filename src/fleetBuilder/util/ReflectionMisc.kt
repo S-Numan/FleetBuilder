@@ -270,20 +270,33 @@ object ReflectionMisc {
         return null
     }
 
-    fun getSelectedSubmarketInFleetTab(
+    fun getSelectedSubmarket(
     ): SubmarketAPI? {
         val campaignUI = Global.getSector().campaignUI
 
-        if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET && campaignUI.isShowingDialog) {
-            val dialog = campaignUI.currentInteractionDialog ?: return null
-            dialog.interactionTarget?.market ?: return null
+        if (campaignUI.isShowingDialog) {
+            if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
+                val dialog = campaignUI.currentInteractionDialog ?: return null
+                dialog.interactionTarget?.market ?: return null
 
-            val fleetTab = getFleetTab() ?: return null
+                val fleetTab = getFleetTab() ?: return null
 
-            return fleetTab
-                .getFieldsMatching(fieldAssignableTo = Submarket::class.java)
-                .getOrNull(0)
-                ?.get(fleetTab) as? SubmarketAPI
+                return fleetTab
+                    .getFieldsMatching(fieldAssignableTo = Submarket::class.java)
+                    .getOrNull(0)
+                    ?.get(fleetTab) as? SubmarketAPI
+            } else if (campaignUI.getActualCurrentTab() == CoreUITabId.CARGO) {
+                val dialog = campaignUI.currentInteractionDialog ?: return null
+                dialog.interactionTarget?.market ?: return null
+
+                val cargoPanel = getCargoPanel() ?: return null
+                val transferHandler = cargoPanel.safeInvoke("getTransferHandler") ?: return null
+
+                return transferHandler
+                    .getFieldsMatching(fieldAssignableTo = Submarket::class.java)
+                    .getOrNull(0)
+                    ?.get(transferHandler) as? SubmarketAPI
+            }
         }
         return null
     }

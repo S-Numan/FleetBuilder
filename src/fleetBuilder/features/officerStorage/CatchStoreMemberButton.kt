@@ -38,7 +38,7 @@ class CatchStoreMemberButton : CampaignInputListener {
             return
 
         fun storeOfficer(captain: PersonAPI) {
-            val submarket = ReflectionMisc.getSelectedSubmarketInFleetTab() ?: return
+            val submarket = ReflectionMisc.getSelectedSubmarket() ?: return
             if (!submarket.plugin.isFreeTransfer) return // Don't sell officers
 
             if (!captain.isDefault && !captain.isPlayer && !captain.memoryWithoutUpdate.contains(Misc.CAPTAIN_UNREMOVABLE)

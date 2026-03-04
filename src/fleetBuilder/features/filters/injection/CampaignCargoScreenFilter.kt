@@ -3,11 +3,14 @@ package fleetBuilder.features.filters.injection
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
+import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.features.filters.filterPanels.BaseFilterPanel
 import fleetBuilder.features.filters.filterPanels.CargoFilterPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
+import starficz.getChildrenCopy
 
 class CampaignCargoScreenFilter : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -52,8 +55,8 @@ class CampaignCargoScreenFilter : EveryFrameScript {
             }
         }
 
+        val entityCargoDisplay = cargoPanel.safeInvoke("getEntityCargoDisplay") as? UIPanelAPI
         fun makeEntityFilter() {
-            val entityCargoDisplay = cargoPanel.safeInvoke("getEntityCargoDisplay") as? UIPanelAPI
             if (entityCargoDisplay?.safeInvoke("getMode")?.toString() == "CARGO_ENTITY") {
                 entityFilterPanel = CargoFilterPanel(200f, 19f, entityCargoDisplay)
             }
@@ -62,8 +65,9 @@ class CampaignCargoScreenFilter : EveryFrameScript {
         if (playerFilterPanel == null)
             makePlayerFilter()
 
-        if (entityFilterPanel == null)
+        if (entityFilterPanel == null || entityCargoDisplay?.getChildrenCopy()?.none { (it as? CustomPanelAPI)?.plugin is BaseFilterPanel } == true) {
             makeEntityFilter()
+        }
 
         // On cargo panel change
         if (prevCargoPanel !== cargoPanel) {
