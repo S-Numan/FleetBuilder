@@ -521,11 +521,10 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                 } else if (event.isLMBDownEvent) {
                     event.consume()
 
-                    val cargoTabParent = ReflectionMisc.getCargoTab() ?: continue
-                    val cargoTab = cargoTabParent.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI
-                        ?: return
+                    val cargoPanel = ReflectionMisc.getCargoPanel() ?: continue
+                    ?: return
 
-                    val dataViewPanels = cargoTab.allChildrenWithMethod("isInvalidDropTarget")
+                    val dataViewPanels = cargoPanel.allChildrenWithMethod("isInvalidDropTarget")
 
                     val allDataChildren = dataViewPanels.mapNotNull { child ->
                         val dataView = (child.safeInvoke("getCargoDataView") as? UIPanelAPI)

@@ -40,10 +40,9 @@ class CargoAutoManagerOpener : CampaignInputListener {
     private fun handleCargoMouseEvents(event: InputEventAPI, sector: SectorAPI) {
         if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtil.Companion.isPopUpPanelOpen()) return
 
-        val cargoTabParent = ReflectionMisc.getCargoTab() ?: return
-        val cargoTab = cargoTabParent.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI ?: return
+        val cargoPanel = ReflectionMisc.getCargoPanel() ?: return
 
-        val submarketButtonParent = cargoTab.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI ?: return
+        val submarketButtonParent = cargoPanel.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI ?: return
         val submarketButtons = submarketButtonParent.getChildrenCopy()
 
         submarketButtons.forEach { submarketButton ->

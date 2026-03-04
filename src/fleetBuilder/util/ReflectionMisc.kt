@@ -119,13 +119,15 @@ object ReflectionMisc {
             null
         else
             getCurrentTab()
+    }
+
+    fun getCargoPanel(): UIPanelAPI? {
+        return getCargoTab()?.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI
+        //val transferHandler = cargoTabChild?.invoke("getTransferHandler")// Howto get Cargo drawn when picked up with the mouse
 
         //Alternative method
         //val border = ReflectionMisc.getBorderContainer()
         //val cargoTab = border?.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI ?: return null
-        //Extra
-        //val cargoTabChild = cargoTab.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI
-        //val transferHandler = cargoTabChild?.invoke("getTransferHandler")//Cargo drawn when picked up with the mouse
     }
 
     /*fun getSelectedSubmarketInCargoTab(
