@@ -6,7 +6,7 @@ import com.fs.starfarer.api.campaign.FleetDataAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
 
 private const val CR_THRESHOLD = 0.4f
-private const val HULL_THRESHOLD = 0.4f
+private const val HULL_THRESHOLD = 1f
 
 class AutoMothballRecoveredShips : EveryFrameScript {
     private val knownMemberIds = mutableSetOf<String>()
