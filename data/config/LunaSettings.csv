@@ -155,6 +155,13 @@ removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a 
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
 This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as hullmod is an sModdedBuiltIn without the ship having MIDAS built in.",,,Dev Options
+cargoScreenFilter,Cargo Screen Filter,Boolean,false,,"DOES NOT WORK CORRECTLY.
+A filter box to the right of the Other [4] tab when viewing cargo. Input values to filter cargo.
+
+I couldn’t get this one to work properly, but I left it in case anyone would like to try it out anyway. It technically works somewhat.",,,Dev Options
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
 ,,,,,,,,
 prefixHeader,Prefix Header,Header,Prefixes,,,,,Dev Options
 prefixText,Prefix Text Field,Text,"Prefixes do not accept anything other than one or two characters, A to Z

@@ -20,6 +20,8 @@ abstract class BaseFilterPanel(
     protected val mainPanel: CustomPanelAPI =
         Global.getSettings().createCustom(width, height, this)
 
+    fun getPanel(): CustomPanelAPI = mainPanel
+
     protected val textField: TextFieldAPI
     protected var prevString: String = defaultText
 

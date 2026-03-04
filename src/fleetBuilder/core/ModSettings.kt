@@ -129,6 +129,8 @@ object ModSettings {
 
     var modPickerFilter = false
 
+    var cargoScreenFilter = false
+
     var reportCargoAutoManagerChanges = true
 
     var removeRefitHullmod = true

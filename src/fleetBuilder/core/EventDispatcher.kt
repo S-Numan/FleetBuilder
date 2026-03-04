@@ -24,6 +24,7 @@ import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
+import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
 import fleetBuilder.util.VariantLib
 
 class EventDispatcher : RefitScreenListener, EveryFrameScript, CurrentLocationChangedListener {
@@ -66,6 +67,7 @@ class EventDispatcher : RefitScreenListener, EveryFrameScript, CurrentLocationCh
             manageTransientScript(CampaignFleetScreenFilter::class.java, ModSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }
             manageTransientScript(CargoAutoManager::class.java, ModSettings.cargoAutoManager) { CargoAutoManager() }
             manageTransientScript(CampaignModPickerFilter::class.java, ModSettings.modPickerFilter) { CampaignModPickerFilter() }
+            manageTransientScript(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { CampaignCargoScreenFilter() }
             manageTransientScript(AutoMothballRecoveredShips::class.java, ModSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
         }

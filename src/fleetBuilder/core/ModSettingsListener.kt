@@ -48,6 +48,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
             ModSettings.cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
             ModSettings.modPickerFilter = getBoolean(modID, "modPickerFilter")!!
+            ModSettings.cargoScreenFilter = getBoolean(modID, "cargoScreenFilter")!!
             ModSettings.reportCargoAutoManagerChanges = getBoolean(modID, "reportCargoAutoManagerChanges")!!
             ModSettings.autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
             ModSettings.replaceVanillaAutofitButton = getBoolean(modID, "replaceVanillaAutofitButton")!!
@@ -73,6 +74,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.storeOfficersInCargo = false
             ModSettings.cargoAutoManager = false
             ModSettings.modPickerFilter = false
+            ModSettings.cargoScreenFilter = false
             ModSettings.autofitMenuEnabled = false
             ModSettings.removeRefitHullmod = false
             ModSettings.autoMothballRecoveredShips = false
