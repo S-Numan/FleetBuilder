@@ -241,7 +241,7 @@ object DataVariant {
 
         // --- Display Name ---
         val fixedDisplayName = data.displayName.ifBlank {
-            "Nameless"
+            ""
         }
 
         // --- HullMods ---
