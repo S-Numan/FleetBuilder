@@ -1,5 +1,5 @@
 ## 1.28.0
-- Newly added Auto Mothball Recovered Ships setting in the Misc tab. When this is true, newly recovered ships will be automatically mothballed.
+- Newly added Mothball Recovered Ships setting in the Misc tab. When this is true, newly recovered ships will be automatically mothballed.
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
@@ -10,6 +10,8 @@
 - Fix Cargo Auto Manager "Blueprints and ModSpecs" not consistently working.
 - Autofit variant tooltip's position themselves to the left side if on the right side of the UI.
 - Avoid showing autofit variants that the player is not aware of.
+- Rearrange LunaLib settings a bit.
+- Allow autofit loadout display name to be empty.
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
 
