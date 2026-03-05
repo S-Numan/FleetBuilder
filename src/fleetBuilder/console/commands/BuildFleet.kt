@@ -5,8 +5,8 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.impl.campaign.ids.Industries
 import com.fs.starfarer.api.impl.campaign.ids.Items
+import fleetBuilder.features.commanderShuttle.CommanderShuttle.Companion.addPlayerShuttle
 import fleetBuilder.util.FBTxt
-import fleetBuilder.features.commanderShuttle.CommanderShuttle.addPlayerShuttle
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console

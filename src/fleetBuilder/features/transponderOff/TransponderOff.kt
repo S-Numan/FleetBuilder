@@ -1,7 +1,6 @@
 package fleetBuilder.features.transponderOff
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CampaignEventListener
 import com.fs.starfarer.api.campaign.LocationAPI
 import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.impl.campaign.ids.Abilities

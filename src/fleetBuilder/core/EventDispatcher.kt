@@ -2,34 +2,28 @@ package fleetBuilder.core
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CampaignEventListener
-import com.fs.starfarer.api.campaign.LocationAPI
-import com.fs.starfarer.api.campaign.econ.MarketAPI
-import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
-import com.fs.starfarer.api.campaign.listeners.RefitScreenListener
-import com.fs.starfarer.api.fleet.FleetMemberAPI
-import fleetBuilder.features.cargoAutoManage.CargoAutoManager
-import fleetBuilder.features.commanderShuttle.CommanderShuttle
-import fleetBuilder.features.codexButton.CampaignCodexButton
-import fleetBuilder.features.filters.injection.CampaignFleetScreenFilter
-import fleetBuilder.features.filters.injection.CampaignModPickerFilter
-import fleetBuilder.features.autofit.listener.CampaignAutofitAdder
-import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
-import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
-import fleetBuilder.features.officerStorage.CatchStoreMemberButton
-import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
-import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
-import fleetBuilder.serialization.PlayerSaveUtil
-import fleetBuilder.util.listeners.ShipOfficerChangeEvents
-import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
+import fleetBuilder.features.autofit.listener.CampaignAutofitAdder
+import fleetBuilder.features.cargoAutoManage.CargoAutoManager
+import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
+import fleetBuilder.features.codexButton.CampaignCodexButton
+import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
+import fleetBuilder.features.filters.injection.CampaignFleetScreenFilter
+import fleetBuilder.features.filters.injection.CampaignModPickerFilter
+import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
+import fleetBuilder.features.officerStorage.CatchStoreMemberButton
+import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
+import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
+import fleetBuilder.serialization.PlayerSaveUtil
 import fleetBuilder.util.VariantLib
+import fleetBuilder.util.listeners.ShipOfficerChangeEvents
+import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 
-class EventDispatcher : RefitScreenListener, EveryFrameScript, CurrentLocationChangedListener {
+class EventDispatcher : EveryFrameScript {
 
     companion object {
         fun setListeners() {
@@ -86,6 +80,8 @@ class EventDispatcher : RefitScreenListener, EveryFrameScript, CurrentLocationCh
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
 
             manageCustomTransientListener(TransponderOff::class.java, true) { TransponderOff() }
+
+            manageCustomTransientListener(CommanderShuttle::class.java, true) { CommanderShuttle() }
         }
     }
 
@@ -144,13 +140,9 @@ class EventDispatcher : RefitScreenListener, EveryFrameScript, CurrentLocationCh
         }
     }
 
-    override fun reportCurrentLocationChanged(prev: LocationAPI, curr: LocationAPI) {
-        CommanderShuttle.reportCurrentLocationChanged(prev, curr)
-    }
-
-    override fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
-        //VariantLib.reportFleetMemberVariantSaved(member, dockedAt)
-    }
+    //override fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
+    //VariantLib.reportFleetMemberVariantSaved(member, dockedAt)
+    //}
 
 
     override fun isDone(): Boolean = false

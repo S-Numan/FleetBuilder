@@ -25,9 +25,9 @@ import fleetBuilder.core.ModSettings.randomPastedCosmetics
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DisplayMessage.showMessage
 import fleetBuilder.core.shipDirectory.ShipDirectoryService.doesLoadoutExist
-import fleetBuilder.features.commanderShuttle.CommanderShuttle.addPlayerShuttle
-import fleetBuilder.features.commanderShuttle.CommanderShuttle.playerShuttleExists
-import fleetBuilder.features.commanderShuttle.CommanderShuttle.removePlayerShuttle
+import fleetBuilder.features.commanderShuttle.CommanderShuttle.Companion.addPlayerShuttle
+import fleetBuilder.features.commanderShuttle.CommanderShuttle.Companion.playerShuttleExists
+import fleetBuilder.features.commanderShuttle.CommanderShuttle.Companion.removePlayerShuttle
 import fleetBuilder.features.hotkeyHandler.Dialogs
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.GameModInfo
