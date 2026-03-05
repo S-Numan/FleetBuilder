@@ -32,9 +32,11 @@ class CatchStoreMemberButton : CampaignInputListener {
         val ui = sector.campaignUI ?: return
         if (ui.currentInteractionDialog == null || ui.currentInteractionDialog.interactionTarget == null || ui.currentInteractionDialog.interactionTarget.market == null) return
         if (ui.getActualCurrentTab() != CoreUITabId.FLEET) return
+        val playerFleet = sector.playerFleet ?: return
+        val playerFleetData = playerFleet.fleetData ?: return
 
         val viewedFleet = ReflectionMisc.getViewedFleetInFleetPanel()
-        if (viewedFleet !== sector.playerFleet.fleetData)//If we aren't looking at the user's fleet, don't continue
+        if (viewedFleet !== playerFleetData)//If we aren't looking at the user's fleet, don't continue
             return
 
         fun storeOfficer(captain: PersonAPI) {
@@ -46,7 +48,7 @@ class CatchStoreMemberButton : CampaignInputListener {
             ) {
                 captain.memoryWithoutUpdate.set(ModSettings.storedOfficerTag, true)
                 captain.memoryWithoutUpdate.set(Misc.CAPTAIN_UNREMOVABLE, true)
-                sector.playerFleet.fleetData.removeOfficer(captain)
+                playerFleetData.removeOfficer(captain)
             }
         }
 

@@ -231,7 +231,7 @@ object DataFleet {
 
     fun buildFleet(data: ParsedFleetData, fleet: FleetDataAPI) {
         val campFleet: CampaignFleetAPI? = fleet.fleet
-        val isPlayerFleet = campFleet === Global.getSector().playerFleet
+        val isPlayerFleet = campFleet != null && campFleet === Global.getSector()?.playerFleet
 
         if (!isPlayerFleet) {
             campFleet?.name = data.fleetName

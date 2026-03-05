@@ -52,7 +52,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
         if (interactionDialog?.plugin != prevInteractionPlugin) {
             prevInteractionPlugin = interactionDialog?.plugin
             //Plugin change
-            val playerFleet = Global.getSector().playerFleet ?: return
+            val playerFleet = Global.getSector()?.playerFleet ?: return
 
             if (interactionDialog == null || interactionDialog.plugin is RuleBasedInteractionDialogPluginImpl) { // No dialog?
                 makeCommanderShuttleGood(playerFleet)
@@ -82,10 +82,9 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
 
         if (interactionDialog != null) return
 
-        val playerFleet = Global.getSector().playerFleet ?: return
+        val playerFleet = Global.getSector()?.playerFleet ?: return
 
         if (prevLocationSetter != null && playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(ModSettings.commandShuttleId)) {
-            val playerFleet = Global.getSector().playerFleet
             playerFleet.containingLocation.removeEntity(playerFleet)
             prevLocationSetter!!.addEntity(playerFleet)
 
@@ -147,6 +146,8 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
     }
 
     override fun reportPlayerMarketTransaction(transaction: PlayerMarketTransaction) {
+        val playerFleet = Global.getSector().playerFleet ?: return
+
         if (transaction.shipsSold.isNotEmpty()) {
             val member = transaction.shipsSold.first().member
             if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
@@ -154,7 +155,7 @@ class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
 
                 if (transaction.creditValue > 0) {
                     val message = FBTxt.txt("command_shuttle_transfer_message", transaction.creditValue.toInt())
-                    Global.getSector().playerFleet.cargo.credits.subtract(transaction.creditValue)
+                    playerFleet.cargo.credits.subtract(transaction.creditValue)
                     DisplayMessage.showMessage(message, Color.YELLOW)
                 }
             }

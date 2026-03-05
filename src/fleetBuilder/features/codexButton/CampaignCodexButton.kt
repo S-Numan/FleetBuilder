@@ -163,7 +163,7 @@ class CampaignCodexButton : EveryFrameScript {
             else -> 1
         }
 
-        val cargo = Global.getSector().playerFleet.cargo
+        val cargo = Global.getSector()?.playerFleet?.cargo ?: return
 
         var message: String? = null
 

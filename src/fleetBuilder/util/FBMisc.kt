@@ -408,7 +408,7 @@ object FBMisc {
         fleet: CampaignFleetAPI, aggression: Int = -1, replacePlayer: Boolean = false,
         settings: FleetSettings = FleetSettings()
     ) {
-        val playerFleet = Global.getSector().playerFleet
+        val playerFleet = Global.getSector()?.playerFleet ?: return
 
         // Clear current fleet members and officers
         for (member in playerFleet.fleetData.membersListCopy)
@@ -462,7 +462,7 @@ object FBMisc {
     }
 
     fun fulfillPlayerFleet() {
-        val playerFleet = Global.getSector().playerFleet
+        val playerFleet = Global.getSector()?.playerFleet ?: return
 
         // Crew
         val neededCrew = playerFleet.cargo.maxPersonnel - playerFleet.cargo.crew

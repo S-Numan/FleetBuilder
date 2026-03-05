@@ -48,6 +48,8 @@ object Dialogs {
     ) {
         val buttonHeight = 24f
 
+        val playerFleet = Global.getSector()?.playerFleet?.fleetData ?: return
+
 
         val dialog = BasePopUpPanel(FBTxt.txt("paste_fleet_into_player_fleet"))
 
@@ -75,8 +77,6 @@ object Dialogs {
             var fulfillNeeds = true
 
             ui.addButton(FBTxt.txt("append_to_player_fleet"), null, ui.width, buttonHeight, 3f).onClick {
-                val playerFleet = Global.getSector().playerFleet.fleetData
-
                 val missing = MissingElements()
                 val fleet = DataFleet.createCampaignFleetFromData(
                     data, false,
@@ -295,6 +295,8 @@ object Dialogs {
         val width = 500f
         val height = 348f
 
+        val playerFleet = Global.getSector()?.playerFleet?.fleetData ?: return
+
         var officerSkillCount = 0
 
         Global.getSettings().skillIds.forEach { skill ->
@@ -347,8 +349,6 @@ object Dialogs {
             initialDialog.onConfirm {
                 var maxLevelValue = maxLevel.getText().toIntOrNull()
                 val maxEliteSkillsValue = maxEliteSkills.getText().toIntOrNull()
-
-                val playerFleet = Global.getSector().playerFleet.fleetData
 
                 val person = OfficerManagerEvent.createOfficer(
                     Global.getSector().playerFaction, 1, OfficerManagerEvent.SkillPickPreference.ANY,

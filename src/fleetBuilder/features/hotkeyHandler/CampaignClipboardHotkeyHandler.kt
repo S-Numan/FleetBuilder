@@ -76,7 +76,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
 
         fun handleUIFleetCopy(sector: SectorAPI): Boolean {
-            val playerFleet = sector.playerFleet.fleetData
+            val playerFleet = sector.playerFleet?.fleetData ?: return false
 
             val settings = FleetSettings()
             settings.includeIdleOfficers = false
@@ -107,10 +107,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 }
             } catch (e: Exception) {
                 DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
-                return false
-            }
-            if (fleetToCopy == null) {
-                DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName))
                 return false
             }
 
@@ -356,7 +352,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 if (event.isRMBDownEvent) {
                     when {
                         isShuttle -> {
-                            if (sector.playerFleet.fleetSizeCount == 1)
+                            if (sector.playerFleet?.fleetSizeCount == 1)
                                 DisplayMessage.showMessage(FBTxt.txt("cannot_remove_last_ship_in_fleet"), Color.YELLOW)
                             else
                                 CommanderShuttle.removePlayerShuttle()

@@ -41,9 +41,10 @@ object PlayerSaveUtil {
     ): JSONObject {
         val json = JSONObject()
         val sector = Global.getSector()
+        val playerFleet = sector.playerFleet ?: return json
 
         if (handleCargo) {
-            val cargoJson = CargoSerialization.saveCargoToJson(sector.playerFleet.cargo.stacksCopy)
+            val cargoJson = CargoSerialization.saveCargoToJson(playerFleet.cargo.stacksCopy)
             json.put("cargo", cargoJson)
         }
 
@@ -71,7 +72,7 @@ object PlayerSaveUtil {
 
         if (handleFleet) {
             val fleetJson = JSONFleet.saveFleetToJson(
-                sector.playerFleet,
+                playerFleet,
                 FleetSettings().apply {
                     includeCommanderSetFlagship = false
                     includeCommanderAsOfficer = false
@@ -84,12 +85,12 @@ object PlayerSaveUtil {
         }
 
         if (handleCredits) {
-            val credits = sector.playerFleet.cargo.credits
+            val credits = playerFleet.cargo.credits
             json.put("credits", credits.get())
         }
 
         if (handleKnownHullmods) {
-            val hullMods = sector.characterData.hullMods
+            val hullMods = sector?.characterData?.hullMods
             json.put("knownHullMods", JSONArray(hullMods))
         }
 
@@ -390,8 +391,9 @@ object PlayerSaveUtil {
         handleAbilityBar: Boolean = true,
     ) {
         val sector = Global.getSector()
+        val playerFleet = sector?.playerFleet ?: return
 
-        val cargo = sector.playerFleet.cargo
+        val cargo = playerFleet.cargo ?: return
 
         if (handleRelations && compiled.relations != null) {
             for ((factionId, relation) in compiled.relations) {
@@ -492,7 +494,7 @@ object PlayerSaveUtil {
 
                         // The ability spec is in the game from this point on
 
-                        val isAbilityUnlocked = sector.playerFleet.abilities.contains(newID) || sector.characterData.abilities.contains(newID) || sector.playerStats.grantedAbilityIds.contains(newID)
+                        val isAbilityUnlocked = playerFleet.abilities?.contains(newID) == true || sector.characterData.abilities.contains(newID) || sector.playerStats.grantedAbilityIds.contains(newID)
                         if (!isAbilityUnlocked) {
                             newID = when (id) {
                                 "SKR_emergency_burn" -> convertMissing(Abilities.EMERGENCY_BURN)
