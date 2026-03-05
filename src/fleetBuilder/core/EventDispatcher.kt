@@ -2,6 +2,7 @@ package fleetBuilder.core
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CampaignEventListener
 import com.fs.starfarer.api.campaign.LocationAPI
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
@@ -25,6 +26,7 @@ import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
 import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
+import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.util.VariantLib
 
 class EventDispatcher : RefitScreenListener, EveryFrameScript, CurrentLocationChangedListener {
@@ -57,6 +59,17 @@ class EventDispatcher : RefitScreenListener, EveryFrameScript, CurrentLocationCh
                 }
             }
 
+            val listenerManager = sector.listenerManager
+            fun <T : Any> manageCustomTransientListener(clazz: Class<T>, enabled: Boolean, creator: () -> T) {
+                if (enabled) {
+                    if (!listenerManager.hasListenerOfClass(clazz)) {
+                        listeners.addListener(creator(), true)
+                    }
+                } else {
+                    listenerManager.removeListenerOfClass(clazz)
+                }
+            }
+
             manageTransientListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
             manageTransientListener(CatchStoreMemberButton::class.java, ModSettings.storeOfficersInCargo || ModSettings.unassignPlayer()) { CatchStoreMemberButton() }
             manageTransientListener(CargoAutoManagerOpener::class.java, ModSettings.cargoAutoManager) { CargoAutoManagerOpener() }
@@ -70,6 +83,8 @@ class EventDispatcher : RefitScreenListener, EveryFrameScript, CurrentLocationCh
             manageTransientScript(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { CampaignCargoScreenFilter() }
             manageTransientScript(AutoMothballRecoveredShips::class.java, ModSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
+
+            manageCustomTransientListener(TransponderOff::class.java, true) { TransponderOff() }
         }
     }
 
