@@ -81,6 +81,7 @@ class EventDispatcher : RefitScreenListener, EveryFrameScript, CurrentLocationCh
             manageTransientScript(CargoAutoManager::class.java, ModSettings.cargoAutoManager) { CargoAutoManager() }
             manageTransientScript(CampaignModPickerFilter::class.java, ModSettings.modPickerFilter) { CampaignModPickerFilter() }
             manageTransientScript(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { CampaignCargoScreenFilter() }
+            manageCustomTransientListener(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { CampaignCargoScreenFilter() }
             manageTransientScript(AutoMothballRecoveredShips::class.java, ModSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
 
