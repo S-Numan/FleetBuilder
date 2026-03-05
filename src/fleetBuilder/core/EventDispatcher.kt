@@ -78,10 +78,9 @@ class EventDispatcher : EveryFrameScript {
             manageCustomTransientListener(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { CampaignCargoScreenFilter() }
             manageTransientScript(AutoMothballRecoveredShips::class.java, ModSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
+            manageCustomTransientListener(CommanderShuttle::class.java, true) { CommanderShuttle() } // Should always be enabled
 
             manageCustomTransientListener(TransponderOff::class.java, true) { TransponderOff() }
-
-            manageCustomTransientListener(CommanderShuttle::class.java, true) { CommanderShuttle() }
         }
     }
 
