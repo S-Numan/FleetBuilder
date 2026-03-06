@@ -93,6 +93,8 @@ object ModSettings {
 
     var autofitMenuEnabled = false
 
+    var codexAutofitButton = true
+
     var replaceVanillaAutofitButton = true
 
     var autofitMenuHotkey = Keyboard.KEY_V

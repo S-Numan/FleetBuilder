@@ -51,6 +51,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.cargoScreenFilter = getBoolean(modID, "cargoScreenFilter")!!
             ModSettings.reportCargoAutoManagerChanges = getBoolean(modID, "reportCargoAutoManagerChanges")!!
             ModSettings.autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
+            ModSettings.codexAutofitButton = getBoolean(modID, "codexAutofitButton")!!
             ModSettings.replaceVanillaAutofitButton = getBoolean(modID, "replaceVanillaAutofitButton")!!
             ModSettings.removeRefitHullmod = getBoolean(modID, "removeRefitHullmod")!!
             ModSettings.autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!

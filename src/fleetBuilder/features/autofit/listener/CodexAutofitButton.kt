@@ -17,7 +17,7 @@ import fleetBuilder.util.addShortcutNoShow
 import fleetBuilder.util.createHullVariant
 import starficz.*
 
-class CampaignCodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin() {
+class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin() {
     override fun isDone(): Boolean = false
 
     override fun runWhilePaused(): Boolean = true
@@ -29,10 +29,9 @@ class CampaignCodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin(
     }
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
-        if (Global.getCombatEngine()?.isPaused == true || Global.getCurrentState() == GameState.TITLE)
+        if (ModSettings.autofitMenuEnabled && ModSettings.codexAutofitButton && Global.getCombatEngine()?.isPaused == true || Global.getCurrentState() == GameState.TITLE)
             onAdvance()
     }
-
 
     var param: Any? = null
     var openAutofitButton: ButtonAPI? = null
