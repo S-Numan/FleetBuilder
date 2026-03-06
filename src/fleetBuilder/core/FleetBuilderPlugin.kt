@@ -39,6 +39,6 @@ class FleetBuilderPlugin : BaseModPlugin() {
     override fun onDevModeF8Reload() {
         super.onDevModeF8Reload()
 
-        eventDispatcher.onApplicationLoad()
+        eventDispatcher.onDevModeF8Reload()
     }
 }

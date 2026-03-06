@@ -84,6 +84,10 @@ class EventDispatcher : EveryFrameScript {
         }
     }
 
+    fun onDevModeF8Reload() {
+        onApplicationLoad()
+    }
+
     fun onApplicationLoad() {
         ModSettings.onApplicationLoad()
 
