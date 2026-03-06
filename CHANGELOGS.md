@@ -12,6 +12,8 @@
 - Avoid showing autofit variants that the player is not aware of.
 - Rearrange LunaLib settings a bit.
 - Allow autofit loadout display name to be empty.
+- Added a setting to disable the transponder when entering hyperspace. Yes, I know, this also exists in the QOL life pack.
+- Fix pasting members with officers into a submarket losing the captain when the player takes the member.
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
 

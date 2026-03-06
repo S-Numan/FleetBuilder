@@ -54,6 +54,10 @@ object VariantUtils {
     private const val errorTag = "FB_ERR"
     fun getFBVariantErrorTag() = errorTag
 
+    fun isErrorVariant(variant: ShipVariantAPI): Boolean { // TODO, use this instead
+        return variant.hasTag(errorTag)
+    }
+
     fun createErrorVariant(displayName: String = ""): ShipVariantAPI {
         var tempVariant: ShipVariantAPI? = null
         try {
@@ -74,10 +78,6 @@ object VariantUtils {
         tempVariant.addTag(errorTag)
 
         return tempVariant
-    }
-
-    fun isErrorVariant(variant: ShipVariantAPI): Boolean { // TODO, use this instead
-        return variant.hasTag(errorTag)
     }
 
     data class CompareOptions(
