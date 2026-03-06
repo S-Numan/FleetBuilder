@@ -98,7 +98,7 @@ object VariantLib {
     fun getFighterWingSpec(wingId: String) = IDToWing[wingId]
     fun getFighterWingIDSet(): Set<String> = IDToWing.keys
     fun getWeaponSpec(weaponId: String) = IDToWeapon[weaponId]
-    fun getActuallyAllWeaponSpecs(): Set<String> = IDToWeapon.keys
+    fun getActuallyAllWeaponSpecIDSet(): Set<String> = IDToWeapon.keys
     fun getHullModSpec(hullModId: String) = IDToHullMod[hullModId]
     fun getHullModIDSet(): Set<String> = IDToHullMod.keys
     fun getAllDMods(): Set<String> = allDMods

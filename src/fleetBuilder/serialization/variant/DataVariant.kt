@@ -285,7 +285,7 @@ object DataVariant {
         }
 
         // --- Weapon Groups ---
-        val allWeapons = VariantLib.getActuallyAllWeaponSpecs()
+        val allWeapons = VariantLib.getActuallyAllWeaponSpecIDSet()
         val cleanWeaponGroups = data.weaponGroups.map { wg ->
             val cleanedSlots = wg.weapons.filter { (_, weaponId) ->
                 val valid = weaponId in allWeapons
