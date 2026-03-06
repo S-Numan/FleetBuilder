@@ -59,7 +59,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-object FBMisc {
+internal object FBMisc {
 
     fun variantVisibleToPlayer(variant: ShipVariantAPI): Boolean {
         if (variant.hullSpec.hasTag("codex_unlockable") && !SharedUnlockData.get().isPlayerAwareOfShip(variant.hullSpec.hullId)) {
