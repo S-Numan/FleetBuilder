@@ -1,4 +1,4 @@
-## 1.28.0
+## 2.0.0
 - Newly added Mothball Recovered Ships setting in the Misc tab. When this is true, newly recovered ships will be automatically mothballed.
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
 - Increase size of onslaught in autofit UI.
