@@ -57,6 +57,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod = getBoolean(modID, "autofitNoSModdedBuiltInWhenNotBuiltInMod")!!
             ModSettings.reserveFirstFourAutofitSlots = getBoolean(modID, "reserveFirstFourAutofitSlots")!!
             ModSettings.autoMothballRecoveredShips = getBoolean(modID, "autoMothballRecoveredShips")!!
+            ModSettings.transponderOffInHyperspace = getBoolean(modID, "transponderOffInHyperspace")!!
 
             ModSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
 
@@ -78,6 +79,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.autofitMenuEnabled = false
             ModSettings.removeRefitHullmod = false
             ModSettings.autoMothballRecoveredShips = false
+            ModSettings.transponderOffInHyperspace = false
         }
 
         EventDispatcher.setListeners()

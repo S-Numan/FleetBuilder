@@ -80,7 +80,7 @@ class EventDispatcher : EveryFrameScript {
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
             manageCustomTransientListener(CommanderShuttle::class.java, true) { CommanderShuttle() } // Should always be enabled
 
-            manageCustomTransientListener(TransponderOff::class.java, true) { TransponderOff() }
+            manageCustomTransientListener(TransponderOff::class.java, ModSettings.transponderOffInHyperspace) { TransponderOff() }
         }
     }
 

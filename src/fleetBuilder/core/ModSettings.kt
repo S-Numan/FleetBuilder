@@ -137,6 +137,8 @@ object ModSettings {
 
     var autoMothballRecoveredShips = false
 
+    var transponderOffInHyperspace = false
+
     var autofitNoSModdedBuiltInWhenNotBuiltInMod = true
 
     var reserveFirstFourAutofitSlots = true

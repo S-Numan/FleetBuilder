@@ -101,7 +101,7 @@ Upon retrieving the ship from storage, the officer returns to your fleet as its 
 unassignPlayer,Unassign Player,Boolean,false,,"Remove your player officer with a right click: (places them in a command shuttle that can't fight or be copied) (Commander bonus still applies)
 This is enabled by default if Cheats are enabled.",,,Misc
 autoMothballRecoveredShips,Mothball Recovered Ships,Boolean,false,,When recovering a new ship: mothball it.,,,Misc
-,,,,,,,,
+transponderOffInHyperspace,Transponder Off,Boolean,false,,Turn the transponder off when entering hyperspace,,,Misc
 ,,,,,,,,
 cargoAutoManager,Enable Cargo Auto Manager,Boolean,true,,"Right click a storage submarket to pull up the Cargo Auto Manager.
 
