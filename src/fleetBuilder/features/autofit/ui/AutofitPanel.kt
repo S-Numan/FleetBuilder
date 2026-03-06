@@ -181,9 +181,9 @@ internal object AutofitPanel {
 
     fun createMagicAutofitPanel(
         parentPanel: UIPanelAPI,
-        width: Float, height: Float, variant: ShipVariantAPI
+        width: Float, height: Float, variant: ShipVariantAPI, makeAndRemoveLoadouts: Boolean
     ): CustomPanelAPI {
-        return createMagicAutofitPanelFull(parentPanel, null, null, width, height, variant)
+        return createMagicAutofitPanelFull(parentPanel, null, null, width, height, variant, makeAndRemoveLoadouts)
     }
 
     internal fun createMagicAutofitPanel(
@@ -196,7 +196,7 @@ internal object AutofitPanel {
     private fun createMagicAutofitPanelFull(
         parentPanel: UIPanelAPI, refitPanel: UIPanelAPI?, shipDisplay: UIPanelAPI?,
         width: Float, height: Float,
-        inputVariant: ShipVariantAPI? = null
+        inputVariant: ShipVariantAPI? = null, makeAndRemoveLoadouts: Boolean = true
     ): CustomPanelAPI {
         val autofitPlugin = AutofitPanelPlugin(parentPanel)
         val autofitPanel = Global.getSettings().createCustom(width, height, autofitPlugin)// Background Panel
@@ -328,7 +328,7 @@ internal object AutofitPanel {
                 highlightBasedOnVariant(autofitSpec.variant, baseVariant, selectorPlugin)
                 makeTooltip(selectorPanel, autofitSpec.variant, autofitSpec.missing, if (i % selectorsPerRow >= selectorsPerRow / 2) TooltipMakerAPI.TooltipLocation.LEFT else TooltipMakerAPI.TooltipLocation.RIGHT)
 
-                if (autofitSpec.source != null) // Is this a loadout from this mod?
+                if (autofitSpec.source != null && makeAndRemoveLoadouts) // Is this a loadout from this mod?
                     removeSelectorPanelButton(selectorPanel, autofitSpec) // Allow it to be removed
             } else {
                 if (selectorPlugin.addXIfAutofitSpecNull) {
@@ -557,6 +557,9 @@ internal object AutofitPanel {
             }
             selectorPlugin.onHoverEnter {
                 Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
+
+                if (!makeAndRemoveLoadouts) return@onHoverEnter
+
                 if (autofitPlugin.draggedAutofitSpec != null) {
                     selectorPlugin.draggingAutofitSpec = true
                 }
@@ -564,6 +567,7 @@ internal object AutofitPanel {
             selectorPlugin.onHoverExit {
                 selectorPlugin.draggingAutofitSpec = false
 
+                if (!makeAndRemoveLoadouts) return@onHoverExit
                 if (!selectorPlugin.hasClicked || selectorPlugin.autofitSpec === autofitPlugin.draggedAutofitSpec) return@onHoverExit
 
                 //Global.getSoundPlayer().playUISound("ui_char_reset", 1f, 1f)
@@ -717,7 +721,6 @@ internal object AutofitPanel {
                                     copyVariant(it.autofitSpec!!.variant, settings) // Copied to apply settings
                                 )
                     })
-
                 } else {
                     Global.getSoundPlayer().playUISound("ui_button_pressed", 0.94f, 1f)
 
@@ -744,7 +747,8 @@ internal object AutofitPanel {
                     selectorPlugin.selectorPanel, selectorPlugin.autofitSpec!!.variant, selectorPlugin.autofitSpec!!.missing,
                     if (index % selectorsPerRow >= selectorsPerRow / 2) TooltipMakerAPI.TooltipLocation.LEFT else TooltipMakerAPI.TooltipLocation.RIGHT
                 )
-                removeSelectorPanelButton(selectorPlugin.selectorPanel, selectorPlugin.autofitSpec!!) // Allow it to be removed
+                if (makeAndRemoveLoadouts)
+                    removeSelectorPanelButton(selectorPlugin.selectorPanel, selectorPlugin.autofitSpec!!) // Allow it to be removed
             }
 
             selectorPlugin.onClick { event ->

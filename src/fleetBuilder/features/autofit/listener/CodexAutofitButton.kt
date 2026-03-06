@@ -99,7 +99,7 @@ class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin() {
 
             openAutofitButton!!.addShortcutNoShow(ModSettings.autofitMenuHotkey)
             openAutofitButton!!.onClick {
-                autofitPanel = AutofitPanel.createMagicAutofitPanel(codex, codex.width - leftPanelSize, codex.height, variant)
+                autofitPanel = AutofitPanel.createMagicAutofitPanel(codex, codex.width - leftPanelSize, codex.height, variant, false)
                 codex.addComponent(autofitPanel).setXAlignOffset(leftPanelSize)
             }
         }
