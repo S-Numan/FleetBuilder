@@ -11,7 +11,7 @@ import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFr
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
 import org.json.JSONArray
@@ -227,7 +227,7 @@ class ShipDirectory(
     }
 
     fun makeVariantID(hullId: String, displayName: String): String {
-        var newVariantId = makeVariantID(hullId, displayName)
+        var newVariantId = VariantUtils.makeVariantID(hullId, displayName)
 
         var iterate = 0
         // Ensure the variant ID is unique
