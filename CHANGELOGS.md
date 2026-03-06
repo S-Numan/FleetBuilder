@@ -1,21 +1,23 @@
 ## 1.28.0
 - Newly added Mothball Recovered Ships setting in the Misc tab. When this is true, newly recovered ships will be automatically mothballed.
-- Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
-- Fix failed fleet copy when FleetMemberAPI name is null for some reason
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
-- A small overhaul to the dialog system. It will be a little different now in many ways.
-- Added an intercept to forceclosedialog from Console Commands to also close this mod's dialogs. Just in case.
 - Increase size of onslaught in autofit UI.
 - In the Cargo Auto Manager, the "Put" toggle is now by default toggled on for new custom inputs.
-- Fix Cargo Auto Manager "Blueprints and ModSpecs" not consistently working.
 - Autofit variant tooltip's position themselves to the left side if on the right side of the UI.
 - Avoid showing autofit variants that the player is not aware of.
 - Rearrange LunaLib settings a bit.
 - Allow autofit loadout display name to be empty.
 - Added a setting to disable the transponder when entering hyperspace. Yes, I know, this also exists in the QOL life pack.
+- Prevent adding more than max limit of officers by mothballing captained ships over the limit.
+### Bugfixes
+- Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
+- Fix failed fleet copy when FleetMemberAPI name is null for some reason
+- Added an intercept to forceclosedialog from Console Commands to also close this mod's dialogs. Just in case.
+- Fix Cargo Auto Manager "Blueprints and ModSpecs" not consistently working.
 - Fix pasting members with officers into a submarket losing the captain when the player takes the member.
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
+- A small overhaul to the dialog system. It will be a little different now in many ways.
 
 ## 1.27.1
 - Fix copy pasted variants loading improperly after saving and loading a game.
