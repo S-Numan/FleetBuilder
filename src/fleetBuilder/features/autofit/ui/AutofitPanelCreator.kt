@@ -44,7 +44,7 @@ internal object AutofitPanelCreator {
         val dialogShowing = shipDisplay.safeInvoke("isShowingDialog") as Boolean
         if (dialogShowing) return false
 
-        val curPaintjobPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->
+        val curAutofitPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->
             panel.plugin != null && panel.plugin is AutofitPanel.AutofitPanelPlugin
         }
 
@@ -55,8 +55,8 @@ internal object AutofitPanelCreator {
         //val buttonShouldNotExist = fleetMember == null
         //if(curPaintjobPanel != null && buttonShouldNotExist) coreUI.removeComponent(curPaintjobPanel)
         //if(curPaintjobPanel != null || buttonShouldNotExist) return//Don't open a second panel if one is already present
-        if (curPaintjobPanel != null || fleetMember == null) {
-            coreUI.removeComponent(curPaintjobPanel)
+        if (curAutofitPanel != null || fleetMember == null) {
+            coreUI.removeComponent(curAutofitPanel)
             Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 1f)
             return true
         }

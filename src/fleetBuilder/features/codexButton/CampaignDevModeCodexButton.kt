@@ -24,7 +24,7 @@ import fleetBuilder.util.createHullVariant
 import org.lwjgl.input.Keyboard
 import starficz.*
 
-class CampaignCodexButton : EveryFrameScript {
+class CampaignDevModeCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {
         return false
     }
@@ -39,13 +39,16 @@ class CampaignCodexButton : EveryFrameScript {
     override fun advance(amount: Float) {
         if (!Global.getSector().isPaused) return
         if (!ModSettings.cheatsEnabled()) return
-
-        val codex = ReflectionMisc.getCodexDialog()
-        if (codex == null) {
-            if (addToFleetButton != null)
-                addToFleetButton = null
+        if (!ReflectionMisc.isCodexOpen()) {
+            addToFleetButton = null
             return
         }
+
+        val codex = ReflectionMisc.getCodexDialog() ?: run {
+            DisplayMessage.showError("Code should not reach here")
+            return
+        }
+
         /*val uiFields = codex.getFieldsMatching(fieldAssignableTo = UIPanelAPI::class.java)
         val tempArray = uiFields.map { field ->
             field.get(codex)
@@ -135,7 +138,7 @@ class CampaignCodexButton : EveryFrameScript {
             addToFleetButton!!.yAlignOffset = -codex.height + addToFleetButton!!.height + pad
 
 
-        } else {
+        } else if (addToFleetButton != null) {
             codex.removeComponent(addToFleetButton)
             addToFleetButton = null
         }
