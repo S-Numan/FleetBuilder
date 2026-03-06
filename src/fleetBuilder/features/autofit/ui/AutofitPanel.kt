@@ -12,6 +12,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
+import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.ModSettings.getDefaultExcludeVariantTags
@@ -53,7 +54,7 @@ internal object AutofitPanel {
     private const val BACKGROUND_ALPHA = 0.7f
     var currentPrefix = ModSettings.defaultPrefix
 
-    internal class AutofitPanelPlugin(private val refitTab: UIPanelAPI) : BaseCustomUIPanelPlugin() {
+    internal class AutofitPanelPlugin(private val parentTab: UIPanelAPI) : BaseCustomUIPanelPlugin() {
         lateinit var autofitPanel: CustomPanelAPI
         var baseVariantPanel: CustomPanelAPI? = null
 
@@ -70,10 +71,10 @@ internal object AutofitPanel {
             val screenW = Global.getSettings().screenWidth
             val screenH = Global.getSettings().screenHeight
             val buffer = -5f
-            val tx = refitTab.x - buffer
-            val ty = refitTab.y - buffer
-            val tw = refitTab.width + buffer * 2
-            val th = refitTab.height + buffer * 2
+            val tx = parentTab.x - buffer
+            val ty = parentTab.y - buffer
+            val tw = parentTab.width + buffer * 2
+            val th = parentTab.height + buffer * 2
             // Left
             GL11.glRectf(0f, 0f, tx, screenH)
             // Right
@@ -97,7 +98,7 @@ internal object AutofitPanel {
             val borderColor = Misc.getDarkPlayerColor()
             val borderAlpha = borderColor.alphaf * alphaMult
             GL11.glColor4f(borderColor.redf, borderColor.greenf, borderColor.bluef, borderAlpha)
-            drawBorder(refitTab.left, refitTab.bottom, refitTab.right, refitTab.top)
+            drawBorder(parentTab.left, parentTab.bottom, parentTab.right, parentTab.top)
 
             // the panel border itself is darker than standard player dark color
             val darkerBorderColor = borderColor.darker()
@@ -133,7 +134,7 @@ internal object AutofitPanel {
                 } else if ((
                             UIUtils.isMouseHoveringOverComponent(autofitPanel, 8f) ||
                                     (baseVariantPanel != null && UIUtils.isMouseHoveringOverComponent(baseVariantPanel!!, 8f)) ||
-                                    !UIUtils.isMouseWithinBounds(refitTab.x, refitTab.y, refitTab.width, refitTab.height) // block if outside tab
+                                    !UIUtils.isMouseWithinBounds(parentTab.x, parentTab.y, parentTab.width, parentTab.height) // block if outside tab
                             ) && (
                             event.isKeyboardEvent ||
                                     event.isMouseMoveEvent ||
@@ -176,7 +177,15 @@ internal object AutofitPanel {
         refitTab: UIPanelAPI, refitPanel: UIPanelAPI, shipDisplay: UIPanelAPI, coreUI: CoreUIAPI,
         width: Float, height: Float
     ): CustomPanelAPI {
-        val autofitPlugin = AutofitPanelPlugin(refitTab)
+        return createMagicAutofitPanelFull(refitTab, refitPanel, shipDisplay, coreUI, width, height, null)
+    }
+
+    private fun createMagicAutofitPanelFull(
+        parentPanel: UIPanelAPI, refitPanel: UIPanelAPI?, shipDisplay: UIPanelAPI?, coreUI: CoreUIAPI,
+        width: Float, height: Float,
+        inputVariant: ShipVariantAPI? = null
+    ): CustomPanelAPI {
+        val autofitPlugin = AutofitPanelPlugin(parentPanel)
         val autofitPanel = Global.getSettings().createCustom(width, height, autofitPlugin)// Background Panel
         autofitPlugin.autofitPanel = autofitPanel
 
@@ -189,11 +198,19 @@ internal object AutofitPanel {
             return autofitPanel
         }
 
-        val baseVariant = shipDisplay.safeInvoke("getCurrentVariant") as? HullVariantSpec
-            ?: return autofitPanel
-        val fleetMember = refitPanel.safeInvoke("getMember") as? FleetMemberAPI ?: return autofitPanel
-        val ship = shipDisplay.safeInvoke("getShip") as? ShipAPI ?: return autofitPanel
-        val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return autofitPanel
+        val baseVariant = shipDisplay?.safeInvoke("getCurrentVariant") as? HullVariantSpec
+            ?: inputVariant ?: return autofitPanel
+        var fleetMember: FleetMemberAPI? = null
+        var ship: ShipAPI? = null
+        var modWidget: ModWidget? = null
+
+        if (refitPanel != null && shipDisplay != null) {
+            fleetMember = refitPanel.safeInvoke("getMember") as? FleetMemberAPI ?: return autofitPanel
+            ship = shipDisplay.safeInvoke("getShip") as? ShipAPI ?: return autofitPanel
+            modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return autofitPanel
+        }
+
+        val modWidgetHeight = modWidget?.y ?: 0f
 
         var firstInRow: UIPanelAPI? = null
         var prev: UIPanelAPI? = null
@@ -315,8 +332,16 @@ internal object AutofitPanel {
 
         //Make base variant selector panel.
 
-        val containerPanelWidth = refitTab.width - autofitPanel.width - 7f
-        val containerPanelHeight = refitTab.height - modWidget.height + 44f
+        var baseVariantSelectorPlugin: AutofitSelector.AutofitSelectorPlugin? = null
+        var cargoButton: ButtonAPI? = null
+        var storageButton: ButtonAPI? = null
+        var marketButton: ButtonAPI? = null
+        var blackMarketButton: ButtonAPI? = null
+        var applySModsButton: ButtonAPI? = null
+
+        val containerPanelWidth = parentPanel.width - autofitPanel.width - 7f
+        val containerPanelHeight = parentPanel.height - modWidgetHeight + 44f
+        //if (fleetMember != null) {
         val descriptorHeight = 34f
         val topPad = 5f
         // Create container panel with modWidget size
@@ -349,7 +374,7 @@ internal object AutofitPanel {
         autofitPlugin.baseVariantPanel = baseVariantPanel
 
         // Position container panel
-        baseVariantPanel.position.inTL(autofitPanel.width + 1f, -autofitPanel.y + (modWidget.height - autofitPanel.y - 50f))
+        baseVariantPanel.position.inTL(autofitPanel.width + 1f, -autofitPanel.y + (modWidgetHeight - autofitPanel.y - 50f))
 
         val containerTextElement = baseVariantPanel.createUIElement(baseVariantPanel.width, descriptorHeight - topPad, false)
         baseVariantPanel.addUIElement(containerTextElement)
@@ -362,39 +387,39 @@ internal object AutofitPanel {
 
         //TODO, re-add this later with fixes
         /*
-                val nonEmptyShipDirectories = LoadoutManager.getShipDirectoriesNotEmpty()
-                if (nonEmptyShipDirectories.size > 1) { // If more than one ship directories with ships is present
+            val nonEmptyShipDirectories = LoadoutManager.getShipDirectoriesNotEmpty()
+            if (nonEmptyShipDirectories.size > 1) { // If more than one ship directories with ships is present
 
-                    val prefixChangerContainerPanel = baseVariantPanel.createUIElement(baseVariantPanel.width, descriptorHeight - topPad, false)
-                    baseVariantPanel.addUIElement(prefixChangerContainerPanel)
-                    with(prefixChangerContainerPanel) {
-                        position.inTL(0f, topPad - position.height)
+                val prefixChangerContainerPanel = baseVariantPanel.createUIElement(baseVariantPanel.width, descriptorHeight - topPad, false)
+                baseVariantPanel.addUIElement(prefixChangerContainerPanel)
+                with(prefixChangerContainerPanel) {
+                    position.inTL(0f, topPad - position.height)
+                    setButtonFontOrbitron20()
+                    //TODO, this should be a drop down. A downwards ^ should be on the right to indicate that.
+                    val currentPrefixButton = addButton(
+                        currentShipDirectory.name, null, Misc.getButtonTextColor(), Misc.getDarkPlayerColor(), Alignment.LMID, CutStyle.NONE,
+                        position.width - position.height * 4f, position.height, 0f
+                    )
+                    currentPrefixButton.position.inTL(0f, -topPad - 1f)
+                    currentPrefixButton.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 400f) { tooltip ->
+                        tooltip.addPara("Click to change or create a new ship directory.\n\nShip directories can be considered to be like different folders that hold all your autofit variants.", 0f)
+                    }
+                    currentPrefixButton.onClick {
+
+                    }
+                    /*
                         setButtonFontOrbitron20()
-                        //TODO, this should be a drop down. A downwards ^ should be on the right to indicate that.
-                        val currentPrefixButton = addButton(
-                            currentShipDirectory.name, null, Misc.getButtonTextColor(), Misc.getDarkPlayerColor(), Alignment.LMID, CutStyle.NONE,
-                            position.width - position.height * 4f, position.height, 0f
-                        )
-                        currentPrefixButton.position.inTL(0f, -topPad - 1f)
-                        currentPrefixButton.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 400f) { tooltip ->
-                            tooltip.addPara("Click to change or create a new ship directory.\n\nShip directories can be considered to be like different folders that hold all your autofit variants.", 0f)
+                        val currentPrefixButton = addButton(currentPrefixObj.name, null, Misc.getButtonTextColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.NONE, position.width - position.height * 5, position.height, 0f)
+                        currentPrefixButton.position.inTL(addPrefixButton.width, -topPad - 1f)
+                        currentPrefixButton.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) { tooltip ->
+                            tooltip.addPara("Shows current ship directory.\nClick to change.\nThink of different ship directories as different folders for all your ship variants.", 0f)
                         }
                         currentPrefixButton.onClick {
 
-                        }
-                        /*
-                            setButtonFontOrbitron20()
-                            val currentPrefixButton = addButton(currentPrefixObj.name, null, Misc.getButtonTextColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.NONE, position.width - position.height * 5, position.height, 0f)
-                            currentPrefixButton.position.inTL(addPrefixButton.width, -topPad - 1f)
-                            currentPrefixButton.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) { tooltip ->
-                                tooltip.addPara("Shows current ship directory.\nClick to change.\nThink of different ship directories as different folders for all your ship variants.", 0f)
-                            }
-                            currentPrefixButton.onClick {
-
-                            }*/
-                    }
+                        }*/
                 }
-        */
+            }
+    */
 
         // Create base selector panel
         val baseVariantSelectorPanel = AutofitSelector.createAutofitSelector(
@@ -404,7 +429,7 @@ internal object AutofitPanel {
         makeTooltip(baseVariantSelectorPanel, baseVariant, location = TooltipMakerAPI.TooltipLocation.LEFT)
 
 
-        val baseVariantSelectorPlugin = baseVariantSelectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
+        baseVariantSelectorPlugin = baseVariantSelectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
         baseVariantSelectorPlugin.isBase = true
         baseVariantSelectorPlugin.noClickFader = true
         baseVariantSelectorPlugin.comparisonStatus = AutofitSelector.AutofitSelectorPlugin.ComparisonStatus.EQUAL
@@ -436,7 +461,7 @@ internal object AutofitPanel {
         val checkboxHeight = 24f
         val checkboxPad = 4f
 
-        val fleetMemory = fleetMember.fleetData?.fleet?.memoryWithoutUpdate
+        val fleetMemory = fleetMember?.fleetData?.fleet?.memoryWithoutUpdate
 
         fun addToggleButton(
             label: String,
@@ -469,12 +494,6 @@ internal object AutofitPanel {
 
             return button
         }
-
-        var cargoButton: ButtonAPI? = null
-        var storageButton: ButtonAPI? = null
-        var marketButton: ButtonAPI? = null
-        var blackMarketButton: ButtonAPI? = null
-        var applySModsButton: ButtonAPI? = null
 
         if (Global.getCurrentState() != GameState.TITLE) {
             cargoButton = addToggleButton(
@@ -514,6 +533,7 @@ internal object AutofitPanel {
 
         autofitPanel.addComponent(baseVariantPanel)
 
+        //}
 
         // sync all the selectors
         for (index in selectorPlugins.indices) {
@@ -540,18 +560,21 @@ internal object AutofitPanel {
                 selectorPlugin.selectorPanel.opacity = 0.15f
             }
             selectorPlugin.onClickRelease { event -> // Load variant
+                if (fleetMember == null)
+                    return@onClickRelease
+
                 selectorPlugin.selectorPanel.opacity = 1f
 
                 if (selectorPlugin.autofitSpec == null || autofitPlugin.draggedAutofitSpec != null || event.isCtrlDown || selectorPlugin.noClickFader) return@onClickRelease // If no variant. or dragging self, do nothing
 
                 fun applyVariant(autofitSpec: AutofitSpec?, applySMods: Boolean = false) {
                     applyVariantInRefitScreen(
-                        baseVariant, autofitSpec!!.variant, fleetMember, ship, coreUI, shipDisplay, refitPanel,
+                        baseVariant, autofitSpec!!.variant, fleetMember, ship!!, coreUI, shipDisplay!!, refitPanel!!,
                         allowCargo = cargoButton?.isChecked == true, allowStorage = storageButton?.isChecked == true, allowMarket = marketButton?.isChecked == true, allowBlackMarket = blackMarketButton?.isChecked == true, applySMods = applySMods
                     )
 
                     //Remake the baseSelector
-                    baseVariantSelectorPlugin.selectorPanel.clearChildren()
+                    baseVariantSelectorPlugin!!.selectorPanel.clearChildren()
                     baseVariantSelectorPlugin.autofitSpec = AutofitSpec(variant = baseVariant, source = null)
                     makeTooltip(baseVariantSelectorPlugin.selectorPanel, baseVariant)
                     AutofitSelector.createAutofitSelectorChildren(
@@ -571,7 +594,7 @@ internal object AutofitPanel {
                 if (applySModsButton?.isChecked == true && !ModSettings.forceAutofit &&
                     (selectorPlugin.autofitSpec!!.variant.sMods.any { it !in baseVariant.sMods } || selectorPlugin.autofitSpec!!.variant.sModdedBuiltIns.any { it !in baseVariant.sModdedBuiltIns })
                 ) {
-                    val (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship, baseVariant, selectorPlugin.autofitSpec!!.variant)
+                    val (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship!!, baseVariant, selectorPlugin.autofitSpec!!.variant)
                     if (sModsToApply.isEmpty())
                         return@onClickRelease
 
