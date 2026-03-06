@@ -54,7 +54,7 @@ internal object AutofitPanel {
     private const val BACKGROUND_ALPHA = 0.7f
     var currentPrefix = ModSettings.defaultPrefix
 
-    internal class AutofitPanelPlugin(private val parentTab: UIPanelAPI) : BaseCustomUIPanelPlugin() {
+    internal class AutofitPanelPlugin(private val parentPanel: UIPanelAPI) : BaseCustomUIPanelPlugin() {
         lateinit var autofitPanel: CustomPanelAPI
         var baseVariantPanel: CustomPanelAPI? = null
 
@@ -71,10 +71,10 @@ internal object AutofitPanel {
             val screenW = Global.getSettings().screenWidth
             val screenH = Global.getSettings().screenHeight
             val buffer = -5f
-            val tx = parentTab.x - buffer
-            val ty = parentTab.y - buffer
-            val tw = parentTab.width + buffer * 2
-            val th = parentTab.height + buffer * 2
+            val tx = parentPanel.x - buffer
+            val ty = parentPanel.y - buffer
+            val tw = parentPanel.width + buffer * 2
+            val th = parentPanel.height + buffer * 2
             // Left
             GL11.glRectf(0f, 0f, tx, screenH)
             // Right
@@ -98,7 +98,7 @@ internal object AutofitPanel {
             val borderColor = Misc.getDarkPlayerColor()
             val borderAlpha = borderColor.alphaf * alphaMult
             GL11.glColor4f(borderColor.redf, borderColor.greenf, borderColor.bluef, borderAlpha)
-            drawBorder(parentTab.left, parentTab.bottom, parentTab.right, parentTab.top)
+            drawBorder(parentPanel.left, parentPanel.bottom, parentPanel.right, parentPanel.top)
 
             // the panel border itself is darker than standard player dark color
             val darkerBorderColor = borderColor.darker()
@@ -134,7 +134,7 @@ internal object AutofitPanel {
                 } else if ((
                             UIUtils.isMouseHoveringOverComponent(autofitPanel, 8f) ||
                                     (baseVariantPanel != null && UIUtils.isMouseHoveringOverComponent(baseVariantPanel!!, 8f)) ||
-                                    !UIUtils.isMouseWithinBounds(parentTab.x, parentTab.y, parentTab.width, parentTab.height) // block if outside tab
+                                    !UIUtils.isMouseWithinBounds(parentPanel.x, parentPanel.y, parentPanel.width, parentPanel.height) // block if outside tab
                             ) && (
                             event.isKeyboardEvent ||
                                     event.isMouseMoveEvent ||
@@ -171,6 +171,13 @@ internal object AutofitPanel {
             draggedPanel!!.position.setYAlignOffset(Global.getSettings().mouseY.toFloat() - draggedPanel!!.height / 2f)
 
         }
+    }
+
+    fun createMagicAutofitPanel(
+        parentPanel: UIPanelAPI, coreUI: CoreUIAPI,
+        width: Float, height: Float, variant: ShipVariantAPI
+    ): CustomPanelAPI {
+        return createMagicAutofitPanelFull(parentPanel, null, null, coreUI, width, height, variant)
     }
 
     internal fun createMagicAutofitPanel(
@@ -210,7 +217,7 @@ internal object AutofitPanel {
             modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return autofitPanel
         }
 
-        val modWidgetHeight = modWidget?.y ?: 0f
+        val modWidgetHeight = modWidget?.height ?: 0f
 
         var firstInRow: UIPanelAPI? = null
         var prev: UIPanelAPI? = null
