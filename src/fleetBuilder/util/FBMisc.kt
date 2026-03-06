@@ -686,6 +686,10 @@ object FBMisc {
                     if (member.captain.isDefault) {
                         FBTxt.txt("added_ship_to_submarket", shipName)
                     } else {
+                        if (member.captain.faction.id != "tahlan_allmother") {
+                            member.captain.memoryWithoutUpdate.set(ModSettings.storedOfficerTag, true)
+                            member.captain.memoryWithoutUpdate.set(Misc.CAPTAIN_UNREMOVABLE, true)
+                        }
                         FBTxt.txt("added_ship_to_submarket_with_officer", shipName)
                     }
                 } else {
