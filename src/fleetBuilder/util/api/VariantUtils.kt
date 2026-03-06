@@ -54,7 +54,7 @@ object VariantUtils {
     private const val errorTag = "FB_ERR"
     fun getFBVariantErrorTag() = errorTag
 
-    fun isErrorVariant(variant: ShipVariantAPI): Boolean { // TODO, use this instead
+    fun isErrorVariant(variant: ShipVariantAPI): Boolean {
         return variant.hasTag(errorTag)
     }
 
