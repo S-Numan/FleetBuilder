@@ -34,7 +34,9 @@ class DrawMessageInTitle : EveryFrameCombatPlugin {
     private var init = false
     private var fadingOut = false
 
-    override fun init(engine: CombatEngineAPI?) {}
+    @Deprecated("Deprecated in Java")
+    override fun init(engine: CombatEngineAPI?) {
+    }
 
     private fun doInit() {
         if (font == null) {

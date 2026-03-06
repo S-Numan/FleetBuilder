@@ -4,19 +4,12 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.ui.customPanel.DialogUtil
+import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.FBMisc.endStencil
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.FBMisc.startStencilWithXPad
 import fleetBuilder.util.FBMisc.startStencilWithYPad
-import fleetBuilder.util.ReflectionMisc
-import starficz.centerX
-import starficz.centerY
-import starficz.height
-import starficz.setSize
-import starficz.width
-import starficz.x
-import starficz.y
+import starficz.*
 import java.awt.Color
 
 open class ComposableUIPanel : CustomUIPanel() {
@@ -53,7 +46,7 @@ open class ComposableUIPanel : CustomUIPanel() {
             tooltip.position.inTL(getXTooltipPadding(), getYTooltipPadding())
             panel
         }
-        DialogUtil.initDialogToShow(this, x = xOffset, y = yOffset, width = width, height = height, parent = parent)
+        DialogUtils.initDialogToShow(this, x = xOffset, y = yOffset, width = width, height = height, parent = parent)
     }
 
 

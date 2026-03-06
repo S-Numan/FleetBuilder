@@ -1,7 +1,7 @@
 package fleetBuilder.console.commands.saveTransfer
 
-import fleetBuilder.util.FBTxt
 import fleetBuilder.serialization.PlayerSaveUtil
+import fleetBuilder.util.FBTxt
 import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings

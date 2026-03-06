@@ -6,10 +6,10 @@ import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.util.FBMisc
-import fleetBuilder.serialization.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat

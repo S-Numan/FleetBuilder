@@ -9,15 +9,10 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
-import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.completelyRemoveMod
-import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.util.safeInvoke
-import fleetBuilder.util.VariantLib
+import fleetBuilder.features.autofit.ui.AutofitPanel
+import fleetBuilder.util.*
 import org.lwjgl.util.vector.Vector2f
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.findChildWithMethod
@@ -83,7 +78,7 @@ class RemoveRefitHullmod : CampaignInputListener {
                                 refitPanel.safeInvoke("syncWithCurrentVariant")
 
                                 DisplayMessage.showMessage(FBTxt.txt("removed_smoddedbuiltin", hullModID.displayName))
-                            } else if (VariantLib.getAllDMods().contains(hullModID.id)) {//Built in DMod?
+                            } else if (LookupUtil.getAllDMods().contains(hullModID.id)) {//Built in DMod?
                                 variant.completelyRemoveMod(hullModID.id)
                                 refitPanel.safeInvoke("syncWithCurrentVariant")
 

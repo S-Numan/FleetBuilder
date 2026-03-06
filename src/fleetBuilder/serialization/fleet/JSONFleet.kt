@@ -3,6 +3,7 @@ package fleetBuilder.serialization.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
@@ -18,7 +19,6 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.JSONVariant.addVariantSourceModsToJson
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.util.FBMisc
-import fleetBuilder.serialization.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
 

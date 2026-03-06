@@ -8,16 +8,16 @@ import fleetBuilder.core.ModSettings.DIRECTORYCONFIGNAME
 import fleetBuilder.core.ModSettings.FLEETDIR
 import fleetBuilder.core.ModSettings.PACKDIR
 import fleetBuilder.core.ModSettings.defaultPrefix
-import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.SerializationUtils.extractDataFromString
-import fleetBuilder.util.FBMisc.variantVisibleToPlayer
-import fleetBuilder.util.VariantLib
-import fleetBuilder.util.VariantLib.compareVariantContents
-import fleetBuilder.util.VariantLib.getCoreVariantsForEffectiveHullspec
+import fleetBuilder.serialization.variant.DataVariant
+import fleetBuilder.serialization.variant.VariantSettings
+import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtil.getCoreVariantsForEffectiveHullspec
+import fleetBuilder.util.api.VariantUtils.compareVariantContents
+import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import fleetBuilder.util.getCompatibleDLessHullId
 import org.apache.log4j.Level
 import org.json.JSONArray
@@ -217,8 +217,8 @@ object ShipDirectoryService {
                         )
                     }
 
-                    if (data.hullId !in VariantLib.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
-                        || data.moduleVariants.any { it.value.hullId !in VariantLib.getHullIDSet() } // Also check hullIds from modules
+                    if (data.hullId !in LookupUtil.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
+                        || data.moduleVariants.any { it.value.hullId !in LookupUtil.getHullIDSet() } // Also check hullIds from modules
                     ) {
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     } else {
@@ -313,7 +313,7 @@ object ShipDirectoryService {
             }.and(
                 ModSettings.cheatsEnabled()
                         || variant.hullSpec.getCompatibleDLessHullId() == hullSpec.getCompatibleDLessHullId() // If this is the hullspec the player is looking at
-                        || variantVisibleToPlayer(variant) // Or the player knows this hullspec
+                        || isVariantKnownToPlayer(variant) // Or the player knows this hullspec
             )
 
             if (shouldShow) {

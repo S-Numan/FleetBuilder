@@ -1,14 +1,14 @@
 package fleetBuilder.serialization.fleet
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.DataPerson.buildPerson
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.serialization.person.DataPerson.validateAndCleanPersonData
 import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
-import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.MissingElements
 import org.json.JSONArray
 import org.json.JSONObject
 import second_in_command.SCData

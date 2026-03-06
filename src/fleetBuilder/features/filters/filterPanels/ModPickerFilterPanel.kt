@@ -1,7 +1,7 @@
 package fleetBuilder.features.filters.filterPanels
 
 import com.fs.starfarer.api.loading.HullModSpecAPI
-import com.fs.starfarer.api.ui.*
+import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.ui.UITable
 import fleetBuilder.util.safeInvoke
 import starficz.ReflectionUtils.getFieldsMatching

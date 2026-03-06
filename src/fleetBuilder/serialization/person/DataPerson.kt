@@ -7,8 +7,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.FBMisc.getRandomPortrait
 import fleetBuilder.serialization.MissingElements
+import fleetBuilder.util.api.PersonUtils
 import org.histidine.chatter.ChatterDataManager
 import org.histidine.chatter.combat.ChatterCombatPlugin
 import java.util.*
@@ -140,7 +140,7 @@ object DataPerson {
 
         val validPortrait = try {
             if (data.portrait == null) {
-                getRandomPortrait(data.gender)
+                PersonUtils.getRandomPortrait(data.gender)
             } else if (data.portrait.isNotEmpty()) {
                 val sprite = Global.getSettings().getSprite(data.portrait)
                 if (sprite == null || sprite.width == 0f) throw Exception()
@@ -148,7 +148,7 @@ object DataPerson {
                 data.portrait
             } else data.portrait
         } catch (_: Exception) {
-            getRandomPortrait(data.gender)
+            PersonUtils.getRandomPortrait(data.gender)
         }
 
         return data.copy(
@@ -178,7 +178,7 @@ object DataPerson {
         person.setPersonality(data.personality)
 
         if (data.portrait == null) {
-            person.portraitSprite = getRandomPortrait(data.gender)
+            person.portraitSprite = PersonUtils.getRandomPortrait(data.gender)
         } else if (data.portrait.isNotEmpty()) {
             person.portraitSprite = data.portrait
         }

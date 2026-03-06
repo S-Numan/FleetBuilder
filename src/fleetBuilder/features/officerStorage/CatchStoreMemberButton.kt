@@ -10,10 +10,9 @@ import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
-import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
-import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.util.*
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse

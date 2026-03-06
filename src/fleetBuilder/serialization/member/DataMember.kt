@@ -3,6 +3,7 @@ package fleetBuilder.serialization.member
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.DataPerson.buildPerson
 import fleetBuilder.serialization.person.DataPerson.filterParsedPersonData
@@ -13,8 +14,7 @@ import fleetBuilder.serialization.variant.DataVariant.buildVariant
 import fleetBuilder.serialization.variant.DataVariant.filterParsedVariantData
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.serialization.variant.DataVariant.validateAndCleanVariantData
-import fleetBuilder.serialization.MissingElements
-import fleetBuilder.util.VariantLib
+import fleetBuilder.util.api.VariantUtils
 
 object DataMember {
     data class ParsedMemberData(
@@ -101,7 +101,7 @@ object DataMember {
         val variant = if (data.variantData != null)
             buildVariant(data.variantData)
         else
-            VariantLib.createErrorVariant()
+            VariantUtils.createErrorVariant()
 
         val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)
 
@@ -113,10 +113,11 @@ object DataMember {
         else
             member.repairTracker.cr = member.repairTracker.maxCR
 
-
         // Officer
         if (data.personData != null)
             member.captain = buildPerson(data.personData)
+
+        member.setStatUpdateNeeded(true)
 
         return member
     }

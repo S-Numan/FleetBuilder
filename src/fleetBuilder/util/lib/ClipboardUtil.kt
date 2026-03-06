@@ -1,7 +1,6 @@
 package fleetBuilder.util.lib
 
 import fleetBuilder.serialization.SerializationUtils.getJSONFromStringSafe
-import fleetBuilder.util.FBMisc
 import org.json.JSONObject
 import org.lwjgl.Sys
 import java.awt.Toolkit

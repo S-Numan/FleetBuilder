@@ -13,7 +13,7 @@ import fleetBuilder.ui.customPanel.common.PopUpPanel
 import fleetBuilder.util.ReflectionMisc
 import starficz.getChildrenCopy
 
-class DialogUtil : EveryFrameCombatPlugin {
+class DialogUtils : EveryFrameCombatPlugin {
     companion object {
         fun initDialogToShow(
             dialog: CustomUIPanel,

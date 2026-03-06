@@ -6,20 +6,19 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Abilities
 import com.fs.starfarer.campaign.CampaignUIPersistentData
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.cargo.CargoSerialization
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
 import fleetBuilder.serialization.person.JSONPerson
-import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBTxt
+import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.optJSONArrayToStringList
 import fleetBuilder.util.safeInvoke
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
-import kotlin.collections.iterator
 
 object PlayerSaveUtil {
 
@@ -421,7 +420,7 @@ object PlayerSaveUtil {
         }
 
         if (handleFleet && compiled.fleet != null) {
-            FBMisc.replacePlayerFleetWith(
+            FleetUtils.replacePlayerFleetWith(
                 compiled.fleet!!, replacePlayer = false, aggression = compiled.aggressionDoctrine,
                 settings = FleetSettings().apply {
                     memberSettings.includeOfficer = handleOfficers

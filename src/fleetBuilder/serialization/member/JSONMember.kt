@@ -1,6 +1,7 @@
 package fleetBuilder.serialization.member
 
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.member.DataMember.buildMemberFull
 import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
@@ -9,7 +10,6 @@ import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.serialization.variant.JSONVariant.saveVariantToJson
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.roundToDecimals
-import fleetBuilder.serialization.MissingElements
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
 

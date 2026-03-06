@@ -4,16 +4,16 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.core.ModSettings
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.util.LookupUtil
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
-import fleetBuilder.util.VariantLib
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -227,7 +227,7 @@ class ShipDirectory(
     }
 
     fun makeVariantID(hullId: String, displayName: String): String {
-        var newVariantId = VariantLib.makeVariantID(hullId, displayName)
+        var newVariantId = makeVariantID(hullId, displayName)
 
         var iterate = 0
         // Ensure the variant ID is unique

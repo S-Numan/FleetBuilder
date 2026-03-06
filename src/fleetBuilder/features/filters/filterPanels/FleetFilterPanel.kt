@@ -3,7 +3,8 @@ package fleetBuilder.features.filters.filterPanels
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShieldAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.ui.*
+import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.*
 import starficz.*

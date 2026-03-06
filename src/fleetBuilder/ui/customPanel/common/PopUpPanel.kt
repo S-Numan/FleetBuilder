@@ -5,9 +5,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.util.FBMisc.closeCampaignDummyDialog
-import fleetBuilder.util.FBMisc.openCampaignDummyDialog
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
 
 open class PopUpPanel : ComposableUIPanel() {
@@ -44,7 +43,7 @@ open class PopUpPanel : ComposableUIPanel() {
 
         super.init(width = width, height = height, xOffset = xOffset, yOffset = yOffset, parent = parent)
 
-        openCampaignDummyDialog() // Only does so if in the campaign
+        CampaignUtils.openCampaignDummyDialog() // Only does so if in the campaign
 
         //if (Global.getCurrentState() == GameState.CAMPAIGN && !Global.getSector().isPaused)
         //    Global.getSector().isPaused = true
@@ -59,7 +58,7 @@ open class PopUpPanel : ComposableUIPanel() {
     }
 
     override fun applyExitScript() {
-        closeCampaignDummyDialog()
+        CampaignUtils.closeCampaignDummyDialog()
 
         super.applyExitScript()
     }

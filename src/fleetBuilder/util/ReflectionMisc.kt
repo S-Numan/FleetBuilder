@@ -15,10 +15,8 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.codex2.CodexDetailPanel
 import com.fs.starfarer.codex2.CodexDialog
-import com.fs.starfarer.combat.CombatState
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.coreui.refit.ModWidget
-import com.fs.starfarer.title.TitleScreenState
 import com.fs.state.AppDriver
 import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching

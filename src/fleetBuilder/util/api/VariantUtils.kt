@@ -1,164 +1,84 @@
-package fleetBuilder.util
+package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import com.fs.starfarer.api.loading.FighterWingSpecAPI
-import com.fs.starfarer.api.loading.HullModSpecAPI
-import com.fs.starfarer.api.loading.VariantSource
-import com.fs.starfarer.api.loading.WeaponSpecAPI
+import com.fs.starfarer.api.impl.SharedUnlockData
+import com.fs.starfarer.api.impl.campaign.ids.Tags
+import fleetBuilder.util.*
+import org.magiclib.kotlin.getBuildInBonusXP
 
-object VariantLib {
+object VariantUtils {
 
-    private lateinit var allDMods: Set<String>
-    private lateinit var allHiddenEverywhereMods: Set<String>
-    private lateinit var effectiveVariantMap: Map<String, List<ShipVariantAPI>>
-    private lateinit var hullIDSet: Set<String>
-    private lateinit var effectiveHullIDToVariant: Map<String, List<ShipVariantAPI>>
-    private lateinit var errorVariantHullID: String
-    private lateinit var IDToHullSpec: Map<String, ShipHullSpecAPI>
-    private lateinit var IDToWing: Map<String, FighterWingSpecAPI>
-    private lateinit var IDToWeapon: Map<String, WeaponSpecAPI>
-    private lateinit var IDToHullMod: Map<String, HullModSpecAPI>
-    private var init = false
-    fun Loaded() = init
-
-    fun onApplicationLoad() {
-        init = true
-
-        allDMods = Global.getSettings().allHullModSpecs
-            .asSequence()
-            .filter { it.hasTag("dmod") }
-            .map { it.id }
-            .toSet()
-
-        allHiddenEverywhereMods = Global.getSettings().allHullModSpecs
-            .asSequence()
-            .filter { it.isHiddenEverywhere }
-            .map { it.id }
-            .toSet()
-
-        //val variantIdMap = Global.getSettings().hullIdToVariantListMap//Does not contain every variant
-        val tempVariantMap: MutableMap<String, MutableList<ShipVariantAPI>> = mutableMapOf()
-        for (variantId in Global.getSettings().allVariantIds) {
-            val variant = Global.getSettings().getVariant(variantId) ?: continue
-            if (variant.source != VariantSource.STOCK) continue
-            val hullId = variant.hullSpec?.getEffectiveHullId() ?: continue
-
-            //Are modules automatically put in every variant?
-            /*variant.moduleSlots.forEach { slot ->
-                val moduleVariant = Global.getSettings().getVariant(variant.stationModules[slot].orEmpty())
-                if(moduleVariant != null) {
-                    variant.setModuleVariant(slot, moduleVariant)
-                } else {
-                    Global.getLogger(this.javaClass).error("module variant with id ${variant.stationModules[slot]} was null")
-                }
-            }*/
-
-            //getOrPut
-            //Checks if tempVariantMap contains the key hullId.
-            //    If yes: returns the existing list.
-            //    If no: creates a new mutableListOf() and puts it into the map under hullId
-            tempVariantMap.getOrPut(hullId) { mutableListOf() }.add(variant)
-        }
-
-        effectiveVariantMap = tempVariantMap.mapValues { it.value.toList() }
-
-        hullIDSet = Global.getSettings().allShipHullSpecs.map { it.hullId }.toSet()
-
-        val fullEffectiveHullIdToVariantIdMap: Map<String, List<String>> =
-            Global.getSettings().allVariantIds
-                .groupBy { variantId ->
-                    // Convert variant ID -> ShipVariantAPI -> hullSpec -> hullId
-                    Global.getSettings().getVariant(variantId).hullSpec.getEffectiveHullId()
-                }
-
-        effectiveHullIDToVariant = fullEffectiveHullIdToVariantIdMap.mapValues { (_, variantIDs) ->
-            variantIDs.mapNotNull { id ->
-                runCatching { Global.getSettings().getVariant(id) }.getOrNull()
-            }
-        }
-
-        errorVariantHullID = createErrorVariant().hullSpec.hullId
-
-        IDToHullSpec = Global.getSettings().allShipHullSpecs.associateBy { it.hullId }
-
-        IDToWing = Global.getSettings().allFighterWingSpecs.associateBy { it.id }
-        IDToHullMod = Global.getSettings().allHullModSpecs.associateBy { it.id }
-        IDToWeapon = Global.getSettings().actuallyAllWeaponSpecs.associateBy { it.weaponId }
-    }
-
-    fun getVariantsFromEffectiveHullID(hullId: String): List<ShipVariantAPI>? {
-        val variants = effectiveHullIDToVariant[hullId] ?: return null
-        return variants.map { it.clone() }
-    }
-
-    fun getHullSpec(hullId: String) = IDToHullSpec[hullId]
-    fun getHullIDSet(): Set<String> = IDToHullSpec.keys
-    fun getFighterWingSpec(wingId: String) = IDToWing[wingId]
-    fun getFighterWingIDSet(): Set<String> = IDToWing.keys
-    fun getWeaponSpec(weaponId: String) = IDToWeapon[weaponId]
-    fun getActuallyAllWeaponSpecIDSet(): Set<String> = IDToWeapon.keys
-    fun getHullModSpec(hullModId: String) = IDToHullMod[hullModId]
-    fun getHullModIDSet(): Set<String> = IDToHullMod.keys
-    fun getAllDMods(): Set<String> = allDMods
-    fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
-
-
-    fun getCoreVariantsForEffectiveHullspec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
-        return effectiveVariantMap[hullSpec.getEffectiveHullId()].orEmpty()
-    }
-
-    //Is this needed? - Numan
-    //No - Future Numan
-    //fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
-
-    //Here sets the variant ID after a variant is saved.
-
-    /*val idIfNone = makeVariantID(member.variant)
-
-    var matchingVariant: ShipVariantAPI? = null
-
-    for (dir in LoadoutManager.getShipDirectories()) {
-        val hullspecVariants = getLoadoutVariantsForHullspec(dir.prefix, member.variant.hullSpec)
-        for (hullspecVariant in hullspecVariants) {
-            if (compareVariantContents(
-                    member.variant,
-                    hullspecVariant,
-                    CompareOptions(tags = false)
-                )
-            ) {//If the variants are equal
-                matchingVariant = hullspecVariant
-                break
-            }
-        }
-        if (matchingVariant != null)
-            break
-    }
-
-    if (matchingVariant == null) { // If not matching loadout variants
-        matchingVariant = getCoreVariantsForEffectiveHullspec(member.hullSpec).find { candidate -> // Try looking in the base game?
-            compareVariantContents(candidate, member.variant, CompareOptions(tags = false))
+    // Returns full amount of xp if this hullmod were to be added to this variant
+    fun getHullModBuildInBonusXP(
+        variant: ShipVariantAPI,
+        modID: String,
+    ): Float {
+        val defaultBonusXP = Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()
+        if (variant.hullSpec.builtInMods.contains(modID)) {
+            return defaultBonusXP
+        } else {
+            val sMod = Global.getSettings().getHullModSpec(modID)
+            return defaultBonusXP * sMod.getBuildInBonusXP(variant.hullSize) // getBuildInBonusXP returns a fraction
         }
     }
 
-    member.variant.hullVariantId = when {
-        matchingVariant != null -> {
-            member.variant.moduleSlots.forEach { slot ->
-                member.variant.getModuleVariant(slot).hullVariantId =
-                    matchingVariant.getModuleVariant(slot).hullVariantId
-            }
-            matchingVariant.hullVariantId
+    fun isVariantKnownToPlayer(variant: ShipVariantAPI): Boolean {
+        if (variant.hullSpec.hasTag("codex_unlockable") && !SharedUnlockData.get().isPlayerAwareOfShip(variant.hullSpec.hullId)) {
+            return false
         }
+        if (!variant.hullSpec.hasTag("codex_unlockable") && (variant.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
+                    || variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hasTag(Tags.HIDE_IN_CODEX))
+        ) {
+            return false
+        }
+        return true
+    }
 
-        else -> {
-            member.variant.moduleSlots.forEach { slot ->
-                member.variant.getModuleVariant(slot).hullVariantId = "${idIfNone}_$slot"
-            }
-            idIfNone
+    fun makeVariantID(variant: ShipVariantAPI): String {
+        val hullId = variant.hullSpec.getCompatibleDLessHullId(true)
+        return makeVariantID(hullId, variant.displayName)
+    }
+
+    fun makeVariantID(hullId: String, displayName: String): String {
+        val cleanName = displayName
+            .replace(" ", "_")                       // replace spaces with underscores
+            .replace(Regex("[^A-Za-z0-9_-]"), "")   // remove anything not a-z, A-Z, 0-9, dash, or underscore
+            .trim('.')                                          // remove leading/trailing dots
+            .trim()                                                     // remove leading/trailing whitespace
+
+        return "${hullId}_$cleanName"
+    }
+
+    private const val errorTag = "FB_ERR"
+    fun getFBVariantErrorTag() = errorTag
+
+    fun createErrorVariant(displayName: String = ""): ShipVariantAPI {
+        var tempVariant: ShipVariantAPI? = null
+        try {
+            tempVariant = Global.getSettings().getVariant(Global.getSettings().getString("errorShipVariant"))
+        } catch (_: Exception) {
         }
-    }*/
-    //}
+        if (tempVariant == null)
+            tempVariant = Global.getSettings().getVariant(Global.getSettings().allVariantIds.first())
+        if (tempVariant == null) throw Exception("No variants anywhere? How?")
+
+        tempVariant = tempVariant.clone()
+
+        if (displayName.isNotEmpty())
+            tempVariant.setVariantDisplayName("ERR:$displayName")
+        else
+            tempVariant.setVariantDisplayName("ERROR")
+
+        tempVariant.addTag(errorTag)
+
+        return tempVariant
+    }
+
+    fun isErrorVariant(variant: ShipVariantAPI): Boolean { // TODO, use this instead
+        return variant.hasTag(errorTag)
+    }
 
     data class CompareOptions(
         val flux: Boolean = true,
@@ -321,6 +241,9 @@ object VariantLib {
         insertVariant2: ShipVariantAPI,
         options: CompareOptions = CompareOptions(),
     ): Boolean {
+        val allDMods = LookupUtil.getAllDMods()
+        val allHiddenEverywhereMods = LookupUtil.getAllHiddenEverywhereMods()
+
         val variant1 = insertVariant1.clone()
         val variant2 = insertVariant2.clone()
 
@@ -375,7 +298,7 @@ object VariantLib {
         return variantModsEqual
     }
 
-    fun processSModsForComparison(variant: ShipVariantAPI, convert: Boolean) {
+    internal fun processSModsForComparison(variant: ShipVariantAPI, convert: Boolean) {
         val sModsCopy = (variant.sMods + variant.sModdedBuiltIns).toSet()
         sModsCopy.forEach { sMod ->
             val isBuiltIn = sMod in variant.hullSpec.builtInMods
@@ -384,52 +307,5 @@ object VariantLib {
                 variant.addMod(sMod)
             }
         }
-    }
-
-    fun makeVariantID(variant: ShipVariantAPI): String {
-        val hullId = variant.hullSpec.getCompatibleDLessHullId(true)
-        return makeVariantID(hullId, variant.displayName)
-    }
-
-    fun makeVariantID(hullId: String, displayName: String): String {
-        val cleanName = displayName
-            .replace(" ", "_")                       // replace spaces with underscores
-            .replace(Regex("[^A-Za-z0-9_-]"), "")   // remove anything not a-z, A-Z, 0-9, dash, or underscore
-            .trim('.')                                          // remove leading/trailing dots
-            .trim()                                                     // remove leading/trailing whitespace
-
-        return "${hullId}_$cleanName"
-    }
-
-    const val errorTag = "FB_ERR"
-
-    fun createErrorVariant(displayName: String = ""): ShipVariantAPI {
-        var tempVariant: ShipVariantAPI? = null
-        try {
-            tempVariant = Global.getSettings().getVariant(Global.getSettings().getString("errorShipVariant"))
-        } catch (_: Exception) {
-        }
-        if (tempVariant == null)
-            tempVariant = Global.getSettings().getVariant(Global.getSettings().allVariantIds.first())
-        if (tempVariant == null) throw Exception("No variants anywhere? How?")
-
-        tempVariant = tempVariant.clone()
-
-        if (displayName.isNotEmpty())
-            tempVariant.setVariantDisplayName("ERR:$displayName")
-        else
-            tempVariant.setVariantDisplayName("ERROR")
-
-        tempVariant.addTag(errorTag)
-
-        return tempVariant
-    }
-
-    fun isErrorVariant(variant: ShipVariantAPI): Boolean {
-        return variant.hasTag(errorTag)
-    }
-
-    fun getErrorVariantHullID(): String {
-        return errorVariantHullID
     }
 }

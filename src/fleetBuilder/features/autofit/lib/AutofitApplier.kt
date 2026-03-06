@@ -12,14 +12,12 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.*
-import fleetBuilder.util.FBMisc.getHullModBonusXP
 import fleetBuilder.util.FBMisc.sModHandlerTemp
-import fleetBuilder.util.FBMisc.spendStoryPoint
-import fleetBuilder.util.VariantLib
+import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
+import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
 import java.awt.Color
 import java.util.*
 
@@ -176,7 +174,7 @@ object AutofitApplier {
                             sModsToApply.toList().forEach {
                                 if (!itemManager.isRequiredItemAvailable(it, ship.fleetMember, baseVariant, market)) {
                                     sModsToApply.remove(it)
-                                    bonusXpToGrant -= getHullModBonusXP(baseVariant, it)
+                                    bonusXpToGrant -= getHullModBuildInBonusXP(baseVariant, it)
                                     DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
                                     return@forEach
                                 }
@@ -275,7 +273,7 @@ object AutofitApplier {
             //    return@forEach
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
-            if (dontForceClearDMods && VariantLib.getAllDMods().contains(mod))
+            if (dontForceClearDMods && LookupUtil.getAllDMods().contains(mod))
                 return@forEach
 
             to.completelyRemoveMod(mod)

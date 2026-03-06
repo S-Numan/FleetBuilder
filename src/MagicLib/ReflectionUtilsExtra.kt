@@ -14,7 +14,8 @@ internal object ReflectionUtilsExtra {
         val constructors = instance.javaClass.declaredConstructors as Array<*>
         // Iterate over each constructor and check its parameter types.
         for (ctor in constructors) {
-            val params = getConstructorParametersHandle.invoke(ctor) as Array<Class<*>>
+            @Suppress("UNCHECKED_CAST")
+            val params = getConstructorParametersHandle.invoke(ctor) as? Array<Class<*>>
             if (params.contentEquals(parameterTypes)) return true
         }
         return false

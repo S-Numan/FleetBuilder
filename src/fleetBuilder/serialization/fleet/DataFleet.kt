@@ -7,6 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.core.ModSettings
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.SecondInCommandSerialization.buildSecondInCommandData
 import fleetBuilder.serialization.fleet.SecondInCommandSerialization.getSecondInCommandDataFromFleet
 import fleetBuilder.serialization.fleet.SecondInCommandSerialization.validateSecondInCommandData
@@ -21,9 +22,9 @@ import fleetBuilder.serialization.person.DataPerson.filterParsedPersonData
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.serialization.person.DataPerson.validateAndCleanPersonData
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.serialization.MissingElements
-import fleetBuilder.util.VariantLib
-import fleetBuilder.util.VariantLib.getErrorVariantHullID
+import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtil.getErrorVariantHullID
+import fleetBuilder.util.api.VariantUtils
 import java.util.*
 
 object DataFleet {
@@ -180,7 +181,7 @@ object DataFleet {
             }
 
             // If hull ID does not exist: log missing and maybe replace with error variant
-            if (variantData.hullId !in VariantLib.getHullIDSet()) {
+            if (variantData.hullId !in LookupUtil.getHullIDSet()) {
                 missing.hullIds.add(variantData.hullId)
 
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
@@ -195,7 +196,7 @@ object DataFleet {
             }
 
             // Error-tagged variant
-            if (VariantLib.errorTag in variantData.tags) {
+            if (VariantUtils.getFBVariantErrorTag() in variantData.tags) {
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
             }
 

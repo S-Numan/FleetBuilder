@@ -1,6 +1,6 @@
 package fleetBuilder.console
 
-import fleetBuilder.ui.customPanel.DialogUtil
+import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommandListener
@@ -32,7 +32,7 @@ class CommandIntercept : CommandListener {
         interceptedBy: CommandListener?
     ) {
         if (command.lowercase() == "forcedismissdialog") {
-            if (DialogUtil.forceCloseAllDialogs()) {
+            if (DialogUtils.forceCloseAllDialogs()) {
                 Console.showMessage("Forcibly closed CustomUIPanel dialog")
             }
         }

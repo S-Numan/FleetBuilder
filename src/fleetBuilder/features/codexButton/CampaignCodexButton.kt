@@ -11,29 +11,18 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.CutStyle
-import com.fs.starfarer.api.ui.TooltipMakerAPI
-import com.fs.starfarer.api.ui.UIComponentAPI
+import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.createHullVariant
 import org.lwjgl.input.Keyboard
-import starficz.Font
-import starficz.addButton
-import starficz.addTooltip
-import starficz.height
-import starficz.onClick
-import starficz.width
-import starficz.xAlignOffset
-import starficz.yAlignOffset
+import starficz.*
 
 class CampaignCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {

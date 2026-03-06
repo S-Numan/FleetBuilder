@@ -6,7 +6,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import fleetBuilder.core.ModSettings
 import org.magiclib.util.StringCreator
 import java.awt.Color
-import java.util.Locale
+import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

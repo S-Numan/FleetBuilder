@@ -3,11 +3,7 @@ package fleetBuilder.features.filters.filterPanels
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.PositionAPI
-import com.fs.starfarer.api.ui.TextFieldAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
+import com.fs.starfarer.api.ui.*
 import org.lwjgl.input.Mouse
 
 abstract class BaseFilterPanel(

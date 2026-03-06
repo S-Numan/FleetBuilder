@@ -6,14 +6,14 @@ import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.SubmarketPlugin
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.impl.campaign.submarkets.LocalResourcesSubmarketPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.ui.customPanel.DialogUtil
-import fleetBuilder.features.hotkeyHandler.Dialogs
+import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
@@ -38,7 +38,7 @@ class CargoAutoManagerOpener : CampaignInputListener {
     }
 
     private fun handleCargoMouseEvents(event: InputEventAPI, sector: SectorAPI) {
-        if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtil.Companion.isPopUpPanelOpen()) return
+        if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtils.Companion.isPopUpPanelOpen()) return
 
         val cargoPanel = ReflectionMisc.getCargoPanel() ?: return
 
@@ -62,7 +62,7 @@ class CargoAutoManagerOpener : CampaignInputListener {
                 if (!submarketPlugin.isFreeTransfer) return@forEach//Temporary to avoid cheating when WIP
                 if (submarketPlugin is LocalResourcesSubmarketPlugin) return@forEach
 
-                Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket)
+                openSubmarketCargoAutoManagerDialog(selectedSubmarket)
 
                 event.consume()
             }
@@ -73,4 +73,11 @@ class CargoAutoManagerOpener : CampaignInputListener {
 
     override fun processCampaignInputPostCore(events: List<InputEventAPI?>?) {}
 
+}
+
+fun openSubmarketCargoAutoManagerDialog(
+    selectedSubmarket: SubmarketAPI,
+    instantUp: Boolean = false
+) {
+    CargoAutoManageUIPlugin(selectedSubmarket, 1000f, 1000f, instantUp).getPanel()
 }

@@ -1,6 +1,5 @@
 package fleetBuilder.features.commanderShuttle
 
-import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.LocationAPI
 import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener

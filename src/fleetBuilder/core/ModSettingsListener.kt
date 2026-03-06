@@ -2,7 +2,7 @@ package fleetBuilder.core
 
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
 import fleetBuilder.core.shipDirectory.ShipDirectoryService.generatePrefixes
-import fleetBuilder.util.VariantLib
+import fleetBuilder.util.LookupUtil
 import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
 import lunalib.lunaSettings.LunaSettings.getString
@@ -63,7 +63,7 @@ internal class ModSettingsListener : LunaSettingsListener {
 
             ModSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
 
-            if (VariantLib.Loaded())
+            if (LookupUtil.Loaded())
                 ShipDirectoryService.loadAllDirectories()//Reload the LoadoutManager
         } else {
             ModSettings.setUnassignPlayer(false)

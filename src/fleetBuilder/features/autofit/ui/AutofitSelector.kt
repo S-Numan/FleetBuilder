@@ -348,8 +348,10 @@ internal object AutofitSelector {
         tempShipPreview.safeInvoke("setVariant", variant)
         tempShipPreview.safeInvoke("overrideVariant", variant)
         tempShipPreview.safeInvoke("prepareShip")
-        val ships = tempShipPreview.safeInvoke("getShips") as Array<ShipAPI>
-        val ship = ships.getOrNull(0) ?: return null
+
+        @Suppress("UNCHECKED_CAST")
+        val ships = tempShipPreview.safeInvoke("getShips") as? Array<ShipAPI>
+        val ship = ships?.getOrNull(0) ?: return null
         return ship.exactBounds?.segments
     }
 

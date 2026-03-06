@@ -5,7 +5,6 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
-import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
@@ -14,17 +13,17 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.mission.FleetSide
-import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
-import fleetBuilder.serialization.member.DataMember
-import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.ui.customPanel.DialogUtil
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.FBMisc
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.serialization.variant.DataVariant
+import fleetBuilder.ui.customPanel.DialogUtils
+import fleetBuilder.util.FBMisc
+import fleetBuilder.util.FBTxt
+import fleetBuilder.util.ReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector2f
@@ -59,8 +58,8 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
-                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtil.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
-                            Dialogs.createDevModeDialog()
+                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
+                            hotkeyHandlerDialogs.createDevModeDialog()
                             event.consume()
                             continue
                         }
@@ -70,7 +69,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                             event.consume()
                             continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
-                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtil.isPopUpPanelOpen())
+                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtils.isPopUpPanelOpen())
                                 if (FBMisc.handleRefitPaste())
                                     event.consume()
 

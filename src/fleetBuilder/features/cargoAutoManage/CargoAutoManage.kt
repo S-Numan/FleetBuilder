@@ -2,7 +2,6 @@ package fleetBuilder.features.cargoAutoManage
 
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
-import kotlin.collections.get
 
 data class CargoAutoManage(
     var applyOnInteraction: Boolean = true,

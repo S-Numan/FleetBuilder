@@ -13,26 +13,28 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
-import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.ModSettings.commandShuttleId
-import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.features.commanderShuttle.CommanderShuttle
+import fleetBuilder.features.hotkeyHandler.hotkeyHandlerDialogs.createDevModeDialog
+import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.JSONMember.saveMemberToJson
 import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
-import fleetBuilder.util.*
-import fleetBuilder.features.hotkeyHandler.Dialogs.createDevModeDialog
-import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.ui.customPanel.DialogUtil
+import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.fleetPaste
 import fleetBuilder.util.FBMisc.handleRefitCopy
 import fleetBuilder.util.FBMisc.handleRefitPaste
+import fleetBuilder.util.FBTxt
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
+import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.lib.ClipboardUtil
+import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
@@ -154,7 +156,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handleKeyDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         if (!event.isCtrlDown) return
-        if (DialogUtil.isPopUpPanelOpen()) return
+        if (DialogUtils.isPopUpPanelOpen()) return
 
         when (event.eventValue) {
             Keyboard.KEY_D -> handleDevModeHotkey(event, sector)
@@ -171,7 +173,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
-            Dialogs.createSaveTransferDialog()
+            hotkeyHandlerDialogs.createSaveTransferDialog()
         }
     }
 
@@ -185,12 +187,12 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 return
             }
 
-            Dialogs.createOfficerCreatorDialog()
+            hotkeyHandlerDialogs.createOfficerCreatorDialog()
         }
     }
 
     private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtil.isPopUpPanelOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
 
         val tab = ui.getActualCurrentTab() ?: return
         val isCtrlLmb = event.isCtrlDown && event.isLMBDownEvent

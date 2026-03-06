@@ -2,7 +2,6 @@ package fleetBuilder.features.hotkeyHandler
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.SectorAPI
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.ids.Factions
@@ -14,26 +13,21 @@ import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
 import fleetBuilder.features.autofit.ui.AutofitSpec
-import fleetBuilder.features.cargoAutoManage.CargoAutoManageUIPlugin
+import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.PlayerSaveUtil
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
-import fleetBuilder.ui.customPanel.common.BasePopUpPanel
-import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.FBMisc
-import fleetBuilder.util.FBTxt
-import fleetBuilder.serialization.PlayerSaveUtil
-import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.addNumericTextField
-import fleetBuilder.util.addToggle
-import fleetBuilder.util.getEffectiveHull
-import fleetBuilder.util.lib.ClipboardUtil
-import fleetBuilder.core.shipDirectory.ShipDirectoryService
-import fleetBuilder.serialization.MissingElements
-import fleetBuilder.util.VariantLib
 import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.ui.customPanel.common.BasePopUpPanel
+import fleetBuilder.util.*
+import fleetBuilder.util.api.FleetUtils
+import fleetBuilder.util.api.VariantUtils
+import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
 import starficz.addTooltip
 import starficz.height
@@ -41,7 +35,7 @@ import starficz.onClick
 import starficz.width
 import java.awt.Color
 
-object Dialogs {
+object hotkeyHandlerDialogs {
     fun pasteFleetIntoPlayerFleetDialog(
         data: DataFleet.ParsedFleetData,
         validatedData: DataFleet.ParsedFleetData,
@@ -62,7 +56,7 @@ object Dialogs {
                         if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else "", 0f
             )
 
-            val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
+            val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag()) }
             if (missingHullCount > 0)
                 ui.addPara("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods", 0f)
 
@@ -100,7 +94,7 @@ object Dialogs {
                 reportMissingElementsIfAny(missing)
 
                 if (fulfillNeeds)
-                    FBMisc.fulfillPlayerFleet()
+                    FleetUtils.fulfillPlayerFleet()
 
                 ReflectionMisc.updateFleetPanelContents()
 
@@ -120,7 +114,7 @@ object Dialogs {
                 settings.includeCommanderAsOfficer = incCommanderAsOfficer
                 settings.includeAggression = setAggression
 
-                val replaceMissing = FBMisc.replacePlayerFleetWith(
+                val replaceMissing = FleetUtils.replacePlayerFleetWith(
                     data,
                     (replacePlayerWithCommander && settings.includeCommanderAsOfficer),
                     settings
@@ -129,7 +123,7 @@ object Dialogs {
                 reportMissingElementsIfAny(replaceMissing)
 
                 if (fulfillNeeds)
-                    FBMisc.fulfillPlayerFleet()
+                    FleetUtils.fulfillPlayerFleet()
 
                 ReflectionMisc.updateFleetPanelContents()
 
@@ -201,13 +195,6 @@ object Dialogs {
 
     }
 
-    fun openSubmarketCargoAutoManagerDialog(
-        selectedSubmarket: SubmarketAPI,
-        instantUp: Boolean = false
-    ) {
-        CargoAutoManageUIPlugin(selectedSubmarket, 1000f, 1000f, instantUp).getPanel()
-    }
-
     fun createDevModeDialog() {
         val dialog = BasePopUpPanel("Dev Options")
 
@@ -237,7 +224,7 @@ object Dialogs {
                         if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else "",
                 0f
             )
-            val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantLib.errorTag) }
+            val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag()) }
             if (missingHullCount > 0)
                 ui.addPara("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods", 0f)
 
@@ -278,7 +265,7 @@ object Dialogs {
                 reportMissingElementsIfAny(missing)
 
                 if (repairAndSetMaxCR)
-                    FBMisc.fullFleetRepair(fleet.fleetData)
+                    FleetUtils.fullFleetRepair(fleet.fleetData)
 
                 sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
                 Global.getSector().campaignUI.showInteractionDialog(fleet)

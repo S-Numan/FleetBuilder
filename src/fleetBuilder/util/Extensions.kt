@@ -13,7 +13,8 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.ui.*
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.ui.common.ObservedTextField
-import fleetBuilder.util.VariantLib.getAllDMods
+import fleetBuilder.util.LookupUtil.getAllDMods
+import fleetBuilder.util.api.VariantUtils
 import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
@@ -103,9 +104,9 @@ fun ShipVariantAPI.completelyRemoveMod(modId: String) {
 
 fun ShipVariantAPI.isEquivalentTo(
     other: ShipVariantAPI,
-    options: VariantLib.CompareOptions = VariantLib.CompareOptions()
+    options: VariantUtils.CompareOptions = VariantUtils.CompareOptions()
 ): Boolean {
-    return VariantLib.compareVariantContents(
+    return VariantUtils.compareVariantContents(
         this,
         other,
         options
@@ -322,7 +323,7 @@ fun PersonAPI.isGenericOfficer(): Boolean {
 fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
     return run {
         val effectiveHullID = hull.getEffectiveHullId()
-        val variants = VariantLib.getVariantsFromEffectiveHullID(effectiveHullID)
+        val variants = LookupUtil.getVariantsFromEffectiveHullID(effectiveHullID)
 
         val exactId = hull.hullId
         val dLessId = hull.getCompatibleDLessHullId()
@@ -347,7 +348,7 @@ fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
         emptyVariant
     }.getOrNull() ?: run {
         DisplayMessage.showError("Failed to find HULL variant for '${hull.hullId}'")
-        VariantLib.createErrorVariant("MISSINGHULLVARIANT:${hull.hullId}")
+        VariantUtils.createErrorVariant("MISSINGHULLVARIANT:${hull.hullId}")
     }
 }
 

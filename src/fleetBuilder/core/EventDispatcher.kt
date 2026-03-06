@@ -19,7 +19,7 @@ import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.serialization.PlayerSaveUtil
-import fleetBuilder.util.VariantLib
+import fleetBuilder.util.LookupUtil
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 
@@ -91,7 +91,7 @@ class EventDispatcher : EveryFrameScript {
     fun onApplicationLoad() {
         ModSettings.onApplicationLoad()
 
-        VariantLib.onApplicationLoad()
+        LookupUtil.onApplicationLoad()
 
         ShipDirectoryService.loadAllDirectories()
     }

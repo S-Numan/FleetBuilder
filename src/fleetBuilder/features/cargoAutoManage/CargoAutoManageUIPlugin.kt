@@ -11,14 +11,12 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.ui.customPanel.common.BasePopUpPanel
-import fleetBuilder.features.hotkeyHandler.Dialogs
 import fleetBuilder.ui.customPanel.common.CustomUIPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.addToggle
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import starficz.*
-import kotlin.text.iterator
 
 //The implementation of this is extremely scuffed, I am aware.
 
@@ -292,7 +290,7 @@ class CargoAutoManageUIPlugin(
             panelAPI.addPara("Click a cargo item to select it. Right click to cancel.")
 
             cargoItemSelector.onExit {
-                Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket)
+                openSubmarketCargoAutoManagerDialog(selectedSubmarket)
             }
         }
 
@@ -319,7 +317,7 @@ class CargoAutoManageUIPlugin(
 
                     unsetCargoAutoManage(selectedSubmarket)
 
-                    Dialogs.openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
+                    openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
                 }
             }
 

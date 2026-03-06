@@ -3,7 +3,6 @@ package fleetBuilder.console.commands
 import com.fs.starfarer.api.Global
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.toBoolean
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommandWithSuggestion
@@ -27,7 +26,7 @@ class RemoveSkill : BaseCommandWithSuggestion {
             Console.showMessage("Could not find skill_id with id '$skillIdInput'")
             return BaseCommand.CommandResult.ERROR
         }
-        
+
         val member = ReflectionMisc.getCurrentMemberInRefitTab()
         if (member == null) {
             Console.showMessage("Failed to get member in refit screen")

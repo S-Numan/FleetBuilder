@@ -2,17 +2,7 @@ package fleetBuilder.features.commanderShuttle
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.BattleAPI
-import com.fs.starfarer.api.campaign.CampaignEventListener
-import com.fs.starfarer.api.campaign.CampaignFleetAPI
-import com.fs.starfarer.api.campaign.CargoAPI
-import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin
-import com.fs.starfarer.api.campaign.InteractionDialogAPI
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin
-import com.fs.starfarer.api.campaign.JumpPointAPI
-import com.fs.starfarer.api.campaign.LocationAPI
-import com.fs.starfarer.api.campaign.PlayerMarketTransaction
-import com.fs.starfarer.api.campaign.SectorEntityToken
+import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.characters.AbilityPlugin
 import com.fs.starfarer.api.characters.PersonAPI
@@ -20,9 +10,9 @@ import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl
-import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.util.FBTxt
 import java.awt.Color
 
 class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {

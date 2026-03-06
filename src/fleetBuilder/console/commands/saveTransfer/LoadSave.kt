@@ -1,11 +1,11 @@
 package fleetBuilder.console.commands.saveTransfer
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
 import fleetBuilder.serialization.PlayerSaveUtil
-import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
 import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.util.FBTxt
+import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
 import org.json.JSONObject
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings

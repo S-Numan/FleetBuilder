@@ -5,7 +5,6 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
-import fleetBuilder.util.FBTxt
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.*

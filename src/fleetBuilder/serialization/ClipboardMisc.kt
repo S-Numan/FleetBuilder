@@ -5,17 +5,17 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.core.ModSettings
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.SerializationUtils.extractDataFromString
 import fleetBuilder.serialization.member.JSONMember
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.SerializationUtils.extractDataFromString
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.createHullVariant
 import fleetBuilder.util.lib.ClipboardUtil
-import fleetBuilder.util.VariantLib
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
@@ -28,7 +28,7 @@ object ClipboardMisc {
         }
 
         val variantToSave = variant.clone()
-        variantToSave.hullVariantId = VariantLib.makeVariantID(variantToSave)
+        variantToSave.hullVariantId = VariantUtils.makeVariantID(variantToSave)
 
         if (!shift) {
             val comp = CompressedVariant.saveVariantToCompString(

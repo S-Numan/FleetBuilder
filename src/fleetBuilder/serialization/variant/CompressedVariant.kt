@@ -2,6 +2,9 @@ package fleetBuilder.serialization.variant
 
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
+import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.serialization.GameModInfo
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
@@ -9,12 +12,9 @@ import fleetBuilder.serialization.SerializationUtils.weaponGroupSep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.serialization.variant.VariantMisc.getSourceModsFromVariant
-import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.util.LookupUtil
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.toBinary
-import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.serialization.MissingElements
-import fleetBuilder.util.VariantLib
 
 object CompressedVariant {
     @JvmOverloads
@@ -239,7 +239,7 @@ object CompressedVariant {
         compressedVariant = "$ver$compressedVariant"//Indicate structure version for compatibility with future compressed format changes
 
         if (includePrepend)
-            compressedVariant = "${data.displayName} ${VariantLib.getHullSpec(data.hullId)?.hullName} : $requiredMods" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
+            compressedVariant = "${data.displayName} ${LookupUtil.getHullSpec(data.hullId)?.hullName} : $requiredMods" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
 
         return compressedVariant
     }

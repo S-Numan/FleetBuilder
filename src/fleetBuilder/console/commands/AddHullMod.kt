@@ -1,12 +1,7 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.FBTxt
-import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.VariantLib
-import fleetBuilder.util.completelyRemoveMod
-import fleetBuilder.util.safeInvoke
-import fleetBuilder.util.toBoolean
+import fleetBuilder.util.*
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommandWithSuggestion
@@ -60,6 +55,6 @@ class AddHullMod : BaseCommandWithSuggestion {
     ): MutableList<String?> {
         if (parameter != 0) return ArrayList<String?>()
 
-        return VariantLib.getHullModIDSet().toMutableList()
+        return LookupUtil.getHullModIDSet().toMutableList()
     }
 }

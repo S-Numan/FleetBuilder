@@ -1,6 +1,6 @@
 package fleetBuilder.serialization.variant
 
-import fleetBuilder.util.VariantLib
+import fleetBuilder.util.LookupUtil
 
 object VariantMisc {
     fun getSourceModsFromVariant(
@@ -18,7 +18,7 @@ object VariantMisc {
         }
 
         //HullSpec
-        VariantLib.getHullSpec(data.hullId)?.let { hullSpec ->
+        LookupUtil.getHullSpec(data.hullId)?.let { hullSpec ->
             hullSpec.sourceMod?.let { sm ->
                 addSourceMod(sm.id, sm.name, sm.version)
             }
@@ -26,7 +26,7 @@ object VariantMisc {
 
         // HullMods
         for (mod in data.hullMods) {
-            VariantLib.getHullModSpec(mod)?.sourceMod?.let { sm ->
+            LookupUtil.getHullModSpec(mod)?.sourceMod?.let { sm ->
 
                 addSourceMod(sm.id, sm.name, sm.version)
             }
@@ -35,7 +35,7 @@ object VariantMisc {
         // Weapons
         for (group in data.weaponGroups) {
             group.weapons.forEach { (slot, weaponId) ->
-                VariantLib.getWeaponSpec(weaponId)?.sourceMod?.let { sm ->
+                LookupUtil.getWeaponSpec(weaponId)?.sourceMod?.let { sm ->
                     addSourceMod(sm.id, sm.name, sm.version)
                 }
             }
@@ -43,7 +43,7 @@ object VariantMisc {
 
         // Fighter Wings
         for (wing in data.wings) {
-            VariantLib.getFighterWingSpec(wing)?.sourceMod?.let { sm ->
+            LookupUtil.getFighterWingSpec(wing)?.sourceMod?.let { sm ->
                 addSourceMod(sm.id, sm.name, sm.version)
             }
         }

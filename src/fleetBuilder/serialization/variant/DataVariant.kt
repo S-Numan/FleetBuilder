@@ -8,11 +8,12 @@ import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.serialization.MissingElements
+import fleetBuilder.util.LookupUtil
 import fleetBuilder.util.allDMods
+import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.createHullVariant
 import fleetBuilder.util.getCompatibleDLessHullId
-import fleetBuilder.serialization.MissingElements
-import fleetBuilder.util.VariantLib
 
 object DataVariant {
 
@@ -163,8 +164,8 @@ object DataVariant {
         fun shouldKeepMod(modId: String): Boolean {
             if (ModSettings.getHullModsToNeverSave().contains(modId)) return false
             if (modId in settings.excludeHullModsWithID) return false
-            if (!settings.includeDMods && VariantLib.getAllDMods().contains(modId)) return false
-            if (!settings.includeHiddenMods && VariantLib.getAllHiddenEverywhereMods().contains(modId)) return false
+            if (!settings.includeDMods && LookupUtil.getAllDMods().contains(modId)) return false
+            if (!settings.includeHiddenMods && LookupUtil.getAllHiddenEverywhereMods().contains(modId)) return false
             return true
         }
 
@@ -227,7 +228,7 @@ object DataVariant {
         missing: MissingElements = MissingElements(),
     ): ParsedVariantData {
         // --- Hull ID ---
-        val validHullId = if (data.hullId in VariantLib.getHullIDSet()) {
+        val validHullId = if (data.hullId in LookupUtil.getHullIDSet()) {
             data.hullId
         } else {
             missing.hullIds.add(data.hullId)
@@ -245,7 +246,7 @@ object DataVariant {
         }
 
         // --- HullMods ---
-        val allHullMods = VariantLib.getHullModIDSet()
+        val allHullMods = LookupUtil.getHullModIDSet()
 
         val cleanHullMods = data.hullMods.filter { modId ->
             if (modId !in allHullMods) {
@@ -276,7 +277,7 @@ object DataVariant {
         }
 
         // --- Wings ---
-        val allWingIds = VariantLib.getFighterWingIDSet()
+        val allWingIds = LookupUtil.getFighterWingIDSet()
         val cleanWings = data.wings.mapIndexed { _, wingId ->
             if (wingId !in allWingIds && wingId.isNotBlank()) {
                 missing.wingIds.add(wingId)
@@ -285,7 +286,7 @@ object DataVariant {
         }
 
         // --- Weapon Groups ---
-        val allWeapons = VariantLib.getActuallyAllWeaponSpecIDSet()
+        val allWeapons = LookupUtil.getActuallyAllWeaponSpecIDSet()
         val cleanWeaponGroups = data.weaponGroups.map { wg ->
             val cleanedSlots = wg.weapons.filter { (_, weaponId) ->
                 val valid = weaponId in allWeapons
@@ -303,7 +304,7 @@ object DataVariant {
         }
 
         val cleanedData = data.copy(
-            hullId = validHullId ?: VariantLib.getErrorVariantHullID(),
+            hullId = validHullId ?: LookupUtil.getErrorVariantHullID(),
             variantId = fixedVariantId,
             displayName = fixedDisplayName,
             hullMods = cleanHullMods.toList(),
@@ -313,7 +314,7 @@ object DataVariant {
             wings = cleanWings,
             weaponGroups = cleanWeaponGroups,
             moduleVariants = cleanedModuleVariants,
-            tags = if (validHullId == null) (data.tags + VariantLib.errorTag) else data.tags
+            tags = if (validHullId == null) (data.tags + VariantUtils.getFBVariantErrorTag()) else data.tags
         )
 
         return cleanedData
@@ -337,7 +338,7 @@ object DataVariant {
 
         data.tags.forEach { loadout.addTag(it) }
 
-        if (loadout.hasTag(VariantLib.errorTag))
+        if (loadout.hasTag(VariantUtils.getFBVariantErrorTag()))
             return loadout
 
         //Remove default DMods
@@ -408,7 +409,7 @@ object DataVariant {
                 loadout.moduleSlots == null // This isn't meant to be used, it is only meant to check for a crash by accessing loadout.moduleSlots
             } catch (_: Exception) {
                 showError("${loadout.hullSpec.hullId} Does not contain module slot $slotId. Removing variant to avoid crash")
-                return VariantLib.createErrorVariant("BAD_MODULE_SLOT:{$slotId}")
+                return VariantUtils.createErrorVariant("BAD_MODULE_SLOT:{$slotId}")
             }
         }
 

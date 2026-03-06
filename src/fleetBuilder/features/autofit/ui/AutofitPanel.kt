@@ -15,25 +15,25 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.ModSettings.getDefaultExcludeVariantTags
-import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.serialization.variant.DataVariant.copyVariant
-import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.*
-import fleetBuilder.util.FBMisc.sModHandlerTemp
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.shipDirectory.ShipDirectory
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
 import fleetBuilder.core.shipDirectory.ShipDirectoryService.deleteLoadoutVariant
 import fleetBuilder.core.shipDirectory.ShipDirectoryService.getCoreAutofitSpecsForShip
 import fleetBuilder.core.shipDirectory.ShipDirectoryService.getLoadoutAutofitSpecsForShip
-import fleetBuilder.serialization.MissingElements
-import fleetBuilder.core.shipDirectory.ShipDirectory
-import fleetBuilder.util.VariantLib.CompareOptions
-import fleetBuilder.util.VariantLib.compareVariantContents
-import fleetBuilder.util.VariantLib.compareVariantHullMods
-import fleetBuilder.util.VariantLib.getAllDMods
-import fleetBuilder.util.VariantLib.processSModsForComparison
 import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.ClipboardMisc
+import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.variant.DataVariant.copyVariant
+import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.customPanel.common.BasePopUpPanel
+import fleetBuilder.util.*
+import fleetBuilder.util.FBMisc.sModHandlerTemp
+import fleetBuilder.util.LookupUtil.getAllDMods
+import fleetBuilder.util.api.VariantUtils
+import fleetBuilder.util.api.VariantUtils.compareVariantContents
+import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
+import fleetBuilder.util.api.VariantUtils.processSModsForComparison
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
@@ -42,7 +42,6 @@ import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import starficz.*
 import java.awt.Color
-import kotlin.collections.iterator
 
 
 /**
@@ -741,7 +740,7 @@ internal object AutofitPanel {
         var equalDefault = compareVariantContents(
             variant,
             baseVariant,
-            CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true, wings = true)
+            VariantUtils.CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true, wings = true)
         )
         var outline = true
 
@@ -756,7 +755,7 @@ internal object AutofitPanel {
             if (compareVariantContents(
                     variant,
                     baseVariantClone,
-                    CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true, wings = true)
+                    VariantUtils.CompareOptions.allFalse(modules = true, hullMods = true, convertSModsToRegular = true, weapons = true, wings = true)
                 )
             ) {
                 equalDefault = true
@@ -774,12 +773,12 @@ internal object AutofitPanel {
             val diffWeaponGroups = !compareVariantContents(
                 variant,
                 baseVariant,
-                CompareOptions.allFalse(modules = true, weaponGroups = true)
+                VariantUtils.CompareOptions.allFalse(modules = true, weaponGroups = true)
             )
             val diffFluxStats = !compareVariantContents(
                 variant,
                 baseVariant,
-                CompareOptions.allFalse(modules = true, flux = true)
+                VariantUtils.CompareOptions.allFalse(modules = true, flux = true)
             )
             if (diffFluxStats) {
                 selectorPlugin.diffFluxStats = true
@@ -816,7 +815,7 @@ internal object AutofitPanel {
         val equalMods = compareVariantHullMods(
             compareVariant,
             compareBaseVariant,
-            CompareOptions(builtInHullMods = false, hiddenHullMods = false)
+            VariantUtils.CompareOptions(builtInHullMods = false, hiddenHullMods = false)
         )
 
         var equalSMods = false
@@ -827,7 +826,7 @@ internal object AutofitPanel {
             equalSMods = compareVariantHullMods(
                 compareVariant,
                 compareBaseVariantTemp,
-                CompareOptions(builtInHullMods = false, hiddenHullMods = false)
+                VariantUtils.CompareOptions(builtInHullMods = false, hiddenHullMods = false)
             )
         }
         if (compareVariant.sMods.isNotEmpty()) {
@@ -836,7 +835,7 @@ internal object AutofitPanel {
             unequalSMods = compareVariantHullMods(
                 compareVariantTemp,
                 compareBaseVariant,
-                CompareOptions(builtInHullMods = false, hiddenHullMods = false)
+                VariantUtils.CompareOptions(builtInHullMods = false, hiddenHullMods = false)
             )
         }
 
@@ -847,13 +846,13 @@ internal object AutofitPanel {
                 unequalDMod = compareVariantHullMods(
                     compareVariant,
                     compareBaseVariant,
-                    CompareOptions(builtInHullMods = false, hiddenHullMods = false)
+                    VariantUtils.CompareOptions(builtInHullMods = false, hiddenHullMods = false)
                 )
             } else {
                 unequalDMod = compareVariantHullMods(
                     compareVariant,
                     compareBaseVariant,
-                    CompareOptions(builtInHullMods = false, hiddenHullMods = false, convertSModsToRegular = true)
+                    VariantUtils.CompareOptions(builtInHullMods = false, hiddenHullMods = false, convertSModsToRegular = true)
                 )
             }
         }
