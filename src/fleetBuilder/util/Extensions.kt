@@ -9,6 +9,7 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.ui.*
 import fleetBuilder.core.displayMessage.DisplayMessage
@@ -356,6 +357,9 @@ fun ShipHullSpecAPI.createHullVariant(): ShipVariantAPI {
     return Global.getSettings().createHullVariant(this)
 }
 
+fun ShipVariantAPI.createFleetMember(): FleetMemberAPI {
+    return Global.getSettings().createFleetMember(FleetMemberType.SHIP, this)
+}
 
 internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
     val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
@@ -403,6 +407,11 @@ internal fun UIPanelAPI.findChildWithMethodReversed(methodName: String): UICompo
 
 fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> {
     return this.officersCopy.map { it.person }.filter { this.getMemberWithCaptain(it) == null }
+}
+
+// Do not show hotkey on button
+fun ButtonAPI.addShortcutNoShow(key: Int) {
+    this.safeInvoke("addExtraShortcut", key, false, false, false)
 }
 
 fun TooltipMakerAPI.addToggle(

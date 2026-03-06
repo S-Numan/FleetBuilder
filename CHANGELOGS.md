@@ -9,12 +9,15 @@
 - Allow autofit loadout display name to be empty.
 - Added a setting to disable the transponder when entering hyperspace. Yes, I know, this also exists in the QOL life pack.
 - Prevent adding more than max limit of officers by mothballing captained ships over the limit.
+- Right clicking outside the autofit dialog removes closes the dialog.
+- Autofit button now shows up in codex above ship display, just click the button to see!
 ### Bugfixes
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason
 - Added an intercept to forceclosedialog from Console Commands to also close this mod's dialogs. Just in case.
 - Fix Cargo Auto Manager "Blueprints and ModSpecs" not consistently working.
 - Fix pasting members with officers into a submarket losing the captain when the player takes the member.
+- Fix isCodexOpen() still not working in some niche conditions.
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
 - A small overhaul to the dialog system. It will be a little different now in many ways.

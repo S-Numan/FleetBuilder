@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.ui.LabelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.CampaignState
 import com.fs.starfarer.campaign.econ.Submarket
@@ -31,6 +32,7 @@ object ReflectionMisc {
         return state.safeInvoke("getScreenPanel") as? UIPanelAPI
     }
 
+    // Tip: Core UI is a child of the screen panel
     fun getCoreUI(): CoreUIAPI? {
         val state = AppDriver.getInstance().currentState
         if (state is CampaignState) {
@@ -194,11 +196,15 @@ object ReflectionMisc {
     fun isCodexOpen(): Boolean {
         if (Global.getSettings().isShowingCodex) return true
 
-        if (Global.getCurrentState() == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
-            val coreUI = getCoreUI() as? UIPanelAPI ?: return false
-            if (coreUI.findChildWithMethodReversed("getCurrentSnapshot") is CodexDialog) {
+        val gameState = Global.getCurrentState()
+        if (gameState == GameState.TITLE) { // Check for the codex that opens when clicking a ship in the title-screen missions
+            if (getScreenPanel()?.findChildWithMethodReversed("getCurrentSnapshot") != null)
                 return true
-            }
+        }
+        if (gameState == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
+            val coreUI = getCoreUI() as? UIPanelAPI ?: return false
+            if (coreUI.findChildWithMethodReversed("getCurrentSnapshot") != null)
+                return true
         }
         return false
     }
@@ -225,29 +231,41 @@ object ReflectionMisc {
         }
 
         //settingsCodex is false despite codex being open
-        if ((gameState == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) || gameState == GameState.TITLE) {
+        if (gameState == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
 
             //F2 while hovering over ship or ship question mark press in the fleet screen. NOT hover over question mark and press F2, that is handled differently for some reason.
             val coreUI = getCoreUI() as? UIPanelAPI
 
             val codex = coreUI?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog
             if (codex != null) return codex
+        }
 
-            //Check for the codex that opens when clicking a ship in the title-screen missions.
-            if (Global.getCurrentState() == GameState.TITLE) {
-                return (getScreenPanel()?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog)
-            }
-
+        //Check for the codex that opens when clicking a ship in the title-screen missions.
+        if (gameState == GameState.TITLE) {
+            return getScreenPanel()?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog
         }
 
         return null
     }
 
+    fun getCodexDetailPanel(codex: CodexDialog): UIPanelAPI? {
+        return codex.get(type = CodexDetailPanel::class.java) as? UIPanelAPI
+    }
+
     fun getCodexEntryParam(codex: CodexDialog): Any? {
-        val codexDetailPanel = codex.get(type = CodexDetailPanel::class.java) ?: return null
+        val codexDetailPanel = getCodexDetailPanel(codex) ?: return null
         val codexEntry = codexDetailPanel.get(name = "plugin") ?: return null
 
         return codexEntry.safeInvoke("getParam")
+    }
+
+    fun getCodexDetailLabel(codex: CodexDialog): LabelAPI? {
+        return getCodexDetailPanel(codex)?.getChildrenCopy()?.filterIsInstance<LabelAPI>()?.firstOrNull()
+    }
+
+    fun getBelowTitleDeeperPanel(codex: CodexDialog): UIPanelAPI? {
+        val belowTitleBarPanel = getCodexDetailPanel(codex)?.findChildWithMethod("addToOverlay") as? UIPanelAPI
+        return belowTitleBarPanel?.getChildrenCopy()?.find { (it as? UIPanelAPI)?.getChildrenCopy()?.isNotEmpty() == true } as? UIPanelAPI
     }
 
     fun getCaptainPickerDialog(): CaptainPickerDialog? {

@@ -1,7 +1,6 @@
 package fleetBuilder.features.autofit.lib
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -28,7 +27,6 @@ object AutofitApplier {
         loadout: ShipVariantAPI,
         fleetMember: FleetMemberAPI,
         ship: ShipAPI,
-        coreUI: CoreUIAPI,
         shipDisplay: UIPanelAPI,
         refitPanel: UIPanelAPI,
         allowCargo: Boolean = true,
@@ -40,6 +38,9 @@ object AutofitApplier {
         shipDisplay.safeInvoke("setSuppressMessages", true)
 
         var appliedSMods = false
+
+        val coreUI = ReflectionMisc.getCoreUI() ?: return
+
 
         try {
             if (baseVariant.moduleSlots != loadout.moduleSlots) {
