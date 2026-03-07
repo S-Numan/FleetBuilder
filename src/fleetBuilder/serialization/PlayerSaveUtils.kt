@@ -20,7 +20,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
 
-object PlayerSaveUtil {
+object PlayerSaveUtils {
 
     data class AbilityPair(
         var abilityId: String? = null,

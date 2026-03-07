@@ -14,6 +14,7 @@ import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.util.*
+import fleetBuilder.util.api.UIUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.getFieldsMatching

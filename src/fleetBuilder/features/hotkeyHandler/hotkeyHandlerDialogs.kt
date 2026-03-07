@@ -19,7 +19,7 @@ import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.serialization.MissingElements
-import fleetBuilder.serialization.PlayerSaveUtil
+import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.reportMissingElementsIfAny
@@ -486,7 +486,7 @@ object hotkeyHandlerDialogs {
             ui.addSpacer(buttonHeight)
 
             ui.addButton(FBTxt.txt("copy_save_to_clipboard"), null, ui.width, buttonHeight, 3f).onClick {
-                val json = PlayerSaveUtil.createPlayerSaveJson(
+                val json = PlayerSaveUtils.createPlayerSaveJson(
                     handleCargo = isEnabled(SaveOption.CARGO),
                     handleRelations = isEnabled(SaveOption.REPUTATION),
                     handleKnownBlueprints = isEnabled(SaveOption.BLUEPRINTS),
@@ -513,7 +513,7 @@ object hotkeyHandlerDialogs {
                     return@onClick
                 }
 
-                val (compiled, missing) = PlayerSaveUtil.compilePlayerSaveJson(json)
+                val (compiled, missing) = PlayerSaveUtils.compilePlayerSaveJson(json)
 
                 if (compiled.isEmpty()) {
                     reportMissingElementsIfAny(missing)
@@ -524,7 +524,7 @@ object hotkeyHandlerDialogs {
                     return@onClick
                 }
 
-                PlayerSaveUtil.loadPlayerCompiledSave(
+                PlayerSaveUtils.loadPlayerCompiledSave(
                     compiled,
                     handleCargo = isEnabled(SaveOption.CARGO),
                     handleRelations = isEnabled(SaveOption.REPUTATION),

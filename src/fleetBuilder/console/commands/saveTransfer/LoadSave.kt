@@ -2,7 +2,7 @@ package fleetBuilder.console.commands.saveTransfer
 
 import com.fs.starfarer.api.Global
 import fleetBuilder.core.ModSettings
-import fleetBuilder.serialization.PlayerSaveUtil
+import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.serialization.reportMissingElementsIfAny
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
@@ -56,7 +56,7 @@ class LoadSave : BaseCommand {
             return BaseCommand.CommandResult.ERROR
         }
 
-        val missing = PlayerSaveUtil.loadPlayerSaveJson(
+        val missing = PlayerSaveUtils.loadPlayerSaveJson(
             json,
             handleCargo = !argList.contains(NO_CARGO),
             handleRelations = !argList.contains(NO_REP),

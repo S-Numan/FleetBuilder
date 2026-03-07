@@ -1,4 +1,4 @@
-package fleetBuilder.util
+package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.UIComponentAPI

@@ -1,6 +1,6 @@
 package fleetBuilder.console.commands.saveTransfer
 
-import fleetBuilder.serialization.PlayerSaveUtil
+import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
 import org.lazywizard.console.BaseCommand
@@ -26,7 +26,7 @@ class CopySave : BaseCommand {
         }
 
         val argList = args.lowercase().split(" ")
-        val json = PlayerSaveUtil.createPlayerSaveJson(
+        val json = PlayerSaveUtils.createPlayerSaveJson(
             handleCargo = !argList.contains(NO_CARGO),
             handleRelations = !argList.contains(NO_REP),
             handleKnownBlueprints = !argList.contains(NO_BLUEPRINTS),

@@ -30,6 +30,7 @@ import fleetBuilder.ui.customPanel.common.BasePopUpPanel
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.util.LookupUtil.getAllDMods
+import fleetBuilder.util.api.UIUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods

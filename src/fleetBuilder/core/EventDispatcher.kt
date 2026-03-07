@@ -19,7 +19,7 @@ import fleetBuilder.features.officerStorage.CatchStoreMemberButton
 import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
-import fleetBuilder.serialization.PlayerSaveUtil
+import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.util.LookupUtil
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
@@ -126,7 +126,7 @@ class EventDispatcher : EveryFrameScript {
         CommanderShuttle.afterGameSave()
 
         if (ModSettings.backupSave) {
-            val json = PlayerSaveUtil.createPlayerSaveJson()
+            val json = PlayerSaveUtils.createPlayerSaveJson()
 
             val jsonString = json.toString(4)
 
