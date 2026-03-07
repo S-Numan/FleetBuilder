@@ -6,7 +6,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.SerializationUtils.extractDataFromString
 import fleetBuilder.serialization.member.JSONMember
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant
@@ -85,9 +84,14 @@ object ClipboardMisc {
     }
 
     fun extractDataFromClipboard(): Any? {
-        val contents = ClipboardUtil.getClipboardJSONFileContents()
-        val clipboardText = contents ?: ClipboardUtil.getClipboardTextSafe() ?: return null
+        val jsonContents = ClipboardUtil.getClipboardJson()
+        if (jsonContents != null)
+            return SerializationUtils.extractDataFromJSON(jsonContents)
 
-        return extractDataFromString(clipboardText)
+        val stringContents = ClipboardUtil.getClipboardTextSafe()
+        if (stringContents != null)
+            return SerializationUtils.extractDataFromString(stringContents)
+
+        return null
     }
 }

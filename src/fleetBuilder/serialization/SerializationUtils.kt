@@ -4,8 +4,8 @@ import fleetBuilder.serialization.fleet.JSONFleet.extractFleetDataFromJson
 import fleetBuilder.serialization.member.JSONMember.extractMemberDataFromJson
 import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString
+import fleetBuilder.serialization.variant.CompressedVariant.isCompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
-import fleetBuilder.util.startsWithJsonBracket
 import org.json.JSONObject
 
 object SerializationUtils {
@@ -56,46 +56,51 @@ object SerializationUtils {
         }
     }
 
+    fun extractDataFromAny(value: Any): Any? {
+        if (value is String)
+            return extractDataFromString(value)
+        else if (value is JSONObject)
+            return extractDataFromJSON(value)
+
+        return null
+    }
+
     fun extractDataFromString(text: String): Any? {
         if (text.isEmpty()) return null
 
-        if (text.startsWithJsonBracket()) {
-            val json = getJSONFromStringSafe(text) ?: return null
+        return when {
+            isCompressedVariant(text) ->
+                extractVariantDataFromCompString(text)
 
-            return when {
-                json.has("skills") -> {
-                    // Officer
-                    extractPersonDataFromJson(json)
-                }
-
-                json.has("variant") || json.has("officer") -> {
-                    // Fleet member
-                    extractMemberDataFromJson(json)
-                }
-
-                json.has("hullId") -> {
-                    // Variant
-                    extractVariantDataFromJson(json)
-                }
-
-                json.has("members") -> {
-                    // Fleet
-                    extractFleetDataFromJson(json)
-                }
-
-                else -> {
-                    null
-                }
-            }
-
-
-        } else {
-            val data = extractVariantDataFromCompString(text)
-            if (data != null) {
-                return data
-            }
+            else -> null
         }
+    }
 
-        return null
+    fun extractDataFromJSON(json: JSONObject): Any? {
+        if (json.length() == 0) return null
+
+        return when {
+            json.has("skills") -> {
+                // Officer
+                extractPersonDataFromJson(json)
+            }
+
+            json.has("variant") || json.has("officer") -> {
+                // Fleet member
+                extractMemberDataFromJson(json)
+            }
+
+            json.has("hullId") -> {
+                // Variant
+                extractVariantDataFromJson(json)
+            }
+
+            json.has("members") -> {
+                // Fleet
+                extractFleetDataFromJson(json)
+            }
+
+            else -> null
+        }
     }
 }

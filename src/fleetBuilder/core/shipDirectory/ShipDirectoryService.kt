@@ -11,7 +11,7 @@ import fleetBuilder.core.ModSettings.defaultPrefix
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.serialization.MissingElements
-import fleetBuilder.serialization.SerializationUtils.extractDataFromString
+import fleetBuilder.serialization.SerializationUtils
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.LookupUtil
@@ -190,7 +190,7 @@ object ShipDirectoryService {
                             )
                             continue
                         }
-                        val tempData = extractDataFromString(variantString)
+                        val tempData = SerializationUtils.extractDataFromString(variantString)
                         if (tempData == null) {
                             Global.getLogger(this.javaClass).error("Failed to get ship variant at /saves/common/$dirPath$prefix/$shipPath\n")
                             continue

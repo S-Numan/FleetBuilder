@@ -17,6 +17,20 @@ import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.toBinary
 
 object CompressedVariant {
+
+    fun isCompressedVariant(comp: String): Boolean {
+        val metaIndexStart = comp.indexOf(metaSep)
+
+        if (metaIndexStart == -1) return false
+
+        val metaVersion = comp.substring(metaIndexStart + 1, metaIndexStart + 2)
+        if (metaVersion.isEmpty()) return false
+        if (metaVersion == "v" || metaVersion == "V")
+            return true
+
+        return false
+    }
+
     @JvmOverloads
     fun extractVariantDataFromCompString(
         comp: String,

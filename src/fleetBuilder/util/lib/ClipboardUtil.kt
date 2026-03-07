@@ -101,11 +101,6 @@ object ClipboardUtil {
         }
     }
 
-    fun getClipboardJSONFileContents(): String? {
-        val filePath = getClipboardFilePath()
-        return filePath?.let { readJSONContentsSafe(it) }
-    }
-
     fun setClipboardText(text: String) {
         try {
             val clipboard = Toolkit.getDefaultToolkit().systemClipboard
@@ -117,7 +112,8 @@ object ClipboardUtil {
     }
 
     fun getClipboardJson(): JSONObject? {
-        val contents = getClipboardJSONFileContents()
+        val filePath = getClipboardFilePath()
+        val contents = filePath?.let { readJSONContentsSafe(it) }
 
         val clipboardText = contents ?: getClipboardTextSafe() ?: return null
         return getJSONFromStringSafe(clipboardText)
