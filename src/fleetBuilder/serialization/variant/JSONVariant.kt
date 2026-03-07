@@ -6,9 +6,9 @@ import com.fs.starfarer.api.loading.WeaponGroupType
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.serialization.variant.VariantMisc.getSourceModsFromVariant
 import fleetBuilder.util.FBMisc
 import fleetBuilder.util.LookupUtil.getCoreVariantsForEffectiveHullspec
+import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.optJSONArrayToStringList
 import org.json.JSONArray
 import org.json.JSONObject
@@ -244,10 +244,9 @@ object JSONVariant {
         data: DataVariant.ParsedVariantData,
         json: JSONObject
     ) {
-        val addedModIds = mutableSetOf<Triple<String, String, String>>()
-        getSourceModsFromVariant(addedModIds, data)
+        val addedMods = VariantUtils.getAllSourceModsFromVariant(data)
 
-        if (addedModIds.isNotEmpty()) {
+        if (addedMods.isNotEmpty()) {
             val existingMods = mutableSetOf<Triple<String, String, String>>()
             val modInfoArray = if (json.has("mod_info")) json.getJSONArray("mod_info") else JSONArray()
 
@@ -261,12 +260,12 @@ object JSONVariant {
             }
 
             // Add only new entries
-            for (mod in addedModIds) {
-                if (mod !in existingMods) {
+            for (mod in addedMods) {
+                if (existingMods.none { it.first == mod.id }) {
                     val newMod = JSONObject().apply {
-                        put("mod_id", mod.first)
-                        put("mod_name", mod.second)
-                        put("mod_version", mod.third)
+                        put("mod_id", mod.id)
+                        put("mod_name", mod.name)
+                        put("mod_version", mod.version)
                     }
                     modInfoArray.put(newMod)
                 }

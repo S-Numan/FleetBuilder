@@ -36,7 +36,7 @@ import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.MemberUtils.getMaxSMods
 import fleetBuilder.util.api.MemberUtils.randomizeMemberCosmetics
-import fleetBuilder.util.api.MemberUtils.randomizePersonCosmetics
+import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
 import org.json.JSONObject
 import org.lwjgl.opengl.GL11
@@ -359,7 +359,7 @@ internal object FBMisc {
                 val person = buildPersonFull(data, missing = missing)
 
                 if (randomPastedCosmetics) {
-                    randomizePersonCosmetics(person, playerFleet.fleet.faction)
+                    PersonUtils.randomizePersonCosmetics(person, playerFleet.fleet.faction)
                 }
                 playerFleet.addOfficer(person)
                 showMessage(FBTxt.txt("added_officer_to_fleet"))

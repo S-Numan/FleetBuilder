@@ -67,17 +67,6 @@ object DataVariant {
                 inputVariant
             }
 
-        /*val allDMods = VariantLib.getAllDMods()
-        val allHiddenEverywhereMods = VariantLib.getAllHiddenEverywhereMods()
-
-        // Mods that should be excluded
-        val excludedMods = buildSet {
-            addAll(ModSettings.getHullModsToNeverSave())
-            addAll(settings.excludeHullModsWithID)
-            if (!settings.includeDMods) addAll(allDMods)
-            if (!settings.includeHiddenMods) addAll(allHiddenEverywhereMods)
-        }*/
-
         // Set of all hullmods IDs on the variant
         val allModIds = buildSet {
             addAll(variant.hullMods)
@@ -92,8 +81,6 @@ object DataVariant {
         val hullMods = mutableListOf<String>()
 
         for (mod in allModIds) {
-            //if (mod in excludedMods) continue
-
             when {
                 mod in variant.sModdedBuiltIns && (mod in variant.hullSpec.builtInMods || mod in variant.permaMods) -> sModdedBuiltIns += mod
                 mod in variant.sMods -> sMods += mod

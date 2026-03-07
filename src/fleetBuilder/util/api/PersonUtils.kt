@@ -1,6 +1,7 @@
 package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.FactionAPI
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
@@ -39,5 +40,22 @@ object PersonUtils {
             faction.femalePortraits.pick()
         else
             if (Random().nextBoolean()) faction.malePortraits.pick() else faction.femalePortraits.pick()
+    }
+
+    fun randomizePersonCosmetics(
+        officer: PersonAPI,
+        faction: FactionAPI?
+    ) {
+        if (!officer.isDefault && !officer.isAICore) {
+            val randomPerson = faction?.createRandomPerson()
+            if (randomPerson != null) {
+                officer.name = randomPerson.name
+                officer.portraitSprite = randomPerson.portraitSprite
+            } else {
+                officer.name.gender = FullName.Gender.ANY
+                officer.portraitSprite = PersonUtils.getRandomPortrait(officer.name.gender, faction = faction?.id)
+                officer.name.first = "Unknown"
+            }
+        }
     }
 }

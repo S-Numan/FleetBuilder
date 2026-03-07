@@ -8,7 +8,9 @@ import starficz.ReflectionUtils.get
 import starficz.findChildWithMethod
 
 object CampaignUtils {
+
     var placeholderDialog: UIPanelAPI? = null
+    
     fun openCampaignDummyDialog() {
         val ui = Global.getSector().campaignUI
         //Open a dialog to prevent input from most other mods
@@ -33,7 +35,10 @@ object CampaignUtils {
         placeholderDialog = null
     }
 
-    fun spendStoryPoint(points: Int, buildInBonus: Float) {
+    fun spendStoryPoint(points: Int, experiencePointsGained: Float) {
+        if (points <= 0)
+            return
+
         val text =
             if (points > 1)
                 FBTxt.txt("used_story_point_plural", points)
@@ -45,9 +50,9 @@ object CampaignUtils {
             true,
             null,
             true,
-            (buildInBonus / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()) / points,
+            (experiencePointsGained / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()) / points,
             text
-        );
+        )
         Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1f, 1f);
     }
 }

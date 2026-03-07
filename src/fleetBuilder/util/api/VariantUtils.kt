@@ -1,14 +1,86 @@
 package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
+import fleetBuilder.serialization.variant.DataVariant
+import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.*
 import org.magiclib.kotlin.getBuildInBonusXP
 
 object VariantUtils {
+
+    /**
+     * Returns all source mods from a variant. Including the hullspec, all weapons, wings, hullmods, and the contents of modules.
+     *
+     * @param variant the variant to get the source mods from
+     * @param filterParsed whether to filter the parsed variant data with settings. Most notably, enabling this to true will exclude always present hullmods such as the 'rat_controller' and similar. (default: false)
+     * @return a set of all source mods from the variant
+     */
+    @JvmOverloads
+    fun getAllSourceModsFromVariant(variant: ShipVariantAPI, filterParsed: Boolean = false): Set<ModSpecAPI> {
+        return getAllSourceModsFromVariant(DataVariant.getVariantDataFromVariant(variant, filterParsed = filterParsed))
+    }
+
+    /**
+     * Returns all source mods from a variant. Including the hullspec, all weapons, wings, hullmods, and the contents of modules.
+     *
+     * @param variant the variant to get the source mods from
+     * @param settings the settings to use when checking for source mods (default: VariantSettings())
+     * @return a set of all source mods from the variant
+     */
+    fun getAllSourceModsFromVariant(
+        variant: ShipVariantAPI,
+        settings: VariantSettings = VariantSettings()
+    ): Set<ModSpecAPI> {
+        return getAllSourceModsFromVariant(DataVariant.getVariantDataFromVariant(variant, settings))
+    }
+
+    fun getAllSourceModsFromVariant(data: DataVariant.ParsedVariantData): Set<ModSpecAPI> {
+        val sourceMods = mutableSetOf<ModSpecAPI>()
+
+        // Check modules first
+
+        data.moduleVariants.forEach { (_, module) ->
+            sourceMods.addAll(getAllSourceModsFromVariant(module))
+        }
+
+        // HullSpec
+
+        LookupUtil.getHullSpec(data.hullId)?.let { hullSpec ->
+            hullSpec.sourceMod?.let { sm ->
+                sourceMods.add(sm)
+            }
+        }
+
+        // HullMods
+        for (mod in data.hullMods) {
+            LookupUtil.getHullModSpec(mod)?.sourceMod?.let { sm ->
+                sourceMods.add(sm)
+            }
+        }
+
+        // Weapons
+        for (group in data.weaponGroups) {
+            group.weapons.forEach { (slot, weaponId) ->
+                LookupUtil.getWeaponSpec(weaponId)?.sourceMod?.let { sm ->
+                    sourceMods.add(sm)
+                }
+            }
+        }
+
+        // Fighter Wings
+        for (wing in data.wings) {
+            LookupUtil.getFighterWingSpec(wing)?.sourceMod?.let { sm ->
+                sourceMods.add(sm)
+            }
+        }
+
+        return sourceMods
+    }
 
     // Returns full amount of xp if this hullmod were to be added to this variant
     fun getHullModBuildInBonusXP(

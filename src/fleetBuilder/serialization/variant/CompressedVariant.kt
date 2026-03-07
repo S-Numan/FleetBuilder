@@ -11,8 +11,8 @@ import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.SerializationUtils.weaponGroupSep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.serialization.variant.VariantMisc.getSourceModsFromVariant
 import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.toBinary
 
@@ -229,16 +229,15 @@ object CompressedVariant {
         var addedModDetails = ""//For the computer to see
 
         if (includeModInfo) {
-            val addedModIds = mutableSetOf<Triple<String, String, String>>()
-            getSourceModsFromVariant(addedModIds, data)
+            val addedMods = VariantUtils.getAllSourceModsFromVariant(data)
 
-            if (addedModIds.isNotEmpty()) {
+            if (addedMods.isNotEmpty()) {
 
                 requiredMods = "Mods Used: "
 
-                for (mod in addedModIds) {
-                    addedModDetails += "${mod.first}$sep${mod.second}$sep${mod.third}$sep"
-                    requiredMods += "(${mod.second}) $sep "
+                for (mod in addedMods) {
+                    addedModDetails += "${mod.id}$sep${mod.name}$sep${mod.version}$sep"
+                    requiredMods += "(${mod.name}) $sep "
                 }
                 requiredMods = requiredMods.dropLast(3)
                 addedModDetails = addedModDetails.dropLast(1)
@@ -267,7 +266,7 @@ object CompressedVariant {
         // Weapon groups (mode;autofire;slot+id,slot+id - ...)
         val weaponGroupStrings = data.weaponGroups.map { group ->
             val mode = group.mode.ordinal // 0 = LINKED, 1 = ALTERNATING
-            val autofire = group.autofire.toString().toBinary
+            val autofire = group.autofire.toString().toBinary ?: 0
             val weapons = group.weapons.mapNotNull { (slotId, weaponId) ->
                 "$slotId$sep$weaponId"
             }

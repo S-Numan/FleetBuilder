@@ -3,6 +3,7 @@ package fleetBuilder.util.api
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
+import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.RepairTrackerAPI
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.Companion.addPlayerShuttle
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.Companion.playerShuttleExists
@@ -19,6 +20,11 @@ import fleetBuilder.util.api.PersonUtils.copyOfficerDataTo
 import kotlin.math.max
 
 object FleetUtils {
+
+    fun getUnassignedOfficers(fleet: FleetDataAPI): List<PersonAPI> {
+        return fleet.officersCopy.map { it.person }.filter { fleet.getMemberWithCaptain(it) == null }
+    }
+
     fun fullFleetRepair(fleet: FleetDataAPI) {
         fleet.membersListCopy.forEach { member ->
             member.status.repairFully()
