@@ -8,9 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.core.ModSettings
 import fleetBuilder.serialization.MissingElements
-import fleetBuilder.serialization.fleet.SecondInCommandSerialization.buildSecondInCommandData
-import fleetBuilder.serialization.fleet.SecondInCommandSerialization.getSecondInCommandDataFromFleet
-import fleetBuilder.serialization.fleet.SecondInCommandSerialization.validateSecondInCommandData
+import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.DataMember.buildMember
 import fleetBuilder.serialization.member.DataMember.filterParsedMemberData
@@ -35,7 +33,7 @@ object DataFleet {
         val commanderIfNoFlagship: DataPerson.ParsedPersonData?, // null if flagship exists, as commander is on flagship
         val members: List<DataMember.ParsedMemberData>,
         val idleOfficers: List<DataPerson.ParsedPersonData>,
-        val secondInCommandData: SecondInCommandSerialization.SecondInCommandData?,
+        val secondInCommandData: DataSecondInCommand.SecondInCommandData?,
     )
 
     @JvmOverloads
@@ -81,7 +79,7 @@ object DataFleet {
             },
             secondInCommandData = run {
                 if (!Global.getSettings().modManager.isModEnabled("second_in_command") || campFleet == null) return@run null
-                getSecondInCommandDataFromFleet(campFleet)
+                DataSecondInCommand.getSecondInCommandDataFromFleet(campFleet)
             }
         )
 
@@ -219,7 +217,7 @@ object DataFleet {
             else null
 
         if (data.secondInCommandData != null)
-            validateSecondInCommandData(data.secondInCommandData, missing)
+            DataSecondInCommand.validateSecondInCommandData(data.secondInCommandData, missing)
 
         return data.copy(
             members = validatedMembers,
@@ -285,7 +283,7 @@ object DataFleet {
         fleet.syncIfNeeded()
 
         if (data.secondInCommandData != null && campFleet != null) {
-            buildSecondInCommandData(data.secondInCommandData, campFleet)
+            DataSecondInCommand.buildSecondInCommandData(data.secondInCommandData, campFleet)
         }
     }
 

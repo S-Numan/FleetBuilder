@@ -1,23 +1,16 @@
-package fleetBuilder.serialization.fleet
+package fleetBuilder.serialization.fleet.mods.secondInCommand
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.person.DataPerson
-import fleetBuilder.serialization.person.DataPerson.buildPerson
-import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
-import fleetBuilder.serialization.person.DataPerson.validateAndCleanPersonData
-import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
-import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
-import org.json.JSONArray
-import org.json.JSONObject
 import second_in_command.SCData
 import second_in_command.SCUtils
 import second_in_command.specs.SCOfficer
 import second_in_command.specs.SCSpecStore
 import starficz.ReflectionUtils.set
 
-object SecondInCommandSerialization {
+object DataSecondInCommand {
 
     data class SecondInCommandData(
         val officers: MutableList<SecondInCommandOfficerData>
@@ -41,7 +34,7 @@ object SecondInCommandSerialization {
         val scData = SecondInCommandData(
             storedData.getOfficersInFleet().map { scOfficer ->
                 SecondInCommandOfficerData(
-                    person = getPersonDataFromPerson(scOfficer.person, filterParsed = false),
+                    person = DataPerson.getPersonDataFromPerson(scOfficer.person, filterParsed = false),
                     aptitudeId = scOfficer.aptitudeId,
                     skillPoints = scOfficer.skillPoints,
                     experiencePoints = scOfficer.getExperiencePoints(),
@@ -53,76 +46,6 @@ object SecondInCommandSerialization {
         )
 
         return scData
-    }
-
-    fun saveSecondInCommandData(data: SecondInCommandData, fleetJson: JSONObject) {
-        val sicJson = JSONObject()
-
-        val officerJsonArray = JSONArray()
-        data.officers.forEach {
-            val scOfficerJson = JSONObject()
-            scOfficerJson.put("person", savePersonToJson(it.person))
-            scOfficerJson.put("level", it.level)
-            scOfficerJson.put("aptitudeId", it.aptitudeId)
-            scOfficerJson.put("skillPoints", it.skillPoints)
-            scOfficerJson.put("experiencePoints", it.experiencePoints)
-            scOfficerJson.put("activeSkillIDs", JSONArray(it.activeSkillIDs))
-            if (it.assignedSlot != null)
-                scOfficerJson.put("assignedSlot", it.assignedSlot)
-
-            officerJsonArray.put(scOfficerJson)
-        }
-        sicJson.put("executiveOfficers", officerJsonArray)
-
-        fleetJson.put("second_in_command", sicJson)
-    }
-
-    fun extractSecondInCommandData(sicJson: JSONObject): SecondInCommandData {
-        val officers = mutableListOf<SecondInCommandOfficerData>()
-
-        val executiveArray = sicJson.optJSONArray("executiveOfficers") ?: return SecondInCommandData(officers)
-
-        for (i in 0 until executiveArray.length()) {
-            val obj = executiveArray.optJSONObject(i) ?: continue
-
-            val personJson = obj.optJSONObject("person") ?: continue
-            val person = extractPersonDataFromJson(personJson)
-
-            val aptitudeId = obj.optString("aptitudeId", null) ?: continue
-            val skillPoints = obj.optInt("skillPoints", 0)
-            val experiencePoints = obj.optDouble("experiencePoints", 0.0).toFloat()
-
-            val skillArray = obj.optJSONArray("activeSkillIDs") ?: JSONArray()
-            val activeSkillIDs = mutableListOf<String>()
-
-            val level = obj.optInt("level", 1)
-
-            for (j in 0 until skillArray.length()) {
-                val skillId = skillArray.optString(j, null)
-                if (!skillId.isNullOrEmpty()) {
-                    activeSkillIDs.add(skillId)
-                }
-            }
-
-            var assignedSlot: Int? = obj.optInt("assignedSlot", -1)
-            if (assignedSlot == -1) {
-                assignedSlot = null
-            }
-
-            officers.add(
-                SecondInCommandOfficerData(
-                    person = person,
-                    aptitudeId = aptitudeId,
-                    skillPoints = skillPoints,
-                    experiencePoints = experiencePoints,
-                    activeSkillIDs = activeSkillIDs,
-                    assignedSlot = assignedSlot,
-                    level = level
-                )
-            )
-        }
-
-        return SecondInCommandData(officers)
     }
 
     fun validateSecondInCommandData(sicData: SecondInCommandData, missing: MissingElements): SecondInCommandData {
@@ -142,7 +65,7 @@ object SecondInCommandSerialization {
                 }
             }
 
-            sicOfficer.person = validateAndCleanPersonData(sicOfficer.person, missing)
+            sicOfficer.person = DataPerson.validateAndCleanPersonData(sicOfficer.person, missing)
         }
 
         return sicData
@@ -164,7 +87,7 @@ object SecondInCommandSerialization {
             val activeSkillIDs = sicOfficer.activeSkillIDs
             val assignedSlot = sicOfficer.assignedSlot
 
-            val scOfficer = SCOfficer(buildPerson(person), aptitudeId)
+            val scOfficer = SCOfficer(DataPerson.buildPerson(person), aptitudeId)
             activeSkillIDs.forEach { scOfficer.addSkill(it) }
             scOfficer.increaseLevel(level - scOfficer.getCurrentLevel())
             scOfficer.skillPoints = skillPoints
