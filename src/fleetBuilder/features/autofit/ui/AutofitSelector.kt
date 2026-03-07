@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.combat.BoundsAPI
 import com.fs.starfarer.api.combat.ShipAPI
+import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
@@ -343,6 +344,92 @@ internal object AutofitSelector {
         }
     }
 
+    fun createShipPreview(
+        variant: ShipVariantAPI,
+        width: Float, height: Float,
+        scaleDownSmallerShips: Boolean = false,
+        showFighters: Boolean = false,
+        setSchematicMode: Boolean = false,
+    ): UIPanelAPI {
+        // Main container panel
+        val containerPanel = Global.getSettings().createCustom(width, height, null)
+
+        val clonedVariant = variant.clone() as HullVariantSpec
+
+        val shipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
+
+        shipPreview.safeInvoke("setVariant", clonedVariant)
+        shipPreview.safeInvoke("overrideVariant", clonedVariant)
+        shipPreview.safeInvoke("setShowBorder", false)
+
+        if (!scaleDownSmallerShips)
+            shipPreview.safeInvoke("setScaleDownSmallerShipsMagnitude", 1f)
+
+        shipPreview.safeInvoke("adjustOverlay", 0f, 0f)
+        shipPreview.setSize(width, height)
+
+        if (showFighters)
+            shipPreview.safeInvoke("setShowFighters", true)
+
+        if (setSchematicMode)
+            shipPreview.safeInvoke("setSchematicMode", true)
+
+
+        //Remove this hard coded scaling code when things scale right properly in the base game.
+
+        val effectiveHullId = variant.hullSpec.getEffectiveHullId()
+
+        // Define config for special ships
+        data class ShipDisplayConfig(
+            val scaleFactor: Float = 1f,
+            val yOffset: Float = 0f,
+            val disableScissor: Boolean = false
+        )
+
+        //val padding = computeSpritePaddingPixels(clonedVariant)
+        //val sprite = Global.getSettings().getSprite(clonedVariant.hullSpec.spriteName)
+        //minOf(width / sprite.width, height / sprite.height, 1f)//See https://fractalsoftworks.com/forum/index.php?topic=33818.0 for why this cannot work as intended
+
+        // Configurations for special hull IDs
+        val specialConfigs = mapOf(
+            "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 12f, disableScissor = true),
+            "radiant" to ShipDisplayConfig(scaleFactor = 0.95f, yOffset = 10f, disableScissor = true),
+            "paragon" to ShipDisplayConfig(scaleFactor = 0.94f, yOffset = 15f, disableScissor = true),
+            "pegasus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
+            "executor" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
+            "invictus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 0f, disableScissor = true),
+            "onslaught" to ShipDisplayConfig(scaleFactor = 1.08f, yOffset = 0f, disableScissor = false)
+        )
+
+        // Get config or default
+        val config = specialConfigs[effectiveHullId] ?: ShipDisplayConfig()
+
+        // Apply config
+        if (config.disableScissor) {
+            shipPreview.safeInvoke("setScissor", false)
+        }
+
+        // Scale and set size
+        val scaledWidth = width * config.scaleFactor
+        val scaledHeight = height * config.scaleFactor
+        shipPreview.setSize(scaledWidth, scaledHeight)
+
+        // Prepare ship
+        shipPreview.safeInvoke("prepareShip")
+
+        // Base Y offset from config
+        val baseYOffset = config.yOffset
+
+        // Center offsets for shipPreview
+        val offsetX = (width - scaledWidth) / 2f
+        val offsetY = (height - scaledHeight) / 2f + baseYOffset
+
+        // Add shipPreview to container, positioned to center plus offset
+        containerPanel.addComponent(shipPreview).inTL(offsetX, offsetY)
+
+        return containerPanel
+    }
+
     private fun getExactBounds(variant: ShipVariantAPI): List<BoundsAPI.SegmentAPI>? {
         val tempShipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
         tempShipPreview.safeInvoke("setVariant", variant)
@@ -353,6 +440,14 @@ internal object AutofitSelector {
         val ships = tempShipPreview.safeInvoke("getShips") as? Array<ShipAPI>
         val ship = ships?.getOrNull(0) ?: return null
         return ship.exactBounds?.segments
+
+        //ships.getOrNull(0)?.visualBounds
+        //ships.getOrNull(0)?.getNearestPointOnBounds()
+        //ships.getOrNull(0)?.getCollisionPoint()
+        //ships.getOrNull(0)?.isPointInBounds()
+        //ships.getOrNull(0)?.exactBounds
+        //ships.getOrNull(0)?.checkCollisionVsRay()
+
     }
 
     data class BoundsDimensions(
@@ -438,97 +533,70 @@ internal object AutofitSelector {
         )
     }
 
-    fun createShipPreview(
-        variant: ShipVariantAPI,
-        width: Float, height: Float,
-        scaleDownSmallerShips: Boolean = false,
-        showFighters: Boolean = false,
-        setSchematicMode: Boolean = false,
-    ): UIPanelAPI {
-        // Main container panel
-        val containerPanel = Global.getSettings().createCustom(width, height, null)
+    fun debugTestingFunction(hull: ShipHullSpecAPI) {
+        val sprite = Global.getSettings().getSprite(hull.spriteName)
 
-        val clonedVariant = variant.clone() as HullVariantSpec
+        // Actual dimensions of the file (png, webp, etc). Includes empty space on sides of the image
+        sprite.width
+        sprite.height
 
-        val shipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
+        // How much the sprite takes up of the texture in OpenGL on a scale of 0 to 1. Return value is based on the sprite width/height divided by the next highest power of two. Next highest power may be different between width and height.
+        sprite.textureWidth // 0.5625 = 288(sprite.width) / 512(next highest power of two above 288)
+        sprite.textureHeight // 0.75 = 384(sprite.height) / 512(next highest power of two above 384)
 
-        shipPreview.safeInvoke("setVariant", clonedVariant)
-        shipPreview.safeInvoke("overrideVariant", clonedVariant)
-        shipPreview.safeInvoke("setShowBorder", false)
+        //Onslaught
+        //Width = 0.5625 = 288 / 512
+        //Height = 0.75 = 384 / 512
 
-        if (!scaleDownSmallerShips)
-            shipPreview.safeInvoke("setScaleDownSmallerShipsMagnitude", 1f)
+        //Apogee
+        //Width = 0.546875 = 140 / 256
+        //Height = 0.546875 = 280 / 512
 
-        shipPreview.safeInvoke("adjustOverlay", 0f, 0f)
-        shipPreview.setSize(width, height)
+        //Executor
+        //Width = 0.546875 = 280 / 512
+        //Height = 0.69921875 = 358 / 512
 
-        if (showFighters)
-            shipPreview.safeInvoke("setShowFighters", true)
+        //Atlas
+        //Width 0.78125 = 200 / 256
+        //Height 0.78125 = 400 / 512
 
-        if (setSchematicMode)
-            shipPreview.safeInvoke("setSchematicMode", true)
+        //Astral
+        //Width 0.625 = 320 / 512
+        //Height 0.859375 = 440 / 512
+
+        //Nova
+        //Width 0.796875 = 204 / 256
+        //Height 0.625 = 320 / 512
 
 
-        //Remove this hard coded scaling code when things scale right properly in the base game.
+        // UV coordinates on the texture made that was scaled up to the next power of two. texX and texY are typically 0.0f, and OpenGL follows bottom left origin.
+        sprite.texX
+        sprite.texY
+        sprite.texWidth
+        sprite.texHeight
 
-        val effectiveHullId = variant.hullSpec.getEffectiveHullId()
 
-        // Define config for special ships
-        data class ShipDisplayConfig(
-            val scaleFactor: Float = 1f,
-            val yOffset: Float = 0f,
-            val disableScissor: Boolean = false
-        )
-
-        //val padding = computeSpritePaddingPixels(clonedVariant)
-        //val sprite = Global.getSettings().getSprite(clonedVariant.hullSpec.spriteName)
-        //minOf(width / sprite.width, height / sprite.height, 1f)//See https://fractalsoftworks.com/forum/index.php?topic=33818.0 for why this cannot work as intended
-
-        // Configurations for special hull IDs
-        val specialConfigs = mapOf(
-            "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 12f, disableScissor = true),
-            "radiant" to ShipDisplayConfig(scaleFactor = 0.95f, yOffset = 10f, disableScissor = true),
-            "paragon" to ShipDisplayConfig(scaleFactor = 0.94f, yOffset = 15f, disableScissor = true),
-            "pegasus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
-            "executor" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
-            "invictus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 0f, disableScissor = true),
-            "onslaught" to ShipDisplayConfig(scaleFactor = 1.08f, yOffset = 0f, disableScissor = false)
-        )
-
-        // Get config or default
-        val config = specialConfigs[effectiveHullId] ?: ShipDisplayConfig()
-
-        // Apply config
-        if (config.disableScissor) {
-            shipPreview.safeInvoke("setScissor", false)
+        /*
+        val padding = computeSpritePaddingPixels(hull.createHullVariant()) ?: return
+        var weaponAtFront = false
+        if (padding.emptyHeight < 20 // Less than x padding?
+        //&& sprite.height > shipDisplay.height // Sprite bigger than shipDisplay?
+        ) {
+            val spriteRealHeightCenter = (sprite.height / 2f)
+            val spriteHeightCenterDiff = spriteRealHeightCenter - sprite.centerY
+            hull.allWeaponSlotsCopy.forEach {
+                if (it.slotSize == WeaponSize.LARGE // Slot is large?
+                    && it.location.x > sprite.height / 2f - 20f // Slot is within 20 pixels from the front of the ship?
+                ) {
+                    weaponAtFront = true
+                    return@forEach
+                }
+            }
         }
+        if (weaponAtFront) {
+            //Scale down?
+        }
+        */
 
-        // Scale and set size
-        val scaledWidth = width * config.scaleFactor
-        val scaledHeight = height * config.scaleFactor
-        shipPreview.setSize(scaledWidth, scaledHeight)
-
-        // Prepare ship
-        shipPreview.safeInvoke("prepareShip")
-
-        // Base Y offset from config
-        val baseYOffset = config.yOffset
-
-        // Center offsets for shipPreview
-        val offsetX = (width - scaledWidth) / 2f
-        val offsetY = (height - scaledHeight) / 2f + baseYOffset
-
-        // Add shipPreview to container, positioned to center plus offset
-        containerPanel.addComponent(shipPreview).inTL(offsetX, offsetY)
-
-        return containerPanel
-
-
-        //ships.getOrNull(0)?.visualBounds
-        //ships.getOrNull(0)?.getNearestPointOnBounds()
-        //ships.getOrNull(0)?.getCollisionPoint()
-        //ships.getOrNull(0)?.isPointInBounds()
-        //ships.getOrNull(0)?.exactBounds
-        //ships.getOrNull(0)?.checkCollisionVsRay()
     }
 }
