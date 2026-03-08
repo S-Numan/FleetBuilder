@@ -21,6 +21,7 @@
 - Fix pasting members with officers into a submarket losing the captain when the player takes the member.
 - Fix isCodexOpen() still not working in some niche conditions.
 - Autofit entries which have had their files removed now have their path to them removed as well. This gets rid of the WARN messages on every game launch in the log.
+- Fix officers not being paste-able if they lack any skills
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
 - A small overhaul to the dialog system. It will be a little different now in many ways.

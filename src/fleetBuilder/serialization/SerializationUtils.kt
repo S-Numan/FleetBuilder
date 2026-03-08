@@ -88,7 +88,7 @@ object SerializationUtils {
         if (json.length() == 0) return null
 
         return when {
-            json.has("skills") -> {
+            json.has("skills") || json.has("first") -> {
                 // Officer
                 extractPersonDataFromJson(json)
             }
