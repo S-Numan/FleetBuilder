@@ -59,7 +59,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
                         if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
-                            hotkeyHandlerDialogs.createDevModeDialog()
+                            HotkeyHandlerDialogs.createDevModeDialog()
                             event.consume()
                             continue
                         }

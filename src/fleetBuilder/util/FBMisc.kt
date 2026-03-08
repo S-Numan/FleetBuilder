@@ -17,7 +17,7 @@ import fleetBuilder.core.ModSettings.randomPastedCosmetics
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DisplayMessage.showMessage
 import fleetBuilder.core.shipDirectory.ShipDirectoryService.doesLoadoutExist
-import fleetBuilder.features.hotkeyHandler.hotkeyHandlerDialogs
+import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingElements
@@ -206,7 +206,7 @@ internal object FBMisc {
         val loadoutExists = doesLoadoutExist(ModSettings.defaultPrefix, variant)
 
         if (!loadoutExists) {
-            hotkeyHandlerDialogs.createImportLoadoutDialog(variant, missing)
+            HotkeyHandlerDialogs.createImportLoadoutDialog(variant, missing)
         } else {
             DisplayMessage.showMessage(
                 FBTxt.txt("loadout_already_exists", variant.hullSpec.hullId),
@@ -334,7 +334,7 @@ internal object FBMisc {
             return false
         }
 
-        hotkeyHandlerDialogs.spawnFleetInCampaignDialog(sector, newData as DataFleet.ParsedFleetData, validatedData)
+        HotkeyHandlerDialogs.spawnFleetInCampaignDialog(sector, newData as DataFleet.ParsedFleetData, validatedData)
 
         return true
     }
@@ -443,7 +443,7 @@ internal object FBMisc {
                     return
                 }
 
-                hotkeyHandlerDialogs.pasteFleetIntoPlayerFleetDialog(data, validatedFleet)
+                HotkeyHandlerDialogs.pasteFleetIntoPlayerFleetDialog(data, validatedFleet)
             }
 
             else -> {

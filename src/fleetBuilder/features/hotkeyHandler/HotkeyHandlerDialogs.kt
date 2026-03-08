@@ -35,7 +35,7 @@ import starficz.onClick
 import starficz.width
 import java.awt.Color
 
-object hotkeyHandlerDialogs {
+object HotkeyHandlerDialogs {
     fun pasteFleetIntoPlayerFleetDialog(
         data: DataFleet.ParsedFleetData,
         validatedData: DataFleet.ParsedFleetData,

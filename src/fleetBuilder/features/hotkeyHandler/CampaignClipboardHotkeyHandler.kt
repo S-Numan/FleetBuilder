@@ -17,7 +17,7 @@ import fleetBuilder.core.ModSettings
 import fleetBuilder.core.ModSettings.commandShuttleId
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
-import fleetBuilder.features.hotkeyHandler.hotkeyHandlerDialogs.createDevModeDialog
+import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
@@ -173,7 +173,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
 
-            hotkeyHandlerDialogs.createSaveTransferDialog()
+            HotkeyHandlerDialogs.createSaveTransferDialog()
         }
     }
 
@@ -187,7 +187,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 return
             }
 
-            hotkeyHandlerDialogs.createOfficerCreatorDialog()
+            HotkeyHandlerDialogs.createOfficerCreatorDialog()
         }
     }
 
