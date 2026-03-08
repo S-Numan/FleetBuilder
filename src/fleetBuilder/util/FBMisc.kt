@@ -3,6 +3,8 @@ package fleetBuilder.util
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.campaign.SectorAPI
+import com.fs.starfarer.api.campaign.SpecialItemData
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -46,6 +48,61 @@ import kotlin.math.min
 
 
 internal object FBMisc {
+
+    fun SpecialItemData.getSpecialItemName(): String? {
+        return when (id) {
+            "fighter_bp" ->
+                Global.getSettings().allFighterWingSpecs.find { it.id == data }?.wingName
+            "weapon_bp" ->
+                Global.getSettings().allWeaponSpecs.find { it.weaponId == data }?.weaponName
+            "ship_bp" ->
+                Global.getSettings().allShipHullSpecs.find { it.hullId == data }?.hullName
+            "modspec" ->
+                Global.getSettings().allHullModSpecs.find { it.id == data }?.displayName
+            "industry_bp" ->
+                Global.getSettings().allIndustrySpecs.find { it.id == data }?.name
+
+            else -> null
+        }
+    }
+
+    // Untested
+    fun getAllSkinVariants(baseHull: String): MutableList<String?> {
+        val out: MutableList<String?> = ArrayList()
+
+        for (s in Global.getSettings().allShipHullSpecs) {
+            if (s.isDefaultDHull) continue
+            if (s.fuel <= 0) continue
+            val id = s.hullId
+            if (id.contains(baseHull) && (id != baseHull) && (!out.contains(id))) {
+                out.add(id)
+            }
+        }
+        return out
+    }
+
+    // Untested
+    fun getIntelOfClass(c: Class<*>): IntelInfoPlugin? {
+        try {
+            if (!Global.getSector().intelManager.hasIntelOfClass(c)) {
+                Global.getSector().intelManager.addIntel(c.getDeclaredConstructor().newInstance() as IntelInfoPlugin) // Global.getSector().intelManager.addIntel(c.newInstance() as IntelInfoPlugin)
+            }
+        } catch (ex: Exception) {
+        }
+        return Global.getSector().intelManager.getFirstIntel(c)
+    }
+
+    // Untested
+    fun getIntelByName(name: String?): IntelInfoPlugin? {
+        for (i1 in Global.getSector().intelManager.intel) {
+            val n1 = i1.javaClass.getSimpleName()
+            if (n1 == name) {
+                return i1
+            }
+        }
+        return null
+    }
+
     fun startStencilWithYPad(panel: CustomPanelAPI, yPad: Float) {
         GL11.glClearStencil(0)
         GL11.glStencilMask(0xff)

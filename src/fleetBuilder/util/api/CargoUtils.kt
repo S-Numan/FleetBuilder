@@ -2,8 +2,36 @@ package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
+import com.fs.starfarer.api.campaign.CargoStackAPI
+import com.fs.starfarer.api.campaign.SpecialItemData
 
 object CargoUtils {
+
+    fun getItemTech(cargo: CargoStackAPI): String? {
+        return when {
+            cargo.isWeaponStack -> cargo.weaponSpecIfWeapon.manufacturer
+            cargo.isFighterWingStack -> cargo.fighterWingSpecIfWing.variant.hullSpec.manufacturer
+            cargo.hullModSpecIfHullMod != null -> cargo.hullModSpecIfHullMod.manufacturer
+            cargo.specialDataIfSpecial != null -> getSpecialItemTech(cargo.specialDataIfSpecial)
+            cargo.specialItemSpecIfSpecial != null -> cargo.specialItemSpecIfSpecial.manufacturer
+            else -> null
+        }
+    }
+
+    fun getSpecialItemTech(data: SpecialItemData): String? {
+        return when (data.id) {
+            "fighter_bp" ->
+                Global.getSettings().allFighterWingSpecs.find { it.id == data.data }?.variant?.hullSpec?.manufacturer
+            "weapon_bp" ->
+                Global.getSettings().allWeaponSpecs.find { it.weaponId == data.data }?.manufacturer
+            "ship_bp" ->
+                Global.getSettings().allShipHullSpecs.find { it.hullId == data.data }?.manufacturer
+            "modspec" ->
+                Global.getSettings().allHullModSpecs.find { it.id == data.data }?.manufacturer
+
+            else -> null
+        }
+    }
 
     // Calculate number of supplies needed to reach maxCargoFraction
     // Cap quantity to 100% remaining cargo space, don't go below 0 either

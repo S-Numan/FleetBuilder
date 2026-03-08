@@ -1,13 +1,13 @@
 package fleetBuilder.features.filters.filterPanels
 
-import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoStackAPI
-import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.ui.trade.CargoItemStack
 import com.fs.starfarer.campaign.ui.trade.CargoStackView
 import com.fs.starfarer.campaign.util.CollectionView
+import fleetBuilder.util.FBMisc.getSpecialItemName
+import fleetBuilder.util.api.CargoUtils
 import fleetBuilder.util.safeGet
 import fleetBuilder.util.safeInvoke
 import starficz.ReflectionUtils.set
@@ -100,55 +100,12 @@ class CargoFilterPanel(
         return when {
             displayName.lowercase().startsWith(desc) -> true
             specialDataIfSpecial?.getSpecialItemName()?.lowercase()?.startsWith(desc) == true -> true
-            getItemTech()?.lowercase()?.startsWith(desc) == true -> true
+            CargoUtils.getItemTech(this)?.lowercase()?.startsWith(desc) == true -> true
             "weapon".startsWith(desc) && isWeaponStack -> true
             ("fighter".startsWith(desc) || "wing".startsWith(desc)) && isFighterWingStack -> true
             "commodity".startsWith(desc) && isCommodityStack -> true
             ("special".startsWith(desc) || "other".startsWith(desc)) && isSpecialStack -> true
             else -> false
-        }
-    }
-
-    private fun SpecialItemData.getSpecialItemName(): String? {
-        return when (id) {
-            "fighter_bp" ->
-                Global.getSettings().allFighterWingSpecs.find { it.id == data }?.wingName
-            "weapon_bp" ->
-                Global.getSettings().allWeaponSpecs.find { it.weaponId == data }?.weaponName
-            "ship_bp" ->
-                Global.getSettings().allShipHullSpecs.find { it.hullId == data }?.hullName
-            "modspec" ->
-                Global.getSettings().allHullModSpecs.find { it.id == data }?.displayName
-            "industry_bp" ->
-                Global.getSettings().allIndustrySpecs.find { it.id == data }?.name
-
-            else -> null
-        }
-    }
-
-    private fun SpecialItemData.getSpecialItemTech(): String? {
-        return when (id) {
-            "fighter_bp" ->
-                Global.getSettings().allFighterWingSpecs.find { it.id == data }?.variant?.hullSpec?.manufacturer
-            "weapon_bp" ->
-                Global.getSettings().allWeaponSpecs.find { it.weaponId == data }?.manufacturer
-            "ship_bp" ->
-                Global.getSettings().allShipHullSpecs.find { it.hullId == data }?.manufacturer
-            "modspec" ->
-                Global.getSettings().allHullModSpecs.find { it.id == data }?.manufacturer
-
-            else -> null
-        }
-    }
-
-    private fun CargoStackAPI.getItemTech(): String? {
-        return when {
-            weaponSpecIfWeapon != null -> weaponSpecIfWeapon.manufacturer
-            fighterWingSpecIfWing != null -> fighterWingSpecIfWing.variant.hullSpec.manufacturer
-            hullModSpecIfHullMod != null -> hullModSpecIfHullMod.manufacturer
-            specialItemSpecIfSpecial != null -> specialItemSpecIfSpecial.manufacturer
-            specialDataIfSpecial != null -> specialDataIfSpecial.getSpecialItemTech()
-            else -> return null
         }
     }
 }
