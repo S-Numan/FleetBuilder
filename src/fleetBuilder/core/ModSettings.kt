@@ -76,6 +76,7 @@ object ModSettings {
     val modName = "FleetBuilder"
 
     var addLogsToConsoleModConsoleLevel = Level.OFF
+    var addLogsToDisplayMessageLevel = Level.OFF
 
 
     var selectorsPerRow = 4

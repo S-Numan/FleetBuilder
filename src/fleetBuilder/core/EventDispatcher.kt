@@ -11,7 +11,7 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManager
 import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
 import fleetBuilder.features.codexButton.CampaignDevModeCodexButton
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
-import fleetBuilder.features.consoleMirror.ConsoleMirrorAppender
+import fleetBuilder.features.consoleMirror.LogMessageAppender
 import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
 import fleetBuilder.features.filters.injection.CampaignFleetScreenFilter
 import fleetBuilder.features.filters.injection.CampaignModPickerFilter
@@ -26,6 +26,7 @@ import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
+import org.lazywizard.console.Console
 
 
 class EventDispatcher : EveryFrameScript {
@@ -97,8 +98,19 @@ class EventDispatcher : EveryFrameScript {
     fun onApplicationLoad() {
         ModSettings.onApplicationLoad()
 
-        if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF && ModSettings.isConsoleModEnabled) {
-            Logger.getRootLogger().addAppender(ConsoleMirrorAppender())
+        if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF || ModSettings.addLogsToDisplayMessageLevel != Level.OFF) {
+            // Cause the lazy class loader to load these classes preemptively to prevent issues.
+            try {
+                Class.forName("org.apache.log4j.Layout")
+                Class.forName("org.apache.log4j.spi.LoggingEvent")
+                Class.forName("org.apache.log4j.Priority")
+                if (ModSettings.isConsoleModEnabled)
+                    Class.forName(Console::class.java.name)
+            } catch (e: ClassNotFoundException) {
+                e.printStackTrace()
+            }
+
+            Logger.getRootLogger().addAppender(LogMessageAppender())
         }
 
         LookupUtil.onApplicationLoad()

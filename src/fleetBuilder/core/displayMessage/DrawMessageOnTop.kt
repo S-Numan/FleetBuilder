@@ -11,7 +11,7 @@ import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
 
-class DrawMessageInTitle : EveryFrameCombatPlugin {
+class DrawMessageOnTop : EveryFrameCombatPlugin {
 
     companion object {
         private val messageQueue = ArrayDeque<String>()

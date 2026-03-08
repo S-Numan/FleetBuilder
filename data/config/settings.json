@@ -2,7 +2,7 @@
   "plugins": {
     "CombatAutofitAdder": "fleetBuilder.features.autofit.listener.CombatAutofitAdder",
     "CampaignCodexAutofitButton": "fleetBuilder.features.autofit.listener.CodexAutofitButton",
-    "DrawMessageInTitle": "fleetBuilder.core.displayMessage.DrawMessageInTitle",
+    "DrawMessageOnTop": "fleetBuilder.core.displayMessage.DrawMessageOnTop",
     "DialogUtil": "fleetBuilder.ui.customPanel.DialogUtils",
     "CombatClipboardHotkeyHandler": "fleetBuilder.features.hotkeyHandler.CombatClipboardHotkeyHandler"
   },

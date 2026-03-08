@@ -94,12 +94,11 @@ object DisplayMessage {
                     defaultColor, after
                 )
             }
-        } else if (gameState == GameState.TITLE) {
+        } else
+            DrawMessageOnTop.addMessage(short)
 
-            DrawMessageInTitle.Companion.addMessage(short)
+        Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
 
-            Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
-        }
     }
 
     @JvmOverloads

@@ -28,8 +28,10 @@ internal class ModSettingsListener : LunaSettingsListener {
         val featuresDisabled = getBoolean(modID, "featuresDisabled")!!
 
         if (!featuresDisabled) {
-            val level = getString(modID, "addLogsToConsoleModConsoleLevel")!!
-            ModSettings.addLogsToConsoleModConsoleLevel = when (level) {
+            val messageLevel = getString(modID, "addLogsToDisplayMessageLevel")!!
+            val consoleLevel = getString(modID, "addLogsToConsoleModConsoleLevel")!!
+
+            fun getLevel(level: String): Level? = when (level) {
                 "FATAL" -> Level.FATAL
                 "ERROR" -> Level.ERROR
                 "WARN" -> Level.WARN
@@ -38,6 +40,9 @@ internal class ModSettingsListener : LunaSettingsListener {
                 "ALL" -> Level.ALL
                 else -> Level.OFF
             }
+
+            ModSettings.addLogsToDisplayMessageLevel = getLevel(messageLevel)
+            ModSettings.addLogsToConsoleModConsoleLevel = getLevel(consoleLevel)
 
             ModSettings.selectorsPerRow = getInt(modID, "selectorsPerRow")!!
             ModSettings.showCoreGoalVariants = getBoolean(modID, "showCoreGoalVariants")!!
@@ -94,6 +99,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.autoMothballRecoveredShips = false
             ModSettings.transponderOffInHyperspace = false
             ModSettings.addLogsToConsoleModConsoleLevel = Level.OFF
+            ModSettings.addLogsToDisplayMessageLevel = Level.OFF
         }
 
         EventDispatcher.setListeners()
