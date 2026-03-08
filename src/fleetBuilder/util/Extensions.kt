@@ -392,6 +392,12 @@ internal fun UIPanelAPI.findChildWithMethodReversed(methodName: String): UICompo
     return getChildrenCopy().asReversed().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
 }
 
+internal fun UIPanelAPI.findChildWithPlugin(clazz: Class<*>): CustomPanelAPI? {
+    return getChildrenCopy().firstOrNull { child ->
+        (child as? CustomPanelAPI)?.plugin?.let { clazz.isInstance(it) } == true
+    } as? CustomPanelAPI
+}
+
 fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> =
     FleetUtils.getUnassignedOfficers(this)
 

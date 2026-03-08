@@ -100,7 +100,7 @@ object DisplayMessage {
                 )
             }
         } else
-            DrawMessageOnTop.addMessage(short)
+            DrawMessageOnTop.addMessage(short, color ?: Misc.getTextColor())
 
         Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
     }
@@ -115,8 +115,9 @@ object DisplayMessage {
         showMessage(short, null, highlight, highlightColor)
     }
 
-    fun showMessageCustom(message: String) {
-        DrawMessageOnTop.addMessage(message)
+    @JvmOverloads
+    fun showMessageCustom(message: String, color: Color? = null) {
+        DrawMessageOnTop.addMessage(message, color ?: Misc.getTextColor())
         Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
     }
 
