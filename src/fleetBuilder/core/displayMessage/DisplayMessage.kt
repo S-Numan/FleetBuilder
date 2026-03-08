@@ -63,7 +63,12 @@ object DisplayMessage {
     }
 
     @JvmOverloads
-    fun showMessage(short: String, color: Color?, highlight: String, highlightColor: Color = Misc.getHighlightColor()) {
+    fun showMessage(
+        short: String,
+        color: Color?,
+        highlight: String,
+        highlightColor: Color = Misc.getHighlightColor(),
+    ) {
         var defaultColor = color
 
         val gameState = Global.getCurrentState()
@@ -98,7 +103,6 @@ object DisplayMessage {
             DrawMessageOnTop.addMessage(short)
 
         Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
-
     }
 
     @JvmOverloads
@@ -109,6 +113,11 @@ object DisplayMessage {
     @JvmOverloads
     fun showMessage(short: String, highlight: String, highlightColor: Color = Misc.getHighlightColor()) {
         showMessage(short, null, highlight, highlightColor)
+    }
+
+    fun showMessageCustom(message: String) {
+        DrawMessageOnTop.addMessage(message)
+        Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
     }
 
     @JvmOverloads

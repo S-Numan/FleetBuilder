@@ -18,7 +18,7 @@ class LogMessageAppender : AppenderSkeleton() {
         if (event.getLevel().isGreaterOrEqual(ModSettings.addLogsToConsoleModConsoleLevel)) {
             if (ModSettings.isConsoleModEnabled && ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF) {
                 val msg = buildString {
-                    //append("[${event.getLevel()}] ")
+                    append("[${event.getLevel()}] ")
                     append("${event.loggerName} - ")
                     append(event.renderedMessage)
 
@@ -31,7 +31,7 @@ class LogMessageAppender : AppenderSkeleton() {
                 Console.showMessage(msg, Level.ALL)
             }
             if (ModSettings.addLogsToDisplayMessageLevel != Level.OFF) {
-                DisplayMessage.showMessage(event.renderedMessage)
+                DisplayMessage.showMessageCustom(event.renderedMessage)
             }
         }
     }

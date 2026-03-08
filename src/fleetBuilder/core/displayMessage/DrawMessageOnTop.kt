@@ -11,6 +11,8 @@ import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
 
+// TODO, add color capability.
+
 class DrawMessageOnTop : EveryFrameCombatPlugin {
 
     companion object {
