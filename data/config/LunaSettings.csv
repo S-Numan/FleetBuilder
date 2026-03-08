@@ -4,7 +4,7 @@ enableCheats,Enable Cheats,Boolean,false,,"This must be enabled to use the more 
 If Dev mode is on, this will be treated as enabled, even if it isn’t.",,,General
 ,,,,,,,,
 ,,,,,,,,
-fleetClipboardHotkeyHandler,Enable Hotkey Handler,Boolean,true,,"Adds a bunch of useful hotkeys in many places.
+fleetClipboardHotkeyHandler,Enable Hotkey Handler,Boolean,true,fprovided,"Adds a bunch of useful hotkeys in many places.
 
 Hotkeys:
 
@@ -153,6 +153,11 @@ personHeader,Person Header,Header,Person Saving Settings,,,,,Misc
 ,,,,,,,,
 ,,,,,,,,
 showDebug,Show Debug,Boolean,false,,Show debug elements,,,Dev Options
+,,,,,,,,
+addLogsToConsoleModConsoleLevel,Add logs to Console,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL","Add logs in ./starsector.log of input level and above to the ConsoleCommands Console, provided that mod is enabled.
+Does not show logs from before onApplicationLoad of this mod is called.
+Requires game restart when enabling to take effect.",,,Dev Options
+,,,,,,,,
 removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?",,,Dev Options
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.

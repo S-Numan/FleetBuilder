@@ -11,6 +11,7 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManager
 import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
 import fleetBuilder.features.codexButton.CampaignDevModeCodexButton
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
+import fleetBuilder.features.consoleMirror.ConsoleMirrorAppender
 import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
 import fleetBuilder.features.filters.injection.CampaignFleetScreenFilter
 import fleetBuilder.features.filters.injection.CampaignModPickerFilter
@@ -23,6 +24,9 @@ import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.util.LookupUtil
 import fleetBuilder.util.listeners.ShipOfficerChangeEvents
 import fleetBuilder.util.listeners.ShipOfficerChangeTracker
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
+
 
 class EventDispatcher : EveryFrameScript {
 
@@ -92,6 +96,10 @@ class EventDispatcher : EveryFrameScript {
 
     fun onApplicationLoad() {
         ModSettings.onApplicationLoad()
+
+        if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF && ModSettings.isConsoleModEnabled) {
+            Logger.getRootLogger().addAppender(ConsoleMirrorAppender())
+        }
 
         LookupUtil.onApplicationLoad()
 

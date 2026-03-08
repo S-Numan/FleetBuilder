@@ -5,6 +5,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.containsString
 import lunalib.lunaSettings.LunaSettings
+import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
@@ -73,6 +74,8 @@ object ModSettings {
     val modID = "SN_FleetBuilder"
 
     val modName = "FleetBuilder"
+
+    var addLogsToConsoleModConsoleLevel = Level.OFF
 
 
     var selectorsPerRow = 4

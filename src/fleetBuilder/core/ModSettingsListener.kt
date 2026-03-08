@@ -7,6 +7,7 @@ import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
 import lunalib.lunaSettings.LunaSettings.getString
 import lunalib.lunaSettings.LunaSettingsListener
+import org.apache.log4j.Level
 
 internal class ModSettingsListener : LunaSettingsListener {
     init {
@@ -27,6 +28,17 @@ internal class ModSettingsListener : LunaSettingsListener {
         val featuresDisabled = getBoolean(modID, "featuresDisabled")!!
 
         if (!featuresDisabled) {
+            val level = getString(modID, "addLogsToConsoleModConsoleLevel")!!
+            ModSettings.addLogsToConsoleModConsoleLevel = when (level) {
+                "FATAL" -> Level.FATAL
+                "ERROR" -> Level.ERROR
+                "WARN" -> Level.WARN
+                "INFO" -> Level.INFO
+                "DEBUG" -> Level.DEBUG
+                "ALL" -> Level.ALL
+                else -> Level.OFF
+            }
+
             ModSettings.selectorsPerRow = getInt(modID, "selectorsPerRow")!!
             ModSettings.showCoreGoalVariants = getBoolean(modID, "showCoreGoalVariants")!!
             ModSettings.showCoreNonGoalVariants = getBoolean(modID, "showCoreNonGoalVariants")!!
@@ -81,6 +93,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.removeRefitHullmod = false
             ModSettings.autoMothballRecoveredShips = false
             ModSettings.transponderOffInHyperspace = false
+            ModSettings.addLogsToConsoleModConsoleLevel = Level.OFF
         }
 
         EventDispatcher.setListeners()

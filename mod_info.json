@@ -1,6 +1,6 @@
 {
   "id": "SN_FleetBuilder",
-  "name": "FleetBuilder",
+  "name": " FleetBuilder", # The space before the name is to cause FleetBuilder to load first, both so that cached functions can be used by other mods and so certain settings such as log to console can get as many logs as possible.
   "author": "S-Numan",
   "utility": true,
   "version": { "major": '1', "minor": '27', "patch": '1' },
