@@ -553,6 +553,13 @@ internal object AutofitPanel {
         for (index in selectorPlugins.indices) {
             val selectorPlugin = selectorPlugins[index]
 
+            selectorPlugin.onHover { event ->
+                if (selectorPlugin.autofitSpec == null)
+                    return@onHover
+                
+                if (Keyboard.isKeyDown(Keyboard.KEY_F2))
+                    Global.getSettings().showCodex(selectorPlugin.autofitSpec!!.variant.createFleetMember())
+            }
             selectorPlugin.onPressOutside {
                 if (selectorPlugin.autofitSpec != null) highlightBasedOnVariant(selectorPlugin.autofitSpec!!.variant, baseVariant, selectorPlugin) // Mostly for applying the different flux stat symbol on alteration of flux stats.
             }

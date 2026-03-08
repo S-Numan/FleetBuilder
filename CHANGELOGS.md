@@ -12,6 +12,7 @@
 - Right clicking outside the autofit dialog removes closes the dialog.
 - Autofit button now shows up in codex above ship display, just click the button to see!
 - Add logs to Console and Add logs to Display Manager setting. When enabled, any logs sent to starsector.log above the specified level will be put in either the ConsoleCommands console or displayed on screen.
+- Can now press F2 on an autofit loadout to open it's codex entry.
 ### Bugfixes
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason
