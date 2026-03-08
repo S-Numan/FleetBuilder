@@ -104,7 +104,7 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
                 }
 
                 override fun advance(amount: Float) {
-                    if ((screenPanel.lastComponent as? CustomPanelAPI)?.plugin != this)
+                    if (screenPanel.lastComponent !== panel)
                         screenPanel.bringComponentToTop(panel)
                 }
             }
