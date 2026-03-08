@@ -154,10 +154,23 @@ object ShipDirectoryService {
             directory.optJSONArray("shipPaths")?.let { shipJsonPaths ->
                 val seenPaths = mutableSetOf<String>()
 
-                for (i in 0 until shipJsonPaths.length()) {
+                var i = 0
+                while (i < shipJsonPaths.length()) {
                     val shipJson = shipJsonPaths.getJSONObject(i)
 
                     val shipPath = shipJson.getString("shipPath")
+
+                    if (!Global.getSettings().fileExistsInCommon("$dirPath$prefix/$shipPath")) {
+                        Global.getLogger(this.javaClass)
+                            .warn("shipPath in path directory /saves/common/$dirPath$prefix\nlinked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location. Removing entry from directory.")
+
+                        shipJsonPaths.remove(i)
+
+                        directory.put("shipPaths", shipJsonPaths)
+                        Global.getSettings().writeJSONToCommon(configFilePath, directory, false)
+
+                        continue
+                    }
 
                     val parsedDate: Date = try {
                         val dateString = shipJson.getString("modifyTime")
@@ -179,34 +192,27 @@ object ShipDirectoryService {
                     var data: DataVariant.ParsedVariantData? = null
                     val missing = MissingElements()
 
-                    if (Global.getSettings().fileExistsInCommon("$dirPath$prefix/$shipPath")) {
-                        val variantString: String
-                        try {
-                            variantString = Global.getSettings().readTextFileFromCommon("$dirPath$prefix/$shipPath")
-                        } catch (e: Exception) {
-                            Global.getLogger(this.javaClass).error(
-                                "Failed to read ship variant at /saves/common/$dirPath$prefix/$shipPath\n",
-                                e
-                            )
-                            continue
-                        }
-                        val tempData = SerializationUtils.extractDataFromString(variantString)
-                        if (tempData == null) {
-                            Global.getLogger(this.javaClass).error("Failed to get ship variant at /saves/common/$dirPath$prefix/$shipPath\n")
-                            continue
-                        } else if (tempData is DataVariant.ParsedVariantData) {
-                            data = tempData
-                        } else {
-                            Global.getLogger(this.javaClass).error("Ship variant was not of data type ParsedVariantData at /saves/common/$dirPath$prefix/$shipPath\nHow?")
-                            continue
-                        }
-                    } else {//Failed to find ship at specific path.
-                        Global.getLogger(this.javaClass)
-                            .warn("shipPath in path directory /saves/common/$dirPath$prefix linked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location")
-                        //Global.getLogger(this.javaClass).info("Failed to find ship with path $dirPath$prefix/$shipPath . Removing from directory")
-                        //TODO, remove this shipPath from shipPaths
+                    val variantString: String
+                    try {
+                        variantString = Global.getSettings().readTextFileFromCommon("$dirPath$prefix/$shipPath")
+                    } catch (e: Exception) {
+                        Global.getLogger(this.javaClass).error(
+                            "Failed to read ship variant at /saves/common/$dirPath$prefix/$shipPath\n",
+                            e
+                        )
                         continue
                     }
+                    val tempData = SerializationUtils.extractDataFromString(variantString)
+                    if (tempData == null) {
+                        Global.getLogger(this.javaClass).error("Failed to get ship variant at /saves/common/$dirPath$prefix/$shipPath\n")
+                        continue
+                    } else if (tempData is DataVariant.ParsedVariantData) {
+                        data = tempData
+                    } else {
+                        Global.getLogger(this.javaClass).error("Ship variant was not of data type ParsedVariantData at /saves/common/$dirPath$prefix/$shipPath\nHow?")
+                        continue
+                    }
+
 
                     if (shipDirectory.containsShip(data.variantId)) {
                         throw Error(
@@ -226,6 +232,8 @@ object ShipDirectoryService {
                         variant.addTag("#PREFIX_$prefix")
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(variant, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     }
+
+                    i++
                 }
             }
 
