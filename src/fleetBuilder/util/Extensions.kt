@@ -302,7 +302,7 @@ fun CargoStackAPI.isBlueprintOrModSpec(): Boolean {
     return this.type == CargoAPI.CargoItemType.SPECIAL && (this.plugin is BlueprintProviderItem || this.plugin is ModSpecItemPlugin)
 }
 
-fun String.startsWithJsonBracket(): Boolean {
+fun String.isJSON(): Boolean {
     this.lineSequence()
         .map { it.substringBefore("#") }           // Remove inline comments
         .map { it.trim() }                          // Trim whitespace

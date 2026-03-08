@@ -6,6 +6,7 @@ import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString
 import fleetBuilder.serialization.variant.CompressedVariant.isCompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
+import fleetBuilder.util.isJSON
 import org.json.JSONObject
 
 object SerializationUtils {
@@ -67,6 +68,13 @@ object SerializationUtils {
 
     fun extractDataFromString(text: String): Any? {
         if (text.isEmpty()) return null
+        if (text.isJSON()) {
+            val json = getJSONFromStringSafe(text)
+            return if (json != null)
+                extractDataFromJSON(json)
+            else
+                null
+        }
 
         return when {
             isCompressedVariant(text) ->
