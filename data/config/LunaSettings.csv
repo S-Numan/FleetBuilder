@@ -152,12 +152,12 @@ personHeader,Person Header,Header,Person Saving Settings,,,,,Misc
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
-showDebug,Show Debug,Boolean,false,,Show debug elements,,,Dev Options
+,,,,,,,,
 ,,,,,,,,
 addLogsToConsoleModConsoleLevel,Add logs to Console,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL","Add logs in ./starsector.log of input level and above to the ConsoleCommands Console, provided that mod is enabled.
 Does not show logs from before onApplicationLoad of this mod is called.",,,Dev Options
 addLogsToDisplayMessageLevel,Add logs to Display Message,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL",Show logs in ./starsector.log of input level and above as a message on the top of the screen.,,,Dev Options
-,,,,,,,,
+showDebug,Show Debug,Boolean,false,,Show debug elements,,,Dev Options
 removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?",,,Dev Options
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
