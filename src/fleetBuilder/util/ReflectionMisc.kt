@@ -197,10 +197,14 @@ object ReflectionMisc {
         if (Global.getSettings().isShowingCodex) return true
 
         val gameState = Global.getCurrentState()
-        if (gameState == GameState.TITLE) { // Check for the codex that opens when clicking a ship in the title-screen missions
+
+        // Check for the codex that opens when clicking a ship in the title-screen missions
+        if (gameState == GameState.TITLE) {
             if (getScreenPanel()?.findChildWithMethodReversed("getCurrentSnapshot") != null)
                 return true
         }
+
+        // F2 while hovering over ship in the fleet screen. Clicking the question mark in the fleet screen. Does not include hovering over the question mark and pressing F2
         if (gameState == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
             val coreUI = getCoreUI() as? UIPanelAPI ?: return false
             if (coreUI.findChildWithMethodReversed("getCurrentSnapshot") != null)
@@ -232,8 +236,7 @@ object ReflectionMisc {
 
         //settingsCodex is false despite codex being open
         if (gameState == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
-
-            //F2 while hovering over ship or ship question mark press in the fleet screen. NOT hover over question mark and press F2, that is handled differently for some reason.
+            //F2 while hovering over ship in the fleet screen. Clicking the question mark in the fleet screen. Does not include hovering over the question mark and pressing F2, that is handled differently for some reason.
             val coreUI = getCoreUI() as? UIPanelAPI
 
             val codex = coreUI?.findChildWithMethodReversed("getCurrentSnapshot") as? CodexDialog
