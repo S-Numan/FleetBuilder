@@ -89,8 +89,15 @@ object LookupUtil {
         IDToWeapon = Global.getSettings().actuallyAllWeaponSpecs.associateBy { it.weaponId }
     }
 
-    fun getVariantsFromEffectiveHullID(hullId: String): List<ShipVariantAPI>? {
-        val variants = effectiveHullIDToVariant[hullId] ?: return null
+
+    /**
+     * Returns a list of [ShipVariantAPI] clones for the specified [hullId].
+     *
+     * @param hullId The ID of the hull spec to get variants for.
+     * @return A list of [ShipVariantAPI] clones for the specified [hullId]
+     */
+    fun getVariantsFromEffectiveHullID(hullId: String): List<ShipVariantAPI> {
+        val variants = effectiveHullIDToVariant[hullId] ?: emptyList()
         return variants.map { it.clone() }
     }
 

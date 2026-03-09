@@ -30,8 +30,8 @@ object HullUtils {
             val exactId = hull.hullId
             val dLessId = hull.getCompatibleDLessHullId()
 
-            variants?.filter { it.source == VariantSource.HULL } // Filter out non hull variants
-                ?.takeIf { it.isNotEmpty() }
+            variants.filter { it.source == VariantSource.HULL } // Filter out non hull variants
+                .takeIf { it.isNotEmpty() }
                 ?.let { hullVariants ->
                     hullVariants.find { it.hullSpec.hullId == exactId }          // Exact match
                         ?: hullVariants.find { it.hullSpec.hullId == dLessId }   // D-less match
