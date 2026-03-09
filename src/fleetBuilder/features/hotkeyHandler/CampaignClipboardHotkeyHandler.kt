@@ -14,15 +14,11 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.core.ModSettings
-import fleetBuilder.core.ModSettings.commandShuttleId
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
-import fleetBuilder.serialization.member.JSONMember.saveMemberToJson
-import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.FBMisc.campaignPaste
 import fleetBuilder.util.FBMisc.fleetPaste
@@ -36,7 +32,6 @@ import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
-import starficz.ReflectionUtils.get
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.findChildWithMethod
@@ -137,12 +132,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         val sector = Global.getSector() ?: return
         val ui = sector.campaignUI ?: return
 
-        //Anti nexerelin code
-        if (dialogToDismiss != null && !Keyboard.isKeyDown(Keyboard.KEY_V)) {
-            dialogToDismiss!!.safeInvoke("dismiss", 0)
-            dialogToDismiss = null
-        }
-
         events.forEach { event ->
             if (event.isConsumed) return@forEach
 
@@ -168,7 +157,6 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     }
 
     private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
-        //if (ModSettings.areCheatsEnabled()) return
         if (ReflectionMisc.isCodexOpen()) return
         if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
             event.consume()
@@ -249,11 +237,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
     }
 
-    var dialogToDismiss: UIPanelAPI? = null
     private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
         val data = ClipboardMisc.extractDataFromClipboard() ?: run {
-            //DisplayMessage.showMessage(FBTxt.txt("no_valid_data_in_clipboard"), Color.YELLOW)
-            //event.consume()
             return
         }
 
@@ -268,22 +253,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                     !ui.isShowingMenu)
         ) {
             if (!ModSettings.cheatsEnabled()) {
-
-                //Anti nexerelin code
-                if (Global.getSettings().modManager.isModEnabled("nexerelin")) {
-                    ui.showMessageDialog("FleetBuilder Placeholder Dialog")
-                    val screenPanel = ui.get("screenPanel") as? UIPanelAPI
-                    dialogToDismiss = screenPanel?.findChildWithMethod("getOptionMap") as? UIPanelAPI
-                    if (dialogToDismiss != null) {
-                        dialogToDismiss!!.safeInvoke("setOpacity", 0f)
-                        dialogToDismiss!!.safeInvoke("setBackgroundDimAmount", 0f)
-                        dialogToDismiss!!.safeInvoke("setAbsorbOutsideEvents", false)
-                        dialogToDismiss!!.safeInvoke("makeOptionInstant", 0)
-                    }
-                }
-
                 DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
-
             } else
                 campaignPaste(sector, data)
         }
@@ -305,10 +275,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 } else null
             } ?: return
 
-            val json = savePersonToJson(hoverOfficer)
-            ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
-            event.consume()
+            ClipboardHotkeyHandlerUtils.personClick(event, hoverOfficer)
         } catch (e: Exception) {
             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
@@ -325,57 +292,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             val fader = portraitPanel.safeInvoke("getMouseoverHighlightFader") as? Fader ?: return
             val isPortraitHoveredOver = fader.isFadingIn || fader.brightness == 1f
 
-            if (event.isCtrlDown && event.isLMBDownEvent) {
-                if (isPortraitHoveredOver) {
-                    val json = savePersonToJson(mouseOverMember.captain)
-                    ClipboardUtil.setClipboardText(json.toString(4))
-                    DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
-                } else {
-                    if (mouseOverMember.variant.hasHullMod(commandShuttleId)) {
-                        DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
-                        return
-                    }
+            if (!isPortraitHoveredOver)
+                ClipboardHotkeyHandlerUtils.memberClick(event, mouseOverMember)
+            else if (mouseOverMember.captain != null)
+                ClipboardHotkeyHandlerUtils.personClick(event, mouseOverMember.captain)
 
-                    val json = saveMemberToJson(mouseOverMember)
-                    ClipboardUtil.setClipboardText(json.toString(4))
-                    DisplayMessage.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
-                }
-                event.consume()
-            } else if (isPortraitHoveredOver && mouseOverMember.captain.isPlayer) {
-                //Hovering over player portrait
-
-                val isShuttle = mouseOverMember.variant.hasHullMod(commandShuttleId)
-
-                if (event.isLMBDownEvent && isShuttle) { // Eat attempt to open captain picker dialog for shuttle. The shuttle is player only
-                    event.consume()
-                    return
-                }
-
-                if (event.isRMBDownEvent) {
-                    when {
-                        isShuttle -> {
-                            if (sector.playerFleet?.fleetSizeCount == 1)
-                                DisplayMessage.showMessage(FBTxt.txt("cannot_remove_last_ship_in_fleet"), Color.YELLOW)
-                            else
-                                CommanderShuttle.removePlayerShuttle()
-                        }
-
-                        ModSettings.unassignPlayer() -> {
-                            CommanderShuttle.addPlayerShuttle()
-                        }
-
-                        else -> {
-                            DisplayMessage.showMessage(
-                                FBTxt.txt("enable_unassign_player", ModSettings.modName),
-                                Color.YELLOW
-                            )
-                        }
-                    }
-
-                    Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 1f)
-                    event.consume()
-                }
-            }
         } catch (e: Exception) {
             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
@@ -401,10 +322,8 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             if (!(fader.isFadingIn || fader.brightness == 1f)) return
 
             val member = thing.safeInvoke("getMember") as? FleetMemberAPI ?: return
-            val json = savePersonToJson(member.captain)
-            ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
-            event.consume()
+            if (member.captain != null)
+                ClipboardHotkeyHandlerUtils.personClick(event, member.captain)
         } catch (e: Exception) {
             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
         }
