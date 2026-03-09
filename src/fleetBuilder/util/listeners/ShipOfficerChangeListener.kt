@@ -48,7 +48,7 @@ class ShipOfficerChangeTracker {
         val member: FleetMemberAPI,
         val previous: PersonAPI?,
         val current: PersonAPI?,
-        val newMember: Boolean // Is true if this officer change was activated by a new ship being added to the fleet, otherwise false.
+        val newMember: Boolean // Is true if this officer change was activated by a new member being added to the fleet, otherwise false.
     )
 
     private val lastAssignments = mutableMapOf<String, PersonAPI?>()
