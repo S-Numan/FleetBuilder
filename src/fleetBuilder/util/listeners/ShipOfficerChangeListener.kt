@@ -1,8 +1,11 @@
 package fleetBuilder.util.listeners
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.getActualCurrentTab
 
 fun interface ShipOfficerChangeListener {
     fun onOfficerAssignmentChanged(change: ShipOfficerChangeTracker.OfficerChange)
@@ -44,13 +47,15 @@ class ShipOfficerChangeTracker {
     data class OfficerChange(
         val member: FleetMemberAPI,
         val previous: PersonAPI?,
-        val current: PersonAPI?
+        val current: PersonAPI?,
+        val newMember: Boolean // Is true if this officer change was activated by a new ship being added to the fleet, otherwise false.
     )
 
     private val lastAssignments = mutableMapOf<String, PersonAPI?>()
 
     private val changed = mutableListOf<OfficerChange>()
 
+    private var justPickedUpMember = false
 
     fun getChangedAssignments(): List<OfficerChange> {
         val fleet = Global.getSector()?.playerFleet ?: return emptyList()
@@ -66,10 +71,12 @@ class ShipOfficerChangeTracker {
 
             if (previous !== current) {
                 val currentIsDefault = current?.isDefault != false
+                val previousIsNull = previous == null
                 val previousIsDefault = previous?.isDefault != false
 
                 if (!(currentIsDefault && previousIsDefault)) {
-                    changed.add(OfficerChange(member, previous, current))
+                    if (!justPickedUpMember)
+                        changed.add(OfficerChange(member, previous, current, previousIsNull))
                 }
             }
 
@@ -81,6 +88,10 @@ class ShipOfficerChangeTracker {
             currentIds.add(member.id)
         }
         lastAssignments.keys.retainAll(currentIds)
+
+        // Picking up and putting down a member in the fleet screen would be considered an officer change by default, this prevents that
+        if (Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET)
+            justPickedUpMember = ReflectionMisc.getFleetScreenPickedUpMember() != null
 
         return changed
     }

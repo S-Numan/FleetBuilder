@@ -346,4 +346,10 @@ object ReflectionMisc {
 
         postUpdateFleetPanelCallbacks.forEach { it.invoke() }
     }
+
+    fun getFleetScreenPickedUpMember(): Any? {
+        val fleetPanel = getFleetPanel()
+        val clickAndDropHandler = fleetPanel?.safeInvoke("getClickAndDropHandler")
+        return clickAndDropHandler?.safeInvoke("getPickedUpMember")
+    }
 }
