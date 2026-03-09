@@ -98,7 +98,7 @@ class CargoFilterPanel(
 
     private fun CargoStackAPI.matchesDescription(desc: String): Boolean {
         return when {
-            displayName.lowercase().startsWith(desc) -> true
+            displayName.lowercase().contains(desc) -> true
             specialDataIfSpecial?.getSpecialItemName()?.lowercase()?.startsWith(desc) == true -> true
             CargoUtils.getItemTech(this)?.lowercase()?.startsWith(desc) == true -> true
             "weapon".startsWith(desc) && isWeaponStack -> true

@@ -12,10 +12,8 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.safeInvoke
 
 class CampaignCargoScreenFilter : CargoScreenListener, EveryFrameScript {
-    companion object {
-        var marketOpened = false
-        var playerStorageOpened = false
-    }
+    var marketOpened = false
+    var playerStorageOpened = false
 
     override fun reportCargoScreenOpened() {
         marketOpened = true
