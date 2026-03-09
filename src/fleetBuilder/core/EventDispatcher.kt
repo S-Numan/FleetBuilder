@@ -23,8 +23,8 @@ import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.util.LookupUtil
-import fleetBuilder.util.listeners.FleetMemberChangeEvents
-import fleetBuilder.util.listeners.FleetMemberChangeTracker
+import fleetBuilder.util.listeners.MemberChangeEvents
+import fleetBuilder.util.listeners.MemberChangeTracker
 import fleetBuilder.util.listeners.OfficerChangeEvents
 import fleetBuilder.util.listeners.OfficerChangeTracker
 import org.apache.log4j.Level
@@ -123,7 +123,7 @@ class EventDispatcher : EveryFrameScript {
     }
 
     private val officerTracker = OfficerChangeTracker()
-    private val memberTracker = FleetMemberChangeTracker()
+    private val memberTracker = MemberChangeTracker()
 
     fun onGameLoad(newGame: Boolean) {
 
@@ -186,7 +186,7 @@ class EventDispatcher : EveryFrameScript {
             OfficerChangeEvents.notifyAll(officerChanges)
 
             val memberChanges = memberTracker.getChangedMembers()
-            FleetMemberChangeEvents.notifyAll(memberChanges)
+            MemberChangeEvents.notifyAll(memberChanges)
         }
 
         //Detect DevMode change

@@ -3,22 +3,22 @@ package fleetBuilder.util.listeners
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
-fun interface FleetMemberChangeListener {
-    fun onFleetMemberChanged(change: FleetMemberChangeTracker.MemberChange)
+fun interface MemberChangeListener {
+    fun onFleetMemberChanged(change: MemberChangeTracker.MemberChange)
 }
 
-object FleetMemberChangeEvents {
-    private val listeners = mutableListOf<FleetMemberChangeListener>()
+object MemberChangeEvents {
+    private val listeners = mutableListOf<MemberChangeListener>()
 
-    fun addTransientListener(listener: FleetMemberChangeListener) {
+    fun addTransientListener(listener: MemberChangeListener) {
         listeners += listener
     }
 
-    fun removeTransientListener(listener: FleetMemberChangeListener) {
+    fun removeTransientListener(listener: MemberChangeListener) {
         listeners -= listener
     }
 
-    fun removeTransientListenerWithClass(clazz: Class<out FleetMemberChangeListener>) {
+    fun removeTransientListenerWithClass(clazz: Class<out MemberChangeListener>) {
         listeners.removeAll { it::class.java == clazz }
     }
 
@@ -26,20 +26,20 @@ object FleetMemberChangeEvents {
         listeners.clear()
     }
 
-    fun notify(change: FleetMemberChangeTracker.MemberChange) {
+    fun notify(change: MemberChangeTracker.MemberChange) {
         for (listener in listeners) {
             listener.onFleetMemberChanged(change)
         }
     }
 
-    fun notifyAll(changes: List<FleetMemberChangeTracker.MemberChange>) {
+    fun notifyAll(changes: List<MemberChangeTracker.MemberChange>) {
         for (change in changes) {
             notify(change)
         }
     }
 }
 
-class FleetMemberChangeTracker {
+class MemberChangeTracker {
     data class MemberChange(
         val member: FleetMemberAPI,
         val type: ChangeType

@@ -2,8 +2,8 @@ package fleetBuilder.features.autoMothball
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.listeners.FleetMemberChangeEvents
-import fleetBuilder.util.listeners.FleetMemberChangeTracker
+import fleetBuilder.util.listeners.MemberChangeEvents
+import fleetBuilder.util.listeners.MemberChangeTracker
 
 private const val CR_THRESHOLD = 0.4f
 private const val HULL_THRESHOLD = 1f
@@ -19,10 +19,10 @@ class AutoMothballRecoveredShips : EveryFrameScript {
         if (!init) {
             val sector = Global.getSector() ?: return
 
-            FleetMemberChangeEvents.addTransientListener { change ->
+            MemberChangeEvents.addTransientListener { change ->
                 if (sector.currentlyOpenMarket != null)
                     return@addTransientListener
-                if (change.type == FleetMemberChangeTracker.ChangeType.REMOVED)
+                if (change.type == MemberChangeTracker.ChangeType.REMOVED)
                     return@addTransientListener
 
                 val tracker = change.member.repairTracker
