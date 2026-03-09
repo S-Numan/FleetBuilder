@@ -148,20 +148,13 @@ class EventDispatcher : EveryFrameScript {
                 try {
                     Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", jsonString)
                 } catch (e: Exception) {
-                    Global.getLogger(this.javaClass).error("FleetBuilder: Backup Save failed.")
-                    //DisplayMessage.showError("FleetBuilder: Backup Save failed.", e)
+                    Global.getLogger(this.javaClass).error("FleetBuilder: Backup Save failed.\n$e")
                 }
             } else {
                 Global.getLogger(this.javaClass).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
-                //DisplayMessage.showMessage("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.", Color.YELLOW)
             }
         }
     }
-
-    //override fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
-    //VariantLib.reportFleetMemberVariantSaved(member, dockedAt)
-    //}
-
 
     override fun isDone(): Boolean = false
     override fun runWhilePaused(): Boolean = true

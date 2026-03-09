@@ -82,7 +82,8 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
 
             if (LookupUtil.Loaded())
-                ShipDirectoryService.loadAllDirectories()//Reload the LoadoutManager
+                ShipDirectoryService.loadAllDirectories()
+
         } else {
             ModSettings.setUnassignPlayer(false)
             ModSettings.setCheatsEnabled(false)
@@ -102,6 +103,8 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.addLogsToDisplayMessageLevel = Level.OFF
         }
 
-        EventDispatcher.setListeners()
+        if (LookupUtil.Loaded())
+            EventDispatcher.setListeners()
+
     }
 }
