@@ -15,9 +15,9 @@ import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.createHullVariant
@@ -225,7 +225,7 @@ class CampaignDevModeCodexButton : EveryFrameScript {
         if (parsedData != null) {
 
             repeat(count) {
-                FBMisc.fleetPaste(sector, parsedData)
+                ClipboardHotkeyHandlerUtils.fleetPaste(sector, parsedData)
             }
         }
 

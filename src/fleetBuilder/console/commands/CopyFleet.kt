@@ -10,7 +10,7 @@ import com.fs.starfarer.api.mission.FleetSide
 import com.fs.starfarer.api.mission.MissionDefinitionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
-import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember.copyMember
@@ -169,7 +169,8 @@ class CopyFleet : BaseCommand {
 
             return BaseCommand.CommandResult.SUCCESS
         } else if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-            if (CampaignClipboardHotkeyHandler.handleUIFleetCopy(sector)) {
+
+            if (ClipboardHotkeyHandlerUtils.handleUIFleetCopy(sector)) {
                 Console.showMessage("Copied fleet in UI to clipboard")
                 return BaseCommand.CommandResult.SUCCESS
             } else {
@@ -177,7 +178,7 @@ class CopyFleet : BaseCommand {
                 return BaseCommand.CommandResult.ERROR
             }
         } else if (ui.currentInteractionDialog != null) {
-            if (CampaignClipboardHotkeyHandler.handleInteractionCopy(ui, false)) {
+            if (ClipboardHotkeyHandlerUtils.handleInteractionCopy(ui, false)) {
                 Console.showMessage("Copied interaction fleet to clipboard")
                 return BaseCommand.CommandResult.SUCCESS
             } else {

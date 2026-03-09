@@ -333,6 +333,12 @@ fun PersonAPI.isGenericOfficer(): Boolean {
     return !hasSkill
 }*/
 
+fun CampaignUIAPI.isIdle(): Boolean {
+    return currentInteractionDialog == null &&
+            !isShowingDialog &&
+            !isShowingMenu
+}
+
 /**
  * Delegates to [HullUtils.createHullVariant].
  */

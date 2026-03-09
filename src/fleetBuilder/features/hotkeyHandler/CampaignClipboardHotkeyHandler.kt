@@ -1,154 +1,63 @@
 package fleetBuilder.features.hotkeyHandler
 
-import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.*
+import com.fs.starfarer.api.campaign.CampaignUIAPI
+import com.fs.starfarer.api.campaign.CoreUITabId
+import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
-import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
-import com.fs.starfarer.api.ui.UIPanelAPI
-import com.fs.starfarer.campaign.fleet.FleetMember
-import com.fs.starfarer.codex2.CodexDialog
-import com.fs.starfarer.coreui.CaptainPickerDialog
-import fleetBuilder.core.ModSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.campaignPaste
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.fleetPaste
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleCaptainPickerMouseEvents
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleCreateOfficer
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleDevModeHotkey
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleFleetMouseEvents
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleInteractionCopy
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRefitCopy
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRefitMouseEvents
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRefitPaste
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleSaveTransfer
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleUIFleetCopy
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.serialization.fleet.FleetSettings
-import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.FBMisc.campaignPaste
-import fleetBuilder.util.FBMisc.fleetPaste
-import fleetBuilder.util.FBMisc.handleRefitCopy
-import fleetBuilder.util.FBMisc.handleRefitPaste
-import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
-import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.util.lib.ClipboardUtil
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.isIdle
 import org.lwjgl.input.Keyboard
-import starficz.ReflectionUtils.getFieldsMatching
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.findChildWithMethod
-import java.awt.Color
 
 
 internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
-
-    companion object {
-        fun handleInteractionCopy(ui: CampaignUIAPI, isAltDown: Boolean): Boolean {
-            val interaction = ui.currentInteractionDialog
-            val plugin = interaction?.plugin
-            val battle = (plugin?.context as? FleetEncounterContext)?.battle
-            val fleet = if (battle != null && !isAltDown) {
-                battle.nonPlayerCombined
-            } else {
-                interaction?.interactionTarget as? CampaignFleetAPI
-            }
-
-            fleet?.let { fleetToCopy ->
-                val json = saveFleetToJson(
-                    fleetToCopy,
-                    FleetSettings().apply {
-                        memberSettings.personSettings.handleXpAndPoints = false
-                    }
-                )
-
-                ClipboardUtil.setClipboardText(json.toString(4))
-                DisplayMessage.showMessage(
-                    if (!isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1) {
-                        FBTxt.txt("copied_interaction_fleet_with_supporting_to_clipboard")
-                    } else {
-                        FBTxt.txt("copied_interaction_fleet_to_clipboard")
-                    }
-                )
-                return true
-            }
-            return false
-        }
-
-        fun handleUIFleetCopy(sector: SectorAPI): Boolean {
-            val playerFleet = sector.playerFleet?.fleetData ?: return false
-
-            val settings = FleetSettings()
-            settings.includeIdleOfficers = false
-
-            var fleetToCopy: FleetDataAPI? = null
-            var uiShowsSubmarketFleet = false
-
-            try {
-                fleetToCopy = getViewedFleetInFleetPanel() ?: playerFleet
-                if (fleetToCopy !== playerFleet)
-                    uiShowsSubmarketFleet = true
-
-                val fleetGrid = ReflectionMisc.getFleetPanel()?.findChildWithMethod("removeItem") ?: return false
-
-                @Suppress("UNCHECKED_CAST")
-                val items = fleetGrid.safeInvoke("getItems") as? List<UIPanelAPI?> ?: return false
-
-                // Collect IDs of visible members from the UI
-                val visibleMemberIds = items.mapNotNull { item ->
-                    (item?.safeInvoke("getMember") as? FleetMemberAPI)?.id
-                }.toSet()
-
-                // Exclude any member from the fleet that's not visible in the UI
-                fleetToCopy.membersListCopy.forEach { member ->
-                    if (member.id !in visibleMemberIds) {
-                        settings.excludeMembersWithID.add(member.id)
-                    }
-                }
-            } catch (e: Exception) {
-                DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
-                return false
-            }
-
-            val json = saveFleetToJson(fleetToCopy, settings)
-            ClipboardUtil.setClipboardText(json.toString(4))
-            val txt =
-                if (settings.excludeMembersWithID.isEmpty()) {
-                    if (!uiShowsSubmarketFleet)
-                        FBTxt.txt("copied_entire_fleet_to_clipboard")
-                    else
-                        FBTxt.txt("copied_entire_submarket_to_clipboard")
-                } else {
-                    if (!uiShowsSubmarketFleet)
-                        FBTxt.txt("copied_visible_fleet_to_clipboard")
-                    else
-                        FBTxt.txt("copied_visible_submarket_to_clipboard")
-                }
-            DisplayMessage.showMessage(txt)
-            return true
-        }
-    }
-
     override fun getListenerInputPriority(): Int = 1
 
     override fun processCampaignInputPreCore(events: MutableList<InputEventAPI>) {
         val sector = Global.getSector() ?: return
         val ui = sector.campaignUI ?: return
 
-        events.forEach { event ->
-            if (event.isConsumed) return@forEach
+        for (event in events) {
+            if (event.isConsumed) continue
 
             when (event.eventType) {
-                InputEventType.KEY_DOWN -> handleKeyDownEvents(event, sector, ui)
-                InputEventType.MOUSE_DOWN -> handleMouseDownEvents(event, sector, ui)
+                InputEventType.KEY_DOWN ->
+                    handleKeyDownEvents(event, sector, ui)
+
+                InputEventType.MOUSE_DOWN ->
+                    handleMouseDownEvents(event, ui)
+
                 else -> Unit
             }
         }
     }
 
-    private fun handleKeyDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        if (!event.isCtrlDown) return
-        if (DialogUtils.isPopUpPanelOpen()) return
+    private fun handleKeyDownEvents(
+        event: InputEventAPI,
+        sector: SectorAPI,
+        ui: CampaignUIAPI
+    ) {
+        if (!event.isCtrlDown || DialogUtils.isPopUpPanelOpen()) return
 
         when (event.eventValue) {
-            Keyboard.KEY_D -> handleDevModeHotkey(event, sector)
+            Keyboard.KEY_D -> if (event.isShiftDown) handleDevModeHotkey(event)
             Keyboard.KEY_C -> handleCopyHotkey(event, sector, ui)
             Keyboard.KEY_V -> handlePasteHotkey(event, ui, sector)
             Keyboard.KEY_O -> handleCreateOfficer(event, ui)
@@ -156,30 +65,10 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
     }
 
-    private fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.isCodexOpen()) return
-        if ((ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
-            event.consume()
-
-            HotkeyHandlerDialogs.createSaveTransferDialog()
-        }
-    }
-
-    private fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.getCodexDialog() != null) return
-        if (ui.getActualCurrentTab() == CoreUITabId.FLEET || (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)) {
-            event.consume()
-
-            if (!ModSettings.cheatsEnabled()) {
-                DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_officer_creator", ModSettings.modName), Color.YELLOW)
-                return
-            }
-
-            HotkeyHandlerDialogs.createOfficerCreatorDialog()
-        }
-    }
-
-    private fun handleMouseDownEvents(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
+    private fun handleMouseDownEvents(
+        event: InputEventAPI,
+        ui: CampaignUIAPI
+    ) {
         if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
 
         val tab = ui.getActualCurrentTab() ?: return
@@ -187,146 +76,67 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
         if (tab == CoreUITabId.REFIT || tab == CoreUITabId.FLEET) {
             val captainPicker = ReflectionMisc.getCaptainPickerDialog()
+
             if (captainPicker != null) {
                 if (isCtrlLmb)
                     handleCaptainPickerMouseEvents(event, captainPicker)
             } else if (tab == CoreUITabId.REFIT) {
                 if (isCtrlLmb)
                     handleRefitMouseEvents(event)
-            } else { // FLEET
-                handleFleetMouseEvents(event, sector)
+            } else {
+                handleFleetMouseEvents(event)
             }
         }
     }
 
-    private fun handleDevModeHotkey(event: InputEventAPI, sector: SectorAPI) {
-        if (!event.isShiftDown) return
-        if (ReflectionMisc.isCodexOpen()) return
-        event.consume()
+    private fun handleCopyHotkey(
+        event: InputEventAPI,
+        sector: SectorAPI,
+        ui: CampaignUIAPI
+    ) {
+        val codex = ReflectionMisc.getCodexDialog()
 
-        createDevModeDialog()
-    }
-
-    private fun handleCopyHotkey(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        try {
-            val codex = ReflectionMisc.getCodexDialog()
-            when {
-                codex != null -> handleCodexCopy(event, codex)
-                ui.getActualCurrentTab() == CoreUITabId.FLEET -> if (handleUIFleetCopy(sector)) event.consume()
-                ui.getActualCurrentTab() == CoreUITabId.REFIT -> if (handleRefitCopy(event.isShiftDown)) event.consume()
-                ui.currentInteractionDialog != null -> if (handleInteractionCopy(ui, event.isAltDown)) event.consume()
+        when {
+            codex != null -> {
+                ClipboardMisc.codexEntryToClipboard(codex)
+                event.consume()
             }
-        } catch (e: Exception) {
-            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+            ui.getActualCurrentTab() == CoreUITabId.FLEET -> if (handleUIFleetCopy(sector)) event.consume()
+            ui.getActualCurrentTab() == CoreUITabId.REFIT -> if (handleRefitCopy(event.isShiftDown)) event.consume()
+            ui.currentInteractionDialog != null -> if (handleInteractionCopy(ui, event.isAltDown)) event.consume()
         }
     }
 
-    private fun handleCodexCopy(event: InputEventAPI, codex: CodexDialog) {
-        ClipboardMisc.codexEntryToClipboard(codex)
-        event.consume()
-    }
-
-    private fun handlePasteHotkey(event: InputEventAPI, ui: CampaignUIAPI, sector: SectorAPI) {
+    private fun handlePasteHotkey(
+        event: InputEventAPI,
+        ui: CampaignUIAPI,
+        sector: SectorAPI
+    ) {
         if (ReflectionMisc.isCodexOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
-            if (handleRefitPaste())
-                event.consume()
+            if (handleRefitPaste()) event.consume()
         } else {
             handleOtherPaste(event, sector, ui)
         }
     }
 
-    private fun handleOtherPaste(event: InputEventAPI, sector: SectorAPI, ui: CampaignUIAPI) {
-        val data = ClipboardMisc.extractDataFromClipboard() ?: run {
-            return
-        }
+    private fun handleOtherPaste(
+        event: InputEventAPI,
+        sector: SectorAPI,
+        ui: CampaignUIAPI
+    ) {
+        val data = ClipboardMisc.extractDataFromClipboard() ?: return
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-            if (!ModSettings.cheatsEnabled())
-                DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
-            else
+            if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
                 fleetPaste(sector, data)
-        } else if (
-            (ui.currentInteractionDialog == null &&// Handle campaign map paste (no dialog/menu showing)
-                    !ui.isShowingDialog &&
-                    !ui.isShowingMenu)
-        ) {
-            if (!ModSettings.cheatsEnabled()) {
-                DisplayMessage.showMessage(FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName), Color.YELLOW)
-            } else
+        } else if (ui.isIdle()) {
+            if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
                 campaignPaste(sector, data)
         }
 
         event.consume()
-    }
-
-    private fun handleCaptainPickerMouseEvents(event: InputEventAPI, captainPicker: CaptainPickerDialog) {
-        try {
-            val officers = captainPicker.safeInvoke("getListOfficers")?.safeInvoke("getItems") as? MutableList<*>
-                ?: return
-            val hoverOfficer = officers.firstNotNullOfOrNull { officer ->
-                val selector = officer?.safeInvoke("getSelector") ?: return@firstNotNullOfOrNull null
-                val fader = selector.safeInvoke("getMouseoverHighlightFader") as? Fader
-                    ?: return@firstNotNullOfOrNull null
-                if (fader.isFadingIn || fader.brightness == 1f) {
-                    val parent = selector.safeInvoke("getParent") ?: return@firstNotNullOfOrNull null
-                    parent.safeInvoke("getPerson") as? PersonAPI
-                } else null
-            } ?: return
-
-            ClipboardHotkeyHandlerUtils.personClick(event, hoverOfficer)
-        } catch (e: Exception) {
-            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
-        }
-    }
-
-    private fun handleFleetMouseEvents(event: InputEventAPI, sector: SectorAPI) {
-        try {
-            val memberUI = getMemberUIHoveredInFleetTabLowerPanel() ?: return
-
-            val mouseOverMember = memberUI.getFieldsMatching(type = FleetMember::class.java).getOrNull(0)?.get(memberUI) as? FleetMemberAPI
-                ?: return
-
-            val portraitPanel = memberUI.safeInvoke("getPortraitButton") ?: return
-            val fader = portraitPanel.safeInvoke("getMouseoverHighlightFader") as? Fader ?: return
-            val isPortraitHoveredOver = fader.isFadingIn || fader.brightness == 1f
-
-            if (!isPortraitHoveredOver)
-                ClipboardHotkeyHandlerUtils.memberClick(event, mouseOverMember)
-            else if (mouseOverMember.captain != null)
-                ClipboardHotkeyHandlerUtils.personClick(event, mouseOverMember.captain)
-
-        } catch (e: Exception) {
-            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
-        }
-    }
-
-    private fun handleRefitMouseEvents(event: InputEventAPI) {
-        try {
-            val refitTab = ReflectionMisc.getRefitTab() ?: return
-            val refitTabChildren = refitTab.safeInvoke("getChildrenCopy") as? MutableList<*> ?: return
-            val thing = refitTabChildren.lastOrNull() { child ->
-                child?.getMethodsMatching("getFleetMemberIndex") != null
-            } ?: return
-            if (thing.getMethodsMatching("getOfficerAndCRDisplay").isEmpty()) return // The previous thing getter may get children we do not want, as it wasn't programmed good enough. I'm too lazy to fix it right now, so this is here to avoid issues.
-
-            val officerCRDisplay = thing.safeInvoke("getOfficerAndCRDisplay") as? UIPanelAPI ?: return
-            val children = officerCRDisplay.safeInvoke("getChildrenCopy") as? List<*> ?: return
-            val officerPanel = children.firstOrNull {
-                it?.getMethodsMatching(name = "getBar")?.isEmpty() ?: true &&
-                        it?.getMethodsMatching(name = "getMouseoverHighlightFader")?.isNotEmpty() ?: false
-            } ?: return
-
-            val fader = officerPanel.safeInvoke("getMouseoverHighlightFader") as? Fader ?: return
-            if (!(fader.isFadingIn || fader.brightness == 1f)) return
-
-            val member = thing.safeInvoke("getMember") as? FleetMemberAPI ?: return
-            if (member.captain != null)
-                ClipboardHotkeyHandlerUtils.personClick(event, member.captain)
-        } catch (e: Exception) {
-            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
-        }
     }
 
     override fun processCampaignInputPreFleetControl(events: MutableList<InputEventAPI>) = Unit

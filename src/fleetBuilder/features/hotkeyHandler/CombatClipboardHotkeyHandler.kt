@@ -21,7 +21,6 @@ import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.reportMissingElementsIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.FBMisc
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import org.lwjgl.input.Keyboard
@@ -51,29 +50,27 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 ClipboardMisc.codexEntryToClipboard(codex)
                                 event.consume(); continue
                             }
-                            if (FBMisc.handleRefitCopy(event.isShiftDown))
-                                event.consume()
-
+                            if (ClipboardHotkeyHandlerUtils.handleRefitCopy(event.isShiftDown)) {
+                                event.consume(); continue
+                            }
                         } catch (e: Exception) {
                             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
                         if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
                             HotkeyHandlerDialogs.createDevModeDialog()
-                            event.consume()
-                            continue
+                            event.consume(); continue
                         }
                         val engine = Global.getCombatEngine() ?: return
                         if (engine.isSimulation || (Global.getCurrentState() == GameState.COMBAT && ModSettings.cheatsEnabled())) {
                             pasteShipIntoCombat(engine, event)
-                            event.consume()
-                            continue
+                            event.consume(); continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
-                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtils.isPopUpPanelOpen())
-                                if (FBMisc.handleRefitPaste())
-                                    event.consume()
-
-                            continue
+                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtils.isPopUpPanelOpen()) {
+                                if (ClipboardHotkeyHandlerUtils.handleRefitPaste()) {
+                                    event.consume(); continue
+                                }
+                            }
                         }
                     }
                 }
