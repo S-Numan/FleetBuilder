@@ -2,7 +2,6 @@ package fleetBuilder.core
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
@@ -139,10 +138,6 @@ class EventDispatcher : EveryFrameScript {
         memberTracker.reset()
 
         CommanderShuttle.onGameLoad(newGame)
-
-        FleetMemberChangeEvents.addTransientListener { change ->
-            DisplayMessage.showMessage("Member " + change.type.toString() + " . Name of member: " + change.member.shipName)
-        }
     }
 
     fun beforeGameSave() {
