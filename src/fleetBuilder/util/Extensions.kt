@@ -24,6 +24,7 @@ import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.getChildrenCopy
 import starficz.onClick
+import java.awt.Color
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -345,7 +346,7 @@ fun ShipHullSpecAPI.createHullVariant(): ShipVariantAPI =
     HullUtils.createHullVariant(this)
 
 fun ShipVariantAPI.createFleetMember(): FleetMemberAPI =
-    Global.getSettings().createFleetMember(FleetMemberType.SHIP, this)
+    Global.getSettings().createFleetMember(if (isFighter) FleetMemberType.FIGHTER_WING else FleetMemberType.SHIP, this)
 
 
 internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
@@ -482,4 +483,8 @@ fun TooltipMakerAPI.addNumericTextField(
 
     addCustom(observedText.component, 0f)
     return observedText
+}
+
+fun Color.setColor(red: Int? = null, green: Int? = null, blue: Int? = null, alpha: Int? = null): Color {
+    return Color(red ?: this.red, green ?: this.green, blue ?: this.blue, alpha ?: this.alpha)
 }
