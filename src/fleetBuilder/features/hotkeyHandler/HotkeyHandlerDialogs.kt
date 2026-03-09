@@ -203,6 +203,14 @@ object HotkeyHandlerDialogs {
             toggleDev.onClick {
                 Global.getSettings().isDevMode = toggleDev.isChecked
             }
+            val triggerTestMessage = ui.addButton(
+                "Trigger Test Message",
+                null,
+                160f, 24f, 8f
+            )
+            triggerTestMessage.onClick {
+                DisplayMessage.showMessageCustom("Test Message!", Color.RED)
+            }
 
             dialog.addCloseButton()
         }

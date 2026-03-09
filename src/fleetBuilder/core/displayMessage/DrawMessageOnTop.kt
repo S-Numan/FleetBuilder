@@ -16,8 +16,6 @@ import org.magiclib.kotlin.setAlpha
 import starficz.lastComponent
 import java.awt.Color
 
-// TODO, add color capability.
-
 class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
 
     companion object {
