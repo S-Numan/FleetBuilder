@@ -8,10 +8,10 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 
 fun interface ShipOfficerChangeListener {
-    fun onOfficerAssignmentChanged(change: ShipOfficerChangeTracker.OfficerChange)
+    fun onOfficerAssignmentChanged(change: OfficerChangeTracker.OfficerChange)
 }
 
-object ShipOfficerChangeEvents {
+object OfficerChangeEvents {
     private val listeners = mutableListOf<ShipOfficerChangeListener>()
 
     fun addTransientListener(listener: ShipOfficerChangeListener) {
@@ -30,20 +30,20 @@ object ShipOfficerChangeEvents {
         listeners.clear()
     }
 
-    fun notify(change: ShipOfficerChangeTracker.OfficerChange) {
+    fun notify(change: OfficerChangeTracker.OfficerChange) {
         for (listener in listeners) {
             listener.onOfficerAssignmentChanged(change)
         }
     }
 
-    fun notifyAll(changes: List<ShipOfficerChangeTracker.OfficerChange>) {
+    fun notifyAll(changes: List<OfficerChangeTracker.OfficerChange>) {
         for (change in changes) {
             notify(change)
         }
     }
 }
 
-class ShipOfficerChangeTracker {
+class OfficerChangeTracker {
     data class OfficerChange(
         val member: FleetMemberAPI,
         val previous: PersonAPI?,

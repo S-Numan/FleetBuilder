@@ -2,6 +2,7 @@ package fleetBuilder.core
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
@@ -23,8 +24,10 @@ import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.util.LookupUtil
-import fleetBuilder.util.listeners.ShipOfficerChangeEvents
-import fleetBuilder.util.listeners.ShipOfficerChangeTracker
+import fleetBuilder.util.listeners.FleetMemberChangeEvents
+import fleetBuilder.util.listeners.FleetMemberChangeTracker
+import fleetBuilder.util.listeners.OfficerChangeEvents
+import fleetBuilder.util.listeners.OfficerChangeTracker
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.lazywizard.console.Console
@@ -120,20 +123,26 @@ class EventDispatcher : EveryFrameScript {
         ShipDirectoryService.loadAllDirectories()
     }
 
-    private val officerTracker = ShipOfficerChangeTracker()
+    private val officerTracker = OfficerChangeTracker()
+    private val memberTracker = FleetMemberChangeTracker()
 
     fun onGameLoad(newGame: Boolean) {
 
         setListeners()
 
 
-        ShipOfficerChangeEvents.clearAll()
+        OfficerChangeEvents.clearAll()
 
         MakeSaveRemovable.onGameLoad()
 
         officerTracker.reset()
+        memberTracker.reset()
 
         CommanderShuttle.onGameLoad(newGame)
+
+        FleetMemberChangeEvents.addTransientListener { change ->
+            DisplayMessage.showMessage("Member " + change.type.toString() + " . Name of member: " + change.member.shipName)
+        }
     }
 
     fun beforeGameSave() {
@@ -178,8 +187,11 @@ class EventDispatcher : EveryFrameScript {
     private var lastDevMode: Boolean = false
     override fun advance(amount: Float) {
         if (Global.getSector().isPaused) {
-            val changed = officerTracker.getChangedAssignments()
-            ShipOfficerChangeEvents.notifyAll(changed)
+            val officerChanges = officerTracker.getChangedAssignments()
+            OfficerChangeEvents.notifyAll(officerChanges)
+
+            val memberChanges = memberTracker.getChangedMembers()
+            FleetMemberChangeEvents.notifyAll(memberChanges)
         }
 
         //Detect DevMode change

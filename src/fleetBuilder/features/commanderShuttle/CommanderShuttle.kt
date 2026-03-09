@@ -7,7 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.core.ModSettings
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.listeners.ShipOfficerChangeEvents
+import fleetBuilder.util.listeners.OfficerChangeEvents
 
 class CommanderShuttle : CurrentLocationChangedListener {
     override fun reportCurrentLocationChanged(prev: LocationAPI?, curr: LocationAPI?) {
@@ -30,7 +30,7 @@ class CommanderShuttle : CurrentLocationChangedListener {
                 sector.addTransientListener(commanderShuttleListener)
             }
 
-            ShipOfficerChangeEvents.addTransientListener { change ->
+            OfficerChangeEvents.addTransientListener { change ->
                 //Remove commandShuttle if was piloted by player and is no longer
                 if (change.previous != null && change.previous.isPlayer &&
                     change.member.variant?.hasHullMod(ModSettings.commandShuttleId) == true
