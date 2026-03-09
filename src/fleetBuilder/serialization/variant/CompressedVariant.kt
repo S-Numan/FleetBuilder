@@ -20,15 +20,10 @@ object CompressedVariant {
 
     fun isCompressedVariant(comp: String): Boolean {
         val metaIndexStart = comp.indexOf(metaSep)
-
         if (metaIndexStart == -1) return false
 
-        val metaVersion = comp.substring(metaIndexStart + 1, metaIndexStart + 2)
-        if (metaVersion.isEmpty()) return false
-        if (metaVersion == "v" || metaVersion == "V")
-            return true
-
-        return false
+        val metaVersion = comp.getOrNull(metaIndexStart + 1)
+        return metaVersion?.equals('v', ignoreCase = true) == true
     }
 
     @JvmOverloads

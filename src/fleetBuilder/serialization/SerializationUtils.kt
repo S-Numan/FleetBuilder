@@ -2,6 +2,7 @@ package fleetBuilder.serialization
 
 import fleetBuilder.serialization.fleet.JSONFleet.extractFleetDataFromJson
 import fleetBuilder.serialization.member.JSONMember.extractMemberDataFromJson
+import fleetBuilder.serialization.person.CompressedPerson.isCompressedPerson
 import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString
 import fleetBuilder.serialization.variant.CompressedVariant.isCompressedVariant
@@ -79,6 +80,8 @@ object SerializationUtils {
         return when {
             isCompressedVariant(text) ->
                 extractVariantDataFromCompString(text)
+            isCompressedPerson(text) ->
+                null
 
             else -> null
         }
