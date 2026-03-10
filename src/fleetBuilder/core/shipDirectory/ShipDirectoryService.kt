@@ -19,7 +19,6 @@ import fleetBuilder.util.LookupUtil.getCoreVariantsForEffectiveHullspec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import fleetBuilder.util.getCompatibleDLessHullId
-import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -138,7 +137,7 @@ object ShipDirectoryService {
                 "Failed to read the $prefix loadout directory",
                 message
             )
-            DisplayMessage.logMessage(message, Level.ERROR)
+            Global.getLogger(javaClass).error(message)
 
             _directory ?: return null
         }

@@ -8,7 +8,6 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.LookupUtil
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
-import org.apache.log4j.Level
 
 object HullUtils {
 
@@ -37,15 +36,15 @@ object HullUtils {
                         ?: hullVariants.find { it.hullSpec.hullId == dLessId }   // D-less match
                         ?: hullVariants.find { it.hullSpec.hullId == effectiveHullID } // Effective match
                         ?: run {
-                            DisplayMessage.logMessage("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'", Level.WARN, this.javaClass)
+                            Global.getLogger(javaClass).warn("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'")
                             hullVariants.firstOrNull()// Cannot find a good enough match, just go for whatever
                         }
                 }
         } ?: runCatching {
             val emptyVariant = Global.getSettings().createEmptyVariant(hull.hullId, hull)
-            DisplayMessage.logMessage(
+            Global.getLogger(javaClass).warn(
                 "Failed to find HULL variant for '${hull.hullId}' and fell back to createEmptyVariant. This can usually be ignored." +
-                        "\nHowever, ships may spawn without modules which can crash the game in certain circumstances", Level.WARN, this.javaClass
+                        "\nHowever, ships may spawn without modules which can crash the game in certain circumstances"
             )
             emptyVariant
         }.getOrNull() ?: run {

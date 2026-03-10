@@ -17,7 +17,6 @@ import fleetBuilder.util.LookupUtil.getAllDMods
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.HullUtils
 import fleetBuilder.util.api.VariantUtils
-import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
 import starficz.ReflectionUtils.getFieldsMatching
@@ -54,7 +53,7 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
         if (value != null) {
             list.add(value)
         } else {
-            DisplayMessage.logMessage("Invalid string at index $i in '$fieldName'", Level.WARN, this.javaClass)
+            Global.getLogger(javaClass).warn("Invalid string at index $i in '$fieldName'")
         }
     }
     return list

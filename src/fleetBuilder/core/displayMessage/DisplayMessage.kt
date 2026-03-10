@@ -46,7 +46,11 @@ object DisplayMessage {
                 Console.showMessage(full, Level.ERROR)
             }
         } else {
-            Global.getLogger(this.javaClass).error(full)
+            val callerClass: Class<*> = Throwable().stackTrace
+                .firstOrNull { it.className != this::class.java.name }
+                ?.let { runCatching { Class.forName(it.className) }.getOrNull() } ?: this.javaClass
+
+            Global.getLogger(callerClass).error(full)
         }
 
         // Show short message to player
@@ -119,23 +123,6 @@ object DisplayMessage {
     fun showMessageCustom(message: String, color: Color? = null) {
         DrawMessageOnTop.addMessage(message, color ?: Misc.getTextColor())
         Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
-    }
-
-    @JvmOverloads
-    fun logMessage(message: String, level: Level, inputJavaClass: Class<*>? = null) {
-        val javaClass = inputJavaClass ?: this.javaClass
-        if (ModSettings.isConsoleModEnabled)
-            Console.showMessage(message, level)
-        else if (level == Level.WARN)
-            Global.getLogger(javaClass).warn(message)
-        else if (level == Level.ERROR)
-            Global.getLogger(javaClass).error(message)
-        else if (level == Level.DEBUG)
-            Global.getLogger(javaClass).debug(message)
-        else if (level == Level.INFO)
-            Global.getLogger(javaClass).info(message)
-        else if (level == Level.FATAL)
-            Global.getLogger(javaClass).fatal(message)
     }
     /*
     val stackTrace = Exception().stackTrace
