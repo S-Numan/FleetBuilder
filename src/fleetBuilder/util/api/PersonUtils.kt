@@ -1,13 +1,37 @@
 package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.campaign.FactionAPI
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
+import fleetBuilder.serialization.person.DataPerson
+import fleetBuilder.serialization.person.PersonSettings
+import fleetBuilder.util.LookupUtil
 import java.util.*
 
 object PersonUtils {
+
+    fun getAllSourceModsFromPerson(
+        person: PersonAPI,
+        settings: PersonSettings = PersonSettings()
+    ): Set<ModSpecAPI> {
+        return getAllSourceModsFromPerson(DataPerson.getPersonDataFromPerson(person, settings))
+    }
+
+    fun getAllSourceModsFromPerson(data: DataPerson.ParsedPersonData): Set<ModSpecAPI> {
+        val sourceMods = mutableSetOf<ModSpecAPI>()
+
+        for (skill in data.skills) {
+            LookupUtil.getSkillSpec(skill.key)?.sourceMod?.let { sm ->
+                sourceMods.add(sm)
+            }
+        }
+
+        return sourceMods
+    }
+
     fun copyOfficerDataTo(from: PersonAPI, to: PersonAPI) {
         //to.id = from.id
         to.name = from.name

@@ -1,6 +1,7 @@
 package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
@@ -21,34 +22,37 @@ object LookupUtil {
     private lateinit var IDToWing: Map<String, FighterWingSpecAPI>
     private lateinit var IDToWeapon: Map<String, WeaponSpecAPI>
     private lateinit var IDToHullMod: Map<String, HullModSpecAPI>
+    private lateinit var IDToSkill: Map<String, SkillSpecAPI>
     private var init = false
     fun Loaded() = init
 
     fun onApplicationLoad() {
         init = true
 
-        allDMods = Global.getSettings().allHullModSpecs
+        val settings = Global.getSettings()
+
+        allDMods = settings.allHullModSpecs
             .asSequence()
             .filter { it.hasTag("dmod") }
             .map { it.id }
             .toSet()
 
-        allHiddenEverywhereMods = Global.getSettings().allHullModSpecs
+        allHiddenEverywhereMods = settings.allHullModSpecs
             .asSequence()
             .filter { it.isHiddenEverywhere }
             .map { it.id }
             .toSet()
 
-        //val variantIdMap = Global.getSettings().hullIdToVariantListMap//Does not contain every variant
+        //val variantIdMap = settings.hullIdToVariantListMap//Does not contain every variant
         val tempVariantMap: MutableMap<String, MutableList<ShipVariantAPI>> = mutableMapOf()
-        for (variantId in Global.getSettings().allVariantIds) {
-            val variant = Global.getSettings().getVariant(variantId) ?: continue
+        for (variantId in settings.allVariantIds) {
+            val variant = settings.getVariant(variantId) ?: continue
             if (variant.source != VariantSource.STOCK) continue
             val hullId = variant.hullSpec?.getEffectiveHullId() ?: continue
 
             //Are modules automatically put in every variant?
             /*variant.moduleSlots.forEach { slot ->
-                val moduleVariant = Global.getSettings().getVariant(variant.stationModules[slot].orEmpty())
+                val moduleVariant = settings.getVariant(variant.stationModules[slot].orEmpty())
                 if(moduleVariant != null) {
                     variant.setModuleVariant(slot, moduleVariant)
                 } else {
@@ -65,28 +69,29 @@ object LookupUtil {
 
         effectiveVariantMap = tempVariantMap.mapValues { it.value.toList() }
 
-        hullIDSet = Global.getSettings().allShipHullSpecs.map { it.hullId }.toSet()
+        hullIDSet = settings.allShipHullSpecs.map { it.hullId }.toSet()
 
         val fullEffectiveHullIdToVariantIdMap: Map<String, List<String>> =
-            Global.getSettings().allVariantIds
+            settings.allVariantIds
                 .groupBy { variantId ->
                     // Convert variant ID -> ShipVariantAPI -> hullSpec -> hullId
-                    Global.getSettings().getVariant(variantId).hullSpec.getEffectiveHullId()
+                    settings.getVariant(variantId).hullSpec.getEffectiveHullId()
                 }
 
         effectiveHullIDToVariant = fullEffectiveHullIdToVariantIdMap.mapValues { (_, variantIDs) ->
             variantIDs.mapNotNull { id ->
-                runCatching { Global.getSettings().getVariant(id) }.getOrNull()
+                runCatching { settings.getVariant(id) }.getOrNull()
             }
         }
 
         errorVariantHullID = createErrorVariant().hullSpec.hullId
 
-        IDToHullSpec = Global.getSettings().allShipHullSpecs.associateBy { it.hullId }
+        IDToHullSpec = settings.allShipHullSpecs.associateBy { it.hullId }
 
-        IDToWing = Global.getSettings().allFighterWingSpecs.associateBy { it.id }
-        IDToHullMod = Global.getSettings().allHullModSpecs.associateBy { it.id }
-        IDToWeapon = Global.getSettings().actuallyAllWeaponSpecs.associateBy { it.weaponId }
+        IDToWing = settings.allFighterWingSpecs.associateBy { it.id }
+        IDToHullMod = settings.allHullModSpecs.associateBy { it.id }
+        IDToWeapon = settings.actuallyAllWeaponSpecs.associateBy { it.weaponId }
+        IDToSkill = settings.skillIds.map { settings.getSkillSpec(it) }.associateBy { it.id }
     }
 
 
@@ -109,6 +114,7 @@ object LookupUtil {
     fun getActuallyAllWeaponSpecIDSet(): Set<String> = IDToWeapon.keys
     fun getHullModSpec(hullModId: String) = IDToHullMod[hullModId]
     fun getHullModIDSet(): Set<String> = IDToHullMod.keys
+    fun getSkillSpec(skillId: String) = IDToSkill[skillId]
     fun getAllDMods(): Set<String> = allDMods
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
 
