@@ -2,39 +2,58 @@ package fleetBuilder.features.autoMothball
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.listeners.MemberChangeEvents
-import fleetBuilder.util.listeners.MemberChangeTracker
+import com.fs.starfarer.api.campaign.FleetDataAPI
 
 private const val CR_THRESHOLD = 0.4f
 private const val HULL_THRESHOLD = 1f
 
 class AutoMothballRecoveredShips : EveryFrameScript {
-    private var init = false
+    private val knownMemberIds = mutableSetOf<String>()
+    private var wasAtInteraction = false
+    private var wasAtMarket = false
 
     override fun isDone(): Boolean = false
 
     override fun runWhilePaused(): Boolean = true
 
     override fun advance(amount: Float) {
-        if (!init) {
-            val sector = Global.getSector() ?: return
+        val sector = Global.getSector() ?: return
+        val fleetData = sector.playerFleet?.fleetData ?: return
 
-            MemberChangeEvents.addTransientListener { change ->
-                if (sector.currentlyOpenMarket != null)
-                    return@addTransientListener
-                if (change.type == MemberChangeTracker.ChangeType.REMOVED)
-                    return@addTransientListener
+        val isAtInteraction = sector.campaignUI?.currentInteractionDialog != null
+        val isAtMarket = sector.currentlyOpenMarket != null
 
-                val tracker = change.member.repairTracker
-                val isDamaged = tracker.cr <= CR_THRESHOLD && change.member.status.hullFraction <= HULL_THRESHOLD
-                val notAlreadyMothballed = !tracker.isMothballed && !tracker.isCrashMothballed
+        // Just opened an interaction
+        if (!wasAtInteraction && isAtInteraction) {
+            snapshotFleet(fleetData)
+        }
 
-                if (isDamaged && notAlreadyMothballed)
-                    tracker.isMothballed = true
-            }
+        // Just closed interaction (and not leaving market)
+        if (wasAtInteraction && !isAtInteraction && !isAtMarket) {
+            mothballNewlyRecoveredShips(fleetData)
+        }
 
-            init = true
+        wasAtInteraction = isAtInteraction
+        wasAtMarket = isAtMarket
+    }
+
+    private fun snapshotFleet(fleetData: FleetDataAPI) {
+        knownMemberIds.clear()
+        for (member in fleetData.membersListCopy) {
+            knownMemberIds.add(member.id)
         }
     }
 
+    private fun mothballNewlyRecoveredShips(fleetData: FleetDataAPI) {
+        for (member in fleetData.membersListCopy) {
+            if (member.id in knownMemberIds) continue
+
+            val tracker = member.repairTracker
+            val isDamaged = tracker.cr <= CR_THRESHOLD && member.status.hullFraction <= HULL_THRESHOLD
+            val notAlreadyMothballed = !tracker.isMothballed && !tracker.isCrashMothballed
+
+            if (isDamaged && notAlreadyMothballed)
+                tracker.isMothballed = true
+        }
+    }
 }
