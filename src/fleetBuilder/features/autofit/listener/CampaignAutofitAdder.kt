@@ -27,7 +27,10 @@ internal class CampaignAutofitAdder : EveryFrameScript {
     var refitTab: UIPanelAPI? = null
     override fun advance(amount: Float) {
         val sector = Global.getSector() ?: return
-        //if (!sector.isPaused) return
+        if (!sector.isPaused) {
+            refitTab = null
+            return
+        }
 
         val ui = sector.campaignUI ?: return
 
