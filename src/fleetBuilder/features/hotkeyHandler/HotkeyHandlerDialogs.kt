@@ -35,6 +35,7 @@ import starficz.onClick
 import starficz.width
 import java.awt.Color
 
+
 object HotkeyHandlerDialogs {
     fun pasteFleetIntoPlayerFleetDialog(
         data: DataFleet.ParsedFleetData,
@@ -196,19 +197,29 @@ object HotkeyHandlerDialogs {
     }
 
     fun createDevModeDialog() {
-        val dialog = BasePopUpPanel("Dev Options")
+        val dialog = BasePopUpPanel("Developer Options")
 
         dialog.onCreateUI(500f, 200f) { ui ->
             val toggleDev = ui.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
             toggleDev.onClick {
                 Global.getSettings().isDevMode = toggleDev.isChecked
             }
-            val triggerTestMessage = ui.addButton(
+
+            ui.addButton(
+                "Trigger F8 Reload",
+                null,
+                160f, 24f, 4f
+            ).onClick {
+                Global.getSettings().modManager.enabledModPlugins.forEach {
+                    it.onDevModeF8Reload()
+                }
+            }
+
+            ui.addButton(
                 "Trigger Test Message",
                 null,
-                160f, 24f, 8f
-            )
-            triggerTestMessage.onClick {
+                160f, 24f, 64f + 12f
+            ).onClick {
                 DisplayMessage.showMessageCustom("Test Message!", Color.RED)
             }
 

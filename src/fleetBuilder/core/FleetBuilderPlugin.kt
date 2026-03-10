@@ -6,14 +6,10 @@ import com.fs.starfarer.api.Global
 class FleetBuilderPlugin : BaseModPlugin() {
     val eventDispatcher = EventDispatcher()
     override fun onApplicationLoad() {
-        super.onApplicationLoad()
-
         eventDispatcher.onApplicationLoad()
     }
 
     override fun onGameLoad(newGame: Boolean) {
-        super.onGameLoad(newGame)
-
         val sector = Global.getSector() ?: return
 
         sector.addTransientScript(eventDispatcher)
@@ -22,20 +18,26 @@ class FleetBuilderPlugin : BaseModPlugin() {
     }
 
     override fun beforeGameSave() {
-        super.beforeGameSave()
-
         eventDispatcher.beforeGameSave()
     }
 
     override fun afterGameSave() {
-        super.afterGameSave()
-
         eventDispatcher.afterGameSave()
     }
 
-    override fun onDevModeF8Reload() {
-        super.onDevModeF8Reload()
+    override fun onGameSaveFailed() {
+        eventDispatcher.onGameSaveFailed()
+    }
 
+    override fun onDevModeF8Reload() {
         eventDispatcher.onDevModeF8Reload()
+    }
+
+    override fun onNewGame() {
+
+    }
+
+    override fun onEnabled(wasEnabledBefore: Boolean) {
+
     }
 }

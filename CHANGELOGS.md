@@ -1,4 +1,6 @@
 ## 2.0.0
+#### Big update!
+### Changes
 - Newly added Mothball Recovered Ships setting in the Misc tab. When this is true, newly recovered ships will be automatically mothballed.
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
 - Increase size of onslaught in autofit UI.
@@ -13,6 +15,7 @@
 - Autofit button now shows up in codex above ship display, just click the button to see!
 - Add logs to Console and Add logs to Display Manager setting. When enabled, any logs sent to starsector.log above the specified level will be put in either the ConsoleCommands console or displayed on screen.
 - Can now press F2 on an autofit loadout to open it's codex entry.
+- Improved missing element handling to now more frequently report what mods were used when pasting a variant/person/fleet with missing elements
 ### Bugfixes
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason

@@ -103,7 +103,12 @@ class EventDispatcher : EveryFrameScript {
                 e.printStackTrace()
             }
 
-            Logger.getRootLogger().addAppender(LogMessageAppender())
+            val rootLogger = Logger.getRootLogger()
+
+            if (rootLogger.getAppender("LogMessageAppender") == null) {
+                val appender = LogMessageAppender().apply { name = "LogMessageAppender" }
+                rootLogger.addAppender(appender)
+            }
         }
 
         LookupUtil.onApplicationLoad()
@@ -133,11 +138,7 @@ class EventDispatcher : EveryFrameScript {
         MakeSaveRemovable.beforeGameSave()
     }
 
-    fun afterGameSave() {
-        MakeSaveRemovable.afterGameSave()
-
-        CommanderShuttle.afterGameSave()
-
+    fun backupSave() {
         if (ModSettings.backupSave) {
             val json = PlayerSaveUtils.createPlayerSaveJson()
 
@@ -154,6 +155,18 @@ class EventDispatcher : EveryFrameScript {
                 Global.getLogger(this.javaClass).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
             }
         }
+    }
+
+    fun onGameSaveFailed() {
+        backupSave()
+    }
+
+    fun afterGameSave() {
+        MakeSaveRemovable.afterGameSave()
+
+        CommanderShuttle.afterGameSave()
+
+        backupSave()
     }
 
     override fun isDone(): Boolean = false

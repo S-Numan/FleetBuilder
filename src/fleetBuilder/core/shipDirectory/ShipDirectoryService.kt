@@ -202,7 +202,7 @@ object ShipDirectoryService {
                         )
                         continue
                     }
-                    val tempData = SerializationUtils.extractDataFromString(variantString)
+                    val tempData = SerializationUtils.extractDataFromString(variantString, missing)
                     if (tempData == null) {
                         Global.getLogger(this.javaClass).error("Failed to get ship variant at /saves/common/$dirPath$prefix/$shipPath\n")
                         continue
