@@ -16,6 +16,7 @@
 - Add logs to Console and Add logs to Display Manager setting. When enabled, any logs sent to starsector.log above the specified level will be put in either the ConsoleCommands console or displayed on screen.
 - Can now press F2 on an autofit loadout to open it's codex entry.
 - Improved missing element handling to now more frequently report what mods were used when pasting a variant/person/fleet with missing elements
+- Externalized more strings
 ### Bugfixes
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason
@@ -25,6 +26,7 @@
 - Fix isCodexOpen() still not working in some niche conditions.
 - Autofit entries which have had their files removed now have their path to them removed as well. This gets rid of the WARN messages on every game launch in the log.
 - Fix officers not being paste-able if they lack any skills
+- Fix officers not storing in different language.
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
 - A small overhaul to the dialog system. It will be a little different now in many ways.

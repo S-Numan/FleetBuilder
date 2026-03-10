@@ -48,7 +48,7 @@ class UnstoreOfficersInCargo : EveryFrameScript {
                         }
                     }
 
-                    sector.campaignUI.addMessage("Went beyond officer limit of '$maxOfficers'\nMothballing officered ships to prevent usage", Misc.getNegativeHighlightColor())
+                    sector.campaignUI.addMessage(FBTxt.txt("went_beyond_officer_limit", maxOfficers), Misc.getNegativeHighlightColor())
                 }
             }
 

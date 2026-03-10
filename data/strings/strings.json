@@ -41,6 +41,7 @@
 
   "failed_to_get_store_member_button":"Failed to get store member button",
   "officer_limit_reached":"Officer limit reached. On exiting the market, ships will be mothballed to prevent usage",
+  "went_beyond_officer_limit":"Went beyond officer limit of %s\nMothballing officered ships to prevent usage",
 
   "no_valid_data_in_clipboard":"No valid data in clipboard",
 
