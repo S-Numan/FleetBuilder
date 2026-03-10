@@ -33,6 +33,11 @@ fun Float.roundToDecimals(decimals: Int): Float {
     return (this * factor).roundToInt() / factor
 }
 
+fun Long.roundToDecimals(decimals: Int): Float {
+    val factor = 10.0.pow(decimals).toFloat()
+    return (this * factor).roundToInt() / factor
+}
+
 fun JSONArray.containsString(value: String): Boolean {
     for (i in 0 until this.length()) {
         if (this.optString(i) == value) return true

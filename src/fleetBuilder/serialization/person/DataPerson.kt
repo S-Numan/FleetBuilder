@@ -108,7 +108,7 @@ object DataPerson {
             val value = data.memKeys[key]
 
             when {
-                value !is Boolean && value !is String && value !is Int -> return@filterKeys false
+                value !is Boolean && value !is String && value !is Int && value !is Float && value !is Long -> return@filterKeys false
                 key in excludeKeys -> return@filterKeys false
                 settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
                 else -> return@filterKeys true

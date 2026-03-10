@@ -10,6 +10,7 @@ import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.util.FBMisc
+import fleetBuilder.util.roundToDecimals
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
@@ -152,7 +153,12 @@ object JSONPerson {
         data.memKeys.keys.forEach { key ->
             if (storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == ModSettings.storedOfficerTag)) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
 
-            val value = data.memKeys[key]
+            var value = data.memKeys[key]
+            if (value is Float)
+                value = value.roundToDecimals(2)
+            else if (value is Long)
+                value = value.roundToDecimals(2)
+            
             memKeysJSON.put(key.removePrefix("$"), value)
         }
         if (memKeysJSON.length() > 0)

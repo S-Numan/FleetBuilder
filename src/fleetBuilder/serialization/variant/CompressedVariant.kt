@@ -6,9 +6,9 @@ import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.SerializationUtils.fieldSep
+import fleetBuilder.serialization.SerializationUtils.joinSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
-import fleetBuilder.serialization.SerializationUtils.weaponGroupSep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.LookupUtil
@@ -128,7 +128,7 @@ object CompressedVariant {
         val tags = fields.getOrNull(11)?.takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
 
         val weaponGroups = if (weaponGroupString.isNotBlank()) {
-            weaponGroupString.split(weaponGroupSep).map { group ->
+            weaponGroupString.split(joinSep).map { group ->
                 val parts = group.split(sep)
                 val mode = parts[0].toInt()
                 val autofire = parts[1] == "1"
@@ -267,7 +267,7 @@ object CompressedVariant {
             }
             "$mode$sep$autofire$sep${weapons.joinToString(sep)}"
         }
-        val weaponGroupString = weaponGroupStrings.joinToString(weaponGroupSep)
+        val weaponGroupString = weaponGroupStrings.joinToString(joinSep)
 
         // Join everything
         parts += data.hullId

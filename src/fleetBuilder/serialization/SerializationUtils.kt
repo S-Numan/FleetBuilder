@@ -14,7 +14,7 @@ object SerializationUtils {
     const val sep = ","
     const val fieldSep = "%"//Only two ascii characters that cannot be in a variant display name
     const val metaSep = "$"//Only two ascii characters that cannot be in a variant display name
-    const val weaponGroupSep = ">"
+    const val joinSep = ">"
 
     fun cleanJsonStringInput(raw: String): String {
         return raw.lines()
