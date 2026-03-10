@@ -54,10 +54,14 @@ object HotkeyHandlerDialogs {
             val memberCount = validatedData.members.size
             val officerCount = validatedData.members.count { it.personData != null }
 
-            val text = if (officerCount > 0)
-                txtPlural("pasted_fleet_members_officers", memberCount, officerCount)
-            else
+            val text = if (officerCount > 0) {
+                if (officerCount > 1)
+                    txtPlural("pasted_fleet_members_officers", memberCount, officerCount)
+                else
+                    txtPlural("pasted_fleet_members_officer", memberCount, officerCount)
+            } else {
                 txtPlural("pasted_fleet_members_only", memberCount)
+            }
 
             ui.addPara(text, 0f)
 
@@ -247,10 +251,14 @@ object HotkeyHandlerDialogs {
             val memberCount = validatedData.members.size
             val officerCount = validatedData.members.count { it.personData != null }
 
-            val text = if (officerCount > 0)
-                txtPlural("pasted_fleet_members_officers", memberCount, officerCount)
-            else
+            val text = if (officerCount > 0) {
+                if (officerCount > 1)
+                    txtPlural("pasted_fleet_members_officers", memberCount, officerCount)
+                else
+                    txtPlural("pasted_fleet_members_officer", memberCount, officerCount)
+            } else {
                 txtPlural("pasted_fleet_members_only", memberCount)
+            }
 
             ui.addPara(text, 0f)
 

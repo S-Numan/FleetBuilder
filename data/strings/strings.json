@@ -162,8 +162,10 @@
   "pasted_fleet_members_only_one": "Pasted fleet contains %s member",
   "pasted_fleet_members_only_many": "Pasted fleet contains %s members",
 
-  "pasted_fleet_members_officers_one": "Pasted fleet contains %s member and %s officer",
+  "pasted_fleet_members_officers_one": "Pasted fleet contains %s member and %s officers",
   "pasted_fleet_members_officers_many": "Pasted fleet contains %s members and %s officers",
+  "pasted_fleet_members_officer_one": "Pasted fleet contains %s member and %s officer",
+  "pasted_fleet_members_officer_many": "Pasted fleet contains %s members and %s officer",
 
   "fleet_contains_missing_hull_one": "Fleet contains %s hull from missing mods",
   "fleet_contains_missing_hull_many": "Fleet contains %s hulls from missing mods",
