@@ -182,8 +182,10 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
         var element: Any? = null
 
+        val missing = MissingElements()
+
         if (event.eventValue == Keyboard.KEY_V) {
-            val data = ClipboardMisc.extractDataFromClipboard() ?: return
+            val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
             if (data is DataVariant.ParsedVariantData || data is DataMember.ParsedMemberData) {
                 //
             } else {
@@ -193,8 +195,6 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
             element = data
         }
-
-        val missing = MissingElements()
         var member: FleetMemberAPI? = null
 
         when (element) {

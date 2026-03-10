@@ -59,57 +59,60 @@ object SerializationUtils {
         }
     }
 
-    fun extractDataFromAny(value: Any): Any? {
+    @JvmOverloads
+    fun extractDataFromAny(value: Any, missing: MissingElements = MissingElements()): Any? {
         if (value is String)
-            return extractDataFromString(value)
+            return extractDataFromString(value, missing)
         else if (value is JSONObject)
-            return extractDataFromJSON(value)
+            return extractDataFromJSON(value, missing)
 
         return null
     }
 
-    fun extractDataFromString(text: String): Any? {
+    @JvmOverloads
+    fun extractDataFromString(text: String, missing: MissingElements = MissingElements()): Any? {
         if (text.isEmpty()) return null
         if (text.isJSON()) {
             val json = getJSONFromStringSafe(text)
             return if (json != null)
-                extractDataFromJSON(json)
+                extractDataFromJSON(json, missing)
             else
                 null
         }
 
         return when {
             isCompressedVariant(text) ->
-                CompressedVariant.extractVariantDataFromCompString(text)
+                CompressedVariant.extractVariantDataFromCompString(text, missing)
             isCompressedPerson(text) ->
-                CompressedPerson.extractPersonDataFromCompString(text)
+                CompressedPerson.extractPersonDataFromCompString(text, missing)
 
             else -> null
         }
     }
 
-    fun extractDataFromJSON(json: JSONObject): Any? {
+    @JvmOverloads
+    fun extractDataFromJSON(json: JSONObject, missing: MissingElements = MissingElements()): Any? {
         if (json.length() == 0) return null
 
         return when {
             json.has("skills") || json.has("first") -> {
                 // Officer
-                extractPersonDataFromJson(json)
+                extractPersonDataFromJson(json, missing)
             }
 
             json.has("variant") || json.has("officer") -> {
                 // Fleet member
-                extractMemberDataFromJson(json)
+                extractMemberDataFromJson(json, missing)
             }
 
             json.has("hullId") -> {
                 // Variant
-                extractVariantDataFromJson(json)
+                extractVariantDataFromJson(json, missing)
             }
 
             json.has("members") -> {
                 // Fleet
-                extractFleetDataFromJson(json)
+                extractFleetDataFromJson(json, missing)
             }
 
             else -> null

@@ -284,7 +284,9 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleRefitPaste(): Boolean {
-        var data = ClipboardMisc.extractDataFromClipboard() ?: return false
+        val missing = MissingElements()
+
+        var data = ClipboardMisc.extractDataFromClipboard(missing) ?: return false
 
         if (data is DataMember.ParsedMemberData && data.variantData != null) {
             data = data.variantData
@@ -294,7 +296,6 @@ internal object ClipboardHotkeyHandlerUtils {
             return true
         }
 
-        val missing = MissingElements()
         val variant = buildVariantFull(data, missing = missing)
 
         if (missing.hullIds.isNotEmpty()) {
@@ -386,7 +387,8 @@ internal object ClipboardHotkeyHandlerUtils {
 
     fun campaignPaste(
         sector: SectorAPI,
-        data: Any
+        data: Any,
+        missing: MissingElements = MissingElements()
     ): Boolean {
         var newData = data
         if (newData !is DataFleet.ParsedFleetData) {
@@ -416,7 +418,6 @@ internal object ClipboardHotkeyHandlerUtils {
             }
         }
 
-        val missing = MissingElements()
         val validatedData = validateAndCleanFleetData(newData as DataFleet.ParsedFleetData, settings = FleetSettings(), missing = missing)
 
         if (validatedData.members.isEmpty()) {
@@ -431,7 +432,8 @@ internal object ClipboardHotkeyHandlerUtils {
 
     fun fleetPaste(
         sector: SectorAPI,
-        data: Any
+        data: Any,
+        missing: MissingElements = MissingElements()
     ) {
         val playerFleet = sector.playerFleet.fleetData
 
@@ -440,8 +442,6 @@ internal object ClipboardHotkeyHandlerUtils {
         val fleetToAddTo = getViewedFleetInFleetPanel() ?: playerFleet
         if (fleetToAddTo !== playerFleet)
             uiShowsSubmarketFleet = true
-
-        val missing = MissingElements()
 
         when (data) {
             is DataPerson.ParsedPersonData -> {

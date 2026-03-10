@@ -102,14 +102,15 @@ object ClipboardMisc {
         }
     }
 
-    fun extractDataFromClipboard(): Any? {
+    @JvmOverloads
+    fun extractDataFromClipboard(missing: MissingElements = MissingElements()): Any? {
         val jsonContents = ClipboardUtil.getClipboardJson()
         if (jsonContents != null)
-            return SerializationUtils.extractDataFromJSON(jsonContents)
+            return SerializationUtils.extractDataFromJSON(jsonContents, missing)
 
         val stringContents = ClipboardUtil.getClipboardTextSafe()
         if (stringContents != null)
-            return SerializationUtils.extractDataFromString(stringContents)
+            return SerializationUtils.extractDataFromString(stringContents, missing)
 
         return null
     }

@@ -20,6 +20,7 @@ import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRef
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleSaveTransfer
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleUIFleetCopy
 import fleetBuilder.serialization.ClipboardMisc
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
@@ -126,14 +127,15 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         sector: SectorAPI,
         ui: CampaignUIAPI
     ) {
-        val data = ClipboardMisc.extractDataFromClipboard() ?: return
+        val missing = MissingElements()
+        val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
             if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
-                fleetPaste(sector, data)
+                fleetPaste(sector, data, missing)
         } else if (ui.isIdle()) {
             if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
-                campaignPaste(sector, data)
+                campaignPaste(sector, data, missing)
         }
 
         event.consume()
