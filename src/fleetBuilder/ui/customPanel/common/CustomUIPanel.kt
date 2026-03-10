@@ -31,7 +31,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     protected open var createUIOnInit: Boolean = true
 
     open var alpha: Float = 1f
-    open val rendererBorder: UILinesRenderer = UILinesRenderer(0f)
+    open val rendererBorder: UILinesRendererGL = UILinesRendererGL(0f)
 
     private val settings = Global.getSettings()
 

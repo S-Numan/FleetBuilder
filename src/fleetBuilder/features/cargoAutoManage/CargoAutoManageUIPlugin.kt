@@ -281,7 +281,7 @@ class CargoAutoManageUIPlugin(
             val cargoItemSelector = CargoItemSelector(market, selectedSubmarket)
 
             val panelAPI = cargoItemSelector.init(
-                320f,
+                325f,
                 20f,
                 Global.getSettings().mouseX.toFloat(),
                 Global.getSettings().mouseY.toFloat(),
