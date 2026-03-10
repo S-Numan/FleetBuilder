@@ -157,27 +157,16 @@
 
 
 
-  # pasteFleetIntoPlayerFleetDialog
+  # Paste fleet dialogs
 
-  "pasted_fleet_contains_member": "Pasted fleet contains %s member",
-  "pasted_fleet_contains_members": "Pasted fleet contains %s members",
+  "pasted_fleet_members_only_one": "Pasted fleet contains %s member",
+  "pasted_fleet_members_only_many": "Pasted fleet contains %s members",
 
-  "pasted_fleet_contains_member_and_officer": "Pasted fleet contains %s member and %s officer",
-  "pasted_fleet_contains_members_and_officers": "Pasted fleet contains %s members and %s officers",
+  "pasted_fleet_members_officers_one": "Pasted fleet contains %s member and %s officer",
+  "pasted_fleet_members_officers_many": "Pasted fleet contains %s members and %s officers",
 
-  "fleet_contains_missing_hull": "Fleet contains %s hull from missing mods",
-  "fleet_contains_missing_hulls": "Fleet contains %s hulls from missing mods",
-
-
-  # spawnFleetInCampaignDialog
-
-  "pasted_fleet_members": "Pasted fleet contains %s members",
-  "pasted_fleet_member": "Pasted fleet contains %s member",
-
-  "pasted_fleet_members_and_officers": "Pasted fleet contains %s members and %s officers",
-  "pasted_fleet_members_and_officer": "Pasted fleet contains %s members and %s officer",
-  "pasted_fleet_member_and_officers": "Pasted fleet contains %s member and %s officers",
-  "pasted_fleet_member_and_officer": "Pasted fleet contains %s member and %s officer",
+  "fleet_contains_missing_hull_one": "Fleet contains %s hull from missing mods",
+  "fleet_contains_missing_hull_many": "Fleet contains %s hulls from missing mods",
 
 
   "clipboard_fleet_added_to_campaign": "Fleet from clipboard added to campaign",

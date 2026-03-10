@@ -25,6 +25,7 @@ import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.reportMissingElementsIfAny
 import fleetBuilder.ui.customPanel.common.BasePopUpPanel
 import fleetBuilder.util.*
+import fleetBuilder.util.FBTxt.txtPlural
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.ClipboardUtil
@@ -53,17 +54,10 @@ object HotkeyHandlerDialogs {
             val memberCount = validatedData.members.size
             val officerCount = validatedData.members.count { it.personData != null }
 
-            val text = if (officerCount > 0) {
-                if (memberCount == 1 && officerCount == 1)
-                    FBTxt.txt("pasted_fleet_contains_member_and_officer", memberCount, officerCount)
-                else
-                    FBTxt.txt("pasted_fleet_contains_members_and_officers", memberCount, officerCount)
-            } else {
-                if (memberCount == 1)
-                    FBTxt.txt("pasted_fleet_contains_member", memberCount)
-                else
-                    FBTxt.txt("pasted_fleet_contains_members", memberCount)
-            }
+            val text = if (officerCount > 0)
+                txtPlural("pasted_fleet_members_officers", memberCount, officerCount)
+            else
+                txtPlural("pasted_fleet_members_only", memberCount)
 
             ui.addPara(text, 0f)
 
@@ -71,14 +65,8 @@ object HotkeyHandlerDialogs {
                 it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag())
             }
 
-            if (missingHullCount > 0) {
-                val key = if (missingHullCount == 1)
-                    "fleet_contains_missing_hull"
-                else
-                    "fleet_contains_missing_hulls"
-
-                ui.addPara(FBTxt.txt(key, missingHullCount), 0f)
-            }
+            if (missingHullCount > 0)
+                ui.addPara(txtPlural("fleet_contains_missing_hull", missingHullCount), 0f)
 
             ui.addSpacer(8f)
 
@@ -259,19 +247,10 @@ object HotkeyHandlerDialogs {
             val memberCount = validatedData.members.size
             val officerCount = validatedData.members.count { it.personData != null }
 
-            val text = if (officerCount > 0) {
-                when {
-                    memberCount == 1 && officerCount == 1 -> FBTxt.txt("pasted_fleet_member_and_officer", memberCount, officerCount)
-                    memberCount == 1 -> FBTxt.txt("pasted_fleet_member_and_officers", memberCount, officerCount)
-                    officerCount == 1 -> FBTxt.txt("pasted_fleet_members_and_officer", memberCount, officerCount)
-                    else -> FBTxt.txt("pasted_fleet_members_and_officers", memberCount, officerCount)
-                }
-            } else {
-                if (memberCount == 1)
-                    FBTxt.txt("pasted_fleet_member", memberCount)
-                else
-                    FBTxt.txt("pasted_fleet_members", memberCount)
-            }
+            val text = if (officerCount > 0)
+                txtPlural("pasted_fleet_members_officers", memberCount, officerCount)
+            else
+                txtPlural("pasted_fleet_members_only", memberCount)
 
             ui.addPara(text, 0f)
 
@@ -279,15 +258,8 @@ object HotkeyHandlerDialogs {
                 it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag())
             }
 
-            if (missingHullCount > 0) {
-                val key =
-                    if (missingHullCount == 1)
-                        "fleet_contains_missing_hull"
-                    else
-                        "fleet_contains_missing_hulls"
-
-                ui.addPara(FBTxt.txt(key, missingHullCount), 0f)
-            }
+            if (missingHullCount > 0)
+                ui.addPara(txtPlural("fleet_contains_missing_hull", missingHullCount), 0f)
 
 
             ui.addSpacer(8f)
