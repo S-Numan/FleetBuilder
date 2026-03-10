@@ -49,8 +49,8 @@
 
   "no_valid_data_in_clipboard":"No valid data in clipboard",
 
-  "compressed_variant_copied_to_clipboard":"Variant compressed and copied to clipboard",
   "variant_copied_to_clipboard":"Variant copied to clipboard",
+  "variant_copied_to_clipboard_compressed":"Variant compressed and copied to clipboard",
 
   "failed_to_load_cargo":"Failed to load cargo",
   "failed_to_load_credits":"Failed to load credits",

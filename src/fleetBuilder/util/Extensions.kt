@@ -26,6 +26,7 @@ import starficz.getChildrenCopy
 import starficz.onClick
 import java.awt.Color
 import kotlin.math.pow
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 fun Float.roundToDecimals(decimals: Int): Float {
@@ -33,9 +34,9 @@ fun Float.roundToDecimals(decimals: Int): Float {
     return (this * factor).roundToInt() / factor
 }
 
-fun Long.roundToDecimals(decimals: Int): Float {
-    val factor = 10.0.pow(decimals).toFloat()
-    return (this * factor).roundToInt() / factor
+fun Double.roundToDecimals(decimals: Int): Double {
+    val factor = 10.0.pow(decimals)
+    return round(this * factor) / factor
 }
 
 fun JSONArray.containsString(value: String): Boolean {

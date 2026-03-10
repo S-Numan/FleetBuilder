@@ -1,11 +1,17 @@
 package fleetBuilder.serialization.person
 
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
+import com.fs.starfarer.api.characters.PersonAPI
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.serialization.GameModInfo
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.joinSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
+import fleetBuilder.serialization.person.DataPerson.buildPersonFull
+import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.roundToDecimals
 
@@ -18,7 +24,25 @@ object CompressedPerson {
         return metaVersion?.equals('p', ignoreCase = true) == true
     }
 
-    fun extractPersonDataFromCompString(comp: String): DataPerson.ParsedPersonData? {
+    @JvmOverloads
+    fun getPersonFromCompString(
+        comp: String,
+        settings: PersonSettings = PersonSettings(),
+        missing: MissingElements = MissingElements(),
+    ): PersonAPI {
+        val parsed = extractPersonDataFromCompString(comp, missing) ?: run {
+            DataPerson.ParsedPersonData()
+        }
+
+        return buildPersonFull(parsed, settings, missing)
+    }
+
+    @JvmOverloads
+    fun extractPersonDataFromCompString(
+        comp: String,
+        missing: MissingElements = MissingElements()
+    ): DataPerson.ParsedPersonData? {
+
         val metaIndexStart = comp.indexOf(metaSep)
         val metaIndexEnd = comp.indexOf(metaSep, metaIndexStart + 1)
 
@@ -36,9 +60,38 @@ object CompressedPerson {
             else -> return null
         } ?: return null
 
-        val fields = fullData.split(fieldSep)
+        if (fullData.isBlank())
+            return null
 
         try {
+            val firstFieldSep = fullData.indexOf(fieldSep)
+            if (firstFieldSep == -1)
+                return null
+
+            val modInfoBulk = fullData.substring(0, firstFieldSep)
+
+            val parts = modInfoBulk.split(sep)
+
+            val modInfos = parts.chunked(3).map { it.joinToString(sep) }
+
+            val gameMods: Set<GameModInfo> =
+                modInfos.mapNotNull { mod ->
+                    val p = mod.split(sep)
+
+                    if (p.size == 3) {
+                        val (id, name, ver) = p
+                        GameModInfo(id, name, ver)
+                    } else null
+                }.toSet()
+
+            missing.gameMods.addAll(gameMods)
+
+            // Person Data
+
+            val dataString = fullData.substring(firstFieldSep + 1)
+
+            val fields = dataString.split(fieldSep)
+
             val aiCoreId = fields[0]
             val first = fields[1]
             val last = fields[2]
@@ -51,34 +104,57 @@ object CompressedPerson {
 
             val portrait = fields[4].ifBlank { null }
 
-            val tags = fields[5].takeIf { it.isNotBlank() }?.split(sep)?.toSet() ?: emptySet()
+            val tags =
+                fields[5].takeIf { it.isNotBlank() }
+                    ?.split(sep)
+                    ?.toSet()
+                    ?: emptySet()
 
-            val rankId = fields[6]
-            val postId = fields[7]
-            val personality = fields[8]
+            val personality = fields[6]
 
-            val level = fields[9].toInt()
+            val level = fields[7].toInt()
 
-            val skills = fields[10].takeIf { it.isNotBlank() }?.split(sep)?.mapNotNull {
-                val parts = it.split(":")
-                if (parts.size == 2)
-                    parts[0] to parts[1].toFloat()
-                else null
-            }?.toMap() ?: emptyMap()
+            val skills =
+                fields[8].takeIf { it.isNotBlank() }
+                    ?.split(sep)
+                    ?.mapNotNull {
+                        val p = it.split(joinSep)
+                        if (p.size == 2)
+                            p[0] to p[1].toFloat()
+                        else null
+                    }?.toMap()
+                    ?: emptyMap()
+
+            val rankId = fields[9]
+            val postId = fields[10]
 
             val xp = fields[11].toLong()
             val bonusXp = fields[12].toLong()
             val points = fields[13].toInt()
 
-            val memKeys = fields.getOrNull(14)
-                ?.takeIf { it.isNotBlank() }
-                ?.split(sep)
-                ?.mapNotNull {
-                    val parts = it.split(joinSep, limit = 2)
-                    if (parts.size == 2)
-                        parts[0] to parts[1]
-                    else null
-                }?.toMap() ?: emptyMap()
+            val memKeys =
+                fields.getOrNull(14)
+                    ?.takeIf { it.isNotBlank() }
+                    ?.split(sep)
+                    ?.mapNotNull {
+                        val p = it.split(joinSep, limit = 2)
+                        if (p.size == 2) {
+                            val key = "$" + p[0]
+                            val raw = p[1]
+
+                            val value: Any =
+                                raw.toIntOrNull()
+                                    ?: raw.toLongOrNull()
+                                    ?: raw.toFloatOrNull()
+                                    ?: raw.toDoubleOrNull()
+                                    ?: raw.lowercase().toBooleanStrictOrNull()
+                                    ?: raw
+
+                            key to value
+                        } else null
+                    }
+                    ?.toMap()
+                    ?: emptyMap()
 
             return DataPerson.ParsedPersonData(
                 aiCoreId = aiCoreId,
@@ -97,10 +173,22 @@ object CompressedPerson {
                 points = points,
                 memKeys = memKeys
             )
+
         } catch (e: Exception) {
             showError("Error parsing person data", e)
             return null
         }
+    }
+
+    @JvmOverloads
+    fun savePersonToCompString(
+        person: PersonAPI,
+        settings: PersonSettings = PersonSettings(),
+        includePrepend: Boolean = true,
+        includeModInfo: Boolean = true,
+        compress: Boolean = true
+    ): String {
+        return savePersonToCompString(getPersonDataFromPerson(person, settings), includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
     }
 
     @JvmOverloads
@@ -118,53 +206,100 @@ object CompressedPerson {
 
         val parts = mutableListOf<String>()
 
+        // Core identity
         parts += data.aiCoreId
         parts += data.first
         parts += data.last
         parts += data.gender.name
         parts += (data.portrait ?: "")
         parts += data.tags.joinToString(sep)
-        parts += data.rankId
-        parts += data.postId
+
+        // Personality
         parts += data.personality
+
+        // Level
         parts += data.level.toString()
 
+        // Skills
         val skillString = data.skills.entries.joinToString(sep) {
-            "${it.key}:${it.value}"
+            "${it.key}$joinSep${it.value}"
         }
-
         parts += skillString
-        parts += data.xp.roundToDecimals(2).toString()
-        parts += data.bonusXp.roundToDecimals(2).toString()
+
+        // Rank / Post
+        parts += data.rankId
+        parts += data.postId
+
+        // Stats
+        parts += data.xp.toString()
+        parts += data.bonusXp.toString()
         parts += data.points.toString()
 
+        // Memory keys
         val memKeyString = data.memKeys.entries.mapNotNull { entry ->
             val key = entry.key
             val value = entry.value
 
             val formattedValue = when (value) {
-                is Boolean -> value.toString()
-                is Int -> value.toString()
-                is String -> value
                 is Float -> value.roundToDecimals(2).toString()
-                is Long -> value.roundToDecimals(2).toString()
-                else -> null // exclude unsupported types
+                is Double -> value.roundToDecimals(2).toString()
+                is Boolean, is Int, is Long -> value.toString()
+                is String -> value
+                else -> null
             }
 
-            formattedValue?.let { "$key$joinSep$it" }
+            formattedValue?.let { "${key.removePrefix("$")}$joinSep$it" }
         }.joinToString(sep)
 
         parts += memKeyString
 
         var personString = parts.joinToString(fieldSep)
 
+        var requiredMods = ""
+        var addedModDetails = ""
+
+        if (includeModInfo) {
+            val mods = mutableSetOf<GameModInfo>()
+
+            for (skill in data.skills.keys) {
+                val spec = Global.getSettings().getSkillSpec(skill) ?: continue
+                val modSpec = spec.sourceMod
+                if (modSpec != null) {
+                    mods += GameModInfo(
+                        modSpec.id,
+                        modSpec.name,
+                        modSpec.version
+                    )
+                }
+            }
+
+            if (mods.isNotEmpty()) {
+                requiredMods = "Mods Used: "
+
+                for (mod in mods) {
+
+                    addedModDetails += "${mod.id}$sep${mod.name}$sep${mod.version}$sep"
+
+                    requiredMods += "(${mod.name}) $sep "
+                }
+
+                requiredMods = requiredMods.dropLast(3)
+                addedModDetails = addedModDetails.dropLast(1)
+            }
+        }
+
+        // Prepend mod metadata to data block
+        personString = "$addedModDetails$fieldSep$personString"
+
+        // Compression
         if (compress)
             personString = CompressionUtil.compressString(personString)
 
         personString = "$ver$personString"
 
+        // Readable prepend
         if (includePrepend) {
-            val readable = "${data.first} ${data.last} : "
+            val readable = "${data.first} ${data.last} : $requiredMods"
             personString = readable + personString
         }
 

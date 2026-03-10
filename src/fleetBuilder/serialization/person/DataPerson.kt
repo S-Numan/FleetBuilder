@@ -7,6 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.core.ModSettings
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.util.api.PersonUtils
 import org.histidine.chatter.ChatterDataManager
@@ -103,14 +104,18 @@ object DataPerson {
             "\$rankId", "\$relName", "\$rel", "\$relValue"
         )
 
+
+        val storedOfficer = data.memKeys.keys.contains(ModSettings.storedOfficerTag)
+
         // Filter memory keys
         val filteredMemory = data.memKeys.filterKeys { key ->
             val value = data.memKeys[key]
 
             when {
-                value !is Boolean && value !is String && value !is Int && value !is Float && value !is Long -> return@filterKeys false
+                value !is Boolean && value !is String && value !is Int && value !is Float && value !is Double && value !is Long -> return@filterKeys false
                 key in excludeKeys -> return@filterKeys false
                 settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
+                storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == ModSettings.storedOfficerTag) -> return@filterKeys false // Skip including captain unremovable if it was added just for storing the officer in storage.
                 else -> return@filterKeys true
             }
         }

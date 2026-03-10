@@ -27,6 +27,19 @@ object CompressedVariant {
     }
 
     @JvmOverloads
+    fun getVariantFromCompString(
+        comp: String,
+        settings: VariantSettings = VariantSettings(),
+        missing: MissingElements = MissingElements(),
+    ): ShipVariantAPI {
+        val parsed = extractVariantDataFromCompString(comp, missing) ?: run {
+            DataVariant.ParsedVariantData("")
+        }
+
+        return buildVariantFull(parsed, settings, missing)
+    }
+
+    @JvmOverloads
     fun extractVariantDataFromCompString(
         comp: String,
         missing: MissingElements = MissingElements()
@@ -173,27 +186,14 @@ object CompressedVariant {
     }
 
     @JvmOverloads
-    fun getVariantFromCompString(
-        comp: String,
-        settings: VariantSettings = VariantSettings(),
-        missing: MissingElements = MissingElements(),
-    ): ShipVariantAPI {
-        val parsed = extractVariantDataFromCompString(comp, missing)
-            ?: run {
-                DataVariant.ParsedVariantData("")
-            }
-
-        return buildVariantFull(parsed, settings, missing)
-    }
-
-    @JvmOverloads
     fun saveVariantToCompString(
         variant: ShipVariantAPI,
         settings: VariantSettings = VariantSettings(),
         includePrepend: Boolean = true,
-        includeModInfo: Boolean = true
+        includeModInfo: Boolean = true,
+        compressString: Boolean = true
     ): String {
-        return saveVariantToCompString(getVariantDataFromVariant(variant, settings), includePrepend = includePrepend, includeModInfo = includeModInfo)
+        return saveVariantToCompString(getVariantDataFromVariant(variant, settings), includePrepend = includePrepend, includeModInfo = includeModInfo, compressString = compressString)
     }
 
     @JvmOverloads
@@ -255,7 +255,6 @@ object CompressedVariant {
     private fun saveModuleVariantToCompString(
         data: DataVariant.ParsedVariantData
     ): String {
-
         val parts = mutableListOf<String>()
 
         // Weapon groups (mode;autofire;slot+id,slot+id - ...)

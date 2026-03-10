@@ -5,7 +5,6 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
@@ -148,17 +147,13 @@ object JSONPerson {
 
         val memKeysJSON = JSONObject()
 
-        val storedOfficer = data.memKeys.keys.contains(ModSettings.storedOfficerTag)
-
         data.memKeys.keys.forEach { key ->
-            if (storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == ModSettings.storedOfficerTag)) return@forEach//Skip including captain unremovable if it was added just for storing the officer in storage.
-
             var value = data.memKeys[key]
             if (value is Float)
                 value = value.roundToDecimals(2)
-            else if (value is Long)
+            else if (value is Double)
                 value = value.roundToDecimals(2)
-            
+
             memKeysJSON.put(key.removePrefix("$"), value)
         }
         if (memKeysJSON.length() > 0)

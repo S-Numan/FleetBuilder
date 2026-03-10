@@ -37,7 +37,6 @@ import fleetBuilder.serialization.member.DataMember.buildMemberFull
 import fleetBuilder.serialization.member.JSONMember.saveMemberToJson
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
-import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
 import fleetBuilder.serialization.reportMissingElementsIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
@@ -332,9 +331,7 @@ internal object ClipboardHotkeyHandlerUtils {
     fun personClick(event: InputEventAPI, person: PersonAPI) {
         if (event.isCtrlDown) {
             if (event.isLMBDownEvent) {
-                val json = savePersonToJson(person)
-                ClipboardUtil.setClipboardText(json.toString(4))
-                DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
+                ClipboardMisc.savePersonToClipboard(person, event.isShiftDown)
                 event.consume()
             }
         } else if (person.isPlayer) {

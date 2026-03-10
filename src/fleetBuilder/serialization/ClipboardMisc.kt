@@ -1,5 +1,6 @@
 package fleetBuilder.serialization
 
+import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -7,6 +8,8 @@ import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.member.JSONMember
+import fleetBuilder.serialization.person.CompressedPerson
+import fleetBuilder.serialization.person.JSONPerson
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
@@ -19,7 +22,6 @@ import org.lwjgl.input.Keyboard
 import java.awt.Color
 
 object ClipboardMisc {
-
     fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false) {
         if (variant.hasHullMod(ModSettings.commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
@@ -37,7 +39,7 @@ object ClipboardMisc {
                 }
             )
             ClipboardUtil.setClipboardText(comp)
-            DisplayMessage.showMessage(FBTxt.txt("compressed_variant_copied_to_clipboard"))
+            DisplayMessage.showMessage(FBTxt.txt("variant_copied_to_clipboard_compressed"))
         } else {
             val json = JSONVariant.saveVariantToJson(
                 variantToSave,
@@ -47,6 +49,23 @@ object ClipboardMisc {
             )
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage(FBTxt.txt("variant_copied_to_clipboard"))
+        }
+    }
+
+    fun savePersonToClipboard(person: PersonAPI, shift: Boolean = false) {
+        if (person.isDefault) {
+            DisplayMessage.showMessage(FBTxt.txt("no_copy_default_officer"), Color.YELLOW)
+            return
+        }
+
+        if (!shift) {
+            val comp = CompressedPerson.savePersonToCompString(person)
+            ClipboardUtil.setClipboardText(comp)
+            DisplayMessage.showMessage("officer_copied_to_clipboard_compressed")
+        } else {
+            val json = JSONPerson.savePersonToJson(person)
+            ClipboardUtil.setClipboardText(json.toString(4))
+            DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
         }
     }
 
