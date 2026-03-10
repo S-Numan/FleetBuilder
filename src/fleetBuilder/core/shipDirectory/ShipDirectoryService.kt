@@ -14,6 +14,7 @@ import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.SerializationUtils
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
+import fleetBuilder.util.FBTxt
 import fleetBuilder.util.LookupUtil
 import fleetBuilder.util.LookupUtil.getCoreVariantsForEffectiveHullspec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
@@ -41,8 +42,8 @@ object ShipDirectoryService {
 
     private fun setupDefaultDirectory() {
         val json = JSONObject()
-        json.put("description", "Default Loadout")
-        json.put("name", "Default")
+        json.put("description", FBTxt.txt("default_directory_default_description"))
+        json.put("name", FBTxt.txt("default_directory_default_name"))
         Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", json, false)
     }
 
@@ -146,7 +147,7 @@ object ShipDirectoryService {
             upgradeLegacyShipPaths(directory, configFilePath)
 
             val name = directory.optString("name", prefix)
-            val description = directory.optString("description", "$prefix Loadout")
+            val description = directory.optString("description", "$prefix ${FBTxt.txt("any_directory_default_descriptor")}")
 
             val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, name = name, description = description)
 
@@ -324,7 +325,7 @@ object ShipDirectoryService {
             )
 
             if (shouldShow) {
-                val label = if (variant.isGoalVariant) "Goal Variant" else "Core Variant"
+                val label = if (variant.isGoalVariant) FBTxt.txt("goal_variant") else FBTxt.txt("core_variant")
                 coreVariantSpecs.add(
                     AutofitSpec(
                         variant,

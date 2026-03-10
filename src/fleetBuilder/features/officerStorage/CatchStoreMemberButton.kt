@@ -13,8 +13,11 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
-import fleetBuilder.util.*
+import fleetBuilder.util.FBTxt
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.UIUtils
+import fleetBuilder.util.getActualCurrentTab
+import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.getFieldsMatching
@@ -60,13 +63,11 @@ class CatchStoreMemberButton : CampaignInputListener {
                 val firstChild = parent.getChildrenCopy().find { it.getFieldsMatching(name = "buyButton").isNotEmpty() } as? UIPanelAPI
                     ?: return null
 
-                val desiredButton = firstChild.getChildrenCopy().find { buttonChild ->
-                    val tooltip = buttonChild.safeInvoke("getTooltip")
-                    tooltip?.getFieldsMatching(fieldAssignableTo = String::class.java)?.find {
-                        val tooltipName = it.get(tooltip)
-                        tooltipName == "Store"
-                    } != null
-                } ?: return null
+                // Get the highest button. (Store button)
+                val desiredButton = firstChild.getChildrenCopy()
+                    .maxByOrNull { child ->
+                        child.position.y
+                    } ?: return null
 
                 if (UIUtils.isMouseHoveringOverComponent(desiredButton)) {
                     return memberUI.getFieldsMatching(type = FleetMember::class.java).getOrNull(0)?.get(memberUI) as? FleetMemberAPI

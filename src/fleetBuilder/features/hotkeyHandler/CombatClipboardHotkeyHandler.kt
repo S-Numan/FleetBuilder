@@ -228,23 +228,23 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
 
         if (!ModSettings.cheatsEnabled()) {
             if (member.hullSpec.hasTag("codex_unlockable") && (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId))) {
-                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. The player is not aware of this hull.", Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_player_not_aware"), Color.YELLOW)
                 return
             }
             if (!member.hullSpec.hasTag("codex_unlockable") && member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
                 || member.variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.variant.hasTag(Tags.HIDE_IN_CODEX)
             ) {
-                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. It is hidden in the codex which suggests it cannot be simulated.", Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_hidden_in_codex"), Color.YELLOW)
                 return
             }
             if (getDeployedFleetPoints(engine, FleetSide.ENEMY) + member.deployCost > Global.getSettings().battleSize / 2f * 1.2f) {
-                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. Would exceed Fleet Point limit.", Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_exceed_fleet_limit"), Color.YELLOW)
                 return
             }
         }
         if (!isPositionFree(engine, loc.x, loc.y, member.hullSpec.collisionRadius / 2f)) {
             loc = findFreeSpawnLocation(engine, loc.x, loc.y, member.hullSpec.collisionRadius) ?: run {
-                DisplayMessage.showMessage("Cannot spawn ship of hull '${member.hullSpec.hullName}'. Cannot find free location.", Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_no_free_location"), Color.YELLOW)
                 return
             }
         }

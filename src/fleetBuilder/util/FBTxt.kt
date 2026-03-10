@@ -20,6 +20,16 @@ object FBTxt {
         return String.format(Global.getSettings().getString(ModSettings.modID, id), *args)
     }
 
+    fun txtPlural(baseKey: String, count: Int, vararg args: Any): String {
+        val key = when (count) {
+            0 -> "${baseKey}_zero"
+            1 -> "${baseKey}_one"
+            else -> "${baseKey}_many"
+        }
+        return FBTxt.txt(key, count, *args)
+    }
+
+
     /**
      * If the input is an empty string, returns null. Otherwise, returns the input.
      */

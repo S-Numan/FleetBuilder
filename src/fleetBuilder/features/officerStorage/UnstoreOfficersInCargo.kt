@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.util.FBTxt
 import fleetBuilder.util.getActualCurrentTab
 import org.lwjgl.input.Mouse
 import org.magiclib.kotlin.getMaxOfficers
@@ -71,7 +72,7 @@ class UnstoreOfficersInCargo : EveryFrameScript {
                 if (!member.captain.isDefault && !member.captain.isAICore) {
                     playerFleet.addOfficer(member.captain)
                     if (ModSettings.storeOfficersInCargo && getNonMothballedOfficerCount(playerFleet.fleet) == playerFleet.fleet.getMaxOfficers() + 1)
-                        DisplayMessage.showMessage("Officer limit reached. On exiting the market, ships will be mothballed to prevent usage", Misc.getNegativeHighlightColor())
+                        DisplayMessage.showMessage(FBTxt.txt("officer_limit_reached"), Misc.getNegativeHighlightColor())
                 }
             }
         }

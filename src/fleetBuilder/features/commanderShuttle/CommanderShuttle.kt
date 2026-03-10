@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.core.ModSettings
+import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.listeners.OfficerChangeEvents
 
@@ -91,7 +92,7 @@ class CommanderShuttle : CurrentLocationChangedListener {
 
             val shuttleMember = Global.getSettings().createFleetMember(FleetMemberType.SHIP, "shuttlepod_Hull")
 
-            shuttleMember.shipName = "Command Shuttle"
+            shuttleMember.shipName = FBTxt.txt("command_shuttle")
             shuttleMember.variant.addMod(ModSettings.commandShuttleId)
             shuttleMember.variant.addTag(Tags.NO_SELL)
             shuttleMember.variant.addTag(Tags.RESTRICTED)

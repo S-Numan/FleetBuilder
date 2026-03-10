@@ -52,15 +52,33 @@ object HotkeyHandlerDialogs {
 
             val memberCount = validatedData.members.size
             val officerCount = validatedData.members.count { it.personData != null }
-            ui.addPara(
-                "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
-                        if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else "", 0f
-            )
 
-            val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag()) }
-            if (missingHullCount > 0)
-                ui.addPara("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods", 0f)
+            val text = if (officerCount > 0) {
+                if (memberCount == 1 && officerCount == 1)
+                    FBTxt.txt("pasted_fleet_contains_member_and_officer", memberCount, officerCount)
+                else
+                    FBTxt.txt("pasted_fleet_contains_members_and_officers", memberCount, officerCount)
+            } else {
+                if (memberCount == 1)
+                    FBTxt.txt("pasted_fleet_contains_member", memberCount)
+                else
+                    FBTxt.txt("pasted_fleet_contains_members", memberCount)
+            }
 
+            ui.addPara(text, 0f)
+
+            val missingHullCount = validatedData.members.count {
+                it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag())
+            }
+
+            if (missingHullCount > 0) {
+                val key = if (missingHullCount == 1)
+                    "fleet_contains_missing_hull"
+                else
+                    "fleet_contains_missing_hulls"
+
+                ui.addPara(FBTxt.txt(key, missingHullCount), 0f)
+            }
 
             ui.addSpacer(8f)
 
@@ -197,16 +215,17 @@ object HotkeyHandlerDialogs {
     }
 
     fun createDevModeDialog() {
-        val dialog = BasePopUpPanel("Developer Options")
+        val dialog = BasePopUpPanel(FBTxt.txt("dev_options_title"))
 
         dialog.onCreateUI(500f, 200f) { ui ->
-            val toggleDev = ui.addToggle("Toggle Dev Mode", Global.getSettings().isDevMode)
+            val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
+
             toggleDev.onClick {
                 Global.getSettings().isDevMode = toggleDev.isChecked
             }
 
             ui.addButton(
-                "Trigger F8 Reload",
+                FBTxt.txt("trigger_f8_reload"),
                 null,
                 160f, 24f, 4f
             ).onClick {
@@ -214,6 +233,7 @@ object HotkeyHandlerDialogs {
                     it.onDevModeF8Reload()
                 }
             }
+
 
             ui.addButton(
                 "Trigger Test Message",
@@ -238,14 +258,36 @@ object HotkeyHandlerDialogs {
 
             val memberCount = validatedData.members.size
             val officerCount = validatedData.members.count { it.personData != null }
-            ui.addPara(
-                "Pasted fleet contains $memberCount member${if (memberCount != 1) "s" else ""}" +
-                        if (officerCount > 0) " and $officerCount officer${if (officerCount != 1) "s" else ""}" else "",
-                0f
-            )
-            val missingHullCount = validatedData.members.count { it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag()) }
-            if (missingHullCount > 0)
-                ui.addPara("Fleet contains $missingHullCount hull${if (missingHullCount != 1) "s" else ""} from missing mods", 0f)
+
+            val text = if (officerCount > 0) {
+                when {
+                    memberCount == 1 && officerCount == 1 -> FBTxt.txt("pasted_fleet_member_and_officer", memberCount, officerCount)
+                    memberCount == 1 -> FBTxt.txt("pasted_fleet_member_and_officers", memberCount, officerCount)
+                    officerCount == 1 -> FBTxt.txt("pasted_fleet_members_and_officer", memberCount, officerCount)
+                    else -> FBTxt.txt("pasted_fleet_members_and_officers", memberCount, officerCount)
+                }
+            } else {
+                if (memberCount == 1)
+                    FBTxt.txt("pasted_fleet_member", memberCount)
+                else
+                    FBTxt.txt("pasted_fleet_members", memberCount)
+            }
+
+            ui.addPara(text, 0f)
+
+            val missingHullCount = validatedData.members.count {
+                it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag())
+            }
+
+            if (missingHullCount > 0) {
+                val key =
+                    if (missingHullCount == 1)
+                        "fleet_contains_missing_hull"
+                    else
+                        "fleet_contains_missing_hulls"
+
+                ui.addPara(FBTxt.txt(key, missingHullCount), 0f)
+            }
 
 
             ui.addSpacer(8f)
@@ -291,7 +333,7 @@ object HotkeyHandlerDialogs {
                 if (fightToTheLast.isChecked)
                     fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
 
-                DisplayMessage.showMessage("Fleet from clipboard added to campaign")
+                DisplayMessage.showMessage(FBTxt.txt("clipboard_fleet_added_to_campaign"))
             }
         }
 
@@ -312,35 +354,33 @@ object HotkeyHandlerDialogs {
         }
 
 
-        val initialDialog = BasePopUpPanel(headerTitle = "Add Officer to Fleet")
+        val initialDialog = BasePopUpPanel(headerTitle = FBTxt.txt("add_officer_to_fleet"))
 
         val buttonHeight = 24f
 
         initialDialog.onCreateUI(width, height) { ui ->
-            ui.addPara("Max Level", 0f)
+            ui.addPara(FBTxt.txt("max_level"), 0f)
             val maxLevel = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
-            ui.addPara("Max Elite Skills", 0f)
+
+            ui.addPara(FBTxt.txt("max_elite_skills"), 0f)
             val maxEliteSkills = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
             ui.addSpacer(buttonHeight / 3)
-            val maxXP = ui.addToggle("Max XP", isChecked = true)
-            val maxSkillPicksPerLevel = ui.addToggle("Max Skill Picks Per Level", isChecked = true)
+            val maxXP = ui.addToggle(FBTxt.txt("max_xp"), isChecked = true)
+            val maxSkillPicksPerLevel = ui.addToggle(FBTxt.txt("max_skill_picks_per_level"), isChecked = true)
 
             ui.addSpacer(8f)
-            ui.addPara("Personality", 0f)
+            ui.addPara(FBTxt.txt("personality"), 0f)
 
             var currentPersonality = "steady"
             val internalPersonalities = listOf("timid", "cautious", "steady", "aggressive", "reckless")
             val externalPersonalities = internalPersonalities.map { FBTxt.txt(it) }
+
             val toggles = internalPersonalities.indices.map { index ->
                 val internalName = internalPersonalities[index]
                 val externalName = externalPersonalities.getOrNull(index) ?: "ERROR"
 
-                ui.addToggle(
-                    name = externalName,
-                    data = internalName,
-                    isChecked = internalName == currentPersonality
-                )
+                ui.addToggle(name = externalName, data = internalName, isChecked = internalName == currentPersonality)
             }
 
             toggles.forEach { toggle ->
@@ -350,7 +390,8 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            initialDialog.setupConfirmCancelSection(confirmText = "Create")
+            initialDialog.setupConfirmCancelSection(confirmText = FBTxt.txt("create"))
+
 
             initialDialog.onConfirm {
                 var maxLevelValue = maxLevel.getText().toIntOrNull()
@@ -389,10 +430,9 @@ object HotkeyHandlerDialogs {
         missing: MissingElements
     ) {
         val baseHullSpec = variant.hullSpec.getEffectiveHull()
-        val loadoutBaseHullName = baseHullSpec.hullName
-            ?: return
+        val loadoutBaseHullName = baseHullSpec.hullName ?: return
 
-        val dialog = BasePopUpPanel(headerTitle = "Import Loadout")
+        val dialog = BasePopUpPanel(headerTitle = FBTxt.txt("import_loadout_title"))
 
         dialog.onCreateUI(375f, 490f) { ui ->
 
@@ -417,19 +457,23 @@ object HotkeyHandlerDialogs {
             ui.addComponent(selectorPanel)
             selectorPanel.position.inTL(0f, dialog.getYTooltipPadding() - 14f)
 
-            //tempTMAPI.addComponent(selectorPanel)
             AutofitPanel.makeTooltip(selectorPanel, variant)
 
             tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
-
-
             ui.addCustom(tempPanel, 0f)
 
-
-            dialog.setupConfirmCancelSection(confirmText = "Import", alignment = Alignment.MID)
+            dialog.setupConfirmCancelSection(confirmText = FBTxt.txt("import"), alignment = Alignment.MID)
 
             dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 600f) { tooltip ->
-                tooltip.addPara("This will import this loadout under the hull class ${variant.hullSpec.getEffectiveHull().hullName} within the ${ShipDirectoryService.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.name} (${ModSettings.defaultPrefix}) directory", 0f)
+                tooltip.addPara(
+                    FBTxt.txt(
+                        "import_loadout_tooltip",
+                        variant.hullSpec.getEffectiveHull().hullName,
+                        ShipDirectoryService.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.name,
+                        ModSettings.defaultPrefix
+                    ),
+                    0f
+                )
             }
         }
 
@@ -437,7 +481,7 @@ object HotkeyHandlerDialogs {
             ShipDirectoryService.importShipLoadout(ModSettings.defaultPrefix, variant, missing)
 
             DisplayMessage.showMessage(
-                " Loadout imported for hull: $loadoutBaseHullName",
+                FBTxt.txt("loadout_imported_for_hull", loadoutBaseHullName),
                 variant.hullSpec.hullId,
                 Misc.getHighlightColor()
             )

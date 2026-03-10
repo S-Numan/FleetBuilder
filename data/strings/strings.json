@@ -1,7 +1,6 @@
-#This file is unfinished. Not all strings are in here.
-
 {
   "SN_FleetBuilder": {
+
   "backup_save_not_found": "Backup save not found",
   "backup_save_read_error": "Failed to read backup save json",
   "failed_to_read_json_in_clipboard": "Failed to read json in clipboard",
@@ -29,11 +28,6 @@
 
   "fleet_member_copied_to_clipboard":"Fleet member copied to clipboard",
 
-  "no_command_shuttle_jump_alone": "Your command shuttle cannot jump alone",
-  "no_copy_command_shuttle": "The commander's shuttle cannot be copied",
-  "command_shuttle_transfer_message": "Refunding market %s credits",
-  "cannot_remove_last_ship_in_fleet": "Cannot remove last ship in fleet",
-
   "enable_unassign_player": "Unassign Player must be on in the %s mod settings to unassign the player",
 
   "added_to_cargo":"Added %s '%s' to cargo",
@@ -46,6 +40,7 @@
   "removed_hullmod":"Removed hullmod with name '%s'",
 
   "failed_to_get_store_member_button":"Failed to get store member button",
+  "officer_limit_reached":"Officer limit reached. On exiting the market, ships will be mothballed to prevent usage",
 
   "no_valid_data_in_clipboard":"No valid data in clipboard",
 
@@ -133,14 +128,91 @@
   "save_loaded_from_clipboard":"Save loaded from clipboard",
   "failed_to_find_save_in_clipboard":"Could not find contents of save in clipboard. Are you sure you copied a valid save?",
 
+  # ShipDirectory
+  "default_directory_default_description":"Default Loadout",
+  "default_directory_default_name":"Default",
+  "any_directory_default_descriptor":"Loadout",
+  "goal_variant":"Goal Variant",
+  "core_variant":"Core Variant",
+
+  # Commander Shuttle
+  "command_shuttle":"Command Shuttle",
+  "no_command_shuttle_jump_alone": "Your command shuttle cannot jump alone",
+  "no_copy_command_shuttle": "The commander's shuttle cannot be copied",
+  "command_shuttle_transfer_message": "Refunding market %s credits",
+  "cannot_remove_last_ship_in_fleet": "Cannot remove last ship in fleet",
+
+  # In combat creation
+  "cannot_spawn_ship_of_hull":"Cannot spawn ship of hull '%s' ",
+  "hull_player_not_aware":"The player is not aware of this hull.",
+  "hull_hidden_in_codex":"It is hidden in the codex which suggests it cannot be simulated.",
+  "hull_exceed_fleet_limit":"Would exceed Fleet Point limit.",
+  "hull_no_free_location":"Cannot find free location.",
+
+  # Developer options dialog
+  "dev_options_title": "Developer Options",
+  "toggle_dev_mode": "Toggle Dev Mode",
+  "trigger_f8_reload": "Trigger F8 Reload",
+
+
+
+  # pasteFleetIntoPlayerFleetDialog
+
+  "pasted_fleet_contains_member": "Pasted fleet contains %s member",
+  "pasted_fleet_contains_members": "Pasted fleet contains %s members",
+
+  "pasted_fleet_contains_member_and_officer": "Pasted fleet contains %s member and %s officer",
+  "pasted_fleet_contains_members_and_officers": "Pasted fleet contains %s members and %s officers",
+
+  "fleet_contains_missing_hull": "Fleet contains %s hull from missing mods",
+  "fleet_contains_missing_hulls": "Fleet contains %s hulls from missing mods",
+
+
+  # spawnFleetInCampaignDialog
+
+  "pasted_fleet_members": "Pasted fleet contains %s members",
+  "pasted_fleet_member": "Pasted fleet contains %s member",
+
+  "pasted_fleet_members_and_officers": "Pasted fleet contains %s members and %s officers",
+  "pasted_fleet_members_and_officer": "Pasted fleet contains %s members and %s officer",
+  "pasted_fleet_member_and_officers": "Pasted fleet contains %s member and %s officers",
+  "pasted_fleet_member_and_officer": "Pasted fleet contains %s member and %s officer",
+
+
+  "clipboard_fleet_added_to_campaign": "Fleet from clipboard added to campaign",
+
+
+  # Import Loadout Dialog
+  "import_loadout_title": "Import Loadout",
+  "import": "Import",
+  "import_loadout_tooltip": "This will import this loadout under the hull class %s within the %s (%s) directory",
+  "loadout_imported_for_hull": "Loadout imported for hull: %s",
+
+
+
+
+
+  # createOfficerCreatorDialog
 
   "timid": "Timid",
   "cautious": "Cautious",
   "steady": "Steady",
   "aggressive": "Aggressive",
   "reckless": "Reckless",
+
+  "add_officer_to_fleet": "Add Officer to Fleet",
+  "max_level": "Max Level",
+  "max_elite_skills": "Max Elite Skills",
+  "max_xp": "Max XP",
+  "max_skill_picks_per_level": "Max Skill Picks Per Level",
+  "personality": "Personality",
+
+
+
+  "create": "Create",
   "confirm": "Confirm",
   "cancel": "Cancel",
+
 
 
 
