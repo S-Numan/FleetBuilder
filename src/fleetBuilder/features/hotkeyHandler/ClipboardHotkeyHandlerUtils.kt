@@ -34,7 +34,6 @@ import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.DataMember.buildMemberFull
-import fleetBuilder.serialization.member.JSONMember.saveMemberToJson
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.reportMissingElementsIfAny
@@ -330,20 +329,21 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun personClick(event: InputEventAPI, person: PersonAPI) {
-        if (event.isCtrlDown) {
-            if (event.isLMBDownEvent) {
+        if (event.isLMBDownEvent) {
+            if (event.isCtrlDown) {
                 ClipboardMisc.savePersonToClipboard(person, event.isShiftDown)
                 event.consume()
             }
-        } else if (person.isPlayer) {
-            val isShuttle = Global.getSector().playerFleet.fleetData.membersListCopy.find { it.captain === person }?.variant?.hasHullMod(commandShuttleId) == true
+        }
+        if (event.isRMBDownEvent) {
+            if (person.isPlayer) {
+                val isShuttle = Global.getSector().playerFleet.fleetData.membersListCopy.find { it.captain === person }?.variant?.hasHullMod(commandShuttleId) == true
 
-            /*if (event.isLMBDownEvent && isShuttle) { // Eat attempt to open captain picker dialog for shuttle. The shuttle is player only
-                event.consume()
-                return
-            }*/
+                /*if (event.isLMBDownEvent && isShuttle) { // Eat attempt to open captain picker dialog for shuttle. The shuttle is player only
+                    event.consume()
+                    return
+                }*/
 
-            if (event.isRMBDownEvent) {
                 when {
                     isShuttle -> {
                         if (Global.getSector()?.playerFleet?.fleetSizeCount == 1)
@@ -372,15 +372,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
     fun memberClick(event: InputEventAPI, member: FleetMemberAPI) {
         if (event.isCtrlDown) {
-            if (member.variant.hasHullMod(commandShuttleId)) {
-                event.consume()
-                DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
-                return
-            }
-
-            val json = saveMemberToJson(member)
-            ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessage.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
+            ClipboardMisc.saveMemberToClipboard(member, event.isShiftDown)
             event.consume()
         }
     }

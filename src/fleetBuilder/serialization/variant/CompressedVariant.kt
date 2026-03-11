@@ -17,7 +17,6 @@ import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.toBinary
 
 object CompressedVariant {
-
     fun isCompressedVariant(comp: String): Boolean {
         val metaIndexStart = comp.indexOf(metaSep)
         if (metaIndexStart == -1) return false
@@ -191,9 +190,9 @@ object CompressedVariant {
         settings: VariantSettings = VariantSettings(),
         includePrepend: Boolean = true,
         includeModInfo: Boolean = true,
-        compressString: Boolean = true
+        compress: Boolean = true
     ): String {
-        return saveVariantToCompString(getVariantDataFromVariant(variant, settings), includePrepend = includePrepend, includeModInfo = includeModInfo, compressString = compressString)
+        return saveVariantToCompString(getVariantDataFromVariant(variant, settings), includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
     }
 
     @JvmOverloads
@@ -201,10 +200,10 @@ object CompressedVariant {
         data: DataVariant.ParsedVariantData,
         includePrepend: Boolean = true,
         includeModInfo: Boolean = true,
-        compressString: Boolean = true,
+        compress: Boolean = true,
     ): String {
         val structureVersion =
-            if (compressString) "v0" // Variant compressed 0
+            if (compress) "v0" // Variant compressed 0
             else "V0" // Variant uncompressed 0
 
 
@@ -241,7 +240,7 @@ object CompressedVariant {
 
         compressedVariant = "$addedModDetails$fieldSep$compressedVariant"
 
-        if (compressString)
+        if (compress)
             compressedVariant = CompressionUtil.compressString(compressedVariant)
 
         compressedVariant = "$ver$compressedVariant"//Indicate structure version for compatibility with future compressed format changes

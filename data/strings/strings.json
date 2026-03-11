@@ -26,7 +26,8 @@
   "copied_visible_fleet_to_clipboard":"Copied visible fleet to clipboard",
   "copied_visible_submarket_to_clipboard":"Copied visible submarket to clipboard",
 
-  "fleet_member_copied_to_clipboard":"Fleet member copied to clipboard",
+  "member_copied_to_clipboard":"Member copied to clipboard",
+  "member_copied_to_clipboard_compressed":"Member compressed and copied to clipboard",
 
   "enable_unassign_player": "Unassign Player must be on in the %s mod settings to unassign the player",
 
@@ -179,6 +180,13 @@
   "import": "Import",
   "import_loadout_tooltip": "This will import this loadout under the hull class %s within the %s (%s) directory",
   "loadout_imported_for_hull": "Loadout imported for hull: %s",
+
+
+
+
+  # Human readable member compression prepend
+  "shipReadableWithPerson": "%s (Pilot: %s) – %s %s : %s",
+  "shipReadableNoPerson": "%s – %s %s : %s",
 
 
 

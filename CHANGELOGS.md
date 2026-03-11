@@ -1,7 +1,12 @@
 ## 2.0.0
 #### Big update!
-### Changes
+### Additions
 - Newly added Mothball Recovered Ships setting in the Misc tab. When this is true, newly recovered ships will be automatically mothballed.
+- Add logs to Console and Add logs to Display Manager setting. When enabled, any logs sent to starsector.log above the specified level will be put in either the ConsoleCommands console or displayed on screen.
+- An autofit button now shows up in codex above the ship display; just click the button to see!
+- Added a setting to disable the transponder when entering hyperspace. Yes, I know, this also exists in the QOL life pack.
+- Compressed person and member on copying by default.
+### Changes
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
 - Increase size of onslaught in autofit UI.
 - In the Cargo Auto Manager, the "Put" toggle is now by default toggled on for new custom inputs.
@@ -9,11 +14,8 @@
 - Avoid showing autofit variants that the player is not aware of.
 - Rearrange LunaLib settings a bit.
 - Allow autofit loadout display name to be empty.
-- Added a setting to disable the transponder when entering hyperspace. Yes, I know, this also exists in the QOL life pack.
 - Prevent adding more than max limit of officers by mothballing captained ships over the limit.
 - Right clicking outside the autofit dialog removes closes the dialog.
-- Autofit button now shows up in codex above ship display, just click the button to see!
-- Add logs to Console and Add logs to Display Manager setting. When enabled, any logs sent to starsector.log above the specified level will be put in either the ConsoleCommands console or displayed on screen.
 - Can now press F2 on an autofit loadout to open it's codex entry.
 - Improved missing element handling to now more frequently report what mods were used when pasting a variant/person/fleet with missing elements
 - Externalized more strings

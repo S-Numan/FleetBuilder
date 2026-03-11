@@ -2,6 +2,7 @@ package fleetBuilder.serialization
 
 import com.fs.starfarer.api.Global
 import fleetBuilder.core.displayMessage.DisplayMessage
+import org.apache.log4j.Level
 import java.awt.Color
 
 data class GameModInfo(
@@ -143,6 +144,6 @@ fun reportMissingElementsIfAny(
     val fullMessage = missingElements.getMissingElementsString()
     if (fullMessage.isNotBlank()) {
         DisplayMessage.showMessage(defaultShortMessage, Color.YELLOW)
-        Global.getLogger(MissingElements::class.java).warn(fullMessage)
+        DisplayMessage.logMessage(MissingElements::class.java, fullMessage, Level.WARN, displayMessage = false)
     }
 }

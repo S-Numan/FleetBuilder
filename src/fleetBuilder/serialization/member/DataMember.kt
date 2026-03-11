@@ -18,12 +18,12 @@ import fleetBuilder.util.api.VariantUtils
 
 object DataMember {
     data class ParsedMemberData(
-        val variantData: DataVariant.ParsedVariantData?,
-        val personData: DataPerson.ParsedPersonData?,
-        val shipName: String,
-        val cr: Float?,
-        val isMothballed: Boolean,
-        val isFlagship: Boolean,
+        val variantData: DataVariant.ParsedVariantData? = null,
+        val personData: DataPerson.ParsedPersonData? = null,
+        val shipName: String = "",
+        val cr: Float? = 0.7f,
+        val isMothballed: Boolean = false,
+        val isFlagship: Boolean = false,
         val id: String? = null
     )
 

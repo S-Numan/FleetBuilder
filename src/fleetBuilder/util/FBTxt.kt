@@ -11,7 +11,6 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 object FBTxt {
-
     fun txt(id: String): String {
         return Global.getSettings().getString(ModSettings.modID, id)
     }

@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
+import fleetBuilder.features.logMessageAppender.NoDisplayThrowable
 import fleetBuilder.ui.customPanel.common.BasePopUpPanel
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
@@ -46,11 +47,8 @@ object DisplayMessage {
                 Console.showMessage(full, Level.ERROR)
             }
         } else {
-            val callerClass: Class<*> = Throwable().stackTrace
-                .firstOrNull { it.className != this::class.java.name }
-                ?.let { runCatching { Class.forName(it.className) }.getOrNull() } ?: this.javaClass
-
-            Global.getLogger(callerClass).error(full)
+            val callerClass: Class<*> = getCallerClass() ?: javaClass
+            logMessage(callerClass, full, Level.ERROR)
         }
 
         // Show short message to player
@@ -147,5 +145,38 @@ object DisplayMessage {
 
             dialog.setupConfirmCancelSection(alignment = Alignment.MID, addCancelButton = false)
         }
+    }
+
+
+    /**
+     * Logs a message with the specified level.
+     *
+     * If [displayMessage] is false, do not show on screen even if the FleetBuilder setting to display logged messages would be true.
+     */
+    @JvmOverloads
+    fun logMessage(javaClass: Class<*>, message: String, level: Level, displayMessage: Boolean = true) {
+        if (displayMessage) {
+            when (level) {
+                Level.INFO -> Global.getLogger(javaClass).info(message)
+                Level.WARN -> Global.getLogger(javaClass).warn(message)
+                Level.ERROR -> Global.getLogger(javaClass).error(message)
+                Level.FATAL -> Global.getLogger(javaClass).fatal(message)
+                Level.DEBUG -> Global.getLogger(javaClass).debug(message)
+            }
+        } else {
+            when (level) {
+                Level.INFO -> Global.getLogger(javaClass).info(message, NoDisplayThrowable())
+                Level.WARN -> Global.getLogger(javaClass).warn(message, NoDisplayThrowable())
+                Level.ERROR -> Global.getLogger(javaClass).error(message, NoDisplayThrowable())
+                Level.FATAL -> Global.getLogger(javaClass).fatal(message, NoDisplayThrowable())
+                Level.DEBUG -> Global.getLogger(javaClass).debug(message, NoDisplayThrowable())
+            }
+        }
+    }
+
+    private fun getCallerClass(): Class<*>? {
+        return Throwable().stackTrace
+            .firstOrNull { it.className != this::class.java.name }
+            ?.let { runCatching { Class.forName(it.className) }.getOrNull() }
     }
 }

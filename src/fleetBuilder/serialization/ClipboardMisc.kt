@@ -7,6 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.member.CompressedMember
 import fleetBuilder.serialization.member.JSONMember
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.person.JSONPerson
@@ -22,10 +23,10 @@ import org.lwjgl.input.Keyboard
 import java.awt.Color
 
 object ClipboardMisc {
-    fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false) {
+    fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false): Boolean {
         if (variant.hasHullMod(ModSettings.commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
-            return
+            return false
         }
 
         val variantToSave = variant.clone()
@@ -50,41 +51,46 @@ object ClipboardMisc {
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage(FBTxt.txt("variant_copied_to_clipboard"))
         }
+
+        return true
     }
 
-    fun savePersonToClipboard(person: PersonAPI, shift: Boolean = false) {
+    fun savePersonToClipboard(person: PersonAPI, shift: Boolean = false): Boolean {
         if (person.isDefault) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_default_officer"), Color.YELLOW)
-            return
+            return false
         }
 
         if (!shift) {
             val comp = CompressedPerson.savePersonToCompString(person)
             ClipboardUtil.setClipboardText(comp)
-            DisplayMessage.showMessage("officer_copied_to_clipboard_compressed")
+            DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard_compressed"))
         } else {
             val json = JSONPerson.savePersonToJson(person)
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage(FBTxt.txt("officer_copied_to_clipboard"))
         }
+
+        return true
     }
 
-    fun saveMemberToClipboard(member: FleetMemberAPI, shift: Boolean = false) {
+    fun saveMemberToClipboard(member: FleetMemberAPI, shift: Boolean = false): Boolean {
         if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
-            return
+            return false
         }
 
-        if (shift) {
-            //val comp = saveMemberToCompString(member)
-            //setClipboardText(comp)
-            //DisplayMessage.showMessage("Member compressed and copied to clipboard")
-            DisplayMessage.showMessage("Copying the compressed member is currently unimplemented. Please avoid holding shift.", Color.YELLOW)
+        if (!shift) {
+            val comp = CompressedMember.saveMemberToCompString(member)
+            ClipboardUtil.setClipboardText(comp)
+            DisplayMessage.showMessage(FBTxt.txt("member_copied_to_clipboard_compressed"))
         } else {
             val json = JSONMember.saveMemberToJson(member)
             ClipboardUtil.setClipboardText(json.toString(4))
-            DisplayMessage.showMessage(FBTxt.txt("fleet_member_copied_to_clipboard"))
+            DisplayMessage.showMessage(FBTxt.txt("member_copied_to_clipboard"))
         }
+
+        return true
     }
 
     fun codexEntryToClipboard(codex: CodexDialog) {

@@ -1,16 +1,34 @@
 package fleetBuilder.util.api
 
-import com.fs.starfarer.api.campaign.FactionAPI
+import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
-import com.fs.starfarer.api.characters.FullName
-import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.MutableShipStatsAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.serialization.member.DataMember
+import fleetBuilder.serialization.member.MemberSettings
 import java.util.*
 
 object MemberUtils {
+
+    fun getAllSourceModsFromMember(
+        member: FleetMemberAPI,
+        settings: MemberSettings = MemberSettings()
+    ): Set<ModSpecAPI> {
+        return getAllSourceModsFromMember(DataMember.getMemberDataFromMember(member, settings))
+    }
+
+    fun getAllSourceModsFromMember(data: DataMember.ParsedMemberData): Set<ModSpecAPI> {
+        val sourceMods = mutableSetOf<ModSpecAPI>()
+
+        if (data.variantData != null)
+            sourceMods.addAll(VariantUtils.getAllSourceModsFromVariant(data.variantData))
+        if (data.personData != null)
+            sourceMods.addAll(PersonUtils.getAllSourceModsFromPerson(data.personData))
+
+        return sourceMods
+    }
 
     fun randomizeMemberCosmetics(
         member: FleetMemberAPI,

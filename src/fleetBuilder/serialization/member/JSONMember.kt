@@ -87,8 +87,6 @@ object JSONMember {
     ): JSONObject {
         val memberJson = JSONObject()
 
-        //memberJson.put("id", member.id)
-
         if (data.cr != null)
             memberJson.put("cr", data.cr.roundToDecimals(2))
 

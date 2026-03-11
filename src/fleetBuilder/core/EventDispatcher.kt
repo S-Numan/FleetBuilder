@@ -12,7 +12,7 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManager
 import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
 import fleetBuilder.features.codexButton.CampaignDevModeCodexButton
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
-import fleetBuilder.features.consoleMirror.LogMessageAppender
+import fleetBuilder.features.logMessageAppender.LogMessageAppender
 import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
 import fleetBuilder.features.filters.injection.CampaignFleetScreenFilter
 import fleetBuilder.features.filters.injection.CampaignModPickerFilter

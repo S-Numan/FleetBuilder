@@ -1,6 +1,8 @@
 package fleetBuilder.serialization
 
 import fleetBuilder.serialization.fleet.JSONFleet.extractFleetDataFromJson
+import fleetBuilder.serialization.member.CompressedMember
+import fleetBuilder.serialization.member.CompressedMember.isCompressedMember
 import fleetBuilder.serialization.member.JSONMember.extractMemberDataFromJson
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.person.CompressedPerson.isCompressedPerson
@@ -85,6 +87,8 @@ object SerializationUtils {
                 CompressedVariant.extractVariantDataFromCompString(text, missing)
             isCompressedPerson(text) ->
                 CompressedPerson.extractPersonDataFromCompString(text, missing)
+            isCompressedMember(text) ->
+                CompressedMember.extractMemberDataFromCompString(text, missing)
 
             else -> null
         }
