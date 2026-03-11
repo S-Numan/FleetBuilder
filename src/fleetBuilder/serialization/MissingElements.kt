@@ -144,6 +144,6 @@ fun reportMissingElementsIfAny(
     val fullMessage = missingElements.getMissingElementsString()
     if (fullMessage.isNotBlank()) {
         DisplayMessage.showMessage(defaultShortMessage, Color.YELLOW)
-        DisplayMessage.logMessage(MissingElements::class.java, fullMessage, Level.WARN, displayMessage = false)
+        DisplayMessage.logMessage(MissingElements::class.java, "\n" + fullMessage, Level.WARN, displayMessage = false)
     }
 }
