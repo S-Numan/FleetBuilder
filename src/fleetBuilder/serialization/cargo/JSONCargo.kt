@@ -45,6 +45,7 @@ object JSONCargo {
             }
         }
 
+        cargo.sort()
         return missingElements
     }
 

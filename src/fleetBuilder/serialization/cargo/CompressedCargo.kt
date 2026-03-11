@@ -21,7 +21,7 @@ object CompressedCargo {
 
     @JvmOverloads
     fun saveCargoToCompString(
-        stacks: List<CargoStackAPI>,
+        inputStacks: List<CargoStackAPI>,
         compress: Boolean = true
     ): String {
         val structureVersion =
@@ -32,31 +32,48 @@ object CompressedCargo {
 
         val parts = mutableListOf<String>()
 
+        var currentType: String? = null
+
+        val stacks = inputStacks.sortedBy { it.type }
+
         for (stack in stacks) {
             val size = stack.size.toInt()
             if (size <= 0) continue
 
-            when (stack.type) {
-                CargoAPI.CargoItemType.RESOURCES -> {
-                    val id = stack.commodityId
-                    parts += listOf("RESOURCES", id, size).joinToString(sep)
-                }
+            val (type, id, data) = when (stack.type) {
+                CargoAPI.CargoItemType.RESOURCES ->
+                    Triple("RESOURCES", stack.commodityId, null)
+
                 CargoAPI.CargoItemType.WEAPONS -> {
                     val spec = stack.weaponSpecIfWeapon ?: continue
-                    parts += listOf("WEAPONS", spec.weaponId, size).joinToString(sep)
+                    Triple("WEAPONS", spec.weaponId, null)
                 }
+
                 CargoAPI.CargoItemType.FIGHTER_CHIP -> {
                     val spec = stack.fighterWingSpecIfWing ?: continue
-                    parts += listOf("FIGHTER_CHIP", spec.id, size).joinToString(sep)
+                    Triple("FIGHTER_CHIP", spec.id, null)
                 }
+
                 CargoAPI.CargoItemType.SPECIAL -> {
                     val special = stack.specialDataIfSpecial ?: continue
-
-                    val data = special.data ?: ""
-                    parts += listOf("SPECIAL", special.id, size, data).joinToString(sep)
+                    Triple("SPECIAL", special.id, special.data)
                 }
+
                 else -> continue
             }
+
+            if (type != currentType) {
+                parts += type
+                currentType = type
+            }
+
+            val entry =
+                if (data != null)
+                    listOf(id, size, data).joinToString(sep)
+                else
+                    listOf(id, size).joinToString(sep)
+
+            parts += entry
         }
 
         var cargoString = parts.joinToString(fieldSep)
@@ -93,17 +110,23 @@ object CompressedCargo {
         if (fullData.isBlank())
             return missing
 
-        val stacks = fullData.split(fieldSep)
+        val entries = fullData.split(fieldSep)
 
-        for (entry in stacks) {
+        var currentType: String? = null
+
+        for (entry in entries) {
+            if (!entry.contains(sep)) {
+                currentType = entry
+                continue
+            }
+
             val parts = entry.split(sep)
-            if (parts.size < 3) continue
 
-            val type = parts[0]
-            val id = parts[1]
-            val size = parts[2].toIntOrNull() ?: continue
+            val id = parts[0]
+            val size = parts.getOrNull(1)?.toIntOrNull() ?: continue
+            val data = parts.getOrNull(2)?.ifBlank { null }
 
-            when (type) {
+            when (currentType) {
                 "RESOURCES" -> {
                     val spec = runCatching {
                         Global.getSettings().getCommoditySpec(id)
@@ -114,7 +137,6 @@ object CompressedCargo {
                     else
                         missing.itemIds.add(id)
                 }
-
                 "WEAPONS" -> {
                     val spec = runCatching {
                         Global.getSettings().getWeaponSpec(id)
@@ -125,7 +147,6 @@ object CompressedCargo {
                     else
                         missing.cargoWeaponIds.add(id)
                 }
-
                 "FIGHTER_CHIP" -> {
                     val spec = runCatching {
                         Global.getSettings().getFighterWingSpec(id)
@@ -136,10 +157,7 @@ object CompressedCargo {
                     else
                         missing.cargoWingIds.add(id)
                 }
-
                 "SPECIAL" -> {
-                    val data = parts.getOrNull(3)?.ifBlank { null }
-
                     val spec = runCatching {
                         Global.getSettings().getSpecialItemSpec(id)
                     }.getOrNull()
@@ -157,6 +175,7 @@ object CompressedCargo {
             }
         }
 
+        cargo.sort()
         return missing
     }
 }

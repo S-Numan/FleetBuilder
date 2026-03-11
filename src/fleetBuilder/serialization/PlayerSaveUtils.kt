@@ -46,7 +46,7 @@ object PlayerSaveUtils {
         if (handleCargo) {
             //val cargoJson = CargoSerialization.saveCargoToJson(playerFleet.cargo.stacksCopy)
             //json.put("cargo", cargoJson)
-            val cargoComp = CompressedCargo.saveCargoToCompString(playerFleet.cargo.stacksCopy, compress = false)
+            val cargoComp = CompressedCargo.saveCargoToCompString(playerFleet.cargo.stacksCopy)
             json.put("cargo", cargoComp)
         }
 
