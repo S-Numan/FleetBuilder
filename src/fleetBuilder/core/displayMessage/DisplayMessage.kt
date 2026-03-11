@@ -104,7 +104,7 @@ object DisplayMessage {
         } else
             DrawMessageOnTop.addMessage(short, color ?: Misc.getTextColor())
 
-        Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
+        //Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
     }
 
     @JvmOverloads

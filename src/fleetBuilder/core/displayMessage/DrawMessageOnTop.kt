@@ -160,6 +160,8 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
         toDraw = font?.createText(currentMessage?.first ?: "", currentMessage?.second ?: Color.WHITE, 24f)?.apply {
             maxWidth = 800f
         }
+
+        Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
     }
 
     private fun render() {
