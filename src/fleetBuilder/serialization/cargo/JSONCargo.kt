@@ -9,10 +9,13 @@ import fleetBuilder.serialization.MissingElementsExtended
 import org.json.JSONArray
 import org.json.JSONObject
 
-object CargoSerialization {
+object JSONCargo {
 
-    // Adds cargo to fleet
-    // Use JSONObject
+    /**
+     * Adds cargo to fleet
+     *
+     * Please use a JSONObject input
+     */
     fun getCargoFromJson(json: Any, cargo: CargoAPI): MissingElementsExtended {
         val missingElements = MissingElementsExtended()
 

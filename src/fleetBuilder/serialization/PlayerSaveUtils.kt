@@ -7,7 +7,8 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Abilities
 import com.fs.starfarer.campaign.CampaignUIPersistentData
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.cargo.CargoSerialization
+import fleetBuilder.serialization.cargo.CompressedCargo
+import fleetBuilder.serialization.cargo.JSONCargo
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
@@ -43,8 +44,10 @@ object PlayerSaveUtils {
         val playerFleet = sector.playerFleet ?: return json
 
         if (handleCargo) {
-            val cargoJson = CargoSerialization.saveCargoToJson(playerFleet.cargo.stacksCopy)
-            json.put("cargo", cargoJson)
+            //val cargoJson = CargoSerialization.saveCargoToJson(playerFleet.cargo.stacksCopy)
+            //json.put("cargo", cargoJson)
+            val cargoComp = CompressedCargo.saveCargoToCompString(playerFleet.cargo.stacksCopy, compress = false)
+            json.put("cargo", cargoComp)
         }
 
         if (handleRelations) {
@@ -197,12 +200,16 @@ object PlayerSaveUtils {
 
         if (json.has("cargo")) {
             try {
-                json.optJSONObject("cargo")?.let { // New
-                    missing.add(CargoSerialization.getCargoFromJson(it, cargo))
-                } ?: json.getJSONArray("cargo")?.let { // Legacy
-                    missing.add(CargoSerialization.getCargoFromJson(it, cargo))
+                val cargoComp = json.optString("cargo", "")
+                if (!cargoComp.isNullOrBlank() && CompressedCargo.isCompressedCargo(cargoComp)) {
+                    missing.add(CompressedCargo.getCargoFromCompString(cargoComp, cargo))
+                } else {
+                    json.optJSONObject("cargo")?.let { // New
+                        missing.add(JSONCargo.getCargoFromJson(it, cargo))
+                    } ?: json.getJSONArray("cargo")?.let { // Legacy
+                        missing.add(JSONCargo.getCargoFromJson(it, cargo))
+                    }
                 }
-
             } catch (e: Exception) {
                 DisplayMessage.showError(FBTxt.txt("failed_to_load_cargo"), e)
             }

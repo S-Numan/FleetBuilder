@@ -477,7 +477,7 @@ object HotkeyHandlerDialogs {
         FLEET(FBTxt.txt("include_fleet"), true),
         OFFICERS(FBTxt.txt("include_officers"), true),
         CARGO(FBTxt.txt("include_cargo"), true),
-        CREDITS(FBTxt.txt("include_cargo"), true),
+        CREDITS(FBTxt.txt("include_credits"), true),
         ABILITYBAR(FBTxt.txt("include_abilitybar"), true, FBTxt.txt("include_abilitybar_tooltip"));
     }
 
