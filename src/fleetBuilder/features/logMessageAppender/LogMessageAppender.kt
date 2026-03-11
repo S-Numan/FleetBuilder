@@ -37,14 +37,14 @@ class LogMessageAppender : AppenderSkeleton() {
 
                 Console.showMessage(msg, Level.ALL)
             }
-        }
 
-        if (ModSettings.addLogsToDisplayMessageLevel == Level.OFF || event.throwableInformation?.throwable is NoDisplayThrowable)
-            return
-        when (level) {
-            Level.WARN -> DisplayMessage.showMessageCustom(event.renderedMessage, Color.yellow)
-            Level.ERROR, Level.FATAL -> DisplayMessage.showMessageCustom(event.renderedMessage, Color.red)
-            else -> DisplayMessage.showMessageCustom(event.renderedMessage, Misc.getTextColor())
+            if (ModSettings.addLogsToDisplayMessageLevel == Level.OFF || event.throwableInformation?.throwable is NoDisplayThrowable)
+                return
+            when (level) {
+                Level.WARN -> DisplayMessage.showMessageCustom(event.renderedMessage, Color.yellow)
+                Level.ERROR, Level.FATAL -> DisplayMessage.showMessageCustom(event.renderedMessage, Color.red)
+                else -> DisplayMessage.showMessageCustom(event.renderedMessage, Misc.getTextColor())
+            }
         }
     }
 
