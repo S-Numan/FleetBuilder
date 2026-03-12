@@ -1,6 +1,7 @@
 package fleetBuilder.core
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.containsString
@@ -12,6 +13,8 @@ import org.lwjgl.input.Keyboard
 
 object ModSettings {
     fun onApplicationLoad() {
+        modSpec = Global.getSettings().modManager.enabledModsCopy.find { it.modPluginClassName == FleetBuilderPlugin::class.java.name }!!
+
         if (Global.getSettings().modManager.isModEnabled("lunalib") && !LunaSettings.hasSettingsListenerOfClass(ModSettingsListener::class.java))
             LunaSettings.addSettingsListener(ModSettingsListener())
 
@@ -71,9 +74,10 @@ object ModSettings {
 
     fun getDefaultExcludeVariantTags(): MutableSet<String> = mutableSetOf(Tags.SHIP_RECOVERABLE, Tags.TAG_RETAIN_SMODS_ON_RECOVERY, Tags.TAG_NO_AUTOFIT, Tags.VARIANT_CONSISTENT_WEAPON_DROPS)
 
-    val modID = "SN_FleetBuilder"
-
-    val modName = "FleetBuilder"
+    private lateinit var modSpec: ModSpecAPI
+    fun getModSpec(): ModSpecAPI = modSpec
+    fun getModName(): String = modSpec.name
+    fun getModID(): String = modSpec.id
 
     var addLogsToConsoleModConsoleLevel = Level.OFF
     var addLogsToDisplayMessageLevel = Level.OFF

@@ -100,7 +100,7 @@ class RemoveRefitHullmod : CampaignInputListener {
             }
 
         } catch (e: Exception) {
-            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.getModName()), e)
         }
     }
 

@@ -11,11 +11,11 @@ import org.apache.log4j.Level
 
 internal class ModSettingsListener : LunaSettingsListener {
     init {
-        settingsChanged(ModSettings.modID)
+        settingsChanged(ModSettings.getModID())
 
         //Only happens once
 
-        val _defaultPrefix = getString(ModSettings.modID, "defaultPrefix")!!
+        val _defaultPrefix = getString(ModSettings.getModID(), "defaultPrefix")!!
 
         if (generatePrefixes().contains(_defaultPrefix))
             ModSettings.defaultPrefix = _defaultPrefix
@@ -24,6 +24,8 @@ internal class ModSettingsListener : LunaSettingsListener {
 
     //Gets called whenever settings are saved in the campaign or the main menu.
     override fun settingsChanged(modID: String) {
+        if (modID != ModSettings.getModID())
+            return
 
         val featuresDisabled = getBoolean(modID, "featuresDisabled")!!
 

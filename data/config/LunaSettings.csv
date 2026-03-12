@@ -1,10 +1,13 @@
 fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
+,,,,,,,,
+,,,,,,,,
 featuresDisabled,Disable All Features,Boolean,false,,"Set this to true to disable all features this mod provides, effectively turning this into a library mod.",,,General
+,,,,,,,,
 enableCheats,Enable Cheats,Boolean,false,,"This must be enabled to use the more cheat like commands this mod provides.
 If Dev mode is on, this will be treated as enabled, even if it isn’t.",,,General
 ,,,,,,,,
 ,,,,,,,,
-fleetClipboardHotkeyHandler,Enable Hotkey Handler,Boolean,true,fprovided,"Adds a bunch of useful hotkeys in many places.
+fleetClipboardHotkeyHandler,Enable Hotkey Handler,Boolean,true,,"Adds a bunch of useful hotkeys in many places.
 
 Hotkeys:
 
@@ -155,22 +158,22 @@ personHeader,Person Header,Header,Person Saving Settings,,,,,Misc
 ,,,,,,,,
 ,,,,,,,,
 addLogsToConsoleModConsoleLevel,Add logs to Console,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL","Add logs in ./starsector.log of input level and above to the ConsoleCommands Console, provided that mod is enabled.
-Does not show logs from before onApplicationLoad of this mod is called.",,,Dev Options
-addLogsToDisplayMessageLevel,Add logs to Display Message,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL",Show logs in ./starsector.log of input level and above as a message on the top of the screen.,,,Dev Options
-showDebug,Show Debug,Boolean,false,,Show debug elements,,,Dev Options
-removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?",,,Dev Options
+Does not show logs from before onApplicationLoad of this mod is called.",,,Developer Options
+addLogsToDisplayMessageLevel,Add logs to Display Message,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL",Show logs in ./starsector.log of input level and above as a message on the top of the screen.,,,Developer Options
+showDebug,Show Debug,Boolean,false,,Show debug elements,,,Developer Options
+removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?",,,Developer Options
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
-This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as hullmod is an sModdedBuiltIn without the ship having MIDAS built in.",,,Dev Options
+This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as hullmod is an sModdedBuiltIn without the ship having MIDAS built in.",,,Developer Options
 cargoScreenFilter,Cargo Screen Filter,Boolean,false,,"DOES NOT WORK CORRECTLY.
 A filter box to the right of the Other (4) tab when viewing cargo. Input values to filter cargo.
 
-I couldn’t get this one to work properly, but I left it in case anyone would like to try it out anyway. It technically works somewhat.",,,Dev Options
+I couldn’t get this one to work properly, but I left it in case anyone would like to try it out anyway. It technically works somewhat.",,,Developer Options
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
-prefixHeader,Prefix Header,Header,Prefixes,,,,,Dev Options
+prefixHeader,Prefix Header,Header,Prefixes,,,,,Developer Options
 prefixText,Prefix Text Field,Text,"Prefixes do not accept anything other than one or two characters, A to Z
-Must restart game to apply",,,,,Dev Options
-defaultPrefix,Default Prefix,String,DF,,Default prefix that loadouts are saved to.,,,Dev Options
+Must restart game to apply",,,,,Developer Options
+defaultPrefix,Default Prefix,String,DF,,Default prefix that loadouts are saved to.,,,Developer Options

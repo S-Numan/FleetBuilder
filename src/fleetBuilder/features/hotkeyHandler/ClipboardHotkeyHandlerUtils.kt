@@ -61,7 +61,7 @@ internal object ClipboardHotkeyHandlerUtils {
             block()
         } catch (e: Exception) {
             DisplayMessage.showError(
-                FBTxt.txt("mod_hotkey_failed", ModSettings.modName),
+                FBTxt.txt("mod_hotkey_failed", ModSettings.getModName()),
                 e
             )
         }
@@ -70,7 +70,7 @@ internal object ClipboardHotkeyHandlerUtils {
     fun requireCheatsOrWarn(): Boolean {
         if (!ModSettings.cheatsEnabled()) {
             DisplayMessage.showMessage(
-                FBTxt.txt("enable_cheats_to_use_paste", ModSettings.modName),
+                FBTxt.txt("enable_cheats_to_use_paste", ModSettings.getModName()),
                 Color.YELLOW
             )
             return false
@@ -358,7 +358,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
                     else -> {
                         DisplayMessage.showMessage(
-                            FBTxt.txt("enable_unassign_player", ModSettings.modName),
+                            FBTxt.txt("enable_unassign_player", ModSettings.getModName()),
                             Color.YELLOW
                         )
                     }

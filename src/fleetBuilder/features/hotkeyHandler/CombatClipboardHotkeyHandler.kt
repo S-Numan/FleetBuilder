@@ -54,7 +54,7 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                                 event.consume(); continue
                             }
                         } catch (e: Exception) {
-                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.modName), e)
+                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.getModName()), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
                         if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
