@@ -48,14 +48,12 @@ object DisplayMessage {
             }
         } else {
             val callerClass: Class<*> = getCallerClass() ?: javaClass
-            logMessage(callerClass, full, Level.ERROR)
+            logMessage(callerClass, full, Level.ERROR, displayMessage = false)
         }
 
         // Show short message to player
         if (!ModSettings.hideErrorMessages) {
-            showMessage(short, Color.RED)
-
-            Global.getSoundPlayer().playUISound("ui_selection_cleared", 1f, 1f)
+            showMessageCustom(short, Color.RED)
         }
     }
 
@@ -120,7 +118,6 @@ object DisplayMessage {
     @JvmOverloads
     fun showMessageCustom(message: String, color: Color? = null) {
         DrawMessageOnTop.addMessage(message, color ?: Misc.getTextColor())
-        Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
     }
     /*
     val stackTrace = Exception().stackTrace
