@@ -30,10 +30,10 @@ object DataFleet {
         val fleetName: String? = null,
         val aggression: Int = -1,
         val factionID: String? = null,
-        val commanderIfNoFlagship: DataPerson.ParsedPersonData?, // null if flagship exists, as commander is on flagship
-        val members: List<DataMember.ParsedMemberData>,
-        val idleOfficers: List<DataPerson.ParsedPersonData>,
-        val secondInCommandData: DataSecondInCommand.SecondInCommandData?,
+        val commanderIfNoFlagship: DataPerson.ParsedPersonData? = null, // null if flagship exists, as commander is on flagship
+        val members: List<DataMember.ParsedMemberData> = emptyList(),
+        val idleOfficers: List<DataPerson.ParsedPersonData> = emptyList(),
+        val secondInCommandData: DataSecondInCommand.SecondInCommandData? = null,
     )
 
     @JvmOverloads

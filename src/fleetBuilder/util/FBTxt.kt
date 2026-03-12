@@ -12,11 +12,11 @@ import java.util.regex.Pattern
 
 object FBTxt {
     fun txt(id: String): String {
-        return Global.getSettings().getString(ModSettings.modID, id)
+        return Global.getSettings().getString(ModSettings.getModID(), id)
     }
 
     fun txt(id: String, vararg args: Any?): String {
-        return String.format(Global.getSettings().getString(ModSettings.modID, id), *args)
+        return String.format(Global.getSettings().getString(ModSettings.getModID(), id), *args)
     }
 
     fun txtPlural(baseKey: String, count: Int, vararg args: Any): String {

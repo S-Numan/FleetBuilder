@@ -22,6 +22,7 @@ object DataMember {
         val personData: DataPerson.ParsedPersonData? = null,
         val shipName: String = "",
         val cr: Float? = 0.7f,
+        val hullFraction: Float? = 1f,
         val isMothballed: Boolean = false,
         val isFlagship: Boolean = false,
         val id: String? = null
@@ -46,6 +47,7 @@ object DataMember {
             personData = if (member.captain != null && !member.captain.isDefault && settings.includeOfficer) getPersonDataFromPerson(member.captain, filterParsed = false) else null,
             shipName = member.shipName ?: "",
             cr = member.repairTracker.cr,
+            hullFraction = member.status.hullFraction,
             isMothballed = member.repairTracker.isMothballed,
             isFlagship = member.isFlagship,
             id = member.id
@@ -66,12 +68,14 @@ object DataMember {
         val personData = if (data.personData != null && settings.includeOfficer) filterParsedPersonData(data.personData, settings.personSettings, missing) else null
         val variantData = if (data.variantData != null) filterParsedVariantData(data.variantData, settings.variantSettings, missing) else null
 
-        val cr = if (settings.includeCR) data.cr else null
+        val cr = if (settings.includeCRAndHull) data.cr else null
+        val hullFraction = if (settings.includeCRAndHull) data.hullFraction else null
 
         return data.copy(
             personData = personData,
             variantData = variantData,
-            cr = cr
+            cr = cr,
+            hullFraction = hullFraction
         )
     }
 
@@ -92,7 +96,8 @@ object DataMember {
         return data.copy(
             personData = personData,
             variantData = variantData,
-            cr = data.cr?.coerceIn(0f, 1f)
+            cr = data.cr?.coerceIn(0f, 1f),
+            hullFraction = data.hullFraction?.coerceIn(0f, 1f)
         )
     }
 
@@ -112,6 +117,22 @@ object DataMember {
             member.repairTracker.cr = data.cr
         else
             member.repairTracker.cr = member.repairTracker.maxCR
+
+        if (data.hullFraction != null && data.hullFraction < 1f) {
+            member.status.disable()
+            member.status.repairDisabledABit()
+            member.status.hullFraction = data.hullFraction
+            /*for (i in 1..<member.status.numStatuses) {
+                val rand = Math.random()
+                if (rand < 0.5f && rand > data.hullFraction) {
+                    member.status.setDetached(i, true)
+                } else {
+                    member.status.setDetached(i, false)
+                    member.status.setHullFraction(i, data.hullFraction)
+                }
+            }*/
+            //member.status.repairFraction(data.hullFraction);
+        }
 
         // Officer
         if (data.personData != null)

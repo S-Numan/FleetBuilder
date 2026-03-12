@@ -39,15 +39,15 @@ object DisplayMessage {
             recentErrors.entries.removeIf { it.value < cutoff }
         }
 
+        val callerClass: Class<*> = getCallerClass() ?: javaClass
         // Console or logger output
         if (ModSettings.isConsoleModEnabled) {
             if (e != null) {
                 Console.showException(full, e)
             } else {
-                Console.showMessage(full, Level.ERROR)
+                Console.showMessage(callerClass.name + " - " + full, Level.ERROR)
             }
         } else {
-            val callerClass: Class<*> = getCallerClass() ?: javaClass
             logMessage(callerClass, full, Level.ERROR, displayMessage = false)
         }
 

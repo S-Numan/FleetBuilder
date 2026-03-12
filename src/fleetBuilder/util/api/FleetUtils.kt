@@ -1,6 +1,7 @@
 package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.characters.PersonAPI
@@ -16,10 +17,41 @@ import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.CargoUtils.getFractionHoldableSupplies
+import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.api.PersonUtils.copyOfficerDataTo
+import second_in_command.specs.SCSpecStore
 import kotlin.math.max
 
 object FleetUtils {
+
+    fun getAllSourceModsFromFleet(
+        fleet: FleetDataAPI,
+        settings: FleetSettings = FleetSettings()
+    ): Set<ModSpecAPI> {
+        return getAllSourceModsFromFleet(getFleetDataFromFleet(fleet, settings))
+    }
+
+    fun getAllSourceModsFromFleet(data: DataFleet.ParsedFleetData): Set<ModSpecAPI> {
+        val sourceMods = mutableSetOf<ModSpecAPI>()
+
+        data.members.forEach {
+            sourceMods.addAll(getAllSourceModsFromMember(it))
+        }
+        data.idleOfficers.forEach {
+            sourceMods.addAll(PersonUtils.getAllSourceModsFromPerson(it))
+        }
+
+        if (data.secondInCommandData != null && Global.getSettings().modManager.isModEnabled("second_in_command")) {
+            data.secondInCommandData.officers.forEach {
+                sourceMods.addAll(PersonUtils.getAllSourceModsFromPerson(it.person))
+                val aptitudeMod = SCSpecStore.getAptitudeSpec(it.aptitudeId)?.modSpec
+                if (aptitudeMod != null)
+                    sourceMods.add(aptitudeMod)
+            }
+        }
+
+        return sourceMods
+    }
 
     fun getUnassignedOfficers(fleet: FleetDataAPI): List<PersonAPI> {
         return fleet.officersCopy.map { it.person }.filter { fleet.getMemberWithCaptain(it) == null }

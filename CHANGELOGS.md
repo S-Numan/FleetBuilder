@@ -2,10 +2,11 @@
 #### Big update!
 ### Additions
 - Newly added Mothball Recovered Ships setting in the Misc tab. When this is true, newly recovered ships will be automatically mothballed.
-- Add logs to Console and Add logs to Display Manager setting. When enabled, any logs sent to starsector.log above the specified level will be put in either the ConsoleCommands console or displayed on screen.
+- Add logs to Console and Add logs to Display Message setting. When enabled, any logs sent to starsector.log above the specified level will be put in either the ConsoleCommands console or displayed on screen.
 - An autofit button now shows up in codex above the ship display; just click the button to see!
 - Added a setting to disable the transponder when entering hyperspace. Yes, I know, this also exists in the QOL life pack.
 - Compressed person and member on copying by default.
+- Compressed cargo in save transfer to save space.
 ### Changes
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
 - Increase size of onslaught in autofit UI.
@@ -29,6 +30,7 @@
 - Autofit entries which have had their files removed now have their path to them removed as well. This gets rid of the WARN messages on every game launch in the log.
 - Fix officers not being paste-able if they lack any skills
 - Fix officers not storing in different language.
+- Fix accidently using "Include Cargo" instead of "Include Credits" causing confusion.
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
 - A small overhaul to the dialog system. It will be a little different now in many ways.

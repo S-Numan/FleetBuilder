@@ -41,6 +41,7 @@ object JSONMember {
             personData = personData,
             shipName = json.optString("name", ""),
             cr = if (json.has("cr")) json.optFloat("cr") else null,
+            hullFraction = if (json.has("hullFraction")) json.optFloat("hullFraction") else null,
             isMothballed = json.optBoolean("ismothballed", false),
             isFlagship = isFlagship
         )
@@ -48,8 +49,10 @@ object JSONMember {
 
     fun setMemberValuesFromJson(json: JSONObject, member: FleetMemberAPI) {
         val cr = json.optFloat("cr", 0.7f)
+        val hullFraction = json.optFloat("hullFraction", 1.0f)
         val shipName = json.optString("name", "")
         member.repairTracker.cr = cr.coerceIn(0f, 1f) // Ensure CR is within [0, 1]
+        member.status.hullFraction = hullFraction.coerceIn(0f, 1f)
         if (shipName.isNotEmpty()) {
             member.shipName = shipName
         }
@@ -89,6 +92,9 @@ object JSONMember {
 
         if (data.cr != null)
             memberJson.put("cr", data.cr.roundToDecimals(2))
+
+        if (data.hullFraction != null)
+            memberJson.put("hullFraction", data.hullFraction.roundToDecimals(2))
 
         memberJson.put("name", data.shipName)
 

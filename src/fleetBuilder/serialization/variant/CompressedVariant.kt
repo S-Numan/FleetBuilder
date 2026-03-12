@@ -11,6 +11,7 @@ import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
+import fleetBuilder.util.FBTxt
 import fleetBuilder.util.LookupUtil
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.CompressionUtil
@@ -227,7 +228,7 @@ object CompressedVariant {
 
             if (addedMods.isNotEmpty()) {
 
-                requiredMods = "Mods Used: "
+                requiredMods = FBTxt.txt("mods_used_prefix")
 
                 for (mod in addedMods) {
                     addedModDetails += "${mod.id}$sep${mod.name}$sep${mod.version}$sep"

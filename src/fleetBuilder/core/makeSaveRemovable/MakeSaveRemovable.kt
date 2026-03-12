@@ -30,7 +30,7 @@ object MakeSaveRemovable {
         val mutableHullMods: MutableList<Thing> = mutableListOf()
 
         Global.getSettings().allHullModSpecs.forEach { mod ->
-            if (mod.sourceMod != null && mod.sourceMod.id == ModSettings.modID) {//Hullmod is from this mod?
+            if (mod.sourceMod != null && mod.sourceMod.id == ModSettings.getModID()) {//Hullmod is from this mod?
                 mutableHullMods.add(Thing(mod.id, "$${mod.id}"))//Add it for removal
             }
         }

@@ -1,11 +1,11 @@
 package fleetBuilder.serialization.fleet.mods.secondInCommand
 
 import fleetBuilder.serialization.person.JSONPerson
+import fleetBuilder.util.roundToDecimals
 import org.json.JSONArray
 import org.json.JSONObject
 
 object JSONSecondInCommand {
-
     fun saveSecondInCommandData(data: DataSecondInCommand.SecondInCommandData, fleetJson: JSONObject) {
         val sicJson = JSONObject()
 
@@ -16,7 +16,7 @@ object JSONSecondInCommand {
             scOfficerJson.put("level", it.level)
             scOfficerJson.put("aptitudeId", it.aptitudeId)
             scOfficerJson.put("skillPoints", it.skillPoints)
-            scOfficerJson.put("experiencePoints", it.experiencePoints)
+            scOfficerJson.put("experiencePoints", it.experiencePoints.roundToDecimals(2))
             scOfficerJson.put("activeSkillIDs", JSONArray(it.activeSkillIDs))
             if (it.assignedSlot != null)
                 scOfficerJson.put("assignedSlot", it.assignedSlot)

@@ -9,6 +9,7 @@ import com.fs.starfarer.campaign.CampaignUIPersistentData
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.cargo.CompressedCargo
 import fleetBuilder.serialization.cargo.JSONCargo
+import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
@@ -73,7 +74,7 @@ object PlayerSaveUtils {
         }
 
         if (handleFleet) {
-            val fleetJson = JSONFleet.saveFleetToJson(
+            val compFleet = CompressedFleet.saveFleetToCompString(
                 playerFleet,
                 FleetSettings().apply {
                     includeCommanderSetFlagship = false
@@ -81,9 +82,8 @@ object PlayerSaveUtils {
                     memberSettings.includeOfficer = handleOfficers
                     includeIdleOfficers = handleOfficers
                 }
-
             )
-            json.put("fleet", fleetJson)
+            json.put("fleet", compFleet)
         }
 
         if (handleCredits) {
@@ -248,6 +248,7 @@ object PlayerSaveUtils {
                 val playerJson = json.getJSONObject("player")
                 val loadedPlayer = JSONPerson.getPersonFromJson(playerJson, missing = missing)
 
+
                 compiled.player = loadedPlayer
             } catch (e: Exception) {
                 DisplayMessage.showError(FBTxt.txt("failed_to_load_player"), e)
@@ -256,9 +257,16 @@ object PlayerSaveUtils {
 
         if (json.has("fleet")) {
             try {
-                val fleetJson = json.getJSONObject("fleet")
+                val fleetJson = json.optJSONObject("fleet")
+                val parsedData = if (fleetJson == null) {
+                    val compFleet = json.getString("fleet")
+                    CompressedFleet.extractFleetDataFromCompString(compFleet, missing) ?: throw Exception()
+                } else {
+                    JSONFleet.extractFleetDataFromJson(fleetJson, missing)
+                }
+
                 val fleet = DataFleet.createCampaignFleetFromData(
-                    JSONFleet.extractFleetDataFromJson(fleetJson), true,
+                    parsedData, true,
                     FleetSettings().apply {
                         includeCommanderSetFlagship = false
                         includeCommanderAsOfficer = false
@@ -266,7 +274,10 @@ object PlayerSaveUtils {
                     },
                     missing
                 )
-                compiled.aggressionDoctrine = fleetJson.optInt("aggression_doctrine", 2)
+                if (parsedData.aggression != -1)
+                    compiled.aggressionDoctrine = parsedData.aggression
+                else
+                    compiled.aggressionDoctrine = 2
 
                 compiled.fleet = fleet
             } catch (e: Exception) {

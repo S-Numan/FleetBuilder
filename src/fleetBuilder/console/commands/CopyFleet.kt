@@ -178,7 +178,7 @@ class CopyFleet : BaseCommand {
                 return BaseCommand.CommandResult.ERROR
             }
         } else if (ui.currentInteractionDialog != null) {
-            if (ClipboardHotkeyHandlerUtils.handleInteractionCopy(ui, false)) {
+            if (ClipboardHotkeyHandlerUtils.handleInteractionCopy(ui, isAltDown = false, isShiftDown = false)) {
                 Console.showMessage("Copied interaction fleet to clipboard")
                 return BaseCommand.CommandResult.SUCCESS
             } else {

@@ -27,6 +27,7 @@ import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.serialization.fleet.DataFleet.validateAndCleanFleetData
@@ -160,7 +161,7 @@ internal object ClipboardHotkeyHandlerUtils {
         }
     }
 
-    fun handleUIFleetCopy(sector: SectorAPI): Boolean {
+    fun handleUIFleetCopy(sector: SectorAPI, isShiftDown: Boolean = false): Boolean {
         val playerFleet = sector.playerFleet?.fleetData ?: return false
 
         val settings = FleetSettings().apply {
@@ -192,21 +193,24 @@ internal object ClipboardHotkeyHandlerUtils {
             }
         }
 
-        val json = saveFleetToJson(fleetToCopy, settings)
-        ClipboardUtil.setClipboardText(json.toString(4))
-
-        val key = when {
-            settings.excludeMembersWithID.isEmpty() && !uiShowsSubmarketFleet ->
-                "copied_entire_fleet_to_clipboard"
-
-            settings.excludeMembersWithID.isEmpty() ->
-                "copied_entire_submarket_to_clipboard"
-
-            !uiShowsSubmarketFleet ->
-                "copied_visible_fleet_to_clipboard"
-
-            else ->
-                "copied_visible_submarket_to_clipboard"
+        val key = if (!isShiftDown) {
+            val json = saveFleetToJson(fleetToCopy, settings)
+            ClipboardUtil.setClipboardText(json.toString(4))
+            when {
+                settings.excludeMembersWithID.isEmpty() && !uiShowsSubmarketFleet -> "copied_entire_fleet_to_clipboard"
+                settings.excludeMembersWithID.isEmpty() -> "copied_entire_submarket_to_clipboard"
+                !uiShowsSubmarketFleet -> "copied_visible_fleet_to_clipboard"
+                else -> "copied_visible_submarket_to_clipboard"
+            }
+        } else {
+            val comp = CompressedFleet.saveFleetToCompString(fleetToCopy)
+            ClipboardUtil.setClipboardText(comp)
+            when {
+                settings.excludeMembersWithID.isEmpty() && !uiShowsSubmarketFleet -> "copied_entire_fleet_to_clipboard_compressed"
+                settings.excludeMembersWithID.isEmpty() -> "copied_entire_submarket_to_clipboard_compressed"
+                !uiShowsSubmarketFleet -> "copied_visible_fleet_to_clipboard_compressed"
+                else -> "copied_visible_submarket_to_clipboard_compressed"
+            }
         }
 
         DisplayMessage.showMessage(FBTxt.txt(key))
@@ -248,7 +252,7 @@ internal object ClipboardHotkeyHandlerUtils {
         createDevModeDialog()
     }
 
-    fun handleInteractionCopy(ui: CampaignUIAPI, isAltDown: Boolean): Boolean {
+    fun handleInteractionCopy(ui: CampaignUIAPI, isAltDown: Boolean = false, isShiftDown: Boolean = false): Boolean {
         val interaction = ui.currentInteractionDialog
         val plugin = interaction?.plugin
         val battle = (plugin?.context as? FleetEncounterContext)?.battle
@@ -260,20 +264,34 @@ internal object ClipboardHotkeyHandlerUtils {
         }
 
         fleet?.let { fleetToCopy ->
-            val json = saveFleetToJson(
-                fleetToCopy,
-                FleetSettings().apply {
-                    memberSettings.personSettings.handleXpAndPoints = false
-                }
-            )
+            val txt = if (!isShiftDown) {
+                val json = saveFleetToJson(
+                    fleetToCopy,
+                    FleetSettings().apply {
+                        memberSettings.personSettings.handleXpAndPoints = false
+                    }
+                )
 
-            ClipboardUtil.setClipboardText(json.toString(4))
+                ClipboardUtil.setClipboardText(json.toString(4))
 
-            val txt =
                 if (!isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1)
                     FBTxt.txt("copied_interaction_fleet_with_supporting_to_clipboard")
                 else
                     FBTxt.txt("copied_interaction_fleet_to_clipboard")
+            } else {
+                val comp = CompressedFleet.saveFleetToCompString(
+                    fleetToCopy.fleetData,
+                    settings = FleetSettings().apply {
+                        memberSettings.personSettings.handleXpAndPoints = false
+                    }
+                )
+                ClipboardUtil.setClipboardText(comp)
+
+                if (!isAltDown && (battle?.nonPlayerSide?.size ?: 1) > 1)
+                    FBTxt.txt("copied_interaction_fleet_with_supporting_to_clipboard_compressed")
+                else
+                    FBTxt.txt("copied_interaction_fleet_to_clipboard_compressed")
+            }
 
             DisplayMessage.showMessage(txt)
 

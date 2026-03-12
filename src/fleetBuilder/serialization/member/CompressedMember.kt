@@ -5,6 +5,7 @@ import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.SerializationUtils.fieldSep
+import fleetBuilder.serialization.SerializationUtils.memberSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.member.DataMember.buildMemberFull
@@ -95,23 +96,23 @@ object CompressedMember {
 
             /* ---------- VARIANT ---------- */
 
-            val variantEnd = fullData.indexOf("$$", cursor)
+            val variantEnd = fullData.indexOf(memberSep, cursor)
             if (variantEnd == -1) return null
 
             val variantString =
                 fullData.substring(cursor, variantEnd).ifBlank { null }
 
-            cursor = variantEnd + 2
+            cursor = variantEnd + memberSep.length
 
             /* ---------- PERSON ---------- */
 
-            val personEnd = fullData.indexOf("$$", cursor)
+            val personEnd = fullData.indexOf(memberSep, cursor)
             if (personEnd == -1) return null
 
             val personString =
                 fullData.substring(cursor, personEnd).ifBlank { null }
 
-            cursor = personEnd + 2
+            cursor = personEnd + memberSep.length
 
             /* ---------- REMAINING FIELDS ---------- */
 
@@ -120,9 +121,10 @@ object CompressedMember {
 
             val shipName = fields.getOrNull(0) ?: ""
             val cr = fields.getOrNull(1)?.toFloatOrNull()
-            val mothballed = fields.getOrNull(2)?.toBoolean() ?: false
-            val flagship = fields.getOrNull(3)?.toBoolean() ?: false
-            val id = fields.getOrNull(4)?.ifBlank { null }
+            val hullFraction = fields.getOrNull(2)?.toFloatOrNull()
+            val mothballed = fields.getOrNull(3)?.toBoolean() ?: false
+            val flagship = fields.getOrNull(4)?.toBoolean() ?: false
+            val id = fields.getOrNull(5)?.ifBlank { null }
 
             val variantData =
                 variantString?.let {
@@ -139,6 +141,7 @@ object CompressedMember {
                 personData = personData,
                 shipName = shipName,
                 cr = cr,
+                hullFraction = hullFraction,
                 isMothballed = mothballed,
                 isFlagship = flagship,
                 id = id
@@ -201,13 +204,14 @@ object CompressedMember {
 
         parts += data.shipName
         parts += (data.cr?.roundToDecimals(2)?.toString() ?: "")
+        parts += (data.hullFraction?.roundToDecimals(2)?.toString() ?: "")
         parts += data.isMothballed.toString()
         parts += data.isFlagship.toString()
         parts += (data.id ?: "")
 
         var memberString =
-            variantString + metaSep + metaSep +
-                    personString + metaSep + metaSep +
+            variantString + memberSep +
+                    personString + memberSep +
                     parts.joinToString(fieldSep)
 
         /* ---------- MOD INFO ---------- */
@@ -219,7 +223,7 @@ object CompressedMember {
             val mods = getAllSourceModsFromMember(data)
 
             if (mods.isNotEmpty()) {
-                requiredMods = "Mods Used: "
+                requiredMods = FBTxt.txt("mods_used_prefix")
 
                 for (mod in mods) {
                     addedModDetails +=

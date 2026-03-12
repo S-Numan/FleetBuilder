@@ -1,5 +1,8 @@
 package fleetBuilder.serialization
 
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.fleet.CompressedFleet
+import fleetBuilder.serialization.fleet.CompressedFleet.isCompressedFleet
 import fleetBuilder.serialization.fleet.JSONFleet.extractFleetDataFromJson
 import fleetBuilder.serialization.member.CompressedMember
 import fleetBuilder.serialization.member.CompressedMember.isCompressedMember
@@ -10,14 +13,19 @@ import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.CompressedVariant.isCompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
+import fleetBuilder.util.FBTxt
 import fleetBuilder.util.isJSON
 import org.json.JSONObject
+import java.awt.Color
 
 object SerializationUtils {
     const val sep = ","
     const val fieldSep = "%"//Only two ascii characters that cannot be in a variant display name
     const val metaSep = "$"//Only two ascii characters that cannot be in a variant display name
     const val joinSep = ">"
+    const val memberSep = "$$><$$"
+    const val fleetSep1 = "$$>>$$"
+    const val fleetSep2 = "$$<<$$"
 
     fun cleanJsonStringInput(raw: String): String {
         return raw.lines()
@@ -83,13 +91,30 @@ object SerializationUtils {
         }
 
         return when {
-            isCompressedVariant(text) ->
-                CompressedVariant.extractVariantDataFromCompString(text, missing)
-            isCompressedPerson(text) ->
-                CompressedPerson.extractPersonDataFromCompString(text, missing)
-            isCompressedMember(text) ->
-                CompressedMember.extractMemberDataFromCompString(text, missing)
-
+            isCompressedVariant(text) -> {
+                val comp = CompressedVariant.extractVariantDataFromCompString(text, missing)
+                if (comp == null)
+                    DisplayMessage.showMessage(FBTxt.txt("failed_extract_variant"), Color.YELLOW)
+                comp
+            }
+            isCompressedPerson(text) -> {
+                val comp = CompressedPerson.extractPersonDataFromCompString(text, missing)
+                if (comp == null)
+                    DisplayMessage.showMessage(FBTxt.txt("failed_extract_person"), Color.YELLOW)
+                comp
+            }
+            isCompressedMember(text) -> {
+                val comp = CompressedMember.extractMemberDataFromCompString(text, missing)
+                if (comp == null)
+                    DisplayMessage.showMessage(FBTxt.txt("failed_extract_member"), Color.YELLOW)
+                comp
+            }
+            isCompressedFleet(text) -> {
+                val comp = CompressedFleet.extractFleetDataFromCompString(text, missing)
+                if (comp == null)
+                    DisplayMessage.showMessage(FBTxt.txt("failed_extract_fleet"), Color.YELLOW)
+                comp
+            }
             else -> null
         }
     }
