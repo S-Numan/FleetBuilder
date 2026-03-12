@@ -217,6 +217,33 @@
 
 
 
+    # MissingElements
+  "missing_weapons": "Missing Weapons",
+  "missing_wings": "Missing Wings",
+  "missing_hullmods": "Missing Hullmods",
+  "missing_hulls": "Missing Hulls",
+  "missing_skills": "Missing Skills",
+  "mods_saved_with": "Mods Saved With",
+
+  "mod_entry": "%s (%s, v%s)",
+
+  "missing_weapon_blueprints": "Missing Weapon Blueprints",
+  "missing_wing_blueprints": "Missing Wing Blueprints",
+  "missing_hull_blueprints": "Missing Hull Blueprints",
+  "missing_industry_blueprints": "Missing Industry Blueprints",
+  "missing_hullmods_known": "Missing Hullmods Known",
+  "missing_weapon_cargo": "Missing Weapon in Cargo",
+  "missing_wing_cargo": "Missing Wing in Cargo",
+  "missing_items": "Missing Items",
+
+  "missing_section_separator": "\n\n",
+
+  "missing_default_short_message": "HAD MISSING ELEMENTS: see console for more details",
+
+
+
+
+
 
 
 

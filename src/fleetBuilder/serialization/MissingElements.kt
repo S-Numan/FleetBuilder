@@ -2,6 +2,7 @@ package fleetBuilder.serialization
 
 import com.fs.starfarer.api.Global
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.util.FBTxt
 import org.apache.log4j.Level
 import java.awt.Color
 
@@ -52,12 +53,12 @@ open class MissingElements(
 
         val missingMessages = mutableListOf<String>()
 
-        printIfNotEmpty("Missing Weapons", missingMessages, weaponIds)
-        printIfNotEmpty("Missing Wings", missingMessages, wingIds)
-        printIfNotEmpty("Missing Hullmods", missingMessages, hullModIds)
-        printIfNotEmpty("Missing Hulls", missingMessages, hullIds)
+        printIfNotEmpty(FBTxt.txt("missing_weapons"), missingMessages, weaponIds)
+        printIfNotEmpty(FBTxt.txt("missing_wings"), missingMessages, wingIds)
+        printIfNotEmpty(FBTxt.txt("missing_hullmods"), missingMessages, hullModIds)
+        printIfNotEmpty(FBTxt.txt("missing_hulls"), missingMessages, hullIds)
 
-        printIfNotEmpty("Missing Skills", missingMessages, skillIds)
+        printIfNotEmpty(FBTxt.txt("missing_skills"), missingMessages, skillIds)
 
         val filteredMods: Set<GameModInfo> = if (doNotPrintEnabledMods) {
             val modManager = Global.getSettings().modManager
@@ -65,17 +66,15 @@ open class MissingElements(
                 .filterNot { mod -> modManager.isModEnabled(mod.id) }
                 .toSet()
         } else {
-            gameMods
-                .toSet()
+            gameMods.toSet()
         }
 
-
-        printIfNotEmpty("Mods Saved With", missingMessages, filteredMods) { mod ->
+        printIfNotEmpty(FBTxt.txt("mods_saved_with"), missingMessages, filteredMods) { mod ->
             val (id, name, version) = mod
-            "$name ($id, v$version)"
+            FBTxt.txt("mod_entry", name, id, version)
         }
 
-        return missingMessages.joinToString("\n\n")
+        return missingMessages.joinToString(FBTxt.txt("missing_section_separator"))
     }
 }
 
@@ -122,24 +121,24 @@ class MissingElementsExtended : MissingElements() {
         val base = super.getMissingElementsString(doNotPrintEnabledMods)
         val extra = mutableListOf<String>()
 
-        printIfNotEmpty("Missing Weapon Blueprints", extra, blueprintWeaponIds)
-        printIfNotEmpty("Missing Wing Blueprints", extra, blueprintWingIds)
-        printIfNotEmpty("Missing Hull Blueprints", extra, blueprintHullIds)
-        printIfNotEmpty("Missing Industry Blueprints", extra, blueprintIndustryIds)
-        printIfNotEmpty("Missing Hullmods Known", extra, hullModIdsKnown)
-        printIfNotEmpty("Missing Weapon in Cargo", extra, cargoWeaponIds)
-        printIfNotEmpty("Missing Wing in Cargo", extra, cargoWingIds)
-        printIfNotEmpty("Missing Items", extra, itemIds)
+        printIfNotEmpty(FBTxt.txt("missing_weapon_blueprints"), extra, blueprintWeaponIds)
+        printIfNotEmpty(FBTxt.txt("missing_wing_blueprints"), extra, blueprintWingIds)
+        printIfNotEmpty(FBTxt.txt("missing_hull_blueprints"), extra, blueprintHullIds)
+        printIfNotEmpty(FBTxt.txt("missing_industry_blueprints"), extra, blueprintIndustryIds)
+        printIfNotEmpty(FBTxt.txt("missing_hullmods_known"), extra, hullModIdsKnown)
+        printIfNotEmpty(FBTxt.txt("missing_weapon_cargo"), extra, cargoWeaponIds)
+        printIfNotEmpty(FBTxt.txt("missing_wing_cargo"), extra, cargoWingIds)
+        printIfNotEmpty(FBTxt.txt("missing_items"), extra, itemIds)
 
         return (extra.filter { it.isNotBlank() } + listOf(base))
             .filter { it.isNotBlank() }
-            .joinToString("\n\n")
+            .joinToString(FBTxt.txt("missing_section_separator"))
     }
 }
 
 fun reportMissingElementsIfAny(
     missingElements: MissingElements,
-    defaultShortMessage: String = "HAD MISSING ELEMENTS: see console for more details"
+    defaultShortMessage: String = FBTxt.txt("missing_default_short_message")
 ) {
     val fullMessage = missingElements.getMissingElementsString()
     if (fullMessage.isNotBlank()) {
