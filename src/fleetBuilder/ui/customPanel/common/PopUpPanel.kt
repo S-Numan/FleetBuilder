@@ -7,6 +7,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
+import fleetBuilder.util.api.UIUtils
 import org.lwjgl.input.Keyboard
 
 open class PopUpPanel : ComposableUIPanel() {
@@ -17,7 +18,7 @@ open class PopUpPanel : ComposableUIPanel() {
 
     open var consumeAllInput: Boolean = true
 
-    open var quitWithEscKey: Boolean = true
+    open var allowHotkeyQuit: Boolean = true
 
     open var attemptedExit: Boolean = false
     open var reachedMaxHeight: Boolean = false
@@ -94,12 +95,14 @@ open class PopUpPanel : ComposableUIPanel() {
                 }
             }*/
 
-            if (quitWithEscKey && event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
+            if (allowHotkeyQuit &&
+                (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE)
+                || (event.isRMBEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
+            ) {
                 if (attemptedExit) {
                     forceDismiss()
                     event.consume()
-                    break
-                } else if (event.isKeyDownEvent) {
+                } else {
                     attemptedExit = true
                     event.consume()
                 }
