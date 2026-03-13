@@ -59,18 +59,23 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
     override fun runWhilePaused(): Boolean = true
     override fun advance(amount: Float) {
         stateChangeChecker()
-        if (curState != GameState.CAMPAIGN)
-            return
+        if (curState != GameState.CAMPAIGN) return
 
         advanceAmount(amount)
     }
 
+
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         stateChangeChecker()
-        if (curState != GameState.TITLE && curState != GameState.COMBAT)
-            return
+        if (curState != GameState.TITLE && curState != GameState.COMBAT) return
 
-        advanceAmount(amount)
+        val engine = Global.getCombatEngine()
+        val trueAmount = if (engine != null)
+            amount / engine.timeMult.modifiedValue
+        else
+            amount
+
+        advanceAmount(trueAmount)
     }
 
     private fun stateChangeChecker() {
