@@ -12,11 +12,11 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManager
 import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
 import fleetBuilder.features.codexButton.CampaignDevModeCodexButton
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
-import fleetBuilder.features.logMessageAppender.LogMessageAppender
 import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
 import fleetBuilder.features.filters.injection.CampaignFleetScreenFilter
 import fleetBuilder.features.filters.injection.CampaignModPickerFilter
 import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
+import fleetBuilder.features.logMessageAppender.LogMessageAppender
 import fleetBuilder.features.officerStorage.CatchStoreMemberButton
 import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
@@ -120,6 +120,8 @@ class EventDispatcher : EveryFrameScript {
     private val memberTracker = MemberChangeTracker()
 
     fun onGameLoad(newGame: Boolean) {
+        DrawMessageOnTop.onGameLoad()
+
         setListeners()
 
         OfficerChangeEvents.clearAll()

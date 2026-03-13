@@ -10,6 +10,7 @@ import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.TimeKeeper
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import org.magiclib.kotlin.setAlpha
@@ -30,11 +31,35 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
         private var init = false
         private var fadingOut = false
         private var curState = GameState.TITLE
+        private var justLoadedGame = 0
+        fun onGameLoad() {
+            justLoadedGame = 2 // Delay a tick for the screen panel
+        }
+
+        fun renderStatic() {
+            if (toDraw != null && currentMessage != null) {
+                val screenWidth = Global.getSettings().screenWidth
+                val x = (screenWidth - toDraw!!.width) / 2f
+                val y = Global.getSettings().screenHeight - (TOP_BUFFER + if (curState == GameState.CAMPAIGN) 10f else 0f)
+
+                val alpha = when {
+                    fadingOut -> {
+                        val fadeProgress = messageTimer / FADE_DURATION
+                        (255 * (1f - fadeProgress.coerceIn(0f, 1f))).toInt()
+                    }
+
+                    else -> 255
+                }
+
+                toDraw!!.baseColor = currentMessage!!.second.setAlpha(alpha)
+                toDraw!!.draw(x, y)
+            }
+        }
 
         // Config
         private const val DISPLAY_TIME = 5f         // seconds before fade starts (no other message)
         private const val FADE_DURATION = 0.5f        // fade-out time in seconds
-        private const val QUICK_DISPLAY_TIME = 0.25f // time before fade starts if another message is waiting
+        private const val QUICK_DISPLAY_TIME = 1.25f // time before fade starts if another message is waiting
 
         /** Call this to queue a message */
         fun addMessage(text: String, color: Color) {
@@ -60,8 +85,7 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
     override fun advance(amount: Float) {
         stateChangeChecker()
         if (curState != GameState.CAMPAIGN) return
-
-        advanceAmount(amount)
+        advanceAmount(TimeKeeper.campaignDelta(amount))
     }
 
 
@@ -69,18 +93,20 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
         stateChangeChecker()
         if (curState != GameState.TITLE && curState != GameState.COMBAT) return
 
-        val engine = Global.getCombatEngine()
-        val trueAmount = if (engine != null)
-            amount / engine.timeMult.modifiedValue
-        else
-            amount
-
-        advanceAmount(trueAmount)
+        advanceAmount(TimeKeeper.combatDelta(amount))
     }
 
-    private fun stateChangeChecker() {
+    fun stateChangeChecker() {
         val state = Global.getCurrentState()
-        if (state != curState) {
+
+        var loadGame = false
+        if (justLoadedGame > 0) {
+            justLoadedGame--
+            if (justLoadedGame == 0)
+                loadGame = true
+        }
+
+        if (state != curState || loadGame) {
             if (toDraw != null) {
                 currentMessage = null
                 toDraw = null
@@ -89,35 +115,8 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
                 fadingOut = false
             }
             curState = state
-
-            val screenPanel = ReflectionMisc.getScreenPanel() ?: return
-
-            class CampaignMessageRenderer : BaseCustomUIPanelPlugin() {
-                var panel: CustomPanelAPI
-
-                init {
-                    val settings = Global.getSettings()
-                    panel = settings.createCustom(settings.screenWidth, settings.screenHeight, this)
-
-                    screenPanel.addComponent(panel).inTL(0f, 0f)
-                }
-
-                override fun render(alphaMult: Float) {
-                    render()
-                }
-
-                override fun advance(amount: Float) {
-                    if (screenPanel.lastComponent !== panel)
-                        screenPanel.bringComponentToTop(panel)
-                }
-            }
-            if (state == GameState.CAMPAIGN) {
+            if (state == GameState.CAMPAIGN)
                 CampaignMessageRenderer()
-            }// else {
-            //   val messageRender = screenPanel.findChildWithPlugin(CampaignMessageRenderer::class.java)
-            //    if (messageRender != null)
-            //       screenPanel.removeComponent(messageRender)
-            //}
         }
     }
 
@@ -170,23 +169,7 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
     }
 
     private fun render() {
-        if (toDraw != null && currentMessage != null) {
-            val screenWidth = Global.getSettings().screenWidth
-            val x = (screenWidth - toDraw!!.width) / 2f
-            val y = Global.getSettings().screenHeight - (TOP_BUFFER + if (curState == GameState.CAMPAIGN) 10f else 0f)
-
-            val alpha = when {
-                fadingOut -> {
-                    val fadeProgress = messageTimer / FADE_DURATION
-                    (255 * (1f - fadeProgress.coerceIn(0f, 1f))).toInt()
-                }
-
-                else -> 255
-            }
-
-            toDraw!!.baseColor = currentMessage!!.second.setAlpha(alpha)
-            toDraw!!.draw(x, y)
-        }
+        renderStatic()
     }
 
     override fun renderInUICoords(viewport: ViewportAPI?) {
@@ -200,4 +183,25 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
     override fun renderInWorldCoords(viewport: ViewportAPI?) {}
 
     override fun processInputPreCoreControls(amount: Float, events: MutableList<InputEventAPI>?) {}
+}
+
+class CampaignMessageRenderer : BaseCustomUIPanelPlugin() {
+    private val screenPanel = ReflectionMisc.getScreenPanel()
+    var panel: CustomPanelAPI
+
+    init {
+        val settings = Global.getSettings()
+        panel = settings.createCustom(settings.screenWidth, settings.screenHeight, this)
+
+        screenPanel?.addComponent(panel)?.inTL(0f, 0f)
+    }
+
+    override fun render(alphaMult: Float) {
+        DrawMessageOnTop.renderStatic()
+    }
+
+    override fun advance(amount: Float) {
+        if (screenPanel?.lastComponent !== panel)
+            screenPanel?.bringComponentToTop(panel)
+    }
 }
