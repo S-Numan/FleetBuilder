@@ -99,14 +99,7 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
     fun stateChangeChecker() {
         val state = Global.getCurrentState()
 
-        var loadGame = false
-        if (justLoadedGame > 0) {
-            justLoadedGame--
-            if (justLoadedGame == 0)
-                loadGame = true
-        }
-
-        if (state != curState || loadGame) {
+        if (state != curState) {
             if (toDraw != null) {
                 currentMessage = null
                 toDraw = null
@@ -115,7 +108,10 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
                 fadingOut = false
             }
             curState = state
-            if (state == GameState.CAMPAIGN)
+        }
+        if (justLoadedGame > 0 && curState == GameState.CAMPAIGN) {
+            justLoadedGame--
+            if (justLoadedGame == 0)
                 CampaignMessageRenderer()
         }
     }
