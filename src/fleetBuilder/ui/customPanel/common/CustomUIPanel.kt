@@ -11,7 +11,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.UIUtils
+import fleetBuilder.ui.UIUtils
 import starficz.height
 import starficz.width
 import starficz.x

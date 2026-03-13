@@ -6,7 +6,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.api.CampaignUtils
-import fleetBuilder.util.api.UIUtils
+import fleetBuilder.ui.UIUtils
 import org.lwjgl.input.Keyboard
 
 open class PopUpPanel : ComposableUIPanel() {

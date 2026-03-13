@@ -15,7 +15,7 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.UIUtils
+import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard

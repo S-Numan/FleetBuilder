@@ -1,11 +1,10 @@
-package fleetBuilder.util.api
+package fleetBuilder.ui
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.withAlphaMult
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL11.*
 import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
@@ -42,11 +41,11 @@ object UIUtils {
         renderProgress: Boolean = false,
         progress: Float = 0f
     ) {
-        glPushMatrix()
-        glDisable(GL_TEXTURE_2D)
+        GL11.glPushMatrix()
+        GL11.glDisable(GL11.GL_TEXTURE_2D)
 
         if (renderProgress) {
-            glColor4f(
+            GL11.glColor4f(
                 progression.red / 255f,
                 progression.green / 255f,
                 progression.blue / 255f,
@@ -59,7 +58,7 @@ object UIUtils {
             drawRectGL(x, y, width, height)
         }
 
-        glColor4f(
+        GL11.glColor4f(
             boxColor.red / 255f,
             boxColor.green / 255f,
             boxColor.blue / 255f,
@@ -75,17 +74,17 @@ object UIUtils {
         drawRectGL(x, y, 1f, h)
         drawRectGL(x + w, y, 1f, h)
 
-        glEnable(GL_TEXTURE_2D)
-        glPopMatrix()
+        GL11.glEnable(GL11.GL_TEXTURE_2D)
+        GL11.glPopMatrix()
     }
 
     private fun drawRectGL(x: Float, y: Float, w: Float, h: Float) {
-        glBegin(GL_QUADS)
-        glVertex2f(x, y)
-        glVertex2f(x + w, y)
-        glVertex2f(x + w, y + h)
-        glVertex2f(x, y + h)
-        glEnd()
+        GL11.glBegin(GL11.GL_QUADS)
+        GL11.glVertex2f(x, y)
+        GL11.glVertex2f(x + w, y)
+        GL11.glVertex2f(x + w, y + h)
+        GL11.glVertex2f(x, y + h)
+        GL11.glEnd()
     }
 
     fun darkenBackground(
@@ -105,6 +104,7 @@ object UIUtils {
 
         GL11.glRectf(0f, 0f, screenW, screenH)
 
+        GL11.glDisable(GL11.GL_BLEND)
         GL11.glPopMatrix()
     }
 
@@ -143,6 +143,7 @@ object UIUtils {
         // Bottom
         GL11.glRectf(tx, 0f, tx + tw, ty)
 
+        GL11.glDisable(GL11.GL_BLEND)
         GL11.glPopMatrix()
     }
 

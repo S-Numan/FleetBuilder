@@ -14,7 +14,7 @@ import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.features.autofit.listener.CombatAutofitAdder
-import fleetBuilder.util.api.UIUtils
+import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Mouse

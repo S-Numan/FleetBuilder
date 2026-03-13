@@ -8,7 +8,7 @@ import fleetBuilder.util.FBMisc.endStencil
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.FBMisc.startStencilWithXPad
 import fleetBuilder.util.FBMisc.startStencilWithYPad
-import fleetBuilder.util.api.UIUtils
+import fleetBuilder.ui.UIUtils
 import starficz.*
 import java.awt.Color
 
