@@ -135,7 +135,7 @@ object DisplayMessage {
     @JvmOverloads
     fun dialogMessage(title: String, message: String, messageColor: Color = Misc.getTextColor()) {
         val dialog = BasePopUpPanel(headerTitle = title)
-        dialog.quitWithEscKey = false
+        dialog.allowHotkeyQuit = false
 
         dialog.onCreateUI(800f, 400f) { ui ->
             ui.addPara(message, messageColor, 0f)
