@@ -31,15 +31,14 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     protected open var createUIOnInit: Boolean = true
 
     open var alpha: Float = 1f
-    open val rendererBorder: UILinesRendererGL = UILinesRendererGL(0f)
-
     private val settings = Global.getSettings()
 
     protected fun sprite(cat: String, id: String): SpriteAPI =
         settings.getSprite(cat, id)
 
     open val background = sprite("ui", "panel00_center")
-    open var backgroundAlphaMult: Float = 1f
+
+    open var renderUIBorders = true
 
     var isOpen = false
         private set
@@ -47,8 +46,8 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     open fun init(
         width: Float,
         height: Float,
-        xOffset: Float,
-        yOffset: Float,
+        xOffset: Float = 0f,
+        yOffset: Float = 0f,
         parent: UIPanelAPI? = ReflectionMisc.getScreenPanel()
     ): CustomPanelAPI {
         val inputPanel = Global.getSettings().createCustom(width, height, this)
@@ -68,8 +67,6 @@ open class CustomUIPanel : CustomUIPanelPlugin {
 
         parent.addComponent(panel).inTL(xOffset, parent.height - yOffset)
         parent.bringComponentToTop(panel)
-
-        rendererBorder.setPanel(panel)
 
         if (createUIOnInit)
             createUI()
@@ -123,10 +120,11 @@ open class CustomUIPanel : CustomUIPanelPlugin {
             panel.x,
             panel.y, panel.width,
             panel.height, background.textureWidth,
-            background.textureHeight, alpha * backgroundAlphaMult, background.color
+            background.textureHeight, alpha * background.alphaMult, background.color
         )
 
-        rendererBorder.render(alphaMult)
+        if (renderUIBorders)
+            UIUtils.renderUILines(panel, alphaMult)
     }
 
     override fun positionChanged(position: PositionAPI?) {

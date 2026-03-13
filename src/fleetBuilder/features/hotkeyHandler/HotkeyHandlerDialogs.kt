@@ -209,7 +209,7 @@ object HotkeyHandlerDialogs {
     fun createDevModeDialog() {
         val dialog = BasePopUpPanel(FBTxt.txt("dev_options_title"))
 
-        dialog.onCreateUI(500f, 200f) { ui ->
+        dialog.onCreateUI(width = 500f, height = 200f) { ui ->
             val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
 
             toggleDev.onClick {

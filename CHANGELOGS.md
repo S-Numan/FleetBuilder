@@ -6,6 +6,7 @@
 - An autofit button now shows up in codex above the ship display; just click the button to see!
 - Added a setting to disable the transponder when entering hyperspace. Yes, I know, this also exists in the QOL life pack.
 - Compressed person and member on copying by default.
+- Compressed fleet if holding shift on copying. Automatically enabled in save transfers to save space.
 - Compressed cargo in save transfer to save space.
 ### Changes
 - Gave the CopyFleet command the ability to work in the fleet screen UI and interactions alongside the existing mission and in combat functionality.
@@ -16,10 +17,11 @@
 - Rearrange LunaLib settings a bit.
 - Allow autofit loadout display name to be empty.
 - Prevent adding more than max limit of officers by mothballing captained ships over the limit.
-- Right clicking outside the autofit dialog removes closes the dialog.
+- Right clicking outside the autofit / PopUpUI dialogs now close the dialogs.
 - Can now press F2 on an autofit loadout to open it's codex entry.
 - Improved missing element handling to now more frequently report what mods were used when pasting a variant/person/fleet with missing elements
 - Externalized more strings
+- Reported errors by this mod now show their error through custom rendering rather than relying on the campaign or combat messages.
 ### Bugfixes
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason

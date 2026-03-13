@@ -556,7 +556,7 @@ internal object AutofitPanel {
             selectorPlugin.onHover { event ->
                 if (selectorPlugin.autofitSpec == null)
                     return@onHover
-                
+
                 if (Keyboard.isKeyDown(Keyboard.KEY_F2))
                     Global.getSettings().showCodex(selectorPlugin.autofitSpec!!.variant.createFleetMember())
             }

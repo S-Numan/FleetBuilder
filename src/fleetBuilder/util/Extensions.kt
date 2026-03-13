@@ -19,6 +19,7 @@ import fleetBuilder.util.api.HullUtils
 import fleetBuilder.util.api.VariantUtils
 import org.json.JSONArray
 import org.json.JSONObject
+import org.magiclib.kotlin.setAlpha
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.getChildrenCopy
@@ -498,4 +499,9 @@ fun TooltipMakerAPI.addNumericTextField(
 
 fun Color.setColor(red: Int? = null, green: Int? = null, blue: Int? = null, alpha: Int? = null): Color {
     return Color(red ?: this.red, green ?: this.green, blue ?: this.blue, alpha ?: this.alpha)
+}
+
+fun Color.withAlphaMult(alphaMult: Float): Color {
+    val clampedAlphaMult = alphaMult.coerceIn(0f, 1f)
+    return this.setAlpha((clampedAlphaMult * 255).toInt())
 }

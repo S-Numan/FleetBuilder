@@ -5,12 +5,16 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.UIUtils
 import org.lwjgl.input.Keyboard
 
 open class PopUpPanel : ComposableUIPanel() {
+
+    init {
+        background.alphaMult = 0.9f
+    }
+
     open var goalWidth: Float = 0f // Unset before init
     open var goalHeight: Float = 0f // Unset before init
     open var openDuration = 0.05f
@@ -23,14 +27,11 @@ open class PopUpPanel : ComposableUIPanel() {
     open var attemptedExit: Boolean = false
     open var reachedMaxHeight: Boolean = false
 
-    override var backgroundAlphaMult: Float = 0.9f
     override var dialogStyle: Boolean = true
+    override var xTooltipPad = 10f
+    override var yTooltipPad = 10f
     override var createUIOnInit: Boolean = false
-
-    fun init(width: Float, height: Float): CustomPanelAPI {
-        val screenPanel = ReflectionMisc.getScreenPanel() ?: return panel
-        return init(width = width, height = height, xOffset = (screenPanel.position.centerX - width / 2), yOffset = (screenPanel.position.centerY - height / 2), parent = screenPanel)
-    }
+    override var darkenBackground: Boolean = true
 
     override fun init(
         width: Float,
@@ -85,15 +86,6 @@ open class PopUpPanel : ComposableUIPanel() {
 
         for (event in events) {
             if (event.isConsumed) continue
-
-            //if (reachedMaxHeight) {
-            /*if (event.isMouseDownEvent && !isDialog) {
-                val hovers = FBMisc.isMouseHoveringOverComponent(panelToInfluence!!)
-                if (!hovers) {
-                    forceDismiss()
-                    event.consume()
-                }
-            }*/
 
             if (allowHotkeyQuit &&
                 (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE)

@@ -1,6 +1,5 @@
 package fleetBuilder.ui.customPanel.common
 
-import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -9,14 +8,16 @@ import fleetBuilder.util.FBMisc.endStencil
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.FBMisc.startStencilWithXPad
 import fleetBuilder.util.FBMisc.startStencilWithYPad
+import fleetBuilder.util.api.UIUtils
 import starficz.*
 import java.awt.Color
 
 open class ComposableUIPanel : CustomUIPanel() {
+
     // Distance the tooltip holds from every side of it's home panel.
-    protected open var xTooltipPad = 10f
+    protected open var xTooltipPad = 0f
     open fun getXTooltipPadding(): Float = xTooltipPad
-    protected open var yTooltipPad = 10f
+    protected open var yTooltipPad = 0f
     open fun getYTooltipPadding(): Float = yTooltipPad
 
     override fun createUI() {
@@ -24,9 +25,21 @@ open class ComposableUIPanel : CustomUIPanel() {
     }
 
     private var createUICallback: (() -> Unit)? = null
+
+    /**
+     * Create a UI panel with a callback. The callback is responsible for populating the panel with UI elements.
+     * This is a more advanced method of creating a UI panel and is recommended for more complex tooltips.
+     *
+     * @param width The width of the panel.
+     * @param height The height of the panel.
+     * @param parent The parent panel. Defaults to screenPanel.
+     * @param xOffset The x offset from the parent. Defaults to a value which would center this panel within the parent.
+     * @param yOffset The y offset from the parent. Defaults to a value which would center this panel within the parent.
+     * @param callback The callback to populate the panel with UI elements.
+     */
     open fun onCreateUI(
-        width: Float = Global.getSettings().screenWidth / 2,
-        height: Float = Global.getSettings().screenHeight / 2,
+        width: Float = 800f,
+        height: Float = 800f,
         parent: UIPanelAPI? = null,
         xOffset: Float? = null,
         yOffset: Float? = null,
@@ -44,9 +57,10 @@ open class ComposableUIPanel : CustomUIPanel() {
             // add UI automatically afterward
             panel.addUIElement(tooltip)
             tooltip.position.inTL(getXTooltipPadding(), getYTooltipPadding())
-            panel
         }
-        DialogUtils.initDialogToShow(this, x = xOffset, y = yOffset, width = width, height = height, parent = parent)
+
+        // Calls init, but in a fancy manner to allow caching the tooltip and making it later in case it's too early for the game to show a panel.
+        DialogUtils.initDialogToShow(this, xOffset = xOffset, yOffset = yOffset, width = width, height = height, parent = parent)
     }
 
 
@@ -59,16 +73,14 @@ open class ComposableUIPanel : CustomUIPanel() {
     ): CustomPanelAPI {
         super.init(width = width, height = height, xOffset = xOffset, yOffset = yOffset, parent = parent)
         initBorderSprites()
-        blackBackground.setSize(Global.getSettings().screenWidth, Global.getSettings().screenHeight)
-        blackBackground.color = Color.black
         return panel
     }
 
     open var dialogStyle: Boolean = false
 
-    open var darkenBackground: Boolean = true
-    open val blackBackground = sprite("FleetBuilder", "white_square")
-    open var blackBackgroundAlphaMult: Float = 0.6f
+    open var darkenBackground: Boolean = false
+    open var darkenBackgroundAlphaMult: Float = 0.6f
+
     open val bot = sprite("ui", "panel00_bot")
     open val top = sprite("ui", "panel00_top")
     open val left = sprite("ui", "panel00_left")
@@ -79,10 +91,9 @@ open class ComposableUIPanel : CustomUIPanel() {
     open val bottomRight = sprite("ui", "panel00_bot_right")
 
     override fun renderBelow(alphaMult: Float) {
-        if (darkenBackground) {
-            blackBackground.alphaMult = blackBackgroundAlphaMult * alpha
-            blackBackground.renderAtCenter(Global.getSettings().screenWidth / 2f, Global.getSettings().screenHeight / 2f)
-        }
+        if (darkenBackground)
+            UIUtils.darkenBackground(alphaMult * (alpha * darkenBackgroundAlphaMult), Color.BLACK)
+
 
         if (dialogStyle) {
             renderTiledTexture(
@@ -90,10 +101,11 @@ open class ComposableUIPanel : CustomUIPanel() {
                 panel.x,
                 panel.y, panel.width,
                 panel.height, background.textureWidth,
-                background.textureHeight, alpha * backgroundAlphaMult, Color.BLACK
+                background.textureHeight, alpha * background.alphaMult, Color.BLACK
             )
 
-            renderBorders()
+            if (renderUIBorders)
+                renderBorders()
         } else {
             super.renderBelow(alphaMult)
         }

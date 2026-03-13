@@ -20,25 +20,21 @@ class DialogUtils : EveryFrameCombatPlugin {
             width: Float,
             height: Float,
             parent: UIPanelAPI? = null,
-            x: Float? = null,
-            y: Float? = null
+            xOffset: Float? = null,
+            yOffset: Float? = null
         ) {
             val gameState = Global.getCurrentState()
             if (gameState == null) {
                 prependDialogToShow(dialog, width, height) // To create a dialog before the game has fully booted up, so it is shown on start
             } else {
-                val screenPanel = ReflectionMisc.getScreenPanel() ?: return
+                val parent = parent ?: ReflectionMisc.getScreenPanel() ?: return
 
                 dialog.init(
                     width = width,
                     height = height,
-                    xOffset = x
-                        ?: parent?.let { parent.position.centerX - width / 2 }
-                        ?: (screenPanel.position.centerX - width / 2),
-                    yOffset = y
-                        ?: parent?.let { parent.position.centerY - height / 2 }
-                        ?: (screenPanel.position.centerY + height / 2),
-                    parent ?: screenPanel
+                    xOffset = xOffset ?: (parent.position.centerX - width / 2),
+                    yOffset = yOffset ?: (parent.position.centerY + height / 2),
+                    parent
                 )
             }
         }
