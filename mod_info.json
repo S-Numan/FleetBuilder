@@ -3,7 +3,7 @@
   "name": " FleetBuilder", # The space before the name is to cause FleetBuilder to load first, both so that cached functions can be used by other mods and so certain settings such as log to console can get as many logs as possible.
   "author": "S-Numan",
   "utility": true,
-  "version": { "major": '2', "minor": '0', "patch": '0dev' },
+  "version": { "major": '2', "minor": '0', "patch": '1dev' },
   "description": "Help with easily managing fleets by providing tools to copy, add, and save; fleets, officers, ships, variants, and more.\n\nThis mod can be safely added and removed at any time.",
   "gameVersion": "0.98a-RC8",
   "jars": [ "jars/FleetBuilder.jar" ],

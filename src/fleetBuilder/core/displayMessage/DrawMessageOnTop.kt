@@ -59,7 +59,7 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
         // Config
         private const val DISPLAY_TIME = 5f         // seconds before fade starts (no other message)
         private const val FADE_DURATION = 0.5f        // fade-out time in seconds
-        private const val QUICK_DISPLAY_TIME = 1.25f // time before fade starts if another message is waiting
+        private const val QUICK_DISPLAY_TIME = 0.25f // time before fade starts if another message is waiting
 
         /** Call this to queue a message */
         fun addMessage(text: String, color: Color) {
