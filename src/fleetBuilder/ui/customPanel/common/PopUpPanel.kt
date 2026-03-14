@@ -5,9 +5,10 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.ui.UIUtils
+import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
+import starficz.height
 
 open class PopUpPanel : ComposableUIPanel() {
 
@@ -15,6 +16,8 @@ open class PopUpPanel : ComposableUIPanel() {
         background.alphaMult = 0.9f
     }
 
+    open var goalXOffset: Float = 0f // Unset before init
+    open var goalYOffset: Float = 0f // Unset before init
     open var goalWidth: Float = 0f // Unset before init
     open var goalHeight: Float = 0f // Unset before init
     open var openDuration = 0.05f
@@ -42,6 +45,8 @@ open class PopUpPanel : ComposableUIPanel() {
     ): CustomPanelAPI {
         goalWidth = width
         goalHeight = height
+        goalXOffset = xOffset
+        goalYOffset = yOffset
 
         super.init(width = width, height = height, xOffset = xOffset, yOffset = yOffset, parent = parent)
 
@@ -73,7 +78,12 @@ open class PopUpPanel : ComposableUIPanel() {
             val progress = (elapsed / openDuration).coerceIn(0f, 1f)
             alpha = progress
 
-            panel.position?.setSize(goalWidth, goalHeight * progress)
+            val currentHeight = goalHeight * progress
+            val centerY = parent.height - goalYOffset
+            val topLeftY = centerY + (goalHeight / 2f) - (currentHeight / 2f)
+
+            panel.position?.setSize(goalWidth, currentHeight)
+            panel.position?.inTL(goalXOffset, topLeftY)
 
             if (progress == 1f) {
                 setMaxSize()
@@ -107,7 +117,8 @@ open class PopUpPanel : ComposableUIPanel() {
 
     fun setMaxSize() {
         reachedMaxHeight = true
-        panel.position.setSize(goalWidth, goalHeight)
+        panel.position?.setSize(goalWidth, goalHeight)
+        panel.position?.inTL(goalXOffset, parent.height - goalYOffset)
         alpha = 1f
         createUI()
     }
