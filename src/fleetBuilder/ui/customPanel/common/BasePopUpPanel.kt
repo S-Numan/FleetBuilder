@@ -61,6 +61,7 @@ open class BasePopUpPanel(
         cancelCallback?.invoke()
     }
 
+    @JvmOverloads
     fun setupConfirmCancelSection(
         addConfirmButton: Boolean = true,
         addCancelButton: Boolean = true,

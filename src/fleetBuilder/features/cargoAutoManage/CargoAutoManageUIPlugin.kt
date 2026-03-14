@@ -290,7 +290,7 @@ class CargoAutoManageUIPlugin(
             panelAPI.addPara("Click a cargo item to select it. Right click to cancel.")
 
             cargoItemSelector.onExit {
-                openSubmarketCargoAutoManagerDialog(selectedSubmarket)
+                openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
             }
         }
 

@@ -24,7 +24,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
         protected set
     lateinit var panel: CustomPanelAPI
         protected set
-    lateinit var tooltip: TooltipMakerAPI
+    var tooltip: TooltipMakerAPI? = null
         protected set
 
     open var consumeMouseEvents: Boolean = true
@@ -43,6 +43,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     var isOpen = false
         private set
 
+    @JvmOverloads
     open fun init(
         width: Float,
         height: Float,
@@ -93,6 +94,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
         }
     }
 
+    @JvmOverloads
     open fun forceDismiss(runExitScript: Boolean = true) {
         if (!isOpen) return
 

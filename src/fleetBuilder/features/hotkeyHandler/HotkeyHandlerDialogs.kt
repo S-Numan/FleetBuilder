@@ -114,7 +114,7 @@ object HotkeyHandlerDialogs {
                 else
                     DisplayMessage.showMessage(FBTxt.txt("member_appended_into_fleet", fleet.fleetData.membersListCopy.size))
 
-                dialog.forceDismiss()
+                dialog.dismiss()
             }
             ui.addSpacer(24f)
 
@@ -140,7 +140,7 @@ object HotkeyHandlerDialogs {
 
                 DisplayMessage.showMessage(FBTxt.txt("player_fleet_replaced"))
 
-                dialog.forceDismiss()
+                dialog.dismiss()
             }
             ui.addToggle(FBTxt.txt("set_aggression_doctrine"), setAggression).onClick { setAggression = !setAggression }
             ui.addToggle(FBTxt.txt("replace_player_with_commander"), replacePlayerWithCommander).onClick { replacePlayerWithCommander = !replacePlayerWithCommander }
@@ -544,7 +544,7 @@ object HotkeyHandlerDialogs {
                 ClipboardUtil.setClipboardText(json.toString(4))
                 DisplayMessage.showMessage(FBTxt.txt("save_copied_to_clipboard"))
 
-                dialog.forceDismiss()
+                dialog.dismiss()
             }
 
             ui.addButton(FBTxt.txt("load_save_from_clipboard"), null, ui.width, buttonHeight, 3f).onClick {
@@ -583,7 +583,7 @@ object HotkeyHandlerDialogs {
                 DisplayMessage.showMessage(FBTxt.txt("save_loaded_from_clipboard"))
                 reportMissingElementsIfAny(missing)
 
-                dialog.forceDismiss()
+                dialog.dismiss()
             }
 
             dialog.addCloseButton()

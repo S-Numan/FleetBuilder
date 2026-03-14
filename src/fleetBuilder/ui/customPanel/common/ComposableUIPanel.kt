@@ -37,6 +37,7 @@ open class ComposableUIPanel : CustomUIPanel() {
      * @param yOffset The y offset from the parent. Defaults to a value which would center this panel within the parent.
      * @param callback The callback to populate the panel with UI elements.
      */
+    @JvmOverloads
     open fun onCreateUI(
         width: Float = 800f,
         height: Float = 800f,
@@ -51,18 +52,17 @@ open class ComposableUIPanel : CustomUIPanel() {
             val tooltipWidth = panel.width - (getXTooltipPadding() * 3)
             val tooltipHeight = panel.height - getYTooltipPadding()
             tooltip = panel.createUIElement(tooltipWidth, tooltipHeight, false)
-            tooltip.setSize(tooltipWidth, tooltipHeight)
+            tooltip!!.setSize(tooltipWidth, tooltipHeight)
             // run the user code
-            callback(tooltip)
+            callback(tooltip!!)
             // add UI automatically afterward
             panel.addUIElement(tooltip)
-            tooltip.position.inTL(getXTooltipPadding(), getYTooltipPadding())
+            tooltip!!.position.inTL(getXTooltipPadding(), getYTooltipPadding())
         }
 
         // Calls init, but in a fancy manner to allow caching the tooltip and making it later in case it's too early for the game to show a panel.
         DialogUtils.initDialogToShow(this, xOffset = xOffset, yOffset = yOffset, width = width, height = height, parent = parent)
     }
-
 
     override fun init(
         width: Float,
