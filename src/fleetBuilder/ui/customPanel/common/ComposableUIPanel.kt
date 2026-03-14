@@ -3,12 +3,12 @@ package fleetBuilder.ui.customPanel.common
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.FBMisc.endStencil
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.FBMisc.startStencilWithXPad
 import fleetBuilder.util.FBMisc.startStencilWithYPad
-import fleetBuilder.ui.UIUtils
 import starficz.*
 import java.awt.Color
 
@@ -93,7 +93,6 @@ open class ComposableUIPanel : CustomUIPanel() {
     override fun renderBelow(alphaMult: Float) {
         if (darkenBackground)
             UIUtils.darkenBackground(alphaMult * (alpha * darkenBackgroundAlphaMult), Color.BLACK)
-
 
         if (dialogStyle) {
             renderTiledTexture(

@@ -9,9 +9,9 @@ import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.ui.UIUtils
 import starficz.height
 import starficz.width
 import starficz.x
@@ -30,7 +30,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     open var consumeMouseEvents: Boolean = true
     protected open var createUIOnInit: Boolean = true
 
-    open var alpha: Float = 1f
+    protected open var alpha: Float = 1f
     private val settings = Global.getSettings()
 
     protected fun sprite(cat: String, id: String): SpriteAPI =

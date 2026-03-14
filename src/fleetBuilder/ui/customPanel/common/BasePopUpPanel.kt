@@ -18,8 +18,8 @@ open class BasePopUpPanel(
 
     var confirmCancelButtonWidth: Float = 160f
 
-    var doesConfirmForceDismiss: Boolean = true
-    var doesCancelForceDismiss: Boolean = true
+    var doesConfirmDismiss: Boolean = true
+    var doesCancelDismiss: Boolean = true
 
     var confirmButtonShortcut = Keyboard.KEY_G
     var cancelButtonShortcut = Keyboard.KEY_ESCAPE
@@ -33,28 +33,13 @@ open class BasePopUpPanel(
 
     override fun renderBelow(alphaMult: Float) {
         super.renderBelow(alphaMult)
-        headerTooltip?.let { drawRectangleFilledForTooltip(it, 1f, Global.getSector().playerFaction.darkUIColor.darker()) }
+
+        if (!closing)
+            headerTooltip?.let { drawRectangleFilledForTooltip(it, 1f, Global.getSector().playerFaction.darkUIColor.darker()) }
     }
 
     override fun advance(amount: Float) {
         super.advance(amount)
-
-        if (confirmButton != null) {
-            if (confirmButton!!.isChecked) {
-                confirmButton!!.isChecked = false
-                if (doesConfirmForceDismiss)
-                    forceDismiss()
-                applyConfirmScript()
-            }
-        }
-        if (cancelButton != null) {
-            if (cancelButton!!.isChecked) {
-                cancelButton!!.isChecked = false
-                if (doesCancelForceDismiss)
-                    forceDismiss()
-                applyCancelScript()
-            }
-        }
     }
 
     private var confirmCallback: (() -> Unit)? = null
@@ -107,6 +92,11 @@ open class BasePopUpPanel(
             xPos += confirmCancelButtonWidth + spacing
 
             confirmButton = button
+            confirmButton!!.onClick {
+                if (doesConfirmDismiss)
+                    dismiss()
+                applyConfirmScript()
+            }
         }
         if (addCancelButton) {
             val button = tooltip.addButton(cancelText, "cancel", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, confirmCancelButtonWidth, 25f, 0f)
@@ -114,6 +104,11 @@ open class BasePopUpPanel(
             button.position.inTL(xPos, 0f)
 
             cancelButton = button
+            cancelButton!!.onClick {
+                if (doesCancelDismiss)
+                    dismiss()
+                applyCancelScript()
+            }
         }
 
         val bottom = goalHeight
@@ -146,7 +141,7 @@ open class BasePopUpPanel(
         // Position in top-right
         panel.addUIElement(ui).inTR(7f, 2f)
 
-        closeButton?.onClick { forceDismiss() }
+        closeButton!!.onClick { dismiss() }
     }
 
     fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color?) {

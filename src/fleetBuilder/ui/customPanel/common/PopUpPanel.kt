@@ -8,6 +8,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
+import starficz.getChildrenCopy
 import starficz.height
 
 open class PopUpPanel : ComposableUIPanel() {
@@ -16,15 +17,28 @@ open class PopUpPanel : ComposableUIPanel() {
         background.alphaMult = 0.9f
     }
 
-    open var goalXOffset: Float = 0f // Unset before init
-    open var goalYOffset: Float = 0f // Unset before init
-    open var goalWidth: Float = 0f // Unset before init
-    open var goalHeight: Float = 0f // Unset before init
-    open var openDuration = 0.05f
-    private var elapsed = 0f
+    enum class CloseAnimation {
+        SHRINK_FADE,
+        FADE_ONLY
+    }
+
+    open var closeAnimation = CloseAnimation.SHRINK_FADE
+    open var closeDuration = 01.1f
+
+    protected open var closing = false
+    protected var closeElapsed = 0f
+
+    // Unset before init
+    open var goalXOffset: Float = 0f
+    open var goalYOffset: Float = 0f
+    open var goalWidth: Float = 0f
+    open var goalHeight: Float = 0f
+
+    open var openDuration = 01.05f
+
+    protected open var elapsed = 0f
 
     open var consumeAllInput: Boolean = true
-
     open var allowHotkeyQuit: Boolean = true
 
     open var attemptedExit: Boolean = false
@@ -48,12 +62,9 @@ open class PopUpPanel : ComposableUIPanel() {
         goalXOffset = xOffset
         goalYOffset = yOffset
 
-        super.init(width = width, height = height, xOffset = xOffset, yOffset = yOffset, parent = parent)
+        super.init(width, height, xOffset, yOffset, parent)
 
-        CampaignUtils.openCampaignDummyDialog() // Only does so if in the campaign
-
-        //if (Global.getCurrentState() == GameState.CAMPAIGN && !Global.getSector().isPaused)
-        //    Global.getSector().isPaused = true
+        CampaignUtils.openCampaignDummyDialog()
 
         if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
             Global.getCombatEngine().isPaused = true
@@ -66,12 +77,16 @@ open class PopUpPanel : ComposableUIPanel() {
 
     override fun applyExitScript() {
         CampaignUtils.closeCampaignDummyDialog()
-
         super.applyExitScript()
     }
 
     override fun advance(amount: Float) {
         super.advance(amount)
+
+        if (closing) {
+            updateClosing(amount)
+            return
+        }
 
         if (!reachedMaxHeight) {
             elapsed += amount
@@ -98,20 +113,57 @@ open class PopUpPanel : ComposableUIPanel() {
             if (event.isConsumed) continue
 
             if (allowHotkeyQuit &&
-                (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE)
-                || (event.isRMBEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
+                (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
+                (event.isRMBEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
             ) {
+
                 if (attemptedExit) {
-                    forceDismiss()
+                    dismiss()
                     event.consume()
                 } else {
                     attemptedExit = true
                     event.consume()
                 }
             }
-            //}
+
             if (consumeAllInput)
                 event.consume()
+        }
+    }
+
+    open fun dismiss(animation: CloseAnimation = closeAnimation) {
+        if (closing) return
+        closeAnimation = animation
+        closing = true
+        closeElapsed = 0f
+        panel.getChildrenCopy().forEach { panel.removeComponent(it) }
+    }
+
+    private fun updateClosing(amount: Float) {
+        closeElapsed += amount
+
+        val progress = (closeElapsed / closeDuration).coerceIn(0f, 1f)
+        val inv = 1f - progress
+
+        when (closeAnimation) {
+            CloseAnimation.SHRINK_FADE -> {
+                alpha = inv
+
+                val currentHeight = goalHeight * inv
+                val centerY = parent.height - goalYOffset
+                val topLeftY = centerY + (goalHeight / 2f) - (currentHeight / 2f)
+
+                panel.position?.setSize(goalWidth, currentHeight)
+                panel.position?.inTL(goalXOffset, topLeftY)
+            }
+
+            CloseAnimation.FADE_ONLY -> {
+                alpha = inv
+            }
+        }
+
+        if (progress >= 1f) {
+            forceDismiss()
         }
     }
 
