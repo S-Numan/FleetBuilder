@@ -25,13 +25,13 @@ open class PopUpPanel : ComposableUIPanel() {
 
     open var animation = PanelAnimation.RESIZE_FADE
 
-    open var openDuration = 0.1f
+    open var openDuration = 0.15f
     open var closeDuration = 0.05f
 
     protected var anim = 0f
     protected var animDirection = 1f
     protected var closing = false
-    protected var panelOnceOpened = false
+    protected var openAnimationFinished = false
 
     // Unset before init
     open var goalXOffset: Float = 0f
@@ -80,7 +80,7 @@ open class PopUpPanel : ComposableUIPanel() {
     override fun advance(amount: Float) {
         super.advance(amount)
 
-        if (!closing && panelOnceOpened)
+        if (!closing && openAnimationFinished)
             return // Panel opened and not closing, do not continue.
 
         val duration = if (closing) closeDuration else openDuration
@@ -157,7 +157,7 @@ open class PopUpPanel : ComposableUIPanel() {
     }
 
     fun setMaxSize() {
-        panelOnceOpened = true
+        openAnimationFinished = true
         anim = 1f
         updatePanelVisuals(1f)
         createUI()

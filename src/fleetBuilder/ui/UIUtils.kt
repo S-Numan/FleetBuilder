@@ -18,12 +18,7 @@ import java.awt.Color
 object UIUtils {
 
     fun easeCubic(t: Float): Float {
-        return if (t < 0.5f) {
-            4f * t * t * t
-        } else {
-            val f = -2f * t + 2f
-            1f - (f * f * f) / 2f
-        }
+        return t * t * t
     }
 
     fun renderUILines(
