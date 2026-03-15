@@ -1,36 +1,31 @@
 package fleetBuilder.core
 
 import com.fs.starfarer.api.BaseModPlugin
-import com.fs.starfarer.api.Global
 
 class FleetBuilderPlugin : BaseModPlugin() {
-    val eventDispatcher = EventDispatcher()
+
     override fun onApplicationLoad() {
-        eventDispatcher.onApplicationLoad()
+        EventDispatcher.onApplicationLoad()
     }
 
     override fun onGameLoad(newGame: Boolean) {
-        val sector = Global.getSector() ?: return
-
-        sector.addTransientScript(eventDispatcher)
-
-        eventDispatcher.onGameLoad(newGame)
+        EventDispatcher.onGameLoad(newGame)
     }
 
     override fun beforeGameSave() {
-        eventDispatcher.beforeGameSave()
+        EventDispatcher.beforeGameSave()
     }
 
     override fun afterGameSave() {
-        eventDispatcher.afterGameSave()
+        EventDispatcher.afterGameSave()
     }
 
     override fun onGameSaveFailed() {
-        eventDispatcher.onGameSaveFailed()
+        EventDispatcher.onGameSaveFailed()
     }
 
     override fun onDevModeF8Reload() {
-        eventDispatcher.onDevModeF8Reload()
+        EventDispatcher.onDevModeF8Reload()
     }
 
     override fun onNewGame() {

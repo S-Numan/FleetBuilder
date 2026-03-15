@@ -2,6 +2,7 @@ package fleetBuilder.core
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
@@ -34,7 +35,7 @@ import org.lazywizard.console.Console
 
 class EventDispatcher : EveryFrameScript {
     internal companion object {
-        fun setListeners() {
+        fun setSectorListeners() {
             val sector = Global.getSector() ?: return
 
             val listeners = sector.listenerManager
@@ -82,99 +83,109 @@ class EventDispatcher : EveryFrameScript {
 
             manageTransientListener(TransponderOff::class.java, ModSettings.transponderOffInHyperspace) { TransponderOff() }
         }
-    }
 
-    fun onDevModeF8Reload() {
-        onApplicationLoad()
-    }
-
-    fun onApplicationLoad() {
-        ModSettings.onApplicationLoad()
-
-        if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF || ModSettings.addLogsToDisplayMessageLevel != Level.OFF) {
-            // Cause the lazy class loader to load these classes preemptively to prevent issues.
-            try {
-                Class.forName("org.apache.log4j.Layout")
-                Class.forName("org.apache.log4j.spi.LoggingEvent")
-                Class.forName("org.apache.log4j.Priority")
-                if (ModSettings.isConsoleModEnabled)
-                    Class.forName(Console::class.java.name)
-            } catch (e: ClassNotFoundException) {
-                e.printStackTrace()
-            }
-
-            val rootLogger = Logger.getRootLogger()
-
-            if (rootLogger.getAppender("LogMessageAppender") == null) {
-                val appender = LogMessageAppender().apply { name = "LogMessageAppender" }
-                rootLogger.addAppender(appender)
-            }
+        fun onDevModeF8Reload() {
+            onApplicationLoad()
+            setSectorListeners()
         }
 
-        LookupUtil.onApplicationLoad()
+        fun onApplicationLoad() {
+            ModSettings.onApplicationLoad()
 
-        ShipDirectoryService.loadAllDirectories()
-    }
-
-    private val officerTracker = OfficerChangeTracker()
-    private val memberTracker = MemberChangeTracker()
-
-    fun onGameLoad(newGame: Boolean) {
-        DrawMessageOnTop.onGameLoad()
-
-        setListeners()
-
-        OfficerChangeEvents.clearAll()
-
-        MakeSaveRemovable.onGameLoad()
-
-        officerTracker.reset()
-        memberTracker.reset()
-
-        CommanderShuttle.onGameLoad(newGame)
-    }
-
-    fun beforeGameSave() {
-        CommanderShuttle.beforeGameSave()
-
-        MakeSaveRemovable.beforeGameSave()
-    }
-
-    fun backupSave() {
-        if (ModSettings.backupSave) {
-            val json = PlayerSaveUtils.createPlayerSaveJson()
-
-            val jsonString = json.toString(4)
-
-            //Safety
-            if (jsonString.length < 1000000) { // Starsector cannot save files over 1MB
+            if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF || ModSettings.addLogsToDisplayMessageLevel != Level.OFF) {
+                // Cause the lazy class loader to load these classes preemptively to prevent issues.
                 try {
-                    Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", jsonString)
-                } catch (e: Exception) {
-                    Global.getLogger(this.javaClass).error("FleetBuilder: Backup Save failed.\n$e")
+                    Class.forName("org.apache.log4j.Layout")
+                    Class.forName("org.apache.log4j.spi.LoggingEvent")
+                    Class.forName("org.apache.log4j.Priority")
+                    if (ModSettings.isConsoleModEnabled)
+                        Class.forName(Console::class.java.name)
+                } catch (e: ClassNotFoundException) {
+                    e.printStackTrace()
                 }
-            } else {
-                Global.getLogger(this.javaClass).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
+
+                val rootLogger = Logger.getRootLogger()
+
+                if (rootLogger.getAppender("LogMessageAppender") == null) {
+                    val appender = LogMessageAppender().apply { name = "LogMessageAppender" }
+                    rootLogger.addAppender(appender)
+                }
+            }
+
+            LookupUtil.onApplicationLoad()
+
+            ShipDirectoryService.loadAllDirectories()
+        }
+
+        private val officerTracker = OfficerChangeTracker()
+        private val memberTracker = MemberChangeTracker()
+
+        val eventDispatcher = EventDispatcher()
+
+        fun onGameLoad(newGame: Boolean) {
+            val sector = Global.getSector() ?: run {
+                DisplayMessage.showError("What?"); return
+            }
+
+            sector.addTransientScript(eventDispatcher)
+
+            DrawMessageOnTop.onGameLoad()
+
+            setSectorListeners()
+
+            OfficerChangeEvents.clearAll()
+
+            MakeSaveRemovable.onGameLoad()
+
+            officerTracker.reset()
+            memberTracker.reset()
+
+            CommanderShuttle.onGameLoad(newGame)
+        }
+
+        fun beforeGameSave() {
+            CommanderShuttle.beforeGameSave()
+
+            MakeSaveRemovable.beforeGameSave()
+        }
+
+        fun backupSave() {
+            if (ModSettings.backupSave) {
+                val json = PlayerSaveUtils.createPlayerSaveJson()
+
+                val jsonString = json.toString(4)
+
+                //Safety
+                if (jsonString.length < 1000000) { // Starsector cannot save files over 1MB
+                    try {
+                        Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", jsonString)
+                    } catch (e: Exception) {
+                        Global.getLogger(this::class.java).error("FleetBuilder: Backup Save failed.\n$e")
+                    }
+                } else {
+                    Global.getLogger(this::class.java).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
+                }
             }
         }
-    }
 
-    fun onGameSaveFailed() {
-        backupSave()
-    }
+        fun onGameSaveFailed() {
+            backupSave()
+        }
 
-    fun afterGameSave() {
-        MakeSaveRemovable.afterGameSave()
+        fun afterGameSave() {
+            MakeSaveRemovable.afterGameSave()
 
-        CommanderShuttle.afterGameSave()
+            CommanderShuttle.afterGameSave()
 
-        backupSave()
+            backupSave()
+        }
     }
 
     override fun isDone(): Boolean = false
     override fun runWhilePaused(): Boolean = true
 
     private var lastDevMode: Boolean = false
+
     override fun advance(amount: Float) {
         if (Global.getSector().isPaused) {
             val officerChanges = officerTracker.getChangedAssignments()
@@ -187,9 +198,10 @@ class EventDispatcher : EveryFrameScript {
         //Detect DevMode change
         val currentDevMode = Global.getSettings().isDevMode
         if (lastDevMode != currentDevMode) {
-            setListeners()
+            setSectorListeners()
 
             lastDevMode = currentDevMode
         }
     }
+
 }

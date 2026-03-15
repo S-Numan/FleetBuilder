@@ -106,7 +106,7 @@ internal class ModSettingsListener : LunaSettingsListener {
         }
 
         if (LookupUtil.Loaded())
-            EventDispatcher.setListeners()
+            EventDispatcher.setSectorListeners()
 
     }
 }
