@@ -1,6 +1,7 @@
 package fleetBuilder.ui
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.withAlphaMult
@@ -19,6 +20,24 @@ object UIUtils {
 
     fun easeCubic(t: Float): Float {
         return t * t * t
+    }
+
+    fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color) {
+        drawRectangleFilledForPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width, tooltipMakerAPI.height, alphaMult, uiColor)
+    }
+
+    fun drawRectangleFilledForPos(x: Float, y: Float, w: Float, h: Float, alphaMult: Float, uiColor: Color) {
+        GL11.glPushMatrix()
+        GL11.glDisable(GL11.GL_TEXTURE_2D)
+        GL11.glEnable(GL11.GL_BLEND)
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        GL11.glColor4f(
+            uiColor.red / 255f, uiColor.green / 255f, uiColor.blue / 255f,
+            uiColor.alpha / 255f * alphaMult * 23f
+        )
+        GL11.glRectf(x, y, x + w, y + h)
+        GL11.glColor4f(1f, 1f, 1f, 1f)
+        GL11.glPopMatrix()
     }
 
     fun renderUILines(

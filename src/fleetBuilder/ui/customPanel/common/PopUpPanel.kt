@@ -110,7 +110,6 @@ open class PopUpPanel : ComposableUIPanel() {
                 (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
                 (event.isRMBEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
             ) {
-
                 if (attemptedExit) {
                     dismiss()
                     event.consume()

@@ -3,9 +3,9 @@ package fleetBuilder.ui.customPanel.common
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.ui.UIUtils.drawRectangleFilledForTooltip
 import fleetBuilder.util.FBTxt
 import org.lwjgl.input.Keyboard
-import org.lwjgl.opengl.GL11
 import starficz.onClick
 import java.awt.Color
 
@@ -29,7 +29,6 @@ open class BasePopUpPanel(
 
         super.createUI()
     }
-
 
     override fun renderBelow(alphaMult: Float) {
         super.renderBelow(alphaMult)
@@ -143,27 +142,6 @@ open class BasePopUpPanel(
         panel.addUIElement(ui).inTR(7f, 2f)
 
         closeButton!!.onClick { dismiss() }
-    }
-
-    fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color?) {
-        if (uiColor == null) return
-
-        val x = tooltipMakerAPI.position.x
-        val y = tooltipMakerAPI.position.y
-        val w = tooltipMakerAPI.position.width
-        val h = tooltipMakerAPI.position.height
-
-        GL11.glPushMatrix()
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        GL11.glColor4f(
-            uiColor.red / 255f, uiColor.green / 255f, uiColor.blue / 255f,
-            uiColor.alpha / 255f * alphaMult * 23f
-        )
-        GL11.glRectf(x, y, x + w, y + h)
-        GL11.glColor4f(1f, 1f, 1f, 1f)
-        GL11.glPopMatrix()
     }
 
     override fun getYTooltipPadding(): Float {

@@ -30,12 +30,16 @@ open class ComposableUIPanel : CustomUIPanel() {
      * Create a UI panel with a callback. The callback is responsible for populating the panel with UI elements.
      * This is a more advanced method of creating a UI panel and is recommended for more complex tooltips.
      *
+     * The callback will be executed once the panel is ready to be populated with UI elements. If the panel
+     * opens with an animation, the callback will be invoked after the animation has finished.
+     *
      * @param width The width of the panel.
      * @param height The height of the panel.
      * @param parent The parent panel. Defaults to screenPanel.
      * @param xOffset The x offset from the parent. Defaults to a value which would center this panel within the parent.
      * @param yOffset The y offset from the parent. Defaults to a value which would center this panel within the parent.
-     * @param callback The callback to populate the panel with UI elements.
+     * @param callback The callback used to populate the panel with UI elements. This is executed when the panel
+     * is fully ready
      */
     @JvmOverloads
     open fun onCreateUI(

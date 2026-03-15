@@ -31,8 +31,8 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     protected open var createUIOnInit: Boolean = true
 
     protected open var alpha: Float = 1f
-    private val settings = Global.getSettings()
 
+    private val settings = Global.getSettings()
     protected fun sprite(cat: String, id: String): SpriteAPI =
         settings.getSprite(cat, id)
 
@@ -40,7 +40,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
 
     open var renderUIBorders = true
 
-    var isOpen = false
+    var initOccured = false
         private set
 
     @JvmOverloads
@@ -53,7 +53,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
     ): CustomPanelAPI {
         val inputPanel = Global.getSettings().createCustom(width, height, this)
 
-        if (isOpen) {
+        if (initOccured) {
             DisplayMessage.showError("init already occurred")
             return inputPanel
         }
@@ -72,7 +72,7 @@ open class CustomUIPanel : CustomUIPanelPlugin {
         if (createUIOnInit)
             createUI()
 
-        isOpen = true
+        initOccured = true
 
         return panel
     }
@@ -96,13 +96,13 @@ open class CustomUIPanel : CustomUIPanelPlugin {
 
     @JvmOverloads
     open fun forceDismiss(runExitScript: Boolean = true) {
-        if (!isOpen) return
+        if (!initOccured) return
 
         parent.removeComponent(panel)
         if (runExitScript)
             applyExitScript()
 
-        isOpen = false
+        initOccured = false
     }
 
     private var exitCallback: (() -> Unit)? = null
