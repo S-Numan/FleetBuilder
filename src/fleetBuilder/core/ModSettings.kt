@@ -3,6 +3,7 @@ package fleetBuilder.core
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.impl.campaign.ids.Tags
+import fleetBuilder.core.listener.ModSettingsListener
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.containsString
 import lunalib.lunaSettings.LunaSettings

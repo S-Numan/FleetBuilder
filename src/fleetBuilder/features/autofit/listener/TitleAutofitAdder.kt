@@ -1,38 +1,29 @@
 package fleetBuilder.features.autofit.listener
 
-import MagicLib.ReflectionUtilsExtra
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
-import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import com.fs.starfarer.combat.entities.Ship
 import fleetBuilder.core.ModSettings
 import fleetBuilder.features.autofit.ui.AutofitPanelCreator
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
-import starficz.BoxedUIShipPreview
-import starficz.ReflectionUtils.getConstructorsMatching
-import starficz.ReflectionUtils.getFieldsMatching
 import starficz.findChildWithMethod
-import starficz.getChildrenCopy
 import starficz.onClick
 
-internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
+internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
     var refitTab: UIPanelAPI? = null
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
         if (Global.getCurrentState() != GameState.TITLE)
             return
 
-        val screenPanel = ReflectionMisc.getScreenPanel() ?: return
-        cacheShipPreviewClass(screenPanel)
-
         if (!ModSettings.autofitMenuEnabled) return
 
+        val screenPanel = ReflectionMisc.getScreenPanel() ?: return
         val delegateChild = screenPanel.findChildWithMethod("dismiss") as? UIPanelAPI ?: return
         val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return
         val holographicBG = oldCoreUI.findChildWithMethod("forceFoldIn") ?: return
@@ -58,34 +49,5 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
         }
 
         this.refitTab = refitTab
-    }
-
-    private fun cacheShipPreviewClass(screenPanel: UIPanelAPI) {
-        if (BoxedUIShipPreview.SHIP_PREVIEW_CLASS != null) return
-
-        val missionWidget = screenPanel.findChildWithMethod("getMissionList") as? UIPanelAPI ?: return
-        val holographicBG = missionWidget.getChildrenCopy()[1] // 2 of the same class in the tree here
-
-        val missionDetail = holographicBG.safeInvoke("getCurr") as? UIPanelAPI ?: return
-
-        val missionShipPreview = missionDetail.getChildrenCopy().find {
-            //it.javaClass.getConstructorsMatching(numOfParams = 1, parameterTypes = arrayOf(missionDetail.javaClass)).isNotEmpty()// File access/reflection error
-            ReflectionUtilsExtra.hasConstructorOfParameters(it, missionDetail.javaClass)
-        } as? UIPanelAPI ?: return
-
-        val shipPreview = missionShipPreview.findChildWithMethod("isSchematicMode") ?: return
-
-        BoxedUIShipPreview.SHIP_PREVIEW_CLASS = shipPreview.javaClass
-        val shipFields = shipPreview.getFieldsMatching(type = Array<Ship>::class.java)
-        BoxedUIShipPreview.SHIPS_FIELD = shipFields[0].name // only one field should be Array<Ship>
-
-
-        val constructors = BoxedUIShipPreview.SHIP_PREVIEW_CLASS!!.getConstructorsMatching()
-
-        BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR = constructors.find { constructor ->
-            constructor.parameterTypes.firstOrNull()?.let { FleetMemberAPI::class.java.isAssignableFrom(it) } ?: false
-        }
-        BoxedUIShipPreview.ENUM_CONSTRUCTOR = constructors.find { it.parameterTypes.size == 2 }
-        BoxedUIShipPreview.ENUM_ARRAY = BoxedUIShipPreview.ENUM_CONSTRUCTOR!!.parameterTypes.first().enumConstants
     }
 }

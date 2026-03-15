@@ -1,7 +1,8 @@
-package fleetBuilder.core
+package fleetBuilder.core.listener
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
+import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
@@ -31,7 +32,6 @@ import fleetBuilder.util.listeners.OfficerChangeTracker
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.lazywizard.console.Console
-
 
 internal class EventDispatcher : EveryFrameScript {
     companion object {
@@ -129,7 +129,7 @@ internal class EventDispatcher : EveryFrameScript {
 
             sector.addTransientScript(eventDispatcher)
 
-            DrawMessageOnTop.onGameLoad()
+            DrawMessageOnTop.Companion.onGameLoad()
 
             setSectorListeners()
 
@@ -140,11 +140,11 @@ internal class EventDispatcher : EveryFrameScript {
             officerTracker.reset()
             memberTracker.reset()
 
-            CommanderShuttle.onGameLoad(newGame)
+            CommanderShuttle.Companion.onGameLoad(newGame)
         }
 
         fun beforeGameSave() {
-            CommanderShuttle.beforeGameSave()
+            CommanderShuttle.Companion.beforeGameSave()
 
             MakeSaveRemovable.beforeGameSave()
         }
@@ -175,7 +175,7 @@ internal class EventDispatcher : EveryFrameScript {
         fun afterGameSave() {
             MakeSaveRemovable.afterGameSave()
 
-            CommanderShuttle.afterGameSave()
+            CommanderShuttle.Companion.afterGameSave()
 
             backupSave()
         }

@@ -1,7 +1,7 @@
-package fleetBuilder.core
+package fleetBuilder.core.listener
 
+import fleetBuilder.core.ModSettings
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
-import fleetBuilder.core.shipDirectory.ShipDirectoryService.generatePrefixes
 import fleetBuilder.util.LookupUtil
 import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
@@ -17,7 +17,7 @@ internal class ModSettingsListener : LunaSettingsListener {
 
         val _defaultPrefix = getString(ModSettings.getModID(), "defaultPrefix")!!
 
-        if (generatePrefixes().contains(_defaultPrefix))
+        if (ShipDirectoryService.generatePrefixes().contains(_defaultPrefix))
             ModSettings.defaultPrefix = _defaultPrefix
 
     }
