@@ -22,6 +22,7 @@
 - Improved missing element handling to now more frequently report what mods were used when pasting a variant/person/fleet with missing elements
 - Externalized more strings
 - Reported errors by this mod now show their error through custom rendering rather than relying on the campaign or combat messages.
+- PopUp UI now opens from the center with a better animation.
 ### Bugfixes
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason
@@ -35,7 +36,7 @@
 - Fix accidently using "Include Cargo" instead of "Include Credits" causing confusion.
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
-- A small overhaul to the dialog system. It will be a little different now in many ways.
+- A small overhaul to the PopUp UI. It will be a little different now in many ways.
 
 ## 1.27.1
 - Fix copy pasted variants loading improperly after saving and loading a game.

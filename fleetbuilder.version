@@ -6,7 +6,7 @@
     {
       "major": 2,
       "minor": 0,
-      "patch": "1dev" # Can be a number, character or string (1, 2, a, b, "-RC2", etc)
+      "patch": "2dev" # Can be a number, character or string (1, 2, a, b, "-RC2", etc)
     },
 
   "modThreadId": 33414,
