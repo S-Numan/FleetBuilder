@@ -8,11 +8,11 @@ import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.ModSettings
 import fleetBuilder.features.autofit.ui.AutofitPanelCreator
+import fleetBuilder.otherMods.starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
-import starficz.findChildWithMethod
-import starficz.onClick
 
 internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
     var refitTab: UIPanelAPI? = null

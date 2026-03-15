@@ -10,7 +10,7 @@ import fleetBuilder.util.FBMisc.getSpecialItemName
 import fleetBuilder.util.api.CargoUtils
 import fleetBuilder.util.safeGet
 import fleetBuilder.util.safeInvoke
-import starficz.ReflectionUtils.set
+import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 
 class CargoFilterPanel(
     width: Float,

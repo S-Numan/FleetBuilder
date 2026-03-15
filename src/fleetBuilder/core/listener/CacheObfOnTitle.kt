@@ -9,11 +9,11 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.combat.entities.Ship
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.safeInvoke
-import starficz.BoxedUIShipPreview
-import starficz.ReflectionUtils.getConstructorsMatching
-import starficz.ReflectionUtils.getFieldsMatching
-import starficz.findChildWithMethod
-import starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.BoxedUIShipPreview
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getConstructorsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 internal class CacheObfOnTitle : BaseEveryFrameCombatPlugin() {
     companion object {

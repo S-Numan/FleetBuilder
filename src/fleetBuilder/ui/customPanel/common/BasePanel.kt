@@ -12,10 +12,10 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.ReflectionMisc
-import starficz.height
-import starficz.width
-import starficz.x
-import starficz.y
+import fleetBuilder.otherMods.starficz.height
+import fleetBuilder.otherMods.starficz.width
+import fleetBuilder.otherMods.starficz.x
+import fleetBuilder.otherMods.starficz.y
 
 //Copied and heavily modified from AshLib
 

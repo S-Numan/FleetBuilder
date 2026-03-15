@@ -9,7 +9,7 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.ui.customPanel.common.BasePanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
-import starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 class DialogUtils : BaseEveryFrameCombatPlugin() {
     companion object {

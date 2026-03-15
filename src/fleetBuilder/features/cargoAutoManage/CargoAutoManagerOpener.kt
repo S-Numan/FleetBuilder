@@ -17,9 +17,9 @@ import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
-import starficz.ReflectionUtils.getFieldsMatching
-import starficz.findChildWithMethod
-import starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 internal class CargoAutoManagerOpener : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 1

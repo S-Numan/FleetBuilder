@@ -1,4 +1,4 @@
-package starficz
+package fleetBuilder.otherMods.starficz
 
 import com.fs.graphics.Sprite
 import com.fs.graphics.util.Fader
@@ -13,11 +13,11 @@ import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
-import starficz.Anchor.AnchorData
-import starficz.Anchor.AnchorReference
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.ReflectionUtils.invoke
-import starficz.ReflectionUtils.set
+import fleetBuilder.otherMods.starficz.Anchor.AnchorData
+import fleetBuilder.otherMods.starficz.Anchor.AnchorReference
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
+import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import java.awt.Color
 
 // UIComponentAPI extensions that expose UIComponent fields/methods

@@ -1,6 +1,6 @@
 package fleetBuilder.features.autofit.ui
 
-import MagicLib.ReflectionUtilsExtra
+import fleetBuilder.otherMods.MagicLib.ReflectionUtilsExtra
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.combat.BoundsAPI
@@ -19,7 +19,7 @@ import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
-import starficz.*
+import fleetBuilder.otherMods.starficz.*
 import java.awt.Color
 import kotlin.math.max
 

@@ -42,7 +42,7 @@ import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
-import starficz.*
+import fleetBuilder.otherMods.starficz.*
 import java.awt.Color
 
 

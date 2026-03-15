@@ -1,14 +1,14 @@
-package starficz
+package fleetBuilder.otherMods.starficz
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.*
 import org.lwjgl.input.Keyboard
-import starficz.Anchor.AnchorData
-import starficz.internal.HorizontalStrategy
-import starficz.internal.StackLayout
-import starficz.internal.VerticalStrategy
+import fleetBuilder.otherMods.starficz.Anchor.AnchorData
+import fleetBuilder.otherMods.starficz.internal.HorizontalStrategy
+import fleetBuilder.otherMods.starficz.internal.StackLayout
+import fleetBuilder.otherMods.starficz.internal.VerticalStrategy
 import java.awt.Color
 
 

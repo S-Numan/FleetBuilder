@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.safeInvoke
-import starficz.ReflectionUtils.get
-import starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.ReflectionUtils.get
+import fleetBuilder.otherMods.starficz.findChildWithMethod
 
 object CampaignUtils {
 

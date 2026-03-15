@@ -1,4 +1,4 @@
-package starficz
+package fleetBuilder.otherMods.starficz
 
 
 /**

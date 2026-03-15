@@ -9,8 +9,8 @@ import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.UIUtils.easeCubic
 import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
-import starficz.getChildrenCopy
-import starficz.height
+import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.height
 
 open class ModalPanel : ComposablePanel() {
 

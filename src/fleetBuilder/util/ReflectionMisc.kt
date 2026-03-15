@@ -19,11 +19,11 @@ import com.fs.starfarer.codex2.CodexDialog
 import com.fs.starfarer.coreui.CaptainPickerDialog
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.state.AppDriver
-import starficz.ReflectionUtils.get
-import starficz.ReflectionUtils.getFieldsMatching
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.findChildWithMethod
-import starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.ReflectionUtils.get
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 object ReflectionMisc {
 

@@ -20,10 +20,10 @@ import fleetBuilder.util.api.VariantUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import org.magiclib.kotlin.setAlpha
-import starficz.ReflectionUtils.getFieldsMatching
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.getChildrenCopy
-import starficz.onClick
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.onClick
 import java.awt.Color
 import kotlin.math.pow
 import kotlin.math.round

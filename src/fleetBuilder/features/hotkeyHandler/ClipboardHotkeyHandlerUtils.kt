@@ -50,9 +50,9 @@ import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.safeInvoke
-import starficz.ReflectionUtils.getFieldsMatching
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.findChildWithMethod
 import java.awt.Color
 
 internal object ClipboardHotkeyHandlerUtils {

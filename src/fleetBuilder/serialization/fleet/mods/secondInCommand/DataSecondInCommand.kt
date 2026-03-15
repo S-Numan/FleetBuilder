@@ -8,7 +8,7 @@ import second_in_command.SCData
 import second_in_command.SCUtils
 import second_in_command.specs.SCOfficer
 import second_in_command.specs.SCSpecStore
-import starficz.ReflectionUtils.set
+import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 
 object DataSecondInCommand {
 

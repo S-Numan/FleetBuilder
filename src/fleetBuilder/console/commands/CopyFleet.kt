@@ -21,7 +21,7 @@ import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.safeInvoke
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.Console
-import starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 
 class CopyFleet : BaseCommand {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {

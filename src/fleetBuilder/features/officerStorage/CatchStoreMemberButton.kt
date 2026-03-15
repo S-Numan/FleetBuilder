@@ -20,8 +20,8 @@ import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
-import starficz.ReflectionUtils.getFieldsMatching
-import starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 internal class CatchStoreMemberButton : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 10

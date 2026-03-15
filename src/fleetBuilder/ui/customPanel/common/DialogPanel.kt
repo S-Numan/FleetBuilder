@@ -6,7 +6,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.ui.UIUtils.drawRectangleFilledForTooltip
 import fleetBuilder.util.FBTxt
 import org.lwjgl.input.Keyboard
-import starficz.onClick
+import fleetBuilder.otherMods.starficz.onClick
 import java.awt.Color
 
 open class DialogPanel(

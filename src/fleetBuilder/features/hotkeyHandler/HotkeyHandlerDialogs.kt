@@ -30,10 +30,10 @@ import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
-import starficz.addTooltip
-import starficz.height
-import starficz.onClick
-import starficz.width
+import fleetBuilder.otherMods.starficz.addTooltip
+import fleetBuilder.otherMods.starficz.height
+import fleetBuilder.otherMods.starficz.onClick
+import fleetBuilder.otherMods.starficz.width
 import java.awt.Color
 
 
@@ -162,9 +162,9 @@ object HotkeyHandlerDialogs {
 
 
                                         val fleetGridClass = FleetGrid::class.java
-                                        //val fleetGrid = MagicLib.ReflectionUtils.instantiate(fleetGridClass, 2, 2, 32f, 32f, 8f) as? UIComponentAPI
+                                        //val fleetGrid = fleetBuilder.otherMods.MagicLib.ReflectionUtils.instantiate(fleetGridClass, 2, 2, 32f, 32f, 8f) as? UIComponentAPI
 
-                                        val fleetGridConstructor = starficz.ReflectionUtils.getConstructorsMatching(fleetGridClass, numOfParams = 6).getOrNull(0)
+                                        val fleetGridConstructor = fleetBuilder.otherMods.starficz.ReflectionUtils.getConstructorsMatching(fleetGridClass, numOfParams = 6).getOrNull(0)
                                         val fleetGrid = fleetGridConstructor?.newInstance(2, 2, 32f, 32f, 8f, null) as? UIComponentAPI
                                         if (fleetGrid != null)
                                             dialog.addCustom(fleetGrid)*/

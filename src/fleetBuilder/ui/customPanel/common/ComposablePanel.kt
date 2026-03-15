@@ -9,7 +9,7 @@ import fleetBuilder.util.FBMisc.endStencil
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.FBMisc.startStencilWithXPad
 import fleetBuilder.util.FBMisc.startStencilWithYPad
-import starficz.*
+import fleetBuilder.otherMods.starficz.*
 import java.awt.Color
 
 open class ComposablePanel : BasePanel() {

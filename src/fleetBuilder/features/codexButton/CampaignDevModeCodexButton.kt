@@ -22,7 +22,7 @@ import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.createHullVariant
 import org.lwjgl.input.Keyboard
-import starficz.*
+import fleetBuilder.otherMods.starficz.*
 
 internal class CampaignDevModeCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {

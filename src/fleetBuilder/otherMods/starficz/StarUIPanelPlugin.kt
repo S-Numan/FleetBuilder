@@ -1,4 +1,4 @@
-package starficz
+package fleetBuilder.otherMods.starficz
 
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI

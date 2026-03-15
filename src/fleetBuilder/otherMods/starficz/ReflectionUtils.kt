@@ -1,4 +1,4 @@
-package starficz
+package fleetBuilder.otherMods.starficz
 
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles

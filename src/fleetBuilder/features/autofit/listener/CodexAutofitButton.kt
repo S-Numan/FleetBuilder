@@ -15,7 +15,7 @@ import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.addShortcutNoShow
 import fleetBuilder.util.createHullVariant
-import starficz.*
+import fleetBuilder.otherMods.starficz.*
 
 internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin() {
     override fun isDone(): Boolean = false

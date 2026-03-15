@@ -1,10 +1,10 @@
-package starficz.internal
+package fleetBuilder.otherMods.starficz.internal
 
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import starficz.*
+import fleetBuilder.otherMods.starficz.*
 import kotlin.math.abs
 import kotlin.math.max
 

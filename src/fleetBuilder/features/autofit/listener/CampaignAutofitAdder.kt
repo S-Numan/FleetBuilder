@@ -11,8 +11,8 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
-import starficz.findChildWithMethod
-import starficz.onClick
+import fleetBuilder.otherMods.starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.onClick
 
 internal class CampaignAutofitAdder : EveryFrameScript {
 

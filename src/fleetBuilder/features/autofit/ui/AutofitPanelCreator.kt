@@ -6,7 +6,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.util.safeInvoke
 import org.magiclib.kotlin.setAlpha
-import starficz.*
+import fleetBuilder.otherMods.starficz.*
 import java.awt.Color
 
 /**

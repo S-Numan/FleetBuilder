@@ -14,11 +14,11 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.util.*
 import org.lwjgl.util.vector.Vector2f
-import starficz.ReflectionUtils.getFieldsMatching
-import starficz.findChildWithMethod
-import starficz.getChildrenCopy
-import starficz.height
-import starficz.width
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.height
+import fleetBuilder.otherMods.starficz.width
 
 internal class RemoveRefitHullmod : CampaignInputListener {
 

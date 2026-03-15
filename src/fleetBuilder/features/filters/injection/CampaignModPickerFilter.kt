@@ -8,7 +8,7 @@ import fleetBuilder.features.filters.filterPanels.ModPickerFilterPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
-import starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.findChildWithMethod
 
 internal class CampaignModPickerFilter : EveryFrameScript {
     override fun isDone(): Boolean {

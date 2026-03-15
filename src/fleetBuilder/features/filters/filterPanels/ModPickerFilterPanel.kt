@@ -4,8 +4,8 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.ui.UITable
 import fleetBuilder.util.safeInvoke
-import starficz.ReflectionUtils.getFieldsMatching
-import starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 class ModPickerFilterPanel(
     width: Float,

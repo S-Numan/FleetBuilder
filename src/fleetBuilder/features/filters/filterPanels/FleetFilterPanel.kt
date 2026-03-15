@@ -7,7 +7,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.util.*
-import starficz.*
+import fleetBuilder.otherMods.starficz.*
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
 

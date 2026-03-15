@@ -13,7 +13,7 @@ import fleetBuilder.util.TimeKeeper
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import org.magiclib.kotlin.setAlpha
-import starficz.lastComponent
+import fleetBuilder.otherMods.starficz.lastComponent
 import java.awt.Color
 
 internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin() {

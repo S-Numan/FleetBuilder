@@ -10,10 +10,10 @@ import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
-import starficz.height
-import starficz.width
-import starficz.x
-import starficz.y
+import fleetBuilder.otherMods.starficz.height
+import fleetBuilder.otherMods.starficz.width
+import fleetBuilder.otherMods.starficz.x
+import fleetBuilder.otherMods.starficz.y
 import java.awt.Color
 
 object UIUtils {

@@ -19,7 +19,7 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.addToggle
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
-import starficz.*
+import fleetBuilder.otherMods.starficz.*
 
 //The implementation of this is extremely scuffed, I am aware.
 
