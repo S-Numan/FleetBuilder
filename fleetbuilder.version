@@ -4,9 +4,9 @@
   "modName": "FleetBuilder",
   "modVersion":
     {
-      "major": 2,
-      "minor": 0,
-      "patch": "2dev" # Can be a number, character or string (1, 2, a, b, "-RC2", etc)
+      "major": 1,
+      "minor": 30,
+      "patch": "0dev" # Can be a number, character or string (1, 2, a, b, "-RC2", etc)
     },
 
   "modThreadId": 33414,

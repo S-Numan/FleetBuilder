@@ -1,4 +1,4 @@
-## 2.0.0
+## 1.30.0
 #### Big update!
 ### Additions
 - Newly added Mothball Recovered Ships setting in the Misc tab. When this is true, newly recovered ships will be automatically mothballed.
@@ -34,9 +34,11 @@
 - Fix officers not being paste-able if they lack any skills
 - Fix officers not storing in different language.
 - Fix accidently using "Include Cargo" instead of "Include Credits" causing confusion.
+- Finally figured out how to center the autofit flux tooltips properly. Horray!
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
 - A small overhaul to the PopUp UI. It will be a little different now in many ways.
+- The versioning should be 2.0.0, however, as that causes a red "mod is unlikely to load correctly" on save game I'll only make that version change on the next starsector update.
 
 ## 1.27.1
 - Fix copy pasted variants loading improperly after saving and loading a game.

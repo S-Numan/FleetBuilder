@@ -5,20 +5,15 @@ import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
-import com.fs.starfarer.api.combat.ShipAPI
-import com.fs.starfarer.api.combat.ShipVariantAPI
-import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.fleet.FleetMemberStatusAPI
-import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
+import starficz.Anchor.AnchorData
+import starficz.Anchor.AnchorReference
 import starficz.ReflectionUtils.getMethodsMatching
 import starficz.ReflectionUtils.invoke
 import starficz.ReflectionUtils.set
 import java.awt.Color
-import starficz.Anchor.AnchorData
-import starficz.Anchor.AnchorReference
 
 // UIComponentAPI extensions that expose UIComponent fields/methods
 var UIComponentAPI.fader: Fader?
@@ -584,6 +579,9 @@ fun UIPanelAPI.addShipPreview(
 }
  */
 
+/**
+ * .
+ */
 fun UIPanelAPI.addPara(
     text: String, font: Font? = null, color: Color? = null,
     highlightedText: Collection<Pair<String, Color>>? = null,

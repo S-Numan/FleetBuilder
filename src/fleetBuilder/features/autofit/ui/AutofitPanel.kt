@@ -11,6 +11,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
+import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.core.ModSettings
@@ -26,11 +27,11 @@ import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.variant.DataVariant.copyVariant
 import fleetBuilder.serialization.variant.VariantSettings
+import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.BasePopUpPanel
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.util.LookupUtil.getAllDMods
-import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
@@ -1179,21 +1180,41 @@ internal object AutofitPanel {
                 addModLines(hiddenMods)
             }
 
-            //val capStr = variant.numFluxCapacitors.toString().padStart(3, ' ')
-            //val ventStr = variant.numFluxVents.toString().padStart(3, ' ')
+            val capWidth = tooltip.computeStringWidth(variant.numFluxCapacitors.toString()) * 2
+            val ventWidth = tooltip.computeStringWidth(variant.numFluxVents.toString()) * 2
+            var usualWidth = tooltip.computeStringWidth("99") * 2
+            if (capWidth > usualWidth)
+                usualWidth = capWidth
+            if (ventWidth > usualWidth)
+                usualWidth = ventWidth
 
-            //TODO, figure out how to align these properly. Font does not appear to be monospaced.
-            tooltip.addPara(
-                "\n%4s  %s",
-                0f,
+            tooltip.beginTable(
+                Color.GRAY, Color.DARK_GRAY, Color.LIGHT_GRAY,
+                16f, false, false,
+                "", usualWidth - 4f,
+                "", width - 32f,
+            ) as? UITable
+
+            tooltip.addRow(
+                Alignment.RMID,
                 Misc.getHighlightColor(),
                 variant.numFluxCapacitors.toString(),
-                "Flux capacitors"
+                Alignment.LMID,
+                Misc.getTextColor(),
+                "flux capacitors"
             )
-            tooltip.addPara("%4s  %s", 0f, Misc.getHighlightColor(), variant.numFluxVents.toString(), "Flux vents")
+            tooltip.addRow(
+                Alignment.RMID,
+                Misc.getHighlightColor(),
+                variant.numFluxVents.toString(),
+                Alignment.LMID,
+                Misc.getTextColor(),
+                "flux vents"
+            )
 
+            tooltip.addTable("", 0, 12f)
 
-            tooltip.addPara("\nHold CTRL and click to copy loadout to clipboard", 2f)
+            tooltip.addPara("Hold CTRL and click to copy loadout to clipboard", 24f)
 
             if (missingFromVariant != null && missingFromVariant.hasMissing()) {
 
@@ -1214,7 +1235,7 @@ internal object AutofitPanel {
                 }
 
                 if (missingMods.isNotEmpty()) {
-                    tooltip.addPara("\nRequired Mods:", 2f)
+                    tooltip.addPara("Required Mods:", 16f)
 
                     for ((modId, modName, modVersion) in missingMods) {
                         tooltip.addPara("$modName (MISSING)\n       $modId $modVersion", Color.RED, 0f)
@@ -1233,8 +1254,8 @@ internal object AutofitPanel {
 
 
                 tooltip.addPara(
-                    "\nFailed to load:\nWeapons: ${missingFromVariant.weaponIds}\nWings: ${missingFromVariant.wingIds}\nHullMods: ${missingFromVariant.hullModIds}",
-                    2f
+                    "Failed to load:\nWeapons: ${missingFromVariant.weaponIds}\nWings: ${missingFromVariant.wingIds}\nHullMods: ${missingFromVariant.hullModIds}",
+                    16f
                 )
             }
 
