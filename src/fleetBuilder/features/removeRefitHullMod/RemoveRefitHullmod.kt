@@ -20,7 +20,7 @@ import starficz.getChildrenCopy
 import starficz.height
 import starficz.width
 
-class RemoveRefitHullmod : CampaignInputListener {
+internal class RemoveRefitHullmod : CampaignInputListener {
 
     override fun getListenerInputPriority(): Int = 1
 

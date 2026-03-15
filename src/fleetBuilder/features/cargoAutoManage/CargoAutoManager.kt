@@ -7,9 +7,10 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManage
 import fleetBuilder.util.*
 
-class CargoAutoManager : EveryFrameScript {
+internal class CargoAutoManager : EveryFrameScript {
     override fun isDone(): Boolean {
         return false
     }
@@ -67,7 +68,7 @@ class CargoAutoManager : EveryFrameScript {
     }
 
     private fun manageCargo(
-        item: ItemAutoManage,
+        item: CargoAutoManage.ItemAutoManage,
         submarket: SubmarketAPI
     ): Boolean {
         val playerCargo = Global.getSector().playerFleet.cargo
@@ -164,7 +165,7 @@ class CargoAutoManager : EveryFrameScript {
     }
 
     private fun moveItem(
-        item: ItemAutoManage,
+        item: CargoAutoManage.ItemAutoManage,
         fromCargo: CargoAPI,
         toCargo: CargoAPI,
         amount: Int = -1
@@ -178,7 +179,7 @@ class CargoAutoManager : EveryFrameScript {
     }
 
     private fun getItemQuantity(
-        item: ItemAutoManage,
+        item: CargoAutoManage.ItemAutoManage,
         cargo: CargoAPI
     ): Float = if (item.data == "weapon_and_wings")
         cargo.getWeaponAndWingQuantity()

@@ -10,7 +10,7 @@ import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.listeners.OfficerChangeEvents
 
-class CommanderShuttle : CurrentLocationChangedListener {
+internal class CommanderShuttle : CurrentLocationChangedListener {
     override fun reportCurrentLocationChanged(prev: LocationAPI?, curr: LocationAPI?) {
         if (prev == null || curr == null)
             return

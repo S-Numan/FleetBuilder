@@ -3,7 +3,6 @@ package fleetBuilder.core
 import com.fs.starfarer.api.BaseModPlugin
 
 class FleetBuilderPlugin : BaseModPlugin() {
-
     override fun onApplicationLoad() {
         EventDispatcher.onApplicationLoad()
     }

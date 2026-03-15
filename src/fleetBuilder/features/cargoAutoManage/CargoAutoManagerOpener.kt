@@ -21,7 +21,7 @@ import starficz.ReflectionUtils.getFieldsMatching
 import starficz.findChildWithMethod
 import starficz.getChildrenCopy
 
-class CargoAutoManagerOpener : CampaignInputListener {
+internal class CargoAutoManagerOpener : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 1
 
     override fun processCampaignInputPreCore(events: List<InputEventAPI>) {

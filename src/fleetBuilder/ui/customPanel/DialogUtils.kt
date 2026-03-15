@@ -1,9 +1,7 @@
 package fleetBuilder.ui.customPanel
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
-import com.fs.starfarer.api.combat.ViewportAPI
+import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -13,7 +11,7 @@ import fleetBuilder.ui.customPanel.common.PopUpPanel
 import fleetBuilder.util.ReflectionMisc
 import starficz.getChildrenCopy
 
-class DialogUtils : EveryFrameCombatPlugin {
+class DialogUtils : BaseEveryFrameCombatPlugin() {
     companion object {
         fun initDialogToShow(
             dialog: CustomUIPanel,
@@ -84,19 +82,5 @@ class DialogUtils : EveryFrameCombatPlugin {
 
             initDialogToShow(dialog, width, height, screenPanel)
         }
-    }
-
-    override fun processInputPreCoreControls(
-        amount: Float,
-        events: List<InputEventAPI?>?
-    ) {
-    }
-
-    override fun renderInWorldCoords(viewport: ViewportAPI?) {}
-
-    override fun renderInUICoords(viewport: ViewportAPI?) {}
-
-    @Deprecated("Deprecated in Java")
-    override fun init(engine: CombatEngineAPI?) {
     }
 }

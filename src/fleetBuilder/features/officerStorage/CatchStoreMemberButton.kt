@@ -13,9 +13,9 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
+import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
@@ -23,7 +23,7 @@ import org.lwjgl.input.Mouse
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.getChildrenCopy
 
-class CatchStoreMemberButton : CampaignInputListener {
+internal class CatchStoreMemberButton : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 10
 
     var storePlayerDelay = false

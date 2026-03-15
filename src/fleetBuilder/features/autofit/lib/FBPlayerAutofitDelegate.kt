@@ -22,7 +22,7 @@ import com.fs.starfarer.loading.specs.FighterWingSpec
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.util.safeInvoke
 
-class FBPlayerAutofitDelegate(
+internal class FBPlayerAutofitDelegate(
     private val fleetMember: FleetMemberAPI,
     private val faction: FactionAPI,
     private val ship: ShipAPI,

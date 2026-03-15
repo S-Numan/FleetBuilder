@@ -9,7 +9,7 @@ import org.apache.log4j.spi.LoggingEvent
 import org.lazywizard.console.Console
 import java.awt.Color
 
-class LogMessageAppender : AppenderSkeleton() {
+internal class LogMessageAppender : AppenderSkeleton() {
     override fun append(event: LoggingEvent) {
         if (ModSettings.addLogsToConsoleModConsoleLevel == Level.OFF && ModSettings.addLogsToDisplayMessageLevel == Level.OFF)
             return

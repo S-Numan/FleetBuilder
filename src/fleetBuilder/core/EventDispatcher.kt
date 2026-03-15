@@ -33,8 +33,8 @@ import org.apache.log4j.Logger
 import org.lazywizard.console.Console
 
 
-class EventDispatcher : EveryFrameScript {
-    internal companion object {
+internal class EventDispatcher : EveryFrameScript {
+    companion object {
         fun setSectorListeners() {
             val sector = Global.getSector() ?: return
 
@@ -203,5 +203,4 @@ class EventDispatcher : EveryFrameScript {
             lastDevMode = currentDevMode
         }
     }
-
 }

@@ -2,10 +2,9 @@ package fleetBuilder.features.hotkeyHandler
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
-import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.SharedUnlockData
@@ -30,7 +29,7 @@ import java.awt.Color
 import kotlin.math.cos
 import kotlin.math.sin
 
-internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
+internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
 
     override fun processInputPreCoreControls(
         amount: Float,
@@ -76,27 +75,6 @@ internal class CombatClipboardHotkeyHandler : EveryFrameCombatPlugin {
                 }
             }
         }
-    }
-
-    override fun advance(
-        amount: Float,
-        events: List<InputEventAPI?>?
-    ) {
-
-    }
-
-    override fun renderInWorldCoords(viewport: ViewportAPI?) {
-
-    }
-
-    override fun renderInUICoords(viewport: ViewportAPI?) {
-
-    }
-
-
-    @Deprecated("Deprecated in Java")
-    override fun init(engine: CombatEngineAPI?) {
-
     }
 
     fun isPositionFree(engine: CombatEngineAPI, x: Float, y: Float, radius: Float): Boolean {

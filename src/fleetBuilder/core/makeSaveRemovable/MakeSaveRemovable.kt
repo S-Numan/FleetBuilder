@@ -10,7 +10,7 @@ import fleetBuilder.core.ModSettings
 
 //Original code is from AITweaks "MakeAITweaksRemovable", the author being Genrir. Credit to them.
 
-object MakeSaveRemovable {
+internal object MakeSaveRemovable {
 
     private data class Thing(val name: String, val key: String)
 

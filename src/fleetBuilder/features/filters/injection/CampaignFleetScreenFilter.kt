@@ -11,7 +11,7 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
 import starficz.getChildrenCopy
 
-class CampaignFleetScreenFilter : EveryFrameScript {
+internal class CampaignFleetScreenFilter : EveryFrameScript {
     override fun isDone(): Boolean {
         return false
     }

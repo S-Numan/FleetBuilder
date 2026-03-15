@@ -181,7 +181,7 @@ internal object AutofitPanel {
         }
     }
 
-    fun createMagicAutofitPanel(
+    internal fun createMagicAutofitPanel(
         parentPanel: UIPanelAPI,
         width: Float, height: Float, variant: ShipVariantAPI, makeAndRemoveLoadouts: Boolean
     ): CustomPanelAPI {
@@ -838,7 +838,7 @@ internal object AutofitPanel {
         }
     }
 
-    fun deHighlight(selectorPlugin: AutofitSelector.AutofitSelectorPlugin) {
+    private fun deHighlight(selectorPlugin: AutofitSelector.AutofitSelectorPlugin) {
         selectorPlugin.isSelected = false
         selectorPlugin.comparisonStatus = AutofitSelector.AutofitSelectorPlugin.ComparisonStatus.DEFAULT
         selectorPlugin.diffFluxStats = false
@@ -915,7 +915,7 @@ internal object AutofitPanel {
         }
     }
 
-    fun deleteSelector(selectorPlugin: AutofitSelector.AutofitSelectorPlugin?) {
+    private fun deleteSelector(selectorPlugin: AutofitSelector.AutofitSelectorPlugin?) {
         selectorPlugin?.autofitSpec = null
         selectorPlugin?.noClickFader = true
         selectorPlugin?.selectorPanel?.clearChildren()
@@ -952,8 +952,7 @@ internal object AutofitPanel {
         }
     }
 
-
-    fun makeTooltip(
+    internal fun makeTooltip(
         selectorPanel: CustomPanelAPI,
         variant: ShipVariantAPI,
         missingFromVariant: MissingElements? = null,

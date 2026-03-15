@@ -10,6 +10,9 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManage
+import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManage
+import fleetBuilder.features.cargoAutoManage.CargoAutoManage.unsetCargoAutoManage
 import fleetBuilder.ui.customPanel.common.BasePopUpPanel
 import fleetBuilder.ui.customPanel.common.CustomUIPanel
 import fleetBuilder.util.ReflectionMisc
@@ -20,9 +23,9 @@ import starficz.*
 
 //The implementation of this is extremely scuffed, I am aware.
 
-val defaultIcon = "graphics/factions/crest_player_flag.png"
+private val defaultIcon = "graphics/factions/crest_player_flag.png"
 
-class CargoAutoManageUIPlugin(
+internal class CargoAutoManageUIPlugin(
     val selectedSubmarket: SubmarketAPI,
     private val width: Float,
     private val height: Float,
@@ -79,12 +82,12 @@ class CargoAutoManageUIPlugin(
 
     var interactToggle: ButtonAPI? = null
     var leaveToggle: ButtonAPI? = null
-    fun createCargoAutoManage(): CargoAutoManage {
-        val itemAutoManages = mutableListOf<ItemAutoManage>()
+    fun createCargoAutoManage(): CargoAutoManage.AutoManage {
+        val itemAutoManages = mutableListOf<CargoAutoManage.ItemAutoManage>()
 
         cargoRows.forEachIndexed { index, row ->
             itemAutoManages.add(
-                ItemAutoManage(
+                CargoAutoManage.ItemAutoManage(
                     row.type,
                     row.data,
                     row.icon,
@@ -98,7 +101,7 @@ class CargoAutoManageUIPlugin(
             )
         }
 
-        return CargoAutoManage(
+        return CargoAutoManage.AutoManage(
             interactToggle?.isChecked ?: false,
             leaveToggle?.isChecked ?: false,
             itemAutoManages
@@ -214,7 +217,7 @@ class CargoAutoManageUIPlugin(
         market = selectedSubmarket.market
 
         val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
-            ?: CargoAutoManage()
+            ?: CargoAutoManage.AutoManage()
 
         //dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
         dialog = BasePopUpPanel(selectedSubmarket.name.replace("\n", " "))
@@ -539,7 +542,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                         val stack = child.safeInvoke("getStack") as? CargoStackAPI ?: return@forEach
 
                         val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
-                            ?: CargoAutoManage()
+                            ?: CargoAutoManage.AutoManage()
 
                         val iconName: String =
                             if (stack.resourceIfResource != null) {
@@ -559,7 +562,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                             }
 
                         cargoAutoManage.autoManageItems.add(
-                            ItemAutoManage(
+                            CargoAutoManage.ItemAutoManage(
                                 stack.type,
                                 stack.data,
                                 iconName,

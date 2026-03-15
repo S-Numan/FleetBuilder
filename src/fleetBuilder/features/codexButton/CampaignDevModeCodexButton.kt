@@ -24,7 +24,7 @@ import fleetBuilder.util.createHullVariant
 import org.lwjgl.input.Keyboard
 import starficz.*
 
-class CampaignDevModeCodexButton : EveryFrameScript {
+internal class CampaignDevModeCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {
         return false
     }

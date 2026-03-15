@@ -11,7 +11,7 @@ import fleetBuilder.features.filters.filterPanels.CargoFilterPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.safeInvoke
 
-class CampaignCargoScreenFilter : CargoScreenListener, EveryFrameScript {
+internal class CampaignCargoScreenFilter : CargoScreenListener, EveryFrameScript {
     var marketOpened = false
     var playerStorageOpened = false
 

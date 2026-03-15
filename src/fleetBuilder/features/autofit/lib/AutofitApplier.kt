@@ -20,7 +20,7 @@ import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
 import java.awt.Color
 import java.util.*
 
-object AutofitApplier {
+internal object AutofitApplier {
 
     fun applyVariantInRefitScreen(
         baseVariant: ShipVariantAPI,

@@ -15,7 +15,7 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBTxt
 import java.awt.Color
 
-class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
+internal class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
     override fun isDone(): Boolean {
         return false
     }

@@ -4,8 +4,7 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
-import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.EveryFrameCombatPlugin
+import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
@@ -17,8 +16,7 @@ import org.magiclib.kotlin.setAlpha
 import starficz.lastComponent
 import java.awt.Color
 
-class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
-
+internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin() {
     companion object {
         private val messageQueue = ArrayDeque<Pair<String, Color>>()
         private var currentMessage: Pair<String, Color>? = null
@@ -164,24 +162,12 @@ class DrawMessageOnTop : EveryFrameCombatPlugin, EveryFrameScript {
         Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
     }
 
-    private fun render() {
+    override fun renderInUICoords(viewport: ViewportAPI?) {
         renderStatic()
     }
-
-    override fun renderInUICoords(viewport: ViewportAPI?) {
-        render()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun init(engine: CombatEngineAPI?) {
-    }
-
-    override fun renderInWorldCoords(viewport: ViewportAPI?) {}
-
-    override fun processInputPreCoreControls(amount: Float, events: MutableList<InputEventAPI>?) {}
 }
 
-class CampaignMessageRenderer : BaseCustomUIPanelPlugin() {
+private class CampaignMessageRenderer : BaseCustomUIPanelPlugin() {
     private val screenPanel = ReflectionMisc.getScreenPanel()
     var panel: CustomPanelAPI
 

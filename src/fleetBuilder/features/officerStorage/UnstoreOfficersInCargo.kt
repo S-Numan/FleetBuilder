@@ -14,7 +14,7 @@ import org.magiclib.kotlin.getMaxOfficers
 import org.magiclib.kotlin.getNumNonMercOfficers
 import org.magiclib.kotlin.isMercenary
 
-class UnstoreOfficersInCargo : EveryFrameScript {
+internal class UnstoreOfficersInCargo : EveryFrameScript {
     override fun advance(amount: Float) {
         val sector = Global.getSector() ?: return
 

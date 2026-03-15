@@ -10,7 +10,7 @@ import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.safeInvoke
 import starficz.findChildWithMethod
 
-class CampaignModPickerFilter : EveryFrameScript {
+internal class CampaignModPickerFilter : EveryFrameScript {
     override fun isDone(): Boolean {
         return false
     }
