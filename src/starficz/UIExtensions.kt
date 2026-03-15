@@ -5,6 +5,11 @@ import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
+import com.fs.starfarer.api.combat.ShipAPI
+import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.fleet.FleetMemberStatusAPI
+import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
@@ -451,7 +456,7 @@ class BoxedUISliderBar(val uiBar: UIPanelAPI) : BoxedUIElement(uiBar), UICompone
  * A Boxed representation of a vanilla UI Ship Preview. Generates ShipAPI's on use.
  * For performance reasons, try and call cleanupShips when hidden.
  */
-/*
+
 class BoxedUIShipPreview(val uiShipPreview: UIPanelAPI) : BoxedUIElement(uiShipPreview),
     UIComponentAPI by uiShipPreview {
     internal companion object {
@@ -459,6 +464,7 @@ class BoxedUIShipPreview(val uiShipPreview: UIPanelAPI) : BoxedUIElement(uiShipP
         var FLEETMEMBER_CONSTRUCTOR: ReflectionUtils.ReflectedConstructor? = null
         var ENUM_CONSTRUCTOR: ReflectionUtils.ReflectedConstructor? = null
         var ENUM_ARRAY: Array<*>? = null
+        var SHIPS_FIELD: String? = null
     }
 
     enum class Style {
@@ -467,6 +473,7 @@ class BoxedUIShipPreview(val uiShipPreview: UIPanelAPI) : BoxedUIElement(uiShipP
         MINI
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun getShips(): Array<ShipAPI> {
         uiShipPreview.invoke("prepareShip")
         return uiShipPreview.invoke("getShips") as Array<ShipAPI>
@@ -579,11 +586,8 @@ fun UIPanelAPI.addShipPreview(
 
     return boxedUIShipPreview
 }
- */
 
-/**
- * .
- */
+
 fun UIPanelAPI.addPara(
     text: String, font: Font? = null, color: Color? = null,
     highlightedText: Collection<Pair<String, Color>>? = null,
@@ -753,40 +757,40 @@ fun ButtonAPI.onClick(function: () -> Unit) {
 }
 
 // Custom CustomUIPanelPlugin extensions that map the plugin to the panel
-val ExtendableCustomUIPanelPlugin.width
+val StarUIPanelPlugin.width
     get() = customPanel.width
 
-val ExtendableCustomUIPanelPlugin.height
+val StarUIPanelPlugin.height
     get() = customPanel.height
 
-val ExtendableCustomUIPanelPlugin.x
+val StarUIPanelPlugin.x
     get() = customPanel.x
 
-val ExtendableCustomUIPanelPlugin.y
+val StarUIPanelPlugin.y
     get() = customPanel.y
 
-val ExtendableCustomUIPanelPlugin.left
+val StarUIPanelPlugin.left
     get() = x
 
-val ExtendableCustomUIPanelPlugin.bottom
+val StarUIPanelPlugin.bottom
     get() = y
 
-val ExtendableCustomUIPanelPlugin.top
+val StarUIPanelPlugin.top
     get() = y + height
 
-val ExtendableCustomUIPanelPlugin.right
+val StarUIPanelPlugin.right
     get() = x + width
 
-val ExtendableCustomUIPanelPlugin.centerX
+val StarUIPanelPlugin.centerX
     get() = customPanel.centerX
 
-val ExtendableCustomUIPanelPlugin.centerY
+val StarUIPanelPlugin.centerY
     get() = customPanel.centerY
 
-val ExtendableCustomUIPanelPlugin.xAlignOffset
+val StarUIPanelPlugin.xAlignOffset
     get() = customPanel.xAlignOffset
 
-val ExtendableCustomUIPanelPlugin.yAlignOffset
+val StarUIPanelPlugin.yAlignOffset
     get() = customPanel.yAlignOffset
 
 fun CustomPanelAPI.setPlugin(plugin: CustomUIPanelPlugin) {

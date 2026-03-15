@@ -6,7 +6,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 
-open class ExtendableCustomUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPanelPlugin() {
+open class StarUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPanelPlugin() {
 
     private var onClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
     private var onClickOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
@@ -14,7 +14,7 @@ open class ExtendableCustomUIPanelPlugin(var customPanel: CustomPanelAPI) : Base
     private var onHoverFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onHoverEnterFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onHoverExitFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
-    private var onHeldFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
+    private var onMouseButtonHeldFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onKeyDownFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onKeyUpFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
 
@@ -23,16 +23,33 @@ open class ExtendableCustomUIPanelPlugin(var customPanel: CustomPanelAPI) : Base
 
     private var advanceFunctions: MutableList<(Float) -> Unit> = mutableListOf()
 
+    var customData: Any? = null
+
     var inputCaptureTopPad = 0f
+        private set
     var inputCaptureBottomPad = 0f
+        private set
     var inputCaptureLeftPad = 0f
+        private set
     var inputCaptureRightPad = 0f
+        private set
 
     var isHovering = false
         private set
 
     var hasClicked = false
         private set
+
+    var consumeEvents = false
+    var ignoreConsumedEvents = false
+
+    fun setMouseCapturePad(leftPad: Float, rightPad: Float, topPad: Float, bottomPad: Float) {
+        inputCaptureTopPad = topPad
+        inputCaptureBottomPad = bottomPad
+        inputCaptureLeftPad = leftPad
+        inputCaptureRightPad = rightPad
+        customPanel.setMouseOverPad(leftPad, rightPad, topPad, bottomPad)
+    }
 
     fun renderBelow(function: (alphaMult: Float) -> Unit) {
         renderBelowFunctions.add(function)
@@ -74,13 +91,13 @@ open class ExtendableCustomUIPanelPlugin(var customPanel: CustomPanelAPI) : Base
         advanceFunctions.forEach { it(amount) }
     }
 
-    override fun processInput(events: MutableList<InputEventAPI>?) {
-        events!!.filter { it.isMouseEvent }.forEach { event ->
-
+    override fun processInput(events: MutableList<InputEventAPI>) {
+        events.filter { it.isMouseEvent }.forEach { event ->
+            if (ignoreConsumedEvents && event.isConsumed) return@forEach
             val inElement = event.x.toFloat() in (left - inputCaptureLeftPad)..(right + inputCaptureRightPad) &&
                     event.y.toFloat() in (bottom - inputCaptureBottomPad)..(top + inputCaptureTopPad)
             if (inElement) {
-                for (onHover in onHoverFunctions) onHover(event)
+                onHoverFunctions.forEach { it(event) }
                 if (!isHovering) onHoverEnterFunctions.forEach { it(event) }
                 isHovering = true
                 if (event.isMouseDownEvent) {
@@ -91,7 +108,8 @@ open class ExtendableCustomUIPanelPlugin(var customPanel: CustomPanelAPI) : Base
                     hasClicked = false
                     onClickReleaseFunctions.forEach { it(event) }
                 }
-                if (Mouse.isButtonDown(0)) onHeldFunctions.forEach { it(event) }
+                if (Mouse.isButtonDown(0)) onMouseButtonHeldFunctions.forEach { it(event) }
+                if (consumeEvents) event.consume()
             } else {
                 if (isHovering) onHoverExitFunctions.forEach { it(event) }
                 isHovering = false
@@ -105,8 +123,10 @@ open class ExtendableCustomUIPanelPlugin(var customPanel: CustomPanelAPI) : Base
         }
 
         events.filter { it.isKeyboardEvent }.forEach { event ->
+            if (ignoreConsumedEvents && event.isConsumed) return@forEach
             if (event.isKeyDownEvent) onKeyDownFunctions.forEach { it(event) }
             if (event.isKeyUpEvent) onKeyUpFunctions.forEach { it(event) }
+            if (consumeEvents) event.consume()
         }
     }
 
@@ -135,7 +155,7 @@ open class ExtendableCustomUIPanelPlugin(var customPanel: CustomPanelAPI) : Base
     }
 
     fun onHeld(function: (InputEventAPI) -> Unit) {
-        onHeldFunctions.add(function)
+        onMouseButtonHeldFunctions.add(function)
     }
 
     fun onKeyDown(function: (InputEventAPI) -> Unit) {
@@ -145,4 +165,5 @@ open class ExtendableCustomUIPanelPlugin(var customPanel: CustomPanelAPI) : Base
     fun onKeyUp(function: (InputEventAPI) -> Unit) {
         onKeyUpFunctions.add(function)
     }
+
 }

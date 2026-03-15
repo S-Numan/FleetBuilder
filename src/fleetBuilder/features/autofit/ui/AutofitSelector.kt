@@ -13,7 +13,6 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.features.autofit.listener.CombatAutofitAdder
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.safeInvoke
@@ -356,7 +355,7 @@ internal object AutofitSelector {
 
         val clonedVariant = variant.clone() as HullVariantSpec
 
-        val shipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
+        val shipPreview = ReflectionUtilsExtra.instantiate(BoxedUIShipPreview.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
 
         shipPreview.safeInvoke("setVariant", clonedVariant)
         shipPreview.safeInvoke("overrideVariant", clonedVariant)
@@ -431,7 +430,7 @@ internal object AutofitSelector {
     }
 
     private fun getExactBounds(variant: ShipVariantAPI): List<BoundsAPI.SegmentAPI>? {
-        val tempShipPreview = ReflectionUtilsExtra.instantiate(CombatAutofitAdder.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
+        val tempShipPreview = ReflectionUtilsExtra.instantiate(BoxedUIShipPreview.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
         tempShipPreview.safeInvoke("setVariant", variant)
         tempShipPreview.safeInvoke("overrideVariant", variant)
         tempShipPreview.safeInvoke("prepareShip")

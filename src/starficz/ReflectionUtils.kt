@@ -1,10 +1,5 @@
 package starficz
 
-import java.lang.Byte
-import java.lang.Double
-import java.lang.Float
-import java.lang.Long
-import java.lang.Short
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
@@ -786,14 +781,14 @@ internal object ReflectionUtils {
     // Map primitives to their corresponding wrapper types
     private val primitiveToWrapper = mapOf<Class<*>, Class<*>>(
         java.lang.Boolean.TYPE to java.lang.Boolean::class.java,
-        Byte.TYPE to Byte::class.java,
-        Character.TYPE to Character::class.java,
-        Short.TYPE to Short::class.java,
-        Integer.TYPE to Integer::class.java,
-        Long.TYPE to Long::class.java,
-        Float.TYPE to Float::class.java,
-        Double.TYPE to Double::class.java,
-        Void.TYPE to Void::class.java
+        java.lang.Byte.TYPE to java.lang.Byte::class.java,
+        java.lang.Character.TYPE to java.lang.Character::class.java,
+        java.lang.Short.TYPE to java.lang.Short::class.java,
+        java.lang.Integer.TYPE to java.lang.Integer::class.java,
+        java.lang.Long.TYPE to java.lang.Long::class.java,
+        java.lang.Float.TYPE to java.lang.Float::class.java,
+        java.lang.Double.TYPE to java.lang.Double::class.java,
+        java.lang.Void.TYPE to java.lang.Void::class.java
     )
 
     // Map wrapper types back to their primitives
@@ -803,13 +798,13 @@ internal object ReflectionUtils {
     // (Key: method parameter type, Value: Set of types that can be passed as arguments)
     private val primitiveWidensFrom = mapOf<Class<*>, Set<Class<*>>>(
         // Primitive Widening the integer types
-        Short.TYPE to setOf(Byte.TYPE),
-        Integer.TYPE to setOf(Byte.TYPE, Short.TYPE, Character.TYPE),
-        Long.TYPE to setOf(Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE),
+        java.lang.Short.TYPE to setOf(java.lang.Byte.TYPE),
+        java.lang.Integer.TYPE to setOf(java.lang.Byte.TYPE, java.lang.Short.TYPE, java.lang.Character.TYPE),
+        java.lang.Long.TYPE to setOf(java.lang.Byte.TYPE, java.lang.Short.TYPE, java.lang.Character.TYPE, java.lang.Integer.TYPE),
 
         // Primitive Widening the float types
-        Float.TYPE to setOf(Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE),
-        Double.TYPE to setOf(Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE)
+        java.lang.Float.TYPE to setOf(java.lang.Byte.TYPE, java.lang.Short.TYPE, java.lang.Character.TYPE, java.lang.Integer.TYPE, java.lang.Long.TYPE),
+        java.lang.Double.TYPE to setOf(java.lang.Byte.TYPE, java.lang.Short.TYPE, java.lang.Character.TYPE, java.lang.Integer.TYPE, java.lang.Long.TYPE, java.lang.Float.TYPE)
     )
 
     /**

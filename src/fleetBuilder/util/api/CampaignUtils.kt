@@ -10,7 +10,7 @@ import starficz.findChildWithMethod
 object CampaignUtils {
 
     var placeholderDialog: UIPanelAPI? = null
-    
+
     fun openCampaignDummyDialog() {
         val ui = Global.getSector().campaignUI
         //Open a dialog to prevent input from most other mods

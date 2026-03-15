@@ -4,6 +4,7 @@ import MagicLib.ReflectionUtilsExtra
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -13,17 +14,14 @@ import fleetBuilder.features.autofit.ui.AutofitPanelCreator
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
+import starficz.BoxedUIShipPreview
+import starficz.ReflectionUtils.getConstructorsMatching
 import starficz.ReflectionUtils.getFieldsMatching
 import starficz.findChildWithMethod
 import starficz.getChildrenCopy
 import starficz.onClick
 
 internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
-    companion object {
-        var SHIP_PREVIEW_CLASS: Class<*>? = null
-        var SHIPS_FIELD: String? = null
-    }
-
     var refitTab: UIPanelAPI? = null
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
@@ -63,7 +61,7 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
     }
 
     private fun cacheShipPreviewClass(screenPanel: UIPanelAPI) {
-        if (SHIP_PREVIEW_CLASS != null) return
+        if (BoxedUIShipPreview.SHIP_PREVIEW_CLASS != null) return
 
         val missionWidget = screenPanel.findChildWithMethod("getMissionList") as? UIPanelAPI ?: return
         val holographicBG = missionWidget.getChildrenCopy()[1] // 2 of the same class in the tree here
@@ -77,8 +75,17 @@ internal class CombatAutofitAdder : BaseEveryFrameCombatPlugin() {
 
         val shipPreview = missionShipPreview.findChildWithMethod("isSchematicMode") ?: return
 
-        SHIP_PREVIEW_CLASS = shipPreview.javaClass
+        BoxedUIShipPreview.SHIP_PREVIEW_CLASS = shipPreview.javaClass
         val shipFields = shipPreview.getFieldsMatching(type = Array<Ship>::class.java)
-        SHIPS_FIELD = shipFields[0].name // only one field should be Array<Ship>
+        BoxedUIShipPreview.SHIPS_FIELD = shipFields[0].name // only one field should be Array<Ship>
+
+
+        val constructors = BoxedUIShipPreview.SHIP_PREVIEW_CLASS!!.getConstructorsMatching()
+
+        BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR = constructors.find { constructor ->
+            constructor.parameterTypes.firstOrNull()?.let { FleetMemberAPI::class.java.isAssignableFrom(it) } ?: false
+        }
+        BoxedUIShipPreview.ENUM_CONSTRUCTOR = constructors.find { it.parameterTypes.size == 2 }
+        BoxedUIShipPreview.ENUM_ARRAY = BoxedUIShipPreview.ENUM_CONSTRUCTOR!!.parameterTypes.first().enumConstants
     }
 }

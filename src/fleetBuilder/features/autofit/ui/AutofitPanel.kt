@@ -361,7 +361,7 @@ internal object AutofitPanel {
             val topPad = 5f
             // Create container panel with modWidget size
             val baseVariantPanel = autofitPanel.CustomPanel(containerPanelWidth, containerPanelHeight) {
-                (plugin as ExtendableCustomUIPanelPlugin).renderBelow { alphaMult ->
+                (plugin as StarUIPanelPlugin).renderBelow { alphaMult ->
                     // vanilla panels are transparent, but paintjobs need a clear background for display purposes
                     val panelColor = Color.BLACK
                     val panelAlpha = panelColor.alphaf * alphaMult
