@@ -19,7 +19,7 @@ import starficz.y
 
 //Copied and heavily modified from AshLib
 
-open class CustomUIPanel : CustomUIPanelPlugin {
+open class BasePanel : CustomUIPanelPlugin {
     lateinit var parent: UIPanelAPI
         protected set
     lateinit var panel: CustomPanelAPI

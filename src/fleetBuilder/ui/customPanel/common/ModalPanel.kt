@@ -12,7 +12,7 @@ import org.lwjgl.input.Keyboard
 import starficz.getChildrenCopy
 import starficz.height
 
-open class PopUpPanel : ComposableUIPanel() {
+open class ModalPanel : ComposablePanel() {
 
     init {
         background.alphaMult = 0.9f

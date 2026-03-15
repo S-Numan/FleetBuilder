@@ -6,7 +6,7 @@ import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.features.logMessageAppender.NoDisplayThrowable
-import fleetBuilder.ui.customPanel.common.BasePopUpPanel
+import fleetBuilder.ui.customPanel.common.DialogPanel
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
 import java.awt.Color
@@ -134,7 +134,7 @@ object DisplayMessage {
 
     @JvmOverloads
     fun dialogMessage(title: String, message: String, messageColor: Color = Misc.getTextColor()) {
-        val dialog = BasePopUpPanel(headerTitle = title)
+        val dialog = DialogPanel(headerTitle = title)
         dialog.allowHotkeyQuit = false
 
         dialog.onCreateUI(800f, 400f) { ui ->

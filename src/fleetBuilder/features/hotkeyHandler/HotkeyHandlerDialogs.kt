@@ -23,7 +23,7 @@ import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.reportMissingElementsIfAny
-import fleetBuilder.ui.customPanel.common.BasePopUpPanel
+import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.util.*
 import fleetBuilder.util.FBTxt.txtPlural
 import fleetBuilder.util.api.FleetUtils
@@ -47,7 +47,7 @@ object HotkeyHandlerDialogs {
         val playerFleet = Global.getSector()?.playerFleet?.fleetData ?: return
 
 
-        val dialog = BasePopUpPanel(FBTxt.txt("paste_fleet_into_player_fleet"))
+        val dialog = DialogPanel(FBTxt.txt("paste_fleet_into_player_fleet"))
 
         dialog.onCreateUI(500f, 380f) { ui ->
 
@@ -207,7 +207,7 @@ object HotkeyHandlerDialogs {
     }
 
     fun createDevModeDialog() {
-        val dialog = BasePopUpPanel(FBTxt.txt("dev_options_title"))
+        val dialog = DialogPanel(FBTxt.txt("dev_options_title"))
 
         dialog.onCreateUI(width = 500f, height = 200f) { ui ->
             val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
@@ -244,7 +244,7 @@ object HotkeyHandlerDialogs {
         data: DataFleet.ParsedFleetData,
         validatedData: DataFleet.ParsedFleetData
     ) {
-        val dialog = BasePopUpPanel(FBTxt.txt("spawn_fleet_in_campaign"))
+        val dialog = DialogPanel(FBTxt.txt("spawn_fleet_in_campaign"))
 
         dialog.onCreateUI(500f, 350f) { ui ->
 
@@ -334,7 +334,7 @@ object HotkeyHandlerDialogs {
         }
 
 
-        val initialDialog = BasePopUpPanel(headerTitle = FBTxt.txt("add_officer_to_fleet"))
+        val initialDialog = DialogPanel(headerTitle = FBTxt.txt("add_officer_to_fleet"))
 
         val buttonHeight = 24f
 
@@ -412,7 +412,7 @@ object HotkeyHandlerDialogs {
         val baseHullSpec = variant.hullSpec.getEffectiveHull()
         val loadoutBaseHullName = baseHullSpec.hullName ?: return
 
-        val dialog = BasePopUpPanel(headerTitle = FBTxt.txt("import_loadout_title"))
+        val dialog = DialogPanel(headerTitle = FBTxt.txt("import_loadout_title"))
 
         dialog.onCreateUI(375f, 490f) { ui ->
 
@@ -483,7 +483,7 @@ object HotkeyHandlerDialogs {
 
 
     fun createSaveTransferDialog() {
-        val dialog = BasePopUpPanel(headerTitle = FBTxt.txt("save_transfer"))
+        val dialog = DialogPanel(headerTitle = FBTxt.txt("save_transfer"))
 
         dialog.onCreateUI(300f, 384f) { ui ->
 

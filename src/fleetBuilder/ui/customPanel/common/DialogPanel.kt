@@ -9,9 +9,9 @@ import org.lwjgl.input.Keyboard
 import starficz.onClick
 import java.awt.Color
 
-open class BasePopUpPanel(
+open class DialogPanel(
     open var headerTitle: String? = null
-) : PopUpPanel() {
+) : ModalPanel() {
     var confirmButton: ButtonAPI? = null
     var cancelButton: ButtonAPI? = null
     var closeButton: ButtonAPI? = null

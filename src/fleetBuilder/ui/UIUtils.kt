@@ -18,6 +18,18 @@ import java.awt.Color
 
 object UIUtils {
 
+    @JvmOverloads
+    fun playSound(id: String, volume: Float = 1f, pitch: Float = 1f) {
+        Global.getSoundPlayer().playUISound(id, pitch, volume)
+    }
+
+    fun drawBorder(x1: Float, y1: Float, x2: Float, y2: Float) {
+        GL11.glRectf(x1, y1, x2 + 1, y1 - 1)
+        GL11.glRectf(x2, y1, x2 + 1, y2 + 1)
+        GL11.glRectf(x1, y2, x1 - 1, y1 - 1)
+        GL11.glRectf(x2, y2, x1 - 1, y2 + 1)
+    }
+
     fun easeCubic(t: Float): Float {
         return t * t * t
     }

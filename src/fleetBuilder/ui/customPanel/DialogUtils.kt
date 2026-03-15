@@ -6,15 +6,15 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.ui.customPanel.common.CustomUIPanel
-import fleetBuilder.ui.customPanel.common.PopUpPanel
+import fleetBuilder.ui.customPanel.common.BasePanel
+import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
 import starficz.getChildrenCopy
 
 class DialogUtils : BaseEveryFrameCombatPlugin() {
     companion object {
         fun initDialogToShow(
-            dialog: CustomUIPanel,
+            dialog: BasePanel,
             width: Float,
             height: Float,
             parent: UIPanelAPI? = null,
@@ -39,7 +39,7 @@ class DialogUtils : BaseEveryFrameCombatPlugin() {
 
         fun isPopUpPanelOpen(): Boolean {
             ReflectionMisc.getScreenPanel()?.getChildrenCopy()?.forEach { child ->
-                if (child is CustomPanelAPI && (child.plugin is PopUpPanel)
+                if (child is CustomPanelAPI && (child.plugin is ModalPanel)
                 ) {
                     return true
                 }
@@ -47,19 +47,19 @@ class DialogUtils : BaseEveryFrameCombatPlugin() {
             return false
         }
 
-        fun prependDialogToShow(dialog: CustomUIPanel, width: Float, height: Float) {
+        fun prependDialogToShow(dialog: BasePanel, width: Float, height: Float) {
             dialogsToShow.add(0, Triple(dialog, width, height))
         }
 
-        private val dialogsToShow: MutableList<Triple<CustomUIPanel, Float, Float>> = mutableListOf()
+        private val dialogsToShow: MutableList<Triple<BasePanel, Float, Float>> = mutableListOf()
 
         fun forceCloseAllDialogs(): Boolean {
             var closedOne = false
             val screenPanel = ReflectionMisc.getScreenPanel()
             screenPanel?.getChildrenCopy()?.toList()?.forEach { child ->
-                if (child is CustomPanelAPI && (child.plugin is CustomUIPanel)) {
+                if (child is CustomPanelAPI && (child.plugin is BasePanel)) {
                     try {
-                        (child.plugin as CustomUIPanel).forceDismiss()
+                        (child.plugin as BasePanel).forceDismiss()
                     } catch (e: Exception) {
                         DisplayMessage.showError("Error when force dismissing dialog\n$e")
                     }

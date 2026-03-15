@@ -28,7 +28,7 @@ import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.variant.DataVariant.copyVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.ui.customPanel.common.BasePopUpPanel
+import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.util.LookupUtil.getAllDMods
@@ -624,7 +624,7 @@ internal object AutofitPanel {
                     if (sModsToApply.isEmpty())
                         return@onClickRelease
 
-                    val dialog = BasePopUpPanel(headerTitle = "Use Story Points to Apply SMods")
+                    val dialog = DialogPanel(headerTitle = "Use Story Points to Apply SMods")
                     dialog.onCreateUI(450f, 110f) { ui ->
                         ui.addPara("This will consume ${sModsToApply.size} Story points and give ${bonusXpToGrant.toInt()} bonus xp", 0f).setAlignment(Alignment.MID)
                         dialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)

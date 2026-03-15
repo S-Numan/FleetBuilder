@@ -13,8 +13,8 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.unsetCargoAutoManage
-import fleetBuilder.ui.customPanel.common.BasePopUpPanel
-import fleetBuilder.ui.customPanel.common.CustomUIPanel
+import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.ui.customPanel.common.BasePanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.addToggle
 import fleetBuilder.util.safeInvoke
@@ -35,7 +35,7 @@ internal class CargoAutoManageUIPlugin(
     private var panel: CustomPanelAPI
     fun getPanel() = panel
 
-    private val dialog: BasePopUpPanel
+    private val dialog: DialogPanel
     private val market: MarketAPI
     private val scrollerTooltip: TooltipMakerAPI
 
@@ -220,7 +220,7 @@ internal class CargoAutoManageUIPlugin(
             ?: CargoAutoManage.AutoManage()
 
         //dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
-        dialog = BasePopUpPanel(selectedSubmarket.name.replace("\n", " "))
+        dialog = DialogPanel(selectedSubmarket.name.replace("\n", " "))
 
         val headerHeight = 24f
         val rowHeight = 48f
@@ -309,7 +309,7 @@ internal class CargoAutoManageUIPlugin(
 
             ui.addButton("Reset Settings", null, ui.width, buttonHeight, 0f).onClick {
 
-                val areYouSureDialog = BasePopUpPanel(headerTitle = "Are you sure?")
+                val areYouSureDialog = DialogPanel(headerTitle = "Are you sure?")
 
                 areYouSureDialog.onCreateUI(380f, 80f) { _ ->
                     areYouSureDialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
@@ -484,7 +484,7 @@ internal class CargoAutoManageUIPlugin(
     }
 }
 
-class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketAPI) : CustomUIPanel() {
+class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketAPI) : BasePanel() {
     override fun advance(amount: Float) {
         val panelWidth = this.panel.position.width
         val panelHeight = this.panel.position.height

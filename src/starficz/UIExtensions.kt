@@ -221,10 +221,12 @@ fun UIComponentAPI.addTooltip(
 
 
 // UIPanelAPI extensions that expose UIPanel methods
+@Suppress("UNCHECKED_CAST")
 fun UIPanelAPI.getChildrenCopy(): List<UIComponentAPI> {
     return invoke("getChildrenCopy") as List<UIComponentAPI>
 }
 
+@Suppress("UNCHECKED_CAST")
 fun UIPanelAPI.getChildrenNonCopy(): List<UIComponentAPI> {
     return invoke("getChildrenNonCopy") as List<UIComponentAPI>
 }

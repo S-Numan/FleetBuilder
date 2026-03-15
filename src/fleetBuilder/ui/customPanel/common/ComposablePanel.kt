@@ -12,7 +12,7 @@ import fleetBuilder.util.FBMisc.startStencilWithYPad
 import starficz.*
 import java.awt.Color
 
-open class ComposableUIPanel : CustomUIPanel() {
+open class ComposablePanel : BasePanel() {
 
     // Distance the tooltip holds from every side of it's home panel.
     protected open var xTooltipPad = 0f
