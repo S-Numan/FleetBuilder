@@ -751,40 +751,40 @@ fun ButtonAPI.onClick(function: () -> Unit) {
 }
 
 // Custom CustomUIPanelPlugin extensions that map the plugin to the panel
-internal val ExtendableCustomUIPanelPlugin.width
+val ExtendableCustomUIPanelPlugin.width
     get() = customPanel.width
 
-internal val ExtendableCustomUIPanelPlugin.height
+val ExtendableCustomUIPanelPlugin.height
     get() = customPanel.height
 
-internal val ExtendableCustomUIPanelPlugin.x
+val ExtendableCustomUIPanelPlugin.x
     get() = customPanel.x
 
-internal val ExtendableCustomUIPanelPlugin.y
+val ExtendableCustomUIPanelPlugin.y
     get() = customPanel.y
 
-internal val ExtendableCustomUIPanelPlugin.left
+val ExtendableCustomUIPanelPlugin.left
     get() = x
 
-internal val ExtendableCustomUIPanelPlugin.bottom
+val ExtendableCustomUIPanelPlugin.bottom
     get() = y
 
-internal val ExtendableCustomUIPanelPlugin.top
+val ExtendableCustomUIPanelPlugin.top
     get() = y + height
 
-internal val ExtendableCustomUIPanelPlugin.right
+val ExtendableCustomUIPanelPlugin.right
     get() = x + width
 
-internal val ExtendableCustomUIPanelPlugin.centerX
+val ExtendableCustomUIPanelPlugin.centerX
     get() = customPanel.centerX
 
-internal val ExtendableCustomUIPanelPlugin.centerY
+val ExtendableCustomUIPanelPlugin.centerY
     get() = customPanel.centerY
 
-internal val ExtendableCustomUIPanelPlugin.xAlignOffset
+val ExtendableCustomUIPanelPlugin.xAlignOffset
     get() = customPanel.xAlignOffset
 
-internal val ExtendableCustomUIPanelPlugin.yAlignOffset
+val ExtendableCustomUIPanelPlugin.yAlignOffset
     get() = customPanel.yAlignOffset
 
 fun CustomPanelAPI.setPlugin(plugin: CustomUIPanelPlugin) {
