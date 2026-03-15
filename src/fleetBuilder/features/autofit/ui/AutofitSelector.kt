@@ -1,6 +1,5 @@
 package fleetBuilder.features.autofit.ui
 
-import fleetBuilder.otherMods.MagicLib.ReflectionUtilsExtra
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.combat.BoundsAPI
@@ -12,14 +11,15 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
-import com.fs.starfarer.loading.specs.HullVariantSpec
+import fleetBuilder.otherMods.MagicLib.ReflectionUtilsExtra
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
+import fleetBuilder.util.createFleetMember
 import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
-import fleetBuilder.otherMods.starficz.*
 import java.awt.Color
 import kotlin.math.max
 
@@ -353,26 +353,22 @@ internal object AutofitSelector {
         // Main container panel
         val containerPanel = Global.getSettings().createCustom(width, height, null)
 
-        val clonedVariant = variant.clone() as HullVariantSpec
+        val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(variant.createFleetMember()) as UIPanelAPI
+        val boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
 
-        val shipPreview = ReflectionUtilsExtra.instantiate(BoxedUIShipPreview.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
-
-        shipPreview.safeInvoke("setVariant", clonedVariant)
-        shipPreview.safeInvoke("overrideVariant", clonedVariant)
-        shipPreview.safeInvoke("setShowBorder", false)
+        boxedUIShipPreview.uiShipPreview.setSize(width, height)
+        boxedUIShipPreview.setShowBorder(false)
 
         if (!scaleDownSmallerShips)
-            shipPreview.safeInvoke("setScaleDownSmallerShipsMagnitude", 1f)
+            boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(1f)
 
-        shipPreview.safeInvoke("adjustOverlay", 0f, 0f)
-        shipPreview.setSize(width, height)
+        boxedUIShipPreview.adjustOverlay(0f, 0f)
 
         if (showFighters)
-            shipPreview.safeInvoke("setShowFighters", true)
+            boxedUIShipPreview.showFighters = true
 
         if (setSchematicMode)
-            shipPreview.safeInvoke("setSchematicMode", true)
-
+            boxedUIShipPreview.setSchematicMode(true)
 
         //Remove this hard coded scaling code when things scale right properly in the base game.
 
@@ -405,16 +401,16 @@ internal object AutofitSelector {
 
         // Apply config
         if (config.disableScissor) {
-            shipPreview.safeInvoke("setScissor", false)
+            boxedUIShipPreview.setScissor(false)
         }
 
         // Scale and set size
         val scaledWidth = width * config.scaleFactor
         val scaledHeight = height * config.scaleFactor
-        shipPreview.setSize(scaledWidth, scaledHeight)
+        boxedUIShipPreview.uiShipPreview.setSize(scaledWidth, scaledHeight)
 
         // Prepare ship
-        shipPreview.safeInvoke("prepareShip")
+        boxedUIShipPreview.uiShipPreview.safeInvoke("prepareShip")
 
         // Base Y offset from config
         val baseYOffset = config.yOffset

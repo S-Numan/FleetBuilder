@@ -525,6 +525,14 @@ class BoxedUIShipPreview(val uiShipPreview: UIPanelAPI) : BoxedUIElement(uiShipP
         uiShipPreview.invoke("setShowNewBorder", newStyle)
     }
 
+    fun setScissor(value: Boolean) {
+        uiShipPreview.invoke("setScissor", value)
+    }
+
+    fun setSchematicMode(value: Boolean) {
+        uiShipPreview.invoke("setSchematicMode", value)
+    }
+
     var variant
         get() = uiShipPreview.invoke("getVariant") as ShipVariantAPI?
         set(variant) {
