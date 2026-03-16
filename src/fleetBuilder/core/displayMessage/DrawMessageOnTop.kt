@@ -8,12 +8,12 @@ import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import fleetBuilder.otherMods.starficz.lastComponent
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.TimeKeeper
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import org.magiclib.kotlin.setAlpha
-import fleetBuilder.otherMods.starficz.lastComponent
 import java.awt.Color
 
 internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin() {
@@ -83,6 +83,13 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
     override fun advance(amount: Float) {
         stateChangeChecker()
         if (curState != GameState.CAMPAIGN) return
+
+        if (justLoadedGame > 0) {
+            justLoadedGame--
+            if (justLoadedGame == 0)
+                CampaignMessageRenderer()
+        }
+
         advanceAmount(TimeKeeper.campaignDelta(amount))
     }
 
@@ -106,11 +113,6 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
                 fadingOut = false
             }
             curState = state
-        }
-        if (justLoadedGame > 0 && curState == GameState.CAMPAIGN) {
-            justLoadedGame--
-            if (justLoadedGame == 0)
-                CampaignMessageRenderer()
         }
     }
 

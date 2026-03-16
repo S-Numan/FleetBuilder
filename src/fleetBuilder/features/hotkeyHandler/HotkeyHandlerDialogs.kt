@@ -34,6 +34,7 @@ import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
+import org.lwjgl.input.Keyboard
 import java.awt.Color
 
 
@@ -49,7 +50,7 @@ object HotkeyHandlerDialogs {
 
         val dialog = DialogPanel(FBTxt.txt("paste_fleet_into_player_fleet"))
 
-        dialog.onCreateUI(500f, 380f) { ui ->
+        dialog.show(500f, 380f) { ui ->
 
             val memberCount = validatedData.members.size
             val officerCount = validatedData.members.count { it.personData != null }
@@ -209,11 +210,12 @@ object HotkeyHandlerDialogs {
     fun createDevModeDialog() {
         val dialog = DialogPanel(FBTxt.txt("dev_options_title"))
 
-        dialog.onCreateUI(width = 500f, height = 200f) { ui ->
+        dialog.show(width = 500f, height = 200f) { ui ->
             val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
-
-            toggleDev.onClick {
-                Global.getSettings().isDevMode = toggleDev.isChecked
+            toggleDev.onClick { Global.getSettings().isDevMode = toggleDev.isChecked }
+            toggleDev.setShortcut(Keyboard.KEY_D, true)
+            toggleDev.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 100f) { tooltip ->
+                tooltip.addPara("Press D to toggle", 0f)
             }
 
             ui.addButton(
@@ -246,7 +248,7 @@ object HotkeyHandlerDialogs {
     ) {
         val dialog = DialogPanel(FBTxt.txt("spawn_fleet_in_campaign"))
 
-        dialog.onCreateUI(500f, 350f) { ui ->
+        dialog.show(500f, 350f) { ui ->
 
             val memberCount = validatedData.members.size
             val officerCount = validatedData.members.count { it.personData != null }
@@ -341,7 +343,7 @@ object HotkeyHandlerDialogs {
 
         val buttonHeight = 24f
 
-        initialDialog.onCreateUI(width, height) { ui ->
+        initialDialog.show(width, height) { ui ->
             ui.addPara(FBTxt.txt("max_level"), 0f)
             val maxLevel = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
@@ -417,7 +419,7 @@ object HotkeyHandlerDialogs {
 
         val dialog = DialogPanel(headerTitle = FBTxt.txt("import_loadout_title"))
 
-        dialog.onCreateUI(375f, 490f) { ui ->
+        dialog.show(375f, 490f) { ui ->
 
             ui.setParaFont(Fonts.ORBITRON_24AABOLD)
             ui.addPara(
@@ -488,7 +490,7 @@ object HotkeyHandlerDialogs {
     fun createSaveTransferDialog() {
         val dialog = DialogPanel(headerTitle = FBTxt.txt("save_transfer"))
 
-        dialog.onCreateUI(300f, 384f) { ui ->
+        dialog.show(300f, 384f) { ui ->
 
             val buttonHeight = 24f
 

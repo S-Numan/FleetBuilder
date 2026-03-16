@@ -6,17 +6,17 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.customPanel.common.BasePanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 class DialogUtils : BaseEveryFrameCombatPlugin() {
     companion object {
         fun initDialogToShow(
             dialog: BasePanel,
-            width: Float,
-            height: Float,
+            width: Float = 800f,
+            height: Float = 800f,
             parent: UIPanelAPI? = null,
             xOffset: Float? = null,
             yOffset: Float? = null
@@ -25,7 +25,10 @@ class DialogUtils : BaseEveryFrameCombatPlugin() {
             if (gameState == null) {
                 prependDialogToShow(dialog, width, height) // To create a dialog before the game has fully booted up, so it is shown on start
             } else {
-                val parent = parent ?: ReflectionMisc.getScreenPanel() ?: return
+                val parent = parent ?: ReflectionMisc.getScreenPanel() ?: run {
+                    DisplayMessage.showError("Failed to get Screen Panel")
+                    return
+                }
 
                 dialog.init(
                     width = width,

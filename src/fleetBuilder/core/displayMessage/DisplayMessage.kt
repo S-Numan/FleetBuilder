@@ -137,7 +137,7 @@ object DisplayMessage {
         val dialog = DialogPanel(headerTitle = title)
         dialog.allowHotkeyQuit = false
 
-        dialog.onCreateUI(800f, 400f) { ui ->
+        dialog.show(width = 800f, height = 400f) { ui ->
             ui.addPara(message, messageColor, 0f)
 
             dialog.setupConfirmCancelSection(alignment = Alignment.MID, addCancelButton = false)

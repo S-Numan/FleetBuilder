@@ -1,15 +1,14 @@
 package fleetBuilder.ui.customPanel.common
 
-import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.FBMisc.endStencil
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.FBMisc.startStencilWithXPad
 import fleetBuilder.util.FBMisc.startStencilWithYPad
-import fleetBuilder.otherMods.starficz.*
 import java.awt.Color
 
 open class ComposablePanel : BasePanel() {
@@ -27,27 +26,9 @@ open class ComposablePanel : BasePanel() {
     private var createUICallback: (() -> Unit)? = null
 
     /**
-     * Create a UI panel with a callback. The callback is responsible for populating the panel with UI elements.
-     * This is a more advanced method of creating a UI panel and is recommended for more complex tooltips.
-     *
-     * The callback will be executed once the panel is ready to be populated with UI elements. If the panel
-     * opens with an animation, the callback will be invoked after the animation has finished.
-     *
-     * @param width The width of the panel.
-     * @param height The height of the panel.
-     * @param parent The parent panel. Defaults to screenPanel.
-     * @param xOffset The x offset from the parent. Defaults to a value which would center this panel within the parent.
-     * @param yOffset The y offset from the parent. Defaults to a value which would center this panel within the parent.
-     * @param callback The callback used to populate the panel with UI elements. This is executed when the panel
-     * is fully ready
+     * Builds the UI for this panel. Occurs after open animation finish, if animation is present.
      */
-    @JvmOverloads
-    open fun onCreateUI(
-        width: Float = 800f,
-        height: Float = 800f,
-        parent: UIPanelAPI? = null,
-        xOffset: Float? = null,
-        yOffset: Float? = null,
+    open fun buildUI(
         callback: (TooltipMakerAPI) -> Unit
     ) {
         // store a callback
@@ -63,21 +44,60 @@ open class ComposablePanel : BasePanel() {
             panel.addUIElement(tooltip)
             tooltip!!.position.inTL(getXTooltipPadding(), getYTooltipPadding())
         }
-
-        // Calls init, but in a fancy manner to allow caching the tooltip and making it later in case it's too early for the game to show a panel.
-        DialogUtils.initDialogToShow(this, xOffset = xOffset, yOffset = yOffset, width = width, height = height, parent = parent)
     }
 
-    override fun init(
-        width: Float,
-        height: Float,
-        xOffset: Float,
-        yOffset: Float,
-        parent: UIPanelAPI?
-    ): CustomPanelAPI {
-        super.init(width = width, height = height, xOffset = xOffset, yOffset = yOffset, parent = parent)
-        initBorderSprites()
-        return panel
+    /**
+     * Shows this panel.
+     *
+     * @param width The width of the dialog. Defaults to 800.
+     * @param height The height of the dialog. Defaults to 800.
+     * @param parent The parent panel of the dialog. Defaults to null. If null, automatically gets the screen panel.
+     * @param xOffset The x offset of the dialog. Defaults to null. If null, automatically positions this panel to the center of its parent.
+     * @param yOffset The y offset of the dialog. Defaults to null. If null, automatically positions this panel to the center of its parent.
+     */
+    @JvmOverloads
+    fun show(
+        width: Float = 800f,
+        height: Float = 800f,
+        parent: UIPanelAPI? = null,
+        xOffset: Float? = null,
+        yOffset: Float? = null
+    ) {
+        // Calls init, but in a fancy manner to allow caching the tooltip and making it later in case it's too early for the game to show a panel.
+        DialogUtils.initDialogToShow(
+            this,
+            width = width,
+            height = height,
+            parent = parent,
+            xOffset = xOffset,
+            yOffset = yOffset,
+        )
+    }
+
+    /**
+     * Builds the panel UI and displays it as a dialog.
+     *
+     * The [callback] is invoked when the panel is ready to create its UI,
+     * with a [TooltipMakerAPI] for adding elements. If this panel has an opening animation, this will call when the animation is over rather than right away.
+     *
+     * @param width The width of the dialog. Defaults to 800.
+     * @param height The height of the dialog. Defaults to 800.
+     * @param parent The parent panel of the dialog. Defaults to null. If null, automatically gets the screen panel.
+     * @param xOffset The x offset of the dialog. Defaults to null. If null, automatically positions this panel to the center of its parent.
+     * @param yOffset The y offset of the dialog. Defaults to null. If null, automatically positions this panel to the center of its parent.
+     * @param callback Lambda used to build the panel UI.
+     */
+    fun show(
+        width: Float = 800f,
+        height: Float = 800f,
+        parent: UIPanelAPI? = null,
+        xOffset: Float? = null,
+        yOffset: Float? = null,
+        callback: (TooltipMakerAPI) -> Unit
+        //ui: TooltipMakerAPI.() -> Unit
+    ) {
+        buildUI(callback)
+        show(width = width, height = height, parent = parent, xOffset = xOffset, yOffset = yOffset)
     }
 
     open var dialogStyle: Boolean = false
@@ -85,14 +105,17 @@ open class ComposablePanel : BasePanel() {
     open var darkenBackground: Boolean = false
     open var darkenBackgroundAlphaMult: Float = 0.6f
 
-    open val bot = sprite("ui", "panel00_bot")
-    open val top = sprite("ui", "panel00_top")
-    open val left = sprite("ui", "panel00_left")
-    open val right = sprite("ui", "panel00_right")
-    open val topLeft = sprite("ui", "panel00_top_left")
-    open val topRight = sprite("ui", "panel00_top_right")
-    open val bottomLeft = sprite("ui", "panel00_bot_left")
-    open val bottomRight = sprite("ui", "panel00_bot_right")
+    protected fun borderSprite(id: String) =
+        lazy { sprite("ui", id).apply { setSize(16f, 16f) } }
+
+    open val bot by borderSprite("panel00_bot")
+    open val top by borderSprite("panel00_top")
+    open val left by borderSprite("panel00_left")
+    open val right by borderSprite("panel00_right")
+    open val topLeft by borderSprite("panel00_top_left")
+    open val topRight by borderSprite("panel00_top_right")
+    open val bottomLeft by borderSprite("panel00_bot_left")
+    open val bottomRight by borderSprite("panel00_bot_right")
 
     override fun renderBelow(alphaMult: Float) {
         if (darkenBackground)
@@ -114,41 +137,30 @@ open class ComposablePanel : BasePanel() {
         }
     }
 
-    private fun initBorderSprites() {
-        listOf(top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight)
-            .forEach { it.setSize(16f, 16f) }
-    }
-
     fun renderBorders() {
         val leftX = panel.position.x + 16
 
-        top.alphaMult = alpha
-        bot.alphaMult = alpha
-        topLeft.alphaMult = alpha
-        topRight.alphaMult = alpha
-        bottomLeft.alphaMult = alpha
-        bottomRight.alphaMult = alpha
-        left.alphaMult = alpha
-        right.alphaMult = alpha
+        listOf(top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight)
+            .forEach { it.alphaMult = alpha }
 
         //val rightX = panel.getPosition().getX() + panel.getPosition().getWidth() - 16
         val botX = panel.y + 16
         startStencilWithXPad(panel, 8f)
-        run {
-            var i = leftX
-            while (i <= panel.x + panel.width) {
-                top.renderAtCenter(i, panel.y + panel.height)
-                bot.renderAtCenter(i, panel.y)
-                i += top.width
-            }
+
+        var i = leftX
+        while (i <= panel.x + panel.width) {
+            top.renderAtCenter(i, panel.y + panel.height)
+            bot.renderAtCenter(i, panel.y)
+            i += top.width
         }
+
         endStencil()
         startStencilWithYPad(panel, 8f)
-        var i = botX
-        while (i <= panel.y + panel.height) {
-            left.renderAtCenter(panel.x, i)
-            right.renderAtCenter(panel.x + panel.width, i)
-            i += top.width
+        var q = botX
+        while (q <= panel.y + panel.height) {
+            left.renderAtCenter(panel.x, q)
+            right.renderAtCenter(panel.x + panel.width, q)
+            q += top.width
         }
         endStencil()
         topLeft.renderAtCenter(leftX - 16, panel.y + panel.height)

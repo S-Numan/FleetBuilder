@@ -302,7 +302,7 @@ internal class CargoAutoManageUIPlugin(
         panel.addUIElement(scrollerTooltip).inTL(dialog.getXTooltipPadding(), 0f)
 
 
-        dialog.onCreateUI(width, height) { ui ->
+        dialog.show(width, height) { ui ->
             dialog.addCloseButton()
 
             val buttonHeight = 24f
@@ -311,7 +311,7 @@ internal class CargoAutoManageUIPlugin(
 
                 val areYouSureDialog = DialogPanel(headerTitle = "Are you sure?")
 
-                areYouSureDialog.onCreateUI(380f, 80f) { _ ->
+                areYouSureDialog.show(380f, 80f) { _ ->
                     areYouSureDialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
                 }
 
