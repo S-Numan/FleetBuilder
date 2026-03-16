@@ -87,6 +87,7 @@ open class ComposablePanel : BasePanel() {
      * @param yOffset The y offset of the dialog. Defaults to null. If null, automatically positions this panel to the center of its parent.
      * @param callback Lambda used to build the panel UI.
      */
+    @JvmOverloads
     fun show(
         width: Float = 800f,
         height: Float = 800f,
