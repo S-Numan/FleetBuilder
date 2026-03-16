@@ -93,7 +93,7 @@ object JSONMember {
         if (data.cr != null)
             memberJson.put("cr", data.cr.roundToDecimals(2))
 
-        if (data.hullFraction != null)
+        if (data.hullFraction != null && data.hullFraction != 1f)
             memberJson.put("hullFraction", data.hullFraction.roundToDecimals(2))
 
         memberJson.put("name", data.shipName)

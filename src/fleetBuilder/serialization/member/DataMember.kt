@@ -121,6 +121,7 @@ object DataMember {
         if (data.hullFraction != null && data.hullFraction < 1f) {
             member.status.disable()
             member.status.repairDisabledABit()
+            member.status.repairFraction(data.hullFraction);
             member.status.hullFraction = data.hullFraction
             /*for (i in 1..<member.status.numStatuses) {
                 val rand = Math.random()
@@ -131,7 +132,6 @@ object DataMember {
                     member.status.setHullFraction(i, data.hullFraction)
                 }
             }*/
-            //member.status.repairFraction(data.hullFraction);
         }
 
         // Officer

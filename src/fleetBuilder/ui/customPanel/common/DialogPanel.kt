@@ -3,10 +3,10 @@ package fleetBuilder.ui.customPanel.common
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.UIUtils.drawRectangleFilledForTooltip
 import fleetBuilder.util.FBTxt
 import org.lwjgl.input.Keyboard
-import fleetBuilder.otherMods.starficz.onClick
 import java.awt.Color
 
 open class DialogPanel(
@@ -93,9 +93,9 @@ open class DialogPanel(
 
             confirmButton = button
             confirmButton!!.onClick {
+                applyConfirmScript()
                 if (doesConfirmDismiss)
                     dismiss()
-                applyConfirmScript()
             }
         }
         if (addCancelButton) {
@@ -105,9 +105,9 @@ open class DialogPanel(
 
             cancelButton = button
             cancelButton!!.onClick {
+                applyCancelScript()
                 if (doesCancelDismiss)
                     dismiss()
-                applyCancelScript()
             }
         }
 

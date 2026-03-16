@@ -18,6 +18,10 @@ import fleetBuilder.core.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
 import fleetBuilder.features.autofit.ui.AutofitSpec
+import fleetBuilder.otherMods.starficz.addTooltip
+import fleetBuilder.otherMods.starficz.height
+import fleetBuilder.otherMods.starficz.onClick
+import fleetBuilder.otherMods.starficz.width
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.serialization.fleet.DataFleet
@@ -30,10 +34,6 @@ import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
-import fleetBuilder.otherMods.starficz.addTooltip
-import fleetBuilder.otherMods.starficz.height
-import fleetBuilder.otherMods.starficz.onClick
-import fleetBuilder.otherMods.starficz.width
 import java.awt.Color
 
 
@@ -287,7 +287,6 @@ object HotkeyHandlerDialogs {
             dialog.setupConfirmCancelSection(confirmText = FBTxt.txt("spawn_fleet"))
 
             dialog.onConfirm {
-
                 val settings = FleetSettings()
                 settings.includeAggression = setAggressionDoctrine.isChecked
                 settings.memberSettings.includeOfficer = includeOfficers.isChecked
@@ -309,9 +308,13 @@ object HotkeyHandlerDialogs {
                     FleetUtils.fullFleetRepair(fleet.fleetData)
 
                 sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
-                Global.getSector().campaignUI.showInteractionDialog(fleet)
                 if (fightToTheLast.isChecked)
                     fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
+
+                dialog.closeDuration = 0f
+                dialog.onExit {
+                    Global.getSector().campaignUI.showInteractionDialog(fleet)
+                }
 
                 DisplayMessage.showMessage(FBTxt.txt("clipboard_fleet_added_to_campaign"))
             }

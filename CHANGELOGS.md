@@ -23,6 +23,7 @@
 - Externalized more strings
 - Reported errors by this mod now show their error through custom rendering rather than relying on the campaign or combat messages.
 - PopUp UI now opens from the center with a better animation.
+- Members now roughly save and load their current hull and armor state, along with CR.
 ### Bugfixes
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason

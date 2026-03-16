@@ -5,12 +5,12 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.UIUtils.easeCubic
 import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
-import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.otherMods.starficz.height
 
 open class ModalPanel : ComposablePanel() {
 
@@ -68,6 +68,9 @@ open class ModalPanel : ComposablePanel() {
 
         if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
             Global.getCombatEngine().isPaused = true
+
+        if (openDuration == 0f)
+            setMaxSize()
 
         return panel
     }
@@ -135,6 +138,9 @@ open class ModalPanel : ComposablePanel() {
         panel.getChildrenCopy().forEach {
             panel.removeComponent(it)
         }
+
+        if (closeDuration == 0f)
+            forceDismiss()
     }
 
     protected fun updatePanelVisuals(progress: Float) {
