@@ -312,7 +312,7 @@ internal class CargoAutoManageUIPlugin(
                 val areYouSureDialog = DialogPanel(headerTitle = "Are you sure?")
 
                 areYouSureDialog.show(380f, 80f) { _ ->
-                    areYouSureDialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
+                    areYouSureDialog.addActionButtons(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
                 }
 
                 areYouSureDialog.onConfirm {

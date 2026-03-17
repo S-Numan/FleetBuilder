@@ -140,7 +140,7 @@ object DisplayMessage {
         dialog.show(width = 800f, height = 400f) { ui ->
             ui.addPara(message, messageColor, 0f)
 
-            dialog.setupConfirmCancelSection(alignment = Alignment.MID, addCancelButton = false)
+            dialog.addActionButtons(alignment = Alignment.MID, addCancelButton = false)
         }
     }
 

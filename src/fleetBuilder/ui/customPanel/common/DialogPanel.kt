@@ -37,10 +37,6 @@ open class DialogPanel(
             headerTooltip?.let { drawRectangleFilledForTooltip(it, 1f, Global.getSector().playerFaction.darkUIColor.darker()) }
     }
 
-    override fun advance(amount: Float) {
-        super.advance(amount)
-    }
-
     private var confirmCallback: (() -> Unit)? = null
     private var cancelCallback: (() -> Unit)? = null
 
@@ -52,16 +48,16 @@ open class DialogPanel(
         cancelCallback = callback
     }
 
-    open fun applyConfirmScript() {
+    protected open fun applyConfirmScript() {
         confirmCallback?.invoke()
     }
 
-    open fun applyCancelScript() {
+    protected open fun applyCancelScript() {
         cancelCallback?.invoke()
     }
 
     @JvmOverloads
-    fun setupConfirmCancelSection(
+    fun addActionButtons(
         addConfirmButton: Boolean = true,
         addCancelButton: Boolean = true,
         alignment: Alignment = Alignment.RMID,
@@ -149,7 +145,7 @@ open class DialogPanel(
     }
 
     var headerTooltip: TooltipMakerAPI? = null
-    fun createHeader() {
+    protected fun createHeader() {
         if (headerTitle != null) {
             headerTooltip = panel.createUIElement(panel.position.width - (xTooltipPad * 3f), 20f, false)
             headerTooltip!!.setParaFont(Fonts.ORBITRON_20AABOLD)

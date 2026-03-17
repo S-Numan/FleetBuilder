@@ -9,13 +9,13 @@ import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.FBMisc.renderTiledTexture
-import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.width
 import fleetBuilder.otherMods.starficz.x
 import fleetBuilder.otherMods.starficz.y
+import fleetBuilder.ui.UIUtils
+import fleetBuilder.util.FBMisc.renderTiledTexture
+import fleetBuilder.util.ReflectionMisc
 
 //Copied and heavily modified from AshLib
 
@@ -107,7 +107,7 @@ open class BasePanel : CustomUIPanelPlugin {
 
     private var exitCallback: (() -> Unit)? = null
 
-    open fun applyExitScript() {
+    protected open fun applyExitScript() {
         exitCallback?.invoke()
         exitCallback = null
     }

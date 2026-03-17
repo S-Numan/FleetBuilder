@@ -286,7 +286,7 @@ object HotkeyHandlerDialogs {
             val repairAndSetMaxCR = ui.addToggle(FBTxt.txt("repair_and_set_max_cr"), true)
             val excludeMissingShips = ui.addToggle(FBTxt.txt("exclude_ships_from_missing_mods"), true)
 
-            dialog.setupConfirmCancelSection(confirmText = FBTxt.txt("spawn_fleet"))
+            dialog.addActionButtons(confirmText = FBTxt.txt("spawn_fleet"))
 
             dialog.onConfirm {
                 val settings = FleetSettings()
@@ -375,7 +375,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            initialDialog.setupConfirmCancelSection(confirmText = FBTxt.txt("create"))
+            initialDialog.addActionButtons(confirmText = FBTxt.txt("create"))
 
 
             initialDialog.onConfirm {
@@ -447,7 +447,7 @@ object HotkeyHandlerDialogs {
             tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
             ui.addCustom(tempPanel, 0f)
 
-            dialog.setupConfirmCancelSection(confirmText = FBTxt.txt("import"), alignment = Alignment.MID)
+            dialog.addActionButtons(confirmText = FBTxt.txt("import"), alignment = Alignment.MID)
 
             dialog.confirmButton?.addTooltip(TooltipMakerAPI.TooltipLocation.ABOVE, 600f) { tooltip ->
                 tooltip.addPara(

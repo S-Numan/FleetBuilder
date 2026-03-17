@@ -22,7 +22,7 @@
 - Improved missing element handling to now more frequently report what mods were used when pasting a variant/person/fleet with missing elements
 - Externalized more strings
 - Reported errors by this mod now show their error through custom rendering rather than relying on the campaign or combat messages.
-- PopUp UI now opens from the center with a better animation.
+- Popups now opens from the middle vertically with a better animation.
 - Members now roughly save and load their current hull and armor state, along with CR.
 ### Bugfixes
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
@@ -38,7 +38,7 @@
 - Finally figured out how to center the autofit flux tooltips properly. Horray!
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
-- A small overhaul to the PopUp UI. It will be a little different now in many ways.
+- A small overhaul to the Popups. It will be a little different now in many ways.
 - The versioning should be 2.0.0, however, as that causes a red "mod is unlikely to load correctly" on save game I'll only make that version change on the next starsector update.
 
 ## 1.27.1

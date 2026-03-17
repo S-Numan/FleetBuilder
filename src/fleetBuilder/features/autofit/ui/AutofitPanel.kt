@@ -628,7 +628,7 @@ internal object AutofitPanel {
                     val dialog = DialogPanel(headerTitle = "Use Story Points to Apply SMods")
                     dialog.show(450f, 110f) { ui ->
                         ui.addPara("This will consume ${sModsToApply.size} Story points and give ${bonusXpToGrant.toInt()} bonus xp", 0f).setAlignment(Alignment.MID)
-                        dialog.setupConfirmCancelSection(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
+                        dialog.addActionButtons(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
                     }
                     dialog.onConfirm { ->
                         applyVariant(selectorPlugin.autofitSpec, true)
