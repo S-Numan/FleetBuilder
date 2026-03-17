@@ -262,16 +262,8 @@ internal object AutofitApplier {
         to.clearTags()
         to.nonBuiltInWeaponSlots.clear()
         to.nonBuiltInWings.clear()
-
-        //Some things really don't want to go easily. Let's be extra sure.
-        //to.clearHullMods()
-        //to.sMods.clear()
-        //to.permaMods.clear()
-        //to.sModdedBuiltIns.clear()
-        //to.suppressedMods.clear()
+        
         to.hullMods.toList().forEach { mod ->
-            //if (to.hullSpec.builtInMods.contains(mod))
-            //    return@forEach
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
             if (dontForceClearDMods && LookupUtil.getAllDMods().contains(mod))
