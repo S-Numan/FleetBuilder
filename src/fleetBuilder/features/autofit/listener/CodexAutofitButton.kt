@@ -12,12 +12,19 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitPanel
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.addShortcutNoShow
 import fleetBuilder.util.createHullVariant
-import fleetBuilder.otherMods.starficz.*
 
 internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin() {
+
+    companion object {
+        var param: Any? = null
+        var openAutofitButton: ButtonAPI? = null
+        var autofitPanel: UIPanelAPI? = null
+    }
+
     override fun isDone(): Boolean = false
 
     override fun runWhilePaused(): Boolean = true
@@ -34,12 +41,9 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
             onAdvance()
     }
 
-    var param: Any? = null
-    var openAutofitButton: ButtonAPI? = null
-    var autofitPanel: UIPanelAPI? = null
     fun onAdvance() {
         if (!ReflectionMisc.isCodexOpen()) {
-            this.param = null
+            Companion.param = null
             openAutofitButton = null
             autofitPanel = null
             return
@@ -51,7 +55,7 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
         }
         val param = ReflectionMisc.getCodexEntryParam(codex)
 
-        if (this.param === param)
+        if (Companion.param === param)
             return
         // Param change detected (may also occur on codex opening)
 
@@ -105,6 +109,6 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
             }
         }
 
-        this.param = param
+        Companion.param = param
     }
 }

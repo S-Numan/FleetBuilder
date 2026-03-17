@@ -23,6 +23,7 @@ import fleetBuilder.core.shipDirectory.ShipDirectoryService.deleteLoadoutVariant
 import fleetBuilder.core.shipDirectory.ShipDirectoryService.getCoreAutofitSpecsForShip
 import fleetBuilder.core.shipDirectory.ShipDirectoryService.getLoadoutAutofitSpecsForShip
 import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.variant.DataVariant.copyVariant
@@ -31,6 +32,8 @@ import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
+import fleetBuilder.util.FBTxt.txt
+import fleetBuilder.util.FBTxt.txtPlural
 import fleetBuilder.util.LookupUtil.getAllDMods
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
@@ -42,7 +45,6 @@ import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
-import fleetBuilder.otherMods.starficz.*
 import java.awt.Color
 
 
@@ -334,11 +336,10 @@ internal object AutofitPanel {
                     removeSelectorPanelButton(selectorPanel, autofitSpec) // Allow it to be removed
             } else {
                 if (selectorPlugin.addXIfAutofitSpecNull) {
-                    selectorPanel.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 780f) { tooltip ->
+                    selectorPanel.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 750f) { tooltip ->
                         tooltip.addPara(
-                            "This slot is reserved for goal variants." +
-                                    "\nIf a game or mod update adds or removes goal variants, the slot positioning would be pushed around and thus messed up. This prevents that." +
-                                    "\n\nThis reservation can be disabled in the LunaLib settings.", 0f
+                            txt("goal_variant_reserved_tooltip"),
+                            0f
                         )
                     }
                 }
@@ -397,7 +398,7 @@ internal object AutofitPanel {
             with(containerTextElement) {
                 position.inTL(0f, topPad)
                 setTitleOrbitronVeryLarge()
-                val label = addTitle("Current Variant")
+                val label = addTitle(txt("current_variant"))
                 label.position.inTL((baseVariantPanel.width - label.computeTextWidth(label.text)) / 2f, 0f)
             }
 
@@ -466,7 +467,7 @@ internal object AutofitPanel {
                 true
             )
 
-            baseVariantPanel.addPara("Click and drag to an empty slot to save", yPad = baseVariantSelectorPanel.height + descriptorHeight + 2f)
+            baseVariantPanel.addPara(txt("click_and_drag_to_empty_slot_to_save"), yPad = baseVariantSelectorPanel.height + descriptorHeight + 2f)
 
             // Position just below the selector
             toggleButtonsElement.position.inTL(2f, descriptorHeight + baseVariantSelectorPanel.height + 4f + 20f)
@@ -513,33 +514,33 @@ internal object AutofitPanel {
 
             if (Global.getCurrentState() != GameState.TITLE) {
                 cargoButton = addToggleButton(
-                    label = "Use ordnance from cargo",
+                    label = txt("toggle_use_cargo_label"),
                     memoryKey = "\$FBA_useCargo",
-                    tooltipText = "Use weapons and fighter LPCs from your fleet's cargo holds."
+                    tooltipText = txt("toggle_use_cargo_tooltip")
                 )
 
                 storageButton = addToggleButton(
-                    label = "Use ordnance from storage",
+                    label = txt("toggle_use_storage_label"),
                     memoryKey = "\$FBA_useStorage",
-                    tooltipText = "Use weapons and fighter LPCs from your local storage facilities."
+                    tooltipText = txt("toggle_use_storage_tooltip")
                 )
 
                 marketButton = addToggleButton(
-                    label = "Buy ordnance from market",
+                    label = txt("toggle_use_market_label"),
                     memoryKey = "\$FBA_useMarket",
-                    tooltipText = "Buy weapons and fighter LPCs from market, if docked at one.\n\nOrdnance from your cargo will be preferred"
+                    tooltipText = txt("toggle_use_market_tooltip")
                 )
 
                 blackMarketButton = addToggleButton(
-                    label = "Allow black market purchases",
+                    label = txt("toggle_use_black_market_label"),
                     memoryKey = "\$FBA_useBlackMarket",
-                    tooltipText = "Buy weapons and fighter LPCs from the black market.\n\nNon-black-market options will be preferred if the alternatives are of equal quality"
+                    tooltipText = txt("toggle_use_black_market_tooltip")
                 )
 
                 applySModsButton = addToggleButton(
-                    label = "Apply SMods",
+                    label = txt("toggle_apply_smods_label"),
                     memoryKey = "\$FBA_applySMods",
-                    tooltipText = "Spend story points to apply SMods to your ship.\n\nIf S-mods are installed, the autofit cannot be undone.",
+                    tooltipText = txt("toggle_apply_smods_tooltip"),
                     default = false
                 )
             }
@@ -625,10 +626,23 @@ internal object AutofitPanel {
                     if (sModsToApply.isEmpty())
                         return@onClickRelease
 
-                    val dialog = DialogPanel(headerTitle = "Use Story Points to Apply SMods")
+                    val dialog = DialogPanel(headerTitle = txt("dialog_apply_smods_title"))
                     dialog.show(450f, 110f) { ui ->
-                        ui.addPara("This will consume ${sModsToApply.size} Story points and give ${bonusXpToGrant.toInt()} bonus xp", 0f).setAlignment(Alignment.MID)
-                        dialog.addActionButtons(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
+                        ui.addPara(
+                            txtPlural(
+                                "dialog_apply_smods_desc",
+                                sModsToApply.size,
+                                sModsToApply.size,
+                                bonusXpToGrant.toInt()
+                            ),
+                            0f
+                        ).setAlignment(Alignment.MID)
+
+                        dialog.addActionButtons(
+                            confirmText = txt("yes"),
+                            cancelText = txt("no"),
+                            alignment = Alignment.MID
+                        )
                     }
                     dialog.onConfirm { ->
                         applyVariant(selectorPlugin.autofitSpec, true)
@@ -649,11 +663,11 @@ internal object AutofitPanel {
 
                 if (selectorPlugin.autofitSpec != null) {
                     if (selectorPlugin.autofitSpec !== autofitPlugin.draggedAutofitSpec)
-                        DisplayMessage.showMessage("Slot already occupied", Color.YELLOW)
+                        DisplayMessage.showMessage(txt("slot_already_occupied"), Color.YELLOW)
                     return@onClickReleaseNoInitClick
                 }
                 if (selectorPlugin.addXIfAutofitSpecNull) {
-                    DisplayMessage.showMessage("Slot is reserved. Hover over the slot for more details.", Color.YELLOW)
+                    DisplayMessage.showMessage(txt("slot_is_reserved"), Color.YELLOW)
                     return@onClickReleaseNoInitClick
                 }
                 //Slot does not have an autofitSpec, and an autofitSpec is being dragged.
@@ -970,7 +984,7 @@ internal object AutofitPanel {
         val spaces = "                    "
 
         selectorPanel.addTooltip(location, width, margin) { tooltip ->
-            tooltip.addTitle(variant.displayName + " Variant")
+            tooltip.addTitle(variant.displayName + " " + txt("variant"))
 
             var weaponsWithSize = mutableMapOf<String, Pair<Int, WeaponAPI.WeaponSize>>()
             for (slot in variant.hullSpec.builtInWeapons) {
@@ -1033,7 +1047,7 @@ internal object AutofitPanel {
                 _wings.merge(wingName, 1, Int::plus)
             }
 
-            tooltip.addPara("Armaments:", 10f)
+            tooltip.addPara(txt("tooltip_armaments_header"), 10f)
             for ((weapon, count) in sortedBuiltInWeapons) {
                 tooltip.addPara(
                     "$spaces%s $weapon %s",
@@ -1048,7 +1062,7 @@ internal object AutofitPanel {
             }
 
             if (_wings.isNotEmpty() || _builtinwings.isNotEmpty()) {
-                tooltip.addPara("Wings:", 2f)
+                tooltip.addPara(txt("tooltip_wings_header"), 2f)
 
                 for ((wing, count) in _builtinwings) {
                     tooltip.addPara(
@@ -1093,17 +1107,17 @@ internal object AutofitPanel {
                     } else if (!variant.suppressedMods.contains(mod.id) && !mod.isHiddenEverywhere) {
                         builtIns += "$name (B)"
                     } else {
-                        hiddenMods += "$name (Hidden) (B)"
+                        hiddenMods += "$name ${txt("tag_hidden")} (B)"
                     }
                     continue
                 }
 
                 if (mod.isHiddenEverywhere) {
-                    hiddenMods += "$name (Hidden)"
+                    hiddenMods += "$name " + txt("tag_hidden")
                     continue
                 }
                 if (variant.suppressedMods.contains(mod.id)) {
-                    hiddenMods += "$name (Suppressed)"
+                    hiddenMods += "$name " + txt("tag_suppressed")
                     continue
                 }
 
@@ -1130,7 +1144,7 @@ internal object AutofitPanel {
             }
 
             // Add header
-            tooltip.addPara("Hull Mods:", 2f)
+            tooltip.addPara(txt("tooltip_hullmods_header"), 2f)
 
             fun addModLines(list: List<String>) {
                 for (line in list) {
@@ -1201,23 +1215,23 @@ internal object AutofitPanel {
                 variant.numFluxCapacitors.toString(),
                 Alignment.LMID,
                 Misc.getTextColor(),
-                "flux capacitors"
+                txt("tooltip_flux_capacitors")
             )
+
             tooltip.addRow(
                 Alignment.RMID,
                 Misc.getHighlightColor(),
                 variant.numFluxVents.toString(),
                 Alignment.LMID,
                 Misc.getTextColor(),
-                "flux vents"
+                txt("tooltip_flux_vents")
             )
 
             tooltip.addTable("", 0, 12f)
 
-            tooltip.addPara("Hold CTRL and click to copy loadout to clipboard", 24f)
+            tooltip.addPara(txt("tooltip_copy_instruction"), 24f)
 
             if (missingFromVariant != null && missingFromVariant.hasMissing()) {
-
                 val enabledMods = Global.getSettings().modManager.enabledModsCopy
 
                 val missingMods = mutableSetOf<Triple<String, String, String>>()
@@ -1235,26 +1249,26 @@ internal object AutofitPanel {
                 }
 
                 if (missingMods.isNotEmpty()) {
-                    tooltip.addPara("Required Mods:", 16f)
+                    tooltip.addPara(txt("tooltip_required_mods_header"), 16f)
 
                     for ((modId, modName, modVersion) in missingMods) {
-                        tooltip.addPara("$modName (MISSING)\n       $modId $modVersion", Color.RED, 0f)
+                        tooltip.addPara(txt("tooltip_missing_mod", modName, modId, modVersion), Color.RED, 0f)
                     }
                     for ((modId, modName, modVersion) in haveModsDifVer) {
-                        tooltip.addPara(
-                            "$modName (VERSION DIFFERENCE)\n        $modId $modVersion",
-                            Color.LIGHT_GRAY,
-                            0f
-                        )
+                        tooltip.addPara(txt("tooltip_version_diff_mod", modName, modId, modVersion), Color.LIGHT_GRAY, 0f)
                     }
                     for ((modId, modName, modVersion) in haveModsEqVer) {
-                        tooltip.addPara("$modName (EXACT)\n     $modId $modVersion", 0f)
+                        tooltip.addPara(txt("tooltip_exact_mod", modName, modId, modVersion), 0f)
                     }
                 }
 
-
                 tooltip.addPara(
-                    "Failed to load:\nWeapons: ${missingFromVariant.weaponIds}\nWings: ${missingFromVariant.wingIds}\nHullMods: ${missingFromVariant.hullModIds}",
+                    txt(
+                        "tooltip_failed_to_load",
+                        missingFromVariant.weaponIds,
+                        missingFromVariant.wingIds,
+                        missingFromVariant.hullModIds
+                    ),
                     16f
                 )
             }

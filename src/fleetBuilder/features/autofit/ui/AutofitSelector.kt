@@ -393,7 +393,8 @@ internal object AutofitSelector {
             "pegasus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
             "executor" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
             "invictus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 0f, disableScissor = true),
-            "onslaught" to ShipDisplayConfig(scaleFactor = 1.08f, yOffset = 0f, disableScissor = false)
+            "onslaught" to ShipDisplayConfig(scaleFactor = 1.08f, yOffset = 0f, disableScissor = false),
+            "hammerhead" to ShipDisplayConfig(scaleFactor = 1.00f, yOffset = 4f, disableScissor = false) // If autofit panel is too small, this clips into the top.
         )
 
         // Get config or default

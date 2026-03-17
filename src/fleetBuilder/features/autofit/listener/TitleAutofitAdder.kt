@@ -15,7 +15,9 @@ import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Keyboard
 
 internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
-    var refitTab: UIPanelAPI? = null
+    companion object {
+        var refitTab: UIPanelAPI? = null
+    }
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
         if (Global.getCurrentState() != GameState.TITLE)
@@ -30,11 +32,12 @@ internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
 
         val refitTab = holographicBG.safeInvoke("getCurr") as? UIPanelAPI ?: return
 
-        if (this.refitTab === refitTab)
+        if (Companion.refitTab === refitTab)
             return
 
         val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return
         val bottomLeftPanel = refitPanel.findChildWithMethod("instantiateForSimulation") as? UIPanelAPI ?: return
+
         val autofitButton = bottomLeftPanel.safeInvoke("getManageButton") as? ButtonAPI ?: return
         autofitButton.setShortcut(ModSettings.autofitMenuHotkey, false)
 
@@ -48,6 +51,6 @@ internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
             }
         }
 
-        this.refitTab = refitTab
+        Companion.refitTab = refitTab
     }
 }

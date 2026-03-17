@@ -1,0 +1,18 @@
+{
+    "FB_NONE":{
+        "sounds":[
+            {"file":"sounds/sfx_interface/ui_button_pressed.ogg","pitch":1.0,"volume":0.0},
+        ],
+    },
+    "FB_ui_char_decrease_skill":{
+        "sounds":[
+            {"file":"sounds/sfx_interface/ui_char_decrease_skill.ogg","pitch":1.0,"volume":1},
+        ],
+    },
+    "FB_ui_char_increase_skill":{
+        "sounds":[
+            {"file":"sounds/sfx_interface/ui_char_increase_skill.ogg","pitch":1.0,"volume":1},
+        ],
+    },
+
+}

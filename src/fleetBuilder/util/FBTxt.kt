@@ -19,13 +19,33 @@ object FBTxt {
         return String.format(Global.getSettings().getString(ModSettings.getModID(), id), *args)
     }
 
+    /**
+     * Returns a translated string based on the given base key and count.
+     * The key is suffixed with "_zero", "_one", or "_many" depending on the count.
+     * If args are provided, the translated string is formatted with the args.
+     * If args are not provided, the count is included as the sole arg.
+     * If count is 0 and key "_zero" does not exist, or count is 1 and key "_one" does not exist, fallback to _many.
+     *
+     * @param baseKey the base key to use for translation
+     * @param count the count to determine the correct key suffix
+     * @param args optional arguments to format the translated string with
+     * @return the translated string
+     */
     fun txtPlural(baseKey: String, count: Int, vararg args: Any): String {
-        val key = when (count) {
+        fun pluralKey(count: Int): String = when (count) {
             0 -> "${baseKey}_zero"
             1 -> "${baseKey}_one"
             else -> "${baseKey}_many"
         }
-        return FBTxt.txt(key, count, *args)
+
+        val key = pluralKey(count)
+
+        return runCatching {
+            if (args.isEmpty()) FBTxt.txt(key, count) else FBTxt.txt(key, *args)
+        }.getOrElse {
+            // fallback to _many if key does not exist
+            if (args.isEmpty()) FBTxt.txt("${baseKey}_many", count) else FBTxt.txt("${baseKey}_many", *args)
+        }
     }
 
 

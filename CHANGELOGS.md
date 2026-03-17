@@ -24,6 +24,7 @@
 - Reported errors by this mod now show their error through custom rendering rather than relying on the campaign or combat messages.
 - Popups now opens from the middle vertically with a better animation.
 - Members now roughly save and load their current hull and armor state, along with CR.
+- Pressing D in the CTRL + SHIFT + D dev menu now toggles dev mode. No mouse needed. The toggle sound was changed too.
 ### Bugfixes
 - Fix crash when opening the dev dialog when the refit screen hullmod adding dialog is open.
 - Fix failed fleet copy when FleetMemberAPI name is null for some reason
@@ -36,6 +37,9 @@
 - Fix officers not storing in different language.
 - Fix accidently using "Include Cargo" instead of "Include Credits" causing confusion.
 - Finally figured out how to center the autofit flux tooltips properly. Horray!
+- No longer hold some things in memory more than needed.
+- Fix mission autofit failing to open if the player opened the mission tab refit screen, campaign, then the mission tab refit screen again.
+- Autofit now applies in the mission tab. If it didn't already.
 ### Technical
 - Major internal rearrangements. Separate functionality is now grouped together, like they should be.
 - A small overhaul to the Popups. It will be a little different now in many ways.

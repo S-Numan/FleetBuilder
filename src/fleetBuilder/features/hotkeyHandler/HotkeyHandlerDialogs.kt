@@ -27,6 +27,7 @@ import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.util.*
 import fleetBuilder.util.FBTxt.txtPlural
@@ -57,9 +58,9 @@ object HotkeyHandlerDialogs {
 
             val text = if (officerCount > 0) {
                 if (officerCount > 1)
-                    txtPlural("pasted_fleet_members_officers", memberCount, officerCount)
+                    txtPlural("pasted_fleet_members_officers", memberCount, memberCount, officerCount)
                 else
-                    txtPlural("pasted_fleet_members_officer", memberCount, officerCount)
+                    txtPlural("pasted_fleet_members_officer", memberCount, memberCount, officerCount)
             } else {
                 txtPlural("pasted_fleet_members_only", memberCount)
             }
@@ -212,9 +213,16 @@ object HotkeyHandlerDialogs {
 
         dialog.show(width = 500f, height = 200f) { ui ->
             val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
-            toggleDev.onClick { Global.getSettings().isDevMode = toggleDev.isChecked }
+            toggleDev.setButtonPressedSound("FB_NONE")
+            toggleDev.onClick {
+                Global.getSettings().isDevMode = toggleDev.isChecked
+                if (toggleDev.isChecked)
+                    UIUtils.playSound("FB_ui_char_increase_skill")
+                else
+                    UIUtils.playSound("FB_ui_char_decrease_skill")
+            }
             toggleDev.setShortcut(Keyboard.KEY_D, true)
-            toggleDev.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 100f) { tooltip ->
+            toggleDev.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 120f) { tooltip ->
                 tooltip.addPara("Press D to toggle", 0f)
             }
 
@@ -227,7 +235,6 @@ object HotkeyHandlerDialogs {
                     it.onDevModeF8Reload()
                 }
             }
-
 
             ui.addButton(
                 "Trigger Test Message",
@@ -255,9 +262,9 @@ object HotkeyHandlerDialogs {
 
             val text = if (officerCount > 0) {
                 if (officerCount > 1)
-                    txtPlural("pasted_fleet_members_officers", memberCount, officerCount)
+                    txtPlural("pasted_fleet_members_officers", memberCount, memberCount, officerCount)
                 else
-                    txtPlural("pasted_fleet_members_officer", memberCount, officerCount)
+                    txtPlural("pasted_fleet_members_officer", memberCount, memberCount, officerCount)
             } else {
                 txtPlural("pasted_fleet_members_only", memberCount)
             }

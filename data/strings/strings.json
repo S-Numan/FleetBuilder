@@ -142,6 +142,8 @@
   "any_directory_default_descriptor":"Loadout",
   "goal_variant":"Goal Variant",
   "core_variant":"Core Variant",
+  "current_variant": "Current Variant",
+  "variant": "Variant",
 
   # Commander Shuttle
   "command_shuttle":"Command Shuttle",
@@ -165,7 +167,6 @@
 
 
   # Paste fleet dialogs
-
   "pasted_fleet_members_only_one": "Pasted fleet contains %s member",
   "pasted_fleet_members_only_many": "Pasted fleet contains %s members",
 
@@ -207,7 +208,6 @@
 
 
   # createOfficerCreatorDialog
-
   "timid": "Timid",
   "cautious": "Cautious",
   "steady": "Steady",
@@ -223,6 +223,47 @@
 
 
 
+
+
+  # Autofit
+  "goal_variant_reserved_tooltip": "This slot is reserved for goal variants.\n\nIf a game or mod update adds or removes goal variants, it could shift other loadouts, potentially causing confusion.\nReserving this slot prevents that.\n\nYou can disable this reservation in the LunaLib settings.",
+  "click_and_drag_to_empty_slot_to_save": "Click and drag to an empty slot to save",
+  "toggle_use_cargo_label": "Use ordnance from cargo",
+  "toggle_use_cargo_tooltip": "Use weapons and fighter LPCs from your fleet's cargo holds.",
+  "toggle_use_storage_label": "Use ordnance from storage",
+  "toggle_use_storage_tooltip": "Use weapons and fighter LPCs from your local storage facilities.",
+  "toggle_use_market_label": "Buy ordnance from market",
+  "toggle_use_market_tooltip": "Buy weapons and fighter LPCs from market, if docked at one.\n\nOrdnance from your cargo will be preferred",
+  "toggle_use_black_market_label": "Allow black market purchases",
+  "toggle_use_black_market_tooltip": "Buy weapons and fighter LPCs from the black market.\n\nNon-black-market options will be preferred if the alternatives are of equal quality",
+  "toggle_apply_smods_label": "Apply SMods",
+  "toggle_apply_smods_tooltip": "Spend story points to apply SMods to your ship.\n\nIf S-mods are installed, the autofit cannot be undone.",
+  "dialog_apply_smods_title": "Use Story Points to Apply SMods",
+  "dialog_apply_smods_desc_one": "This will consume %d Story point and give %d bonus xp",
+  "dialog_apply_smods_desc_many": "This will consume %d Story points and give %d bonus xp",
+  "slot_already_occupied": "Slot already occupied",
+  "slot_is_reserved": "Slot is reserved. Hover over the slot for more details.",
+
+  "tooltip_armaments_header": "Armaments:",
+  "tooltip_wings_header": "Wings:",
+  "tooltip_hullmods_header": "Hull Mods:",
+  "tooltip_flux_capacitors": "flux capacitors",
+  "tooltip_flux_vents": "flux vents",
+  "tooltip_copy_instruction": "Hold CTRL and click to copy loadout to clipboard",
+  "tooltip_required_mods_header": "Required Mods:",
+  "tooltip_missing_mod": "%s (MISSING)\n       %s %s",
+  "tooltip_version_diff_mod": "%s (VERSION DIFFERENCE)\n        %s %s",
+  "tooltip_exact_mod": "%s (EXACT)\n     %s %s",
+  "tooltip_failed_to_load": "Failed to load:\nWeapons: %s\nWings: %s\nHullMods: %s",
+  "tag_suppressed": "(Suppressed)",
+  "tag_hidden": "(Hidden)",
+
+
+
+
+
+  "yes": "Yes",
+  "no": "No",
   "create": "Create",
   "confirm": "Confirm",
   "cancel": "Cancel",
@@ -290,7 +331,7 @@
     "mb_comm_reply": "The other $shipFleet does not answer to your hails.",
 
     "ml_mp_appliedPaintjobNoMore": "%s",
-    "ml_mp_appliedPaintjobMore": "%s (+%s more)",
+    "ml_mp_appliedPaintjobMore": "%s (+%s more)"
 
   }
 }

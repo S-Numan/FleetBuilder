@@ -1,5 +1,6 @@
 package fleetBuilder.features.autofit.lib
 
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.combat.ShipAPI
@@ -39,10 +40,14 @@ internal object AutofitApplier {
 
         var appliedSMods = false
 
-        val coreUI = ReflectionMisc.getCoreUI() ?: return
-
-
         try {
+            if (Global.getCurrentState() != GameState.CAMPAIGN) {
+                replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
+                return
+            }
+
+            val coreUI = ReflectionMisc.getCoreUI() ?: return
+
             if (baseVariant.moduleSlots != loadout.moduleSlots) {
                 DisplayMessage.showError("Module slots between loadout and base variant's do not match. Stopping autofit to prevent crash.")
                 return
@@ -58,8 +63,6 @@ internal object AutofitApplier {
                 shipDisplay
             )
 
-            val auto: CoreAutofitPlugin
-
             val ui = Global.getSector().campaignUI
             val interaction = ui.currentInteractionDialog
 
@@ -71,151 +74,146 @@ internal object AutofitApplier {
                 delegate.setMarket(market)
             }
 
-            if (!Global.getSettings().isInCampaignState) {
+            //Strip items off ship first if in campaign. Both so they can be used by the autofitplugin, and so if using forceAutofit, the things on the ship aren't erased.
+            val auto: CoreAutofitPlugin = CoreAutofitPlugin(fleetMember.fleetData.commander).apply { random = Random() }
+            auto.setChecked(CoreAutofitPlugin.STRIP, false)
+
+            fun stripVaraint(variant: ShipVariantAPI, variantTo: ShipVariantAPI) {
+                variant.nonBuiltInWeaponSlots
+                    .mapNotNull { variant.getSlot(it) }
+                    .filter { variant.getWeaponId(it.id) != variantTo.getWeaponId(it.id) }//Only strip weapons that aren't in the right position
+                    .forEach { auto.clearWeaponSlot(it, delegate, variant) }
+
+                variant.wings.indices
+                    .drop(variant.hullSpec.builtInWings.size)
+                    .filter { variant.getWingId(it) != variantTo.getWingId(it) }
+                    .forEach { auto.clearFighterSlot(it, delegate, variant) }
+
+                variant.nonBuiltInHullmods
+                    .filter { delegate.canAddRemoveHullmodInPlayerCampaignRefit(it) }
+                    //.filter { !variantTo.hasHullMod(it) }//No need
+                    .forEach { variant.removeMod(it) }
+                variant.numFluxCapacitors = 0
+                variant.numFluxVents = 0
+            }
+
+            stripVaraint(baseVariant, loadout)
+
+            for (moduleSlot in baseVariant.moduleSlots) {
+                val baseModule = baseVariant.getModuleVariant(moduleSlot)
+                val loadoutModule = loadout.getModuleVariant(moduleSlot)
+                if (baseModule == null)
+                    throw Exception("base ship module was null")
+                else if (loadoutModule == null)
+                    throw Exception("loadout ship module was null")
+
+                stripVaraint(baseModule, loadoutModule)
+            }
+
+            if (ModSettings.forceAutofit) {
                 replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
-
+                //baseVariant.addTag(Tags.SHIP_RECOVERABLE)
+                //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
             } else {
-                //Strip items off ship first if in campaign. Both so they can be used by the autofitplugin, and so if using forceAutofit, the things on the ship aren't erased.
-                auto = CoreAutofitPlugin(fleetMember.fleetData.commander).apply { random = Random() }
-                auto.setChecked(CoreAutofitPlugin.STRIP, false)
 
-                fun stripVaraint(variant: ShipVariantAPI, variantTo: ShipVariantAPI) {
-                    variant.nonBuiltInWeaponSlots
-                        .mapNotNull { variant.getSlot(it) }
-                        .filter { variant.getWeaponId(it.id) != variantTo.getWeaponId(it.id) }//Only strip weapons that aren't in the right position
-                        .forEach { auto.clearWeaponSlot(it, delegate, variant) }
+                //Add submarkets to delegate if present
+                if (market != null) {
+                    for (submarket in market.submarketsCopy) {
+                        if (submarket.plugin.isHidden) continue
+                        if (!submarket.plugin.isEnabled(coreUI)) continue
+                        if (!submarket.plugin.showInCargoScreen()) continue
+                        if (!allowMarket && !submarket.plugin.isFreeTransfer) continue
+                        if (!allowBlackMarket && submarket.plugin.isBlackMarket) continue
+                        if (!allowStorage && submarket.plugin.isFreeTransfer) continue
 
-                    variant.wings.indices
-                        .drop(variant.hullSpec.builtInWings.size)
-                        .filter { variant.getWingId(it) != variantTo.getWingId(it) }
-                        .forEach { auto.clearFighterSlot(it, delegate, variant) }
-
-                    variant.nonBuiltInHullmods
-                        .filter { delegate.canAddRemoveHullmodInPlayerCampaignRefit(it) }
-                        //.filter { !variantTo.hasHullMod(it) }//No need
-                        .forEach { variant.removeMod(it) }
-                    variant.numFluxCapacitors = 0
-                    variant.numFluxVents = 0
-                }
-
-                stripVaraint(baseVariant, loadout)
-
-                for (moduleSlot in baseVariant.moduleSlots) {
-                    val baseModule = baseVariant.getModuleVariant(moduleSlot)
-                    val loadoutModule = loadout.getModuleVariant(moduleSlot)
-                    if (baseModule == null)
-                        throw Exception("base ship module was null")
-                    else if (loadoutModule == null)
-                        throw Exception("loadout ship module was null")
-
-                    stripVaraint(baseModule, loadoutModule)
-                }
-
-                if (ModSettings.forceAutofit) {
-                    replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
-                    //baseVariant.addTag(Tags.SHIP_RECOVERABLE)
-                    //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
-                } else {
-
-                    //Add submarkets to delegate if present
-                    if (market != null) {
-                        for (submarket in market.submarketsCopy) {
-                            if (submarket.plugin.isHidden) continue
-                            if (!submarket.plugin.isEnabled(coreUI)) continue
-                            if (!submarket.plugin.showInCargoScreen()) continue
-                            if (!allowMarket && !submarket.plugin.isFreeTransfer) continue
-                            if (!allowBlackMarket && submarket.plugin.isBlackMarket) continue
-                            if (!allowStorage && submarket.plugin.isFreeTransfer) continue
-
-                            for (weapon in submarket.cargo.weapons) {
-                                delegate.addAvailableWeapon(
-                                    Global.getSettings().getWeaponSpec(weapon.item),
-                                    weapon.count,
-                                    submarket.cargo,
-                                    submarket
-                                )
-                            }
-                            for (fighter in submarket.cargo.fighters) {
-                                delegate.addAvailableFighter(
-                                    Global.getSettings().getFighterWingSpec(fighter.item),
-                                    fighter.count,
-                                    submarket.cargo,
-                                    submarket
-                                )
-                            }
-                        }
-                    }
-
-                    if (allowCargo) {
-                        //Add player cargo weapons/fighters to delegate for AutofitPlugin to use.
-                        for (weapon in Global.getSector().playerFleet.cargo.weapons) {
+                        for (weapon in submarket.cargo.weapons) {
                             delegate.addAvailableWeapon(
                                 Global.getSettings().getWeaponSpec(weapon.item),
                                 weapon.count,
-                                Global.getSector().playerFleet.cargo,
-                                null
+                                submarket.cargo,
+                                submarket
                             )
                         }
-                        for (fighter in Global.getSector().playerFleet.cargo.fighters) {
+                        for (fighter in submarket.cargo.fighters) {
                             delegate.addAvailableFighter(
                                 Global.getSettings().getFighterWingSpec(fighter.item),
                                 fighter.count,
-                                Global.getSector().playerFleet.cargo,
-                                null
+                                submarket.cargo,
+                                submarket
                             )
                         }
                     }
+                }
 
-                    if (applySMods) {
-
-                        var (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship, baseVariant, loadout)
-                        sModsToApply = sModsToApply.filter { delegate.canAddRemoveHullmodInPlayerCampaignRefit(it) }.toMutableList()
-                        if (sModsToApply.isNotEmpty()) {
-                            val itemManager = HullModItemManager.getInstance()
-                            sModsToApply.toList().forEach {
-                                if (!itemManager.isRequiredItemAvailable(it, ship.fleetMember, baseVariant, market)) {
-                                    sModsToApply.remove(it)
-                                    bonusXpToGrant -= getHullModBuildInBonusXP(baseVariant, it)
-                                    DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
-                                    return@forEach
-                                }
-
-                                appliedSMods = true
-
-                                if (baseVariant.hullSpec.builtInMods.contains(it)) {
-                                    baseVariant.sModdedBuiltIns.add(it)
-                                } else {
-                                    baseVariant.addPermaMod(it, true)
-                                }
-                            }
-
-                            spendStoryPoint(sModsToApply.size, bonusXpToGrant)
-                        }
+                if (allowCargo) {
+                    //Add player cargo weapons/fighters to delegate for AutofitPlugin to use.
+                    for (weapon in Global.getSector().playerFleet.cargo.weapons) {
+                        delegate.addAvailableWeapon(
+                            Global.getSettings().getWeaponSpec(weapon.item),
+                            weapon.count,
+                            Global.getSector().playerFleet.cargo,
+                            null
+                        )
                     }
-
-                    auto.doFit(baseVariant, loadout, 0, delegate)
-
-                    //For some reason, vanilla starsector autofit does not fit hullmods into modules. I'm not sure why. So it has to be done ourselves.
-                    loadout.moduleSlots.forEach { slot ->
-                        val loadoutModVariant = loadout.getModuleVariant(slot)
-                        val baseModVariant = baseVariant.getModuleVariant(slot)
-                        baseModVariant.numFluxVents = 0
-                        baseModVariant.numFluxCapacitors = 0
-                        baseModVariant.clearHullMods()
-                        auto.addVentsAndCaps(baseModVariant, loadoutModVariant, 1f)
-                        auto.addHullmods(baseModVariant, delegate, *loadoutModVariant.nonBuiltInHullmods.toTypedArray())
-                    }
-
-                    if (auto.creditCost > 0) {
-                        val creditString = Misc.getDGSCredits(auto.creditCost.toFloat())
-                        DisplayMessage.showMessage(
-                            FBTxt.txt("autofit_confirmed_purchased", creditString),
-                            creditString, Misc.getHighlightColor()
+                    for (fighter in Global.getSector().playerFleet.cargo.fighters) {
+                        delegate.addAvailableFighter(
+                            Global.getSettings().getFighterWingSpec(fighter.item),
+                            fighter.count,
+                            Global.getSector().playerFleet.cargo,
+                            null
                         )
                     }
                 }
 
+                if (applySMods) {
+
+                    var (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship, baseVariant, loadout)
+                    sModsToApply = sModsToApply.filter { delegate.canAddRemoveHullmodInPlayerCampaignRefit(it) }.toMutableList()
+                    if (sModsToApply.isNotEmpty()) {
+                        val itemManager = HullModItemManager.getInstance()
+                        sModsToApply.toList().forEach {
+                            if (!itemManager.isRequiredItemAvailable(it, ship.fleetMember, baseVariant, market)) {
+                                sModsToApply.remove(it)
+                                bonusXpToGrant -= getHullModBuildInBonusXP(baseVariant, it)
+                                DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
+                                return@forEach
+                            }
+
+                            appliedSMods = true
+
+                            if (baseVariant.hullSpec.builtInMods.contains(it)) {
+                                baseVariant.sModdedBuiltIns.add(it)
+                            } else {
+                                baseVariant.addPermaMod(it, true)
+                            }
+                        }
+
+                        spendStoryPoint(sModsToApply.size, bonusXpToGrant)
+                    }
+                }
+
+                auto.doFit(baseVariant, loadout, 0, delegate)
+
+                //For some reason, vanilla starsector autofit does not fit hullmods into modules. I'm not sure why. So it has to be done ourselves.
+                loadout.moduleSlots.forEach { slot ->
+                    val loadoutModVariant = loadout.getModuleVariant(slot)
+                    val baseModVariant = baseVariant.getModuleVariant(slot)
+                    baseModVariant.numFluxVents = 0
+                    baseModVariant.numFluxCapacitors = 0
+                    baseModVariant.clearHullMods()
+                    auto.addVentsAndCaps(baseModVariant, loadoutModVariant, 1f)
+                    auto.addHullmods(baseModVariant, delegate, *loadoutModVariant.nonBuiltInHullmods.toTypedArray())
+                }
+
+                if (auto.creditCost > 0) {
+                    val creditString = Misc.getDGSCredits(auto.creditCost.toFloat())
+                    DisplayMessage.showMessage(
+                        FBTxt.txt("autofit_confirmed_purchased", creditString),
+                        creditString, Misc.getHighlightColor()
+                    )
+                }
             }
+
         } catch (e: Exception) {
             DisplayMessage.showError(FBTxt.txt("failed_to_apply_variant"), e)
             //e.printStackTrace()
@@ -262,7 +260,7 @@ internal object AutofitApplier {
         to.clearTags()
         to.nonBuiltInWeaponSlots.clear()
         to.nonBuiltInWings.clear()
-        
+
         to.hullMods.toList().forEach { mod ->
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
