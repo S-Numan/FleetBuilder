@@ -218,9 +218,9 @@ object HotkeyHandlerDialogs {
             toggleDev.onClick {
                 Global.getSettings().isDevMode = toggleDev.isChecked
                 if (toggleDev.isChecked)
-                    UIUtils.playSound("FB_ui_char_increase_skill")
-                else
                     UIUtils.playSound("FB_ui_char_decrease_skill")
+                else
+                    UIUtils.playSound("FB_ui_char_increase_skill")
             }
             toggleDev.setShortcut(Keyboard.KEY_D, true)
             toggleDev.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 120f) { tooltip ->
