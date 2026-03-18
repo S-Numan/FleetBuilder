@@ -63,7 +63,7 @@ object CompressedVariant {
             // Extract the compressed portion after the second metaSep
             val compressedData = comp.substring(metaIndexEnd + 1)
 
-            fullData = CompressionUtil.decompressString(compressedData)
+            fullData = CompressionUtil.base64Inflate(compressedData)
             if (fullData.isNullOrBlank()) {
                 showError("Error decompressing variant data", "Error decompressing variant data\n$compressedData")
                 return null
@@ -242,7 +242,7 @@ object CompressedVariant {
         compressedVariant = "$addedModDetails$fieldSep$compressedVariant"
 
         if (compress)
-            compressedVariant = CompressionUtil.compressString(compressedVariant)
+            compressedVariant = CompressionUtil.base64Deflate(compressedVariant)
 
         compressedVariant = "$ver$compressedVariant"//Indicate structure version for compatibility with future compressed format changes
 

@@ -7,6 +7,7 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Abilities
 import com.fs.starfarer.campaign.CampaignUIPersistentData
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.SerializationUtils.getJSONFromStringSafe
 import fleetBuilder.serialization.cargo.CompressedCargo
 import fleetBuilder.serialization.cargo.JSONCargo
 import fleetBuilder.serialization.fleet.CompressedFleet
@@ -16,6 +17,7 @@ import fleetBuilder.serialization.fleet.JSONFleet
 import fleetBuilder.serialization.person.JSONPerson
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.api.FleetUtils
+import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.optJSONArrayToStringList
 import fleetBuilder.util.safeInvoke
 import org.json.JSONArray
@@ -29,7 +31,7 @@ object PlayerSaveUtils {
         var inHyperAbilityId: String? = null
     )
 
-    fun createPlayerSaveJson(
+    fun createSaveJson(
         handleCargo: Boolean = true,
         handleRelations: Boolean = true,
         handleKnownBlueprints: Boolean = true,
@@ -39,15 +41,16 @@ object PlayerSaveUtils {
         handleKnownHullmods: Boolean = true,
         handleOfficers: Boolean = true,
         handleAbilityBar: Boolean = true,
-    ): JSONObject {
+        superCompressSave: Boolean = false
+    ): String {
         val json = JSONObject()
         val sector = Global.getSector()
-        val playerFleet = sector.playerFleet ?: return json
+        val playerFleet = sector.playerFleet ?: return ""
 
         if (handleCargo) {
             //val cargoJson = CargoSerialization.saveCargoToJson(playerFleet.cargo.stacksCopy)
             //json.put("cargo", cargoJson)
-            val cargoComp = CompressedCargo.saveCargoToCompString(playerFleet.cargo.stacksCopy)
+            val cargoComp = CompressedCargo.saveCargoToCompString(playerFleet.cargo.stacksCopy, compress = !superCompressSave)
             json.put("cargo", cargoComp)
         }
 
@@ -82,7 +85,8 @@ object PlayerSaveUtils {
                     memberSettings.includeOfficer = handleOfficers
                     includeIdleOfficers = handleOfficers
                 },
-                includePrepend = false
+                includePrepend = false,
+                compress = !superCompressSave
             )
             json.put("fleet", compFleet)
         }
@@ -158,10 +162,13 @@ object PlayerSaveUtils {
             json.put("abilities", JSONArray(sector.characterData.abilities))
         }
 
-        return json
+        return if (superCompressSave)
+            "\$z0$" + CompressionUtil.base64Deflate(json.toString())
+        else
+            json.toString(4)
     }
 
-    data class CompiledSaved(
+    data class CompiledSave(
         var fleet: CampaignFleetAPI? = null,
         var aggressionDoctrine: Int = -1,
         var player: PersonAPI? = null,
@@ -189,13 +196,48 @@ object PlayerSaveUtils {
         }
     }
 
-    fun compilePlayerSaveJson(
-        json: JSONObject
-    ): Pair<CompiledSaved, MissingElementsExtended> {
-        val missing = MissingElementsExtended()
-        val compiled = CompiledSaved()
+    @JvmOverloads
+    fun compileSaveAny(
+        value: Any?,
+        missing: MissingElementsExtended = MissingElementsExtended()
+    ): CompiledSave {
+        return when (value) {
+            is JSONObject -> compileSaveJson(value, missing)
+            is String -> compileSaveString(value, missing)
+            else -> CompiledSave()
+        }
+    }
 
-        val sector = Global.getSector() ?: return compiled to missing
+    @JvmOverloads
+    fun compileSaveString(
+        value: String,
+        missing: MissingElementsExtended = MissingElementsExtended()
+    ): CompiledSave {
+        val json = getJSONFromStringSafe(value)
+        if (json != null) {
+            return compileSaveJson(json, missing)
+        } else {
+            if (value.contains("\$z0$")) {
+                val valueSub = value.substringAfter("\$z0$")
+                val valueDecomp = CompressionUtil.base64Inflate(valueSub)
+                if (valueDecomp != null) {
+                    val json = getJSONFromStringSafe(valueDecomp)
+                    if (json != null)
+                        return compileSaveJson(json, missing)
+                }
+            }
+        }
+        return CompiledSave()
+    }
+
+    @JvmOverloads
+    fun compileSaveJson(
+        json: JSONObject,
+        missing: MissingElementsExtended = MissingElementsExtended()
+    ): CompiledSave {
+        val compiled = CompiledSave()
+
+        val sector = Global.getSector() ?: return compiled
 
         val cargo = Global.getFactory().createCargo(true)
 
@@ -393,11 +435,11 @@ object PlayerSaveUtils {
             }
         }
 
-        return compiled to missing
+        return compiled
     }
 
-    fun loadPlayerCompiledSave(
-        compiled: CompiledSaved,
+    fun loadCompiledSave(
+        compiled: CompiledSave,
         handleCargo: Boolean = true,
         handleRelations: Boolean = true,
         handleKnownBlueprints: Boolean = true,
@@ -535,35 +577,5 @@ object PlayerSaveUtils {
                 }
             }
         }
-    }
-
-    fun loadPlayerSaveJson(
-        json: JSONObject,
-        handleCargo: Boolean = true,
-        handleRelations: Boolean = true,
-        handleKnownBlueprints: Boolean = true,
-        handlePlayer: Boolean = true,
-        handleFleet: Boolean = true,
-        handleCredits: Boolean = true,
-        handleKnownHullmods: Boolean = true,
-        handleOfficers: Boolean = true,
-        handleAbilityBar: Boolean = true,
-    ): MissingElements {
-        val (compiled, missing) = compilePlayerSaveJson(json)
-
-        loadPlayerCompiledSave(
-            compiled,
-            handleCargo,
-            handleRelations,
-            handleKnownBlueprints,
-            handlePlayer,
-            handleFleet,
-            handleCredits,
-            handleKnownHullmods,
-            handleOfficers,
-            handleAbilityBar
-        )
-
-        return missing
     }
 }

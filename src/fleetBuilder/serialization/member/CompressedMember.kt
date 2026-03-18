@@ -57,7 +57,7 @@ object CompressedMember {
         val fullData = when (metaVersion) {
             "m0" -> {
                 val compressedData = comp.substring(metaIndexEnd + 1)
-                CompressionUtil.decompressString(compressedData)
+                CompressionUtil.base64Inflate(compressedData)
             }
             "M0" -> comp.substring(metaIndexEnd + 1)
             else -> return null
@@ -240,7 +240,7 @@ object CompressedMember {
         memberString = "$addedModDetails$fieldSep$memberString"
 
         if (compress)
-            memberString = CompressionUtil.compressString(memberString)
+            memberString = CompressionUtil.base64Deflate(memberString)
 
         memberString = "$ver$memberString"
 

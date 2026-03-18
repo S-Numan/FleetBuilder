@@ -152,12 +152,10 @@ internal class EventDispatcher : EveryFrameScript {
         fun backupSave() {
             if (ModSettings.backupSave) {
                 try {
-                    val json = PlayerSaveUtils.createPlayerSaveJson()
+                    val compSave = PlayerSaveUtils.createSaveJson(superCompressSave = true)
 
-                    val jsonString = json.toString(4)
-
-                    if (jsonString.length < 1000000) // Starsector cannot save files over 1MB
-                        Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", jsonString)
+                    if (compSave.length < 1000000) // Starsector cannot save files over 1MB
+                        Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", compSave)
                     else
                         Global.getLogger(this::class.java).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
 

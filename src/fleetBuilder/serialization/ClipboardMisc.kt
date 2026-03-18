@@ -23,6 +23,8 @@ import org.lwjgl.input.Keyboard
 import java.awt.Color
 
 object ClipboardMisc {
+
+    @JvmOverloads
     fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false): Boolean {
         if (variant.hasHullMod(ModSettings.commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
@@ -55,6 +57,7 @@ object ClipboardMisc {
         return true
     }
 
+    @JvmOverloads
     fun savePersonToClipboard(person: PersonAPI, shift: Boolean = false): Boolean {
         if (person.isDefault) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_default_officer"), Color.YELLOW)
@@ -74,6 +77,7 @@ object ClipboardMisc {
         return true
     }
 
+    @JvmOverloads
     fun saveMemberToClipboard(member: FleetMemberAPI, shift: Boolean = false): Boolean {
         if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)

@@ -34,7 +34,7 @@ object CompressedSecondInCommand {
         val version = comp.substring(metaStart + 1, metaEnd)
 
         val fullData = when (version) {
-            "s0" -> CompressionUtil.decompressString(comp.substring(metaEnd + 1))
+            "s0" -> CompressionUtil.base64Inflate(comp.substring(metaEnd + 1))
             "S0" -> comp.substring(metaEnd + 1)
             else -> return null
         } ?: return null
@@ -134,7 +134,7 @@ object CompressedSecondInCommand {
         var result = officersBlock
 
         if (compress)
-            result = CompressionUtil.compressString(result)
+            result = CompressionUtil.base64Deflate(result)
 
         result = "$ver$result"
 

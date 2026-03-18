@@ -2,11 +2,12 @@ package fleetBuilder.console.commands.saveTransfer
 
 import com.fs.starfarer.api.Global
 import fleetBuilder.core.ModSettings
-import fleetBuilder.serialization.PlayerSaveUtils
+import fleetBuilder.serialization.MissingElementsExtended
+import fleetBuilder.serialization.PlayerSaveUtils.compileSaveAny
+import fleetBuilder.serialization.PlayerSaveUtils.loadCompiledSave
 import fleetBuilder.serialization.reportMissingElementsIfAny
 import fleetBuilder.util.FBTxt
-import fleetBuilder.util.lib.ClipboardUtil.getClipboardJson
-import org.json.JSONObject
+import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
@@ -30,7 +31,7 @@ class LoadSave : BaseCommand {
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
 
-        val json: JSONObject?
+        val json: Any?
 
         val argList = args.lowercase().split(" ")
 
@@ -48,16 +49,19 @@ class LoadSave : BaseCommand {
                 return BaseCommand.CommandResult.ERROR
             }
         } else {
-            json = getClipboardJson()
+            json = ClipboardUtil.getClipboardJson() ?: ClipboardUtil.getClipboardTextSafe()
         }
 
-        if (json == null) {
-            Console.showMessage(FBTxt.txt("failed_to_read_json_in_clipboard") + "\n")
+        val missing = MissingElementsExtended()
+        val compiled = compileSaveAny(json, missing)
+
+        if (compiled.isEmpty()) {
+            Console.showMessage(FBTxt.txt("failed_to_read_save_in_clipboard") + "\n")
             return BaseCommand.CommandResult.ERROR
         }
 
-        val missing = PlayerSaveUtils.loadPlayerSaveJson(
-            json,
+        loadCompiledSave(
+            compiled,
             handleCargo = !argList.contains(NO_CARGO),
             handleRelations = !argList.contains(NO_REP),
             handleKnownBlueprints = !argList.contains(NO_BLUEPRINTS),
@@ -69,7 +73,6 @@ class LoadSave : BaseCommand {
             handleAbilityBar = !argList.contains(NO_ABILITYBAR),
         )
 
-
         if (!missing.hasMissing()) {
             Console.showMessage(FBTxt.txt("no_missing_elements"))
         } else {
@@ -79,6 +82,5 @@ class LoadSave : BaseCommand {
 
         Console.showMessage("\n" + FBTxt.txt("load_complete"))
         return BaseCommand.CommandResult.SUCCESS
-
     }
 }

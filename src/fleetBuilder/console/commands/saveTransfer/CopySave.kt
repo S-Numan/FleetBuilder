@@ -26,7 +26,7 @@ class CopySave : BaseCommand {
         }
 
         val argList = args.lowercase().split(" ")
-        val json = PlayerSaveUtils.createPlayerSaveJson(
+        val json = PlayerSaveUtils.createSaveJson(
             handleCargo = !argList.contains(NO_CARGO),
             handleRelations = !argList.contains(NO_REP),
             handleKnownBlueprints = !argList.contains(NO_BLUEPRINTS),
@@ -37,7 +37,7 @@ class CopySave : BaseCommand {
             handleOfficers = !argList.contains(NO_OFFICERS)
         )
 
-        setClipboardText(json.toString(4))
+        setClipboardText(json)
 
         Console.showMessage(FBTxt.txt("save_copied"))
         return BaseCommand.CommandResult.SUCCESS

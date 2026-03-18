@@ -61,7 +61,7 @@ object CompressedFleet {
         val fullData = when (metaVersion) {
             "f0" -> {
                 val compressedData = comp.substring(metaIndexEnd + 1)
-                CompressionUtil.decompressString(compressedData)
+                CompressionUtil.base64Inflate(compressedData)
             }
             "F0" -> comp.substring(metaIndexEnd + 1)
             else -> return null
@@ -333,7 +333,7 @@ object CompressedFleet {
         /* -------- COMPRESSION -------- */
 
         if (compress)
-            fleetString = CompressionUtil.compressString(fleetString)
+            fleetString = CompressionUtil.base64Deflate(fleetString)
 
         fleetString = "$ver$fleetString"
 
