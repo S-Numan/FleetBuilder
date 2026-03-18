@@ -1,5 +1,8 @@
 fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
+,,,,,,,,
+,,,,,,,,
 featuresDisabled,Disable All Features,Boolean,false,,"Set this to true to disable all features this mod provides, effectively turning this into a library mod.",,,General
+,,,,,,,,
 enableCheats,Enable Cheats,Boolean,false,,"This must be enabled to use the more cheat like commands this mod provides.
 If Dev mode is on, this will be treated as enabled, even if it isn’t.",,,General
 ,,,,,,,,
@@ -41,8 +44,8 @@ This avoids pasted members looking like a clone army, and makes them look like a
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
-fleetScreenFilter,Enable Fleet Screen Filter,Boolean,false,,"A clickable filter on the fleet screen that allows you to type in keywords to filter visible ships.
-You can enter hull names like ""Hammerhead"", or ship types such as ""phase"", ""carrier"", or ""frigate"".
+fleetScreenFilter,Enable Fleet Screen Filter,Boolean,false,,A clickable filter on the fleet screen that allows you to type in keywords to filter visible ships.,,,Filters
+fleetScreenFilterField,Fleet Screen Filter Field,Text,"You can enter hull names like ""Hammerhead"", or ship types such as ""phase"", ""carrier"", or ""frigate"".
 Ships that do not match any of the entered keywords will be hidden.
 To exclude specific matches, prepend a dash (-) to your entry; for example, -frigate will hide all frigates.
 
@@ -72,13 +75,15 @@ automated
 marines / transport
 fuel / tanker
 crew / liner
-cargo / freighter",,,Fleet Filter
-,,,,,,,,
+cargo / freighter",fleetScreenFilterField,Fleet Screen Filter Field,,,Filters
+modPickerFilter,Enable Mod Picker Filter,Boolean,false,,"Functions similar to the Fleet Filter, but for the hull mod picker.",,,Filters
 autofitMainHeader,Autofit Main Header,Header,Main,,,,,Autofit Menu
 autofitMenuEnabled,Enable Autofit Menu,Boolean,false,,A custom autofit menu for the refit screen with unlimited variant slots that stay between saves.,,,Autofit Menu
+,,,,,,,,
 autofitSettingsHeader,Autofit Settings Header,Header,Settings,,,,,Autofit Menu
 replaceVanillaAutofitButton,Replace Vanilla Button,Boolean,true,,"When true, opens this mod’s autofit menu instead of vanilla’s autofit menu when clicking the autofit button.",,,Autofit Menu
 autofitMenuHotkey,Autofit Menu Hotkey,Keycode,47,,"Keybind to open this mod’s autofit menu. Press this keybind in the refit screen to open the autofit menu,.",,,Autofit Menu
+codexAutofitButton,Codex Autofit Button,Boolean,true,,Adds an autofit button in the codex which opens the autofit menu for the ship you’re looking at.,,,Autofit Menu
 uIHeader,UI Header,Header,UI,,,,,Autofit Menu
 selectorsPerRow,Selectors Per Row,Int,4,,"Amount of autofit loadouts you see per row.
 Setting this to a lower number will increase the size of your autofit options.",1,10,Autofit Menu
@@ -95,19 +100,14 @@ This is default behavior in the main menu missions, as there is no cargo or stor
 dontForceClearDMods,Dont Force Clear D-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove D-Mods on an overwrite autofit",,,Autofit Menu
 dontForceClearSMods,Dont Force Clear S-Mods,Boolean,false,,"If Force Autofit is enabled, don’t remove S-Mods on an overwrite autofit",,,Autofit Menu
 ,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-extraHeader,Extra Header,Header,Extra,,,,,Misc
-devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When cheats are enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
-Hold Shift or Alt to multiply the added value by 10
-Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,Misc
+featuresHeader,Features Header,Header,Features,,,,,Misc
 storeOfficersInCargo,Store Officers In Cargo,Boolean,false,,"Officers stay with their ships when putting a ship in storage, thus removing them from your fleet.
 Upon retrieving the ship from storage, the officer returns to your fleet as its pilot.",,,Misc
 unassignPlayer,Unassign Player,Boolean,false,,"Remove your player officer with a right click: (places them in a command shuttle that can't fight or be copied) (Commander bonus still applies)
 This is enabled by default if Cheats are enabled.",,,Misc
-modPickerFilter,Mod Picker Filter,Boolean,false,,"Functions the same as the Fleet Filter, but for the hull mod picker.",,,Misc
+autoMothballRecoveredShips,Mothball Recovered Ships,Boolean,false,,When recovering a new ship: mothball it.,,,Misc
+transponderOffInHyperspace,Transponder Off,Boolean,false,,Turn the transponder off when entering hyperspace,,,Misc
+,,,,,,,,
 cargoAutoManager,Enable Cargo Auto Manager,Boolean,true,,"Right click a storage submarket to pull up the Cargo Auto Manager.
 
 This menu allows you to configure automatically taking and/or depositing cargo items on entering or leaving a market.
@@ -115,6 +115,13 @@ You can, for example, automatically stock up on supplies, fuel, and crew on inte
 You can also automatically deposit all weapons when interacting with a market
 Highly configurable",,,Misc
 reportCargoAutoManagerChanges,Report Cargo Auto Manager Changes,Boolean,true,,"If true, will show a message at the top of the screen every time the Cargo Auto Manager moves your cargo on entering or leaving a market.",,,Misc
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+extraHeader,Extra Header,Header,Extra,,,,,Misc
+devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When cheats are enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
+Hold Shift or Alt to multiply the added value by 10
+Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,Misc
 removeRefitHullmod,Force Remove Refit Hullmod,Boolean,true,,"If true, right click a hullmod in the refit screen to remove it. This works on built in SMods, SMods, DMods, etc.
 Cheats must be enabled.",,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
@@ -122,6 +129,9 @@ This might be useful if your save game gets bricked and you can’t load it.
 Put “loadsave -backup” in the console to load it.",,,Misc
 hideErrorMessages,Hide Error Messages,Boolean,false,,"If true, prevents error messages from appearing at the top of the screen.
 Error messages will still appear in the console and logs.",,,Misc
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
@@ -138,6 +148,8 @@ Enable the setting ‘Show Hidden HullMods’ in the ‘Autofit Menu’ tab and 
 memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
 fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
 ,,,,,,,,
+personHeader,Person Header,Header,Person Saving Settings,,,,,Misc
+#handleRankAndPost,Handle Rank And Post,Boolean,false,,If false: do not include rank and post when saving or loading a PersonAPI,,,Misc
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
@@ -145,13 +157,23 @@ fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
-showDebug,Show Debug,Boolean,false,,Show debug elements,,,Dev Options
-removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?",,,Dev Options
+addLogsToConsoleModConsoleLevel,Add logs to Console,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL","Add logs in ./starsector.log of input level and above to the ConsoleCommands Console, provided that mod is enabled.
+Does not show logs from before onApplicationLoad of this mod is called.",,,Developer Options
+addLogsToDisplayMessageLevel,Add logs to Display Message,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL",Show logs in ./starsector.log of input level and above as a message on the top of the screen.,,,Developer Options
+showDebug,Show Debug,Boolean,false,,Show debug elements,,,Developer Options
+removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?",,,Developer Options
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
-This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as hullmod is an sModdedBuiltIn without the ship having MIDAS built in.",,,Dev Options
+This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as hullmod is an sModdedBuiltIn without the ship having MIDAS built in.",,,Developer Options
+cargoScreenFilter,Cargo Screen Filter,Boolean,false,,"DOES NOT WORK CORRECTLY.
+A filter box to the right of the Other (4) tab when viewing cargo. Input values to filter cargo.
+
+I couldn’t get this one to work properly, but I left it in case anyone would like to try it out anyway. It technically works somewhat.",,,Developer Options
 ,,,,,,,,
-prefixHeader,Prefix Header,Header,Prefixes,,,,,Dev Options
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+prefixHeader,Prefix Header,Header,Prefixes,,,,,Developer Options
 prefixText,Prefix Text Field,Text,"Prefixes do not accept anything other than one or two characters, A to Z
-Must restart game to apply",,,,,Dev Options
-defaultPrefix,Default Prefix,String,DF,,Default prefix that loadouts are saved to.,,,Dev Options
+Must restart game to apply",,,,,Developer Options
+defaultPrefix,Default Prefix,String,DF,,Default prefix that loadouts are saved to.,,,Developer Options

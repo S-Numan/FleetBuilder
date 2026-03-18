@@ -1,163 +1,204 @@
 package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.*
-import com.fs.starfarer.api.characters.FullName
-import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.combat.MutableShipStatsAPI
+import com.fs.starfarer.api.campaign.CoreUIAPI
+import com.fs.starfarer.api.campaign.SpecialItemData
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.fleet.FleetMemberType
-import com.fs.starfarer.api.fleet.RepairTrackerAPI
 import com.fs.starfarer.api.impl.campaign.HullModItemManager
-import com.fs.starfarer.api.impl.campaign.ids.Factions
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
-import com.fs.starfarer.api.impl.campaign.ids.Stats
-import com.fs.starfarer.api.ui.UIComponentAPI
-import com.fs.starfarer.api.util.Misc
-import fleetBuilder.config.FBTxt
-import fleetBuilder.config.ModSettings
-import fleetBuilder.config.ModSettings.randomPastedCosmetics
-import fleetBuilder.features.CommanderShuttle.addPlayerShuttle
-import fleetBuilder.features.CommanderShuttle.playerShuttleExists
-import fleetBuilder.features.CommanderShuttle.removePlayerShuttle
-import fleetBuilder.persistence.fleet.DataFleet
-import fleetBuilder.persistence.fleet.DataFleet.buildFleetFull
-import fleetBuilder.persistence.fleet.DataFleet.createCampaignFleetFromData
-import fleetBuilder.persistence.fleet.DataFleet.getFleetDataFromFleet
-import fleetBuilder.persistence.fleet.DataFleet.validateAndCleanFleetData
-import fleetBuilder.persistence.fleet.FleetSettings
-import fleetBuilder.persistence.fleet.JSONFleet.extractFleetDataFromJson
-import fleetBuilder.persistence.member.DataMember
-import fleetBuilder.persistence.member.DataMember.buildMemberFull
-import fleetBuilder.persistence.member.JSONMember.extractMemberDataFromJson
-import fleetBuilder.persistence.person.DataPerson
-import fleetBuilder.persistence.person.DataPerson.buildPersonFull
-import fleetBuilder.persistence.person.JSONPerson.extractPersonDataFromJson
-import fleetBuilder.persistence.variant.CompressedVariant.extractVariantDataFromCompString
-import fleetBuilder.persistence.variant.DataVariant
-import fleetBuilder.persistence.variant.DataVariant.buildVariantFull
-import fleetBuilder.persistence.variant.JSONVariant.extractVariantDataFromJson
-import fleetBuilder.util.DisplayMessage.showMessage
-import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
-import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
-import fleetBuilder.util.lib.ClipboardUtil.cleanJsonStringInput
-import fleetBuilder.variants.GameModInfo
-import fleetBuilder.variants.LoadoutManager.doesLoadoutExist
-import fleetBuilder.variants.MissingElements
-import fleetBuilder.variants.reportMissingElementsIfAny
+import com.fs.starfarer.api.ui.CustomPanelAPI
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.GameModInfo
+import fleetBuilder.util.api.MemberUtils.getMaxSMods
+import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
 import org.json.JSONObject
-import org.magiclib.kotlin.getBuildInBonusXP
+import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
 import java.awt.Color
-import java.util.*
-import kotlin.math.max
 import kotlin.math.min
 
 
-object FBMisc {
+internal object FBMisc {
 
-    fun extractDataFromString(text: String): Any? {
-        if (text.isEmpty()) return null
+    fun SpecialItemData.getSpecialItemName(): String? {
+        return when (id) {
+            "fighter_bp" ->
+                Global.getSettings().allFighterWingSpecs.find { it.id == data }?.wingName
+            "weapon_bp" ->
+                Global.getSettings().allWeaponSpecs.find { it.weaponId == data }?.weaponName
+            "ship_bp" ->
+                Global.getSettings().allShipHullSpecs.find { it.hullId == data }?.hullName
+            "modspec" ->
+                Global.getSettings().allHullModSpecs.find { it.id == data }?.displayName
+            "industry_bp" ->
+                Global.getSettings().allIndustrySpecs.find { it.id == data }?.name
 
-        if (text.startsWithJsonBracket()) {
-            val json = getJSONFromStringSafe(text) ?: return null
+            else -> null
+        }
+    }
 
-            return when {
-                json.has("skills") -> {
-                    // Officer
-                    extractPersonDataFromJson(json)
-                }
+    // Untested
+    fun getAllSkinVariants(baseHull: String): MutableList<String?> {
+        val out: MutableList<String?> = ArrayList()
 
-                json.has("variant") || json.has("officer") -> {
-                    // Fleet member
-                    extractMemberDataFromJson(json)
-                }
-
-                json.has("hullId") -> {
-                    // Variant
-                    extractVariantDataFromJson(json)
-                }
-
-                json.has("members") -> {
-                    // Fleet
-                    extractFleetDataFromJson(json)
-                }
-
-                else -> {
-                    null
-                }
-            }
-
-
-        } else {
-            val data = extractVariantDataFromCompString(text)
-            if (data != null) {
-                return data
+        for (s in Global.getSettings().allShipHullSpecs) {
+            if (s.isDefaultDHull) continue
+            if (s.fuel <= 0) continue
+            val id = s.hullId
+            if (id.contains(baseHull) && (id != baseHull) && (!out.contains(id))) {
+                out.add(id)
             }
         }
+        return out
+    }
 
+    // Untested
+    fun getIntelOfClass(c: Class<*>): IntelInfoPlugin? {
+        try {
+            if (!Global.getSector().intelManager.hasIntelOfClass(c)) {
+                Global.getSector().intelManager.addIntel(c.getDeclaredConstructor().newInstance() as IntelInfoPlugin) // Global.getSector().intelManager.addIntel(c.newInstance() as IntelInfoPlugin)
+            }
+        } catch (ex: Exception) {
+        }
+        return Global.getSector().intelManager.getFirstIntel(c)
+    }
+
+    // Untested
+    fun getIntelByName(name: String?): IntelInfoPlugin? {
+        for (i1 in Global.getSector().intelManager.intel) {
+            val n1 = i1.javaClass.getSimpleName()
+            if (n1 == name) {
+                return i1
+            }
+        }
         return null
     }
 
-    fun getJSONFromStringSafe(inputText: String): JSONObject? {
-        var text = inputText
-        text = cleanJsonStringInput(text)
+    fun startStencilWithYPad(panel: CustomPanelAPI, yPad: Float) {
+        GL11.glClearStencil(0)
+        GL11.glStencilMask(0xff)
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT)
 
-        if (text.isEmpty()) return null
+        GL11.glColorMask(false, false, false, false)
+        GL11.glEnable(GL11.GL_STENCIL_TEST)
 
-        return try {
-            JSONObject(text)
-        } catch (_: Exception) {
-            null
-        }
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xff)
+        GL11.glStencilMask(0xff)
+        GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE)
+
+        GL11.glBegin(GL11.GL_POLYGON)
+        val position = panel.getPosition()
+        val x = position.getX() - 5
+        val y = position.getY()
+        val width = position.getWidth() + 10
+        val height = position.getHeight()
+
+        // Define the rectangle
+        GL11.glVertex2f(x, y)
+        GL11.glVertex2f(x + width, y)
+        GL11.glVertex2f(x + width, y + height - yPad)
+        GL11.glVertex2f(x, y + height - yPad)
+        GL11.glEnd()
+
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP)
+        GL11.glColorMask(true, true, true, true)
+
+        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF)
     }
 
-    fun handleRefitCopy(isShiftDown: Boolean): Boolean {
-        val baseVariant = ReflectionMisc.getCurrentVariantInRefitTab() ?: return false
+    fun startStencilWithXPad(panel: CustomPanelAPI, xPad: Float) {
+        GL11.glClearStencil(0)
+        GL11.glStencilMask(0xff)
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT)
 
-        ClipboardMisc.saveVariantToClipboard(baseVariant, isShiftDown)
+        GL11.glColorMask(false, false, false, false)
+        GL11.glEnable(GL11.GL_STENCIL_TEST)
 
-        return true
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xff)
+        GL11.glStencilMask(0xff)
+        GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE)
+
+        GL11.glBegin(GL11.GL_POLYGON)
+        val position = panel.getPosition()
+        val x = position.getX() - 5
+        val y = position.getY() - 10
+        val width = position.getWidth() + 10
+        val height = position.getHeight() + 20
+
+        // Define the rectangle
+        GL11.glVertex2f(x, y)
+        GL11.glVertex2f(x + width - xPad, y)
+        GL11.glVertex2f(x + width - xPad, y + height)
+        GL11.glVertex2f(x, y + height)
+        GL11.glEnd()
+
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP)
+        GL11.glColorMask(true, true, true, true)
+
+        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF)
     }
 
-    fun handleRefitPaste(): Boolean {
-        var data = ClipboardMisc.extractDataFromClipboard() ?: return false
+    fun endStencil() {
+        GL11.glDisable(GL11.GL_STENCIL_TEST)
+    }
 
-        if (data is DataMember.ParsedMemberData && data.variantData != null) {
-            data = data.variantData
-        }
-        if (data !is DataVariant.ParsedVariantData) {
-            DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_variant"), Color.YELLOW)
-            return true
-        }
-
-        val missing = MissingElements()
-        val variant = buildVariantFull(data, missing = missing)
-
-        if (missing.hullIds.isNotEmpty()) {
-            DisplayMessage.showMessage(
-                FBTxt.txt("failed_to_import_loadout", missing.hullIds.first()),
-                Color.YELLOW
-            )
-            return true
+    fun renderTiledTexture(
+        textureId: Int,
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        tileWidth: Float,
+        tileHeight: Float,
+        alphaMult: Float,
+        color: Color
+    ) {
+        if (textureId == 0) {
+            DisplayMessage.showError("Error: Invalid texture ID.")
+            return
         }
 
+        GL11.glEnable(GL11.GL_TEXTURE_2D)
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId)
 
-        val loadoutExists = doesLoadoutExist(ModSettings.defaultPrefix, variant)
+        // Enable blending for alpha transparency
+        GL11.glEnable(GL11.GL_BLEND)
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
-        if (!loadoutExists) {
-            Dialogs.createImportLoadoutDialog(variant, missing)
-        } else {
-            DisplayMessage.showMessage(
-                FBTxt.txt("loadout_already_exists", variant.hullSpec.hullId),
-                variant.hullSpec.hullName,
-                Misc.getHighlightColor()
-            )
-        }
+        // Set the texture to repeat
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT)
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT)
 
-        return true
+        // Set nearest neighbor filtering to preserve the lines
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+
+        // Calculate texture repeat factors based on the panel's size and the texture's tile size
+        val uMax: Float = width / tileWidth // Repeat in the X direction
+        val vMax: Float = height / tileHeight // Repeat in the Y direction
+
+        // Set color with alpha transparency
+        GL11.glColor4f(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), alphaMult)
+
+        // Render the panel with tiling
+        GL11.glBegin(GL11.GL_QUADS)
+        GL11.glTexCoord2f(0f, 0f)
+        GL11.glVertex2f(x, y) // Bottom-left
+        GL11.glTexCoord2f(uMax, 0f)
+        GL11.glVertex2f(x + width, y) // Bottom-right
+        GL11.glTexCoord2f(uMax, vMax)
+        GL11.glVertex2f(x + width, y + height) // Top-right
+        GL11.glTexCoord2f(0f, vMax)
+        GL11.glVertex2f(x, y + height) // Top-left
+        GL11.glEnd()
+
+        // Reset color to fully opaque to avoid affecting other renders
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
+
+        // Disable blending and textures
+        GL11.glDisable(GL11.GL_BLEND)
+        GL11.glDisable(GL11.GL_TEXTURE_2D)
     }
 
     fun sModHandlerTemp(
@@ -230,438 +271,10 @@ object FBMisc {
 
         var bonusXpToGrant = 0f
         sModsToApply.forEach { modID ->
-            bonusXpToGrant += getHullModBonusXP(baseVariant, modID)
+            bonusXpToGrant += getHullModBuildInBonusXP(baseVariant, modID)
         }
 
         return sModsToApply to bonusXpToGrant
-    }
-
-    fun getHullModBonusXP(
-        variant: ShipVariantAPI,
-        modID: String,
-    ): Float {
-        val defaultBonusXP = Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()
-        if (variant.hullSpec.builtInMods.contains(modID)) {
-            return defaultBonusXP
-        } else {
-            val sMod = Global.getSettings().getHullModSpec(modID)
-            return defaultBonusXP * sMod.getBuildInBonusXP(variant.hullSize)
-        }
-    }
-
-    fun getMaxSMods(fleetMember: FleetMemberAPI): Int {
-        return getMaxSMods(fleetMember.stats)
-    }
-
-    fun getMaxSMods(stats: MutableShipStatsAPI): Int {
-        return stats.dynamic
-            .getMod(Stats.MAX_PERMANENT_HULLMODS_MOD)
-            .computeEffective(Misc.MAX_PERMA_MODS.toFloat()).toInt()
-        //stats.dynamic.getStat(Stats.MAX_PERMANENT_HULLMODS_MOD).modifiedInt
-    }
-
-    fun spendStoryPoint(points: Int, buildInBonus: Float) {
-        val text =
-            if (points > 1)
-                FBTxt.txt("used_story_point_plural", points)
-            else
-                FBTxt.txt("used_story_point", points)
-
-        Global.getSector().playerStats.spendStoryPoints(
-            points,
-            true,
-            null,
-            true,
-            (buildInBonus / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()) / points,
-            text
-        );
-        Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1f, 1f);
-    }
-
-    fun replacePlayerFleetWith(
-        data: DataFleet.ParsedFleetData, replacePlayer: Boolean = false,
-        settings: FleetSettings = FleetSettings()
-    ): MissingElements {
-        val missing = MissingElements()
-        val fleet = createCampaignFleetFromData(data, true, missing = missing)
-
-        replacePlayerFleetWith(
-            fleet,
-            if (settings.includeAggression) data.aggression else -1,
-            replacePlayer, settings
-        )
-
-        return missing
-    }
-
-    fun replacePlayerFleetWith(
-        fleet: CampaignFleetAPI, aggression: Int = -1, replacePlayer: Boolean = false,
-        settings: FleetSettings = FleetSettings()
-    ) {
-        val playerFleet = Global.getSector().playerFleet
-
-        // Clear current fleet members and officers
-        for (member in playerFleet.fleetData.membersListCopy)
-            playerFleet.fleetData.removeFleetMember(member)
-        for (officer in playerFleet.fleetData.officersCopy)
-            playerFleet.fleetData.removeOfficer(officer.person)
-
-        addPlayerShuttle()
-
-        settings.includeCommanderSetFlagship = false//The player is always commanding the flagship. Thus if this isn't false, the player will displace the officer of that ship with themselves.
-        settings.includeAggression = false//We do this manually for the player faction
-
-        //Copy the fleet over
-        val dataFleet = getFleetDataFromFleet(fleet, settings)
-        buildFleetFull(dataFleet, playerFleet.fleetData, settings)
-
-        if (replacePlayer) {
-            val playerPerson = Global.getSector().playerPerson
-            val newCommander = fleet.commander
-            copyOfficerData(newCommander, playerPerson)
-            Global.getSector().characterData.setName(newCommander.name.fullName, newCommander.gender)
-
-            // Look for a fleet member commanded by an officer matching the new commander
-            val matchingMember = playerFleet.membersWithFightersCopy.find { member ->
-                val officer = member.captain
-                officer != null && !officer.isPlayer && officer.nameString == newCommander.nameString &&
-                        officer.stats.level == newCommander.stats.level &&
-                        officer.stats.skillsCopy.map { it.skill.id to it.level }.toSet() ==
-                        newCommander.stats.skillsCopy.map { it.skill.id to it.level }.toSet()
-            }
-
-            // If found, remove the officer and assign the player as captain
-            if (matchingMember != null) {
-                removePlayerShuttle()
-
-                playerFleet.fleetData.removeOfficer(matchingMember.captain)
-                matchingMember.captain = playerPerson
-                //Console.showMessage("Replaced duplicate officer with player captain: ${playerPerson.nameString}")
-            }
-        }
-
-        if (playerShuttleExists()) {
-            //Need to move the shuttle to the last member in the fleet, but I don't care enough to do this properly.
-            removePlayerShuttle()
-            addPlayerShuttle()
-        }
-
-        if (aggression != -1) {
-            Global.getSector().playerFaction.doctrine.aggression = aggression
-        }
-    }
-
-    fun fulfillPlayerFleet() {
-        val playerFleet = Global.getSector().playerFleet
-
-        // Crew
-        val neededCrew = playerFleet.cargo.maxPersonnel - playerFleet.cargo.crew
-        playerFleet.cargo.addCrew(neededCrew.toInt())
-
-        // Supplies
-        val maxCargoFraction = 0.5f
-
-        val maxSupplies = playerFleet.cargo.maxCapacity - playerFleet.cargo.supplies
-        val suppliesToAdd = getFractionHoldableSupplies(playerFleet, maxCargoFraction).coerceAtMost(maxSupplies.toInt())
-        playerFleet.cargo.addSupplies(suppliesToAdd.toFloat())
-
-        // Fuel
-        val fuelToAdd = playerFleet.cargo.freeFuelSpace
-        playerFleet.cargo.addFuel(fuelToAdd.toFloat())
-
-        // Remove excess supplies
-        if (playerFleet.cargo.supplies > playerFleet.cargo.maxCapacity * maxCargoFraction) {
-            val overflow = playerFleet.cargo.supplies - playerFleet.cargo.maxCapacity * maxCargoFraction
-
-            playerFleet.cargo.removeSupplies(overflow)
-        }
-
-        // Remove excess fuel
-        if (playerFleet.cargo.fuel > playerFleet.cargo.maxFuel) {
-            playerFleet.cargo.removeFuel(playerFleet.cargo.fuel - playerFleet.cargo.maxFuel)
-        }
-
-        // Remove excess crew
-        if (playerFleet.cargo.totalPersonnel > playerFleet.cargo.maxPersonnel) {
-            val removable = playerFleet.cargo.crew - playerFleet.fleetData.minCrew
-            val overflow = playerFleet.cargo.totalPersonnel - playerFleet.cargo.maxPersonnel
-
-            if (removable > 0) {
-                playerFleet.cargo.removeCrew(minOf(removable, overflow).toInt())
-            }
-        }
-        // Repair
-        fullFleetRepair(playerFleet.fleetData)
-
-
-        updateFleetPanelContents()
-    }
-
-    fun copyOfficerData(from: PersonAPI, to: PersonAPI) {
-        //to.id = from.id
-        to.name = from.name
-        to.portraitSprite = from.portraitSprite
-
-        val fromStats = from.stats
-        val toStats = to.stats
-        if (fromStats != null && toStats != null) {
-            toStats.level = fromStats.level
-
-            toStats.xp = fromStats.xp
-            toStats.bonusXp = fromStats.bonusXp
-            toStats.points = fromStats.points
-
-            toStats.skillsCopy.forEach { skill ->
-                toStats.setSkillLevel(skill.skill.id, 0f)
-            }
-
-            fromStats.skillsCopy.forEach { skill ->
-                toStats.setSkillLevel(skill.skill.id, skill.level)
-            }
-        }
-    }
-
-    fun getFractionHoldableSupplies(fleet: CampaignFleetAPI, maxCargoFraction: Float = 1f): Int {
-
-        // Calculate number of supplies needed to reach maxCargoFraction
-        // Cap quantity to 100% remaining cargo space, don't go below 0 either
-        val cargo: CargoAPI = fleet.cargo
-        var total = Math.min(
-            cargo.getSpaceLeft(),
-            Math.max(
-                0f,
-                ((cargo.getMaxCapacity() * maxCargoFraction) - cargo.getSupplies())
-            )
-        ).toInt()
-
-        // Adjust for cargo space supplies take up (if modded, only use 1 in vanilla)
-        val spacePerSupply = Global.getSector().economy
-            .getCommoditySpec("supplies").cargoSpace
-        if (spacePerSupply > 0)
-            total = (total / spacePerSupply).toInt()
-
-        if (total < 0)
-            total = 0
-
-        return total
-    }
-
-    fun fullFleetRepair(fleet: FleetDataAPI) {
-        fleet.membersListCopy.forEach { member ->
-            member.status.repairFully()
-
-            val repairs: RepairTrackerAPI = member.repairTracker
-            repairs.cr = max(repairs.cr, repairs.maxCR)
-            member.setStatUpdateNeeded(true)
-        }
-    }
-
-    fun isMouseHoveringOverComponent(component: UIComponentAPI, pad: Float = 0f): Boolean {
-        val x = component.position.x - pad
-        val y = component.position.y - pad
-        val width = component.position.width + pad * 2
-        val height = component.position.height + pad * 2
-
-        return isMouseWithinBounds(x, y, width, height)
-    }
-
-    fun isMouseWithinBounds(x: Float, y: Float, width: Float, height: Float): Boolean {
-        val mouseX = Global.getSettings().mouseX
-        val mouseY = Global.getSettings().mouseY
-
-        return mouseX >= x && mouseX <= x + width &&
-                mouseY >= y && mouseY <= y + height
-    }
-
-    fun campaignPaste(
-        sector: SectorAPI,
-        data: Any
-    ): Boolean {
-        var newData = data
-        if (newData !is DataFleet.ParsedFleetData) {
-            fun hackTogetherFleet(member: FleetMemberAPI) {
-                val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, true)
-                fleet.fleetData.addFleetMember(member)
-                if (!member.captain.isDefault) {
-                    fleet.fleetData.addOfficer(member.captain)
-                    fleet.commander = member.captain
-                }
-                //fleet.fleetData.setFlagship(member)
-
-                newData = getFleetDataFromFleet(fleet)
-            }
-            if (newData is DataMember.ParsedMemberData) {
-                val member = buildMemberFull(newData as DataMember.ParsedMemberData)
-                hackTogetherFleet(member)
-            } else if (newData is DataVariant.ParsedVariantData) {
-                val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, buildVariantFull(newData as DataVariant.ParsedVariantData))
-                hackTogetherFleet(member)
-            } else if (newData is DataPerson.ParsedPersonData) {
-                DisplayMessage.showMessage(FBTxt.txt("campaign_officer_spawn"), Color.YELLOW)
-                return false
-            } else {
-                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_campaign_paste"), Color.YELLOW)
-                return false
-            }
-        }
-
-        val missing = MissingElements()
-        val validatedData = validateAndCleanFleetData(newData as DataFleet.ParsedFleetData, settings = FleetSettings(), missing = missing)
-
-        if (validatedData.members.isEmpty()) {
-            reportMissingElementsIfAny(missing, FBTxt.txt("fleet_was_empty_when_pasting"))
-            return false
-        }
-
-        Dialogs.spawnFleetInCampaignDialog(sector, newData as DataFleet.ParsedFleetData, validatedData)
-
-        return true
-    }
-
-    fun fleetPaste(
-        sector: SectorAPI,
-        data: Any
-    ) {
-        val playerFleet = sector.playerFleet.fleetData
-
-        var uiShowsSubmarketFleet = false
-
-        val fleetToAddTo = getViewedFleetInFleetPanel() ?: playerFleet
-        if (fleetToAddTo !== playerFleet)
-            uiShowsSubmarketFleet = true
-
-        val missing = MissingElements()
-
-        when (data) {
-            is DataPerson.ParsedPersonData -> {
-                // Officer
-                val person = buildPersonFull(data, missing = missing)
-
-                if (randomPastedCosmetics) {
-                    randomizePersonCosmetics(person, playerFleet.fleet.faction)
-                }
-                playerFleet.addOfficer(person)
-                showMessage(FBTxt.txt("added_officer_to_fleet"))
-            }
-
-            is DataVariant.ParsedVariantData -> {
-                // Variant
-                val variant = buildVariantFull(data, missing = missing)
-
-                if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, FBTxt.txt("could_not_find_hullid_when_variant", missing.hullIds.first()))
-                    return
-                }
-
-                val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)
-
-                if (randomPastedCosmetics)
-                    randomizeMemberCosmetics(member, fleetToAddTo)
-
-                fleetToAddTo.addFleetMember(member)
-
-                val shipName = variant.hullSpec.hullName
-
-                val message = if (uiShowsSubmarketFleet)
-                    FBTxt.txt("added_ship_to_submarket", shipName)
-                else
-                    FBTxt.txt("added_ship_to_fleet", shipName)
-
-                showMessage(message, shipName, Misc.getHighlightColor())
-
-                updateFleetPanelContents()
-            }
-
-            is DataMember.ParsedMemberData -> {
-                // Fleet member
-                val member = buildMemberFull(data, missing = missing)
-
-                if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, FBTxt.txt("could_not_find_hullid_when_member", missing.hullIds.first()))
-                    return
-                }
-
-                if (randomPastedCosmetics)
-                    randomizeMemberCosmetics(member, fleetToAddTo)
-
-                fleetToAddTo.addFleetMember(member)
-                if (!member.captain.isDefault && !member.captain.isAICore && !uiShowsSubmarketFleet)
-                    fleetToAddTo.addOfficer(member.captain)
-
-                val shipName = member.hullSpec.hullName
-                val message = if (uiShowsSubmarketFleet) {
-                    if (member.captain.isDefault) {
-                        FBTxt.txt("added_ship_to_submarket", shipName)
-                    } else {
-                        FBTxt.txt("added_ship_to_submarket_with_officer", shipName)
-                    }
-                } else {
-                    if (member.captain.isDefault) {
-                        FBTxt.txt("added_ship_to_fleet", shipName)
-                    } else {
-                        FBTxt.txt("added_ship_to_fleet_with_officer", shipName)
-                    }
-                }
-
-                showMessage(message, shipName, Misc.getHighlightColor())
-
-                updateFleetPanelContents()
-            }
-
-            is DataFleet.ParsedFleetData -> {
-                // Fleet
-                val subMissing = MissingElements()
-                val validatedFleet = validateAndCleanFleetData(data, missing = subMissing)
-
-                if (validatedFleet.members.isEmpty()) {
-                    reportMissingElementsIfAny(subMissing, FBTxt.txt("fleet_was_empty_when_pasting"))
-                    return
-                }
-
-                Dialogs.pasteFleetIntoPlayerFleetDialog(data, validatedFleet)
-            }
-
-            else -> {
-                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_not_fleet_member_variant_person"), Color.YELLOW)
-            }
-        }
-
-        reportMissingElementsIfAny(missing)
-    }
-
-    fun randomizeMemberCosmetics(
-        member: FleetMemberAPI,
-        fleet: FleetDataAPI
-    ) {
-        member.shipName = fleet.pickShipName(member, Random())
-        randomizePersonCosmetics(member.captain, fleet.fleet?.faction)
-    }
-
-    fun randomizePersonCosmetics(
-        officer: PersonAPI,
-        faction: FactionAPI?
-    ) {
-        if (!officer.isDefault && !officer.isAICore) {
-            val randomPerson = faction?.createRandomPerson()
-            if (randomPerson != null) {
-                officer.name = randomPerson.name
-                officer.portraitSprite = randomPerson.portraitSprite
-            } else {
-                officer.name.gender = FullName.Gender.ANY
-                officer.portraitSprite = getRandomPortrait(officer.name.gender, faction = faction?.id)
-                officer.name.first = "Unknown"
-            }
-        }
-    }
-
-    fun getRandomPortrait(gender: FullName.Gender = FullName.Gender.ANY, faction: String? = null): String {
-        val faction = Global.getSettings().getFactionSpec(faction ?: Factions.PLAYER)
-        return if (gender == FullName.Gender.MALE)
-            faction.malePortraits.pick()
-        else if (gender == FullName.Gender.FEMALE)
-            faction.femalePortraits.pick()
-        else
-            if (Random().nextBoolean()) faction.malePortraits.pick() else faction.femalePortraits.pick()
     }
 
     fun getModInfosFromJson(json: JSONObject, onlyMissing: Boolean = false): MutableSet<GameModInfo> {

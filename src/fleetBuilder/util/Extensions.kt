@@ -2,41 +2,41 @@ package fleetBuilder.util
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.SettingsAPI
-import com.fs.starfarer.api.campaign.CampaignUIAPI
-import com.fs.starfarer.api.campaign.CargoAPI
-import com.fs.starfarer.api.campaign.CargoStackAPI
-import com.fs.starfarer.api.campaign.CoreUITabId
-import com.fs.starfarer.api.campaign.FleetDataAPI
+import com.fs.starfarer.api.campaign.*
+import com.fs.starfarer.api.campaign.impl.items.BlueprintProviderItem
 import com.fs.starfarer.api.campaign.impl.items.ModSpecItemPlugin
-import com.fs.starfarer.api.campaign.impl.items.MultiBlueprintItemPlugin
-import com.fs.starfarer.api.campaign.impl.items.ShipBlueprintItemPlugin
-import com.fs.starfarer.api.campaign.impl.items.WeaponBlueprintItemPlugin
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.loading.VariantSource
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.TooltipMakerAPI
-import com.fs.starfarer.api.ui.UIComponentAPI
-import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.util.lib.ObservedTextField
-import fleetBuilder.variants.VariantLib
-import fleetBuilder.variants.VariantLib.getAllDMods
-import org.apache.log4j.Level
+import com.fs.starfarer.api.fleet.FleetMemberType
+import com.fs.starfarer.api.ui.*
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.ui.common.ObservedTextField
+import fleetBuilder.util.LookupUtil.getAllDMods
+import fleetBuilder.util.api.FleetUtils
+import fleetBuilder.util.api.HullUtils
+import fleetBuilder.util.api.VariantUtils
 import org.json.JSONArray
 import org.json.JSONObject
-import starficz.BoxedUIElement
-import starficz.ReflectionUtils.getMethodsMatching
-import starficz.getChildrenCopy
-import starficz.onClick
+import org.magiclib.kotlin.setAlpha
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.onClick
+import java.awt.Color
 import kotlin.math.pow
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 fun Float.roundToDecimals(decimals: Int): Float {
     val factor = 10.0.pow(decimals).toFloat()
     return (this * factor).roundToInt() / factor
+}
+
+fun Double.roundToDecimals(decimals: Int): Double {
+    val factor = 10.0.pow(decimals)
+    return round(this * factor) / factor
 }
 
 fun JSONArray.containsString(value: String): Boolean {
@@ -54,55 +54,42 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
         if (value != null) {
             list.add(value)
         } else {
-            DisplayMessage.logMessage("Invalid string at index $i in '$fieldName'", Level.WARN, this.javaClass)
+            Global.getLogger(javaClass).warn("Invalid string at index $i in '$fieldName'")
         }
     }
     return list
 }
 
-// Extension to get the effective hull
-fun ShipHullSpecAPI.getEffectiveHull(): ShipHullSpecAPI {
-    return if (isCompatibleWithBase) {
-        if (dParentHull != null) {
-            if (dParentHull.isCompatibleWithBase)
-                dParentHull.baseHull ?: dParentHull
-            else
-                dParentHull
-        } else baseHull ?: this
-    } else
-        this
-}
+/**
+ * Delegates to [HullUtils.getEffectiveHull].
+ */
+fun ShipHullSpecAPI.getEffectiveHull(): ShipHullSpecAPI =
+    HullUtils.getEffectiveHull(this)
 
-fun ShipHullSpecAPI.getEffectiveHullId(): String {
-    return this.getEffectiveHull().hullId
-}
+/**
+ * Returns the effective hull ID of this [ShipHullSpecAPI]. See [HullUtils.getEffectiveHull].
+ */
+fun ShipHullSpecAPI.getEffectiveHullId(): String =
+    HullUtils.getEffectiveHull(this).hullId
 
-fun ShipHullSpecAPI.getCompatibleDLessHull(keepDModSkin: Boolean = false): ShipHullSpecAPI {
-    if (!isDHull) return this
+/**
+ * Delegates to [HullUtils.getCompatibleDLessHull].
+ */
+fun ShipHullSpecAPI.getCompatibleDLessHull(keepDModSkin: Boolean = false): ShipHullSpecAPI =
+    HullUtils.getCompatibleDLessHull(this, keepDModSkin)
 
-    if (keepDModSkin && (baseHull != null && baseHull.spriteName != spriteName))
-        return this
+/**
+ * Returns the compatible D less hull ID of this [ShipHullSpecAPI]. See [HullUtils.getCompatibleDLessHull].
+ */
+fun ShipHullSpecAPI.getCompatibleDLessHullId(keepDModSkin: Boolean = false): String =
+    HullUtils.getCompatibleDLessHull(this, keepDModSkin).hullId
 
-    // 0.98a
-    // Note that sometimes isCompatibleWithBase is true but dParentHull is null despite being a dmodded ship.
-    // This usually occurs on ships such as the dominator_d whereas the ship has a custom "dmodded" skin (and thus a variant json file)
-    // When isCompatibleWithBase is true and dParentHull is not null, that usually occurs with fake "dmodded" hulls where there is no custom skin nor variant json file.
 
-    if (isCompatibleWithBase) {
-        if (dParentHull != null)
-            return dParentHull
-        else if (!keepDModSkin && baseHull != null)
-            return baseHull
-    }
-
-    return this
-}
-
-fun ShipHullSpecAPI.getCompatibleDLessHullId(keepDModSkin: Boolean = false): String {
-    return this.getCompatibleDLessHull(keepDModSkin).hullId
-}
-
-// Use this to be extra sure a hullmod was completely removed.
+/**
+ * Completely removes a mod from the variant. This includes removing it from sMods, sModdedBuiltIns, suppressedMods, and hullMods.
+ *
+ * @param modId The ID of the mod to be removed.
+ */
 fun ShipVariantAPI.completelyRemoveMod(modId: String) {
     sModdedBuiltIns.remove(modId)
     suppressedMods.remove(modId)
@@ -113,16 +100,19 @@ fun ShipVariantAPI.completelyRemoveMod(modId: String) {
 
 fun ShipVariantAPI.isEquivalentTo(
     other: ShipVariantAPI,
-    options: VariantLib.CompareOptions = VariantLib.CompareOptions()
+    options: VariantUtils.CompareOptions = VariantUtils.CompareOptions()
 ): Boolean {
-    return VariantLib.compareVariantContents(
+    return VariantUtils.compareVariantContents(
         this,
         other,
         options
     )
 }
 
-//Get all dMods in the variant
+
+/**
+ * Returns a set of all DMods in the variant.
+ */
 fun ShipVariantAPI.allDMods(): Set<String> {
     val allDMods = getAllDMods()
     val dMods = mutableSetOf<String>()
@@ -133,7 +123,9 @@ fun ShipVariantAPI.allDMods(): Set<String> {
     return dMods
 }
 
-//Get all sMods and sModdedBuiltIns in the variant
+/**
+ * Returns a set of all SMods in the variant. This includes both SMods and SModdedBuiltIns.
+ */
 fun ShipVariantAPI.allSMods(): Set<String> {
     val outputSMods = mutableSetOf<String>()
     for (mod in sMods) {
@@ -145,7 +137,9 @@ fun ShipVariantAPI.allSMods(): Set<String> {
     return outputSMods
 }
 
-//Gets all hullmods that are not smods, perma mods, suppressed mods, or built in mods. Just ordinary hullmods.
+/**
+ * Gets all hullmods that are not sMods, perma mods, suppressed mods, or built-in mods. Simply the ordinary hullmods only.
+ */
 fun ShipVariantAPI.getRegularHullMods(): Set<String> {
     return hullMods
         .filter { !sModdedBuiltIns.contains(it) && !sMods.contains(it) && !permaMods.contains(it) && !suppressedMods.contains(it) && !hullSpec.builtInMods.contains(it) }
@@ -162,7 +156,7 @@ fun FleetMemberAPI.getShipNameWithoutPrefix(): String {
         fleetData?.fleet?.faction?.shipNamePrefixOverride?.let { if (it.isNotBlank()) add(it) }
 
         // Loop through all known factions
-        Global.getSector().allFactions.forEach { faction ->
+        Global.getSector()?.allFactions?.forEach { faction ->
             faction?.shipNamePrefix?.let { if (it.isNotBlank()) add(it) }
             faction?.shipNamePrefixOverride?.let { if (it.isNotBlank()) add(it) }
         }
@@ -176,18 +170,37 @@ fun FleetMemberAPI.getShipNameWithoutPrefix(): String {
     }
 }
 
+/**
+ * Returns the actual current tab of the campaign UI.
+ *
+ * This function is necessary because the campaign UI sometimes reports that the player is still in a UI screen even if they are not.
+ * This can happen when the player escapes out of a UI screen while in an interaction dialog.
+ *
+ * This function checks if the player is in a ghost interaction dialog and if so, returns null, indicating that the player is not in a UI screen.
+ */
 fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
     if (!Global.getSector().isPaused) return null
     if (currentInteractionDialog != null && currentInteractionDialog.interactionTarget != null) {
-        //Validate that we're not stuck in a ghost interaction dialog. (Happens when you escape out of a UI screen while in an interaction dialog. It reports that the player is still in that ui screen, which is false)
+        // Validate that we're not stuck in a ghost interaction dialog. (Happens when you escape out of a UI screen while in an interaction dialog. It reports that the player is still in that ui screen, which is false)
         if (currentInteractionDialog.optionPanel != null && currentInteractionDialog.optionPanel.savedOptionList.isNotEmpty()) return null
     }
 
     return currentCoreTab
 }
 
-val String.toBinary: Int
-    get() = if (this.equals("TRUE", ignoreCase = true) || this == "1") 1 else 0
+val String.toBinary: Int?
+    get() =
+        if (this.equals("TRUE", ignoreCase = true) || this == "1") 1
+        else if (this.equals("FALSE", ignoreCase = true) || this == "0") 0
+        else null
+
+val String.toBoolean: Boolean?
+    get() =
+        when (this.toBinary) {
+            1 -> true
+            0 -> false
+            else -> null
+        }
 
 fun CargoStackAPI.moveStack(to: CargoAPI, inputAmount: Float = -1f) {
     if (!this.isNull && this.cargo !== to && inputAmount != 0f) {
@@ -293,10 +306,10 @@ fun CargoAPI.moveBlueprintAndModSpec(to: CargoAPI, inputAmount: Float = -1f) {
 }
 
 fun CargoStackAPI.isBlueprintOrModSpec(): Boolean {
-    return this.type == CargoAPI.CargoItemType.SPECIAL && (this.plugin is ShipBlueprintItemPlugin || this.plugin is WeaponBlueprintItemPlugin || this.plugin is MultiBlueprintItemPlugin || this.plugin is ModSpecItemPlugin)
+    return this.type == CargoAPI.CargoItemType.SPECIAL && (this.plugin is BlueprintProviderItem || this.plugin is ModSpecItemPlugin)
 }
 
-fun String.startsWithJsonBracket(): Boolean {
+fun String.isJSON(): Boolean {
     this.lineSequence()
         .map { it.substringBefore("#") }           // Remove inline comments
         .map { it.trim() }                          // Trim whitespace
@@ -309,9 +322,11 @@ fun String.startsWithJsonBracket(): Boolean {
     return false
 }
 
+// Why was this commented out? Does it have an issue?
 //internal fun UIPanelAPI.findChildWithField(fieldName: String): UIComponentAPI? {
 //    return getChildrenCopy().find { it.getFieldsMatching(name = fieldName).isNotEmpty() }
 //}
+
 /*
 fun PersonAPI.isGenericOfficer(): Boolean {
     var hasSkill = false
@@ -324,64 +339,65 @@ fun PersonAPI.isGenericOfficer(): Boolean {
     return !hasSkill
 }*/
 
-// This exists because createEmptyVariant does not create modules.
-// Remember to change the source of the variant to VariantSource.REFIT if you don't want the variant to be forgotten between save games.
-fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
-    return run {
-        val effectiveHullID = hull.getEffectiveHullId()
-        val variants = VariantLib.getVariantsFromEffectiveHullID(effectiveHullID)
-
-        val exactId = hull.hullId
-        val dLessId = hull.getCompatibleDLessHullId()
-
-        variants?.filter { it.source == VariantSource.HULL } // Filter out non hull variants
-            ?.takeIf { it.isNotEmpty() }
-            ?.let { hullVariants ->
-                hullVariants.find { it.hullSpec.hullId == exactId }          // Exact match
-                    ?: hullVariants.find { it.hullSpec.hullId == dLessId }   // D-less match
-                    ?: hullVariants.find { it.hullSpec.hullId == effectiveHullID } // Effective match
-                    ?: run {
-                        DisplayMessage.logMessage("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'", Level.WARN, this.javaClass)
-                        hullVariants.firstOrNull()// Cannot find a good enough match, just go for whatever
-                    }
-            }
-    } ?: runCatching {
-        val emptyVariant = this.createEmptyVariant(hull.hullId, hull)
-        DisplayMessage.logMessage(
-            "Failed to find HULL variant for '${hull.hullId}' and fell back to createEmptyVariant. This can usually be ignored." +
-                    "However, ships may spawn without modules which can crash the game in certain circumstances", Level.WARN, this.javaClass
-        )
-        emptyVariant
-    }.getOrNull() ?: run {
-        DisplayMessage.showError("Failed to find HULL variant for '${hull.hullId}'")
-        VariantLib.createErrorVariant("MISSINGHULLVARIANT:${hull.hullId}")
-    }
+fun CampaignUIAPI.isIdle(): Boolean {
+    return currentInteractionDialog == null &&
+            !isShowingDialog &&
+            !isShowingMenu
 }
 
-fun ShipHullSpecAPI.createHullVariant(): ShipVariantAPI {
-    return Global.getSettings().createHullVariant(this)
-}
+/**
+ * Delegates to [HullUtils.createHullVariant].
+ */
+fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI =
+    HullUtils.createHullVariant(hull)
+
+/**
+ * Delegates to [HullUtils.createHullVariant].
+ */
+fun ShipHullSpecAPI.createHullVariant(): ShipVariantAPI =
+    HullUtils.createHullVariant(this)
+
+fun ShipVariantAPI.createFleetMember(): FleetMemberAPI =
+    Global.getSettings().createFleetMember(if (isFighter) FleetMemberType.FIGHTER_WING else FleetMemberType.SHIP, this)
 
 
 internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
-    val target = if (this is BoxedUIElement) this.boxedElement else this
     val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
-    val reflectedMethods = target.getMethodsMatching(name, parameterTypes = paramTypes)
+    val reflectedMethods = this.getMethodsMatching(name, parameterTypes = paramTypes)
     if (reflectedMethods.isEmpty()) {
         DisplayMessage.showError(
-            short = "ERROR: No method found on class: ${target::class.java.name}. See console for more details.",
-            full = "No method found for name: '$name' on class: ${target::class.java.name} " +
+            short = "ERROR: No method found on class: ${this::class.java.name}. See console for more details.",
+            full = "No method found for name: '$name' on class: ${this::class.java.name} " +
                     "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}"
         )
-        return null
     } else if (reflectedMethods.size > 1) {
         DisplayMessage.showError(
-            short = "ERROR: Ambiguous method call on class: ${target::class.java.name}. See console for more details.",
-            full = "Ambiguous method call for name: '$name' on class: ${target::class.java.name}. " +
+            short = "ERROR: Ambiguous method call on class: ${this::class.java.name}. See console for more details.",
+            full = "Ambiguous method call for name: '$name' on class: ${this::class.java.name}. " +
                     "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
         )
-        return null
-    } else return reflectedMethods[0].invoke(target, *args)
+    } else return reflectedMethods[0].invoke(this, *args)
+
+    return null
+}
+
+internal fun Any.safeGet(name: String? = null, type: Class<*>? = null, searchSuperclass: Boolean = false): Any? {
+    val reflectedFields = this.getFieldsMatching(name, fieldAssignableTo = type, searchSuperclass = searchSuperclass)
+    if (reflectedFields.isEmpty())
+        DisplayMessage.showError(
+            short = "ERROR: No field found on class: ${this::class.java.name}. See console for more details.",
+            full = "No field found for name: '${name ?: "<any>"}' on class: ${this::class.java.name} " +
+                    "that is assignable to type: '${type?.name ?: "<any>"}'."
+        )
+    else if (reflectedFields.size > 1)
+        DisplayMessage.showError(
+            short = "ERROR: Ambiguous fields on class: ${this::class.java.name}. See console for more details.",
+            full = "Ambiguous fields with name: '${name ?: "<any>"}' on class ${this::class.java.name} " +
+                    "assignable to type: '${type?.name ?: "<any>"}'. Multiple fields match."
+        )
+    else return reflectedFields[0].get(this)
+
+    return null
 }
 
 //For optimization purposes
@@ -389,8 +405,18 @@ internal fun UIPanelAPI.findChildWithMethodReversed(methodName: String): UICompo
     return getChildrenCopy().asReversed().find { it.getMethodsMatching(name = methodName).isNotEmpty() }
 }
 
-fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> {
-    return this.officersCopy.map { it.person }.filter { this.getMemberWithCaptain(it) == null }
+internal fun UIPanelAPI.findChildWithPlugin(clazz: Class<*>): CustomPanelAPI? {
+    return getChildrenCopy().firstOrNull { child ->
+        (child as? CustomPanelAPI)?.plugin?.let { clazz.isInstance(it) } == true
+    } as? CustomPanelAPI
+}
+
+fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> =
+    FleetUtils.getUnassignedOfficers(this)
+
+// Do not show hotkey on button
+fun ButtonAPI.addShortcutNoShow(key: Int) {
+    this.safeInvoke("addExtraShortcut", key, false, false, false)
 }
 
 fun TooltipMakerAPI.addToggle(
@@ -469,4 +495,13 @@ fun TooltipMakerAPI.addNumericTextField(
 
     addCustom(observedText.component, 0f)
     return observedText
+}
+
+fun Color.setColor(red: Int? = null, green: Int? = null, blue: Int? = null, alpha: Int? = null): Color {
+    return Color(red ?: this.red, green ?: this.green, blue ?: this.blue, alpha ?: this.alpha)
+}
+
+fun Color.withAlphaMult(alphaMult: Float): Color {
+    val clampedAlphaMult = alphaMult.coerceIn(0f, 1f)
+    return this.setAlpha((clampedAlphaMult * 255).toInt())
 }

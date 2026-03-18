@@ -3,4 +3,4 @@ listenerId,listenerClass,priority
 # listenerClass - Called before (with a chance to take over execution) and after the console executes each command,,
 # (listenerClass must implement the org.lazywizard.console.CommandListener interface),,
 # priority - The listener with the highest priority wins when intercepting execution of a command,,
-FBCommandIntercept,fleetBuilder.consoleCommands.CommandIntercept,0
+FBCommandIntercept,fleetBuilder.console.CommandIntercept,0
