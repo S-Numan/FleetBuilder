@@ -102,7 +102,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
                 ClipboardMisc.codexEntryToClipboard(codex)
                 event.consume()
             }
-            ui.getActualCurrentTab() == CoreUITabId.FLEET -> if (handleUIFleetCopy(sector)) event.consume()
+            ui.getActualCurrentTab() == CoreUITabId.FLEET -> if (handleUIFleetCopy(sector, event.isShiftDown)) event.consume()
             ui.getActualCurrentTab() == CoreUITabId.REFIT -> if (handleRefitCopy(event.isShiftDown)) event.consume()
             ui.currentInteractionDialog != null -> if (handleInteractionCopy(ui, event.isAltDown, event.isShiftDown)) event.consume()
         }

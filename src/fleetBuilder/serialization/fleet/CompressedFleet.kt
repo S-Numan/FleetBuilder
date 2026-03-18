@@ -150,7 +150,6 @@ object CompressedFleet {
             val officersBlock = blocks[4]
 
             if (officersBlock.isNotBlank()) {
-
                 officersBlock.split(fleetSep1)
                     .filter { it.isNotBlank() }
                     .forEach {
