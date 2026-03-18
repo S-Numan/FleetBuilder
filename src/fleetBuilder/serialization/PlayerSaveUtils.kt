@@ -81,7 +81,8 @@ object PlayerSaveUtils {
                     includeCommanderAsOfficer = false
                     memberSettings.includeOfficer = handleOfficers
                     includeIdleOfficers = handleOfficers
-                }
+                },
+                includePrepend = false
             )
             json.put("fleet", compFleet)
         }
