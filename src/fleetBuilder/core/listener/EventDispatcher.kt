@@ -186,10 +186,10 @@ internal class EventDispatcher : EveryFrameScript {
     override fun advance(amount: Float) {
         if (Global.getSector().isPaused) {
             val officerChanges = officerTracker.getChangedAssignments()
-            OfficerChangeEvents.notifyAll(officerChanges)
+            OfficerChangeEvents.notify(officerChanges)
 
             val memberChanges = memberTracker.getChangedMembers()
-            MemberChangeEvents.notifyAll(memberChanges)
+            MemberChangeEvents.notify(memberChanges)
         }
 
         //Detect DevMode change
