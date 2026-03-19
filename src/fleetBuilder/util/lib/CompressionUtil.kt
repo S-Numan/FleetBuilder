@@ -7,7 +7,7 @@ import java.util.zip.Inflater
 object CompressionUtil {
     const val BLOCK_SIZE = 1024
 
-    fun compressString(input: String): String {
+    fun base64Deflate(input: String): String {
         val data = input.toByteArray(Charsets.UTF_8)
         val fullOutput = mutableListOf<ByteArray>()
         var result: ByteArray
@@ -37,7 +37,7 @@ object CompressionUtil {
         return base64
     }
 
-    fun decompressString(input: String): String? {
+    fun base64Inflate(input: String): String? {
         try {
             val compressed = Base64.getDecoder().decode(input)
             val fullOutput = mutableListOf<ByteArray>()

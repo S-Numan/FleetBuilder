@@ -3,7 +3,7 @@
 
   "backup_save_not_found": "Backup save not found",
   "backup_save_read_error": "Failed to read backup save json",
-  "failed_to_read_json_in_clipboard": "Failed to read json in clipboard",
+  "failed_to_read_save_in_clipboard": "Failed to read save in clipboard",
   "no_missing_elements": "No missing elements.",
   "cargo_auto_manage_message": "Cargo auto-managed",
   "officer_copied_to_clipboard": "Officer copied to clipboard",

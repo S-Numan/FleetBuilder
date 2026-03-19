@@ -79,7 +79,7 @@ object CompressedCargo {
         var cargoString = parts.joinToString(fieldSep)
 
         if (compress)
-            cargoString = CompressionUtil.compressString(cargoString)
+            cargoString = CompressionUtil.base64Deflate(cargoString)
 
         return "$ver$cargoString"
     }
@@ -101,7 +101,7 @@ object CompressedCargo {
         val fullData = when (metaVersion) {
             "c0" -> {
                 val compressedData = comp.substring(metaIndexEnd + 1)
-                CompressionUtil.decompressString(compressedData)
+                CompressionUtil.base64Inflate(compressedData)
             }
             "C0" -> comp.substring(metaIndexEnd + 1)
             else -> return missing

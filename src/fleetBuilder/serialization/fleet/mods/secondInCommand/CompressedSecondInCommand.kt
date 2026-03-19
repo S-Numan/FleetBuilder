@@ -34,7 +34,7 @@ object CompressedSecondInCommand {
         val version = comp.substring(metaStart + 1, metaEnd)
 
         val fullData = when (version) {
-            "s0" -> CompressionUtil.decompressString(comp.substring(metaEnd + 1))
+            "s0" -> CompressionUtil.base64Inflate(comp.substring(metaEnd + 1))
             "S0" -> comp.substring(metaEnd + 1)
             else -> return null
         } ?: return null
@@ -48,24 +48,28 @@ object CompressedSecondInCommand {
 
         for (officerStr in officerStrings) {
             try {
+                val personString = officerStr.substringBefore(sep + metaSep + fieldSep)
+                if (personString.isEmpty())
+                    continue
+                val theRest = officerStr.substringAfter(sep + metaSep + fieldSep)
+                if (theRest.isEmpty())
+                    continue
 
-                val fields = officerStr.split(fieldSep)
+                val fields = theRest.split(fieldSep)
 
-                val personString = fields.getOrNull(0) ?: continue
-
-                val level = fields.getOrNull(1)?.toIntOrNull() ?: 1
-                val aptitudeId = fields.getOrNull(2) ?: continue
-                val skillPoints = fields.getOrNull(3)?.toIntOrNull() ?: 0
-                val experiencePoints = fields.getOrNull(4)?.toFloatOrNull() ?: 0f
+                val level = fields.getOrNull(0)?.toIntOrNull() ?: 1
+                val aptitudeId = fields.getOrNull(1) ?: continue
+                val skillPoints = fields.getOrNull(2)?.toIntOrNull() ?: 0
+                val experiencePoints = fields.getOrNull(3)?.toFloatOrNull() ?: 0f
 
                 val skillIDs =
-                    fields.getOrNull(5)
+                    fields.getOrNull(4)
                         ?.takeIf { it.isNotBlank() }
                         ?.split(sep)
                         ?: emptyList()
 
                 val assignedSlot =
-                    fields.getOrNull(6)?.toIntOrNull()
+                    fields.getOrNull(5)?.toIntOrNull()
 
                 val person =
                     CompressedPerson.extractPersonDataFromCompString(
@@ -105,16 +109,14 @@ object CompressedSecondInCommand {
         val ver = "$metaSep$structureVersion$metaSep"
 
         val officersBlock = buildString {
-
             data.officers.forEach { officer ->
-
                 val personString =
                     CompressedPerson.savePersonToCompString(
                         officer.person,
                         includePrepend = false,
                         includeModInfo = false,
                         compress = false
-                    )
+                    ) + sep + metaSep
 
                 val parts = mutableListOf<String>()
 
@@ -134,7 +136,7 @@ object CompressedSecondInCommand {
         var result = officersBlock
 
         if (compress)
-            result = CompressionUtil.compressString(result)
+            result = CompressionUtil.base64Deflate(result)
 
         result = "$ver$result"
 

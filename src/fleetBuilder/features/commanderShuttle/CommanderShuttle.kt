@@ -31,7 +31,7 @@ internal class CommanderShuttle : CurrentLocationChangedListener {
                 sector.addTransientListener(commanderShuttleListener)
             }
 
-            OfficerChangeEvents.addTransientListener { change ->
+            OfficerChangeEvents.addListener { change ->
                 //Remove commandShuttle if was piloted by player and is no longer
                 if (change.previous != null && change.previous.isPlayer &&
                     change.member.variant?.hasHullMod(ModSettings.commandShuttleId) == true

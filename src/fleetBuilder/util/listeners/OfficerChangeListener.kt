@@ -6,40 +6,45 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
+import java.util.concurrent.CopyOnWriteArrayList
 
-fun interface ShipOfficerChangeListener {
+fun interface OfficerChangeListener {
     fun onOfficerAssignmentChanged(change: OfficerChangeTracker.OfficerChange)
 }
 
 object OfficerChangeEvents {
-    private val listeners = mutableListOf<ShipOfficerChangeListener>()
+    private val listeners = CopyOnWriteArrayList<OfficerChangeListener>()
+    fun getListeners(): List<OfficerChangeListener> = listeners.toList()
 
-    fun addTransientListener(listener: ShipOfficerChangeListener) {
+    fun addListener(listener: OfficerChangeListener) {
         listeners += listener
     }
 
-    fun removeTransientListener(listener: ShipOfficerChangeListener) {
+    fun removeListener(listener: OfficerChangeListener) {
         listeners -= listener
     }
 
-    fun removeTransientListenerWithClass(clazz: Class<out ShipOfficerChangeListener>) {
-        listeners.removeAll { it::class.java == clazz }
+    fun removeListenerOfClass(clazz: Class<out OfficerChangeListener>) {
+        listeners.removeAll { clazz.isInstance(it) }
     }
 
-    fun clearAll() {
+    fun hasListener(listener: OfficerChangeListener): Boolean {
+        return listener in listeners
+    }
+
+    fun hasListenerOfClass(clazz: Class<out OfficerChangeListener>): Boolean {
+        return listeners.any { clazz.isInstance(it) }
+    }
+
+    internal fun clearAll() {
         listeners.clear()
     }
 
-    fun notify(change: OfficerChangeTracker.OfficerChange) {
-        for (listener in listeners) {
-            listener.onOfficerAssignmentChanged(change)
-        }
-    }
+    fun notify(change: OfficerChangeTracker.OfficerChange) =
+        listeners.forEach { it.onOfficerAssignmentChanged(change) }
 
-    fun notifyAll(changes: List<OfficerChangeTracker.OfficerChange>) {
-        for (change in changes) {
-            notify(change)
-        }
+    fun notify(changes: Iterable<OfficerChangeTracker.OfficerChange>) {
+        changes.forEach { notify(it) }
     }
 }
 

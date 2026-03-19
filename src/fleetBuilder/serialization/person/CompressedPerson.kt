@@ -55,7 +55,7 @@ object CompressedPerson {
         val fullData = when (metaVersion) {
             "p0" -> {
                 val compressedData = comp.substring(metaIndexEnd + 1)
-                CompressionUtil.decompressString(compressedData)
+                CompressionUtil.base64Inflate(compressedData)
             }
             "P0" -> comp.substring(metaIndexEnd + 1)
             else -> return null
@@ -294,7 +294,7 @@ object CompressedPerson {
 
         // Compression
         if (compress)
-            personString = CompressionUtil.compressString(personString)
+            personString = CompressionUtil.base64Deflate(personString)
 
         personString = "$ver$personString"
 

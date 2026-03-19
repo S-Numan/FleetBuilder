@@ -61,7 +61,7 @@ object CompressedFleet {
         val fullData = when (metaVersion) {
             "f0" -> {
                 val compressedData = comp.substring(metaIndexEnd + 1)
-                CompressionUtil.decompressString(compressedData)
+                CompressionUtil.base64Inflate(compressedData)
             }
             "F0" -> comp.substring(metaIndexEnd + 1)
             else -> return null
@@ -150,7 +150,6 @@ object CompressedFleet {
             val officersBlock = blocks[4]
 
             if (officersBlock.isNotBlank()) {
-
                 officersBlock.split(fleetSep1)
                     .filter { it.isNotBlank() }
                     .forEach {
@@ -333,7 +332,7 @@ object CompressedFleet {
         /* -------- COMPRESSION -------- */
 
         if (compress)
-            fleetString = CompressionUtil.compressString(fleetString)
+            fleetString = CompressionUtil.base64Deflate(fleetString)
 
         fleetString = "$ver$fleetString"
 

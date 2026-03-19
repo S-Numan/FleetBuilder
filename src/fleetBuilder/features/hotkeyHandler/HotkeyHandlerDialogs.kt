@@ -23,6 +23,7 @@ import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.otherMods.starficz.width
 import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingElementsExtended
 import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
@@ -217,9 +218,9 @@ object HotkeyHandlerDialogs {
             toggleDev.onClick {
                 Global.getSettings().isDevMode = toggleDev.isChecked
                 if (toggleDev.isChecked)
-                    UIUtils.playSound("FB_ui_char_increase_skill")
-                else
                     UIUtils.playSound("FB_ui_char_decrease_skill")
+                else
+                    UIUtils.playSound("FB_ui_char_increase_skill")
             }
             toggleDev.setShortcut(Keyboard.KEY_D, true)
             toggleDev.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 120f) { tooltip ->
@@ -541,7 +542,7 @@ object HotkeyHandlerDialogs {
             ui.addSpacer(buttonHeight)
 
             ui.addButton(FBTxt.txt("copy_save_to_clipboard"), null, ui.width, buttonHeight, 3f).onClick {
-                val json = PlayerSaveUtils.createPlayerSaveJson(
+                val json = PlayerSaveUtils.createSaveJson(
                     handleCargo = isEnabled(SaveOption.CARGO),
                     handleRelations = isEnabled(SaveOption.REPUTATION),
                     handleKnownBlueprints = isEnabled(SaveOption.BLUEPRINTS),
@@ -553,7 +554,7 @@ object HotkeyHandlerDialogs {
                     handleAbilityBar = isEnabled(SaveOption.ABILITYBAR)
                 )
 
-                ClipboardUtil.setClipboardText(json.toString(4))
+                ClipboardUtil.setClipboardText(json)
                 DisplayMessage.showMessage(FBTxt.txt("save_copied_to_clipboard"))
 
                 dialog.dismiss()
@@ -561,14 +562,10 @@ object HotkeyHandlerDialogs {
 
             ui.addButton(FBTxt.txt("load_save_from_clipboard"), null, ui.width, buttonHeight, 3f).onClick {
 
-                val json = ClipboardUtil.getClipboardJson()
+                val json = ClipboardUtil.getClipboardJson() ?: ClipboardUtil.getClipboardTextSafe()
 
-                if (json == null) {
-                    DisplayMessage.showMessage(FBTxt.txt("failed_to_read_json_in_clipboard"), Color.YELLOW)
-                    return@onClick
-                }
-
-                val (compiled, missing) = PlayerSaveUtils.compilePlayerSaveJson(json)
+                val missing = MissingElementsExtended()
+                val compiled = PlayerSaveUtils.compileSaveAny(json, missing)
 
                 if (compiled.isEmpty()) {
                     reportMissingElementsIfAny(missing)
@@ -579,7 +576,7 @@ object HotkeyHandlerDialogs {
                     return@onClick
                 }
 
-                PlayerSaveUtils.loadPlayerCompiledSave(
+                PlayerSaveUtils.loadCompiledSave(
                     compiled,
                     handleCargo = isEnabled(SaveOption.CARGO),
                     handleRelations = isEnabled(SaveOption.REPUTATION),

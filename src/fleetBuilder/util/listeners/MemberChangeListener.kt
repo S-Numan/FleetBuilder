@@ -2,40 +2,45 @@ package fleetBuilder.util.listeners
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import java.util.concurrent.CopyOnWriteArrayList
 
 fun interface MemberChangeListener {
     fun onFleetMemberChanged(change: MemberChangeTracker.MemberChange)
 }
 
 object MemberChangeEvents {
-    private val listeners = mutableListOf<MemberChangeListener>()
+    private val listeners = CopyOnWriteArrayList<MemberChangeListener>()
+    fun getListeners(): List<MemberChangeListener> = listeners.toList()
 
-    fun addTransientListener(listener: MemberChangeListener) {
+    fun addListener(listener: MemberChangeListener) {
         listeners += listener
     }
 
-    fun removeTransientListener(listener: MemberChangeListener) {
+    fun removeListener(listener: MemberChangeListener) {
         listeners -= listener
     }
 
-    fun removeTransientListenerWithClass(clazz: Class<out MemberChangeListener>) {
-        listeners.removeAll { it::class.java == clazz }
+    fun removeListenerOfClass(clazz: Class<out MemberChangeListener>) {
+        listeners.removeAll { clazz.isInstance(it) }
     }
 
-    fun clearAll() {
+    fun hasListener(listener: MemberChangeListener): Boolean {
+        return listener in listeners
+    }
+
+    fun hasListenerOfClass(clazz: Class<out MemberChangeListener>): Boolean {
+        return listeners.any { clazz.isInstance(it) }
+    }
+
+    internal fun clearAll() {
         listeners.clear()
     }
 
-    fun notify(change: MemberChangeTracker.MemberChange) {
-        for (listener in listeners) {
-            listener.onFleetMemberChanged(change)
-        }
-    }
+    fun notify(change: MemberChangeTracker.MemberChange) =
+        listeners.forEach { it.onFleetMemberChanged(change) }
 
-    fun notifyAll(changes: List<MemberChangeTracker.MemberChange>) {
-        for (change in changes) {
-            notify(change)
-        }
+    fun notify(changes: Iterable<MemberChangeTracker.MemberChange>) {
+        changes.forEach { notify(it) }
     }
 }
 
