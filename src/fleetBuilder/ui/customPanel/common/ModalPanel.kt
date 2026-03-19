@@ -20,7 +20,8 @@ open class ModalPanel : ComposablePanel() {
 
     enum class PanelAnimation {
         RESIZE_FADE,
-        FADE_ONLY
+        FADE_ONLY,
+        NONE
     }
 
     open var animation = PanelAnimation.RESIZE_FADE
@@ -69,7 +70,7 @@ open class ModalPanel : ComposablePanel() {
         if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
             Global.getCombatEngine().isPaused = true
 
-        if (openDuration == 0f)
+        if (openDuration == 0f || animation == PanelAnimation.NONE)
             setMaxSize()
 
         return panel
@@ -113,6 +114,7 @@ open class ModalPanel : ComposablePanel() {
                 (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
                 (event.isRMBEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
             ) {
+                //TODO, fix me properly. Actually check if ESC was just let go
                 if (attemptedExit) {
                     dismiss()
                     event.consume()
@@ -139,7 +141,7 @@ open class ModalPanel : ComposablePanel() {
             panel.removeComponent(it)
         }
 
-        if (closeDuration == 0f)
+        if (closeDuration == 0f || animation == PanelAnimation.NONE)
             forceDismiss()
     }
 

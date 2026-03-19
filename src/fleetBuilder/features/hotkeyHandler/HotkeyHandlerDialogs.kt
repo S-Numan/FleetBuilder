@@ -211,6 +211,8 @@ object HotkeyHandlerDialogs {
 
     fun createDevModeDialog() {
         val dialog = DialogPanel(FBTxt.txt("dev_options_title"))
+        dialog.openDuration = 0f
+        dialog.closeDuration = 0f
 
         dialog.show(width = 500f, height = 200f) { ui ->
             val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)

@@ -10,16 +10,26 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManage
-import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManage
+import fleetBuilder.core.ModSettings.PRIMARYDIR
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromMap
+import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
+import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManageToMap
+import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManageToSubmarket
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.unsetCargoAutoManage
-import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.otherMods.starficz.*
+import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
 import fleetBuilder.ui.customPanel.common.BasePanel
+import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.ui.customPanel.common.ModalPanel
+import fleetBuilder.util.FBMisc.jsonArrayToList
+import fleetBuilder.util.FBMisc.listToJsonArray
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.addToggle
 import fleetBuilder.util.safeInvoke
+import org.json.JSONArray
+import org.json.JSONObject
 import org.lwjgl.input.Keyboard
-import fleetBuilder.otherMods.starficz.*
 
 //The implementation of this is extremely scuffed, I am aware.
 
@@ -82,6 +92,7 @@ internal class CargoAutoManageUIPlugin(
 
     var interactToggle: ButtonAPI? = null
     var leaveToggle: ButtonAPI? = null
+
     fun createCargoAutoManage(): CargoAutoManage.AutoManage {
         val itemAutoManages = mutableListOf<CargoAutoManage.ItemAutoManage>()
 
@@ -104,7 +115,7 @@ internal class CargoAutoManageUIPlugin(
         return CargoAutoManage.AutoManage(
             interactToggle?.isChecked ?: false,
             leaveToggle?.isChecked ?: false,
-            itemAutoManages
+            autoManageItems = itemAutoManages
         )
     }
 
@@ -216,7 +227,7 @@ internal class CargoAutoManageUIPlugin(
     init {
         market = selectedSubmarket.market
 
-        val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
+        val cargoAutoManage = loadCargoAutoManageFromSubmarket(selectedSubmarket)
             ?: CargoAutoManage.AutoManage()
 
         //dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
@@ -307,14 +318,12 @@ internal class CargoAutoManageUIPlugin(
 
             val buttonHeight = 24f
 
-            ui.addButton("Reset Settings", null, ui.width, buttonHeight, 0f).onClick {
-
+            val resetSettingsButton = ui.addButton("Reset Settings", null, ui.width, buttonHeight, 0f)
+            resetSettingsButton.onClick {
                 val areYouSureDialog = DialogPanel(headerTitle = "Are you sure?")
-
                 areYouSureDialog.show(380f, 80f) { _ ->
                     areYouSureDialog.addActionButtons(confirmText = "Yes", cancelText = "No", alignment = Alignment.MID)
                 }
-
                 areYouSureDialog.onConfirm {
                     dialog.forceDismiss(false)
 
@@ -333,6 +342,161 @@ internal class CargoAutoManageUIPlugin(
 
             ui.addSpacer(buttonHeight)
 
+            val heightSoFar = ui.heightSoFar
+            val availablePoliciesButton = ui.addButton(
+                "Available policies", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(),
+                Alignment.MID, CutStyle.BL_TR, 128f, 32f, 0f
+            )
+            availablePoliciesButton.position.belowRight(resetSettingsButton, 8f)
+            ui.heightSoFar = heightSoFar
+            availablePoliciesButton.onClick {
+                val autoManagePoliciesDialog = DialogPanel(headerTitle = "Available policies")
+
+                autoManagePoliciesDialog.show(430f, 800f) { externalUI ->
+                    try {
+                        val innerPanel = Global.getSettings().createCustom(externalUI.width, externalUI.height, null)
+                        val innerUI = innerPanel.createUIElement(externalUI.width, externalUI.height, true)
+
+                        val currentAutoManage = createCargoAutoManage()
+
+                        val cargoAutoManagerPoliciesPath = "${PRIMARYDIR}CargoAutoManagerPolicies"
+                        var cargoAutoManagerPoliciesJSON = runCatching {
+                            if (Global.getSettings().fileExistsInCommon(cargoAutoManagerPoliciesPath))
+                                Global.getSettings().readJSONFromCommon(cargoAutoManagerPoliciesPath, false)
+                            else
+                                JSONObject()
+                        }.getOrNull()
+
+                        if (cargoAutoManagerPoliciesJSON == null || cargoAutoManagerPoliciesJSON.length() == 0) {
+                            cargoAutoManagerPoliciesJSON = JSONObject()
+                            cargoAutoManagerPoliciesJSON.put("policies", JSONArray())
+                        }
+                        @Suppress("UNCHECKED_CAST")
+                        val cargoAutoManagerPoliciesTemp = jsonArrayToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
+                        val cargoAutoManagerPolicies = cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it) }.sortedBy { it.orderInList }.toMutableList()
+
+                        cargoAutoManagerPolicies.forEach { autoManage ->
+                            val name = if (autoManage.copy(name = "", orderInList = 0) == currentAutoManage) {
+                                autoManage.name + " (Current)"
+                            } else {
+                                autoManage.name
+                            }
+
+                            val buttonHeight = 32f
+
+                            val para = innerUI.addPara(name, 8f) as UIComponentAPI
+                            para.position.inTL(0f, innerUI.heightSoFar)
+                            para.invoke("autoSize")
+                            para.setSize(200f, para.height)
+                            val applyButton = innerUI.addButton("Apply", null, Misc.getPositiveHighlightColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.ALL, 50f, buttonHeight, 0f)
+                            applyButton.position.rightOfMid(para, 8f)
+                            applyButton.onClick {
+                                autoManagePoliciesDialog.forceDismiss()
+                                dialog.forceDismiss(false)
+                                saveCargoAutoManageToSubmarket(selectedSubmarket, autoManage)
+                                openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
+                            }
+                            var overwriteButton: ButtonAPI? = null
+
+                            val removeButton = innerUI.addButton("Delete", null, Misc.getNegativeHighlightColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.ALL, 50f, buttonHeight, 0f)
+                            removeButton.position.rightOfMid(applyButton, 8f)
+                            removeButton.onClick {
+                                val areYouSureDialog = DialogPanel(headerTitle = "Are you sure you want to remove this policy?")
+                                areYouSureDialog.animation = ModalPanel.PanelAnimation.NONE
+                                areYouSureDialog.show(470f, 80f) { _ ->
+                                    areYouSureDialog.addActionButtons(confirmText = "Delete", cancelText = "Cancel", alignment = Alignment.MID)
+                                }
+                                areYouSureDialog.onConfirm {
+                                    para.opacity = 0f
+                                    applyButton.opacity = 0f
+                                    removeButton.opacity = 0f
+                                    overwriteButton?.opacity = 0f
+
+                                    cargoAutoManagerPolicies.remove(autoManage)
+                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it) }
+                                    val json = JSONObject().put("policies", listToJsonArray(mapList))
+                                    Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
+                                    //autoManagePoliciesDialog.createUI()
+                                    DisplayMessage.showMessageCustom("Policy removed!")
+                                }
+                            }
+
+                            overwriteButton = innerUI.addButton("Overwrite", null, Misc.getHighlightColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.ALL, 70f, buttonHeight, 0f)
+                            overwriteButton.position.rightOfMid(removeButton, 8f)
+                            overwriteButton.onClick {
+                                val areYouSureDialog = DialogPanel(headerTitle = "Are you sure you want to overwrite this policy?")
+                                areYouSureDialog.animation = ModalPanel.PanelAnimation.NONE
+                                areYouSureDialog.show(500f, 80f) { _ ->
+                                    areYouSureDialog.addActionButtons(confirmText = "Overwrite", cancelText = "Cancel", alignment = Alignment.MID)
+                                }
+                                areYouSureDialog.onConfirm {
+                                    cargoAutoManagerPolicies.remove(autoManage)
+                                    val currentAutoManageCopy = currentAutoManage.copy(
+                                        orderInList = autoManage.orderInList,
+                                        name = autoManage.name
+                                    )
+                                    cargoAutoManagerPolicies.add(currentAutoManageCopy)
+                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it) }
+                                    val json = JSONObject().put("policies", listToJsonArray(mapList))
+                                    Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
+                                    autoManagePoliciesDialog.recreateUI()
+                                    DisplayMessage.showMessageCustom("Policy overwritten!")
+                                }
+                            }
+
+                            innerUI.heightSoFar = -applyButton.y
+                        }
+
+                        val heightSoFar = innerUI.heightSoFar
+
+                        //innerUI.addPara("end point", 0f)
+
+                        val saveCurrentButton = innerUI.addButton("Save Current", null, Misc.getButtonTextColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.ALL, 128f, buttonHeight * 1.5f, 0f)
+                        saveCurrentButton.position.inTL(0f, externalUI.height - saveCurrentButton.height - 8f)
+                        saveCurrentButton.onClick {
+                            val namePolicyDialog = DialogPanel(headerTitle = "Name the new policy")
+                            var textField: TextFieldAPI? = null
+                            namePolicyDialog.show(350f, 113f) { ui ->
+                                textField = ui.addTextField(ui.width, 0f)
+                                namePolicyDialog.addActionButtons(confirmText = "Save", cancelText = "Cancel", alignment = Alignment.MID)
+                            }
+                            namePolicyDialog.onConfirm {
+                                if (textField == null) return@onConfirm
+                                if (textField.text.isBlank()) {
+                                    DisplayMessage.showMessageCustom("Policy name cannot be blank!")
+                                    return@onConfirm
+                                }
+                                if (cargoAutoManagerPolicies.any { it.name == textField.text }) {
+                                    DisplayMessage.showMessageCustom("Policy name already exists. No duplicates allowed!")
+                                    return@onConfirm
+                                }
+
+                                val currentAutoManageCopy = currentAutoManage.copy(
+                                    orderInList = cargoAutoManagerPolicies.maxByOrNull { it.orderInList }?.orderInList // Place on end
+                                        ?: 0,
+                                    name = textField.text
+                                )
+                                cargoAutoManagerPolicies.add(currentAutoManageCopy)
+
+                                val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it) }
+                                val json = JSONObject().put("policies", listToJsonArray(mapList))
+                                Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
+                                autoManagePoliciesDialog.recreateUI()
+                                DisplayMessage.showMessageCustom("Policy saved!")
+                            }
+                        }
+
+                        innerUI.heightSoFar = heightSoFar
+
+                        innerPanel.addUIElement(innerUI)
+                        externalUI.addCustom(innerPanel, 0f)
+                    } catch (e: Exception) {
+                        DisplayMessage.showError("Failed to read Cargo Auto Manager Policies", e)
+                        autoManagePoliciesDialog.dismiss()
+                    }
+                }
+            }
+
             ui.addComponent(panel).inTL(0f, ui.heightSoFar)
         }
 
@@ -342,7 +506,7 @@ internal class CargoAutoManageUIPlugin(
             if (cargoAutoManage.isDefault()) {//If the cargo is default
                 unsetCargoAutoManage(selectedSubmarket)
             } else {
-                saveCargoAutoManage(selectedSubmarket, cargoAutoManage)
+                saveCargoAutoManageToSubmarket(selectedSubmarket, cargoAutoManage)
             }
         }
 
@@ -541,7 +705,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
 
                         val stack = child.safeInvoke("getStack") as? CargoStackAPI ?: return@forEach
 
-                        val cargoAutoManage = loadCargoAutoManage(selectedSubmarket)
+                        val cargoAutoManage = loadCargoAutoManageFromSubmarket(selectedSubmarket)
                             ?: CargoAutoManage.AutoManage()
 
                         val iconName: String =
@@ -575,7 +739,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                             )
                         )
 
-                        saveCargoAutoManage(selectedSubmarket, cargoAutoManage)
+                        saveCargoAutoManageToSubmarket(selectedSubmarket, cargoAutoManage)
 
                         forceDismiss()
                         return

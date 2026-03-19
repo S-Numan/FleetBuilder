@@ -1,18 +1,43 @@
 package fleetBuilder.features.cargoAutoManage
 
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
+import fleetBuilder.core.ModSettings.PRIMARYDIR
+import fleetBuilder.util.FBMisc.jsonArrayToList
+import org.json.JSONArray
+import org.json.JSONObject
 
 internal object CargoAutoManage {
     data class AutoManage(
         var applyOnInteraction: Boolean = true,
         var applyOnLeave: Boolean = false,
+        var orderInList: Int = 0,
+        var name: String = "",
         val autoManageItems: MutableList<ItemAutoManage> = mutableListOf()
     ) {
         fun isDefault(): Boolean {
-            if (!applyOnInteraction || applyOnLeave || autoManageItems.isNotEmpty()) return false
+            if (!applyOnInteraction || applyOnLeave || autoManageItems.isNotEmpty() || orderInList != 0 || name != "") return false
             return true
         }
+    }
+
+    fun getSavedPolicies(): List<CargoAutoManage.AutoManage> {
+        val cargoAutoManagerPoliciesPath = "${PRIMARYDIR}CargoAutoManagerPolicies"
+        var cargoAutoManagerPoliciesJSON = runCatching {
+            if (Global.getSettings().fileExistsInCommon(cargoAutoManagerPoliciesPath))
+                Global.getSettings().readJSONFromCommon(cargoAutoManagerPoliciesPath, false)
+            else
+                JSONObject()
+        }.getOrNull()
+
+        if (cargoAutoManagerPoliciesJSON == null || cargoAutoManagerPoliciesJSON.length() == 0) {
+            cargoAutoManagerPoliciesJSON = JSONObject()
+            cargoAutoManagerPoliciesJSON.put("policies", JSONArray())
+        }
+        @Suppress("UNCHECKED_CAST")
+        val cargoAutoManagerPoliciesTemp = jsonArrayToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
+        return cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it) }.sortedBy { it.orderInList }.toMutableList()
     }
 
     data class ItemAutoManage(
@@ -29,12 +54,12 @@ internal object CargoAutoManage {
 
     //Cannot save the classes directly as that would prevent the mod from being removed.
 
-    fun saveCargoAutoManage(submarket: SubmarketAPI, cargoAutoManage: AutoManage) {
-        val market = submarket.market
-
-        val safeMap = mapOf(
+    fun saveCargoAutoManageToMap(cargoAutoManage: AutoManage): Map<String, Any?> {
+        return mapOf(
             "applyOnInteraction" to cargoAutoManage.applyOnInteraction,
             "applyOnLeave" to cargoAutoManage.applyOnLeave,
+            "orderInList" to cargoAutoManage.orderInList,
+            "name" to cargoAutoManage.name,
             "autoManageItems" to cargoAutoManage.autoManageItems.map { item ->
                 mapOf(
                     "type" to item.type.name, // store enum as String
@@ -49,16 +74,23 @@ internal object CargoAutoManage {
                 )
             }
         )
-        market.memoryWithoutUpdate.set("\$FBC_${submarket.specId}", safeMap)
     }
 
-    fun loadCargoAutoManage(submarket: SubmarketAPI): AutoManage? {
-        val market = submarket.market
+    fun saveCargoAutoManageToSubmarket(submarket: SubmarketAPI, cargoAutoManage: AutoManage) {
+        val safeMap = saveCargoAutoManageToMap(cargoAutoManage)
+        submarket.market.memoryWithoutUpdate.set("\$FBC_${submarket.specId}", safeMap)
+    }
 
-        val stored = market.memoryWithoutUpdate.get("\$FBC_${submarket.specId}") as? Map<*, *> ?: return null
+    fun loadCargoAutoManageFromSubmarket(submarket: SubmarketAPI): AutoManage? {
+        val stored = submarket.market.memoryWithoutUpdate.get("\$FBC_${submarket.specId}") as? Map<*, *> ?: return null
+        return loadCargoAutoManageFromMap(stored)
+    }
 
+    fun loadCargoAutoManageFromMap(stored: Map<*, *>): AutoManage {
         val applyOnInteraction = stored["applyOnInteraction"] as? Boolean ?: true
         val applyOnLeave = stored["applyOnLeave"] as? Boolean ?: false
+        val orderInList = stored["orderInList"] as? Int ?: 0
+        val name = stored["name"] as? String ?: ""
 
         val autoManageItems = (stored["autoManageItems"] as? List<*>)?.mapNotNull { raw ->
             (raw as? Map<*, *>)?.let { m ->
@@ -83,7 +115,7 @@ internal object CargoAutoManage {
             }
         }?.toMutableList() ?: mutableListOf()
 
-        return AutoManage(applyOnInteraction, applyOnLeave, autoManageItems)
+        return AutoManage(applyOnInteraction, applyOnLeave, orderInList = orderInList, name = name, autoManageItems = autoManageItems)
     }
 
     fun unsetCargoAutoManage(submarket: SubmarketAPI) {

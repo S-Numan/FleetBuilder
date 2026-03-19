@@ -146,7 +146,7 @@ open class DialogPanel(
 
     var headerTooltip: TooltipMakerAPI? = null
     protected fun createHeader() {
-        if (headerTitle != null) {
+        if (headerTitle != null && headerTooltip == null) {
             headerTooltip = panel.createUIElement(panel.position.width - (xTooltipPad * 3f), 20f, false)
             headerTooltip!!.setParaFont(Fonts.ORBITRON_20AABOLD)
             val label = headerTooltip!!.addPara(headerTitle, Misc.getTooltipTitleAndLightHighlightColor(), 5f)

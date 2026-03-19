@@ -12,6 +12,7 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.util.api.MemberUtils.getMaxSMods
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
+import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
@@ -20,6 +21,83 @@ import kotlin.math.min
 
 
 internal object FBMisc {
+
+    fun mapToJsonObject(map: Map<*, *>): JSONObject {
+        val json = JSONObject()
+
+        for ((key, value) in map) {
+            // JSON keys must be strings
+            val stringKey = key?.toString() ?: continue
+
+            json.put(
+                stringKey, when (value) {
+                    null -> JSONObject.NULL
+                    is Map<*, *> -> mapToJsonObject(value)
+                    is List<*> -> listToJsonArray(value)
+                    else -> value
+                }
+            )
+        }
+
+        return json
+    }
+
+    fun listToJsonArray(list: List<*>): JSONArray {
+        val array = JSONArray()
+
+        for (value in list) {
+            array.put(
+                when (value) {
+                    null -> JSONObject.NULL
+                    is Map<*, *> -> mapToJsonObject(value)
+                    is List<*> -> listToJsonArray(value)
+                    else -> value
+                }
+            )
+        }
+
+        return array
+    }
+
+    fun jsonObjectToMap(json: JSONObject): Map<String, Any?> {
+        val map = mutableMapOf<String, Any?>()
+
+        val keys = json.keys()
+        while (keys.hasNext()) {
+            val key = keys.next()
+            if (key !is String) continue
+            val value = json.get(key)
+
+            map[key] = when (value) {
+                is JSONObject -> jsonObjectToMap(value)
+                is JSONArray -> jsonArrayToList(value)
+                JSONObject.NULL -> null
+                else -> value
+            }
+        }
+
+        return map
+    }
+
+    fun jsonArrayToList(array: JSONArray): List<Any?> {
+        val list = mutableListOf<Any?>()
+
+        for (i in 0 until array.length()) {
+            val value = array.get(i)
+
+            list.add(
+                when (value) {
+                    is JSONObject -> jsonObjectToMap(value)
+                    is JSONArray -> jsonArrayToList(value)
+                    JSONObject.NULL -> null
+                    else -> value
+                }
+            )
+        }
+
+        return list
+    }
+
 
     fun SpecialItemData.getSpecialItemName(): String? {
         return when (id) {
