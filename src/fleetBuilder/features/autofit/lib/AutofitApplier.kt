@@ -7,16 +7,18 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.loading.VariantSource
-import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.*
+import fleetBuilder.util.FBMisc.replaceVariantWithVariant
 import fleetBuilder.util.FBMisc.sModHandlerTemp
+import fleetBuilder.util.FBTxt
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
+import fleetBuilder.util.safeInvoke
 import java.awt.Color
 import java.util.*
 
@@ -246,135 +248,5 @@ internal object AutofitApplier {
         }
 
         shipDisplay.safeInvoke("setSuppressMessages", false)
-    }
-
-    private fun replaceVariantWithVariant(
-        to: ShipVariantAPI,
-        from: ShipVariantAPI,
-        dontForceClearDMods: Boolean = false,
-        dontForceClearSMods: Boolean = false
-    ) {
-        if (to.hullSpec.getEffectiveHullId() != from.hullSpec.getEffectiveHullId()) {
-            DisplayMessage.showError("Replace Variant With Variant failed. Base hulls '${to.hullSpec.getEffectiveHullId()}' and '${from.hullSpec.getEffectiveHullId()}' do not match.")
-            return
-        }
-        to.clear()
-        to.weaponGroups.clear()
-        to.clearTags()
-        to.nonBuiltInWeaponSlots.clear()
-        to.nonBuiltInWings.clear()
-
-        to.hullMods.toList().forEach { mod ->
-            if (dontForceClearSMods && to.sMods.contains(mod))
-                return@forEach
-            if (dontForceClearDMods && LookupUtil.getAllDMods().contains(mod))
-                return@forEach
-
-            to.completelyRemoveMod(mod)
-        }
-
-        if (ModSettings.removeDefaultDMods) {
-            to.allDMods().forEach {
-                to.hullMods.remove(it)
-            }
-        }
-
-        if (!dontForceClearSMods) {
-            to.sModdedBuiltIns.clear()
-        }
-        /*to.weaponGroups.forEachIndexed { index, group ->
-            for (i in group.slots.indices.reversed()) {
-                to.weaponGroups[index].removeSlot(group.slots[i])
-            }
-        }*/
-
-        // Copy tags
-        for (tag in from.tags) {
-            if (!tag.startsWith("#"))
-                to.addTag(tag)
-        }
-
-        // Copy hullmod data
-        for (mod in from.getRegularHullMods()) {
-            to.addMod(mod)
-        }
-
-        // Copy perma-mods
-        for (mod in from.permaMods) {
-            to.addPermaMod(mod, false)
-        }
-
-        // Copy S-mods
-        for (mod in from.sMods) {
-            to.addPermaMod(mod, true)
-        }
-
-        // Copy S-modded built-ins
-        for (mod in from.sModdedBuiltIns) {
-            to.sModdedBuiltIns.add(mod)
-        }
-
-        // Copy Built-in DMods
-        for (mod in from.allDMods()) {
-            if (mod !in from.hullSpec.builtInMods) continue
-            to.hullMods.add(mod)
-        }
-
-        for (mod in from.suppressedMods) {
-            to.addSuppressedMod(mod)
-        }
-
-        // Copy weapon assignments
-        for (slotId in from.nonBuiltInWeaponSlots) {
-            val weapon = from.getWeaponId(slotId)
-            if (weapon != null) {
-                to.addWeapon(slotId, weapon)
-            }
-        }
-
-        // Copy autofire groups
-        from.weaponGroups.forEach { group ->
-            val newGroup = WeaponGroupSpec()
-            newGroup.isAutofireOnByDefault = group.isAutofireOnByDefault
-            newGroup.type = group.type
-
-            group.slots.forEach { slotId ->
-                newGroup.addSlot(slotId)
-            }
-
-            to.weaponGroups.add(newGroup)
-        }
-
-
-        // Copy wings
-        for (i in from.hullSpec.builtInWings.size until from.wings.size) {
-            val wing = from.getWingId(i)
-            if (wing != null) {
-                to.setWingId(i, wing)
-            }
-        }
-
-        // Copy flux vents/caps
-        to.numFluxVents = from.numFluxVents
-        to.numFluxCapacitors = from.numFluxCapacitors
-
-        // Copy variant ID and display name
-        to.hullVariantId = from.hullVariantId
-        to.setVariantDisplayName(from.displayName)
-
-        for (slot in from.moduleSlots) {
-            val toVariant = runCatching { to.getModuleVariant(slot) }.getOrNull()
-            val fromVariant = runCatching { from.getModuleVariant(slot) }.getOrNull()
-            if (toVariant == null || fromVariant == null)
-                continue
-
-            replaceVariantWithVariant(
-                toVariant,
-                fromVariant,
-                dontForceClearDMods,
-                dontForceClearSMods
-            )
-            to.setModuleVariant(slot, toVariant)
-        }
     }
 }

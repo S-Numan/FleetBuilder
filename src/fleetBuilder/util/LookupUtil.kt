@@ -115,6 +115,7 @@ object LookupUtil {
     fun getHullModSpec(hullModId: String) = IDToHullMod[hullModId]
     fun getHullModIDSet(): Set<String> = IDToHullMod.keys
     fun getSkillSpec(skillId: String) = IDToSkill[skillId]
+    fun getAllSkillSpecs(): Collection<SkillSpecAPI> = IDToSkill.values
     fun getAllDMods(): Set<String> = allDMods
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
 

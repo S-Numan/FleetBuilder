@@ -30,6 +30,12 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
 
+
+// Avoid using getModuleSlots(). It uses getStationModules() internally anyway.
+fun ShipVariantAPI.getModules(): List<ShipVariantAPI> {
+    return this.stationModules.map { getModuleVariant(it.key) }
+}
+
 internal var previouslyLoadedSprite = HashMap<String, Boolean>()
 internal fun SettingsAPI.getAndLoadSprite(filename: String): SpriteAPI? {
     if (!previouslyLoadedSprite.contains(filename)) {
@@ -107,10 +113,10 @@ fun ShipHullSpecAPI.getCompatibleDLessHullId(keepDModSkin: Boolean = false): Str
  *
  * @param modId The ID of the mod to be removed.
  */
-fun ShipVariantAPI.completelyRemoveMod(modId: String) {
+fun ShipVariantAPI.completelyRemoveMod(modId: String, removeBuiltIns: Boolean = false) {
     sModdedBuiltIns.remove(modId)
     suppressedMods.remove(modId)
-    if (!hullSpec.builtInMods.contains(modId))
+    if (!hullSpec.builtInMods.contains(modId) || removeBuiltIns)
         hullMods.remove(modId)
     removePermaMod(modId)
 }
