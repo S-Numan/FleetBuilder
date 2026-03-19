@@ -14,6 +14,7 @@ object LookupUtil {
 
     private lateinit var allDMods: Set<String>
     private lateinit var allHiddenEverywhereMods: Set<String>
+    private lateinit var allVariants: Set<ShipVariantAPI>
     private lateinit var effectiveVariantMap: Map<String, List<ShipVariantAPI>>
     private lateinit var hullIDSet: Set<String>
     private lateinit var effectiveHullIDToVariant: Map<String, List<ShipVariantAPI>>
@@ -92,6 +93,7 @@ object LookupUtil {
         IDToHullMod = settings.allHullModSpecs.associateBy { it.id }
         IDToWeapon = settings.actuallyAllWeaponSpecs.associateBy { it.weaponId }
         IDToSkill = settings.skillIds.map { settings.getSkillSpec(it) }.associateBy { it.id }
+        allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }.toSet()
     }
 
 
@@ -118,6 +120,7 @@ object LookupUtil {
     fun getAllSkillSpecs(): Collection<SkillSpecAPI> = IDToSkill.values
     fun getAllDMods(): Set<String> = allDMods
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
+    fun getAllVariants(): Set<ShipVariantAPI> = allVariants
 
     fun getErrorVariantHullID() = errorVariantHullID
 
