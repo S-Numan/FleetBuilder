@@ -10,8 +10,13 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
+import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.ui.*
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.common.ObservedTextField
 import fleetBuilder.util.LookupUtil.getAllDMods
 import fleetBuilder.util.api.FleetUtils
@@ -20,14 +25,26 @@ import fleetBuilder.util.api.VariantUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import org.magiclib.kotlin.setAlpha
-import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
-import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
-import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.otherMods.starficz.onClick
 import java.awt.Color
 import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
+
+internal var previouslyLoadedSprite = HashMap<String, Boolean>()
+internal fun SettingsAPI.getAndLoadSprite(filename: String): SpriteAPI? {
+    if (!previouslyLoadedSprite.contains(filename)) {
+        this.loadTexture(filename)
+        previouslyLoadedSprite[filename] = true
+    }
+    return this.getSprite(filename)
+}
+
+internal fun SettingsAPI.loadTextureCached(filename: String) {
+    if (!previouslyLoadedSprite.contains(filename)) {
+        this.loadTexture(filename)
+        previouslyLoadedSprite[filename] = true
+    }
+}
 
 fun Float.roundToDecimals(decimals: Int): Float {
     val factor = 10.0.pow(decimals).toFloat()

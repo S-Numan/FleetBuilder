@@ -26,6 +26,7 @@ import fleetBuilder.util.FBMisc.jsonArrayToList
 import fleetBuilder.util.FBMisc.listToJsonArray
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.addToggle
+import fleetBuilder.util.loadTextureCached
 import fleetBuilder.util.safeInvoke
 import org.json.JSONArray
 import org.json.JSONObject
@@ -34,6 +35,7 @@ import org.lwjgl.input.Keyboard
 //The implementation of this is extremely scuffed, I am aware.
 
 private val defaultIcon = "graphics/factions/crest_player_flag.png"
+private val errorIcon = "graphics/ui/icons/64x_xcircle.png"
 
 internal class CargoAutoManageUIPlugin(
     val selectedSubmarket: SubmarketAPI,
@@ -225,6 +227,8 @@ internal class CargoAutoManageUIPlugin(
     val buttonHeight = 28f
 
     init {
+        Global.getSettings().loadTextureCached(errorIcon)
+
         market = selectedSubmarket.market
 
         val cargoAutoManage = loadCargoAutoManageFromSubmarket(selectedSubmarket)
@@ -396,6 +400,9 @@ internal class CargoAutoManageUIPlugin(
                                 saveCargoAutoManageToSubmarket(selectedSubmarket, autoManage)
                                 openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
                             }
+                            applyButton.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 400f) {
+                                it.addPara("Replaces your current policy with this one.", 0f)
+                            }
                             var overwriteButton: ButtonAPI? = null
 
                             val removeButton = innerUI.addButton("Delete", null, Misc.getNegativeHighlightColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.ALL, 50f, buttonHeight, 0f)
@@ -420,6 +427,9 @@ internal class CargoAutoManageUIPlugin(
                                     DisplayMessage.showMessageCustom("Policy removed!")
                                 }
                             }
+                            removeButton.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 400f) {
+                                it.addPara("Remove this policy from the saved policy list.", 0f)
+                            }
 
                             overwriteButton = innerUI.addButton("Overwrite", null, Misc.getHighlightColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.ALL, 70f, buttonHeight, 0f)
                             overwriteButton.position.rightOfMid(removeButton, 8f)
@@ -443,6 +453,9 @@ internal class CargoAutoManageUIPlugin(
                                     DisplayMessage.showMessageCustom("Policy overwritten!")
                                 }
                             }
+                            overwriteButton.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 400f) {
+                                it.addPara("Overwrite this policy with your current policy.", 0f)
+                            }
 
                             innerUI.heightSoFar = -applyButton.y
                         }
@@ -456,8 +469,9 @@ internal class CargoAutoManageUIPlugin(
                         saveCurrentButton.onClick {
                             val namePolicyDialog = DialogPanel(headerTitle = "Name the new policy")
                             var textField: TextFieldAPI? = null
-                            namePolicyDialog.show(350f, 113f) { ui ->
+                            namePolicyDialog.show(450f, 113f) { ui ->
                                 textField = ui.addTextField(ui.width, 0f)
+                                textField.grabFocus()
                                 namePolicyDialog.addActionButtons(confirmText = "Save", cancelText = "Cancel", alignment = Alignment.MID)
                             }
                             namePolicyDialog.onConfirm {
@@ -534,11 +548,27 @@ internal class CargoAutoManageUIPlugin(
         var yOffset1 = yOffset
 
         // 1. Image + label
-        val imageTooltip = ui.beginImageWithText(iconName, rowHeight)
+        val sprite = Global.getSettings().getSprite(iconName)
+        val imageTooltip = if (sprite.textureId != 0)
+            ui.beginImageWithText(iconName, rowHeight)
+        else
+            ui.beginImageWithText(errorIcon, rowHeight)
+
         val imageLabel = imageTooltip.addPara(displayName, 0f)
-        imageLabel.color = Misc.getButtonTextColor()
+        if (sprite.textureId != 0)
+            imageLabel.color = Misc.getButtonTextColor()
+        else
+            imageLabel.color = Misc.getNegativeHighlightColor()
+
         val newText = ui.addImageWithText(0f)
         newText.position.inTL(xPos1, yOffset1)
+        if (sprite.textureId == 0) {
+            newText.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 280f) {
+                it.addPara("This item is most likely from a removed mod.\n(The sprite was null)", 0f)
+            }
+            val sprite = newText.getChildrenCopy().getOrNull(0)?.safeInvoke("getSprite")
+            sprite?.safeInvoke("setColor", Misc.getNegativeHighlightColor())
+        }
 
         xPos1 += columnWidths[0] + spacing
 
