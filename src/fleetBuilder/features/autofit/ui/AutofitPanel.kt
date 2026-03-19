@@ -52,6 +52,7 @@ import java.awt.Color
  * Original author
  * @author Starficz
  * Heavily modified otherwise
+ * A grand pile of jank
  */
 internal object AutofitPanel {
     private const val BACKGROUND_ALPHA = 0.7f
@@ -476,9 +477,9 @@ internal object AutofitPanel {
             //toggleButtonsElement.addSpacer(12f)
 
             val checkboxHeight = 24f
-            val checkboxPad = 4f
+            val checkboxPad = 2f
 
-            val fleetMemory = fleetMember?.fleetData?.fleet?.memoryWithoutUpdate
+            val fleetMemory = fleetMember.fleetData?.fleet?.memoryWithoutUpdate
 
             fun addToggleButton(
                 label: String,
@@ -512,7 +513,7 @@ internal object AutofitPanel {
                 return button
             }
 
-            if (Global.getCurrentState() != GameState.TITLE) {
+            if (Global.getCurrentState() == GameState.CAMPAIGN) {
                 cargoButton = addToggleButton(
                     label = txt("toggle_use_cargo_label"),
                     memoryKey = "\$FBA_useCargo",
@@ -535,6 +536,22 @@ internal object AutofitPanel {
                     label = txt("toggle_use_black_market_label"),
                     memoryKey = "\$FBA_useBlackMarket",
                     tooltipText = txt("toggle_use_black_market_tooltip")
+                )
+
+                toggleButtonsElement.addSpacer(8f)
+
+                addToggleButton(
+                    label = txt("toggle_upgrade_weapons_label"),
+                    memoryKey = "\$FBA_upgradeWeapons",
+                    tooltipText = txt("toggle_upgrade_weapons_tooltip"),
+                    default = false
+                )
+
+                addToggleButton(
+                    label = txt("toggle_strip_before_autofit_label"),
+                    memoryKey = "\$FBA_stripBeforeAutofit",
+                    tooltipText = txt("toggle_strip_before_autofit_tooltip"),
+                    default = true
                 )
 
                 applySModsButton = addToggleButton(

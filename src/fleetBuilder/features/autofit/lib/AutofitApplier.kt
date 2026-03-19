@@ -51,7 +51,7 @@ internal object AutofitApplier {
                 replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
             } else {
                 val coreUI = ReflectionMisc.getCoreUI() ?: return
-                
+
                 val delegate = FBPlayerAutofitDelegate(
                     fleetMember,
                     Global.getSector().playerFaction,
@@ -68,23 +68,35 @@ internal object AutofitApplier {
 
                 //Strip items off ship first if in campaign. Both so they can be used by the autofitplugin, and so if using forceAutofit, the things on the ship aren't erased.
                 val auto: CoreAutofitPlugin = CoreAutofitPlugin(fleetMember.fleetData.commander).apply { random = Random() }
-                auto.setChecked(CoreAutofitPlugin.STRIP, false)
+                auto.setChecked(CoreAutofitPlugin.STRIP, false) // We do this manually
+                var stripVariant = true
+
+                val fleetMemory = fleetMember.fleetData?.fleet?.memoryWithoutUpdate
+                if (fleetMemory != null) {
+                    if (fleetMemory.contains("\$FBA_upgradeWeapons"))
+                        auto.setChecked(CoreAutofitPlugin.UPGRADE, fleetMemory.getBoolean("\$FBA_upgradeWeapons"))
+
+                    if (fleetMemory.contains("\$FBA_stripBeforeAutofit") && !ModSettings.forceAutofit)
+                        stripVariant = fleetMemory.getBoolean("\$FBA_stripBeforeAutofit")
+                }
 
                 fun stripVaraint(variant: ShipVariantAPI, variantTo: ShipVariantAPI) {
-                    variant.nonBuiltInWeaponSlots
-                        .mapNotNull { variant.getSlot(it) }
-                        .filter { variant.getWeaponId(it.id) != variantTo.getWeaponId(it.id) }//Only strip weapons that aren't in the right position
-                        .forEach { auto.clearWeaponSlot(it, delegate, variant) }
+                    if (stripVariant) {
+                        variant.nonBuiltInWeaponSlots
+                            .mapNotNull { variant.getSlot(it) }
+                            .filter { variant.getWeaponId(it.id) != variantTo.getWeaponId(it.id) }//Only strip weapons that aren't in the right position
+                            .forEach { auto.clearWeaponSlot(it, delegate, variant) }
 
-                    variant.wings.indices
-                        .drop(variant.hullSpec.builtInWings.size)
-                        .filter { variant.getWingId(it) != variantTo.getWingId(it) }
-                        .forEach { auto.clearFighterSlot(it, delegate, variant) }
+                        variant.wings.indices
+                            .drop(variant.hullSpec.builtInWings.size)
+                            .filter { variant.getWingId(it) != variantTo.getWingId(it) }
+                            .forEach { auto.clearFighterSlot(it, delegate, variant) }
 
-                    variant.nonBuiltInHullmods
-                        .filter { delegate.canAddRemoveHullmodInPlayerCampaignRefit(it) }
-                        //.filter { !variantTo.hasHullMod(it) }//No need
-                        .forEach { variant.removeMod(it) }
+                        variant.nonBuiltInHullmods
+                            .filter { delegate.canAddRemoveHullmodInPlayerCampaignRefit(it) }
+                            //.filter { !variantTo.hasHullMod(it) }//No need
+                            .forEach { variant.removeMod(it) }
+                    }
                     variant.numFluxCapacitors = 0
                     variant.numFluxVents = 0
                 }
@@ -157,7 +169,6 @@ internal object AutofitApplier {
                     }
 
                     if (applySMods) {
-
                         var (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship, baseVariant, loadout)
                         sModsToApply = sModsToApply.filter { delegate.canAddRemoveHullmodInPlayerCampaignRefit(it) }.toMutableList()
                         if (sModsToApply.isNotEmpty()) {
