@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.FactionAPI
+import com.fs.starfarer.api.campaign.SectorEntityToken
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.characters.PersonAPI
@@ -21,7 +22,6 @@ import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.completelyRemoveMod
 import fleetBuilder.util.getModules
 import fleetBuilder.util.safeGet
-import org.lazywizard.console.Console
 
 // Jank code alert!
 
@@ -37,6 +37,7 @@ internal object RemoveFromSave {
         removeWings: Boolean = true,
         removeCargoItems: Boolean = true,
         removeMarkets: Boolean = true,
+        removeAllFactionOwnedEntities: Boolean = true,
         removeListeners: Boolean = true,
         removeFleets: Boolean = true,
     ) {
@@ -90,7 +91,7 @@ internal object RemoveFromSave {
                 val listenerJarLocation = listenerClass.protectionDomain.codeSource?.location.toString().substringAfter("mods/")
                 modsToRemoveStuffFrom.forEach { mod ->
                     if (mod.dirName + "/" + mod.jars.getOrNull(0) == listenerJarLocation) {
-                        Console.showMessage("listenerManager: Mod: ${mod.dirName}    Listener: ${listenerClass.name}")
+                        //Console.showMessage("listenerManager: Mod: ${mod.dirName}    Listener: ${listenerClass.name}")
                         while (listenerManager.hasListenerOfClass(listenerClass))
                             listenerManager.removeListenerOfClass(listenerClass)
                     }
@@ -102,7 +103,7 @@ internal object RemoveFromSave {
                 val listenerJarLocation = listenerClass.protectionDomain.codeSource?.location.toString().substringAfter("mods/")
                 modsToRemoveStuffFrom.forEach { mod ->
                     if (mod.dirName + "/" + mod.jars.getOrNull(0) == listenerJarLocation) {
-                        Console.showMessage("sectorScripts: Mod: ${mod.dirName}    Listener: ${listenerClass.name}")
+                        //Console.showMessage("sectorScripts: Mod: ${mod.dirName}    Listener: ${listenerClass.name}")
                         while (sector.hasScript(listenerClass))
                             listenerManager.removeListenerOfClass(listenerClass)
                     }
@@ -114,7 +115,7 @@ internal object RemoveFromSave {
                 val listenerJarLocation = listenerClass.javaClass.protectionDomain.codeSource?.location.toString().substringAfter("mods/")
                 modsToRemoveStuffFrom.forEach { mod ->
                     if (mod.dirName + "/" + mod.jars.getOrNull(0) == listenerJarLocation) {
-                        Console.showMessage("sectorListeners: Mod: ${mod.dirName}    Listener: ${listenerClass.javaClass.name}")
+                        //Console.showMessage("sectorListeners: Mod: ${mod.dirName}    Listener: ${listenerClass.javaClass.name}")
                         sector.removeListener(listenerClass)
                         sector.removeListener(listenerClass)
                     }
@@ -129,13 +130,17 @@ internal object RemoveFromSave {
                     val listenerJarLocation = listenerClass.javaClass.protectionDomain.codeSource?.location.toString().substringAfter("mods/")
                     modsToRemoveStuffFrom.forEach { mod ->
                         if (mod.dirName + "/" + mod.jars.getOrNull(0) == listenerJarLocation) {
-                            Console.showMessage("fleetListeners: Mod: ${mod.dirName}    Listener: ${listenerClass.javaClass.name}")
+                            //Console.showMessage("fleetListeners: Mod: ${mod.dirName}    Listener: ${listenerClass.javaClass.name}")
                             fleet.removeEventListener(listenerClass)
                         }
                     }
                 }
             }
         }
+
+        val targetModIds = modsToRemoveStuffFrom.map { it.id }.toSet()
+        val removedTargets = mutableSetOf<SectorEntityToken>()
+        val locations = Global.getSector().allLocations
 
         getEntitiesWithThings().forEach { entity ->
             if (removeHullmods)
@@ -168,9 +173,20 @@ internal object RemoveFromSave {
                 }
         }
 
+        var fleets = locations.flatMap { it.fleets }
+        fleets.forEach { fleet ->
+            if (fleet.membersWithFightersCopy.isEmpty()) {
+                val location = fleet.containingLocation
+                if (location != null) {
+                    location.removeEntity(fleet)
+                    removedTargets.add(fleet)
+                }
+            }
+        }
+
         if (removeMarkets) {
-            val locations = Global.getSector().allLocations
             val markets = locations.flatMap { it.allEntities }.mapNotNull { it.market }
+
             markets.toList().forEach { market ->
                 val sourceMod = FactionUtils.getSourceModFromFaction(market.faction.id) ?: return@forEach
                 if (sourceMod.id !in modsToRemoveStuffFrom.map { it.id }) return@forEach
@@ -191,16 +207,27 @@ internal object RemoveFromSave {
                 if (entity != null) {
                     entity.market = null
                     entity.containingLocation?.removeEntity(entity)
+                    removedTargets.add(entity)
                 }
             }
+        }
 
-            // Temp, need to remove assignments traveling towards newly deleted markets. Probably.
-            val fleets = sector.allLocations.flatMap { it.fleets }
+        if (removeFleets) {
+            val fleets = locations.flatMap { it.fleets }
+
             fleets.forEach { fleet ->
-                fleet.clearAssignments()
-            }
+                val sourceMod = FactionUtils.getSourceModFromFaction(fleet.faction.id) ?: return@forEach
+                if (sourceMod.id !in targetModIds) return@forEach
 
-            // Catch a few extras
+                val location = fleet.containingLocation
+                if (location != null) {
+                    location.removeEntity(fleet)
+                    removedTargets.add(fleet)
+                }
+            }
+        }
+
+        if (removeAllFactionOwnedEntities) {
             val campaignEntity = locations.flatMap { it.allEntities }.mapNotNull { entity ->
                 val sourceMod = FactionUtils.getSourceModFromFaction(entity.faction.id)
                 if (sourceMod?.id in modsToRemoveStuffFrom.map { it.id }) {
@@ -210,20 +237,17 @@ internal object RemoveFromSave {
             }
             campaignEntity.forEach { entity ->
                 entity.containingLocation?.removeEntity(entity)
+                removedTargets.add(entity)
             }
         }
-        val targetModIds = modsToRemoveStuffFrom.map { it.id }.toSet()
 
-        if (removeFleets) {
-            val fleets = sector.allLocations.flatMap { it.fleets }
-
-            fleets.forEach { fleet ->
-                val sourceMod = FactionUtils.getSourceModFromFaction(fleet.faction.id) ?: return@forEach
-                if (sourceMod.id !in targetModIds) return@forEach
-
-                val location = fleet.containingLocation
-                if (location != null)
-                    location.removeEntity(fleet)
+        fleets = locations.flatMap { it.fleets }
+        // Remove assignments involving removed targets from every fleet
+        fleets.forEach { fleet ->
+            fleet.assignmentsCopy.toList().forEach {
+                if (it.target in removedTargets) {
+                    fleet.ai.removeAssignment(it)
+                }
             }
         }
 
@@ -348,8 +372,8 @@ internal object RemoveFromSave {
 
         override fun removeHullSpec(value: String) {
             if (member.variant.hullSpec.hullId == value) {
-                member.setVariant(VariantUtils.createErrorVariant("Removed Mod"), true, true)
-                member.fleetData.removeFleetMember(member) // This might be more effective.
+                //member.setVariant(VariantUtils.createErrorVariant("Removed Mod"), true, true)
+                member.fleetData?.removeFleetMember(member) // This might be more effective.
             }
         }
 
