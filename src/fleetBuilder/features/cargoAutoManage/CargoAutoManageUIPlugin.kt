@@ -359,7 +359,7 @@ internal class CargoAutoManageUIPlugin(
                 autoManagePoliciesDialog.show(430f, 800f) { externalUI ->
                     try {
                         val innerPanel = Global.getSettings().createCustom(externalUI.width, externalUI.height, null)
-                        val innerUI = innerPanel.createUIElement(externalUI.width, externalUI.height, true)
+                        val innerUI = innerPanel.createUIElement(externalUI.width, externalUI.height - buttonHeight * 2, true)
 
                         val currentAutoManage = createCargoAutoManage()
 
@@ -460,11 +460,9 @@ internal class CargoAutoManageUIPlugin(
                             innerUI.heightSoFar = -applyButton.y
                         }
 
-                        val heightSoFar = innerUI.heightSoFar
-
                         //innerUI.addPara("end point", 0f)
 
-                        val saveCurrentButton = innerUI.addButton("Save Current", null, Misc.getButtonTextColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.ALL, 128f, buttonHeight * 1.5f, 0f)
+                        val saveCurrentButton = innerPanel.addButton("Save Current", null, Misc.getButtonTextColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.ALL, 128f, buttonHeight * 1.5f)
                         saveCurrentButton.position.inTL(0f, externalUI.height - saveCurrentButton.height - 8f)
                         saveCurrentButton.onClick {
                             val namePolicyDialog = DialogPanel(headerTitle = "Name the new policy")
@@ -500,9 +498,7 @@ internal class CargoAutoManageUIPlugin(
                             }
                         }
 
-                        innerUI.heightSoFar = heightSoFar
-
-                        innerPanel.addUIElement(innerUI)
+                        innerPanel.addUIElement(innerUI).inTL(0f, 0f)
                         externalUI.addCustom(innerPanel, 0f)
                     } catch (e: Exception) {
                         DisplayMessage.showError("Failed to read Cargo Auto Manager Policies", e)
