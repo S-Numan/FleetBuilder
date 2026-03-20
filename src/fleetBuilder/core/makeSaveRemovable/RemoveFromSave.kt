@@ -23,13 +23,28 @@ import fleetBuilder.util.getModules
 import fleetBuilder.util.safeGet
 import org.lazywizard.console.Console
 
+// Jank code alert!
+
 internal object RemoveFromSave {
 
-    data class Thing(val name: String, val key: String)
-
-    fun removeStuffFromMod(modsToRemove: List<ModSpecAPI>, removeListeners: Boolean = true) {
-        val modIds = modsToRemove.map { it.id }.toSet()
+    fun removeModThings(
+        modsToRemove: List<ModSpecAPI>,
+        removeHullmods: Boolean = true,
+        removeWeapons: Boolean = true,
+        removeHullspecs: Boolean = true,
+        removeSkills: Boolean = true,
+        removeIndustries: Boolean = true,
+        removeWings: Boolean = true,
+        removeCargoItems: Boolean = true,
+        removeMarkets: Boolean = true,
+        removeListeners: Boolean = true,
+        removeFleets: Boolean = true,
+    ) {
+        val modsToRemoveStuffFrom = modsToRemove.filter { it.modPluginClassName != null }
+        val sector = Global.getSector()
         val settings = Global.getSettings()
+
+        val modIds = modsToRemove.map { it.id }.toSet()
 
         val hullmods = settings.allHullModSpecs
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
@@ -61,38 +76,6 @@ internal object RemoveFromSave {
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
             .map { it.id }
 
-        removeStuff(
-            modsToRemove,
-            hullmods,
-            weapons,
-            hullspecs,
-            skills,
-            industries,
-            wings,
-            cargoItems,
-            removeMarkets = true,
-            removeListeners = removeListeners,
-            removeFleets = true,
-            removeFactions = true,
-        )
-    }
-
-    fun removeStuff(
-        modsToRemoveStuff: List<ModSpecAPI>,
-        hullmods: List<String>,
-        weapons: List<String>,
-        hullspecs: List<String>,
-        skills: List<String>,
-        industries: List<String>,
-        wings: List<String>,
-        cargoItems: List<String>,
-        removeMarkets: Boolean,
-        removeListeners: Boolean,
-        removeFleets: Boolean,
-        removeFactions: Boolean
-    ) {
-        val modsToRemoveStuffFrom = modsToRemoveStuff.filter { it.modPluginClassName != null }
-        val sector = Global.getSector()
 
         if (modsToRemoveStuffFrom.isNotEmpty() && removeListeners) {
             val listenerManager = sector.listenerManager
@@ -155,27 +138,34 @@ internal object RemoveFromSave {
         }
 
         getEntitiesWithThings().forEach { entity ->
-            hullmods.forEach { hullmod ->
-                entity.removeHullmod(hullmod)
-            }
-            wings.forEach { wing ->
-                entity.removeWings(wing)
-            }
-            industries.forEach { industry ->
-                entity.removeIndustries(industry)
-            }
-            skills.forEach { skill ->
-                entity.removeSkills(skill)
-            }
-            weapons.forEach { weapon ->
-                entity.removeWeapon(weapon)
-            }
-            hullspecs.forEach { hullspec ->
-                entity.removeHullSpec(hullspec)
-            }
-            cargoItems.forEach { cargoItem ->
-                entity.removeCargoItem(cargoItem)
-            }
+            if (removeHullmods)
+                hullmods.forEach { hullmod ->
+                    entity.removeHullmod(hullmod)
+                }
+            if (removeWings)
+                wings.forEach { wing ->
+                    entity.removeWings(wing)
+                }
+            if (removeIndustries)
+                industries.forEach { industry ->
+                    entity.removeIndustries(industry)
+                }
+            if (removeSkills)
+                skills.forEach { skill ->
+                    entity.removeSkills(skill)
+                }
+            if (removeWeapons)
+                weapons.forEach { weapon ->
+                    entity.removeWeapon(weapon)
+                }
+            if (removeHullspecs)
+                hullspecs.forEach { hullspec ->
+                    entity.removeHullSpec(hullspec)
+                }
+            if (removeCargoItems)
+                cargoItems.forEach { cargoItem ->
+                    entity.removeCargoItem(cargoItem)
+                }
         }
 
         if (removeMarkets) {
@@ -203,6 +193,24 @@ internal object RemoveFromSave {
                     entity.containingLocation?.removeEntity(entity)
                 }
             }
+
+            // Temp, need to remove assignments traveling towards newly deleted markets. Probably.
+            val fleets = sector.allLocations.flatMap { it.fleets }
+            fleets.forEach { fleet ->
+                fleet.clearAssignments()
+            }
+
+            // Catch a few extras
+            val campaignEntity = locations.flatMap { it.allEntities }.mapNotNull { entity ->
+                val sourceMod = FactionUtils.getSourceModFromFaction(entity.faction.id)
+                if (sourceMod?.id in modsToRemoveStuffFrom.map { it.id }) {
+                    entity
+                } else
+                    null
+            }
+            campaignEntity.forEach { entity ->
+                entity.containingLocation?.removeEntity(entity)
+            }
         }
         val targetModIds = modsToRemoveStuffFrom.map { it.id }.toSet()
 
@@ -219,15 +227,15 @@ internal object RemoveFromSave {
             }
         }
 
-        if (removeFactions) {
-            /*
-            Global.getSector().allFactions.toList().forEach { faction ->
-                val sourceMod = FactionUtils.getSourceModFromFaction(faction.id) ?: return@forEach
-                if (sourceMod.id !in targetModIds) return@forEach
-                Global.getSector().allFactions.remove(faction)
-            }*/
-            // Does not appear to do anything
-        }
+        //if (removeFactions) {
+        /*
+        Global.getSector().allFactions.toList().forEach { faction ->
+            val sourceMod = FactionUtils.getSourceModFromFaction(faction.id) ?: return@forEach
+            if (sourceMod.id !in targetModIds) return@forEach
+            Global.getSector().allFactions.remove(faction)
+        }*/
+        // Does not appear to do anything
+        //}
     }
 
     private fun getEntitiesWithThings(): List<HasThing> {
@@ -341,6 +349,7 @@ internal object RemoveFromSave {
         override fun removeHullSpec(value: String) {
             if (member.variant.hullSpec.hullId == value) {
                 member.setVariant(VariantUtils.createErrorVariant("Removed Mod"), true, true)
+                member.fleetData.removeFleetMember(member) // This might be more effective.
             }
         }
 

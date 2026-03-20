@@ -244,7 +244,7 @@ object HotkeyHandlerDialogs {
                 null,
                 160f, 24f, 64f + 12f
             ).onClick {
-                //removeStuffFromMod(listOf(Global.getSettings().modManager.getModSpec("diableavionics")))
+                //removeModThings(listOf(Global.getSettings().modManager.getModSpec("diableavionics")))
                 DisplayMessage.showMessageCustom("Test Message!", Color.RED)
             }
 

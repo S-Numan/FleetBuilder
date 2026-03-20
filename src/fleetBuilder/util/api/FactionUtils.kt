@@ -14,9 +14,12 @@ object FactionUtils {
      * This assumes the faction file name is the same as the faction id.
      **/
     fun getSourceModFromFaction(factionId: String): ModSpecAPI? {
-        return buildFactionToModMap()[factionId]
+        if (factionToModMap == null)
+            factionToModMap = buildFactionToModMap()
+        return factionToModMap?.get(factionId)
     }
 
+    private var factionToModMap: Map<String, ModSpecAPI?>? = null
     private fun buildFactionToModMap(): Map<String, ModSpecAPI?> {
         val result = mutableMapOf<String, ModSpecAPI?>()
 
