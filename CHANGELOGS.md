@@ -1,3 +1,7 @@
+## 1.31.4
+### Bugfixes
+- Fix special items not saving correctly in the Cargo Auto Manager (such as blueprints)
+
 ## 1.31.1
 ### Changes
 - Made mod removal slightly more safe, by asking the user if they are sure.

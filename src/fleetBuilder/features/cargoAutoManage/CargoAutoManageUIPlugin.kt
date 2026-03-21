@@ -554,7 +554,7 @@ internal class CargoAutoManageUIPlugin(
             ui.beginImageWithText(errorIcon, rowHeight)
 
         val imageLabel = imageTooltip.addPara(displayName, 0f)
-        if (sprite.textureId != 0)
+        if (sprite.textureId != 0 || data == null)
             imageLabel.color = Misc.getButtonTextColor()
         else
             imageLabel.color = Misc.getNegativeHighlightColor()
@@ -567,6 +567,11 @@ internal class CargoAutoManageUIPlugin(
             }
             val sprite = newText.getChildrenCopy().getOrNull(0)?.safeInvoke("getSprite")
             sprite?.safeInvoke("setColor", Misc.getNegativeHighlightColor())
+        }
+        if (data == null) {
+            newText.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 280f) {
+                it.addPara("Data may have been corrupted during load.\n(data was null)", 0f)
+            }
         }
 
         xPos1 += columnWidths[0] + spacing
