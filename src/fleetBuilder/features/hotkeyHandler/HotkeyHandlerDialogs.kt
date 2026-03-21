@@ -1,5 +1,6 @@
 package fleetBuilder.features.hotkeyHandler
 
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -7,10 +8,7 @@ import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
-import com.fs.starfarer.api.ui.Alignment
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
@@ -39,6 +37,7 @@ import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
+import org.magiclib.kotlin.autoSizeToText
 import java.awt.Color
 
 
@@ -250,48 +249,62 @@ object HotkeyHandlerDialogs {
                 DisplayMessage.showMessageCustom("Test Message!", Color.RED)
             }
 
-            val removeModButton = ui.addButton(
-                "Remove Mod",
-                null,
-                160f, 24f, 0f
-            )
-            removeModButton.position.inTL(ui.width - removeModButton.width + 12f, ui.height - removeModButton.height - 8f)
-            removeModButton.onClick {
-                val dialog = DialogPanel("Remove Mod")
-                dialog.show(width = 800f, height = 800f) { ui ->
-                    ui.addPara("HERE BE DRAGONS!\nPlease note that these are very unsafe options and are very likely to cause issues.", Color.RED, 0f)
-                    ui.addSpacer(8f)
-                    val removeListeners = ui.addToggle("Remove all listeners")
-                    removeListeners.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
-                        it.addPara("May crash the game", Color.RED, 0f)
-                    }
-                    val removeEntities = ui.addToggle("Remove all faction owned entities", isChecked = true)
+            if (Global.getCurrentState() == GameState.CAMPAIGN) {
+                removeModButton(ui)
+            }
 
-                    val tempPanel = Global.getSettings().createCustom(ui.width, ui.height - ui.heightSoFar, null)
-                    val tempTMAPI = tempPanel.createUIElement(ui.width, tempPanel.height, true)
+            dialog.addCloseButton()
+        }
+    }
 
-                    var yMargin = 16f
-                    Global.getSettings().modManager.enabledModsCopy.forEach {
-                        tempTMAPI.addButton(it.name + " - " + it.id, null, ui.width - 8f, 32f, 4f).onClick {
+    private fun removeModButton(
+        ui: TooltipMakerAPI
+    ) {
+        val removeModButton = ui.addButton("Remove Mod", null, 160f, 24f, 0f)
+
+        removeModButton.position.inTL(ui.width - removeModButton.width + 12f, ui.height - removeModButton.height - 8f)
+        removeModButton.onClick {
+            val dialog = DialogPanel("Remove Mod")
+            dialog.show(width = 800f, height = 800f) { ui ->
+                ui.addPara("HERE BE DRAGONS!\nPlease note that these are very unsafe options and are very likely to cause issues.", Color.RED, 0f)
+                ui.addSpacer(8f)
+                val removeListeners = ui.addToggle("Remove all listeners")
+                removeListeners.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
+                    it.addPara("May crash the game", Color.RED, 0f)
+                }
+                val removeEntities = ui.addToggle("Remove all faction owned entities", isChecked = true)
+
+                val tempPanel = Global.getSettings().createCustom(ui.width, ui.height - ui.heightSoFar, null)
+                val tempTMAPI = tempPanel.createUIElement(ui.width, tempPanel.height, true)
+
+                var yMargin = 16f
+                Global.getSettings().modManager.enabledModsCopy.forEach {
+                    tempTMAPI.addButton(it.name + " - " + it.id, null, ui.width - 8f, 32f, 4f).onClick {
+                        val dialog = DialogPanel("Are you sure?")
+                        dialog.show(500f, 200f) { ui ->
+                            val removeModLabel = ui.addPara("Remove mod: ${it.name} - ${it.id}", 0f).autoSizeToText()
+                            removeModLabel.position.inTMid(0f)
+                            ui.addPara("Warning, this may brick your save file.", Color.RED, 0f).autoSizeToText().position.belowMid(removeModLabel as UIComponentAPI, 8f)
+                            dialog.addActionButtons()
+                        }
+                        dialog.onConfirm {
                             runCatching {
                                 removeModThings(
                                     listOf(it), removeListeners = removeListeners.isChecked,
                                     removeAllFactionOwnedEntities = removeEntities.isChecked, removeFleets = removeEntities.isChecked, removeMarkets = removeEntities.isChecked
                                 )
+                                DisplayMessage.showMessageCustom("Removed mod: ${it.name}")
                             }.onFailure { e ->
                                 DisplayMessage.showError("Failed to remove mod", "Failed to remove mod:\n${e.message}")
                             }
                         }
-                        yMargin += 40f
                     }
-
-                    tempPanel.addUIElement(tempTMAPI)
-                    ui.addCustom(tempPanel, 0f)
-
+                    yMargin += 40f
                 }
-            }
 
-            dialog.addCloseButton()
+                tempPanel.addUIElement(tempTMAPI)
+                ui.addCustom(tempPanel, 0f)
+            }
         }
     }
 
