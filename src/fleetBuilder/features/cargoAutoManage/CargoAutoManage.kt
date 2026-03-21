@@ -22,6 +22,27 @@ internal object CargoAutoManage {
             return true
         }
 
+        // What accursed code
+        fun Any?.toSpecialItemString(): Any? {
+            return when (this) {
+                is SpecialItemData -> "(${this.id}, ${this.data})"
+                else -> this
+            }
+        }
+
+        fun isEqual(other: Any?): Boolean {
+            if (other !is AutoManage) return false
+            return applyOnInteraction == other.applyOnInteraction &&
+                    applyOnLeave == other.applyOnLeave &&
+                    orderInList == other.orderInList &&
+                    name == other.name &&
+                    autoManageItems.size == other.autoManageItems.size &&
+                    autoManageItems.zip(other.autoManageItems).all { (a, b) ->
+                        a.copy(data = a.data.toSpecialItemString()) ==
+                                b.copy(data = b.data.toSpecialItemString())
+                    }
+        }
+        /*
         fun <T> List<T>.toFrequencyMap() =
             groupingBy { it }.eachCount()
 
@@ -30,9 +51,9 @@ internal object CargoAutoManage {
                     applyOnLeave == other.applyOnLeave &&
                     orderInList == other.orderInList &&
                     name == other.name &&
-                    autoManageItems.toFrequencyMap() ==
-                    other.autoManageItems.toFrequencyMap()
+                    autoManageItems.toFrequencyMap() == other.autoManageItems.toFrequencyMap()
         }
+        */
     }
 
     fun getSavedPolicies(): List<CargoAutoManage.AutoManage> {
@@ -79,7 +100,7 @@ internal object CargoAutoManage {
                 else if (item.data is SpecialItemData)
                     (item.data as SpecialItemData).id to (item.data as SpecialItemData).data
                 else
-                    null
+                    item.data
 
                 mapOf(
                     "type" to item.type.name, // store enum as String
@@ -120,10 +141,11 @@ internal object CargoAutoManage {
                 } catch (_: Exception) {
                     return@let null
                 }
-                
-                val data = if (!usePair)
+
+                // This is awful
+                var data = if (!usePair)
                     m["data"]
-                else { // This is awful
+                else {
                     val raw = m["data"]
 
                     val pair = when (raw) {
@@ -141,8 +163,11 @@ internal object CargoAutoManage {
                             it.first as String?,
                             it.second as String?
                         )
-                    }
+                    } ?: raw
                 }
+                if (usePair && data is SpecialItemData && data.data == null)
+                    data = data.id
+
 
                 ItemAutoManage(
                     type = type,

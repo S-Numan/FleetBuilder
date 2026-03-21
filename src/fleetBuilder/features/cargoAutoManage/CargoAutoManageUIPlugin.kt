@@ -381,6 +381,7 @@ internal class CargoAutoManageUIPlugin(
 
 
                         cargoAutoManagerPolicies.forEach { autoManage ->
+                            autoManage.autoManageItems.getOrNull(0)?.data
                             val name = if (
                                 autoManage.copy(name = "", orderInList = 0) == currentAutoManage
                             ) {
