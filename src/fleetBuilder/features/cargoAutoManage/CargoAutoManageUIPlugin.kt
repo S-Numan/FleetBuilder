@@ -377,10 +377,13 @@ internal class CargoAutoManageUIPlugin(
                         }
                         @Suppress("UNCHECKED_CAST")
                         val cargoAutoManagerPoliciesTemp = jsonArrayToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
-                        val cargoAutoManagerPolicies = cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it) }.sortedBy { it.orderInList }.toMutableList()
+                        val cargoAutoManagerPolicies = cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it, true) }.sortedBy { it.orderInList }.toMutableList()
+
 
                         cargoAutoManagerPolicies.forEach { autoManage ->
-                            val name = if (autoManage.copy(name = "", orderInList = 0) == currentAutoManage) {
+                            val name = if (
+                                autoManage.copy(name = "", orderInList = 0) == currentAutoManage
+                            ) {
                                 autoManage.name + " (Current)"
                             } else {
                                 autoManage.name
@@ -420,7 +423,7 @@ internal class CargoAutoManageUIPlugin(
                                     overwriteButton?.opacity = 0f
 
                                     cargoAutoManagerPolicies.remove(autoManage)
-                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it) }
+                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it, true) }
                                     val json = JSONObject().put("policies", listToJsonArray(mapList))
                                     Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
                                     //autoManagePoliciesDialog.createUI()
@@ -446,7 +449,7 @@ internal class CargoAutoManageUIPlugin(
                                         name = autoManage.name
                                     )
                                     cargoAutoManagerPolicies.add(currentAutoManageCopy)
-                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it) }
+                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it, true) }
                                     val json = JSONObject().put("policies", listToJsonArray(mapList))
                                     Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
                                     autoManagePoliciesDialog.recreateUI()
@@ -490,7 +493,7 @@ internal class CargoAutoManageUIPlugin(
                                 )
                                 cargoAutoManagerPolicies.add(currentAutoManageCopy)
 
-                                val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it) }
+                                val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it, true) }
                                 val json = JSONObject().put("policies", listToJsonArray(mapList))
                                 Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
                                 autoManagePoliciesDialog.recreateUI()
@@ -551,7 +554,7 @@ internal class CargoAutoManageUIPlugin(
             ui.beginImageWithText(errorIcon, rowHeight)
 
         val imageLabel = imageTooltip.addPara(displayName, 0f)
-        if (sprite.textureId != 0)
+        if (sprite.textureId != 0 || data == null)
             imageLabel.color = Misc.getButtonTextColor()
         else
             imageLabel.color = Misc.getNegativeHighlightColor()
@@ -564,6 +567,11 @@ internal class CargoAutoManageUIPlugin(
             }
             val sprite = newText.getChildrenCopy().getOrNull(0)?.safeInvoke("getSprite")
             sprite?.safeInvoke("setColor", Misc.getNegativeHighlightColor())
+        }
+        if (data == null) {
+            newText.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 280f) {
+                it.addPara("Data may have been corrupted during load.\n(data was null)", 0f)
+            }
         }
 
         xPos1 += columnWidths[0] + spacing

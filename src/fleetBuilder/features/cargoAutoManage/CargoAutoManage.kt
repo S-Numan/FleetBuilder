@@ -2,6 +2,7 @@ package fleetBuilder.features.cargoAutoManage
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
+import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import fleetBuilder.core.ModSettings.PRIMARYDIR
 import fleetBuilder.util.FBMisc.jsonArrayToList
@@ -14,11 +15,23 @@ internal object CargoAutoManage {
         var applyOnLeave: Boolean = false,
         var orderInList: Int = 0,
         var name: String = "",
-        val autoManageItems: MutableList<ItemAutoManage> = mutableListOf()
+        var autoManageItems: MutableList<ItemAutoManage> = mutableListOf()
     ) {
         fun isDefault(): Boolean {
             if (!applyOnInteraction || applyOnLeave || autoManageItems.isNotEmpty() || orderInList != 0 || name != "") return false
             return true
+        }
+
+        fun <T> List<T>.toFrequencyMap() =
+            groupingBy { it }.eachCount()
+
+        fun equalsIgnoringItemOrder(other: AutoManage): Boolean {
+            return applyOnInteraction == other.applyOnInteraction &&
+                    applyOnLeave == other.applyOnLeave &&
+                    orderInList == other.orderInList &&
+                    name == other.name &&
+                    autoManageItems.toFrequencyMap() ==
+                    other.autoManageItems.toFrequencyMap()
         }
     }
 
@@ -42,7 +55,7 @@ internal object CargoAutoManage {
 
     data class ItemAutoManage(
         val type: CargoAPI.CargoItemType,
-        val data: Any?,
+        var data: Any?,
         val icon: String,
         val displayName: String,
         val amount: Int? = null,
@@ -54,16 +67,23 @@ internal object CargoAutoManage {
 
     //Cannot save the classes directly as that would prevent the mod from being removed.
 
-    fun saveCargoAutoManageToMap(cargoAutoManage: AutoManage): Map<String, Any?> {
+    fun saveCargoAutoManageToMap(cargoAutoManage: AutoManage, usePair: Boolean = false): Map<String, Any?> {
         return mapOf(
             "applyOnInteraction" to cargoAutoManage.applyOnInteraction,
             "applyOnLeave" to cargoAutoManage.applyOnLeave,
             "orderInList" to cargoAutoManage.orderInList,
             "name" to cargoAutoManage.name,
             "autoManageItems" to cargoAutoManage.autoManageItems.map { item ->
+                val data = if (!usePair)
+                    item.data
+                else if (item.data is SpecialItemData)
+                    (item.data as SpecialItemData).id to (item.data as SpecialItemData).data
+                else
+                    null
+
                 mapOf(
                     "type" to item.type.name, // store enum as String
-                    "data" to item.data, // must be primitive or serializable
+                    "data" to data, // must be primitive or serializable
                     "icon" to item.icon,
                     "displayName" to item.displayName,
                     "amount" to item.amount,
@@ -86,7 +106,7 @@ internal object CargoAutoManage {
         return loadCargoAutoManageFromMap(stored)
     }
 
-    fun loadCargoAutoManageFromMap(stored: Map<*, *>): AutoManage {
+    fun loadCargoAutoManageFromMap(stored: Map<*, *>, usePair: Boolean = false): AutoManage {
         val applyOnInteraction = stored["applyOnInteraction"] as? Boolean ?: true
         val applyOnLeave = stored["applyOnLeave"] as? Boolean ?: false
         val orderInList = stored["orderInList"] as? Int ?: 0
@@ -100,10 +120,33 @@ internal object CargoAutoManage {
                 } catch (_: Exception) {
                     return@let null
                 }
+                
+                val data = if (!usePair)
+                    m["data"]
+                else { // This is awful
+                    val raw = m["data"]
+
+                    val pair = when (raw) {
+                        is Pair<*, *> -> raw
+                        is String -> raw
+                            .removeSurrounding("(", ")")
+                            .split(",")
+                            .map { it.trim() }
+                            .let { Pair(it.getOrNull(0), it.getOrNull(1)) }
+                        else -> null
+                    }
+
+                    pair?.let {
+                        SpecialItemData(
+                            it.first as String?,
+                            it.second as String?
+                        )
+                    }
+                }
 
                 ItemAutoManage(
                     type = type,
-                    data = m["data"], // Still Any? If the data is a class from a removed mod, the save won't load
+                    data = data, // Still Any? If the data is a class from a removed mod, the save won't load
                     icon = m["icon"] as? String ?: "",
                     displayName = m["displayName"] as? String ?: "",
                     amount = (m["amount"] as? Number)?.toInt(),
