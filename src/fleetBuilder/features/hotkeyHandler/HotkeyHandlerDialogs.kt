@@ -263,7 +263,7 @@ object HotkeyHandlerDialogs {
                     ui.addSpacer(8f)
                     val removeListeners = ui.addToggle("Remove all listeners")
                     removeListeners.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
-                        it.addPara("Will likely cause crashes", Color.RED, 0f)
+                        it.addPara("May crash the game", Color.RED, 0f)
                     }
                     val removeEntities = ui.addToggle("Remove all faction owned entities", isChecked = true)
 

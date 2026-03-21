@@ -1,3 +1,18 @@
+## 1.31.0
+### Additions
+- Added "Upgrade weapons using extra OP" and "Strip before autofitting" to autofit toggle list.
+- Added "Available policies" button in the Cargo Auto Manager. Open this to save and load a list of Cargo Auto Manager policies even between save games.
+- Added a "Remove Mod" button in the dev dialog, which does as implied.
+    * Removes most contents of a mod from your game, including:
+    * Every mod based item (weapons, wings, ships, industries)
+    * Every faction owned entity added by the mod(markets, fleets, Comm relay)
+    * Optionally every listener the mod adds.
+    * * This is very much so not safe to use, but I left it in in case anyone wanted to live dangerously.
+### Changes
+- Dialogs now close on input press down, instead of on letting go.
+### Bugfixes
+- Fix multiple layers of UI dialogs closing when they shouldn't after hitting ESC or right click.
+
 ## 1.30.2
 ### Changes
 - No more fleet info prepend in SaveTransfer json files.
