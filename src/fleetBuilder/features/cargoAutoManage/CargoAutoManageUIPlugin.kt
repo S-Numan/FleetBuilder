@@ -377,10 +377,13 @@ internal class CargoAutoManageUIPlugin(
                         }
                         @Suppress("UNCHECKED_CAST")
                         val cargoAutoManagerPoliciesTemp = jsonArrayToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
-                        val cargoAutoManagerPolicies = cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it) }.sortedBy { it.orderInList }.toMutableList()
+                        val cargoAutoManagerPolicies = cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it, true) }.sortedBy { it.orderInList }.toMutableList()
+
 
                         cargoAutoManagerPolicies.forEach { autoManage ->
-                            val name = if (autoManage.copy(name = "", orderInList = 0) == currentAutoManage) {
+                            val name = if (
+                                autoManage.copy(name = "", orderInList = 0) == currentAutoManage
+                            ) {
                                 autoManage.name + " (Current)"
                             } else {
                                 autoManage.name
@@ -420,7 +423,7 @@ internal class CargoAutoManageUIPlugin(
                                     overwriteButton?.opacity = 0f
 
                                     cargoAutoManagerPolicies.remove(autoManage)
-                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it) }
+                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it, true) }
                                     val json = JSONObject().put("policies", listToJsonArray(mapList))
                                     Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
                                     //autoManagePoliciesDialog.createUI()
@@ -446,7 +449,7 @@ internal class CargoAutoManageUIPlugin(
                                         name = autoManage.name
                                     )
                                     cargoAutoManagerPolicies.add(currentAutoManageCopy)
-                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it) }
+                                    val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it, true) }
                                     val json = JSONObject().put("policies", listToJsonArray(mapList))
                                     Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
                                     autoManagePoliciesDialog.recreateUI()
@@ -490,7 +493,7 @@ internal class CargoAutoManageUIPlugin(
                                 )
                                 cargoAutoManagerPolicies.add(currentAutoManageCopy)
 
-                                val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it) }
+                                val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it, true) }
                                 val json = JSONObject().put("policies", listToJsonArray(mapList))
                                 Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
                                 autoManagePoliciesDialog.recreateUI()
