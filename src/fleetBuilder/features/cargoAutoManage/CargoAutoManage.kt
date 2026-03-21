@@ -22,14 +22,13 @@ internal object CargoAutoManage {
             return true
         }
 
-        // What accursed code
+        /*
         fun Any?.toSpecialItemString(): Any? {
             return when (this) {
                 is SpecialItemData -> "(${this.id}, ${this.data})"
                 else -> this
             }
         }
-
         fun isEqual(other: Any?): Boolean {
             if (other !is AutoManage) return false
             return applyOnInteraction == other.applyOnInteraction &&
@@ -42,7 +41,8 @@ internal object CargoAutoManage {
                                 b.copy(data = b.data.toSpecialItemString())
                     }
         }
-        /*
+        */
+
         fun <T> List<T>.toFrequencyMap() =
             groupingBy { it }.eachCount()
 
@@ -53,7 +53,7 @@ internal object CargoAutoManage {
                     name == other.name &&
                     autoManageItems.toFrequencyMap() == other.autoManageItems.toFrequencyMap()
         }
-        */
+        
     }
 
     fun getSavedPolicies(): List<CargoAutoManage.AutoManage> {
