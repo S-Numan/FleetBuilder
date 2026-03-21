@@ -23,6 +23,11 @@ open class ComposablePanel : BasePanel() {
         createUICallback?.invoke()
     }
 
+    open fun recreateUI() {
+        panel.removeComponent(tooltip)
+        createUI()
+    }
+
     private var createUICallback: (() -> Unit)? = null
 
     /**

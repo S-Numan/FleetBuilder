@@ -7,11 +7,14 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.HullModItemManager
+import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.util.api.MemberUtils.getMaxSMods
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
+import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
@@ -20,6 +23,215 @@ import kotlin.math.min
 
 
 internal object FBMisc {
+
+    fun replaceVariantWithVariant(
+        to: ShipVariantAPI,
+        from: ShipVariantAPI,
+        dontForceClearDMods: Boolean = false,
+        dontForceClearSMods: Boolean = false
+    ) {
+        if (to.hullSpec.getEffectiveHullId() != from.hullSpec.getEffectiveHullId()) {
+            DisplayMessage.showError("Replace Variant With Variant failed. Base hulls '${to.hullSpec.getEffectiveHullId()}' and '${from.hullSpec.getEffectiveHullId()}' do not match.")
+            return
+        }
+        to.clear()
+        to.weaponGroups.clear()
+        to.clearTags()
+        to.nonBuiltInWeaponSlots.clear()
+        to.nonBuiltInWings.clear()
+        to.fittedWeaponSlots.clear()
+
+        to.hullMods.toList().forEach { mod ->
+            if (dontForceClearSMods && to.sMods.contains(mod))
+                return@forEach
+            if (dontForceClearDMods && LookupUtil.getAllDMods().contains(mod))
+                return@forEach
+
+            to.completelyRemoveMod(mod)
+        }
+
+        if (ModSettings.removeDefaultDMods) {
+            to.allDMods().forEach {
+                to.hullMods.remove(it)
+            }
+        }
+
+        if (!dontForceClearSMods) {
+            to.sModdedBuiltIns.clear()
+        }
+        /*to.weaponGroups.forEachIndexed { index, group ->
+            for (i in group.slots.indices.reversed()) {
+                to.weaponGroups[index].removeSlot(group.slots[i])
+            }
+        }*/
+
+        // Copy tags
+        for (tag in from.tags) {
+            if (!tag.startsWith("#"))
+                to.addTag(tag)
+        }
+
+        // Copy hullmod data
+        for (mod in from.getRegularHullMods()) {
+            to.addMod(mod)
+        }
+
+        // Copy perma-mods
+        for (mod in from.permaMods) {
+            to.addPermaMod(mod, false)
+        }
+
+        // Copy S-mods
+        for (mod in from.sMods) {
+            to.addPermaMod(mod, true)
+        }
+
+        // Copy S-modded built-ins
+        for (mod in from.sModdedBuiltIns) {
+            to.sModdedBuiltIns.add(mod)
+        }
+
+        // Copy Built-in DMods
+        for (mod in from.allDMods()) {
+            if (mod !in from.hullSpec.builtInMods) continue
+            to.hullMods.add(mod)
+        }
+
+        for (mod in from.suppressedMods) {
+            to.addSuppressedMod(mod)
+        }
+
+        // Copy weapon assignments
+        for (slotId in from.nonBuiltInWeaponSlots) {
+            val weapon = from.getWeaponId(slotId)
+            if (weapon != null) {
+                to.addWeapon(slotId, weapon)
+            }
+        }
+
+        // Copy autofire groups
+        from.weaponGroups.forEach { group ->
+            val newGroup = WeaponGroupSpec()
+            newGroup.isAutofireOnByDefault = group.isAutofireOnByDefault
+            newGroup.type = group.type
+
+            group.slots.forEach { slotId ->
+                newGroup.addSlot(slotId)
+            }
+
+            to.weaponGroups.add(newGroup)
+        }
+
+
+        // Copy wings
+        for (i in from.hullSpec.builtInWings.size until from.wings.size) {
+            val wing = from.getWingId(i)
+            if (wing != null) {
+                to.setWingId(i, wing)
+            }
+        }
+
+        // Copy flux vents/caps
+        to.numFluxVents = from.numFluxVents
+        to.numFluxCapacitors = from.numFluxCapacitors
+
+        // Copy variant ID and display name
+        to.hullVariantId = from.hullVariantId
+        to.setVariantDisplayName(from.displayName)
+        to.source = from.source
+
+        for (slot in from.moduleSlots) {
+            val toVariant = runCatching { to.getModuleVariant(slot) }.getOrNull()
+            val fromVariant = runCatching { from.getModuleVariant(slot) }.getOrNull()
+            if (toVariant == null || fromVariant == null)
+                continue
+
+            replaceVariantWithVariant(
+                toVariant,
+                fromVariant,
+                dontForceClearDMods,
+                dontForceClearSMods
+            )
+            to.setModuleVariant(slot, toVariant)
+        }
+    }
+
+    fun mapToJsonObject(map: Map<*, *>): JSONObject {
+        val json = JSONObject()
+
+        for ((key, value) in map) {
+            // JSON keys must be strings
+            val stringKey = key?.toString() ?: continue
+
+            json.put(
+                stringKey, when (value) {
+                    null -> JSONObject.NULL
+                    is Map<*, *> -> mapToJsonObject(value)
+                    is List<*> -> listToJsonArray(value)
+                    else -> value
+                }
+            )
+        }
+
+        return json
+    }
+
+    fun listToJsonArray(list: List<*>): JSONArray {
+        val array = JSONArray()
+
+        for (value in list) {
+            array.put(
+                when (value) {
+                    null -> JSONObject.NULL
+                    is Map<*, *> -> mapToJsonObject(value)
+                    is List<*> -> listToJsonArray(value)
+                    else -> value
+                }
+            )
+        }
+
+        return array
+    }
+
+    fun jsonObjectToMap(json: JSONObject): Map<String, Any?> {
+        val map = mutableMapOf<String, Any?>()
+
+        val keys = json.keys()
+        while (keys.hasNext()) {
+            val key = keys.next()
+            if (key !is String) continue
+            val value = json.get(key)
+
+            map[key] = when (value) {
+                is JSONObject -> jsonObjectToMap(value)
+                is JSONArray -> jsonArrayToList(value)
+                JSONObject.NULL -> null
+                else -> value
+            }
+        }
+
+        return map
+    }
+
+    fun jsonArrayToList(array: JSONArray): List<Any?> {
+        val list = mutableListOf<Any?>()
+
+        for (i in 0 until array.length()) {
+            val value = array.get(i)
+
+            list.add(
+                when (value) {
+                    is JSONObject -> jsonObjectToMap(value)
+                    is JSONArray -> jsonArrayToList(value)
+                    JSONObject.NULL -> null
+                    else -> value
+                }
+            )
+        }
+
+        return list
+    }
+
 
     fun SpecialItemData.getSpecialItemName(): String? {
         return when (id) {

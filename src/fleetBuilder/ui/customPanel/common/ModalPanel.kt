@@ -20,7 +20,8 @@ open class ModalPanel : ComposablePanel() {
 
     enum class PanelAnimation {
         RESIZE_FADE,
-        FADE_ONLY
+        FADE_ONLY,
+        NONE
     }
 
     open var animation = PanelAnimation.RESIZE_FADE
@@ -41,8 +42,7 @@ open class ModalPanel : ComposablePanel() {
 
     open var consumeAllInput: Boolean = true
     open var allowHotkeyQuit: Boolean = true
-
-    open var attemptedExit: Boolean = false
+    open var hotkeyClosesOnRelease: Boolean = false
 
     override var dialogStyle: Boolean = true
     override var xTooltipPad = 10f
@@ -69,7 +69,7 @@ open class ModalPanel : ComposablePanel() {
         if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
             Global.getCombatEngine().isPaused = true
 
-        if (openDuration == 0f)
+        if (openDuration == 0f || animation == PanelAnimation.NONE)
             setMaxSize()
 
         return panel
@@ -103,22 +103,37 @@ open class ModalPanel : ComposablePanel() {
             forceDismiss()
     }
 
+    open var escapeRequested: Boolean = false
     override fun processInput(events: MutableList<InputEventAPI>) {
         super.processInput(events)
 
         for (event in events) {
             if (event.isConsumed) continue
 
-            if (allowHotkeyQuit &&
-                (event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                (event.isRMBEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
-            ) {
-                if (attemptedExit) {
-                    dismiss()
-                    event.consume()
-                } else {
-                    attemptedExit = true
-                    event.consume()
+            if (allowHotkeyQuit) {
+                if (hotkeyClosesOnRelease && escapeRequested) {
+                    if (
+                        (event.isKeyUpEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
+                        (event.isRMBUpEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
+                    ) {
+                        dismiss()
+                        event.consume()
+                        escapeRequested = false
+                    } else if (
+                        !(event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) && // Escape not being held down?
+                        !(event.isRMBEvent) // RMB not being held down?
+                    )
+                        escapeRequested = true
+                } else if (
+                    (event.isKeyDownEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
+                    (event.isRMBDownEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
+                ) {
+                    if (hotkeyClosesOnRelease)
+                        escapeRequested = true
+                    else {
+                        dismiss()
+                        event.consume()
+                    }
                 }
             }
 
@@ -139,7 +154,7 @@ open class ModalPanel : ComposablePanel() {
             panel.removeComponent(it)
         }
 
-        if (closeDuration == 0f)
+        if (closeDuration == 0f || animation == PanelAnimation.NONE)
             forceDismiss()
     }
 

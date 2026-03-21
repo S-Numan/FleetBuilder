@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManage
+import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
 import fleetBuilder.util.*
 
 internal class CargoAutoManager : EveryFrameScript {
@@ -31,7 +31,7 @@ internal class CargoAutoManager : EveryFrameScript {
             interactionMarket = market
 
             interactionMarket?.submarketsCopy?.forEach { submarket ->
-                val cargoAutoManage = loadCargoAutoManage(submarket)
+                val cargoAutoManage = loadCargoAutoManageFromSubmarket(submarket)
                     ?: return@forEach
                 if (!cargoAutoManage.applyOnInteraction) return@forEach
 
@@ -48,7 +48,7 @@ internal class CargoAutoManager : EveryFrameScript {
             var changeOccured = false
 
             interactionMarket?.submarketsCopy?.forEach { submarket ->
-                val cargoAutoManage = loadCargoAutoManage(submarket)
+                val cargoAutoManage = loadCargoAutoManageFromSubmarket(submarket)
                     ?: return@forEach
                 if (!cargoAutoManage.applyOnLeave) return@forEach
 
