@@ -1,3 +1,8 @@
+## 1.31.1
+### Changes
+- Made mod removal slightly more safe, by asking the user if they are sure.
+- Updated the mod picker filter to match hullmod display names that contain the input text, rather than only those that start with it.
+
 ## 1.31.0
 ### Additions
 - Added "Upgrade weapons using extra OP" and "Strip before autofitting" to autofit toggle list.
@@ -5,7 +10,7 @@
 - Added a "Remove Mod" button in the dev dialog, which does as implied.
     * Removes most contents of a mod from your game, including:
     * Every mod based item (weapons, wings, ships, industries)
-    * Every faction owned entity added by the mod(markets, fleets, Comm relay)
+    * Every faction owned entity added by the mod (markets, fleets, comm relays)
     * Optionally every listener the mod adds.
     * * This is very much so not safe to use, but I left it in in case anyone wanted to live dangerously.
 ### Changes

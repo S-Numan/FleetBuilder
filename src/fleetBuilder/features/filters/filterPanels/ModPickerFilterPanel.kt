@@ -3,9 +3,9 @@ package fleetBuilder.features.filters.filterPanels
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.ui.UITable
-import fleetBuilder.util.safeInvoke
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.util.safeInvoke
 
 class ModPickerFilterPanel(
     width: Float,
@@ -78,7 +78,7 @@ class ModPickerFilterPanel(
 
     private fun HullModSpecAPI.matchesDescription(desc: String): Boolean {
         return when {
-            displayName.lowercase().startsWith(desc) -> true
+            displayName.lowercase().contains(desc) -> true
             manufacturer.lowercase().startsWith(desc) -> true
             else -> false
         }
