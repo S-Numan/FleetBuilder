@@ -1,3 +1,9 @@
+## 1.31.6
+- Saving Cargo Auto Manager entries is quite finicky.
+### Bugfixes
+- Fix Cargo Auto Manager saving special items will null data, such as the industrial evolution ability items.
+- Remove autofit Apply SMods button if Ship Mastery System mod exists, to avoid conflicting functionality.
+
 ## 1.31.4
 ### Bugfixes
 - Fix special items not saving correctly in the Cargo Auto Manager (such as blueprints)
