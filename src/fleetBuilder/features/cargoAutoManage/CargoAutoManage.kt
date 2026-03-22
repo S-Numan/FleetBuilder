@@ -53,7 +53,7 @@ internal object CargoAutoManage {
                     name == other.name &&
                     autoManageItems.toFrequencyMap() == other.autoManageItems.toFrequencyMap()
         }
-        
+
     }
 
     fun getSavedPolicies(): List<CargoAutoManage.AutoManage> {
@@ -165,8 +165,13 @@ internal object CargoAutoManage {
                         )
                     } ?: raw
                 }
-                if (usePair && data is SpecialItemData && data.data == null)
-                    data = data.id
+                if (usePair && data is SpecialItemData) {
+                    if (data.data == null)
+                        data = data.id
+                    else if (data.data == "null")
+                        data.data = null
+                }
+
 
 
                 ItemAutoManage(
