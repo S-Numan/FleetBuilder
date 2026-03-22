@@ -554,12 +554,14 @@ internal object AutofitPanel {
                     default = true
                 )
 
-                applySModsButton = addToggleButton(
-                    label = txt("toggle_apply_smods_label"),
-                    memoryKey = "\$FBA_applySMods",
-                    tooltipText = txt("toggle_apply_smods_tooltip"),
-                    default = false
-                )
+                if (!Global.getSettings().modManager.isModEnabled("shipmasterysystem")) { // No apply s-mods if conflicting functionality
+                    applySModsButton = addToggleButton(
+                        label = txt("toggle_apply_smods_label"),
+                        memoryKey = "\$FBA_applySMods",
+                        tooltipText = txt("toggle_apply_smods_tooltip"),
+                        default = false
+                    )
+                }
             }
 
             // Add the buttons element to the panel
