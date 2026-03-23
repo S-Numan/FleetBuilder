@@ -7,6 +7,7 @@
   "no_missing_elements": "No missing elements.",
   "cargo_auto_manage_message": "Cargo auto-managed",
   "officer_copied_to_clipboard": "Officer copied to clipboard",
+  "officer_copied_to_clipboard_compressed": "Officer copied to clipboard",
   "save_copied": "Save copied to clipboard",
   "load_complete": "Load Complete",
   "done": "Done",

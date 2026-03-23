@@ -1,3 +1,11 @@
+## 1.32.0
+### Changes
+- Moved Cargo Auto Manager "Add Custom" button to outside the scroller tooltip, so the user no longer needs to scroll down to click it if the list of elements is too large.
+- Added default Cargo Auto Manager suggestions for supplies, crew, and fuel.
+- Auto toggle "Take" in Cargo Auto Manager when adding a new custom option.
+### Bugfixes
+- Added missing officer_copied_to_clipboard_compressed string.
+
 ## 1.31.6
 - Saving Cargo Auto Manager entries is quite finicky.
 ### Bugfixes
