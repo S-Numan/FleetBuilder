@@ -87,8 +87,8 @@ object HotkeyHandlerDialogs {
                     state.isHideUI
                     //CampaignGameManager().
                     CampaignEngine.getInstance().saveDirName
-                    SaveGameData().saveDir
                 }*/
+
             }
 
             if (Global.getCurrentState() == GameState.CAMPAIGN) {
@@ -355,7 +355,7 @@ object HotkeyHandlerDialogs {
             val buttonHeight = 24f
             val includeOfficers = ui.addToggle(FBTxt.txt("include_officers"), true)
             val includeCommanderAsCommander = ui.addToggle(FBTxt.txt("include_commander_as_commander"), true)
-            val includeCommanderAsOfficer = ui.addToggle(FBTxt.txt("include_commander_as_officer"), true)
+            val includeCommanderAsOfficerToggle = ui.addToggle(FBTxt.txt("include_commander_as_officer"), true)
             val setAggressionDoctrine = ui.addToggle(FBTxt.txt("set_aggression_doctrine"), true)
             ui.addSpacer(buttonHeight / 2)
             val setFactionToPirates = ui.addToggle(FBTxt.txt("set_faction_to_pirate"), true)
@@ -367,12 +367,13 @@ object HotkeyHandlerDialogs {
             dialog.addActionButtons(confirmText = FBTxt.txt("spawn_fleet"))
 
             dialog.onConfirm {
-                val settings = FleetSettings()
-                settings.includeAggression = setAggressionDoctrine.isChecked
-                settings.memberSettings.includeOfficer = includeOfficers.isChecked
-                settings.includeCommanderSetFlagship = includeCommanderAsCommander.isChecked
-                settings.includeCommanderAsOfficer = includeCommanderAsOfficer.isChecked
-                settings.excludeMembersWithMissingHullSpec = excludeMissingShips.isChecked
+                val settings = FleetSettings().apply {
+                    includeAggression = setAggressionDoctrine.isChecked
+                    memberSettings.includeOfficer = includeOfficers.isChecked
+                    includeCommanderSetFlagship = includeCommanderAsCommander.isChecked
+                    includeCommanderAsOfficer = includeCommanderAsOfficerToggle.isChecked
+                    excludeMembersWithMissingHullSpec = excludeMissingShips.isChecked
+                }
                 val repairAndSetMaxCR = repairAndSetMaxCR.isChecked
                 val setFactionToPirates = setFactionToPirates.isChecked
 

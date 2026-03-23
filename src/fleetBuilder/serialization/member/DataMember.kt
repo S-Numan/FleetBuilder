@@ -68,8 +68,8 @@ object DataMember {
         val personData = if (data.personData != null && settings.includeOfficer) filterParsedPersonData(data.personData, settings.personSettings, missing) else null
         val variantData = if (data.variantData != null) filterParsedVariantData(data.variantData, settings.variantSettings, missing) else null
 
-        val cr = if (settings.includeCRAndHull) data.cr else null
-        val hullFraction = if (settings.includeCRAndHull) data.hullFraction else null
+        val cr = if (settings.includeCR) data.cr else null
+        val hullFraction = if (settings.includeHull) data.hullFraction else null
 
         return data.copy(
             personData = personData,

@@ -84,9 +84,6 @@ internal class ModSettingsListener : LunaSettingsListener {
 
             ModSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
 
-            if (LookupUtils.Loaded())
-                ShipDirectoryService.loadAllDirectories()
-
         } else {
             ModSettings.setUnassignPlayer(false)
             ModSettings.setCheatsEnabled(false)
@@ -107,6 +104,6 @@ internal class ModSettingsListener : LunaSettingsListener {
         }
 
         if (LookupUtils.Loaded())
-            EventDispatcher.setSectorListeners()
+            EventDispatcher.onReload()
     }
 }

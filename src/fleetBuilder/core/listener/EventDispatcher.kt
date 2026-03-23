@@ -1,6 +1,7 @@
 package fleetBuilder.core.listener
 
 import com.fs.starfarer.api.EveryFrameScript
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
 import fleetBuilder.core.ModSettings
@@ -22,6 +23,7 @@ import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
 import fleetBuilder.features.logMessageAppender.LogMessageAppender
 import fleetBuilder.features.officerStorage.CatchStoreMemberButton
 import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
+import fleetBuilder.features.recentBattles.FleetDirectoryService
 import fleetBuilder.features.recentBattles.RecentBattleTracker
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
@@ -113,13 +115,21 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun onDevModeF8Reload() {
-            onApplicationLoad()
-            setSectorListeners()
+            onBigLoad()
+            onReload()
         }
 
         fun onApplicationLoad() {
-            ModSettings.onApplicationLoad()
+            onBigLoad()
+            onReload()
+        }
 
+        fun onBigLoad() {
+            ModSettings.onApplicationLoad()
+            LookupUtils.onApplicationLoad()
+        }
+
+        fun onReload() {
             if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF || ModSettings.addLogsToDisplayMessageLevel != Level.OFF) {
                 // Cause the lazy class loader to load these classes preemptively to prevent issues.
                 try {
@@ -140,9 +150,13 @@ internal class EventDispatcher : EveryFrameScript {
                 }
             }
 
-            LookupUtils.onApplicationLoad()
+            if (ModSettings.autofitMenuEnabled)
+                ShipDirectoryService.loadAllDirectories()
+            // TODO, setting for this
+            FleetDirectoryService.loadDirectory()
 
-            ShipDirectoryService.loadAllDirectories()
+            if (Global.getCurrentState() == GameState.CAMPAIGN)
+                setSectorListeners()
         }
 
         private val officerTracker = OfficerChangeTracker()
@@ -226,7 +240,7 @@ internal class EventDispatcher : EveryFrameScript {
         //Detect DevMode change
         val currentDevMode = Global.getSettings().isDevMode
         if (lastDevMode != currentDevMode) {
-            setSectorListeners()
+            onReload()
 
             lastDevMode = currentDevMode
         }
