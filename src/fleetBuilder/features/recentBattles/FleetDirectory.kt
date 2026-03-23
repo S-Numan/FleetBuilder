@@ -103,7 +103,7 @@ class FleetDirectory(
                 comparisonSettings
             )
             val fleetUnJSON = JSONFleet.extractFleetDataFromJson(fleetJSON)
-            if (fleetUnJSON != parsedFleet) // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
+            if (fleetUnJSON != filterParsedFleetData(parsedFleet, comparisonSettings)) // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
                 DisplayMessage.showError("DEBUG: Fleet data mismatch", "DEBUG: Fleet data mismatch\n\nfleetUnJSON:\n${fleetUnJSON}\n\nparsedFleet:\n${parsedFleet}")
         }
 
@@ -125,7 +125,7 @@ class FleetDirectory(
             }
         }
 
-        val fleetPath = "${parsedFleet.fleetName}/$fleetID"
+        val fleetPath = fleetID
 
         if (editDirectoryFile)
             updateDirectory(fleetID, fleetPath, currentTime)
