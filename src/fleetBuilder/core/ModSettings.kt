@@ -87,6 +87,7 @@ object ModSettings {
     var selectorsPerRow = 4
 
     var showDebug = false
+    var enableDebug = false
 
     var showHiddenModsInTooltip = false
 

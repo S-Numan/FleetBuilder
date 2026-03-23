@@ -213,7 +213,7 @@ object DataFleet {
         }
 
         val validatedFaction =
-            if (Global.getSettings().allFactionSpecs.any { it.id == data.factionID }) data.factionID
+            if (LookupUtil.getAllFactionIDs().contains(data.factionID)) data.factionID
             else null
 
         if (data.secondInCommandData != null)

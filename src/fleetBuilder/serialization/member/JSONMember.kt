@@ -43,7 +43,8 @@ object JSONMember {
             cr = if (json.has("cr")) json.optFloat("cr") else null,
             hullFraction = if (json.has("hullFraction")) json.optFloat("hullFraction") else null,
             isMothballed = json.optBoolean("ismothballed", false),
-            isFlagship = isFlagship
+            isFlagship = isFlagship,
+            id = if (json.has("id")) json.optString("id") else null
         )
     }
 
@@ -112,6 +113,9 @@ object JSONMember {
             if (includeModInfo)
                 addVariantSourceModsToJson(data.variantData, memberJson)
         }
+
+        if (!data.id.isNullOrEmpty())
+            memberJson.put("id", data.id)
 
         return memberJson
     }

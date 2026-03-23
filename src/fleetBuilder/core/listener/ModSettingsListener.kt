@@ -51,6 +51,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.showCoreNonGoalVariants = getBoolean(modID, "showCoreNonGoalVariants")!!
             ModSettings.showHiddenModsInTooltip = getBoolean(modID, "showHiddenModsInTooltip")!!
             ModSettings.showDebug = getBoolean(modID, "showDebug")!!
+            ModSettings.enableDebug = getBoolean(modID, "enableDebug")!!
             ModSettings.saveDMods = getBoolean(modID, "saveDMods")!!
             ModSettings.saveSMods = getBoolean(modID, "saveSMods")!!
             ModSettings.saveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
