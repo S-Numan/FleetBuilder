@@ -2,6 +2,7 @@ package fleetBuilder.core.listener
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CampaignEventListener
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
@@ -35,33 +36,56 @@ import org.lazywizard.console.Console
 
 internal class EventDispatcher : EveryFrameScript {
     companion object {
-        fun setSectorListeners() {
+
+        // EveryFrameScript
+        fun <T : EveryFrameScript> manageTransientScript(
+            clazz: Class<T>, enabled: Boolean = true, creator: (() -> T)? = null
+        ) {
             val sector = Global.getSector() ?: return
 
-            val listeners = sector.listenerManager
-
-            // Generic helper for managing listeners
-            fun <T : Any> manageTransientListener(clazz: Class<T>, enabled: Boolean, creator: () -> T) {
-                if (enabled) {
-                    if (!listeners.hasListenerOfClass(clazz)) {
-                        listeners.addListener(creator(), true)
-                    }
-                } else {
-                    listeners.removeListenerOfClass(clazz)
+            if (enabled) {
+                if (!sector.hasTransientScript(clazz) && creator != null) {
+                    sector.addTransientScript(creator())
                 }
+            } else {
+                sector.removeTransientScriptsOfClass(clazz)
             }
+        }
 
-            // Generic helper for managing transient scripts
-            fun <T : EveryFrameScript> manageTransientScript(clazz: Class<T>, enabled: Boolean, creator: () -> T) {
-                if (enabled) {
-                    if (!sector.hasTransientScript(clazz)) {
-                        sector.addTransientScript(creator())
-                    }
-                } else {
-                    sector.removeTransientScriptsOfClass(clazz)
+        // CampaignEventListener
+        fun <T : CampaignEventListener> manageTransientCampaignListener(
+            clazz: Class<T>, enabled: Boolean = true, creator: (() -> T)? = null
+        ) {
+            val sector = Global.getSector() ?: return
+
+            if (enabled) {
+                if (sector.allListeners.none { it.javaClass == clazz } && creator != null) {
+                    sector.addTransientListener(creator())
                 }
+            } else {
+                sector.allListeners
+                    .filter { it.javaClass == clazz }
+                    .forEach { sector.removeListener(it) }
             }
+        }
 
+        // Everything else
+        fun <T : Any> manageTransientListener(
+            clazz: Class<T>, enabled: Boolean = true, creator: (() -> T)? = null
+        ) {
+            val sector = Global.getSector() ?: return
+            val listeners = sector.listenerManager ?: return
+
+            if (enabled) {
+                if (!listeners.hasListenerOfClass(clazz) && creator != null) {
+                    listeners.addListener(creator(), true)
+                }
+            } else {
+                listeners.removeListenerOfClass(clazz)
+            }
+        }
+
+        fun setSectorListeners() {
             manageTransientListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
             manageTransientListener(CatchStoreMemberButton::class.java, ModSettings.storeOfficersInCargo || ModSettings.unassignPlayer()) { CatchStoreMemberButton() }
             manageTransientListener(CargoAutoManagerOpener::class.java, ModSettings.cargoAutoManager) { CargoAutoManagerOpener() }
@@ -73,14 +97,15 @@ internal class EventDispatcher : EveryFrameScript {
             manageTransientScript(CampaignFleetScreenFilter::class.java, ModSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }
             manageTransientScript(CargoAutoManager::class.java, ModSettings.cargoAutoManager) { CargoAutoManager() }
             manageTransientScript(CampaignModPickerFilter::class.java, ModSettings.modPickerFilter) { CampaignModPickerFilter() }
+
             val cargoScreenFilter = CampaignCargoScreenFilter()
             manageTransientScript(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { cargoScreenFilter }
             manageTransientListener(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { cargoScreenFilter }
+
             manageTransientScript(AutoMothballRecoveredShips::class.java, ModSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
-            manageTransientListener(CommanderShuttle::class.java, true) { CommanderShuttle() } // Should always be enabled
-            manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
 
+            manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
             manageTransientListener(TransponderOff::class.java, ModSettings.transponderOffInHyperspace) { TransponderOff() }
         }
 
@@ -140,11 +165,11 @@ internal class EventDispatcher : EveryFrameScript {
             officerTracker.reset()
             memberTracker.reset()
 
-            CommanderShuttle.Companion.onGameLoad(newGame)
+            CommanderShuttle.onGameLoad(newGame)
         }
 
         fun beforeGameSave() {
-            CommanderShuttle.Companion.beforeGameSave()
+            CommanderShuttle.beforeGameSave()
 
             MakeSaveRemovable.beforeGameSave()
         }
@@ -172,7 +197,7 @@ internal class EventDispatcher : EveryFrameScript {
         fun afterGameSave() {
             MakeSaveRemovable.afterGameSave()
 
-            CommanderShuttle.Companion.afterGameSave()
+            CommanderShuttle.afterGameSave()
 
             backupSave()
         }

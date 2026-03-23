@@ -6,9 +6,9 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.RepairTrackerAPI
-import fleetBuilder.features.commanderShuttle.CommanderShuttle.Companion.addPlayerShuttle
-import fleetBuilder.features.commanderShuttle.CommanderShuttle.Companion.playerShuttleExists
-import fleetBuilder.features.commanderShuttle.CommanderShuttle.Companion.removePlayerShuttle
+import fleetBuilder.features.commanderShuttle.CommanderShuttle.addPlayerShuttle
+import fleetBuilder.features.commanderShuttle.CommanderShuttle.playerShuttleExists
+import fleetBuilder.features.commanderShuttle.CommanderShuttle.removePlayerShuttle
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull

@@ -4,9 +4,7 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.econ.MarketAPI
-import com.fs.starfarer.api.characters.AbilityPlugin
-import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.combat.EngagementResultAPI
+import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl
@@ -15,22 +13,17 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBTxt
 import java.awt.Color
 
-internal class CommanderShuttleListener : CampaignEventListener, EveryFrameScript {
+internal class CommanderShuttleListener :
+    BaseCampaignEventListener(false),
+    EveryFrameScript,
+    CurrentLocationChangedListener {
+
     override fun isDone(): Boolean {
         return false
     }
 
     override fun runWhilePaused(): Boolean {
         return true
-    }
-
-    var prevLocationSetter: LocationAPI? = null
-
-    fun reportCurrentLocationChanged(prev: LocationAPI, curr: LocationAPI) {
-        if (CommanderShuttle.playerShuttleExists() && !prev.isHyperspace && curr.isHyperspace) {
-            prevLocationSetter = prev
-        }
-
     }
 
     var prevInteractionPlugin: InteractionDialogPlugin? = null
@@ -89,6 +82,16 @@ internal class CommanderShuttleListener : CampaignEventListener, EveryFrameScrip
         makeCommanderShuttleGood(playerFleet)
     }
 
+    var prevLocationSetter: LocationAPI? = null
+
+    override fun reportCurrentLocationChanged(prev: LocationAPI?, curr: LocationAPI?) {
+        if (prev == null || curr == null)
+            return
+
+        if (CommanderShuttle.playerShuttleExists() && !prev.isHyperspace && curr.isHyperspace)
+            prevLocationSetter = prev
+    }
+
     var marketOpened = false
 
     override fun reportShownInteractionDialog(dialog: InteractionDialogAPI) {
@@ -124,17 +127,6 @@ internal class CommanderShuttleListener : CampaignEventListener, EveryFrameScrip
         marketOpened = true
     }
 
-    override fun reportPlayerClosedMarket(market: MarketAPI?) {
-
-    }
-
-    override fun reportPlayerOpenedMarketAndCargoUpdated(market: MarketAPI?) {
-    }
-
-    override fun reportEncounterLootGenerated(plugin: FleetEncounterContextPlugin?, loot: CargoAPI?) {
-
-    }
-
     override fun reportPlayerMarketTransaction(transaction: PlayerMarketTransaction) {
         val playerFleet = Global.getSector().playerFleet ?: return
 
@@ -150,73 +142,5 @@ internal class CommanderShuttleListener : CampaignEventListener, EveryFrameScrip
                 }
             }
         }
-    }
-
-    override fun reportBattleOccurred(primaryWinner: CampaignFleetAPI?, battle: BattleAPI?) {
-
-    }
-
-    override fun reportBattleFinished(primaryWinner: CampaignFleetAPI?, battle: BattleAPI?) {
-
-    }
-
-    override fun reportPlayerEngagement(result: EngagementResultAPI?) {
-
-    }
-
-    override fun reportFleetDespawned(
-        fleet: CampaignFleetAPI?,
-        reason: CampaignEventListener.FleetDespawnReason?,
-        param: Any?
-    ) {
-
-    }
-
-    override fun reportFleetSpawned(fleet: CampaignFleetAPI?) {
-
-    }
-
-    override fun reportFleetReachedEntity(fleet: CampaignFleetAPI?, entity: SectorEntityToken?) {
-
-    }
-
-    override fun reportFleetJumped(
-        fleet: CampaignFleetAPI?,
-        from: SectorEntityToken?,
-        to: JumpPointAPI.JumpDestination?
-    ) {
-
-    }
-
-    override fun reportPlayerReputationChange(faction: String?, delta: Float) {
-
-    }
-
-    override fun reportPlayerReputationChange(person: PersonAPI?, delta: Float) {
-
-    }
-
-    override fun reportPlayerActivatedAbility(ability: AbilityPlugin?, param: Any?) {
-
-    }
-
-    override fun reportPlayerDeactivatedAbility(ability: AbilityPlugin?, param: Any?) {
-
-    }
-
-    override fun reportPlayerDumpedCargo(cargo: CargoAPI?) {
-
-    }
-
-    override fun reportPlayerDidNotTakeCargo(cargo: CargoAPI?) {
-
-    }
-
-    override fun reportEconomyTick(iterIndex: Int) {
-
-    }
-
-    override fun reportEconomyMonthEnd() {
-
     }
 }
