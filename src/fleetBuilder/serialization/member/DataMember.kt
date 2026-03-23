@@ -110,6 +110,10 @@ object DataMember {
 
         val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)
 
+        // Officer
+        if (data.personData != null)
+            member.captain = buildPerson(data.personData)
+
         // Set name and CR
         member.shipName = data.shipName
         member.repairTracker.isMothballed = data.isMothballed
@@ -133,10 +137,6 @@ object DataMember {
                 }
             }*/
         }
-
-        // Officer
-        if (data.personData != null)
-            member.captain = buildPerson(data.personData)
 
         member.setStatUpdateNeeded(true)
 

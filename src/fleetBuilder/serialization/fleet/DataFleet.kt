@@ -247,9 +247,12 @@ object DataFleet {
             fleet.addOfficer(buildPerson(it))
         }
 
+        if (data.secondInCommandData != null && campFleet != null) {
+            DataSecondInCommand.buildSecondInCommandData(data.secondInCommandData, campFleet)
+        }
+
         data.members.forEach { parsed ->
             val member = buildMember(parsed)
-
             fleet.addFleetMember(member)
 
             if (parsed.isFlagship) {
@@ -278,13 +281,13 @@ object DataFleet {
                     officer.setPersonality(personality)
                 }
             }
+
+            // Re-run cr check if it's null to account for new stats
+            if (parsed.cr == null)
+                member.repairTracker.cr = member.repairTracker.maxCR
         }
 
         fleet.syncIfNeeded()
-
-        if (data.secondInCommandData != null && campFleet != null) {
-            DataSecondInCommand.buildSecondInCommandData(data.secondInCommandData, campFleet)
-        }
     }
 
     @JvmOverloads
