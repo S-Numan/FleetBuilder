@@ -42,6 +42,115 @@ import java.awt.Color
 
 
 object HotkeyHandlerDialogs {
+
+    fun createDevModeDialog() {
+        val dialog = DialogPanel(FBTxt.txt("dev_options_title"))
+        dialog.animation = ModalPanel.PanelAnimation.NONE
+
+        dialog.show(width = 500f, height = 200f) { ui ->
+            val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
+            toggleDev.setButtonPressedSound("FB_NONE")
+            toggleDev.onClick {
+                Global.getSettings().isDevMode = toggleDev.isChecked
+                if (toggleDev.isChecked)
+                    UIUtils.playSound("FB_ui_char_decrease_skill")
+                else
+                    UIUtils.playSound("FB_ui_char_increase_skill")
+            }
+            toggleDev.setShortcut(Keyboard.KEY_D, true)
+            toggleDev.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 120f) { tooltip ->
+                tooltip.addPara("Press D to toggle", 0f)
+            }
+
+            ui.addButton(
+                FBTxt.txt("trigger_f8_reload"),
+                null,
+                160f, 24f, 4f
+            ).onClick {
+                Global.getSettings().modManager.enabledModPlugins.forEach {
+                    it.onDevModeF8Reload()
+                }
+            }
+
+            val testMessageTrigger = ui.addButton(
+                "Trigger Test Message",
+                null,
+                160f, 24f, 0f
+            )
+            testMessageTrigger.position.inTL(0f, ui.height - testMessageTrigger.height - 8f)
+            testMessageTrigger.onClick {
+                DisplayMessage.showMessageCustom("Test Message!", Color.RED)
+
+                /*val state = AppDriver.getInstance().currentState
+                if (state is CampaignState) {
+                    state.cmdCodex()
+                    state.isHideUI
+                    //CampaignGameManager().
+                    CampaignEngine.getInstance().saveDirName
+                    SaveGameData().saveDir
+                }*/
+            }
+
+            if (Global.getCurrentState() == GameState.CAMPAIGN) {
+                removeModButton(ui)
+            }
+
+            dialog.addCloseButton()
+        }
+    }
+
+    private fun removeModButton(
+        ui: TooltipMakerAPI
+    ) {
+        val removeModButton = ui.addButton("Remove Mod", null, 160f, 24f, 0f)
+
+        removeModButton.position.inTL(ui.width - removeModButton.width + 12f, ui.height - removeModButton.height - 8f)
+        removeModButton.onClick {
+            val dialog = DialogPanel("Remove Mod")
+            dialog.show(width = 800f, height = 800f) { ui ->
+                ui.addPara("HERE BE DRAGONS!\nPlease note that these are very unsafe options and are very likely to cause issues.", Color.RED, 0f)
+                ui.addSpacer(8f)
+                val removeListeners = ui.addToggle("Remove all listeners")
+                removeListeners.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
+                    it.addPara("May crash the game", Color.RED, 0f)
+                }
+                val removeEntities = ui.addToggle("Remove all faction owned entities", isChecked = true)
+
+                val tempPanel = Global.getSettings().createCustom(ui.width, ui.height - ui.heightSoFar, null)
+                val tempTMAPI = tempPanel.createUIElement(ui.width, tempPanel.height, true)
+
+                var yMargin = 16f
+                Global.getSettings().modManager.enabledModsCopy.forEach {
+                    tempTMAPI.addButton(it.name + " - " + it.id, null, ui.width - 8f, 32f, 4f).onClick {
+                        val dialog = DialogPanel("Are you sure?")
+                        dialog.show(500f, 200f) { ui ->
+                            val removeModLabel = ui.addPara("Remove mod: ${it.name} - ${it.id}", 0f).autoSizeToText()
+                            removeModLabel.position.inTMid(0f)
+                            ui.addPara("Warning, this may brick your save file.", Color.RED, 0f).autoSizeToText().position.belowMid(removeModLabel as UIComponentAPI, 8f)
+                            dialog.addActionButtons()
+                        }
+                        dialog.onConfirm {
+                            runCatching {
+                                removeModThings(
+                                    listOf(it), removeListeners = removeListeners.isChecked,
+                                    removeAllFactionOwnedEntities = removeEntities.isChecked, removeFleets = removeEntities.isChecked, removeMarkets = removeEntities.isChecked
+                                )
+                                DisplayMessage.showMessageCustom("Removed mod: ${it.name}")
+                            }.onFailure { e ->
+                                DisplayMessage.showError("Failed to remove mod", "Failed to remove mod:\n${e.message}")
+                            }
+                        }
+                    }
+                    yMargin += 40f
+                }
+
+                tempPanel.addUIElement(tempTMAPI)
+                ui.addCustom(tempPanel, 0f)
+            }
+        }
+    }
+
+
     fun pasteFleetIntoPlayerFleetDialog(
         data: DataFleet.ParsedFleetData,
         validatedData: DataFleet.ParsedFleetData,
@@ -208,104 +317,6 @@ object HotkeyHandlerDialogs {
                         custom.addUIElement(tooltip)
                         dialog.addCustom(custom)*/
 
-    }
-
-    fun createDevModeDialog() {
-        val dialog = DialogPanel(FBTxt.txt("dev_options_title"))
-        dialog.animation = ModalPanel.PanelAnimation.NONE
-
-        dialog.show(width = 500f, height = 200f) { ui ->
-            val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
-            toggleDev.setButtonPressedSound("FB_NONE")
-            toggleDev.onClick {
-                Global.getSettings().isDevMode = toggleDev.isChecked
-                if (toggleDev.isChecked)
-                    UIUtils.playSound("FB_ui_char_decrease_skill")
-                else
-                    UIUtils.playSound("FB_ui_char_increase_skill")
-            }
-            toggleDev.setShortcut(Keyboard.KEY_D, true)
-            toggleDev.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 120f) { tooltip ->
-                tooltip.addPara("Press D to toggle", 0f)
-            }
-
-            ui.addButton(
-                FBTxt.txt("trigger_f8_reload"),
-                null,
-                160f, 24f, 4f
-            ).onClick {
-                Global.getSettings().modManager.enabledModPlugins.forEach {
-                    it.onDevModeF8Reload()
-                }
-            }
-
-            val testMessageTrigger = ui.addButton(
-                "Trigger Test Message",
-                null,
-                160f, 24f, 0f
-            )
-            testMessageTrigger.position.inTL(0f, ui.height - testMessageTrigger.height - 8f)
-            testMessageTrigger.onClick {
-                DisplayMessage.showMessageCustom("Test Message!", Color.RED)
-            }
-
-            if (Global.getCurrentState() == GameState.CAMPAIGN) {
-                removeModButton(ui)
-            }
-
-            dialog.addCloseButton()
-        }
-    }
-
-    private fun removeModButton(
-        ui: TooltipMakerAPI
-    ) {
-        val removeModButton = ui.addButton("Remove Mod", null, 160f, 24f, 0f)
-
-        removeModButton.position.inTL(ui.width - removeModButton.width + 12f, ui.height - removeModButton.height - 8f)
-        removeModButton.onClick {
-            val dialog = DialogPanel("Remove Mod")
-            dialog.show(width = 800f, height = 800f) { ui ->
-                ui.addPara("HERE BE DRAGONS!\nPlease note that these are very unsafe options and are very likely to cause issues.", Color.RED, 0f)
-                ui.addSpacer(8f)
-                val removeListeners = ui.addToggle("Remove all listeners")
-                removeListeners.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
-                    it.addPara("May crash the game", Color.RED, 0f)
-                }
-                val removeEntities = ui.addToggle("Remove all faction owned entities", isChecked = true)
-
-                val tempPanel = Global.getSettings().createCustom(ui.width, ui.height - ui.heightSoFar, null)
-                val tempTMAPI = tempPanel.createUIElement(ui.width, tempPanel.height, true)
-
-                var yMargin = 16f
-                Global.getSettings().modManager.enabledModsCopy.forEach {
-                    tempTMAPI.addButton(it.name + " - " + it.id, null, ui.width - 8f, 32f, 4f).onClick {
-                        val dialog = DialogPanel("Are you sure?")
-                        dialog.show(500f, 200f) { ui ->
-                            val removeModLabel = ui.addPara("Remove mod: ${it.name} - ${it.id}", 0f).autoSizeToText()
-                            removeModLabel.position.inTMid(0f)
-                            ui.addPara("Warning, this may brick your save file.", Color.RED, 0f).autoSizeToText().position.belowMid(removeModLabel as UIComponentAPI, 8f)
-                            dialog.addActionButtons()
-                        }
-                        dialog.onConfirm {
-                            runCatching {
-                                removeModThings(
-                                    listOf(it), removeListeners = removeListeners.isChecked,
-                                    removeAllFactionOwnedEntities = removeEntities.isChecked, removeFleets = removeEntities.isChecked, removeMarkets = removeEntities.isChecked
-                                )
-                                DisplayMessage.showMessageCustom("Removed mod: ${it.name}")
-                            }.onFailure { e ->
-                                DisplayMessage.showError("Failed to remove mod", "Failed to remove mod:\n${e.message}")
-                            }
-                        }
-                    }
-                    yMargin += 40f
-                }
-
-                tempPanel.addUIElement(tempTMAPI)
-                ui.addCustom(tempPanel, 0f)
-            }
-        }
     }
 
     fun spawnFleetInCampaignDialog(

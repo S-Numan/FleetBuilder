@@ -97,14 +97,18 @@ object VariantUtils {
     }
 
     fun isVariantKnownToPlayer(variant: ShipVariantAPI): Boolean {
-        if (variant.hullSpec.hasTag("codex_unlockable") && !SharedUnlockData.get().isPlayerAwareOfShip(variant.hullSpec.hullId)) {
+        //  If module, replace variant with parent variant. Modules are considered known if their parent is known.
+        //  This would need a function to get the parent variant of a module variant ... That isn't easily possible.
+
+        if (variant.hullSpec.hasTag(Tags.CODEX_UNLOCKABLE)) {
+            if (!SharedUnlockData.get().isPlayerAwareOfShip(variant.hullSpec.hullId))
+                return false
+        } else if (variant.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
+            || variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hasTag(Tags.HIDE_IN_CODEX)
+            || variant.hullSpec.hasTag(Tags.RESTRICTED)
+        )
             return false
-        }
-        if (!variant.hullSpec.hasTag("codex_unlockable") && (variant.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
-                    || variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hasTag(Tags.HIDE_IN_CODEX))
-        ) {
-            return false
-        }
+
         return true
     }
 

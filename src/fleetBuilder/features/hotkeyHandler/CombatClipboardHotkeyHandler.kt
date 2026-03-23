@@ -4,7 +4,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.ShipHullSpecAPI
+import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.SharedUnlockData
@@ -205,24 +205,34 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
         var loc = Vector2f(worldX, worldY)
 
         if (!ModSettings.cheatsEnabled()) {
-            if (member.hullSpec.hasTag("codex_unlockable") && (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId))) {
-                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_player_not_aware"), Color.YELLOW)
+            if (member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM)) {
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_no_sim"), Color.YELLOW)
                 return
             }
-            if (!member.hullSpec.hasTag("codex_unlockable") && member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
-                || member.variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.variant.hasTag(Tags.HIDE_IN_CODEX)
+            if (member.hullSpec.hasTag(Tags.CODEX_UNLOCKABLE)) {
+                if (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId)) {
+                    DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_player_not_aware"), Color.YELLOW)
+                    return
+                }
+            } else if (member.hullSpec.hints.contains(ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
+                || member.variant.hints.contains(ShipTypeHints.HIDE_IN_CODEX) || member.variant.hasTag(Tags.HIDE_IN_CODEX)
+                || member.hullSpec.hasTag(Tags.RESTRICTED)
             ) {
-                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_hidden_in_codex"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_hidden_in_codex"), Color.YELLOW)
                 return
             }
             if (getDeployedFleetPoints(engine, FleetSide.ENEMY) + member.deployCost > Global.getSettings().battleSize / 2f * 1.2f) {
-                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_exceed_fleet_limit"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_exceed_fleet_limit"), Color.YELLOW)
                 return
             }
+            /*if (member.hullSpec.hints.contains(ShipTypeHints.STATION)) {
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_no_station"), Color.YELLOW)
+                return
+            }*/
         }
         if (!isPositionFree(engine, loc.x, loc.y, member.hullSpec.collisionRadius / 2f)) {
             loc = findFreeSpawnLocation(engine, loc.x, loc.y, member.hullSpec.collisionRadius) ?: run {
-                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_no_free_location"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_no_free_location"), Color.YELLOW)
                 return
             }
         }

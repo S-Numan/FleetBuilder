@@ -155,9 +155,12 @@ internal class EventDispatcher : EveryFrameScript {
                 DisplayMessage.showError("What?"); return
             }
 
+            if (!sector.memoryWithoutUpdate.contains("\$FB_UNIQUESAVEID"))
+                sector.memoryWithoutUpdate.set("\$FB_UNIQUESAVEID", sector.genUID())
+
             sector.addTransientScript(eventDispatcher)
 
-            DrawMessageOnTop.Companion.onGameLoad()
+            DrawMessageOnTop.onGameLoad()
 
             setSectorListeners()
 

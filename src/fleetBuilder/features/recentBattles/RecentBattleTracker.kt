@@ -20,6 +20,8 @@ class RecentBattleTracker : BaseCampaignEventListener(false) {
         val battleIsAutoPursuit = playerResult.allEverDeployedCopy == null
         if (battleIsAutoPursuit) return
 
+        if (!result.didPlayerWin()) return
+
         val battle = result.battle ?: return
         //battle.snapshotSideTwo
         //battle.nonPlayerCombined
