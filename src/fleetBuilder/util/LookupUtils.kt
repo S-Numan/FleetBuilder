@@ -10,7 +10,7 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import fleetBuilder.util.api.VariantUtils.createErrorVariant
 
-object LookupUtil {
+object LookupUtils {
 
     private lateinit var allDMods: Set<String>
     private lateinit var allHiddenEverywhereMods: Set<String>

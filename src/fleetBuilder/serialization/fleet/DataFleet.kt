@@ -20,8 +20,8 @@ import fleetBuilder.serialization.person.DataPerson.filterParsedPersonData
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.serialization.person.DataPerson.validateAndCleanPersonData
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.util.LookupUtil
-import fleetBuilder.util.LookupUtil.getErrorVariantHullID
+import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.LookupUtils.getErrorVariantHullID
 import fleetBuilder.util.api.VariantUtils
 import java.util.*
 
@@ -179,7 +179,7 @@ object DataFleet {
             }
 
             // If hull ID does not exist: log missing and maybe replace with error variant
-            if (variantData.hullId !in LookupUtil.getHullIDSet()) {
+            if (variantData.hullId !in LookupUtils.getHullIDSet()) {
                 missing.hullIds.add(variantData.hullId)
 
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
@@ -213,7 +213,7 @@ object DataFleet {
         }
 
         val validatedFaction =
-            if (LookupUtil.getAllFactionIDs().contains(data.factionID)) data.factionID
+            if (LookupUtils.getAllFactionIDs().contains(data.factionID)) data.factionID
             else null
 
         if (data.secondInCommandData != null)

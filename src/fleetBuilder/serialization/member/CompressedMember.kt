@@ -13,7 +13,7 @@ import fleetBuilder.serialization.member.DataMember.getMemberDataFromMember
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.util.FBTxt
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.roundToDecimals
@@ -247,7 +247,7 @@ object CompressedMember {
         if (includePrepend) {
             val shipName = data.shipName
             val displayName = data.variantData?.displayName ?: "null"
-            val hullName = LookupUtil.getHullSpec(data.variantData?.hullId ?: "")?.hullName ?: "null"
+            val hullName = LookupUtils.getHullSpec(data.variantData?.hullId ?: "")?.hullName ?: "null"
 
             val readable = if (data.personData != null) {
                 val personName = data.personData.first + " " + data.personData.last

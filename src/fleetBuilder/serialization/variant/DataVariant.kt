@@ -9,7 +9,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.MissingElements
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.createHullVariant
@@ -151,8 +151,8 @@ object DataVariant {
         fun shouldKeepMod(modId: String): Boolean {
             if (ModSettings.getHullModsToNeverSave().contains(modId)) return false
             if (modId in settings.excludeHullModsWithID) return false
-            if (!settings.includeDMods && LookupUtil.getAllDMods().contains(modId)) return false
-            if (!settings.includeHiddenMods && LookupUtil.getAllHiddenEverywhereMods().contains(modId)) return false
+            if (!settings.includeDMods && LookupUtils.getAllDMods().contains(modId)) return false
+            if (!settings.includeHiddenMods && LookupUtils.getAllHiddenEverywhereMods().contains(modId)) return false
             return true
         }
 
@@ -215,7 +215,7 @@ object DataVariant {
         missing: MissingElements = MissingElements(),
     ): ParsedVariantData {
         // --- Hull ID ---
-        val validHullId = if (data.hullId in LookupUtil.getHullIDSet()) {
+        val validHullId = if (data.hullId in LookupUtils.getHullIDSet()) {
             data.hullId
         } else {
             missing.hullIds.add(data.hullId)
@@ -233,7 +233,7 @@ object DataVariant {
         }
 
         // --- HullMods ---
-        val allHullMods = LookupUtil.getHullModIDSet()
+        val allHullMods = LookupUtils.getHullModIDSet()
 
         val cleanHullMods = data.hullMods.filter { modId ->
             if (modId !in allHullMods) {
@@ -264,7 +264,7 @@ object DataVariant {
         }
 
         // --- Wings ---
-        val allWingIds = LookupUtil.getFighterWingIDSet()
+        val allWingIds = LookupUtils.getFighterWingIDSet()
         val cleanWings = data.wings.mapIndexed { _, wingId ->
             if (wingId !in allWingIds && wingId.isNotBlank()) {
                 missing.wingIds.add(wingId)
@@ -273,7 +273,7 @@ object DataVariant {
         }
 
         // --- Weapon Groups ---
-        val allWeapons = LookupUtil.getActuallyAllWeaponSpecIDSet()
+        val allWeapons = LookupUtils.getActuallyAllWeaponSpecIDSet()
         val cleanWeaponGroups = data.weaponGroups.map { wg ->
             val cleanedSlots = wg.weapons.filter { (_, weaponId) ->
                 val valid = weaponId in allWeapons
@@ -291,7 +291,7 @@ object DataVariant {
         }
 
         val cleanedData = data.copy(
-            hullId = validHullId ?: LookupUtil.getErrorVariantHullID(),
+            hullId = validHullId ?: LookupUtils.getErrorVariantHullID(),
             variantId = fixedVariantId,
             displayName = fixedDisplayName,
             hullMods = cleanHullMods.toList(),

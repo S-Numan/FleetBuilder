@@ -2,7 +2,7 @@ package fleetBuilder.core.listener
 
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
 import lunalib.lunaSettings.LunaSettings.getString
@@ -84,7 +84,7 @@ internal class ModSettingsListener : LunaSettingsListener {
 
             ModSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
 
-            if (LookupUtil.Loaded())
+            if (LookupUtils.Loaded())
                 ShipDirectoryService.loadAllDirectories()
 
         } else {
@@ -106,7 +106,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.addLogsToDisplayMessageLevel = Level.OFF
         }
 
-        if (LookupUtil.Loaded())
+        if (LookupUtils.Loaded())
             EventDispatcher.setSectorListeners()
     }
 }

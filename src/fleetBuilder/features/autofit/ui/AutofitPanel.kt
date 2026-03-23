@@ -34,7 +34,7 @@ import fleetBuilder.util.*
 import fleetBuilder.util.FBMisc.sModHandlerTemp
 import fleetBuilder.util.FBTxt.txt
 import fleetBuilder.util.FBTxt.txtPlural
-import fleetBuilder.util.LookupUtil.getAllDMods
+import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods

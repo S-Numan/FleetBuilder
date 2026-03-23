@@ -55,6 +55,6 @@ class AddHullMod : BaseCommandWithSuggestion {
     ): MutableList<String?> {
         if (parameter != 0) return ArrayList<String?>()
 
-        return LookupUtil.getHullModIDSet().toMutableList()
+        return LookupUtils.getHullModIDSet().toMutableList()
     }
 }

@@ -12,7 +12,7 @@ import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.FBTxt
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.toBinary
@@ -247,7 +247,7 @@ object CompressedVariant {
         compressedVariant = "$ver$compressedVariant"//Indicate structure version for compatibility with future compressed format changes
 
         if (includePrepend)
-            compressedVariant = "${data.displayName} ${LookupUtil.getHullSpec(data.hullId)?.hullName} : $requiredMods" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
+            compressedVariant = "${data.displayName} ${LookupUtils.getHullSpec(data.hullId)?.hullName} : $requiredMods" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
 
         return compressedVariant
     }

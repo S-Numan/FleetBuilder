@@ -50,7 +50,7 @@ object VariantUtils {
 
         // HullSpec
 
-        LookupUtil.getHullSpec(data.hullId)?.let { hullSpec ->
+        LookupUtils.getHullSpec(data.hullId)?.let { hullSpec ->
             hullSpec.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
@@ -58,7 +58,7 @@ object VariantUtils {
 
         // HullMods
         for (mod in data.hullMods) {
-            LookupUtil.getHullModSpec(mod)?.sourceMod?.let { sm ->
+            LookupUtils.getHullModSpec(mod)?.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
         }
@@ -66,7 +66,7 @@ object VariantUtils {
         // Weapons
         for (group in data.weaponGroups) {
             group.weapons.forEach { (slot, weaponId) ->
-                LookupUtil.getWeaponSpec(weaponId)?.sourceMod?.let { sm ->
+                LookupUtils.getWeaponSpec(weaponId)?.sourceMod?.let { sm ->
                     sourceMods.add(sm)
                 }
             }
@@ -74,7 +74,7 @@ object VariantUtils {
 
         // Fighter Wings
         for (wing in data.wings) {
-            LookupUtil.getFighterWingSpec(wing)?.sourceMod?.let { sm ->
+            LookupUtils.getFighterWingSpec(wing)?.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
         }
@@ -313,8 +313,8 @@ object VariantUtils {
         insertVariant2: ShipVariantAPI,
         options: CompareOptions = CompareOptions(),
     ): Boolean {
-        val allDMods = LookupUtil.getAllDMods()
-        val allHiddenEverywhereMods = LookupUtil.getAllHiddenEverywhereMods()
+        val allDMods = LookupUtils.getAllDMods()
+        val allHiddenEverywhereMods = LookupUtils.getAllHiddenEverywhereMods()
 
         val variant1 = insertVariant1.clone()
         val variant2 = insertVariant2.clone()

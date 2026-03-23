@@ -5,7 +5,7 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.VariantSource
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
 
@@ -24,7 +24,7 @@ object HullUtils {
     fun createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
         return run {
             val effectiveHullID = hull.getEffectiveHullId()
-            val variants = LookupUtil.getVariantsFromEffectiveHullID(effectiveHullID)
+            val variants = LookupUtils.getVariantsFromEffectiveHullID(effectiveHullID)
 
             val exactId = hull.hullId
             val dLessId = hull.getCompatibleDLessHullId()

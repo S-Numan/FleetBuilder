@@ -18,7 +18,7 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.common.ObservedTextField
-import fleetBuilder.util.LookupUtil.getAllDMods
+import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.HullUtils
 import fleetBuilder.util.api.VariantUtils

@@ -44,7 +44,7 @@ internal object FBMisc {
         to.hullMods.toList().forEach { mod ->
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
-            if (dontForceClearDMods && LookupUtil.getAllDMods().contains(mod))
+            if (dontForceClearDMods && LookupUtils.getAllDMods().contains(mod))
                 return@forEach
 
             to.completelyRemoveMod(mod)

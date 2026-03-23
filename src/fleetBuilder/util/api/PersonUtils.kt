@@ -8,7 +8,7 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.PersonSettings
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import java.util.*
 
 object PersonUtils {
@@ -24,7 +24,7 @@ object PersonUtils {
         val sourceMods = mutableSetOf<ModSpecAPI>()
 
         for (skill in data.skills) {
-            LookupUtil.getSkillSpec(skill.key)?.sourceMod?.let { sm ->
+            LookupUtils.getSkillSpec(skill.key)?.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
         }

@@ -15,8 +15,8 @@ import fleetBuilder.serialization.SerializationUtils
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.FBTxt
-import fleetBuilder.util.LookupUtil
-import fleetBuilder.util.LookupUtil.getCoreVariantsForEffectiveHullspec
+import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.LookupUtils.getCoreVariantsForEffectiveHullspec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import fleetBuilder.util.getCompatibleDLessHullId
@@ -223,8 +223,8 @@ object ShipDirectoryService {
                         )
                     }
 
-                    if (data.hullId !in LookupUtil.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
-                        || data.moduleVariants.any { it.value.hullId !in LookupUtil.getHullIDSet() } // Also check hullIds from modules
+                    if (data.hullId !in LookupUtils.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
+                        || data.moduleVariants.any { it.value.hullId !in LookupUtils.getHullIDSet() } // Also check hullIds from modules
                     ) {
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     } else {

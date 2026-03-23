@@ -7,7 +7,7 @@ import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.FBMisc
-import fleetBuilder.util.LookupUtil.getCoreVariantsForEffectiveHullspec
+import fleetBuilder.util.LookupUtils.getCoreVariantsForEffectiveHullspec
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.optJSONArrayToStringList
 import org.json.JSONArray

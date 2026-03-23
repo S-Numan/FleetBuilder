@@ -22,10 +22,11 @@ import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
 import fleetBuilder.features.logMessageAppender.LogMessageAppender
 import fleetBuilder.features.officerStorage.CatchStoreMemberButton
 import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
+import fleetBuilder.features.recentBattles.RecentBattleTracker
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.serialization.PlayerSaveUtils
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.listeners.MemberChangeEvents
 import fleetBuilder.util.listeners.MemberChangeTracker
 import fleetBuilder.util.listeners.OfficerChangeEvents
@@ -107,6 +108,8 @@ internal class EventDispatcher : EveryFrameScript {
 
             manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
             manageTransientListener(TransponderOff::class.java, ModSettings.transponderOffInHyperspace) { TransponderOff() }
+
+            manageTransientCampaignListener(RecentBattleTracker::class.java, true) { RecentBattleTracker() } // TODO, setting
         }
 
         fun onDevModeF8Reload() {
@@ -137,7 +140,7 @@ internal class EventDispatcher : EveryFrameScript {
                 }
             }
 
-            LookupUtil.onApplicationLoad()
+            LookupUtils.onApplicationLoad()
 
             ShipDirectoryService.loadAllDirectories()
         }
