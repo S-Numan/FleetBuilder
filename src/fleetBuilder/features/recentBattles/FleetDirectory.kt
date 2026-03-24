@@ -128,7 +128,7 @@ class FleetDirectory(
         val fleetPath = fleetID
 
         if (editDirectoryFile)
-            updateDirectory(fleetID, fleetPath, currentTime)
+            updateDirectory(fleetID, currentTime)
 
         if (editFleetFile)
             Global.getSettings().writeTextFileToCommon("$dir$fleetPath", comp)
@@ -153,9 +153,9 @@ class FleetDirectory(
 
         val comp = CompressedFleet.saveFleetToCompString(data, includePrepend = false)
 
-        val fleetPath = "${fleetEntry.path.substringBefore("/")}/$fleetId"
+        val fleetPath = fleetId
 
-        updateDirectory(fleetId, fleetPath, fleetEntry.timeSaved)
+        updateDirectory(fleetId, fleetEntry.timeSaved)
 
         Global.getSettings().writeTextFileToCommon("$dir$fleetPath", comp)
 
@@ -190,7 +190,6 @@ class FleetDirectory(
 
     private fun updateDirectory(
         fleetId: String,
-        fleetPath: String,
         currentTime: Date
     ) {
         updateFleetDirectoryJson { fleetsJson ->
@@ -198,11 +197,48 @@ class FleetDirectory(
             val timeString = formatter.format(currentTime)
 
             val obj = JSONObject().apply {
-                put("fleetPath", fleetPath)
+                //put("fleetPath", fleetPath)
                 put("modifyTime", timeString)
             }
 
             fleetsJson.put(fleetId, obj)
+
+            pruneOldFleetsIfNeeded(fleetsJson)
+        }
+    }
+
+    private fun pruneOldFleetsIfNeeded(fleetsJson: JSONObject, maxSize: Int = 1000) {
+        if (fleetsJson.length() <= maxSize) return
+
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+
+        val entries = mutableListOf<Pair<String, Date>>()
+
+        val keys = fleetsJson.keys()
+        while (keys.hasNext()) {
+            val id = keys.next() as? String ?: continue
+            val obj = fleetsJson.optJSONObject(id) ?: continue
+
+            val date = try {
+                formatter.parse(obj.optString("modifyTime")) ?: Date(0)
+            } catch (_: Exception) {
+                Date(0)
+            }
+
+            entries.add(id to date)
+        }
+
+        // Sort oldest first
+        entries.sortBy { it.second }
+
+        val toRemove = entries.take(entries.size - maxSize)
+
+        for ((fleetId, _) in toRemove) {
+            fleetsJson.remove(fleetId)
+            fleetEntries.remove(fleetId)
+
+            // Also delete file
+            Global.getSettings().deleteTextFileFromCommon("$dir$fleetId")
         }
     }
 }

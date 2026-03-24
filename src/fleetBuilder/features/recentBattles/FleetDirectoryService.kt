@@ -49,7 +49,7 @@ object FleetDirectoryService {
             val fleetId = keys.next() as? String ?: continue
             val obj = fleetsJson.optJSONObject(fleetId) ?: continue
 
-            val fleetPath = obj.optString("fleetPath", null) ?: continue
+            val fleetPath = fleetId
 
             // File existence check
             if (!Global.getSettings().fileExistsInCommon("$dir$fleetPath")) {
