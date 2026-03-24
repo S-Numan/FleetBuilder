@@ -18,7 +18,7 @@ object CampaignUtils {
     private var placeholderDialog: UIPanelAPI? = null
 
     /**
-     * Opens an empty dialog to prevent input from other sources.
+     * Opens an empty dialog, which does nothing and cannot be seen
      *
      * This causes Global.getSector().getCampaignUI().isShowingDialog() to return true, as a dialog is indeed open.
      *
