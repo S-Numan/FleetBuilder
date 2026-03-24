@@ -79,8 +79,8 @@
   "members_appended_into_fleet":"%s members appended to fleet",
   "player_fleet_replaced":"Fleet replaced",
 
-  "used_story_point":"Used %s story point",
-  "used_story_point_plural":"Used %s story point",
+  "used_story_points_one":"Used %s story point",
+  "used_story_points_many":"Used %s story points",
 
   "cannot_apply_smod_lack_build_in_slots":"Cannot apply SMods. Not enough build in slots left",
   "cannot_apply_smod_lack_story_point":"Cannot apply SMods. Not enough Story Points",

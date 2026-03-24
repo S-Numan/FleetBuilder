@@ -76,19 +76,13 @@ object CampaignUtils {
         if (points <= 0)
             return
 
-        val text =
-            if (points > 1)
-                FBTxt.txt("used_story_point_plural", points)
-            else
-                FBTxt.txt("used_story_point", points)
-
         Global.getSector().playerStats.spendStoryPoints(
             points,
             true,
             null,
             true,
             (experiencePointsGained / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()) / points,
-            text
+            FBTxt.txtPlural("used_story_points", points)
         )
         Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1f, 1f);
     }
