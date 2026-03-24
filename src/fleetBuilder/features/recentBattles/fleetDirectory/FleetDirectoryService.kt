@@ -1,4 +1,4 @@
-package fleetBuilder.features.recentBattles
+package fleetBuilder.features.recentBattles.fleetDirectory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
@@ -18,29 +18,27 @@ object FleetDirectoryService {
 
     fun getDirectory(): FleetDirectory? = fleetDirectory
 
-    fun loadDirectory(
-        dir: String = "$FLEETDIR/BattleTracker/",
-        configPath: String = "$dir/$DIRECTORYCONFIGNAME"
-    ): FleetDirectory? {
+    private const val directory: String = "$FLEETDIR/BattleTracker/"
+    fun loadDirectory(): FleetDirectory? {
         // Ensure config exists
-        if (!Global.getSettings().fileExistsInCommon(configPath)) {
+        if (!Global.getSettings().fileExistsInCommon("$directory$DIRECTORYCONFIGNAME")) {
             val json = JSONObject()
             json.put("fleets", JSONObject())
-            Global.getSettings().writeJSONToCommon(configPath, json, false)
+            Global.getSettings().writeJSONToCommon("$directory$DIRECTORYCONFIGNAME", json, false)
         }
 
         val directoryJson: JSONObject = try {
-            Global.getSettings().readJSONFromCommon(configPath, false)
+            Global.getSettings().readJSONFromCommon("$directory$DIRECTORYCONFIGNAME", false)
         } catch (e: Exception) {
             DisplayMessage.showError(
                 "Failed to read fleet directory",
-                "Failed to read fleet directory at /saves/common/$configPath\n",
+                "Failed to read fleet directory at /saves/common/$directory$DIRECTORYCONFIGNAME\n",
                 e
             )
             return null
         }
 
-        val fleetDir = FleetDirectory(dir, configPath)
+        val fleetDir = FleetDirectory(directory)
 
         val fleetsJson = directoryJson.optJSONObject("fleets") ?: JSONObject()
 
@@ -52,9 +50,9 @@ object FleetDirectoryService {
             val fleetPath = fleetId
 
             // File existence check
-            if (!Global.getSettings().fileExistsInCommon("$dir$fleetPath")) {
+            if (!Global.getSettings().fileExistsInCommon("$directory$fleetPath")) {
                 Global.getLogger(this.javaClass).warn(
-                    "Fleet file missing at /saves/common/$dir$fleetPath, removing from directory"
+                    "Fleet file missing at /saves/common/$directory$fleetPath, removing from directory"
                 )
 
                 fleetsJson.remove(fleetId)
@@ -72,10 +70,10 @@ object FleetDirectoryService {
             val missing = MissingElements()
 
             val fleetString: String = try {
-                Global.getSettings().readTextFileFromCommon("$dir$fleetPath")
+                Global.getSettings().readTextFileFromCommon("$directory$fleetPath")
             } catch (e: Exception) {
                 Global.getLogger(this.javaClass).error(
-                    "Failed to read fleet at /saves/common/$dir$fleetPath",
+                    "Failed to read fleet at /saves/common/$directory$fleetPath",
                     e
                 )
                 continue
@@ -84,14 +82,14 @@ object FleetDirectoryService {
             val parsed = extractFleetDataFromCompString(fleetString)
             if (parsed == null) {
                 Global.getLogger(this.javaClass).error(
-                    "Failed to parse fleet at /saves/common/$dir$fleetPath"
+                    "Failed to parse fleet at /saves/common/$directory$fleetPath"
                 )
                 continue
             }
 
             if (fleetDir.containsFleet(fleetId)) {
                 throw Error(
-                    "Duplicate fleet ID detected: \"$fleetId\" in /saves/common/$configPath"
+                    "Duplicate fleet ID detected: \"$fleetId\" in /saves/common/$directory$DIRECTORYCONFIGNAME"
                 )
             }
 
@@ -103,7 +101,7 @@ object FleetDirectoryService {
 
         // Save cleaned JSON (in case missing files were removed)
         directoryJson.put("fleets", fleetsJson)
-        Global.getSettings().writeJSONToCommon(configPath, directoryJson, false)
+        Global.getSettings().writeJSONToCommon("$directory$DIRECTORYCONFIGNAME", directoryJson, false)
 
         fleetDirectory = fleetDir
         return fleetDir

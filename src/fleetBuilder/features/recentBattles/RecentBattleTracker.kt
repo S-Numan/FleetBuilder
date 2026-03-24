@@ -3,6 +3,7 @@ package fleetBuilder.features.recentBattles
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener
 import com.fs.starfarer.api.combat.EngagementResultAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
 import fleetBuilder.serialization.fleet.FleetSettings
 
 

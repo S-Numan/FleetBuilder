@@ -1,8 +1,9 @@
-package fleetBuilder.features.recentBattles
+package fleetBuilder.features.recentBattles.fleetDirectory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import fleetBuilder.core.ModSettings
+import fleetBuilder.core.ModSettings.DIRECTORYCONFIGNAME
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.CompressedFleet
@@ -25,8 +26,7 @@ data class FleetEntry(
 )
 
 class FleetDirectory(
-    val dir: String,
-    val configPath: String,
+    val directory: String,
 ) {
     private var fleetEntries: MutableMap<String, FleetEntry> = mutableMapOf()
 
@@ -60,7 +60,7 @@ class FleetDirectory(
         }
 
         if (editFleetFile)
-            Global.getSettings().deleteTextFileFromCommon("$dir${entry.path}")
+            Global.getSettings().deleteTextFileFromCommon("$directory${entry.path}")
 
         fleetEntries.remove(fleetId)
     }
@@ -131,7 +131,7 @@ class FleetDirectory(
             updateDirectory(fleetID, currentTime)
 
         if (editFleetFile)
-            Global.getSettings().writeTextFileToCommon("$dir$fleetPath", comp)
+            Global.getSettings().writeTextFileToCommon("$directory$fleetPath", comp)
 
         val entry = FleetEntry(
             parsedFleet,
@@ -157,7 +157,7 @@ class FleetDirectory(
 
         updateDirectory(fleetId, fleetEntry.timeSaved)
 
-        Global.getSettings().writeTextFileToCommon("$dir$fleetPath", comp)
+        Global.getSettings().writeTextFileToCommon("$directory$fleetPath", comp)
 
         fleetEntries[fleetId] = FleetEntry(
             data,
@@ -171,11 +171,11 @@ class FleetDirectory(
 
     private fun updateFleetDirectoryJson(modify: (JSONObject) -> Unit) {
         val fleetDirJson = try {
-            Global.getSettings().readJSONFromCommon(configPath, false)
+            Global.getSettings().readJSONFromCommon("$directory$DIRECTORYCONFIGNAME", false)
         } catch (e: Exception) {
             DisplayMessage.showError(
                 "Failed to update fleet directory.",
-                "Failed to read fleet directory at /saves/common/$configPath\n",
+                "Failed to read fleet directory at /saves/common/$$directory$DIRECTORYCONFIGNAME\n",
                 e
             )
             return
@@ -185,7 +185,7 @@ class FleetDirectory(
         modify(fleetsJson)
         fleetDirJson.put("fleets", fleetsJson)
 
-        Global.getSettings().writeJSONToCommon(configPath, fleetDirJson, false)
+        Global.getSettings().writeJSONToCommon("$directory$DIRECTORYCONFIGNAME", fleetDirJson, false)
     }
 
     private fun updateDirectory(
@@ -238,7 +238,7 @@ class FleetDirectory(
             fleetEntries.remove(fleetId)
 
             // Also delete file
-            Global.getSettings().deleteTextFileFromCommon("$dir$fleetId")
+            Global.getSettings().deleteTextFileFromCommon("$directory$fleetId")
         }
     }
 }
