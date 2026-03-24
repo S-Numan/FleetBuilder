@@ -82,7 +82,15 @@ object VariantUtils {
         return sourceMods
     }
 
-    // Returns full amount of xp if this hullmod were to be added to this variant
+    /**
+     * Returns the full bonus XP that would be gained if this hullmod were to be added to this variant.
+     * If the hullmod is already built in, returns the default bonus XP.
+     * If the hullmod is not built in, returns the bonus XP for that hullmod.
+     *
+     * @param variant The ShipVariantAPI to check.
+     * @param modID The ID of the hullmod to check.
+     * @return The bonus XP that would be gained if this hullmod were to be added to this variant.
+     */
     fun getHullModBuildInBonusXP(
         variant: ShipVariantAPI,
         modID: String,
