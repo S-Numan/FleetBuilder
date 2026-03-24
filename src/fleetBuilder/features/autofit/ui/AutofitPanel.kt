@@ -17,11 +17,11 @@ import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.ModSettings.getDefaultExcludeVariantTags
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.core.shipDirectory.ShipDirectory
-import fleetBuilder.core.shipDirectory.ShipDirectoryService
-import fleetBuilder.core.shipDirectory.ShipDirectoryService.deleteLoadoutVariant
-import fleetBuilder.core.shipDirectory.ShipDirectoryService.getCoreAutofitSpecsForShip
-import fleetBuilder.core.shipDirectory.ShipDirectoryService.getLoadoutAutofitSpecsForShip
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectory
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.deleteLoadoutVariant
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getCoreAutofitSpecsForShip
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getLoadoutAutofitSpecsForShip
 import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.ClipboardMisc

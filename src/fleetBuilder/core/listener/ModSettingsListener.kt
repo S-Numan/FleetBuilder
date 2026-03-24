@@ -1,7 +1,7 @@
 package fleetBuilder.core.listener
 
 import fleetBuilder.core.ModSettings
-import fleetBuilder.core.shipDirectory.ShipDirectoryService
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.util.LookupUtils
 import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt

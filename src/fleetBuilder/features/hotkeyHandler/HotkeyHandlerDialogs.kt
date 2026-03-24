@@ -13,7 +13,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
-import fleetBuilder.core.shipDirectory.ShipDirectoryService
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
 import fleetBuilder.features.autofit.ui.AutofitSpec

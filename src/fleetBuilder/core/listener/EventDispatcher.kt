@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignEventListener
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
-import fleetBuilder.core.shipDirectory.ShipDirectoryService
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
 import fleetBuilder.features.autofit.listener.CampaignAutofitAdder
 import fleetBuilder.features.autofit.listener.CodexAutofitButton

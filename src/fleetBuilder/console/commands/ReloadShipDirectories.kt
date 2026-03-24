@@ -1,6 +1,6 @@
 package fleetBuilder.console.commands
 
-import fleetBuilder.core.shipDirectory.ShipDirectoryService
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.util.FBTxt
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.Console

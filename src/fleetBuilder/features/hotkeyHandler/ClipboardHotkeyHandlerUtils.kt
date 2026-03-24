@@ -22,7 +22,7 @@ import fleetBuilder.core.ModSettings.commandShuttleId
 import fleetBuilder.core.ModSettings.randomPastedCosmetics
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DisplayMessage.showMessage
-import fleetBuilder.core.shipDirectory.ShipDirectoryService.doesLoadoutExist
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.doesLoadoutExist
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog
 import fleetBuilder.serialization.ClipboardMisc

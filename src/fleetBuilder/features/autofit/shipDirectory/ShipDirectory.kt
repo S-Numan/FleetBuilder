@@ -1,4 +1,4 @@
-package fleetBuilder.core.shipDirectory
+package fleetBuilder.features.autofit.shipDirectory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
