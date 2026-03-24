@@ -12,7 +12,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 
-object ModSettings {
+object FBSettings {
     fun onApplicationLoad() {
         modSpec = Global.getSettings().modManager.enabledModsCopy.find { it.modPluginClassName == FleetBuilderPlugin::class.java.name }!!
 

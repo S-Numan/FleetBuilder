@@ -3,7 +3,7 @@ package fleetBuilder.features.commanderShuttle
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.ids.Tags
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.listener.EventDispatcher
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
@@ -24,7 +24,7 @@ internal object CommanderShuttle {
         OfficerChangeEvents.addListener { change ->
             //Remove commandShuttle if was piloted by player and is no longer
             if (change.previous != null && change.previous.isPlayer &&
-                change.member.variant?.hasHullMod(ModSettings.commandShuttleId) == true
+                change.member.variant?.hasHullMod(FBSettings.commandShuttleId) == true
             ) {
                 val playerFleet = Global.getSector().playerFleet.fleetData
                 playerFleet?.removeFleetMember(change.member)
@@ -56,8 +56,8 @@ internal object CommanderShuttle {
     fun removePlayerShuttle() {
         var hadShuttle = false
         for (member in Global.getSector().playerFleet.fleetData.membersListCopy) {
-            if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
-                member.variant.removeMod(ModSettings.commandShuttleId)
+            if (member.variant.hasHullMod(FBSettings.commandShuttleId)) {
+                member.variant.removeMod(FBSettings.commandShuttleId)
                 Global.getSector().playerFleet.fleetData.removeFleetMember(member)
                 hadShuttle = true
             }
@@ -83,7 +83,7 @@ internal object CommanderShuttle {
         val shuttleMember = Global.getSettings().createFleetMember(FleetMemberType.SHIP, "shuttlepod_Hull")
 
         shuttleMember.shipName = FBTxt.txt("command_shuttle")
-        shuttleMember.variant.addMod(ModSettings.commandShuttleId)
+        shuttleMember.variant.addMod(FBSettings.commandShuttleId)
         shuttleMember.variant.addTag(Tags.NO_SELL)
         shuttleMember.variant.addTag(Tags.RESTRICTED)
         shuttleMember.variant.addTag(Tags.NO_SIM)
@@ -110,7 +110,7 @@ internal object CommanderShuttle {
 
     fun playerShuttleExists(): Boolean {
         for (member in Global.getSector().playerFleet.fleetData.membersListCopy) {
-            if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
+            if (member.variant.hasHullMod(FBSettings.commandShuttleId)) {
                 return true
             }
         }

@@ -17,9 +17,9 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.coreui.CaptainPickerDialog
-import fleetBuilder.core.ModSettings
-import fleetBuilder.core.ModSettings.commandShuttleId
-import fleetBuilder.core.ModSettings.randomPastedCosmetics
+import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBSettings.commandShuttleId
+import fleetBuilder.core.FBSettings.randomPastedCosmetics
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DisplayMessage.showMessage
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.doesLoadoutExist
@@ -62,16 +62,16 @@ internal object ClipboardHotkeyHandlerUtils {
             block()
         } catch (e: Exception) {
             DisplayMessage.showError(
-                FBTxt.txt("mod_hotkey_failed", ModSettings.getModName()),
+                FBTxt.txt("mod_hotkey_failed", FBSettings.getModName()),
                 e
             )
         }
     }
 
     fun requireCheatsOrWarn(): Boolean {
-        if (!ModSettings.cheatsEnabled()) {
+        if (!FBSettings.cheatsEnabled()) {
             DisplayMessage.showMessage(
-                FBTxt.txt("enable_cheats_to_use_paste", ModSettings.getModName()),
+                FBTxt.txt("enable_cheats_to_use_paste", FBSettings.getModName()),
                 Color.YELLOW
             )
             return false
@@ -324,7 +324,7 @@ internal object ClipboardHotkeyHandlerUtils {
         }
 
 
-        val loadoutExists = doesLoadoutExist(ModSettings.defaultPrefix, variant)
+        val loadoutExists = doesLoadoutExist(FBSettings.defaultPrefix, variant)
 
         if (!loadoutExists) {
             HotkeyHandlerDialogs.createImportLoadoutDialog(variant, missing)
@@ -370,13 +370,13 @@ internal object ClipboardHotkeyHandlerUtils {
                             CommanderShuttle.removePlayerShuttle()
                     }
 
-                    ModSettings.unassignPlayer() -> {
+                    FBSettings.unassignPlayer() -> {
                         CommanderShuttle.addPlayerShuttle()
                     }
 
                     else -> {
                         DisplayMessage.showMessage(
-                            FBTxt.txt("enable_unassign_player", ModSettings.getModName()),
+                            FBTxt.txt("enable_unassign_player", FBSettings.getModName()),
                             Color.YELLOW
                         )
                     }
@@ -515,7 +515,7 @@ internal object ClipboardHotkeyHandlerUtils {
                         FBTxt.txt("added_ship_to_submarket", shipName)
                     } else {
                         if (member.captain.faction.id != "tahlan_allmother") {
-                            member.captain.memoryWithoutUpdate.set(ModSettings.storedOfficerTag, true)
+                            member.captain.memoryWithoutUpdate.set(FBSettings.storedOfficerTag, true)
                             member.captain.memoryWithoutUpdate.set(Misc.CAPTAIN_UNREMOVABLE, true)
                         }
                         FBTxt.txt("added_ship_to_submarket_with_officer", shipName)

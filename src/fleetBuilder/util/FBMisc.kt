@@ -9,7 +9,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.ui.CustomPanelAPI
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.util.api.MemberUtils.getMaxSMods
@@ -50,7 +50,7 @@ internal object FBMisc {
             to.completelyRemoveMod(mod)
         }
 
-        if (ModSettings.removeDefaultDMods) {
+        if (FBSettings.removeDefaultDMods) {
             to.allDMods().forEach {
                 to.hullMods.remove(it)
             }

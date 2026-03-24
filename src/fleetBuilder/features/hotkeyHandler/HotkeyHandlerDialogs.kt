@@ -10,7 +10,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
@@ -533,8 +533,8 @@ object HotkeyHandlerDialogs {
                     FBTxt.txt(
                         "import_loadout_tooltip",
                         variant.hullSpec.getEffectiveHull().hullName,
-                        ShipDirectoryService.getShipDirectoryWithPrefix(ModSettings.defaultPrefix)?.name,
-                        ModSettings.defaultPrefix
+                        ShipDirectoryService.getShipDirectoryWithPrefix(FBSettings.defaultPrefix)?.name,
+                        FBSettings.defaultPrefix
                     ),
                     0f
                 )
@@ -542,7 +542,7 @@ object HotkeyHandlerDialogs {
         }
 
         dialog.onConfirm {
-            ShipDirectoryService.importShipLoadout(ModSettings.defaultPrefix, variant, missing)
+            ShipDirectoryService.importShipLoadout(FBSettings.defaultPrefix, variant, missing)
 
             DisplayMessage.showMessage(
                 FBTxt.txt("loadout_imported_for_hull", loadoutBaseHullName),

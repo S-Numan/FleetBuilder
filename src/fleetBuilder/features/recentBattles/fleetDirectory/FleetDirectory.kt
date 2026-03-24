@@ -2,8 +2,8 @@ package fleetBuilder.features.recentBattles.fleetDirectory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
-import fleetBuilder.core.ModSettings
-import fleetBuilder.core.ModSettings.DIRECTORYCONFIGNAME
+import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.CompressedFleet
@@ -97,7 +97,7 @@ class FleetDirectory(
         }
 
         // DEBUG!
-        if (ModSettings.enableDebug) {
+        if (FBSettings.enableDebug) {
             val fleetJSON = JSONFleet.saveFleetToJson(
                 inputFleet,
                 comparisonSettings

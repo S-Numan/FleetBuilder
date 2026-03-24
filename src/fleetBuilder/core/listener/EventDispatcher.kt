@@ -4,7 +4,7 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
@@ -89,27 +89,27 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun setSectorListeners() {
-            manageTransientListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
-            manageTransientListener(CatchStoreMemberButton::class.java, ModSettings.storeOfficersInCargo || ModSettings.unassignPlayer()) { CatchStoreMemberButton() }
-            manageTransientListener(CargoAutoManagerOpener::class.java, ModSettings.cargoAutoManager) { CargoAutoManagerOpener() }
-            manageTransientListener(RemoveRefitHullmod::class.java, ModSettings.removeRefitHullmod) { RemoveRefitHullmod() }
+            manageTransientListener(CampaignClipboardHotkeyHandler::class.java, FBSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
+            manageTransientListener(CatchStoreMemberButton::class.java, FBSettings.storeOfficersInCargo || FBSettings.unassignPlayer()) { CatchStoreMemberButton() }
+            manageTransientListener(CargoAutoManagerOpener::class.java, FBSettings.cargoAutoManager) { CargoAutoManagerOpener() }
+            manageTransientListener(RemoveRefitHullmod::class.java, FBSettings.removeRefitHullmod) { RemoveRefitHullmod() }
 
-            manageTransientScript(CampaignAutofitAdder::class.java, ModSettings.autofitMenuEnabled) { CampaignAutofitAdder() }
-            manageTransientScript(CodexAutofitButton::class.java, ModSettings.autofitMenuEnabled && ModSettings.codexAutofitButton) { CodexAutofitButton() }
-            manageTransientScript(CampaignDevModeCodexButton::class.java, ModSettings.devModeCodexButtonEnabled) { CampaignDevModeCodexButton() }
-            manageTransientScript(CampaignFleetScreenFilter::class.java, ModSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }
-            manageTransientScript(CargoAutoManager::class.java, ModSettings.cargoAutoManager) { CargoAutoManager() }
-            manageTransientScript(CampaignModPickerFilter::class.java, ModSettings.modPickerFilter) { CampaignModPickerFilter() }
+            manageTransientScript(CampaignAutofitAdder::class.java, FBSettings.autofitMenuEnabled) { CampaignAutofitAdder() }
+            manageTransientScript(CodexAutofitButton::class.java, FBSettings.autofitMenuEnabled && FBSettings.codexAutofitButton) { CodexAutofitButton() }
+            manageTransientScript(CampaignDevModeCodexButton::class.java, FBSettings.devModeCodexButtonEnabled) { CampaignDevModeCodexButton() }
+            manageTransientScript(CampaignFleetScreenFilter::class.java, FBSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }
+            manageTransientScript(CargoAutoManager::class.java, FBSettings.cargoAutoManager) { CargoAutoManager() }
+            manageTransientScript(CampaignModPickerFilter::class.java, FBSettings.modPickerFilter) { CampaignModPickerFilter() }
 
             val cargoScreenFilter = CampaignCargoScreenFilter()
-            manageTransientScript(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { cargoScreenFilter }
-            manageTransientListener(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { cargoScreenFilter }
+            manageTransientScript(CampaignCargoScreenFilter::class.java, FBSettings.cargoScreenFilter) { cargoScreenFilter }
+            manageTransientListener(CampaignCargoScreenFilter::class.java, FBSettings.cargoScreenFilter) { cargoScreenFilter }
 
-            manageTransientScript(AutoMothballRecoveredShips::class.java, ModSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
+            manageTransientScript(AutoMothballRecoveredShips::class.java, FBSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
 
             manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
-            manageTransientListener(TransponderOff::class.java, ModSettings.transponderOffInHyperspace) { TransponderOff() }
+            manageTransientListener(TransponderOff::class.java, FBSettings.transponderOffInHyperspace) { TransponderOff() }
 
             manageTransientCampaignListener(RecentBattleTracker::class.java, true) { RecentBattleTracker() } // TODO, setting
         }
@@ -119,21 +119,21 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun onApplicationLoad() {
-            ModSettings.onApplicationLoad()
+            FBSettings.onApplicationLoad()
             updateApplicationState()
         }
 
         fun updateApplicationState() {
-            ModSettings.setNeverSaveHullmods()
+            FBSettings.setNeverSaveHullmods()
             LookupUtils.setup()
 
-            if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF || ModSettings.addLogsToDisplayMessageLevel != Level.OFF) {
+            if (FBSettings.addLogsToConsoleModConsoleLevel != Level.OFF || FBSettings.addLogsToDisplayMessageLevel != Level.OFF) {
                 // Cause the lazy class loader to load these classes preemptively to prevent issues.
                 try {
                     Class.forName("org.apache.log4j.Layout")
                     Class.forName("org.apache.log4j.spi.LoggingEvent")
                     Class.forName("org.apache.log4j.Priority")
-                    if (ModSettings.isConsoleModEnabled)
+                    if (FBSettings.isConsoleModEnabled)
                         Class.forName(Console::class.java.name)
                 } catch (e: ClassNotFoundException) {
                     e.printStackTrace()
@@ -147,7 +147,7 @@ internal class EventDispatcher : EveryFrameScript {
                 }
             }
 
-            if (ModSettings.autofitMenuEnabled)
+            if (FBSettings.autofitMenuEnabled)
                 ShipDirectoryService.loadAllDirectories()
             // TODO, setting for this
             FleetDirectoryService.loadDirectory()
@@ -196,12 +196,12 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun backupSave() {
-            if (ModSettings.backupSave) {
+            if (FBSettings.backupSave) {
                 try {
                     val compSave = PlayerSaveUtils.createSaveJson(superCompressSave = true)
 
                     if (compSave.length < 1000000) // Starsector cannot save files over 1MB
-                        Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", compSave)
+                        Global.getSettings().writeTextFileToCommon("${FBSettings.PRIMARYDIR}/SaveTransfer/lastSave", compSave)
                     else
                         Global.getLogger(this::class.java).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
 

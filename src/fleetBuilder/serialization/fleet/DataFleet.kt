@@ -6,7 +6,7 @@ import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.DataMember
@@ -104,7 +104,7 @@ object DataFleet {
             // Exclude by variant or hull ID
             if (variantData?.hullId in settings.excludeMembersWithHullID ||
                 member.id in settings.excludeMembersWithID ||
-                variantData?.allHullMods()?.contains(ModSettings.commandShuttleId) == true
+                variantData?.allHullMods()?.contains(FBSettings.commandShuttleId) == true
             ) return@mapNotNull null
 
             var processedMember = member

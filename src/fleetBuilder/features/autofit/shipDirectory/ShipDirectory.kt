@@ -3,7 +3,7 @@ package fleetBuilder.features.autofit.shipDirectory
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.variant.CompressedVariant
@@ -132,7 +132,7 @@ class ShipDirectory(
         }
 
         // DEBUG!
-        if (ModSettings.enableDebug) {
+        if (FBSettings.enableDebug) {
             val comparisonSettings = VariantSettings().apply {
 
             }
@@ -151,7 +151,7 @@ class ShipDirectory(
         val shipPath = "${savedVariant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"
 
         val newIndex = if (inputDesiredIndexInMenu < 0)
-            ShipDirectoryService.getHighestIndexInEffectiveMenu(ModSettings.defaultPrefix, variantToSave.hullSpec) + 1
+            ShipDirectoryService.getHighestIndexInEffectiveMenu(FBSettings.defaultPrefix, variantToSave.hullSpec) + 1
         else
             inputDesiredIndexInMenu
 

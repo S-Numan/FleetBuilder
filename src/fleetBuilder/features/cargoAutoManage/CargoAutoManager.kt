@@ -5,7 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
 import fleetBuilder.util.*
@@ -60,7 +60,7 @@ internal class CargoAutoManager : EveryFrameScript {
 
             interactionMarket = market
 
-            if (changeOccured && ModSettings.reportCargoAutoManagerChanges)
+            if (changeOccured && FBSettings.reportCargoAutoManagerChanges)
                 DisplayMessage.showMessage(FBTxt.txt("cargo_auto_manage_message"))
         }
 

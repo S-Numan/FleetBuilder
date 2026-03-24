@@ -10,7 +10,7 @@ import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.ui.UIUtils
@@ -49,7 +49,7 @@ internal class CatchStoreMemberButton : CampaignInputListener {
             if (!captain.isDefault && !captain.isPlayer && !captain.memoryWithoutUpdate.contains(Misc.CAPTAIN_UNREMOVABLE)
                 && captain.faction.id != "tahlan_allmother" // Mod specific support to avoid issues. Storing the Rigveda and other Lostech ships like it with the non AI, non built in yet non-removable captain causes issues.
             ) {
-                captain.memoryWithoutUpdate.set(ModSettings.storedOfficerTag, true)
+                captain.memoryWithoutUpdate.set(FBSettings.storedOfficerTag, true)
                 captain.memoryWithoutUpdate.set(Misc.CAPTAIN_UNREMOVABLE, true)
                 playerFleetData.removeOfficer(captain)
             }
@@ -104,18 +104,18 @@ internal class CatchStoreMemberButton : CampaignInputListener {
                     ?: return@forEach
                 val captain = mouseOverMember.captain
 
-                if (captain.isPlayer && ModSettings.unassignPlayer() && !mouseOverMember.variant.hasHullMod(ModSettings.commandShuttleId)) {
+                if (captain.isPlayer && FBSettings.unassignPlayer() && !mouseOverMember.variant.hasHullMod(FBSettings.commandShuttleId)) {
                     storePlayerDelay = true
                     lastStoreHoverStatus = mouseOverMember
-                } else if (ModSettings.storeOfficersInCargo)
+                } else if (FBSettings.storeOfficersInCargo)
                     storeOfficer(captain)
 
             } else if (event.isLMBDownEvent) {
                 val member = hoveringOverStore()
                 if (member != null) {
-                    if (member.captain.isPlayer && ModSettings.unassignPlayer() && !member.variant.hasHullMod(ModSettings.commandShuttleId))
+                    if (member.captain.isPlayer && FBSettings.unassignPlayer() && !member.variant.hasHullMod(FBSettings.commandShuttleId))
                         storePlayerDelay = true
-                    else if (ModSettings.storeOfficersInCargo)
+                    else if (FBSettings.storeOfficersInCargo)
                         storeOfficer(member.captain)
                 }
             }

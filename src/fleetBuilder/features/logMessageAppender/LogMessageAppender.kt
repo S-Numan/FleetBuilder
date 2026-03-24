@@ -1,7 +1,7 @@
 package fleetBuilder.features.logMessageAppender
 
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import org.apache.log4j.AppenderSkeleton
 import org.apache.log4j.Level
@@ -11,15 +11,15 @@ import java.awt.Color
 
 internal class LogMessageAppender : AppenderSkeleton() {
     override fun append(event: LoggingEvent) {
-        if (ModSettings.addLogsToConsoleModConsoleLevel == Level.OFF && ModSettings.addLogsToDisplayMessageLevel == Level.OFF)
+        if (FBSettings.addLogsToConsoleModConsoleLevel == Level.OFF && FBSettings.addLogsToDisplayMessageLevel == Level.OFF)
             return
 
         // Ignore logs from Console class to prevent infinite loops
         if (event.loggerName == Console::class.java.name) return
 
         val level = event.getLevel()
-        if (level.isGreaterOrEqual(ModSettings.addLogsToConsoleModConsoleLevel)) {
-            if (ModSettings.isConsoleModEnabled && ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF) {
+        if (level.isGreaterOrEqual(FBSettings.addLogsToConsoleModConsoleLevel)) {
+            if (FBSettings.isConsoleModEnabled && FBSettings.addLogsToConsoleModConsoleLevel != Level.OFF) {
                 val msg = buildString {
                     append("[${level}] ")
                     append("${event.loggerName} - ")
@@ -38,7 +38,7 @@ internal class LogMessageAppender : AppenderSkeleton() {
                 Console.showMessage(msg, Level.ALL)
             }
 
-            if (ModSettings.addLogsToDisplayMessageLevel == Level.OFF || event.throwableInformation?.throwable is NoDisplayThrowable)
+            if (FBSettings.addLogsToDisplayMessageLevel == Level.OFF || event.throwableInformation?.throwable is NoDisplayThrowable)
                 return
             when (level) {
                 Level.WARN -> DisplayMessage.showMessageCustom(event.renderedMessage, Color.yellow)

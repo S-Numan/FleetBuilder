@@ -6,7 +6,7 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.util.LookupUtils
@@ -149,7 +149,7 @@ object DataVariant {
     ): ParsedVariantData {
 
         fun shouldKeepMod(modId: String): Boolean {
-            if (ModSettings.getHullModsToNeverSave().contains(modId)) return false
+            if (FBSettings.getHullModsToNeverSave().contains(modId)) return false
             if (modId in settings.excludeHullModsWithID) return false
             if (!settings.includeDMods && LookupUtils.getAllDMods().contains(modId)) return false
             if (!settings.includeHiddenMods && LookupUtils.getAllHiddenEverywhereMods().contains(modId)) return false
@@ -329,7 +329,7 @@ object DataVariant {
             return loadout
 
         //Remove default DMods
-        if (ModSettings.removeDefaultDMods) {
+        if (FBSettings.removeDefaultDMods) {
             loadout.allDMods().forEach {
                 loadout.hullMods.remove(it)
             }

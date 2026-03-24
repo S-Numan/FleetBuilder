@@ -14,8 +14,8 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.core.ModSettings
-import fleetBuilder.core.ModSettings.getDefaultExcludeVariantTags
+import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBSettings.getDefaultExcludeVariantTags
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectory
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
@@ -56,7 +56,7 @@ import java.awt.Color
  */
 internal object AutofitPanel {
     private const val BACKGROUND_ALPHA = 0.7f
-    var currentPrefix = ModSettings.defaultPrefix
+    var currentPrefix = FBSettings.defaultPrefix
 
     internal class AutofitPanelPlugin(private val parentPanel: UIPanelAPI) : BaseCustomUIPanelPlugin() {
         lateinit var autofitPanel: CustomPanelAPI
@@ -136,7 +136,7 @@ internal object AutofitPanel {
                 }
 
                 if (event.isKeyDownEvent
-                    && (event.eventValue == Keyboard.KEY_ESCAPE || event.eventValue == ModSettings.autofitMenuHotkey)
+                    && (event.eventValue == Keyboard.KEY_ESCAPE || event.eventValue == FBSettings.autofitMenuHotkey)
                 ) {
                     deleteSelf()
                     event.consume()
@@ -235,20 +235,20 @@ internal object AutofitPanel {
 
         val endPad = 6f
         val midPad = 5f
-        val selectorsPerRow = ModSettings.selectorsPerRow
+        val selectorsPerRow = FBSettings.selectorsPerRow
         val selectorWidth = (autofitPanel.width - (endPad * 2 + midPad * (selectorsPerRow - 1))) / selectorsPerRow
         autofitPlugin.selectorWidth = selectorWidth
 
         val selectorPlugins = mutableListOf<AutofitSelector.AutofitSelectorPlugin>()
 
         var coreEffectiveHullAutofitSpecs: MutableList<AutofitSpec?> = mutableListOf()
-        if (currentPrefix == ModSettings.defaultPrefix) { // Only add core goal autofits if default prefix
+        if (currentPrefix == FBSettings.defaultPrefix) { // Only add core goal autofits if default prefix
             // Get core specs and convert to mutable list
             coreEffectiveHullAutofitSpecs =
                 getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec).toMutableList()
 
             // Determine minimum reserved slots for core specs
-            val minCoreSlots = if (ModSettings.reserveFirstFourAutofitSlots) 4 else 0
+            val minCoreSlots = if (FBSettings.reserveFirstFourAutofitSlots) 4 else 0
 
             // Pad with nulls if fewer than minCoreSlots
             while (coreEffectiveHullAutofitSpecs.size < minCoreSlots) {
@@ -300,7 +300,7 @@ internal object AutofitPanel {
         val remainder = (lastNonNullIndex + 1) % selectorsPerRow
         val fillToRow = if (remainder == 0) 0 else selectorsPerRow - remainder
         var extraNulls = fillToRow + selectorsPerRow
-        if (indexedSpecs.isEmpty() && ModSettings.reserveFirstFourAutofitSlots)
+        if (indexedSpecs.isEmpty() && FBSettings.reserveFirstFourAutofitSlots)
             extraNulls += selectorsPerRow
 
         // Build final list with padding
@@ -312,7 +312,7 @@ internal object AutofitPanel {
         for (i in allAutofitSpecs.indices) {
             val autofitSpec = allAutofitSpecs[i]
 
-            val selectorPanel = AutofitSelector.createAutofitSelector(autofitSpec, selectorWidth, addXIfAutofitSpecNull = ModSettings.reserveFirstFourAutofitSlots && i < 4) // Create the panel
+            val selectorPanel = AutofitSelector.createAutofitSelector(autofitSpec, selectorWidth, addXIfAutofitSpecNull = FBSettings.reserveFirstFourAutofitSlots && i < 4) // Create the panel
             // Add the panel's plugin to the ModSettings.plugin && list
             val selectorPlugin = selectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
             selectorPlugins.add(selectorPlugin)
@@ -638,7 +638,7 @@ internal object AutofitPanel {
                 }
 
 
-                if (applySModsButton?.isChecked == true && !ModSettings.forceAutofit &&
+                if (applySModsButton?.isChecked == true && !FBSettings.forceAutofit &&
                     (selectorPlugin.autofitSpec!!.variant.sMods.any { it !in baseVariant.sMods } || selectorPlugin.autofitSpec!!.variant.sModdedBuiltIns.any { it !in baseVariant.sModdedBuiltIns })
                 ) {
                     val (sModsToApply, bonusXpToGrant) = sModHandlerTemp(ship!!, baseVariant, selectorPlugin.autofitSpec!!.variant)
@@ -695,7 +695,7 @@ internal object AutofitPanel {
                 var shipDirectory: ShipDirectory?
 
                 if (autofitPlugin.draggedAutofitSpec!!.source == null) {
-                    settings = ModSettings.getConfiguredVariantSettings()
+                    settings = FBSettings.getConfiguredVariantSettings()
 
                     shipDirectory = ShipDirectoryService.getShipDirectoryWithPrefix(currentPrefix)
 
@@ -716,7 +716,7 @@ internal object AutofitPanel {
 
                 val draggedVariant = copyVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would be loaded if brought up later
 
-                if (ModSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod) {
+                if (FBSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod) {
                     draggedVariant.sModdedBuiltIns.toList().forEach {
                         if (it !in draggedVariant.hullSpec.builtInMods) {
                             draggedVariant.completelyRemoveMod(it)
@@ -827,7 +827,7 @@ internal object AutofitPanel {
         )
         var outline = true
 
-        if (!equalDefault && ModSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod) {
+        if (!equalDefault && FBSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod) {
             val baseVariantClone = baseVariant.clone()
             //We want to highlight but not outline the variant if it has sModdedBuiltIns that the HullSpec does not have as a built-in hullmod.
             baseVariantClone.sModdedBuiltIns.forEach {
@@ -992,7 +992,7 @@ internal object AutofitPanel {
         missingFromVariant: MissingElements? = null,
         location: TooltipMakerAPI.TooltipLocation = TooltipMakerAPI.TooltipLocation.RIGHT,
         margin: Float? = null,
-        width: Float = if (ModSettings.showDebug) 400f else 350f
+        width: Float = if (FBSettings.showDebug) 400f else 350f
     ) {
         val allDMods = getAllDMods()
         val sizeOrder = mapOf(
@@ -1010,7 +1010,7 @@ internal object AutofitPanel {
                 val spec = Global.getSettings().getWeaponSpec(slot.value)
                 if (spec.type == WeaponAPI.WeaponType.DECORATIVE) continue
 
-                val weaponName = if (ModSettings.showDebug)
+                val weaponName = if (FBSettings.showDebug)
                     "${spec.weaponName} (${spec.weaponId} $slot)"
                 else
                     spec.weaponName
@@ -1028,7 +1028,7 @@ internal object AutofitPanel {
             for (slot in variant.nonBuiltInWeaponSlots) {
                 val spec = variant.getWeaponSpec(slot)
 
-                val weaponName = if (ModSettings.showDebug)
+                val weaponName = if (FBSettings.showDebug)
                     "${spec.weaponName} (${spec.weaponId} $slot)"
                 else
                     spec.weaponName
@@ -1047,7 +1047,7 @@ internal object AutofitPanel {
             variant.hullSpec.builtInWings.forEachIndexed { index, wingId ->
                 val spec = variant.getWing(index) ?: return@forEachIndexed
 
-                val wingName = if (ModSettings.showDebug)
+                val wingName = if (FBSettings.showDebug)
                     "${spec.wingName} (${spec.id})"
                 else
                     spec.wingName
@@ -1058,7 +1058,7 @@ internal object AutofitPanel {
             for (wing in variant.nonBuiltInWings) {
                 val spec = Global.getSettings().getFighterWingSpec(wing) ?: continue
 
-                val wingName = if (ModSettings.showDebug)
+                val wingName = if (FBSettings.showDebug)
                     "${spec.wingName} (${spec.id})"
                 else
                     spec.wingName
@@ -1109,7 +1109,7 @@ internal object AutofitPanel {
             val hiddenMods = mutableListOf<String>()
 
             for (mod in allMods) {
-                val name = if (ModSettings.showDebug) {
+                val name = if (FBSettings.showDebug) {
                     mod.displayName + " '${mod.id}'"
                 } else {
                     mod.displayName
@@ -1209,7 +1209,7 @@ internal object AutofitPanel {
             addModLines(regularMods)
             addModLines(dMods)
 
-            if (ModSettings.showHiddenModsInTooltip) {
+            if (FBSettings.showHiddenModsInTooltip) {
                 addModLines(hiddenMods)
             }
 
@@ -1293,7 +1293,7 @@ internal object AutofitPanel {
             }
 
 
-            if (ModSettings.showDebug) {
+            if (FBSettings.showDebug) {
                 tooltip.addPara("\n\nDEBUG: VariantID = ${variant.hullVariantId}", 2f)
                 tooltip.addPara("DEBUG: HullID = ${variant.hullSpec.hullId}", 2f)
                 tooltip.addPara("DEBUG: Compatible with base = ${variant.hullSpec.isCompatibleWithBase}", 2f)

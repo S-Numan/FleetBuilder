@@ -9,7 +9,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.otherMods.starficz.*
@@ -35,7 +35,7 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
     }
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
-        if (ModSettings.autofitMenuEnabled && ModSettings.codexAutofitButton
+        if (FBSettings.autofitMenuEnabled && FBSettings.codexAutofitButton
             && (Global.getCombatEngine()?.isPaused == true || Global.getCurrentState() == GameState.TITLE)
         )
             onAdvance()
@@ -102,7 +102,7 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
             openAutofitButton!!.xAlignOffset = -codexDetailPanel.x + shipDisplay.centerX - openAutofitButton!!.width / 2f
             //openAutofitButton!!.yAlignOffset = -openAutofitButton!!.height + 1f
 
-            openAutofitButton!!.addShortcutNoShow(ModSettings.autofitMenuHotkey)
+            openAutofitButton!!.addShortcutNoShow(FBSettings.autofitMenuHotkey)
             openAutofitButton!!.onClick {
                 autofitPanel = AutofitPanel.createMagicAutofitPanel(codex, codex.width - leftPanelSize, codex.height, variant, false)
                 codex.addComponent(autofitPanel).setXAlignOffset(leftPanelSize)

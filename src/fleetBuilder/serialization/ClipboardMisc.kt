@@ -5,7 +5,7 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.member.CompressedMember
 import fleetBuilder.serialization.member.JSONMember
@@ -26,7 +26,7 @@ object ClipboardMisc {
 
     @JvmOverloads
     fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false): Boolean {
-        if (variant.hasHullMod(ModSettings.commandShuttleId)) {
+        if (variant.hasHullMod(FBSettings.commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return false
         }
@@ -38,7 +38,7 @@ object ClipboardMisc {
             val comp = CompressedVariant.saveVariantToCompString(
                 variantToSave,
                 VariantSettings().apply {
-                    excludeTagsWithID = ModSettings.getDefaultExcludeVariantTags()
+                    excludeTagsWithID = FBSettings.getDefaultExcludeVariantTags()
                 }
             )
             ClipboardUtil.setClipboardText(comp)
@@ -47,7 +47,7 @@ object ClipboardMisc {
             val json = JSONVariant.saveVariantToJson(
                 variantToSave,
                 VariantSettings().apply {
-                    excludeTagsWithID = ModSettings.getDefaultExcludeVariantTags()
+                    excludeTagsWithID = FBSettings.getDefaultExcludeVariantTags()
                 }
             )
             ClipboardUtil.setClipboardText(json.toString(4))
@@ -79,7 +79,7 @@ object ClipboardMisc {
 
     @JvmOverloads
     fun saveMemberToClipboard(member: FleetMemberAPI, shift: Boolean = false): Boolean {
-        if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
+        if (member.variant.hasHullMod(FBSettings.commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return false
         }

@@ -12,7 +12,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.mission.FleetSide
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingElements
@@ -35,7 +35,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
         amount: Float,
         events: List<InputEventAPI>
     ) {
-        if (!ModSettings.fleetClipboardHotkeyHandler) return
+        if (!FBSettings.fleetClipboardHotkeyHandler) return
 
         for (event in events) {
             if (event.isConsumed) continue
@@ -53,7 +53,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                                 event.consume(); continue
                             }
                         } catch (e: Exception) {
-                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.getModName()), e)
+                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", FBSettings.getModName()), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
                         if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
@@ -61,7 +61,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                             event.consume(); continue
                         }
                         val engine = Global.getCombatEngine() ?: return
-                        if (engine.isSimulation || (Global.getCurrentState() == GameState.COMBAT && ModSettings.cheatsEnabled())) {
+                        if (engine.isSimulation || (Global.getCurrentState() == GameState.COMBAT && FBSettings.cheatsEnabled())) {
                             pasteShipIntoCombat(engine, event)
                             event.consume(); continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
@@ -204,7 +204,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
         val worldY = viewport.convertScreenYToWorldY(sy)
         var loc = Vector2f(worldX, worldY)
 
-        if (!ModSettings.cheatsEnabled()) {
+        if (!FBSettings.cheatsEnabled()) {
             if (member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM)) {
                 DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_no_sim"), Color.YELLOW)
                 return

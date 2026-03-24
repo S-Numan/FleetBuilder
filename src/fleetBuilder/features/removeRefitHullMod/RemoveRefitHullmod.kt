@@ -9,7 +9,7 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.util.*
@@ -25,7 +25,7 @@ internal class RemoveRefitHullmod : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 1
 
     override fun processCampaignInputPreCore(events: List<InputEventAPI>) {
-        if (!ModSettings.cheatsEnabled()) return
+        if (!FBSettings.cheatsEnabled()) return
 
         val sector = Global.getSector() ?: return
         val ui = sector.campaignUI ?: return
@@ -100,7 +100,7 @@ internal class RemoveRefitHullmod : CampaignInputListener {
             }
 
         } catch (e: Exception) {
-            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.getModName()), e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", FBSettings.getModName()), e)
         }
     }
 

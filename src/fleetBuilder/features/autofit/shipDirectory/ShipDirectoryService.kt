@@ -3,11 +3,11 @@ package fleetBuilder.features.autofit.shipDirectory
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.core.ModSettings
-import fleetBuilder.core.ModSettings.DIRECTORYCONFIGNAME
-import fleetBuilder.core.ModSettings.FLEETDIR
-import fleetBuilder.core.ModSettings.PACKDIR
-import fleetBuilder.core.ModSettings.defaultPrefix
+import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
+import fleetBuilder.core.FBSettings.FLEETDIR
+import fleetBuilder.core.FBSettings.PACKDIR
+import fleetBuilder.core.FBSettings.defaultPrefix
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.serialization.MissingElements
@@ -316,10 +316,10 @@ object ShipDirectoryService {
         var variantCount = 0
         variants.forEach { variant ->
             val shouldShow = when {
-                variant.isGoalVariant -> ModSettings.showCoreGoalVariants
-                else -> ModSettings.showCoreNonGoalVariants
+                variant.isGoalVariant -> FBSettings.showCoreGoalVariants
+                else -> FBSettings.showCoreNonGoalVariants
             }.and(
-                ModSettings.cheatsEnabled()
+                FBSettings.cheatsEnabled()
                         || variant.hullSpec.getCompatibleDLessHullId() == hullSpec.getCompatibleDLessHullId() // If this is the hullspec the player is looking at
                         || isVariantKnownToPlayer(variant) // Or the player knows this hullspec
             )

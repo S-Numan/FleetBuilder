@@ -10,7 +10,7 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBMisc.replaceVariantWithVariant
 import fleetBuilder.util.FBMisc.sModHandlerTemp
@@ -50,7 +50,7 @@ internal object AutofitApplier {
             }
 
             if (Global.getCurrentState() != GameState.CAMPAIGN) {
-                replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
+                replaceVariantWithVariant(baseVariant, loadout, FBSettings.dontForceClearDMods, FBSettings.dontForceClearSMods)
             } else {
                 val coreUI = ReflectionMisc.getCoreUI() ?: return
 
@@ -78,7 +78,7 @@ internal object AutofitApplier {
                     if (fleetMemory.contains("\$FBA_upgradeWeapons"))
                         auto.setChecked(CoreAutofitPlugin.UPGRADE, fleetMemory.getBoolean("\$FBA_upgradeWeapons"))
 
-                    if (fleetMemory.contains("\$FBA_stripBeforeAutofit") && !ModSettings.forceAutofit)
+                    if (fleetMemory.contains("\$FBA_stripBeforeAutofit") && !FBSettings.forceAutofit)
                         stripVariant = fleetMemory.getBoolean("\$FBA_stripBeforeAutofit")
                 }
 
@@ -116,8 +116,8 @@ internal object AutofitApplier {
                     stripVaraint(baseModule, loadoutModule)
                 }
 
-                if (ModSettings.forceAutofit) {
-                    replaceVariantWithVariant(baseVariant, loadout, ModSettings.dontForceClearDMods, ModSettings.dontForceClearSMods)
+                if (FBSettings.forceAutofit) {
+                    replaceVariantWithVariant(baseVariant, loadout, FBSettings.dontForceClearDMods, FBSettings.dontForceClearSMods)
                     //baseVariant.addTag(Tags.SHIP_RECOVERABLE)
                     //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
                 } else {

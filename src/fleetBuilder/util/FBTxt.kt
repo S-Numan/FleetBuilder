@@ -3,7 +3,7 @@ package fleetBuilder.util
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.TextPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import org.magiclib.util.StringCreator
 import java.awt.Color
 import java.util.*
@@ -12,11 +12,11 @@ import java.util.regex.Pattern
 
 object FBTxt {
     fun txt(id: String): String {
-        return Global.getSettings().getString(ModSettings.getModID(), id)
+        return Global.getSettings().getString(FBSettings.getModID(), id)
     }
 
     fun txt(id: String, vararg args: Any?): String {
-        return String.format(Global.getSettings().getString(ModSettings.getModID(), id), *args)
+        return String.format(Global.getSettings().getString(FBSettings.getModID(), id), *args)
     }
 
     /**

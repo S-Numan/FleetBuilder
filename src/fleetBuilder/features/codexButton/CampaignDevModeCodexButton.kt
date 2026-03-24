@@ -13,7 +13,7 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.serialization.member.DataMember
@@ -38,7 +38,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
 
     override fun advance(amount: Float) {
         if (!Global.getSector().isPaused) return
-        if (!ModSettings.cheatsEnabled()) return
+        if (!FBSettings.cheatsEnabled()) return
         if (!ReflectionMisc.isCodexOpen()) {
             addToFleetButton = null
             return

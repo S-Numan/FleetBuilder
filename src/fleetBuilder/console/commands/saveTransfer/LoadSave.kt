@@ -1,7 +1,7 @@
 package fleetBuilder.console.commands.saveTransfer
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.serialization.MissingElementsExtended
 import fleetBuilder.serialization.PlayerSaveUtils.compileSaveAny
 import fleetBuilder.serialization.PlayerSaveUtils.loadCompiledSave
@@ -36,7 +36,7 @@ class LoadSave : BaseCommand {
         val argList = args.lowercase().split(" ")
 
         if (argList.contains("-backup")) {
-            val configPath = "${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave"
+            val configPath = "${FBSettings.PRIMARYDIR}/SaveTransfer/lastSave"
 
             if (!Global.getSettings().fileExistsInCommon(configPath)) {
                 Console.showMessage(FBTxt.txt("backup_save_not_found"))
