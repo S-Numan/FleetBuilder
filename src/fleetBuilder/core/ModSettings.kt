@@ -20,11 +20,9 @@ object ModSettings {
             LunaSettings.addSettingsListener(ModSettingsListener())
 
         isConsoleModEnabled = Global.getSettings().modManager.isModEnabled("lw_console")
-
-        setNeverSaveHullmods()
     }
 
-    private fun setNeverSaveHullmods() {
+    fun setNeverSaveHullmods() {
         val neverHullModsPath = "${PRIMARYDIR}HullModsToNeverSave"
         val neverHullModsJson = try {
             if (Global.getSettings().fileExistsInCommon(neverHullModsPath)) {

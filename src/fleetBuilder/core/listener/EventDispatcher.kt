@@ -124,6 +124,7 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun updateApplicationState() {
+            ModSettings.setNeverSaveHullmods()
             LookupUtils.setup()
 
             if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF || ModSettings.addLogsToDisplayMessageLevel != Level.OFF) {
