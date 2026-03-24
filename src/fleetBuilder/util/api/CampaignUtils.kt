@@ -18,9 +18,11 @@ object CampaignUtils {
     private var placeholderDialog: UIPanelAPI? = null
 
     /**
-     * Opens an empty dialog, which does nothing and cannot be seen
+     * Opens an empty dialog, which does nothing by itself and cannot be seen.
      *
      * This causes Global.getSector().getCampaignUI().isShowingDialog() to return true, as a dialog is indeed open.
+     *
+     * Remember to close it via [closeCampaignDummyDialog] when done.
      *
      * @param hideUI If true, the campaign UI will be hidden. Otherwise, no visual changes.
      * @see closeCampaignDummyDialog
