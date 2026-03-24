@@ -20,7 +20,7 @@ LoadSave,fleetBuilder.console.commands.saveTransfer.LoadSave,"cheat,campaign,fle
 ,,,,
 ,,,,
 ,,,,
-ReloadShipDirs,fleetBuilder.console.commands.ReloadShipDirectories,fleetbuilder,reloadshipdirs,Reloads ship directories. Editing loadout files mid game wont load them in right away. The ship directory must be reloaded to load them in.
+,,,,
 BuildFleet,fleetBuilder.console.commands.BuildFleet,"cheat,campaign,fleetbuilder",buildfleet,"Prepares the player fleet for full customization.
 
 Removes all ships and officers.
