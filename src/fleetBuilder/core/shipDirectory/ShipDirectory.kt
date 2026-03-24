@@ -10,6 +10,8 @@ import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
+import fleetBuilder.serialization.variant.DataVariant.filterParsedVariantData
+import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.getCompatibleDLessHullId
@@ -127,6 +129,20 @@ class ShipDirectory(
         val parsedVariant = extractVariantDataFromCompString(comp) ?: run {
             DisplayMessage.showError("Failed to save variant", "Failed to extract variant data from comp string after just saving: $comp")
             return ""
+        }
+
+        // DEBUG!
+        if (ModSettings.enableDebug) {
+            val comparisonSettings = VariantSettings().apply {
+
+            }
+            val variantJSON = JSONVariant.saveVariantToJson(
+                inputVariant,
+                comparisonSettings
+            )
+            val variantUnJSON = JSONVariant.extractVariantDataFromJson(variantJSON)
+            if (variantUnJSON != filterParsedVariantData(parsedVariant, comparisonSettings)) // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
+                DisplayMessage.showError("DEBUG: Fleet data mismatch", "DEBUG: Fleet data mismatch\n\nfleetUnJSON:\n${variantUnJSON}\n\nparsedFleet:\n${parsedVariant}")
         }
 
         val savedVariant = buildVariantFull(parsedVariant)

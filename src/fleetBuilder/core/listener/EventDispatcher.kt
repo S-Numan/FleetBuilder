@@ -5,7 +5,6 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
 import fleetBuilder.core.ModSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
 import fleetBuilder.core.shipDirectory.ShipDirectoryService
@@ -29,6 +28,7 @@ import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.listeners.MemberChangeEvents
 import fleetBuilder.util.listeners.MemberChangeTracker
 import fleetBuilder.util.listeners.OfficerChangeEvents
@@ -166,11 +166,15 @@ internal class EventDispatcher : EveryFrameScript {
 
         fun onGameLoad(newGame: Boolean) {
             val sector = Global.getSector() ?: run {
-                DisplayMessage.showError("What?"); return
+                throw Error("How was sector null here?")
             }
 
             if (!sector.memoryWithoutUpdate.contains("\$FB_UNIQUESAVEID"))
                 sector.memoryWithoutUpdate.set("\$FB_UNIQUESAVEID", sector.genUID())
+
+            val deferredActionPlugin = CampaignDeferredActionPlugin()
+            manageTransientScript(CampaignDeferredActionPlugin::class.java) { deferredActionPlugin }
+            CampaignDeferredActionPlugin.setActive(deferredActionPlugin)
 
             sector.addTransientScript(eventDispatcher)
 

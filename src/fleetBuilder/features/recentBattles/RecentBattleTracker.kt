@@ -1,8 +1,6 @@
 package fleetBuilder.features.recentBattles
 
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener
-import com.fs.starfarer.api.campaign.BattleAPI
-import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.combat.EngagementResultAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.fleet.FleetSettings
@@ -32,15 +30,5 @@ class RecentBattleTracker : BaseCampaignEventListener(false) {
         } catch (e: Exception) {
             DisplayMessage.showError("Failed to save fleet after battle", e)
         }
-    }
-
-    override fun reportBattleFinished(primaryWinner: CampaignFleetAPI?, battle: BattleAPI?) {
-        // Occurs after player exits a battle, and closes the battle over dialog (likely after looting too)
-        battle ?: return
-        battle.snapshotSideTwo
-        battle.combinedTwo
-        battle.nonPlayerCombined
-
-        val e = 0f
     }
 }

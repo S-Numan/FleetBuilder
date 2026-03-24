@@ -86,8 +86,10 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
 
         if (justLoadedGame > 0) {
             justLoadedGame--
-            if (justLoadedGame == 0)
+            if (justLoadedGame == 0) {
+                clearCurrent()
                 CampaignMessageRenderer()
+            }
         }
 
         advanceAmount(TimeKeeper.campaignDelta(amount))
@@ -105,14 +107,18 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
         val state = Global.getCurrentState()
 
         if (state != curState) {
-            if (toDraw != null) {
-                currentMessage = null
-                toDraw = null
-                messageQueue.clear()
-                messageTimer = 0f
-                fadingOut = false
-            }
+            //clearCurrent()
             curState = state
+        }
+    }
+
+    private fun clearCurrent() {
+        if (toDraw != null) {
+            currentMessage = null
+            toDraw = null
+            messageQueue.clear()
+            messageTimer = 0f
+            fadingOut = false
         }
     }
 
