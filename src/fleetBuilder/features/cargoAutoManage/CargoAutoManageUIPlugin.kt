@@ -10,7 +10,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings.PRIMARYDIR
+import fleetBuilder.core.FBSettings.PRIMARYDIR
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromMap
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket

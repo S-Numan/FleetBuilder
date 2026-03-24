@@ -2,8 +2,8 @@ package fleetBuilder.features.recentBattles.fleetDirectory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
-import fleetBuilder.core.ModSettings.DIRECTORYCONFIGNAME
-import fleetBuilder.core.ModSettings.FLEETDIR
+import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
+import fleetBuilder.core.FBSettings.FLEETDIR
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.CompressedFleet.extractFleetDataFromCompString
