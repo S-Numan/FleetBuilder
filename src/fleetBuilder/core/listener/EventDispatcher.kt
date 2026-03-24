@@ -7,10 +7,10 @@ import com.fs.starfarer.api.campaign.CampaignEventListener
 import fleetBuilder.core.ModSettings
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
-import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
 import fleetBuilder.features.autofit.listener.CampaignAutofitAdder
 import fleetBuilder.features.autofit.listener.CodexAutofitButton
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.cargoAutoManage.CargoAutoManager
 import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
 import fleetBuilder.features.codexButton.CampaignDevModeCodexButton
@@ -115,21 +115,17 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun onDevModeF8Reload() {
-            onBigLoad()
-            onReload()
+            updateApplicationState()
         }
 
         fun onApplicationLoad() {
-            onBigLoad()
-            onReload()
-        }
-
-        fun onBigLoad() {
             ModSettings.onApplicationLoad()
-            LookupUtils.onApplicationLoad()
+            updateApplicationState()
         }
 
-        fun onReload() {
+        fun updateApplicationState() {
+            LookupUtils.setup()
+
             if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF || ModSettings.addLogsToDisplayMessageLevel != Level.OFF) {
                 // Cause the lazy class loader to load these classes preemptively to prevent issues.
                 try {
@@ -144,8 +140,8 @@ internal class EventDispatcher : EveryFrameScript {
 
                 val rootLogger = Logger.getRootLogger()
 
-                if (rootLogger.getAppender("LogMessageAppender") == null) {
-                    val appender = LogMessageAppender().apply { name = "LogMessageAppender" }
+                if (rootLogger.getAppender("FB_LogMessageAppender") == null) {
+                    val appender = LogMessageAppender().apply { name = "FB_LogMessageAppender" }
                     rootLogger.addAppender(appender)
                 }
             }
@@ -244,7 +240,7 @@ internal class EventDispatcher : EveryFrameScript {
         //Detect DevMode change
         val currentDevMode = Global.getSettings().isDevMode
         if (lastDevMode != currentDevMode) {
-            onReload()
+            updateApplicationState()
 
             lastDevMode = currentDevMode
         }

@@ -26,9 +26,9 @@ object LookupUtils {
     private lateinit var IDToSkill: Map<String, SkillSpecAPI>
     private lateinit var allFactionIDs: Set<String>
     private var init = false
-    fun Loaded() = init
+    fun isSetup() = init
 
-    fun onApplicationLoad() {
+    fun setup() {
         init = true
 
         val settings = Global.getSettings()

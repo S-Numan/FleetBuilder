@@ -103,7 +103,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             ModSettings.addLogsToDisplayMessageLevel = Level.OFF
         }
 
-        if (LookupUtils.Loaded())
-            EventDispatcher.onReload()
+        if (LookupUtils.isSetup())
+            EventDispatcher.updateApplicationState()
     }
 }
