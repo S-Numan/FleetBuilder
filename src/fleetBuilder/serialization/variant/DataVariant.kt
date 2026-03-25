@@ -105,7 +105,7 @@ object DataVariant {
             displayName = variant.displayName,
             fluxCapacitors = variant.numFluxCapacitors,
             fluxVents = variant.numFluxVents,
-            tags = variant.tags.filterNot { it.startsWith("#") },
+            tags = variant.tags.toList(),
             hullMods = hullMods,
             permaMods = permaMods,
             sMods = sMods,
@@ -153,6 +153,7 @@ object DataVariant {
             if (modId in settings.excludeHullModsWithID) return false
             if (!settings.includeDMods && LookupUtils.getAllDMods().contains(modId)) return false
             if (!settings.includeHiddenMods && LookupUtils.getAllHiddenEverywhereMods().contains(modId)) return false
+            if (LookupUtils.getHullModSpec(modId)?.hasTag("FB_no_copy") == true) return false
             return true
         }
 
@@ -165,7 +166,7 @@ object DataVariant {
         }
 
         fun shouldKeepTag(tagId: String): Boolean {
-            return tagId !in settings.excludeTagsWithID
+            return tagId !in settings.excludeTagsWithID && !tagId.startsWith("#")
         }
 
         // Remove entries from missing that were filtered out, as they aren't missing if they weren't supposed to be included in the first place.
