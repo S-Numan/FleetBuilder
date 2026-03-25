@@ -3,6 +3,7 @@ package fleetBuilder.features.hotkeyHandler
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
@@ -393,23 +394,16 @@ object HotkeyHandlerDialogs {
             val listPanel = dialog.panel.createCustomPanel(leftWidth, totalHeight, null)
 
 // Add ship previews
+            var isPressedMember: FleetMemberAPI? = null
             members.forEachIndexed { index, member ->
                 val col = index % numPerRow
                 val row = index / numPerRow
-
                 val x = col * (size + padding)
                 val y = row * (size + padding)
-
-                val preview = ShipPreviewOverlayPlugin(
-                    member, size, size, scaleDownSmallerShips = true, showOfficersAndFlagship = true, showSModAndDModBars = true, manualScaleSpecificShips = true
-                )
-                val highlightFader = FaderUtil(0.0F, 0.05F, 0.25F)
-                val hoverFader = FaderUtil(0.0F, 0.05F, 0.25F)
+                val preview = ShipPreviewOverlayPlugin(member, size, size, scaleDownSmallerShips = true, showOfficersAndFlagship = true, showSModAndDModBars = true, manualScaleSpecificShips = true)
                 val clickFader = FaderUtil(0.0F, 0.05F, 0.25F)
                 val defaultBGColor: Color = Color.BLACK
                 val clickedBGColor: Color = Misc.getDarkPlayerColor()
-                val hoverBGColor: Color = Misc.getDarkPlayerColor().darker()
-                val highlightBGColor: Color = Misc.getDarkPlayerColor().darker().darker()
                 preview.onKeyDown { event ->
                     if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel)) {
                         Global.getSettings().showCodex(member)
@@ -417,35 +411,21 @@ object HotkeyHandlerDialogs {
                     }
                 }
                 preview.renderBelow { alphaMult ->
-                    // interpolate all the different faders together for the flash color
-                    var panelColor = Misc.interpolateColor(defaultBGColor, highlightBGColor, highlightFader.brightness)
-                    panelColor = Misc.interpolateColor(panelColor, hoverBGColor, hoverFader.brightness)
-                    panelColor = Misc.interpolateColor(panelColor, clickedBGColor, clickFader.brightness)
-
+                    val panelColor = Misc.interpolateColor(defaultBGColor, clickedBGColor, clickFader.brightness)
                     val panelAlpha = panelColor.alphaf * alphaMult
                     GL11.glColor4f(panelColor.redf, panelColor.greenf, panelColor.bluef, panelAlpha)
                     GL11.glRectf(preview.panel.left, preview.panel.bottom, preview.panel.right, preview.panel.top)
-
-                    //val darkerBorderColor = Misc.getDarkPlayerColor().darker()
-
-                    //val darkerBorderAlpha = darkerBorderColor.alphaf * alphaMult
-
-                    //GL11.glColor4f(darkerBorderColor.redf, darkerBorderColor.greenf, darkerBorderColor.bluef, darkerBorderAlpha)
-                    //drawBorder(preview.panel.left, preview.panel.bottom, preview.panel.right, preview.panel.top)
                 }
                 preview.advance { amount ->
-                    highlightFader.advance(amount)
-                    hoverFader.advance(amount)
                     clickFader.advance(amount)
                 }
-                preview.onHoverExit {
-                    hoverFader.fadeOut()
-                    clickFader.fadeOut()
-                }
-                preview.onClick {
+                preview.onClick { event ->
+                    isPressedMember = member
                     clickFader.fadeIn()
                 }
-                preview.onClickRelease {
+                preview.onClickOutside { event ->
+                    if (isPressedMember == member)
+                        isPressedMember = null
                     clickFader.fadeOut()
                 }
 

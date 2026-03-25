@@ -1,6 +1,7 @@
 package fleetBuilder.features.autofit.ui
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
@@ -43,10 +44,20 @@ class ShipPreviewOverlayPlugin(
         if (setSchematicMode)
             boxedUIShipPreview.setSchematicMode(true)
 
-        if (!scaleDownSmallerShips)
-            boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(1f)
-        //else
-        //    boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(0.8f)
+        var scaleDownFactor = 1f
+
+
+        boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(1f)
+        if (scaleDownSmallerShips) {
+            val hullSize = member.hullSpec.hullSize
+            if (hullSize == ShipAPI.HullSize.FRIGATE) {
+                scaleDownFactor = 0.5f
+            } else if (hullSize == ShipAPI.HullSize.DESTROYER) {
+                scaleDownFactor = 0.75f
+            } else if (hullSize == ShipAPI.HullSize.CRUISER) {
+                scaleDownFactor = 0.9f
+            }
+        }
 
         //Remove this hard coded scaling code when things scale right properly in the base game.
 
@@ -82,8 +93,8 @@ class ShipPreviewOverlayPlugin(
         }
 
         // Scale and set size
-        val scaledWidth = width * config.scaleFactor
-        val scaledHeight = height * config.scaleFactor
+        val scaledWidth = width * config.scaleFactor * scaleDownFactor
+        val scaledHeight = height * config.scaleFactor * scaleDownFactor
         boxedUIShipPreview.uiShipPreview.setSize(scaledWidth, scaledHeight)
 
         // Base Y offset from config
