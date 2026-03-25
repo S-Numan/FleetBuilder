@@ -7,8 +7,9 @@ import com.fs.starfarer.api.ui.PositionAPI
 import fleetBuilder.util.allDMods
 import org.lwjgl.opengl.GL11.*
 
-class ShipOverlayPlugin(
-    private val member: FleetMemberAPI
+class ShipPreviewOverlayPlugin(
+    private val member: FleetMemberAPI,
+    val showSModAndDModBars: Boolean = true
 ) : CustomUIPanelPlugin {
 
     private lateinit var pos: PositionAPI
@@ -22,6 +23,11 @@ class ShipOverlayPlugin(
     override fun render(alphaMult: Float) {
         if (!::pos.isInitialized) return
 
+        if (showSModAndDModBars)
+            showSModAndDModBars()
+    }
+
+    private fun showSModAndDModBars() {
         val sMods = member.variant.sMods.size
         val dMods = member.variant.allDMods().size
 
@@ -35,7 +41,7 @@ class ShipOverlayPlugin(
 
         val step = fillW + spacing
 
-        val rightEdge = pos.x + pos.width - 5f
+        val rightEdge = pos.x + pos.width - 8f
         val topY = pos.y + pos.height - 3f
 
         glPushMatrix()
@@ -91,43 +97,6 @@ class ShipOverlayPlugin(
         glPopMatrix()
     }
 
-    private fun drawGrid(
-        count: Int,
-        startX: Float,
-        startY: Float,
-        cols: Int,
-        fillW: Float,
-        fillH: Float,
-        spacing: Float,
-        border: Float,
-        topColor: FloatArray,
-        midColor: FloatArray
-    ) {
-        val max = count.coerceAtMost(15)
-
-        for (i in 0 until max) {
-            val col = i % cols
-            val row = i / cols
-
-            // Position based on FILL size (critical for correct spacing)
-            val x = startX + col * (fillW + spacing)
-            val y = startY - row * fillH
-
-            // Border first (outside)
-            drawBorder(x, y, fillW, fillH, border)
-
-            // Fill inside border
-            drawGradientRect(
-                x + border,
-                y,
-                fillW,
-                fillH,
-                topColor,
-                midColor
-            )
-        }
-    }
-
     private fun drawGradientRect(
         x: Float,
         y: Float,
@@ -162,7 +131,7 @@ class ShipOverlayPlugin(
         glEnd()
     }
 
-    // Draws a 1px border OUTSIDE the fill area
+    // Draws a 1px border outside the fill area
     private fun drawBorder(x: Float, y: Float, w: Float, h: Float, b: Float) {
         glColor3f(0f, 0f, 0f)
 

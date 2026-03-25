@@ -243,7 +243,7 @@ internal class CargoAutoManageUIPlugin(
         val spacing = 10f
         //val entireRowHeight = rowHeight + spacing
 
-        panel = Global.getSettings().createCustom(width - (dialog.getXTooltipPadding() * 2), height - (dialog.getYTooltipPadding() * 2) - 100f, this)
+        panel = Global.getSettings().createCustom(width - (dialog.tooltipPadFromSide * 2), height - (dialog.tooltipPadFromTop * 2) - 100f, this)
 
         val addCustom = panel.addAreaCheckbox("Add Custom", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), columnWidths[0], rowHeight)
         addCustom.position.inBL(0f, -32f)
@@ -322,7 +322,7 @@ internal class CargoAutoManageUIPlugin(
 
         scrollerTooltip.heightSoFar = yOffset - 12f
 
-        panel.addUIElement(scrollerTooltip).inTL(dialog.getXTooltipPadding(), 0f)
+        panel.addUIElement(scrollerTooltip).inTL(dialog.tooltipPadFromSide, 0f)
 
 
         dialog.show(width, height) { ui ->

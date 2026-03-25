@@ -6,6 +6,7 @@ import com.fs.starfarer.api.combat.BoundsAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -307,7 +308,6 @@ internal object AutofitSelector {
         addDescription: Boolean = true,
         addXIfAutofitSpecNull: Boolean = false
     ): CustomPanelAPI {
-
         val plugin = AutofitSelectorPlugin(autofitSpec, addXIfAutofitSpecNull)
         val selectorPanel = Global.getSettings().createCustom(width, width + (if (addTitle) titleHeight else 0f) + (if (addDescription) descriptionHeight else 0f), plugin)
         plugin.selectorPanel = selectorPanel
@@ -331,7 +331,7 @@ internal object AutofitSelector {
         val descriptionYOffset = 2f
         val topPad = 5f
 
-        val shipPreview = createShipPreview(autofitSpec.variant, width, width, showFighters = true)
+        val shipPreview = createShipPreview(autofitSpec.variant, width, width, showFighters = true, showSModAndDModBars = true)
         selectorPanel.addComponent(shipPreview).inTL(0f, topPad)
 
         if (!addTitle && !addDescription) return
@@ -356,17 +356,30 @@ internal object AutofitSelector {
     fun createShipPreview(
         variant: ShipVariantAPI,
         width: Float, height: Float,
-        scaleDownSmallerShips: Boolean = false,
         showFighters: Boolean = false,
+        showSModAndDModBars: Boolean = false,
         setSchematicMode: Boolean = false,
+        scaleDownSmallerShips: Boolean = false,
     ): UIPanelAPI {
-        val fleetMember = variant.createFleetMember()
+        return createShipPreview(
+            variant.createFleetMember(), width, height,
+            showFighters = showFighters, showSModAndDModBars = showSModAndDModBars, setSchematicMode = setSchematicMode, scaleDownSmallerShips = scaleDownSmallerShips
+        )
+    }
+
+    fun createShipPreview(
+        member: FleetMemberAPI,
+        width: Float, height: Float,
+        showFighters: Boolean = false,
+        showSModAndDModBars: Boolean = false,
+        setSchematicMode: Boolean = false,
+        scaleDownSmallerShips: Boolean = false,
+    ): UIPanelAPI {
         // Main container panel
-        val containerPanel = Global.getSettings().createCustom(width, height, ShipOverlayPlugin(fleetMember))
+        val containerPanel = Global.getSettings().createCustom(width, height, ShipPreviewOverlayPlugin(member, showSModAndDModBars = showSModAndDModBars))
 
-        val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(fleetMember) as UIPanelAPI
+        val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(member) as UIPanelAPI
         val boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
-
         boxedUIShipPreview.uiShipPreview.setSize(width, height)
         boxedUIShipPreview.setBorderNewStyle(true)
         boxedUIShipPreview.setShowBorder(false)
@@ -383,7 +396,7 @@ internal object AutofitSelector {
 
         //Remove this hard coded scaling code when things scale right properly in the base game.
 
-        val effectiveHullId = variant.hullSpec.getEffectiveHullId()
+        val effectiveHullId = member.hullSpec.getEffectiveHullId()
 
         // Define config for special ships
         data class ShipDisplayConfig(
@@ -428,7 +441,7 @@ internal object AutofitSelector {
         val offsetY = (height - scaledHeight) / 2f + baseYOffset
 
         // Add shipPreview to container, positioned to center plus offset
-        containerPanel.addComponent(shipPreview)
+        containerPanel.addComponent(shipPreview).inTL(0f, 0f)
         shipPreview.position.inTL(offsetX, offsetY)
 
         return containerPanel

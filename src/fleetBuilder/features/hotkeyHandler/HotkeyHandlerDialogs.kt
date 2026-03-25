@@ -77,7 +77,7 @@ object HotkeyHandlerDialogs {
                 null,
                 160f, 24f, 0f
             )
-            testMessageTrigger.position.inTL(0f, ui.height - testMessageTrigger.height - 8f)
+            testMessageTrigger.position.inTR(0f, ui.height - testMessageTrigger.height)
             testMessageTrigger.onClick {
                 DisplayMessage.showMessageCustom("Test Message!", Color.RED)
 
@@ -104,7 +104,7 @@ object HotkeyHandlerDialogs {
     ) {
         val removeModButton = ui.addButton("Remove Mod", null, 160f, 24f, 0f)
 
-        removeModButton.position.inTL(ui.width - removeModButton.width + 12f, ui.height - removeModButton.height - 8f)
+        removeModButton.position.inTL(0f, ui.height - removeModButton.height)
         removeModButton.onClick {
             val dialog = DialogPanel("Remove Mod")
             dialog.show(width = 800f, height = 800f) { ui ->
@@ -419,6 +419,7 @@ object HotkeyHandlerDialogs {
 
 
         val initialDialog = DialogPanel(headerTitle = FBTxt.txt("add_officer_to_fleet"))
+        initialDialog.tooltipPadFromSide = 10f
 
         val buttonHeight = 24f
 
@@ -499,32 +500,25 @@ object HotkeyHandlerDialogs {
         val dialog = DialogPanel(headerTitle = FBTxt.txt("import_loadout_title"))
 
         dialog.show(375f, 490f) { ui ->
-
             ui.setParaFont(Fonts.ORBITRON_24AABOLD)
-            ui.addPara(
+            val para = ui.addPara(
                 loadoutBaseHullName,
                 0f,
                 arrayOf(Color.YELLOW),
                 *arrayOf(loadoutBaseHullName)
-            ).setAlignment(Alignment.MID)
-
-            val tempPanel = Global.getSettings().createCustom(ui.width, ui.height, null)
-            val tempTMAPI = tempPanel.createUIElement(tempPanel.width, tempPanel.height, false)
+            )
+            para.autoSizeToText().position.inMid()
 
             val selectorPanel = AutofitSelector.createAutofitSelector(
                 autofitSpec = AutofitSpec(variant, null),
-                ui.width,
+                ui.width - 12f,
                 addDescription = false,
                 centerTitle = true
             )
 
-            ui.addComponent(selectorPanel)
-            selectorPanel.position.inTL(0f, dialog.getYTooltipPadding() - 14f)
+            ui.addComponent(selectorPanel).inTMid(dialog.tooltipPadFromTop - 14f)
 
             AutofitPanel.makeTooltip(selectorPanel, variant)
-
-            tempPanel.addUIElement(tempTMAPI).inTL(0f, 0f)
-            ui.addCustom(tempPanel, 0f)
 
             dialog.addActionButtons(confirmText = FBTxt.txt("import"), alignment = Alignment.MID)
 

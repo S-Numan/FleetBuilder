@@ -45,8 +45,9 @@ open class ModalPanel : ComposablePanel() {
     open var hotkeyClosesOnRelease: Boolean = false
 
     override var dialogStyle: Boolean = true
-    override var xTooltipPad = 10f
-    override var yTooltipPad = 10f
+    override var tooltipPadFromSide = 12f
+    override var tooltipPadFromTop = 10f
+    override var tooltipPadFromBottom = 10f
     override var createUIOnInit: Boolean = false
     override var darkenBackground: Boolean = true
 

@@ -968,7 +968,7 @@ internal object AutofitPanel {
             "X",
             null,
             Color(255, 50, 0),
-            Misc.getDarkPlayerColor(),
+            Misc.getDarkPlayerColor().darker(),
             Alignment.MID,
             CutStyle.NONE,
             23f, 22f,

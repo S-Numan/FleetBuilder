@@ -14,10 +14,9 @@ import java.awt.Color
 open class ComposablePanel : BasePanel() {
 
     // Distance the tooltip holds from every side of it's home panel.
-    protected open var xTooltipPad = 0f
-    open fun getXTooltipPadding(): Float = xTooltipPad
-    protected open var yTooltipPad = 0f
-    open fun getYTooltipPadding(): Float = yTooltipPad
+    open var tooltipPadFromSide = 0f
+    open var tooltipPadFromBottom = 0f
+    open var tooltipPadFromTop: Float = 0f
 
     override fun createUI() {
         createUICallback?.invoke()
@@ -39,15 +38,19 @@ open class ComposablePanel : BasePanel() {
         // store a callback
         createUICallback = {
             // create the tooltip
-            val tooltipWidth = panel.width - (getXTooltipPadding() * 3)
-            val tooltipHeight = panel.height - getYTooltipPadding()
+            val tooltipWidth = panel.width - (tooltipPadFromSide * 2)
+            val tooltipHeight = panel.height - tooltipPadFromBottom - tooltipPadFromTop
             tooltip = panel.createUIElement(tooltipWidth, tooltipHeight, false)
             tooltip!!.setSize(tooltipWidth, tooltipHeight)
+
+            // Align new tooltip components to the top left to rid of the mysterious 5f x pad
+            tooltip!!.addSpacer(0f).position?.inTL(0f, 0f)
+
             // run the user code
             callback(tooltip!!)
             // add UI automatically afterward
             panel.addUIElement(tooltip)
-            tooltip!!.position.inTL(getXTooltipPadding(), getYTooltipPadding())
+            tooltip!!.position.inTL(tooltipPadFromSide, tooltipPadFromTop)
         }
     }
 
