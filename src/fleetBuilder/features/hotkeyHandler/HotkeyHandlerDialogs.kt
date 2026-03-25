@@ -6,6 +6,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
+import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
@@ -13,12 +14,9 @@ import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
-import fleetBuilder.features.autofit.ui.AutofitSelector.createShipPreview
 import fleetBuilder.features.autofit.ui.AutofitSpec
-import fleetBuilder.otherMods.starficz.addTooltip
-import fleetBuilder.otherMods.starficz.height
-import fleetBuilder.otherMods.starficz.onClick
-import fleetBuilder.otherMods.starficz.width
+import fleetBuilder.features.autofit.ui.ShipPreviewOverlayPlugin
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.MissingElementsExtended
 import fleetBuilder.serialization.PlayerSaveUtils
@@ -36,7 +34,8 @@ import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
-import org.magiclib.kotlin.autoSizeToText
+import org.lwjgl.opengl.GL11
+import org.magiclib.kotlin.*
 import java.awt.Color
 
 
@@ -360,7 +359,7 @@ object HotkeyHandlerDialogs {
             val height = 750f
 
             val leftWidth = width - 500f
-            val rightWidth = 300f
+            val rightWidth = 500f
 
             val factionColor = faction.baseUIColor
             val darkColor = faction.darkUIColor
@@ -401,9 +400,56 @@ object HotkeyHandlerDialogs {
                 val x = col * (size + padding)
                 val y = row * (size + padding)
 
-                val preview = createShipPreview(member, size, size, scaleDownSmallerShips = true, showOfficersAndFlagship = true, showSModAndDModBars = true)
+                val preview = ShipPreviewOverlayPlugin(
+                    member, size, size, scaleDownSmallerShips = true, showOfficersAndFlagship = true, showSModAndDModBars = true, manualScaleSpecificShips = true
+                )
+                val highlightFader = FaderUtil(0.0F, 0.05F, 0.25F)
+                val hoverFader = FaderUtil(0.0F, 0.05F, 0.25F)
+                val clickFader = FaderUtil(0.0F, 0.05F, 0.25F)
+                val defaultBGColor: Color = Color.BLACK
+                val clickedBGColor: Color = Misc.getDarkPlayerColor()
+                val hoverBGColor: Color = Misc.getDarkPlayerColor().darker()
+                val highlightBGColor: Color = Misc.getDarkPlayerColor().darker().darker()
+                preview.onKeyDown { event ->
+                    if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel)) {
+                        Global.getSettings().showCodex(member)
+                        event.consume()
+                    }
+                }
+                preview.renderBelow { alphaMult ->
+                    // interpolate all the different faders together for the flash color
+                    var panelColor = Misc.interpolateColor(defaultBGColor, highlightBGColor, highlightFader.brightness)
+                    panelColor = Misc.interpolateColor(panelColor, hoverBGColor, hoverFader.brightness)
+                    panelColor = Misc.interpolateColor(panelColor, clickedBGColor, clickFader.brightness)
 
-                listPanel.addComponent(preview).inTL(x, y)
+                    val panelAlpha = panelColor.alphaf * alphaMult
+                    GL11.glColor4f(panelColor.redf, panelColor.greenf, panelColor.bluef, panelAlpha)
+                    GL11.glRectf(preview.panel.left, preview.panel.bottom, preview.panel.right, preview.panel.top)
+
+                    //val darkerBorderColor = Misc.getDarkPlayerColor().darker()
+
+                    //val darkerBorderAlpha = darkerBorderColor.alphaf * alphaMult
+
+                    //GL11.glColor4f(darkerBorderColor.redf, darkerBorderColor.greenf, darkerBorderColor.bluef, darkerBorderAlpha)
+                    //drawBorder(preview.panel.left, preview.panel.bottom, preview.panel.right, preview.panel.top)
+                }
+                preview.advance { amount ->
+                    highlightFader.advance(amount)
+                    hoverFader.advance(amount)
+                    clickFader.advance(amount)
+                }
+                preview.onHoverExit {
+                    hoverFader.fadeOut()
+                    clickFader.fadeOut()
+                }
+                preview.onClick {
+                    clickFader.fadeIn()
+                }
+                preview.onClickRelease {
+                    clickFader.fadeOut()
+                }
+
+                listPanel.addComponent(preview.panel).inTL(x, y)
             }
 
 // Add to scroll UI
@@ -421,31 +467,23 @@ object HotkeyHandlerDialogs {
             // ---- Summary ----
             rightUI.addSectionHeading(
                 "Summary",
-                com.fs.starfarer.api.ui.Alignment.MID,
+                Alignment.MID,
                 0f
             )
 
-            val fleetPoints = members.sumOf { it.fleetPointCost.toDouble() }
             val dp = members.sumOf { it.deploymentPointsCost.toDouble() }
-
-            rightUI.addPara(
-                "Fleet Points: %s",
-                10f,
-                com.fs.starfarer.api.util.Misc.getHighlightColor(),
-                fleetPoints.toInt().toString()
-            )
 
             rightUI.addPara(
                 "Deployment Points: %s",
                 5f,
-                com.fs.starfarer.api.util.Misc.getHighlightColor(),
+                Misc.getHighlightColor(),
                 dp.toInt().toString()
             )
 
             // ---- Actions ----
             rightUI.addSectionHeading(
                 "Actions",
-                com.fs.starfarer.api.ui.Alignment.MID,
+                Alignment.MID,
                 20f
             )
 

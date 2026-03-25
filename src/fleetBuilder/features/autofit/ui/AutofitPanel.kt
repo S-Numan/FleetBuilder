@@ -172,7 +172,7 @@ internal object AutofitPanel {
             }
 
             if (draggedPanel == null)
-                draggedPanel = AutofitSelector.createShipPreview(draggedAutofitSpec!!.variant, selectorWidth, selectorWidth)
+                draggedPanel = ShipPreviewOverlayPlugin(draggedAutofitSpec!!.variant.createFleetMember(), selectorWidth, selectorWidth, manualScaleSpecificShips = true).panel
 
             val screenPanel = ReflectionMisc.getScreenPanel() ?: return
             if (screenPanel.getChildrenCopy().find { it === draggedPanel } == null)
@@ -579,8 +579,10 @@ internal object AutofitPanel {
                 if (selectorPlugin.autofitSpec == null)
                     return@onKeyDown
 
-                if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(selectorPlugin.selectorPanel))
+                if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(selectorPlugin.selectorPanel)) {
                     Global.getSettings().showCodex(selectorPlugin.autofitSpec!!.variant.createFleetMember())
+                    event.consume()
+                }
             }
             selectorPlugin.onPressOutside {
                 if (selectorPlugin.autofitSpec != null) highlightBasedOnVariant(selectorPlugin.autofitSpec!!.variant, baseVariant, selectorPlugin) // Mostly for applying the different flux stat symbol on alteration of flux stats.

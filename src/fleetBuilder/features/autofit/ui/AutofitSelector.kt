@@ -6,7 +6,6 @@ import com.fs.starfarer.api.combat.BoundsAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -330,7 +329,7 @@ internal object AutofitSelector {
         val descriptionYOffset = 2f
         val topPad = 5f
 
-        val shipPreview = createShipPreview(autofitSpec.variant, width, width, showFighters = true, showSModAndDModBars = true)
+        val shipPreview = ShipPreviewOverlayPlugin(autofitSpec.variant.createFleetMember(), width, width, showFighters = true, showSModAndDModBars = true, manualScaleSpecificShips = true).panel
         selectorPanel.addComponent(shipPreview).inTL(0f, topPad)
 
         if (!addTitle && !addDescription) return
@@ -350,37 +349,6 @@ internal object AutofitSelector {
                 description.autoSizeToText(autofitSpec.description)
             }
         }
-    }
-
-    fun createShipPreview(
-        variant: ShipVariantAPI,
-        width: Float, height: Float,
-        showFighters: Boolean = false,
-        showSModAndDModBars: Boolean = false,
-        setSchematicMode: Boolean = false,
-        scaleDownSmallerShips: Boolean = false,
-    ): UIPanelAPI {
-        return createShipPreview(
-            variant.createFleetMember(), width, height,
-            showFighters = showFighters, showSModAndDModBars = showSModAndDModBars, setSchematicMode = setSchematicMode, scaleDownSmallerShips = scaleDownSmallerShips
-        )
-    }
-
-    fun createShipPreview(
-        member: FleetMemberAPI,
-        width: Float, height: Float,
-        showFighters: Boolean = false,
-        showSModAndDModBars: Boolean = false,
-        setSchematicMode: Boolean = false,
-        scaleDownSmallerShips: Boolean = false,
-        showOfficersAndFlagship: Boolean = false
-    ): UIPanelAPI {
-        // Main container panel
-        val plugin = ShipPreviewOverlayPlugin(
-            member, width, height,
-            showSModAndDModBars = showSModAndDModBars, showFighters = showFighters, setSchematicMode = setSchematicMode, scaleDownSmallerShips = scaleDownSmallerShips, showOfficersAndFlagship = showOfficersAndFlagship
-        )
-        return plugin.panel
     }
 
     private fun getExactBounds(variant: ShipVariantAPI): List<BoundsAPI.SegmentAPI>? {
