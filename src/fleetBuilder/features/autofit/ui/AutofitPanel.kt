@@ -17,12 +17,12 @@ import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBSettings.getDefaultExcludeVariantTags
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectory
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.deleteLoadoutVariant
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getCoreAutofitSpecsForShip
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getLoadoutAutofitSpecsForShip
-import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingElements
@@ -575,11 +575,11 @@ internal object AutofitPanel {
         for (index in selectorPlugins.indices) {
             val selectorPlugin = selectorPlugins[index]
 
-            selectorPlugin.onHover { event ->
+            selectorPlugin.onKeyDown { event ->
                 if (selectorPlugin.autofitSpec == null)
-                    return@onHover
+                    return@onKeyDown
 
-                if (Keyboard.isKeyDown(Keyboard.KEY_F2))
+                if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(selectorPlugin.selectorPanel))
                     Global.getSettings().showCodex(selectorPlugin.autofitSpec!!.variant.createFleetMember())
             }
             selectorPlugin.onPressOutside {
@@ -967,15 +967,15 @@ internal object AutofitPanel {
         val removeVariantButton = selectorPanel.addButton(
             "X",
             null,
-            Misc.getButtonTextColor(),
+            Color(255, 50, 0),
             Misc.getDarkPlayerColor(),
             Alignment.MID,
-            CutStyle.ALL,
-            25f, 25f,
+            CutStyle.NONE,
+            23f, 22f,
             Font.ORBITRON_20
         )
         //removeVariantButton.setButtonPressedSound("ui_refit_slot_cleared_large")
-        removeVariantButton.xAlignOffset = selectorPanel.right - removeVariantButton.right
+        //removeVariantButton.xAlignOffset = selectorPanel.right - removeVariantButton.right
         removeVariantButton.yAlignOffset = selectorPanel.top - removeVariantButton.top
         removeVariantButton.onClick {
             deleteLoadoutVariant(currentPrefix, newSpec.variant.hullVariantId)

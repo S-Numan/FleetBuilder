@@ -192,7 +192,6 @@ internal object AutofitSelector {
 
         override fun processInput(events: MutableList<InputEventAPI>?) {
             events!!.filter { it.isMouseEvent }.forEach { event ->
-
                 if (event.isConsumed) return@forEach
                 val inElement = event.x.toFloat() in selectorPanel.left..selectorPanel.right &&
                         event.y.toFloat() in selectorPanel.bottom..selectorPanel.top
@@ -225,6 +224,17 @@ internal object AutofitSelector {
                     }
                 }
             }
+
+            events.filter { it.isKeyboardEvent }.forEach { event ->
+                if (event.isConsumed) return@forEach
+                if (event.isKeyDownEvent) onKeyDownFunctions.forEach { it(event) }
+            }
+        }
+
+        private var onKeyDownFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
+
+        fun onKeyDown(function: (InputEventAPI) -> Unit) {
+            onKeyDownFunctions.add(function)
         }
 
         fun onClick(function: (InputEventAPI) -> Unit) {
@@ -418,7 +428,8 @@ internal object AutofitSelector {
         val offsetY = (height - scaledHeight) / 2f + baseYOffset
 
         // Add shipPreview to container, positioned to center plus offset
-        containerPanel.addComponent(shipPreview).inTL(offsetX, offsetY)
+        containerPanel.addComponent(shipPreview)
+        shipPreview.position.inTL(offsetX, offsetY)
 
         return containerPanel
     }

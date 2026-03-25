@@ -35,8 +35,8 @@ class ShipOverlayPlugin(
 
         val step = fillW + spacing
 
-        val rightEdge = pos.x + pos.width
-        val topY = pos.y + pos.height
+        val rightEdge = pos.x + pos.width - 5f
+        val topY = pos.y + pos.height - 3f
 
         glPushMatrix()
         glDisable(GL_TEXTURE_2D)
