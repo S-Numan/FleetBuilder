@@ -350,10 +350,11 @@ internal object AutofitSelector {
         showFighters: Boolean = false,
         setSchematicMode: Boolean = false,
     ): UIPanelAPI {
+        val fleetMember = variant.createFleetMember()
         // Main container panel
-        val containerPanel = Global.getSettings().createCustom(width, height, null)
+        val containerPanel = Global.getSettings().createCustom(width, height, ShipOverlayPlugin(fleetMember))
 
-        val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(variant.createFleetMember()) as UIPanelAPI
+        val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(fleetMember) as UIPanelAPI
         val boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
 
         boxedUIShipPreview.uiShipPreview.setSize(width, height)
