@@ -357,11 +357,8 @@ internal object AutofitSelector {
         val boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
 
         boxedUIShipPreview.uiShipPreview.setSize(width, height)
+        boxedUIShipPreview.setBorderNewStyle(true)
         boxedUIShipPreview.setShowBorder(false)
-
-        if (!scaleDownSmallerShips)
-            boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(1f)
-
         boxedUIShipPreview.adjustOverlay(0f, 0f)
 
         if (showFighters)
@@ -369,6 +366,9 @@ internal object AutofitSelector {
 
         if (setSchematicMode)
             boxedUIShipPreview.setSchematicMode(true)
+
+        if (!scaleDownSmallerShips)
+            boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(1f)
 
         //Remove this hard coded scaling code when things scale right properly in the base game.
 
@@ -380,10 +380,6 @@ internal object AutofitSelector {
             val yOffset: Float = 0f,
             val disableScissor: Boolean = false
         )
-
-        //val padding = computeSpritePaddingPixels(clonedVariant)
-        //val sprite = Global.getSettings().getSprite(clonedVariant.hullSpec.spriteName)
-        //minOf(width / sprite.width, height / sprite.height, 1f)//See https://fractalsoftworks.com/forum/index.php?topic=33818.0 for why this cannot work as intended
 
         // Configurations for special hull IDs
         val specialConfigs = mapOf(
@@ -411,7 +407,7 @@ internal object AutofitSelector {
         boxedUIShipPreview.uiShipPreview.setSize(scaledWidth, scaledHeight)
 
         // Prepare ship
-        boxedUIShipPreview.uiShipPreview.safeInvoke("prepareShip")
+        //boxedUIShipPreview.uiShipPreview.safeInvoke("prepareShip")
 
         // Base Y offset from config
         val baseYOffset = config.yOffset
