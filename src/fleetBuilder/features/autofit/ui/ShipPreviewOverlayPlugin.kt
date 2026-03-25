@@ -1,16 +1,100 @@
 package fleetBuilder.features.autofit.ui
 
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.PositionAPI
+import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.otherMods.starficz.BoxedUIShipPreview
+import fleetBuilder.otherMods.starficz.setSize
 import fleetBuilder.util.allDMods
+import fleetBuilder.util.getEffectiveHullId
 import org.lwjgl.opengl.GL11.*
 
 class ShipPreviewOverlayPlugin(
-    private val member: FleetMemberAPI,
-    val showSModAndDModBars: Boolean = true
+    val member: FleetMemberAPI,
+    width: Float, height: Float,
+    showFighters: Boolean = false,
+    setSchematicMode: Boolean = false,
+    scaleDownSmallerShips: Boolean = false,
+    val showSModAndDModBars: Boolean = false,
+    val showOfficersAndFlagship: Boolean = false
 ) : CustomUIPanelPlugin {
+
+    val panel = Global.getSettings().createCustom(width, height, this)
+    var boxedUIShipPreview: BoxedUIShipPreview
+
+    init {
+        val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(member) as UIPanelAPI
+        boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
+        boxedUIShipPreview.uiShipPreview.setSize(width, height)
+        boxedUIShipPreview.setBorderNewStyle(true)
+        boxedUIShipPreview.setShowBorder(false)
+        boxedUIShipPreview.adjustOverlay(0f, 0f)
+
+        if (showFighters)
+            boxedUIShipPreview.showFighters = true
+
+        if (setSchematicMode)
+            boxedUIShipPreview.setSchematicMode(true)
+
+        if (!scaleDownSmallerShips)
+            boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(1f)
+        //else
+        //    boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(0.8f)
+
+        //Remove this hard coded scaling code when things scale right properly in the base game.
+
+        val effectiveHullId = member.hullSpec.getEffectiveHullId()
+
+        // Define config for special ships
+        data class ShipDisplayConfig(
+            val scaleFactor: Float = 1f,
+            val yOffset: Float = 0f,
+            val disableScissor: Boolean = false
+        )
+
+        // Configurations for special hull IDs
+        val specialConfigs = mapOf(
+            "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 12f, disableScissor = true),
+            "radiant" to ShipDisplayConfig(scaleFactor = 0.95f, yOffset = 10f, disableScissor = true),
+            "paragon" to ShipDisplayConfig(scaleFactor = 0.94f, yOffset = 15f, disableScissor = true),
+            "pegasus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
+            "executor" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
+            "invictus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 0f, disableScissor = true),
+            "onslaught" to ShipDisplayConfig(scaleFactor = 1.08f, yOffset = 0f, disableScissor = false),
+            "hammerhead" to ShipDisplayConfig(scaleFactor = 1.00f, yOffset = 4f, disableScissor = false) // If autofit panel is too small, this clips into the top.
+        )
+
+        // Get config or default
+        val config = specialConfigs[effectiveHullId] ?: ShipDisplayConfig()
+
+        // Apply config
+        if (config.disableScissor) {
+            boxedUIShipPreview.setScissor(false)
+        }
+
+        // Scale and set size
+        val scaledWidth = width * config.scaleFactor
+        val scaledHeight = height * config.scaleFactor
+        boxedUIShipPreview.uiShipPreview.setSize(scaledWidth, scaledHeight)
+
+        // Base Y offset from config
+        val baseYOffset = config.yOffset
+
+        // Center offsets for shipPreview
+        val offsetX = (width - scaledWidth) / 2f
+        val offsetY = (height - scaledHeight) / 2f + baseYOffset
+
+        // Add shipPreview to container, positioned to center plus offset
+        panel.addComponent(shipPreview).inTL(0f, 0f)
+        shipPreview.position.inTL(offsetX, offsetY)
+    }
+
+    fun cleanup() {
+        boxedUIShipPreview.cleanupShips()
+    }
 
     private lateinit var pos: PositionAPI
 
@@ -23,8 +107,73 @@ class ShipPreviewOverlayPlugin(
     override fun render(alphaMult: Float) {
         if (!::pos.isInitialized) return
 
+        if (showOfficersAndFlagship)
+            renderOfficerAndFlag()
+
         if (showSModAndDModBars)
             showSModAndDModBars()
+    }
+
+    private fun renderOfficerAndFlag() {
+        val pad = 4f
+        val size = 20f
+
+        val x = pos.x + pad
+        val y = pos.y + pos.height - pad
+
+        val captain = member.captain
+        val hasOfficer = captain != null && !captain.isDefault
+
+        glPushMatrix()
+        glEnable(GL_TEXTURE_2D)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+        if (hasOfficer) {
+            val sprite = Global.getSettings().getSprite(captain.portraitSprite)
+
+            // Portrait
+            sprite.setSize(size, size)
+            sprite.alphaMult = 1f
+            sprite.render(x, y - size)
+
+            // Blue outline
+            drawBlueBorder(x, y, size, size)
+
+            // Flagship icon under portrait
+            if (member.isFlagship) {
+                val insignia = Global.getSettings()
+                    .getSprite("graphics/icons/insignia/16x_star_circle.png")
+
+                insignia.setSize(size, size)
+                insignia.render(x, y - size * 2f - 2f)
+            }
+        } else if (member.isFlagship) {
+            // No officer -> just draw insignia in top-left
+            val insignia = Global.getSettings()
+                .getSprite("graphics/icons/insignia/16x_star_circle.png")
+
+            insignia.setSize(size, size)
+            insignia.render(x, y - size)
+        }
+        
+
+        glPopMatrix()
+    }
+
+    private fun drawBlueBorder(x: Float, y: Float, w: Float, h: Float) {
+        glDisable(GL_TEXTURE_2D)
+
+        glColor3f(0.2f, 0.6f, 1f) // nice UI blue
+
+        glBegin(GL_LINE_LOOP)
+        glVertex2f(x, y)
+        glVertex2f(x + w, y)
+        glVertex2f(x + w, y - h)
+        glVertex2f(x, y - h)
+        glEnd()
+
+        glEnable(GL_TEXTURE_2D)
     }
 
     private fun showSModAndDModBars() {

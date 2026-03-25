@@ -2,11 +2,8 @@ package fleetBuilder.features.hotkeyHandler
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
-import com.fs.starfarer.api.impl.campaign.ids.Factions
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
@@ -16,6 +13,7 @@ import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
+import fleetBuilder.features.autofit.ui.AutofitSelector.createShipPreview
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.otherMods.starficz.addTooltip
 import fleetBuilder.otherMods.starficz.height
@@ -25,6 +23,7 @@ import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.MissingElementsExtended
 import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.serialization.fleet.DataFleet
+import fleetBuilder.serialization.fleet.DataFleet.validateAndCleanFleetData
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.reportMissingElementsIfAny
 import fleetBuilder.ui.UIUtils
@@ -320,31 +319,183 @@ object HotkeyHandlerDialogs {
     }
 
     fun spawnFleetInCampaignDialog(
-        sector: SectorAPI,
         data: DataFleet.ParsedFleetData,
-        validatedData: DataFleet.ParsedFleetData
-    ) {
-        val dialog = DialogPanel(FBTxt.txt("spawn_fleet_in_campaign"))
+        missing: MissingElements
+    ): Boolean {
+        val validatedData = validateAndCleanFleetData(data, settings = FleetSettings(), missing = missing)
 
-        dialog.show(500f, 350f) { ui ->
+        if (validatedData.members.isEmpty()) {
+            reportMissingElementsIfAny(missing, FBTxt.txt("fleet_was_empty_when_pasting"))
+            return false
+        }
 
-            val memberCount = validatedData.members.size
-            val officerCount = validatedData.members.count { it.personData != null }
+        val memberCount = validatedData.members.size
+        val officerCount = validatedData.members.count { it.personData != null }
 
-            val text = if (officerCount > 0) {
-                if (officerCount > 1)
-                    txtPlural("pasted_fleet_members_officers", memberCount, memberCount, officerCount)
-                else
-                    txtPlural("pasted_fleet_members_officer", memberCount, memberCount, officerCount)
-            } else {
-                txtPlural("pasted_fleet_members_only", memberCount)
+        val text = if (officerCount > 0) {
+            if (officerCount > 1)
+                txtPlural("pasted_fleet_members_officers", memberCount, memberCount, officerCount)
+            else
+                txtPlural("pasted_fleet_members_officer", memberCount, memberCount, officerCount)
+        } else {
+            txtPlural("pasted_fleet_members_only", memberCount)
+        }
+
+        val missingHullCount = validatedData.members.count {
+            it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag())
+        }
+
+        val faction = Global.getSector().allFactions.find { validatedData.factionID == it.id }
+            ?: Global.getSector().getFaction("neutral") ?: Global.getSector().playerFaction
+
+        val fleet = DataFleet.createCampaignFleetFromData(validatedData, true)
+        val members = fleet.fleetData.membersListCopy
+
+        val dialog = DialogPanel()//(FBTxt.txt("spawn_fleet_in_campaign"))
+
+
+        dialog.show(1200f, 750f) { ui ->
+
+            val width = 1200f
+            val height = 750f
+
+            val leftWidth = width - 500f
+            val rightWidth = 300f
+
+            val factionColor = faction.baseUIColor
+            val darkColor = faction.darkUIColor
+
+            // Root panel (important for layout)
+            val root = dialog.panel.createCustomPanel(width, height, null)
+
+            // =========================
+            // LEFT PANEL (SHIP LIST)
+            // =========================
+            val leftPanel = dialog.panel.createCustomPanel(leftWidth, height, null)
+
+            val leftUI = leftPanel.createUIElement(leftWidth, height, true)
+
+            leftUI.addSectionHeading(
+                "Fleet Members",
+                factionColor,
+                darkColor,
+                com.fs.starfarer.api.ui.Alignment.MID,
+                0f
+            )
+
+            val size = 128f
+            val padding = 10f
+            val numPerRow = Math.max(1, (leftWidth / (size + padding)).toInt())
+
+            val rows = (members.size + numPerRow - 1) / numPerRow
+            val totalHeight = rows * (size + padding)
+
+// Scrollable container
+            val listPanel = dialog.panel.createCustomPanel(leftWidth, totalHeight, null)
+
+// Add ship previews
+            members.forEachIndexed { index, member ->
+                val col = index % numPerRow
+                val row = index / numPerRow
+
+                val x = col * (size + padding)
+                val y = row * (size + padding)
+
+                val preview = createShipPreview(member, size, size, scaleDownSmallerShips = true, showOfficersAndFlagship = true, showSModAndDModBars = true)
+
+                listPanel.addComponent(preview).inTL(x, y)
             }
+
+// Add to scroll UI
+            leftUI.addCustom(listPanel, 10f)
+
+            leftPanel.addUIElement(leftUI).inTL(0f, 0f)
+
+            // =========================
+            // RIGHT PANEL (SUMMARY + ACTIONS)
+            // =========================
+            val rightPanel = dialog.panel.createCustomPanel(rightWidth, height, null)
+
+            val rightUI = rightPanel.createUIElement(rightWidth - 20f, height, false)
+
+            // ---- Summary ----
+            rightUI.addSectionHeading(
+                "Summary",
+                com.fs.starfarer.api.ui.Alignment.MID,
+                0f
+            )
+
+            val fleetPoints = members.sumOf { it.fleetPointCost.toDouble() }
+            val dp = members.sumOf { it.deploymentPointsCost.toDouble() }
+
+            rightUI.addPara(
+                "Fleet Points: %s",
+                10f,
+                com.fs.starfarer.api.util.Misc.getHighlightColor(),
+                fleetPoints.toInt().toString()
+            )
+
+            rightUI.addPara(
+                "Deployment Points: %s",
+                5f,
+                com.fs.starfarer.api.util.Misc.getHighlightColor(),
+                dp.toInt().toString()
+            )
+
+            // ---- Actions ----
+            rightUI.addSectionHeading(
+                "Actions",
+                com.fs.starfarer.api.ui.Alignment.MID,
+                20f
+            )
+
+            rightUI.addButton(
+                "Spawn Fleet",
+                "spawn_fleet_btn",
+                rightWidth - 40f,
+                30f,
+                10f
+            )
+
+            rightUI.addButton(
+                "Cancel",
+                "cancel_btn",
+                rightWidth - 40f,
+                30f,
+                10f
+            )
+
+            rightPanel.addUIElement(rightUI).inTL(10f, 0f)
+
+            // =========================
+            // ADD TO ROOT
+            // =========================
+            root.addComponent(leftPanel).inTL(0f, 0f)
+            root.addComponent(rightPanel).rightOfTop(leftPanel, 0f)
+
+            // Finally attach to dialog
+            ui.addCustom(root, 0f)
+        }
+
+
+        /*
+        val tempPanel = Global.getSettings().createCustom(ui.width - 350f, ui.height, null)
+            val shipsPanel = tempPanel.createUIElement(tempPanel.width, tempPanel.height, false)
+            tempPanel.addUIElement(shipsPanel)
+            val iconSize = 80f
+
+            val numPerRow = max(1, ((shipsPanel.width / iconSize)).toInt())
+
+            //val shipPreview = createShipPreview(member, 400f, 400f, showFighters = true, showSModAndDModBars = true)
+            shipsPanel.addShipList(numPerRow, (members.size + numPerRow - 1) / numPerRow, iconSize, faction.baseUIColor, members, 0f);
+
+            ui.addCustom(tempPanel, 0f).position.inTL(0f, 0f)
+         */
+
+        /*dialog.show(500f, 350f) { ui ->
+
 
             ui.addPara(text, 0f)
-
-            val missingHullCount = validatedData.members.count {
-                it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag())
-            }
 
             if (missingHullCount > 0)
                 ui.addPara(txtPlural("fleet_contains_missing_hull", missingHullCount), 0f)
@@ -399,8 +550,9 @@ object HotkeyHandlerDialogs {
 
                 DisplayMessage.showMessage(FBTxt.txt("clipboard_fleet_added_to_campaign"))
             }
-        }
+        }*/
 
+        return true
     }
 
     fun createOfficerCreatorDialog() {

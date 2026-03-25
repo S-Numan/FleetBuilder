@@ -16,7 +16,6 @@ import fleetBuilder.otherMods.MagicLib.ReflectionUtilsExtra
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.createFleetMember
-import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
@@ -374,77 +373,14 @@ internal object AutofitSelector {
         showSModAndDModBars: Boolean = false,
         setSchematicMode: Boolean = false,
         scaleDownSmallerShips: Boolean = false,
+        showOfficersAndFlagship: Boolean = false
     ): UIPanelAPI {
         // Main container panel
-        val containerPanel = Global.getSettings().createCustom(width, height, ShipPreviewOverlayPlugin(member, showSModAndDModBars = showSModAndDModBars))
-
-        val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(member) as UIPanelAPI
-        val boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
-        boxedUIShipPreview.uiShipPreview.setSize(width, height)
-        boxedUIShipPreview.setBorderNewStyle(true)
-        boxedUIShipPreview.setShowBorder(false)
-        boxedUIShipPreview.adjustOverlay(0f, 0f)
-
-        if (showFighters)
-            boxedUIShipPreview.showFighters = true
-
-        if (setSchematicMode)
-            boxedUIShipPreview.setSchematicMode(true)
-
-        if (!scaleDownSmallerShips)
-            boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(1f)
-
-        //Remove this hard coded scaling code when things scale right properly in the base game.
-
-        val effectiveHullId = member.hullSpec.getEffectiveHullId()
-
-        // Define config for special ships
-        data class ShipDisplayConfig(
-            val scaleFactor: Float = 1f,
-            val yOffset: Float = 0f,
-            val disableScissor: Boolean = false
+        val plugin = ShipPreviewOverlayPlugin(
+            member, width, height,
+            showSModAndDModBars = showSModAndDModBars, showFighters = showFighters, setSchematicMode = setSchematicMode, scaleDownSmallerShips = scaleDownSmallerShips, showOfficersAndFlagship = showOfficersAndFlagship
         )
-
-        // Configurations for special hull IDs
-        val specialConfigs = mapOf(
-            "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 12f, disableScissor = true),
-            "radiant" to ShipDisplayConfig(scaleFactor = 0.95f, yOffset = 10f, disableScissor = true),
-            "paragon" to ShipDisplayConfig(scaleFactor = 0.94f, yOffset = 15f, disableScissor = true),
-            "pegasus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
-            "executor" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
-            "invictus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 0f, disableScissor = true),
-            "onslaught" to ShipDisplayConfig(scaleFactor = 1.08f, yOffset = 0f, disableScissor = false),
-            "hammerhead" to ShipDisplayConfig(scaleFactor = 1.00f, yOffset = 4f, disableScissor = false) // If autofit panel is too small, this clips into the top.
-        )
-
-        // Get config or default
-        val config = specialConfigs[effectiveHullId] ?: ShipDisplayConfig()
-
-        // Apply config
-        if (config.disableScissor) {
-            boxedUIShipPreview.setScissor(false)
-        }
-
-        // Scale and set size
-        val scaledWidth = width * config.scaleFactor
-        val scaledHeight = height * config.scaleFactor
-        boxedUIShipPreview.uiShipPreview.setSize(scaledWidth, scaledHeight)
-
-        // Prepare ship
-        //boxedUIShipPreview.uiShipPreview.safeInvoke("prepareShip")
-
-        // Base Y offset from config
-        val baseYOffset = config.yOffset
-
-        // Center offsets for shipPreview
-        val offsetX = (width - scaledWidth) / 2f
-        val offsetY = (height - scaledHeight) / 2f + baseYOffset
-
-        // Add shipPreview to container, positioned to center plus offset
-        containerPanel.addComponent(shipPreview).inTL(0f, 0f)
-        shipPreview.position.inTL(offsetX, offsetY)
-
-        return containerPanel
+        return plugin.panel
     }
 
     private fun getExactBounds(variant: ShipVariantAPI): List<BoundsAPI.SegmentAPI>? {

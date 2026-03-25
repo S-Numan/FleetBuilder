@@ -25,6 +25,9 @@ import fleetBuilder.core.displayMessage.DisplayMessage.showMessage
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.doesLoadoutExist
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.CompressedFleet
@@ -50,9 +53,6 @@ import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.safeInvoke
-import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
-import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
-import fleetBuilder.otherMods.starficz.findChildWithMethod
 import java.awt.Color
 
 internal object ClipboardHotkeyHandlerUtils {
@@ -428,16 +428,7 @@ internal object ClipboardHotkeyHandlerUtils {
             }
         }
 
-        val validatedData = validateAndCleanFleetData(newData as DataFleet.ParsedFleetData, settings = FleetSettings(), missing = missing)
-
-        if (validatedData.members.isEmpty()) {
-            reportMissingElementsIfAny(missing, FBTxt.txt("fleet_was_empty_when_pasting"))
-            return false
-        }
-
-        HotkeyHandlerDialogs.spawnFleetInCampaignDialog(sector, newData as DataFleet.ParsedFleetData, validatedData)
-
-        return true
+        return HotkeyHandlerDialogs.spawnFleetInCampaignDialog(newData as DataFleet.ParsedFleetData, missing)
     }
 
     fun fleetPaste(
