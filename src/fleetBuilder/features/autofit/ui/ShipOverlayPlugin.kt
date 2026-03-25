@@ -27,64 +27,64 @@ class ShipOverlayPlugin(
 
         if (sMods <= 0 && dMods <= 0) return
 
-        val rectWidth = 4f
-        val rectHeight = 16f
+        val fillW = 4f
+        val fillH = 16f
+        val border = 1f
         val spacing = 1f
         val groupSpacing = 4f
 
-        val cols = 5
-        val rows = 3
+        val step = fillW + spacing
 
-        val groupWidth = cols * rectWidth + (cols - 1) * spacing
-        val startXRight = pos.x + pos.width - groupWidth
-        val startYTop = pos.y + pos.height - rectHeight
+        val rightEdge = pos.x + pos.width
+        val topY = pos.y + pos.height
 
         glPushMatrix()
         glDisable(GL_TEXTURE_2D)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        var currentX = startXRight
-
-        // If both exist, shift SMods left
-        if (sMods > 0 && dMods > 0) {
-            currentX -= (groupWidth + groupSpacing)
-        }
-
-        // Draw SMods
-        if (sMods > 0) {
-            drawGrid(
-                count = sMods,
-                startX = currentX,
-                startY = startYTop,
-                cols = cols,
-                rectWidth = rectWidth,
-                rectHeight = rectHeight,
-                spacing = spacing,
-                topColor = floatArrayOf(168f / 255f, 246f / 255f, 132f / 255f),
-                midColor = floatArrayOf(239f / 255f, 255f / 255f, 188f / 255f)
-            )
-        }
-
-        // Draw DMods
+        // === DMods (rightmost, grow left) ===
         if (dMods > 0) {
-            val dmodX = if (sMods > 0) {
-                currentX + groupWidth + groupSpacing
-            } else {
-                currentX
-            }
+            for (i in 0 until dMods) {
+                val x = rightEdge - fillW - i * step
+                val y = topY
 
-            drawGrid(
-                count = dMods,
-                startX = dmodX,
-                startY = startYTop,
-                cols = cols,
-                rectWidth = rectWidth,
-                rectHeight = rectHeight,
-                spacing = spacing,
-                topColor = floatArrayOf(255f / 255f, 103f / 255f, 0f / 255f),
-                midColor = floatArrayOf(255f / 255f, 147f / 255f, 0f / 255f)
-            )
+                drawBorder(x, y, fillW, fillH, border)
+                drawGradientRect(
+                    x + border,
+                    y - border,
+                    fillW,
+                    fillH,
+                    floatArrayOf(255f / 255f, 103f / 255f, 0f),
+                    floatArrayOf(255f / 255f, 147f / 255f, 0f)
+                )
+            }
+        }
+
+        // === SMods (to the left of DMods) ===
+        if (sMods > 0) {
+            val dBlockWidth = if (dMods > 0) {
+                dMods * step - spacing // last one has no trailing spacing
+            } else 0f
+
+            val startOffset = if (dMods > 0) {
+                dBlockWidth + groupSpacing
+            } else 0f
+
+            for (i in 0 until sMods) {
+                val x = rightEdge - fillW - startOffset - i * step
+                val y = topY
+
+                drawBorder(x, y, fillW, fillH, border)
+                drawGradientRect(
+                    x + border,
+                    y - border,
+                    fillW,
+                    fillH,
+                    floatArrayOf(168f / 255f, 246f / 255f, 132f / 255f),
+                    floatArrayOf(239f / 255f, 255f / 255f, 188f / 255f)
+                )
+            }
         }
 
         glEnable(GL_TEXTURE_2D)
@@ -96,21 +96,35 @@ class ShipOverlayPlugin(
         startX: Float,
         startY: Float,
         cols: Int,
-        rectWidth: Float,
-        rectHeight: Float,
+        fillW: Float,
+        fillH: Float,
         spacing: Float,
+        border: Float,
         topColor: FloatArray,
         midColor: FloatArray
     ) {
-        for (i in 0 until count.coerceAtMost(15)) {
+        val max = count.coerceAtMost(15)
+
+        for (i in 0 until max) {
             val col = i % cols
             val row = i / cols
 
-            val x = startX + col * (rectWidth + spacing)
-            val y = startY - row * (rectHeight + spacing)
+            // Position based on FILL size (critical for correct spacing)
+            val x = startX + col * (fillW + spacing)
+            val y = startY - row * fillH
 
-            drawGradientRect(x, y, rectWidth, rectHeight, topColor, midColor)
-            drawBorder(x, y, rectWidth, rectHeight)
+            // Border first (outside)
+            drawBorder(x, y, fillW, fillH, border)
+
+            // Fill inside border
+            drawGradientRect(
+                x + border,
+                y,
+                fillW,
+                fillH,
+                topColor,
+                midColor
+            )
         }
     }
 
@@ -131,12 +145,12 @@ class ShipOverlayPlugin(
         glVertex2f(x, y)
         glVertex2f(x + w, y)
 
-        // Middle
+        // Mid
         glColor3f(mid[0], mid[1], mid[2])
         glVertex2f(x + w, y - h / 2f)
         glVertex2f(x, y - h / 2f)
 
-        // Middle → Bottom
+        // Mid → Bottom
         glColor3f(mid[0], mid[1], mid[2])
         glVertex2f(x, y - h / 2f)
         glVertex2f(x + w, y - h / 2f)
@@ -148,15 +162,36 @@ class ShipOverlayPlugin(
         glEnd()
     }
 
-    private fun drawBorder(x: Float, y: Float, w: Float, h: Float) {
+    // Draws a 1px border OUTSIDE the fill area
+    private fun drawBorder(x: Float, y: Float, w: Float, h: Float, b: Float) {
         glColor3f(0f, 0f, 0f)
-        glLineWidth(1f)
 
-        glBegin(GL_LINE_LOOP)
+        glBegin(GL_QUADS)
+
+        // Top
         glVertex2f(x, y)
-        glVertex2f(x + w, y)
-        glVertex2f(x + w, y - h)
+        glVertex2f(x + w + 2 * b, y)
+        glVertex2f(x + w + 2 * b, y + b)
+        glVertex2f(x, y + b)
+
+        // Bottom
         glVertex2f(x, y - h)
+        glVertex2f(x + w + 2 * b, y - h)
+        glVertex2f(x + w + 2 * b, y - h - b)
+        glVertex2f(x, y - h - b)
+
+        // Left
+        glVertex2f(x, y)
+        glVertex2f(x + b, y)
+        glVertex2f(x + b, y - h)
+        glVertex2f(x, y - h)
+
+        // Right
+        glVertex2f(x + w + b, y)
+        glVertex2f(x + w + 2 * b, y)
+        glVertex2f(x + w + 2 * b, y - h)
+        glVertex2f(x + w + b, y - h)
+
         glEnd()
     }
 
