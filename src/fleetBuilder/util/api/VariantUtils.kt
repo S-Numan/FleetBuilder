@@ -2,7 +2,6 @@ package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
-import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
@@ -104,18 +103,40 @@ object VariantUtils {
         }
     }
 
+    /**
+     * Checks if a variant is known to the player.
+     *
+     * Includes the variant's hullspec, all fitted weapons, fitted fighter wings, and non built in hullmods. Does not include modules
+     *
+     * Weapons, wings, and hullmods are checked for if the CODEX_UNLOCKABLE tag is true, and if the player is not aware of it.
+     * HIDE_IN_CODEX is not considered for variant components to avoid being too overzealous with this check.
+     *
+     * @param variant The variant to check.
+     * @return True if all components of the variant are known to the player, false otherwise.
+     */
     fun isVariantKnownToPlayer(variant: ShipVariantAPI): Boolean {
         //  If module, replace variant with parent variant. Modules are considered known if their parent is known.
         //  This would need a function to get the parent variant of a module variant ... That isn't easily possible.
 
-        if (variant.hullSpec.hasTag(Tags.CODEX_UNLOCKABLE)) {
-            if (!SharedUnlockData.get().isPlayerAwareOfShip(variant.hullSpec.hullId))
-                return false
-        } else if (variant.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
-            || variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hasTag(Tags.HIDE_IN_CODEX)
-            || variant.hullSpec.hasTag(Tags.RESTRICTED)
-        )
+        if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
             return false
+
+        variant.fittedWeaponSlots.forEach { slot ->
+            val weapon = variant.getSlot(slot) ?: return@forEach
+            if (LookupUtils.getWeaponSpec(weapon.id)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.id))
+                return false
+        }
+        variant.fittedWings.forEach { wing ->
+            if (LookupUtils.getFighterWingSpec(wing)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfFighter(wing))
+                return false
+        }
+        variant.hullMods.forEach { mod ->
+            if (variant.hullSpec.isBuiltInMod(mod))
+                return@forEach
+
+            if (LookupUtils.getHullModSpec(mod)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfHullmod(mod))
+                return false
+        }
 
         return true
     }

@@ -3,6 +3,8 @@ package fleetBuilder.util.api
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.impl.SharedUnlockData
+import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.VariantSource
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.LookupUtils
@@ -10,6 +12,16 @@ import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
 
 object HullUtils {
+
+    fun isHullKnownToPlayer(hull: ShipHullSpecAPI): Boolean {
+        if (hull.hasTag(Tags.CODEX_UNLOCKABLE)) {
+            if (!SharedUnlockData.get().isPlayerAwareOfShip(hull.hullId))
+                return false
+        } else if (hull.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || hull.hasTag(Tags.HIDE_IN_CODEX))// || hull.hasTag(Tags.RESTRICTED))
+            return false
+
+        return true
+    }
 
     /**
      * Creates a ShipVariantAPI for a given ShipHullSpecAPI.
