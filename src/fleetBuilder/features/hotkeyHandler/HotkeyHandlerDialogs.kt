@@ -363,8 +363,10 @@ object HotkeyHandlerDialogs {
         val factionColor = faction.baseUIColor
         val darkColor = faction.darkUIColor
 
-        // IMPORTANT: persist selection outside UI rebuild
+        // IMPORTANT: persist outside UI rebuild
         var isPressedMember: FleetMemberAPI? = null
+        var savedScroll = 0f
+        var savedScrollRatio = 0f
 
         dialog.show(1200f, 750f) { ui ->
             val root = dialog.panel.createCustomPanel(width, height, null)
@@ -443,7 +445,20 @@ object HotkeyHandlerDialogs {
                 }
 
                 preview.onClick {
+
+                    // Save scrollbar position BEFORE rebuild
+                    val scroller = listUI.externalScroller
+                    scroller.height
+                    val contentHeight = listPanel.position.height
+                    val viewHeight = listUI.position.height
+
+                    val maxScroll = totalHeight//(contentHeight - viewHeight).coerceAtLeast(1f)
+
+                    savedScroll = scroller.yOffset
+                    savedScrollRatio = savedScroll / maxScroll
+
                     isPressedMember = if (isPressedMember == member) null else member
+
                     dialog.recreateUI()
                 }
 
@@ -452,6 +467,18 @@ object HotkeyHandlerDialogs {
 
             listUI.addCustom(listPanel, 10f)
             leftPanel.addUIElement(listUI).inTL(0f, 0f)
+
+            // Restore scroll AFTER layout is built
+            val scroller = listUI.externalScroller
+            val contentHeight = listPanel.position.height
+            val viewHeight = listUI.position.height
+
+            val maxScroll = totalHeight//(contentHeight - viewHeight).coerceAtLeast(0f)
+
+// Scale scroll based on previous ratio
+            val newScroll = (savedScrollRatio * maxScroll).coerceIn(0f, maxScroll)
+
+            scroller.yOffset = newScroll
 
             // -------------------------
             // OFFICER PANEL
