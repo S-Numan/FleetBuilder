@@ -24,7 +24,7 @@ open class ModalPanel : ComposablePanel() {
         NONE
     }
 
-    open var animation = PanelAnimation.RESIZE_FADE
+    open var animation = PanelAnimation.NONE
 
     open var openDuration = 0.15f
     open var closeDuration = 0.05f

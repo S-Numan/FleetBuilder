@@ -13,12 +13,9 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.ui.*
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
-import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.otherMods.starficz.height
-import fleetBuilder.otherMods.starficz.onClick
-import fleetBuilder.otherMods.starficz.width
 import fleetBuilder.ui.common.ObservedTextField
 import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.FleetUtils
@@ -33,9 +30,9 @@ import kotlin.math.round
 import kotlin.math.roundToInt
 
 
-internal fun TooltipMakerAPI.whiteBoxForTesting(width: Float? = null, height: Float? = null): ButtonAPI {
+internal fun UIPanelAPI.whiteBoxForTesting(width: Float? = null, height: Float? = null): ButtonAPI {
     val whiteBox = this.addButton(
-        "", null, Color.BLACK, Color.WHITE, Alignment.MID, CutStyle.NONE, width ?: this.width, height ?: this.height, 0f
+        "", null, Color.BLACK, Color.WHITE, Alignment.MID, CutStyle.NONE, width ?: this.width, height ?: this.height
     )
     return whiteBox
 }

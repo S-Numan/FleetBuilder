@@ -2,6 +2,7 @@ package fleetBuilder.features.hotkeyHandler
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
@@ -353,33 +354,41 @@ object HotkeyHandlerDialogs {
 
         val dialog = DialogPanel()//(FBTxt.txt("spawn_fleet_in_campaign"))
 
+        val width = 1200f
+        val height = 750f
+
+        val leftWidth = width - 360f
+        val rightWidth = 360f
+
+        val factionColor = faction.baseUIColor
+        val darkColor = faction.darkUIColor
+
+        // IMPORTANT: persist selection outside UI rebuild
+        var isPressedMember: FleetMemberAPI? = null
 
         dialog.show(1200f, 750f) { ui ->
-
-            val width = 1200f
-            val height = 750f
-
-            val leftWidth = width - 500f
-            val rightWidth = 500f
-
-            val factionColor = faction.baseUIColor
-            val darkColor = faction.darkUIColor
-
-            // Root panel (important for layout)
             val root = dialog.panel.createCustomPanel(width, height, null)
 
             // =========================
-            // LEFT PANEL (SHIP LIST)
+            // LEFT PANEL
             // =========================
             val leftPanel = dialog.panel.createCustomPanel(leftWidth, height, null)
 
-            val leftUI = leftPanel.createUIElement(leftWidth, height, true)
+            val officerPanelHeight = if (isPressedMember != null) height * 0.4f else 20f
+            val listHeight = height - officerPanelHeight
 
-            leftUI.addSectionHeading(
+            val leftRoot = leftPanel.createUIElement(leftWidth, height, false)
+
+            // -------------------------
+            // SHIP LIST (SCROLLABLE)
+            // -------------------------
+            val listUI = leftPanel.createUIElement(leftWidth, listHeight, true)
+
+            listUI.addSectionHeading(
                 "Fleet Members",
                 factionColor,
                 darkColor,
-                com.fs.starfarer.api.ui.Alignment.MID,
+                Alignment.MID,
                 0f
             )
 
@@ -390,66 +399,184 @@ object HotkeyHandlerDialogs {
             val rows = (members.size + numPerRow - 1) / numPerRow
             val totalHeight = rows * (size + padding)
 
-// Scrollable container
             val listPanel = dialog.panel.createCustomPanel(leftWidth, totalHeight, null)
 
-// Add ship previews
-            var isPressedMember: FleetMemberAPI? = null
             members.forEachIndexed { index, member ->
                 val col = index % numPerRow
                 val row = index / numPerRow
                 val x = col * (size + padding)
                 val y = row * (size + padding)
-                val preview = ShipPreviewOverlayPlugin(member, size, size, scaleDownSmallerShips = true, showOfficersAndFlagship = true, showSModAndDModBars = true, manualScaleSpecificShips = true)
-                val clickFader = FaderUtil(0.0F, 0.05F, 0.25F)
-                val defaultBGColor: Color = Color.BLACK
-                val clickedBGColor: Color = Misc.getDarkPlayerColor()
+
+                val preview = ShipPreviewOverlayPlugin(
+                    member,
+                    size,
+                    size,
+                    scaleDownSmallerShips = true,
+                    showOfficersAndFlagship = true,
+                    showSModAndDModBars = true,
+                    manualScaleSpecificShips = true
+                )
                 preview.onKeyDown { event ->
                     if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel)) {
                         Global.getSettings().showCodex(member)
                         event.consume()
                     }
                 }
+
+                val clickFader = FaderUtil(0.0F, 0.05F, 0.25F)
+                val defaultBGColor: Color = Color.BLACK
+                val clickedBGColor: Color = Misc.getDarkPlayerColor()
+
                 preview.renderBelow { alphaMult ->
-                    val panelColor = Misc.interpolateColor(defaultBGColor, clickedBGColor, clickFader.brightness)
+                    val isSelected = isPressedMember == member
+                    val brightness = if (isSelected) 1f else clickFader.brightness
+
+                    val panelColor = Misc.interpolateColor(defaultBGColor, clickedBGColor, brightness)
                     val panelAlpha = panelColor.alphaf * alphaMult
+
                     GL11.glColor4f(panelColor.redf, panelColor.greenf, panelColor.bluef, panelAlpha)
                     GL11.glRectf(preview.panel.left, preview.panel.bottom, preview.panel.right, preview.panel.top)
                 }
+
                 preview.advance { amount ->
                     clickFader.advance(amount)
                 }
-                preview.onClick { event ->
-                    isPressedMember = member
-                    clickFader.fadeIn()
-                }
-                preview.onClickOutside { event ->
-                    if (isPressedMember == member)
-                        isPressedMember = null
-                    clickFader.fadeOut()
+
+                preview.onClick {
+                    isPressedMember = if (isPressedMember == member) null else member
+                    dialog.recreateUI()
                 }
 
                 listPanel.addComponent(preview.panel).inTL(x, y)
             }
 
-// Add to scroll UI
-            leftUI.addCustom(listPanel, 10f)
+            listUI.addCustom(listPanel, 10f)
+            leftPanel.addUIElement(listUI).inTL(0f, 0f)
 
-            leftPanel.addUIElement(leftUI).inTL(0f, 0f)
+            // -------------------------
+            // OFFICER PANEL
+            // -------------------------
+            if (isPressedMember != null) {
+                val officerPanel = leftPanel.createCustomPanel(leftWidth, officerPanelHeight, null)
+
+                val captain = isPressedMember!!.captain
+
+                val officerUI = officerPanel.createUIElement(leftWidth, officerPanelHeight, false)
+
+                officerUI.addSectionHeading(
+                    if (captain.isDefault) "Officer Data"
+                    else "Officer: ${captain.nameString}",
+                    factionColor,
+                    darkColor,
+                    Alignment.MID,
+                    10f
+                )
+
+                officerPanel.addUIElement(officerUI).inTL(0f, 0f)
+
+                // =========================
+                // SHIP PREVIEW (PLUGIN)
+                // =========================
+                val shipSize = 150f
+
+                val preview = ShipPreviewOverlayPlugin(
+                    isPressedMember!!,
+                    shipSize,
+                    shipSize,
+                    scaleDownSmallerShips = true,
+                    showOfficersAndFlagship = true,
+                    showSModAndDModBars = true,
+                )
+                preview.onKeyDown { event ->
+                    if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel)) {
+                        Global.getSettings().showCodex(isPressedMember)
+                        event.consume()
+                    }
+                }
+
+                val shipX = 10f
+                val shipY = 40f
+
+                officerPanel.addComponent(preview.panel).inTL(shipX, shipY)
+
+                // =========================
+                // SKILLS PANEL
+                // =========================
+                val skillsX = shipX + shipSize + 15f
+                val skillsY = 40f
+
+                val skillsWidth = leftWidth - skillsX - 10f
+                val skillsHeight = officerPanelHeight - skillsY - 10f
+
+                val skillsUI = officerPanel.createUIElement(skillsWidth, skillsHeight, true)
+
+                // =========================
+                // ADMIRAL SKILLS (if flagship)
+                // =========================
+                if (isPressedMember!!.isFlagship) {
+
+                    val tempModified = mutableListOf<SkillSpecAPI>()
+
+                    for (id in Global.getSettings().skillIds) {
+                        val spec = Global.getSettings().getSkillSpec(id)
+
+                        if (spec.isAdmiralSkill && !spec.isCombatOfficerSkill) {
+                            spec.isCombatOfficerSkill = true
+                            tempModified.add(spec)
+                        }
+                        if (spec.isCombatOfficerSkill && !spec.isAdmiralSkill) {
+                            spec.isCombatOfficerSkill = false
+                            tempModified.add(spec)
+                        }
+                    }
+
+                    skillsUI.addSectionHeading(
+                        "Admiral Skills",
+                        factionColor,
+                        darkColor,
+                        Alignment.MID,
+                        10f
+                    )
+
+                    skillsUI.addSkillPanel(captain, 0f)
+
+                    // revert changes
+                    for (spec in tempModified) {
+                        spec.isCombatOfficerSkill = !spec.isCombatOfficerSkill
+                    }
+                }
+
+                // =========================
+                // COMBAT SKILLS
+                // =========================
+                skillsUI.addSectionHeading(
+                    "Combat Skills",
+                    factionColor,
+                    darkColor,
+                    Alignment.MID,
+                    10f
+                )
+
+                skillsUI.addSkillPanel(captain, 0f)
+
+                officerPanel.addUIElement(skillsUI).inTL(skillsX, skillsY)
+
+                // =========================
+                // ADD PANEL BELOW LIST
+                // =========================
+                leftPanel.addComponent(officerPanel).inTL(0f, listHeight)
+            }
+
+            leftPanel.addUIElement(leftRoot).inTL(0f, 0f)
 
             // =========================
-            // RIGHT PANEL (SUMMARY + ACTIONS)
+            // RIGHT PANEL
             // =========================
             val rightPanel = dialog.panel.createCustomPanel(rightWidth, height, null)
 
             val rightUI = rightPanel.createUIElement(rightWidth - 20f, height, false)
 
-            // ---- Summary ----
-            rightUI.addSectionHeading(
-                "Summary",
-                Alignment.MID,
-                0f
-            )
+            rightUI.addSectionHeading("Summary", Alignment.MID, 0f)
 
             val dp = members.sumOf { it.deploymentPointsCost.toDouble() }
 
@@ -460,12 +587,7 @@ object HotkeyHandlerDialogs {
                 dp.toInt().toString()
             )
 
-            // ---- Actions ----
-            rightUI.addSectionHeading(
-                "Actions",
-                Alignment.MID,
-                20f
-            )
+            rightUI.addSectionHeading("Actions", Alignment.MID, 20f)
 
             rightUI.addButton(
                 "Spawn Fleet",
@@ -490,8 +612,6 @@ object HotkeyHandlerDialogs {
             // =========================
             root.addComponent(leftPanel).inTL(0f, 0f)
             root.addComponent(rightPanel).rightOfTop(leftPanel, 0f)
-
-            // Finally attach to dialog
             ui.addCustom(root, 0f)
         }
 
