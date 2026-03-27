@@ -2,10 +2,11 @@ package fleetBuilder.features.hotkeyHandler
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.FaderUtil
@@ -19,13 +20,10 @@ import fleetBuilder.features.autofit.ui.AutofitSelector
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.features.autofit.ui.ShipPreviewOverlayPlugin
 import fleetBuilder.otherMods.starficz.*
-import fleetBuilder.serialization.MissingElements
-import fleetBuilder.serialization.MissingElementsExtended
-import fleetBuilder.serialization.PlayerSaveUtils
+import fleetBuilder.serialization.*
 import fleetBuilder.serialization.fleet.DataFleet
-import fleetBuilder.serialization.fleet.DataFleet.validateAndCleanFleetData
 import fleetBuilder.serialization.fleet.FleetSettings
-import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
@@ -320,55 +318,111 @@ object HotkeyHandlerDialogs {
     }
 
     fun spawnFleetInCampaignDialog(
-        data: DataFleet.ParsedFleetData,
+        inputData: DataFleet.ParsedFleetData,
         missing: MissingElements
     ): Boolean {
-        val validatedData = validateAndCleanFleetData(data, settings = FleetSettings(), missing = missing)
+        val sector = Global.getSector()
+        val data = inputData.copy(
+            members = inputData.members.map { it.copy(id = sector.genUID()) }
+        )
 
-        if (validatedData.members.isEmpty()) {
+        /*val validatedData1 = validateAndCleanFleetData(data, settings = FleetSettings(), missing = missing)
+
+        if (validatedData1.members.isEmpty()) {
             reportMissingElementsIfAny(missing, FBTxt.txt("fleet_was_empty_when_pasting"))
             return false
-        }
+        }*/
 
-        val memberCount = validatedData.members.size
-        val officerCount = validatedData.members.count { it.personData != null }
-
-        val text = if (officerCount > 0) {
-            if (officerCount > 1)
-                txtPlural("pasted_fleet_members_officers", memberCount, memberCount, officerCount)
-            else
-                txtPlural("pasted_fleet_members_officer", memberCount, memberCount, officerCount)
-        } else {
-            txtPlural("pasted_fleet_members_only", memberCount)
-        }
-
-        val missingHullCount = validatedData.members.count {
-            it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag())
-        }
-
-        val faction = Global.getSector().allFactions.find { validatedData.factionID == it.id }
+        val faction = Global.getSector().allFactions.find { data.factionID == it.id }
             ?: Global.getSector().getFaction("neutral") ?: Global.getSector().playerFaction
-
-        val fleet = DataFleet.createCampaignFleetFromData(validatedData, true)
-        val members = fleet.fleetData.membersListCopy
 
         val dialog = DialogPanel()//(FBTxt.txt("spawn_fleet_in_campaign"))
 
-        val width = 1200f
-        val height = 750f
+        val width = 1280f
+        val height = 800f
 
-        val leftWidth = width - 360f
-        val rightWidth = 360f
+        val rightWidth = 440f
+        val leftWidth = width - rightWidth
 
         val factionColor = faction.baseUIColor
         val darkColor = faction.darkUIColor
 
         // IMPORTANT: persist outside UI rebuild
-        var isPressedMember: FleetMemberAPI? = null
-        var savedScroll = 0f
+        var isPressedMemberID: String? = null
         var savedScrollRatio = 0f
+        val previewList = mutableListOf<ShipPreviewOverlayPlugin>()
+        fun cleanupShipList() {
+            previewList.forEach { it.cleanup() }
+            previewList.clear()
+        }
+        dialog.onExit { cleanupShipList() }
 
-        dialog.show(1200f, 750f) { ui ->
+        var fightToTheLast = true
+        var includeOfficers = true
+        var includeCommanderAsCommander = true
+        var repairAndSetMaxCR = true
+        var setAggressionDoctrine = true
+        var excludeMissingShips = true
+
+        fun rebuildUI(maxScroll: Float, listUI: TooltipMakerAPI) {
+            // Save scrollbar position BEFORE rebuild
+            savedScrollRatio = listUI.externalScroller.yOffset / maxScroll
+
+            dialog.recreateUI()
+        }
+
+        fun excludeMissingShips(fleet: CampaignFleetAPI) {
+            fleet.fleetData.membersListCopy.toList().forEach {
+                if (it.variant.hasTag(VariantUtils.getFBVariantErrorTag()))
+                    fleet.fleetData.removeFleetMember(it)
+            }
+        }
+
+        dialog.show(width, height) { ui ->
+            if (previewList.isNotEmpty())
+                cleanupShipList()
+
+            val settings = FleetSettings().apply {
+                includeAggression = setAggressionDoctrine
+                memberSettings.includeOfficer = includeOfficers
+                includeCommanderSetFlagship = includeCommanderAsCommander
+                memberSettings.applyID = true
+            }
+
+            val missingEx = MissingElements()
+            val fleet = DataFleet.createCampaignFleetFromData(
+                data,
+                true, settings = settings, missing = missingEx
+            )
+
+            if (repairAndSetMaxCR)
+                FleetUtils.fullFleetRepair(fleet.fleetData)
+
+            if (fightToTheLast)
+                fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
+
+            val members = fleet.fleetData.membersListCopy
+
+            val memberCount = members.size
+            val officerCount = members.count { it.captain != null && !it.captain.isDefault }
+
+            val text = if (officerCount > 0) {
+                if (officerCount > 1)
+                    txtPlural("pasted_fleet_members_officers", memberCount, memberCount, officerCount)
+                else
+                    txtPlural("pasted_fleet_members_officer", memberCount, memberCount, officerCount)
+            } else {
+                txtPlural("pasted_fleet_members_only", memberCount)
+            }
+
+            val missingHullCount = members.count {
+                it.variant.hasTag(VariantUtils.getFBVariantErrorTag())
+            }
+
+            if (members.none { it.id == isPressedMemberID })
+                isPressedMemberID = null
+
+
             val root = dialog.panel.createCustomPanel(width, height, null)
 
             // =========================
@@ -376,7 +430,7 @@ object HotkeyHandlerDialogs {
             // =========================
             val leftPanel = dialog.panel.createCustomPanel(leftWidth, height, null)
 
-            val officerPanelHeight = if (isPressedMember != null) height * 0.4f else 20f
+            val officerPanelHeight = if (isPressedMemberID != null) height * 0.4f else 20f
             val listHeight = height - officerPanelHeight
 
             val leftRoot = leftPanel.createUIElement(leftWidth, height, false)
@@ -394,7 +448,7 @@ object HotkeyHandlerDialogs {
                 0f
             )
 
-            val size = 128f
+            val size = 129f
             val padding = 10f
             val numPerRow = Math.max(1, (leftWidth / (size + padding)).toInt())
 
@@ -416,8 +470,14 @@ object HotkeyHandlerDialogs {
                     scaleDownSmallerShips = true,
                     showOfficersAndFlagship = true,
                     showSModAndDModBars = true,
-                    manualScaleSpecificShips = true
+                    manualScaleShipsToBetterFit = true
                 )
+                previewList.add(preview)
+
+                val dataMember = data.members.find { it.id == member.id }
+                if (dataMember != null)
+                    DataMember.validateAndCleanMemberData(dataMember, missing = preview.missingElements)
+
                 preview.onKeyDown { event ->
                     if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel)) {
                         Global.getSettings().showCodex(member)
@@ -430,7 +490,7 @@ object HotkeyHandlerDialogs {
                 val clickedBGColor: Color = Misc.getDarkPlayerColor()
 
                 preview.renderBelow { alphaMult ->
-                    val isSelected = isPressedMember == member
+                    val isSelected = isPressedMemberID == member.id
                     val brightness = if (isSelected) 1f else clickFader.brightness
 
                     val panelColor = Misc.interpolateColor(defaultBGColor, clickedBGColor, brightness)
@@ -444,22 +504,15 @@ object HotkeyHandlerDialogs {
                     clickFader.advance(amount)
                 }
 
-                preview.onClick {
+                preview.onClick { event ->
+                    if (!event.isLMBDownEvent) return@onClick
+                    if (event.isCtrlDown) {
+                        ClipboardMisc.saveMemberToClipboard(member!!, event.isShiftDown)
+                    } else {
+                        isPressedMemberID = if (isPressedMemberID == member.id) null else member.id
 
-                    // Save scrollbar position BEFORE rebuild
-                    val scroller = listUI.externalScroller
-                    scroller.height
-                    val contentHeight = listPanel.position.height
-                    val viewHeight = listUI.position.height
-
-                    val maxScroll = totalHeight//(contentHeight - viewHeight).coerceAtLeast(1f)
-
-                    savedScroll = scroller.yOffset
-                    savedScrollRatio = savedScroll / maxScroll
-
-                    isPressedMember = if (isPressedMember == member) null else member
-
-                    dialog.recreateUI()
+                        rebuildUI(totalHeight, listUI)
+                    }
                 }
 
                 listPanel.addComponent(preview.panel).inTL(x, y)
@@ -469,30 +522,25 @@ object HotkeyHandlerDialogs {
             leftPanel.addUIElement(listUI).inTL(0f, 0f)
 
             // Restore scroll AFTER layout is built
-            val scroller = listUI.externalScroller
-            val contentHeight = listPanel.position.height
-            val viewHeight = listUI.position.height
+            val maxScroll = totalHeight
 
-            val maxScroll = totalHeight//(contentHeight - viewHeight).coerceAtLeast(0f)
-
-// Scale scroll based on previous ratio
             val newScroll = (savedScrollRatio * maxScroll).coerceIn(0f, maxScroll)
 
-            scroller.yOffset = newScroll
+            listUI.externalScroller.yOffset = newScroll
 
             // -------------------------
             // OFFICER PANEL
             // -------------------------
-            if (isPressedMember != null) {
+            if (isPressedMemberID != null) {
                 val officerPanel = leftPanel.createCustomPanel(leftWidth, officerPanelHeight, null)
 
-                val captain = isPressedMember!!.captain
+                val member = members.find { it.id == isPressedMemberID }!!
+                val captain = member.captain
 
                 val officerUI = officerPanel.createUIElement(leftWidth, officerPanelHeight, false)
 
                 officerUI.addSectionHeading(
-                    if (captain.isDefault) "Officer Data"
-                    else "Officer: ${captain.nameString}",
+                    "Officer Data",
                     factionColor,
                     darkColor,
                     Alignment.MID,
@@ -504,27 +552,45 @@ object HotkeyHandlerDialogs {
                 // =========================
                 // SHIP PREVIEW (PLUGIN)
                 // =========================
-                val shipSize = 150f
+                val shipSize = 240f
 
                 val preview = ShipPreviewOverlayPlugin(
-                    isPressedMember!!,
+                    member,
                     shipSize,
                     shipSize,
-                    scaleDownSmallerShips = true,
-                    showOfficersAndFlagship = true,
+                    showFighters = true,
+                    manualScaleShipsToBetterFit = true,
                     showSModAndDModBars = true,
                 )
+                previewList.add(preview)
+                val dataMember = data.members.find { it.id == member.id }
+                if (dataMember != null)
+                    DataMember.validateAndCleanMemberData(dataMember, missing = preview.missingElements)
+
                 preview.onKeyDown { event ->
                     if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel)) {
-                        Global.getSettings().showCodex(isPressedMember)
+                        Global.getSettings().showCodex(member)
                         event.consume()
+                    }
+                }
+                preview.onClick { event ->
+                    if (event.isLMBDownEvent && event.isCtrlDown) {
+                        ClipboardMisc.saveMemberToClipboard(member, event.isShiftDown)
                     }
                 }
 
                 val shipX = 10f
                 val shipY = 40f
 
+                officerPanel.addPara("Personality: " + member.captain.getPersonalityName())
+
+                if (!captain.isDefault) {
+                    val officerSprite = officerPanel.addImage(captain.portraitSprite, 75f, 75f)
+                    officerSprite.position.inTL(0f, 20f)
+                    officerSprite.opacity = 0.3f
+                }
                 officerPanel.addComponent(preview.panel).inTL(shipX, shipY)
+
 
                 // =========================
                 // SKILLS PANEL
@@ -540,7 +606,14 @@ object HotkeyHandlerDialogs {
                 // =========================
                 // ADMIRAL SKILLS (if flagship)
                 // =========================
-                if (isPressedMember!!.isFlagship) {
+                if (member.isFlagship) {
+                    skillsUI.addSectionHeading(
+                        "Admiral Skills",
+                        factionColor,
+                        darkColor,
+                        Alignment.MID,
+                        10f
+                    )
 
                     val tempModified = mutableListOf<SkillSpecAPI>()
 
@@ -556,14 +629,6 @@ object HotkeyHandlerDialogs {
                             tempModified.add(spec)
                         }
                     }
-
-                    skillsUI.addSectionHeading(
-                        "Admiral Skills",
-                        factionColor,
-                        darkColor,
-                        Alignment.MID,
-                        10f
-                    )
 
                     skillsUI.addSkillPanel(captain, 0f)
 
@@ -601,12 +666,54 @@ object HotkeyHandlerDialogs {
             // =========================
             val rightPanel = dialog.panel.createCustomPanel(rightWidth, height, null)
 
-            val rightUI = rightPanel.createUIElement(rightWidth - 20f, height, false)
+            val rightUI = rightPanel.createUIElement(rightWidth - 30f, height, false)
 
-            rightUI.addSectionHeading("Summary", Alignment.MID, 0f)
+            val tempModified = mutableListOf<SkillSpecAPI>()
+
+            for (id in Global.getSettings().skillIds) {
+                val spec = Global.getSettings().getSkillSpec(id)
+
+                if (spec.isAdmiralSkill && !spec.isCombatOfficerSkill) {
+                    spec.isCombatOfficerSkill = true
+                    tempModified.add(spec)
+                }
+                if (spec.isCombatOfficerSkill && !spec.isAdmiralSkill) {
+                    spec.isCombatOfficerSkill = false
+                    tempModified.add(spec)
+                }
+            }
+
+
+            val rightUIAdmiralHeight = 370f
+            val rightUIAdmiral = rightPanel.createUIElement(rightWidth - 20f, rightUIAdmiralHeight, true)
+            if (fleet.commander != null) {
+                rightUIAdmiral.addSectionHeading(
+                    "Admiral Skills",
+                    factionColor,
+                    darkColor,
+                    Alignment.MID,
+                    10f
+                ).apply {
+                    position.setSize(position.width - 5f, position.height)
+                }
+                val admiralSkillPanelUI = rightUIAdmiral.addSkillPanel(fleet.commander, 0f)
+                admiralSkillPanelUI.position.inTL(-5f, 15f)
+                rightUIAdmiral.heightSoFar -= 15f
+            }
+            // revert changes
+            for (spec in tempModified) {
+                spec.isCombatOfficerSkill = !spec.isCombatOfficerSkill
+            }
+
+            rightUI.addSectionHeading("Summary", Alignment.MID, 10f)
 
             val dp = members.sumOf { it.deploymentPointsCost.toDouble() }
 
+            rightUI.addPara(
+                text, 5f,
+                Misc.getHighlightColor(),
+                memberCount.toString(), officerCount.toString()
+            )
             rightUI.addPara(
                 "Deployment Points: %s",
                 5f,
@@ -614,25 +721,116 @@ object HotkeyHandlerDialogs {
                 dp.toInt().toString()
             )
 
-            rightUI.addSectionHeading("Actions", Alignment.MID, 20f)
+            rightUI.addSectionHeading("Actions", Alignment.MID, 10f)
 
             rightUI.addButton(
-                "Spawn Fleet",
-                "spawn_fleet_btn",
+                "Simulated Battle",
+                null,
                 rightWidth - 40f,
                 30f,
-                10f
-            )
+                5f
+            ).apply {
+                setShortcut(Keyboard.KEY_T, true)
+                onClick {
+                    if (excludeMissingShips)
+                        excludeMissingShips(fleet)
 
-            rightUI.addButton(
-                "Cancel",
-                "cancel_btn",
-                rightWidth - 40f,
-                30f,
-                10f
-            )
+                    dialog.dismiss()
+                }
+            }
 
-            rightPanel.addUIElement(rightUI).inTL(10f, 0f)
+            rightUI.addToggle("Fight to the last", fightToTheLast).apply {
+                onClick {
+                    fightToTheLast = !fightToTheLast
+                    rebuildUI(totalHeight, listUI)
+                }
+                addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
+                    it.addPara("If checked; no members of the fleet will retreat", 0f)
+                }
+            }
+            rightUI.addSpacer(10f)
+
+            rightUI.addToggle("Include officers", includeOfficers).onClick {
+                includeOfficers = !includeOfficers
+                rebuildUI(totalHeight, listUI)
+            }
+
+            rightUI.addToggle("Include commander as commander", includeCommanderAsCommander).apply {
+                onClick {
+                    includeCommanderAsCommander = !includeCommanderAsCommander
+                    rebuildUI(totalHeight, listUI)
+                }
+                addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
+                    it.addPara("If unchecked; the commander will be unset as the commander of the fleet. Their admiral skills will not apply", 0f)
+                }
+            }
+
+            rightUI.addToggle("Fulfill needs and repair", repairAndSetMaxCR).onClick {
+                repairAndSetMaxCR = !repairAndSetMaxCR
+                rebuildUI(totalHeight, listUI)
+            }
+
+            rightUI.addToggle("Set aggression doctrine", setAggressionDoctrine).onClick {
+                setAggressionDoctrine = !setAggressionDoctrine
+                rebuildUI(totalHeight, listUI)
+            }
+
+            rightUI.addToggle("Exclude ships from missing mods", excludeMissingShips).onClick {
+                excludeMissingShips = !excludeMissingShips
+                rebuildUI(totalHeight, listUI)
+            }
+
+            if (FBSettings.cheatsEnabled()) {
+                rightUI.addSectionHeading("Cheats", Alignment.MID, 10f)
+                rightUI.addButton(
+                    "Spawn Fleet Into Campaign",
+                    null,
+                    rightWidth - 40f,
+                    30f,
+                    5f
+                ).onClick {
+                    if (excludeMissingShips)
+                        excludeMissingShips(fleet)
+
+
+                    sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
+                    dialog.onExit {
+                        Global.getSector().campaignUI.showInteractionDialog(fleet)
+                    }
+                    DisplayMessage.showMessage(FBTxt.txt("clipboard_fleet_added_to_campaign"))
+                    dialog.dismiss()
+                }
+                rightUI.addButton(
+                    "Replace Player Fleet With This Fleet",
+                    null,
+                    rightWidth - 40f,
+                    30f,
+                    5f
+                ).onClick {
+                    if (excludeMissingShips)
+                        excludeMissingShips(fleet)
+
+
+                    dialog.dismiss()
+                }
+                rightUI.addButton(
+                    "Append To Player Fleet",
+                    null,
+                    rightWidth - 40f,
+                    30f,
+                    5f
+                ).onClick {
+                    if (excludeMissingShips)
+                        excludeMissingShips(fleet)
+
+
+                    dialog.dismiss()
+                }
+            }
+
+
+            rightPanel.addUIElement(rightUIAdmiral).inTL(10f, 0f)
+            rightPanel.addUIElement(rightUI).inTL(10f, rightUIAdmiralHeight)
 
             // =========================
             // ADD TO ROOT
@@ -641,7 +839,6 @@ object HotkeyHandlerDialogs {
             root.addComponent(rightPanel).rightOfTop(leftPanel, 0f)
             ui.addCustom(root, 0f)
         }
-
 
         /*
         val tempPanel = Global.getSettings().createCustom(ui.width - 350f, ui.height, null)

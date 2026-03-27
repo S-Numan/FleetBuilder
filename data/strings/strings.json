@@ -6,7 +6,7 @@
   "failed_to_read_save_in_clipboard": "Failed to read save in clipboard",
   "no_missing_elements": "No missing elements.",
   "cargo_auto_manage_message": "Cargo auto-managed",
-  "officer_copied_to_clipboard": "Officer copied to clipboard",
+  "officer_copied_to_clipboard": "Officer copied to clipboard without compression",
   "officer_copied_to_clipboard_compressed": "Officer copied to clipboard",
   "save_copied": "Save copied to clipboard",
   "load_complete": "Load Complete",
@@ -20,10 +20,10 @@
   "add_to_faction": "Add to faction",
   "add_count_to_fleet": "Add %s to fleet",
 
-  "copied_interaction_fleet_to_clipboard": "Interaction fleet copied to clipboard",
-  "copied_interaction_fleet_to_clipboard_compressed": "Interaction fleet compressed and copied to clipboard",
-  "copied_interaction_fleet_with_supporting_to_clipboard": "Interaction fleet with supporting fleets copied to clipboard",
-  "copied_interaction_fleet_with_supporting_to_clipboard_compressed": "Interaction fleet with supporting fleets compressed and copied to clipboard",
+  "copied_interaction_fleet_to_clipboard": "Interaction fleet copied to clipboard without compression",
+  "copied_interaction_fleet_to_clipboard_compressed": "Interaction fleet copied to clipboard",
+  "copied_interaction_fleet_with_supporting_to_clipboard": "Interaction fleet with supporting fleets copied to clipboard without compression",
+  "copied_interaction_fleet_with_supporting_to_clipboard_compressed": "Interaction fleet with supporting fleets copied to clipboard",
 
   "copied_entire_fleet_to_clipboard": "Fleet copied to clipboard",
   "copied_entire_fleet_to_clipboard_compressed": "Fleet compressed and copied to clipboard",
@@ -34,8 +34,8 @@
   "copied_visible_submarket_to_clipboard":"Filtered submarket compressed and copied to clipboard",
   "copied_visible_submarket_to_clipboard_compressed":"Filtered submarket compressed and copied to clipboard",
 
-  "member_copied_to_clipboard":"Member copied to clipboard",
-  "member_copied_to_clipboard_compressed":"Member compressed and copied to clipboard",
+  "member_copied_to_clipboard":"Member copied to clipboard without compression",
+  "member_copied_to_clipboard_compressed":"Member copied to clipboard",
 
   "enable_unassign_player": "Unassign Player must be on in the %s mod settings to unassign the player",
 
@@ -54,8 +54,8 @@
 
   "no_valid_data_in_clipboard":"No valid data in clipboard",
 
-  "variant_copied_to_clipboard":"Variant copied to clipboard",
-  "variant_copied_to_clipboard_compressed":"Variant compressed and copied to clipboard",
+  "variant_copied_to_clipboard":"Variant copied to clipboard without compression",
+  "variant_copied_to_clipboard_compressed":"Variant copied to clipboard",
 
   "failed_to_load_cargo":"Failed to load cargo",
   "failed_to_load_credits":"Failed to load credits",
@@ -100,23 +100,6 @@
 
   "enable_cheats_to_use_officer_creator":"Enable cheats in %s settings to unlock officer creation functionality",
   "enable_cheats_to_use_paste":"Enable cheats in %s settings to unlock paste functionality",
-
-  "paste_fleet_into_player_fleet":"Paste Fleet into Player Fleet",
-  "replace_player_fleet":"Replace Player Fleet",
-  "append_to_player_fleet":"Append to Player Fleet",
-  "set_aggression_doctrine":"Set Aggression Doctrine",
-  "replace_player_with_commander":"Replace Player with Commander",
-  "additional_settings":"Additional Settings:",
-  "include_commander_as_officer":"Include Commander as Officer",
-  "exclude_ships_from_missing_mods":"Exclude Ships From Missing Mods",
-  "fulfill_fleet_needs":"Fulfill cargo, fuel, crew, and repair for fleet",
-
-  "spawn_fleet_in_campaign":"Spawn Fleet in Campaign",
-  "include_commander_as_commander":"Include Commander as Commander",
-  "spawn_fleet":"Spawn Fleet",
-  "set_faction_to_pirate":"Set Faction to Pirate",
-  "fight_to_the_last":"Fight To The Last",
-  "repair_and_set_max_cr":"Repair and Set Max CR",
 
   "save_transfer":"Save Transfer",
   "include_blueprints":"Include Blueprints",

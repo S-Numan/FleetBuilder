@@ -7,14 +7,14 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.otherMods.starficz.BoxedUIShipPreview
-import fleetBuilder.otherMods.starficz.StarUIPanelPlugin
-import fleetBuilder.otherMods.starficz.setPlugin
-import fleetBuilder.otherMods.starficz.setSize
+import fleetBuilder.otherMods.starficz.*
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.util.allDMods
+import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.getEffectiveHullId
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
+import kotlin.math.max
 
 class ShipPreviewOverlayPlugin(
     val member: FleetMemberAPI,
@@ -25,11 +25,16 @@ class ShipPreviewOverlayPlugin(
     scaleDownSmallerShips: Boolean = false,
     val showSModAndDModBars: Boolean = false,
     val showOfficersAndFlagship: Boolean = false,
-    manualScaleSpecificShips: Boolean = false,
+    manualScaleShipsToBetterFit: Boolean = false,
+    val missingElements: MissingElements = MissingElements()
 ) : StarUIPanelPlugin(panel) {
-    var boxedUIShipPreview: BoxedUIShipPreview
+    val hasMissingElements: Boolean = missingElements.weaponIds.isNotEmpty() || missingElements.hullModIds.isNotEmpty() || missingElements.wingIds.isNotEmpty()
+    val isShipMissing: Boolean = member.variant.hasTag(VariantUtils.getFBVariantErrorTag())
+
+    val boxedUIShipPreview: BoxedUIShipPreview
 
     init {
+
         panel.setPlugin(this)
         val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(member) as UIPanelAPI
         boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
@@ -70,7 +75,7 @@ class ShipPreviewOverlayPlugin(
             val disableScissor: Boolean = false
         )
 
-        val specialConfigs = if (manualScaleSpecificShips) {
+        val specialConfigs = if (manualScaleShipsToBetterFit) {
             // Configurations for special hull IDs
             mapOf(
                 "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 12f, disableScissor = true),
@@ -130,6 +135,30 @@ class ShipPreviewOverlayPlugin(
         if (showSModAndDModBars)
             showSModAndDModBars()
 
+        val lockAlpha = 0.7f
+        if (!isShipMissing) {
+            if (hasMissingElements) {
+                val lockSize = 0.7f
+                val lockedSprite = Global.getSettings().getSprite("FleetBuilder", "mission_indicator")
+                lockedSprite.alphaMult = lockAlpha
+                lockedSprite.color = Color.YELLOW
+                val scaleFactor = lockSize * panel.width / max(lockedSprite.width, lockedSprite.height)
+                if (scaleFactor < 2f)
+                    lockedSprite.setSize(scaleFactor * lockedSprite.width, scaleFactor * lockedSprite.height)
+                lockedSprite.renderAtCenter(panel.centerX, panel.top - panel.width / 2)
+            }
+        } else {
+            val xSprite = Global.getSettings().getSprite("ui", "checkmark_x")
+            
+            xSprite.color = Misc.interpolateColor(Color.GRAY, Color.RED.darker(), 0.7f)
+            xSprite.alphaMult = 0.9f
+
+            var scaleFactor = 1.0f * panel.width / max(xSprite.width, xSprite.height)
+            if (scaleFactor > 2f)
+                scaleFactor = 2f
+            xSprite.setSize(scaleFactor * xSprite.width, scaleFactor * xSprite.height)
+            xSprite.renderAtCenter(panel.centerX, panel.top - panel.width / 2)
+        }
         //TODO: combat readiness bar
         //TODO: Hull bar
     }
@@ -145,7 +174,7 @@ class ShipPreviewOverlayPlugin(
 
         val captain = member.captain
         val hasOfficer = captain != null && !captain.isDefault
-        val isFlagship = member == member.fleetData?.fleet?.flagship
+        val isFlagship = member.isFlagship
 
         val highlight = Misc.getDarkPlayerColor()
 

@@ -329,7 +329,7 @@ internal object AutofitSelector {
         val descriptionYOffset = 2f
         val topPad = 5f
 
-        val shipPreview = ShipPreviewOverlayPlugin(autofitSpec.variant.createFleetMember(), width, width, showFighters = true, showSModAndDModBars = true, manualScaleSpecificShips = true).panel
+        val shipPreview = ShipPreviewOverlayPlugin(autofitSpec.variant.createFleetMember(), width, width, showFighters = true, showSModAndDModBars = true, manualScaleShipsToBetterFit = true).panel
         selectorPanel.addComponent(shipPreview).inTL(0f, topPad)
 
         if (!addTitle && !addDescription) return

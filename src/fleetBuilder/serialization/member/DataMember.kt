@@ -68,14 +68,12 @@ object DataMember {
         val personData = if (data.personData != null && settings.includeOfficer) filterParsedPersonData(data.personData, settings.personSettings, missing) else null
         val variantData = if (data.variantData != null) filterParsedVariantData(data.variantData, settings.variantSettings, missing) else null
 
-        val cr = if (settings.includeCR) data.cr else null
-        val hullFraction = if (settings.includeHull) data.hullFraction else null
-
         return data.copy(
             personData = personData,
             variantData = variantData,
-            cr = cr,
-            hullFraction = hullFraction
+            cr = if (settings.includeCR) data.cr else null,
+            hullFraction = if (settings.includeHull) data.hullFraction else null,
+            id = if (settings.applyID) data.id else null
         )
     }
 
@@ -109,6 +107,8 @@ object DataMember {
             VariantUtils.createErrorVariant()
 
         val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, variant)
+        if (data.id != null)
+            member.id = data.id
 
         // Officer
         if (data.personData != null)

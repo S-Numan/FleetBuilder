@@ -172,7 +172,7 @@ internal object AutofitPanel {
             }
 
             if (draggedPanel == null)
-                draggedPanel = ShipPreviewOverlayPlugin(draggedAutofitSpec!!.variant.createFleetMember(), selectorWidth, selectorWidth, manualScaleSpecificShips = true).panel
+                draggedPanel = ShipPreviewOverlayPlugin(draggedAutofitSpec!!.variant.createFleetMember(), selectorWidth, selectorWidth, manualScaleShipsToBetterFit = true).panel
 
             val screenPanel = ReflectionMisc.getScreenPanel() ?: return
             if (screenPanel.getChildrenCopy().find { it === draggedPanel } == null)

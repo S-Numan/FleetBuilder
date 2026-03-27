@@ -13,9 +13,12 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.ui.*
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.addButton
+import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.otherMods.starficz.height
+import fleetBuilder.otherMods.starficz.width
 import fleetBuilder.ui.common.ObservedTextField
 import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.FleetUtils
@@ -455,7 +458,7 @@ fun TooltipMakerAPI.addToggle(
     size: ButtonAPI.UICheckboxSize = ButtonAPI.UICheckboxSize.SMALL,
     data: Any? = null,
     pad: Float = 0f,
-    onClick: (Boolean) -> Unit = {}
+    //onClick: (Boolean) -> Unit = {}
 ): ButtonAPI {
     val checkbox = this.addCheckbox(
         this.computeStringWidth(name) + buttonHeight + 4f,
@@ -467,7 +470,7 @@ fun TooltipMakerAPI.addToggle(
     )
     checkbox.isChecked = isChecked
 
-    checkbox.onClick { onClick(checkbox.isChecked) }
+    //checkbox.onClick { onClick(checkbox.isChecked) }
 
     return checkbox
 }
