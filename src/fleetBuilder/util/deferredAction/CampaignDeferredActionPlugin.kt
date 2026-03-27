@@ -52,10 +52,20 @@ class CampaignDeferredActionPlugin : EveryFrameScript {
         fun performOnUnpause(action: () -> Unit) {
             active?.onUnpause?.add(action)
         }
+
+        fun performOnPlayerBattleFinish(action: () -> Unit) {
+            active?.onPlayerBattleFinish?.add(action)
+        }
+
+        internal fun battleStarted() {
+            active?.battleStarted = true
+        }
     }
 
+    private var battleStarted = false
     private val queue = PriorityQueue<Task>()
     private val onUnpause = mutableListOf<() -> Unit>()
+    private val onPlayerBattleFinish = mutableListOf<() -> Unit>()
 
     override fun isDone() = false
     override fun runWhilePaused() = true
@@ -82,6 +92,12 @@ class CampaignDeferredActionPlugin : EveryFrameScript {
         if (!Global.getSector().isPaused && onUnpause.isNotEmpty()) {
             onUnpause.forEach { it.invoke() }
             onUnpause.clear()
+        }
+
+        if (battleStarted) {
+            onPlayerBattleFinish.forEach { it.invoke() }
+            onPlayerBattleFinish.clear()
+            battleStarted = false
         }
     }
 }

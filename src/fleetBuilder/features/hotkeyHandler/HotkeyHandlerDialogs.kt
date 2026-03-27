@@ -4,7 +4,9 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.characters.SkillSpecAPI
+import com.fs.starfarer.api.combat.BattleCreationContext
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.fleet.FleetGoal
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
@@ -23,6 +25,7 @@ import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.features.autofit.ui.ShipPreviewOverlayPlugin
+import fleetBuilder.features.recentBattles.RecentBattlesReplay
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.*
 import fleetBuilder.serialization.fleet.DataFleet
@@ -692,6 +695,28 @@ object HotkeyHandlerDialogs {
                     excludeMissingShips(fleet)
 
                     reportMissingElementsIfAny(missingEx)
+
+                    // val battle = Global.getFactory().createBattle(Global.getSector().playerFleet, fleet)
+
+                    // Fleet is not alive (location is null), so battle will see it as empty
+                    //battle.genCombinedDoNotRemoveEmpty()
+
+                    val battleContext = BattleCreationContext(Global.getSector().playerFleet, FleetGoal.ATTACK, fleet, FleetGoal.ATTACK)
+                    battleContext.fightToTheLast = fightToTheLast
+                    battleContext.aiRetreatAllowed = false
+                    battleContext.enemyDeployAll = true
+                    battleContext.objectivesAllowed = true
+
+                    Global.getSector().campaignUI.safeInvoke("setNextTransitionFast", true)
+                    val coreUI = ReflectionMisc.getCoreUI()
+                    //coreUI?.safeInvoke("closeCurrent")
+                    coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
+
+                    RecentBattlesReplay.simulateBattle(battleContext)
+
+
+                    //battle.finish(null, false)
+
 
                     dialog.dismiss()
                 }

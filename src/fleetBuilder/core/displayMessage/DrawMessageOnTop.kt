@@ -8,6 +8,7 @@ import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.lastComponent
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.TimeKeeper
@@ -88,7 +89,9 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
             justLoadedGame--
             if (justLoadedGame == 0) {
                 clearCurrent()
-                CampaignMessageRenderer()
+                val screenPanel = ReflectionMisc.getScreenPanel()
+                if (screenPanel != null && screenPanel.getChildrenCopy().none { CampaignMessageRenderer::class.java.isInstance((it as? CustomPanelAPI)?.plugin) })
+                    CampaignMessageRenderer()
             }
         }
 
@@ -109,6 +112,10 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
         if (state != curState) {
             //clearCurrent()
             curState = state
+
+            val screenPanel = ReflectionMisc.getScreenPanel()
+            if (screenPanel != null && curState == GameState.CAMPAIGN && screenPanel.getChildrenCopy().none { CampaignMessageRenderer::class.java.isInstance((it as? CustomPanelAPI)?.plugin) })
+                CampaignMessageRenderer()
         }
     }
 

@@ -17,8 +17,8 @@ object HullUtils {
         if (hull.hasTag(Tags.CODEX_UNLOCKABLE)) {
             if (!SharedUnlockData.get().isPlayerAwareOfShip(hull.hullId))
                 return false
-        } else if (hull.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || hull.hasTag(Tags.HIDE_IN_CODEX))// || hull.hasTag(Tags.RESTRICTED))
-            return false
+        } //else if (hull.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || hull.hasTag(Tags.HIDE_IN_CODEX))// || hull.hasTag(Tags.RESTRICTED))
+        //return false
 
         return true
     }

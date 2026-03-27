@@ -68,6 +68,8 @@ class CombatDeferredActionPlugin : BaseEveryFrameCombatPlugin() {
 
             active = this
 
+            CampaignDeferredActionPlugin.battleStarted()
+
             init = true
         }
 
