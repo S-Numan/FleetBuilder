@@ -37,7 +37,8 @@ open class BasePanel : CustomUIPanelPlugin {
     protected fun sprite(cat: String, id: String): SpriteAPI =
         settings.getSprite(cat, id)
 
-    open val background by lazy { sprite("ui", "panel00_center").apply { color = Color.BLACK } }
+    open val background: SpriteAPI = sprite("ui", "panel00_center").apply { color = Color.BLACK }
+
 
     open var renderUIBorders = true
     open var uiBorderColor: Color? = null

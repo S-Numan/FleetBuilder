@@ -55,13 +55,13 @@ open class ComposablePanel : BasePanel() {
     }
 
     /**
-     * Shows this panel.
+     * Shows this panel. Must be called after [buildUI] to do anything, as that is what this function shows.
      *
-     * @param width The width of the dialog. Defaults to 800.
-     * @param height The height of the dialog. Defaults to 800.
-     * @param parent The parent panel of the dialog. Defaults to null. If null, automatically gets the screen panel.
-     * @param xOffset The x offset of the dialog. Defaults to null. If null, automatically positions this panel to the center of its parent.
-     * @param yOffset The y offset of the dialog. Defaults to null. If null, automatically positions this panel to the center of its parent.
+     * @param width The width of the panel. Defaults to 800.
+     * @param height The height of the panel. Defaults to 800.
+     * @param parent The parent panel of the panel. Defaults to null. If null, automatically gets the screen panel.
+     * @param xOffset The x offset of the panel. Defaults to null. If null, automatically positions this panel to the center of its parent.
+     * @param yOffset The y offset of the panel. Defaults to null. If null, automatically positions this panel to the center of its parent.
      */
     @JvmOverloads
     fun show(
@@ -83,16 +83,16 @@ open class ComposablePanel : BasePanel() {
     }
 
     /**
-     * Builds the panel UI and displays it as a dialog.
+     * Builds the panel UI and shows it as a panel.
      *
      * The [callback] is invoked when the panel is ready to create its UI,
      * with a [TooltipMakerAPI] for adding elements. If this panel has an opening animation, this will call when the animation is over rather than right away.
      *
-     * @param width The width of the dialog. Defaults to 800.
-     * @param height The height of the dialog. Defaults to 800.
-     * @param parent The parent panel of the dialog. Defaults to null. If null, automatically gets the screen panel.
-     * @param xOffset The x offset of the dialog. Defaults to null. If null, automatically positions this panel to the center of its parent.
-     * @param yOffset The y offset of the dialog. Defaults to null. If null, automatically positions this panel to the center of its parent.
+     * @param width The width of the panel. Defaults to 800.
+     * @param height The height of the panel. Defaults to 800.
+     * @param parent The parent panel of the panel. Defaults to null. If null, automatically gets the screen panel.
+     * @param xOffset The x offset of the panel. Defaults to null. If null, automatically positions this panel to the center of its parent.
+     * @param yOffset The y offset of the panel. Defaults to null. If null, automatically positions this panel to the center of its parent.
      * @param callback Lambda used to build the panel UI.
      */
     @JvmOverloads
@@ -115,16 +115,16 @@ open class ComposablePanel : BasePanel() {
     open var darkenBackgroundAlphaMult: Float = 0.6f
 
     protected fun borderSprite(id: String) =
-        lazy { sprite("ui", id).apply { setSize(16f, 16f) } }
+        sprite("ui", id).apply { setSize(16f, 16f) }
 
-    open val bot by borderSprite("panel00_bot")
-    open val top by borderSprite("panel00_top")
-    open val left by borderSprite("panel00_left")
-    open val right by borderSprite("panel00_right")
-    open val topLeft by borderSprite("panel00_top_left")
-    open val topRight by borderSprite("panel00_top_right")
-    open val bottomLeft by borderSprite("panel00_bot_left")
-    open val bottomRight by borderSprite("panel00_bot_right")
+    open val bot = borderSprite("panel00_bot")
+    open val top = borderSprite("panel00_top")
+    open val left = borderSprite("panel00_left")
+    open val right = borderSprite("panel00_right")
+    open val topLeft = borderSprite("panel00_top_left")
+    open val topRight = borderSprite("panel00_top_right")
+    open val bottomLeft = borderSprite("panel00_bot_left")
+    open val bottomRight = borderSprite("panel00_bot_right")
 
     override fun renderBelow(alphaMult: Float) {
         if (darkenBackground)

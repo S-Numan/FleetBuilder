@@ -163,9 +163,6 @@ object HotkeyHandlerDialogs {
             members = inputData.members.map { it.copy(id = sector.genUID()) }
         )
 
-        val faction = Global.getSector().allFactions.find { data.factionID == it.id }
-            ?: Global.getSector().getFaction("neutral") ?: Global.getSector().playerFaction
-
         val dialog = DialogPanel()
 
         val width = 1280f
@@ -173,6 +170,9 @@ object HotkeyHandlerDialogs {
 
         val rightWidth = 440f
         val leftWidth = width - rightWidth
+
+        val faction = Global.getSector().allFactions.find { data.factionID == it.id }
+            ?: Global.getSector().getFaction("neutral") ?: Global.getSector().playerFaction
 
         val factionColor = Global.getSettings().basePlayerColor//faction.baseUIColor
         val darkColor = Global.getSettings().darkPlayerColor //faction.darkUIColor
@@ -194,7 +194,6 @@ object HotkeyHandlerDialogs {
         var includeCommanderAsCommander = true
         var repairAndSetMaxCR = true
         var setAggressionDoctrine = true
-        var excludeMissingShips = true
 
         fun rebuildUI(maxScroll: Float, listUI: TooltipMakerAPI) {
             // Save scrollbar position BEFORE rebuild
@@ -602,8 +601,8 @@ object HotkeyHandlerDialogs {
             ).apply {
                 setShortcut(Keyboard.KEY_T, true)
                 onClick {
-                    if (excludeMissingShips)
-                        excludeMissingShips(fleet)
+
+                    excludeMissingShips(fleet)
 
                     dialog.dismiss()
                 }
@@ -645,10 +644,10 @@ object HotkeyHandlerDialogs {
                 rebuildUI(totalHeight, listUI)
             }
 
-            rightUI.addToggle("Exclude ships from missing mods", excludeMissingShips, textColor = factionColor).onClick {
+            /*rightUI.addToggle("Exclude ships from missing mods", excludeMissingShips, textColor = factionColor).onClick {
                 excludeMissingShips = !excludeMissingShips
                 rebuildUI(totalHeight, listUI)
-            }
+            }*/
 
             if (FBSettings.cheatsEnabled()) {
                 rightUI.addSectionHeading("Cheats", factionColor, darkColor, Alignment.MID, 10f)
@@ -659,9 +658,9 @@ object HotkeyHandlerDialogs {
                     30f,
                     5f,
                 ).onClick {
-                    if (excludeMissingShips)
-                        excludeMissingShips(fleet)
+                    excludeMissingShips(fleet)
 
+                    reportMissingElementsIfAny(missingEx)
 
                     sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
                     dialog.onExit {
@@ -677,8 +676,7 @@ object HotkeyHandlerDialogs {
                     30f,
                     5f
                 ).onClick {
-                    if (excludeMissingShips)
-                        excludeMissingShips(fleet)
+                    excludeMissingShips(fleet)
 
                     reportMissingElementsIfAny(missingEx)
 
@@ -704,8 +702,7 @@ object HotkeyHandlerDialogs {
                     30f,
                     5f
                 ).onClick {
-                    if (excludeMissingShips)
-                        excludeMissingShips(fleet)
+                    excludeMissingShips(fleet)
 
                     reportMissingElementsIfAny(missingEx)
 
