@@ -61,6 +61,7 @@ internal object AutofitPanel {
     internal class AutofitPanelPlugin(private val parentPanel: UIPanelAPI) : BaseCustomUIPanelPlugin() {
         lateinit var autofitPanel: CustomPanelAPI
         var baseVariantPanel: CustomPanelAPI? = null
+        var allPlugins: List<AutofitSelector.AutofitSelectorPlugin>? = null
 
         override fun renderBelow(alphaMult: Float) {
             GL11.glPushMatrix()
@@ -133,6 +134,7 @@ internal object AutofitPanel {
                 fun deleteSelf() {
                     autofitPanel.parent?.removeComponent(autofitPanel)
                     draggedPanel?.parent?.removeComponent(draggedPanel!!)
+                    allPlugins?.forEach { it.cleanup() }
                 }
 
                 if (event.isKeyDownEvent
@@ -312,9 +314,9 @@ internal object AutofitPanel {
         for (i in allAutofitSpecs.indices) {
             val autofitSpec = allAutofitSpecs[i]
 
-            val selectorPanel = AutofitSelector.createAutofitSelector(autofitSpec, selectorWidth, addXIfAutofitSpecNull = FBSettings.reserveFirstFourAutofitSlots && i < 4) // Create the panel
+            val selectorPlugin = AutofitSelector.createAutofitSelector(autofitSpec, selectorWidth, addXIfAutofitSpecNull = FBSettings.reserveFirstFourAutofitSlots && i < 4) // Create the panel
+            val selectorPanel = selectorPlugin.selectorPanel
             // Add the panel's plugin to the ModSettings.plugin && list
-            val selectorPlugin = selectorPanel.plugin as AutofitSelector.AutofitSelectorPlugin
             selectorPlugins.add(selectorPlugin)
 
             // add panel and position into the grid
@@ -440,10 +442,11 @@ internal object AutofitPanel {
         */
 
             // Create base selector panel
-            val baseVariantSelectorPanel = AutofitSelector.createAutofitSelector(
+            baseVariantSelectorPlugin = AutofitSelector.createAutofitSelector(
                 AutofitSpec(baseVariant, null),
                 containerPanelWidth - 2f, addDescription = false, centerTitle = true
             )
+            val baseVariantSelectorPanel = baseVariantSelectorPlugin.selectorPanel
             makeTooltip(baseVariantSelectorPanel, baseVariant, location = TooltipMakerAPI.TooltipLocation.LEFT)
 
 
@@ -571,6 +574,8 @@ internal object AutofitPanel {
 
         }
 
+
+        autofitPlugin.allPlugins = selectorPlugins
         // sync all the selectors
         for (index in selectorPlugins.indices) {
             val selectorPlugin = selectorPlugins[index]

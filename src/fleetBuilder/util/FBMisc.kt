@@ -413,6 +413,37 @@ internal object FBMisc {
         GL11.glDisable(GL11.GL_TEXTURE_2D)
     }
 
+    fun getModuleSlotsFromVariantFile(filepath: String): HashMap<String, String> {
+        val moduleSlots = HashMap<String, String>()
+
+        try {
+            val fixedFilePath = filepath.replace("\\", "/")
+            val jsonObject = Global.getSettings().loadJSON(fixedFilePath)
+
+            if (jsonObject.has("modules")) {
+                val modulesArray = jsonObject.getJSONArray("modules")
+
+                for (i in 0..<modulesArray.length()) {
+                    val moduleJSON = modulesArray.getJSONObject(i)
+
+                    val keys = moduleJSON.keys()
+                    while (keys.hasNext()) {
+                        val key = keys.next() as? String ?: continue
+                        val value = moduleJSON.getString(key)
+
+                        moduleSlots[key] = value
+                    }
+                }
+
+            }
+
+        } catch (e: Exception) {
+
+        }
+
+        return moduleSlots
+    }
+
     fun sModHandlerTemp(
         ship: ShipAPI,
         baseVariant: ShipVariantAPI,

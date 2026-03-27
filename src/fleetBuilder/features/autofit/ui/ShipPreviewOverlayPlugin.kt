@@ -19,7 +19,7 @@ import kotlin.math.max
 class ShipPreviewOverlayPlugin(
     val member: FleetMemberAPI,
     width: Float, height: Float,
-    val panel: CustomPanelAPI = Global.getSettings().createCustom(width, height, null),
+    panel: CustomPanelAPI = Global.getSettings().createCustom(width, height, null),
     showFighters: Boolean = false,
     setSchematicMode: Boolean = false,
     scaleDownSmallerShips: Boolean = false,
@@ -149,7 +149,7 @@ class ShipPreviewOverlayPlugin(
             }
         } else {
             val xSprite = Global.getSettings().getSprite("ui", "checkmark_x")
-            
+
             xSprite.color = Misc.interpolateColor(Color.GRAY, Color.RED.darker(), 0.7f)
             xSprite.alphaMult = 0.9f
 

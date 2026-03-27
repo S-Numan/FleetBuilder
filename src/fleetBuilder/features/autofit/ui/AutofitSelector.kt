@@ -30,6 +30,11 @@ internal object AutofitSelector {
     internal class AutofitSelectorPlugin(var autofitSpec: AutofitSpec?, var addXIfAutofitSpecNull: Boolean = false) :
         BaseCustomUIPanelPlugin() {
         lateinit var selectorPanel: CustomPanelAPI
+        var shipPreview: ShipPreviewOverlayPlugin? = null
+        fun cleanup() {
+            shipPreview?.cleanup()
+        }
+
 
         val defaultBGColor: Color = Color.BLACK
         val clickedBGColor: Color = Misc.getDarkPlayerColor()
@@ -305,17 +310,18 @@ internal object AutofitSelector {
         centerTitle: Boolean = false,
         addDescription: Boolean = true,
         addXIfAutofitSpecNull: Boolean = false
-    ): CustomPanelAPI {
+    ): AutofitSelectorPlugin {
         val plugin = AutofitSelectorPlugin(autofitSpec, addXIfAutofitSpecNull)
         val selectorPanel = Global.getSettings().createCustom(width, width + (if (addTitle) titleHeight else 0f) + (if (addDescription) descriptionHeight else 0f), plugin)
         plugin.selectorPanel = selectorPanel
 
+
         if (autofitSpec != null)
-            createAutofitSelectorChildren(autofitSpec, width, selectorPanel, addTitle = addTitle, addDescription = addDescription, centerTitle = centerTitle)
+            plugin.shipPreview = createAutofitSelectorChildren(autofitSpec, width, selectorPanel, addTitle = addTitle, addDescription = addDescription, centerTitle = centerTitle)
         else
             plugin.noClickFader = true
 
-        return selectorPanel
+        return plugin
     }
 
     fun createAutofitSelectorChildren(
@@ -325,14 +331,14 @@ internal object AutofitSelector {
         addTitle: Boolean = true,
         centerTitle: Boolean = false,
         addDescription: Boolean = true
-    ) {
+    ): ShipPreviewOverlayPlugin? {
         val descriptionYOffset = 2f
         val topPad = 5f
 
-        val shipPreview = ShipPreviewOverlayPlugin(autofitSpec.variant.createFleetMember(), width, width, showFighters = true, showSModAndDModBars = true, manualScaleShipsToBetterFit = true).panel
-        selectorPanel.addComponent(shipPreview).inTL(0f, topPad)
+        val shipPreview = ShipPreviewOverlayPlugin(autofitSpec.variant.createFleetMember(), width, width, showFighters = true, showSModAndDModBars = true, manualScaleShipsToBetterFit = true)
+        selectorPanel.addComponent(shipPreview.panel).inTL(0f, topPad)
 
-        if (!addTitle && !addDescription) return
+        if (!addTitle && !addDescription) return null
 
         val textElement = selectorPanel.createUIElement(width, (if (addTitle) titleHeight else 0f) + (if (addDescription) descriptionHeight else 0f) - topPad, false)
         selectorPanel.addUIElement(textElement)
@@ -349,6 +355,7 @@ internal object AutofitSelector {
                 description.autoSizeToText(autofitSpec.description)
             }
         }
+        return shipPreview
     }
 
     private fun getExactBounds(variant: ShipVariantAPI): List<BoundsAPI.SegmentAPI>? {

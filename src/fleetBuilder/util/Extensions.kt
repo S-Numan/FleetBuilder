@@ -413,6 +413,25 @@ internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
     return null
 }
 
+internal fun Class<*>.safeInvoke(name: String? = null, vararg args: Any?): Any? {
+    val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
+    val reflectedMethods = this.getMethodsMatching(name, parameterTypes = paramTypes)
+    if (reflectedMethods.isEmpty())
+        DisplayMessage.showError(
+            short = "ERROR: No method found on class: ${this::class.java.name}. See console for more details.",
+            full = "No method found for name: '$name' on class: ${this::class.java.name} " +
+                    "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}"
+        )
+    else if (reflectedMethods.size > 1)
+        DisplayMessage.showError(
+            short = "ERROR: Ambiguous method call on class: ${this::class.java.name}. See console for more details.",
+            full = "Ambiguous method call for name: '$name' on class: ${this::class.java.name}. " +
+                    "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
+        )
+    else return reflectedMethods[0].invoke(null, *args)
+    return null
+}
+
 internal fun Any.safeGet(name: String? = null, type: Class<*>? = null, searchSuperclass: Boolean = false): Any? {
     val reflectedFields = this.getFieldsMatching(name, fieldAssignableTo = type, searchSuperclass = searchSuperclass)
     if (reflectedFields.isEmpty())

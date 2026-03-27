@@ -160,6 +160,9 @@ var UIComponentAPI.yAlignOffset: Float
         position.setYAlignOffset(yOffset)
     }
 
+fun PositionAPI.getXAlignOffset(): Float = invoke("getXAlignOffset") as Float
+
+fun PositionAPI.getYAlignOffset(): Float = invoke("getYAlignOffset") as Float
 
 fun UIComponentAPI.applyAnchor(anchor: AnchorData) {
     val floatType = Float::class.javaPrimitiveType!!
@@ -766,16 +769,16 @@ fun ButtonAPI.onClick(function: () -> Unit) {
 
 // Custom CustomUIPanelPlugin extensions that map the plugin to the panel
 val StarUIPanelPlugin.width
-    get() = customPanel.width
+    get() = panel.width
 
 val StarUIPanelPlugin.height
-    get() = customPanel.height
+    get() = panel.height
 
 val StarUIPanelPlugin.x
-    get() = customPanel.x
+    get() = panel.x
 
 val StarUIPanelPlugin.y
-    get() = customPanel.y
+    get() = panel.y
 
 val StarUIPanelPlugin.left
     get() = x
@@ -790,16 +793,16 @@ val StarUIPanelPlugin.right
     get() = x + width
 
 val StarUIPanelPlugin.centerX
-    get() = customPanel.centerX
+    get() = panel.centerX
 
 val StarUIPanelPlugin.centerY
-    get() = customPanel.centerY
+    get() = panel.centerY
 
 val StarUIPanelPlugin.xAlignOffset
-    get() = customPanel.xAlignOffset
+    get() = panel.xAlignOffset
 
 val StarUIPanelPlugin.yAlignOffset
-    get() = customPanel.yAlignOffset
+    get() = panel.yAlignOffset
 
 fun CustomPanelAPI.setPlugin(plugin: CustomUIPanelPlugin) {
     set(value = plugin)

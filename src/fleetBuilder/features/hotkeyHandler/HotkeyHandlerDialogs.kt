@@ -11,6 +11,10 @@ import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
+import com.fs.starfarer.campaign.CharacterStats
+import com.fs.starfarer.campaign.fleet.FleetMember
+import com.fs.starfarer.ui.impl.StandardTooltipV2
+import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
@@ -174,6 +178,7 @@ object HotkeyHandlerDialogs {
 
         // IMPORTANT: persist outside UI rebuild
         var isPressedMemberID: String? = null
+        var currentHoverMemberID: String? = null
         var savedScrollRatio = 0f
         val previewList = mutableListOf<ShipPreviewOverlayPlugin>()
         fun cleanupShipList() {
@@ -311,6 +316,27 @@ object HotkeyHandlerDialogs {
                     }
                 }
 
+                var skipMouseOverSoundOnce = false
+                if (currentHoverMemberID == member.id) {
+                    preview.boxedUIShipPreview.getHighlightFader().forceIn()
+                    currentHoverMemberID = null
+                    skipMouseOverSoundOnce = true
+                }
+
+                preview.onHoverEnter {
+                    preview.boxedUIShipPreview.highlight()
+                    if (skipMouseOverSoundOnce)
+                        skipMouseOverSoundOnce = false
+                    else {
+                        UIUtils.playSound("ui_button_mouseover", 1f, 1f)
+                    }
+                    currentHoverMemberID = member.id
+                }
+                preview.onHoverExit {
+                    preview.boxedUIShipPreview.unhighlight()
+                    currentHoverMemberID = null
+                }
+
                 val clickFader = FaderUtil(0.0F, 0.05F, 0.25F)
                 val defaultBGColor: Color = Color.BLACK
                 val clickedBGColor: Color = Misc.getDarkPlayerColor()
@@ -337,9 +363,14 @@ object HotkeyHandlerDialogs {
                     } else {
                         isPressedMemberID = if (isPressedMemberID == member.id) null else member.id
 
+                        UIUtils.playSound("ui_button_pressed")
+
                         rebuildUI(totalHeight, listUI)
                     }
                 }
+                val tooltipClass = StandardTooltipV2Expandable::class.java
+                val memberTooltip = StandardTooltipV2.createFleetMemberTooltipPreDeploy(member as FleetMember, member.captain.stats as CharacterStats)
+                tooltipClass.safeInvoke("addTooltipBelow", preview.panel, memberTooltip)
 
                 listPanel.addComponent(preview.panel).inTL(x, y)
             }
@@ -404,6 +435,17 @@ object HotkeyHandlerDialogs {
                         ClipboardMisc.saveMemberToClipboard(member, event.isShiftDown)
                     }
                 }
+                preview.onHoverEnter {
+                    preview.boxedUIShipPreview.highlight()
+                    UIUtils.playSound("ui_button_mouseover", 1f, 1f)
+                }
+                preview.onHoverExit {
+                    preview.boxedUIShipPreview.unhighlight()
+                }
+
+                val tooltipClass = StandardTooltipV2Expandable::class.java
+                val memberTooltip = StandardTooltipV2.createFleetMemberTooltipPreDeploy(member as FleetMember, member.captain.stats as CharacterStats)
+                tooltipClass.safeInvoke("addTooltipBelow", preview.panel, memberTooltip)
 
                 val shipX = 10f
                 val shipY = 40f
@@ -886,16 +928,19 @@ object HotkeyHandlerDialogs {
             )
             para.autoSizeToText().position.inMid()
 
-            val selectorPanel = AutofitSelector.createAutofitSelector(
+            val selectorPlugin = AutofitSelector.createAutofitSelector(
                 autofitSpec = AutofitSpec(variant, null),
                 ui.width - 12f,
                 addDescription = false,
                 centerTitle = true
             )
+            dialog.onExit {
+                selectorPlugin.cleanup()
+            }
 
-            ui.addComponent(selectorPanel).inTMid(dialog.tooltipPadFromTop - 14f)
+            ui.addComponent(selectorPlugin.selectorPanel).inTMid(dialog.tooltipPadFromTop - 14f)
 
-            AutofitPanel.makeTooltip(selectorPanel, variant)
+            AutofitPanel.makeTooltip(selectorPlugin.selectorPanel, variant)
 
             dialog.addActionButtons(confirmText = FBTxt.txt("import"), alignment = Alignment.MID)
 

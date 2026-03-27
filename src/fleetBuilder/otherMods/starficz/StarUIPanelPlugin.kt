@@ -6,7 +6,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 
-open class StarUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPanelPlugin() {
+open class StarUIPanelPlugin(var panel: CustomPanelAPI) : BaseCustomUIPanelPlugin() {
 
     private var onClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
     private var onClickOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
@@ -48,7 +48,7 @@ open class StarUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPane
         inputCaptureBottomPad = bottomPad
         inputCaptureLeftPad = leftPad
         inputCaptureRightPad = rightPad
-        customPanel.setMouseOverPad(leftPad, rightPad, topPad, bottomPad)
+        panel.setMouseOverPad(leftPad, rightPad, topPad, bottomPad)
     }
 
     fun renderBelow(function: (alphaMult: Float) -> Unit) {
