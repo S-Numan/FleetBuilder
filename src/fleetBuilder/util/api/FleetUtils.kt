@@ -9,10 +9,8 @@ import com.fs.starfarer.api.fleet.RepairTrackerAPI
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.playerShuttleExists
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.removePlayerShuttle
-import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
-import fleetBuilder.serialization.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
@@ -65,22 +63,6 @@ object FleetUtils {
             repairs.cr = max(repairs.cr, repairs.maxCR)
             member.setStatUpdateNeeded(true)
         }
-    }
-
-    fun replacePlayerFleetWith(
-        data: DataFleet.ParsedFleetData, replacePlayer: Boolean = false,
-        settings: FleetSettings = FleetSettings()
-    ): MissingElements {
-        val missing = MissingElements()
-        val fleet = createCampaignFleetFromData(data, true, missing = missing)
-
-        replacePlayerFleetWith(
-            fleet,
-            if (settings.includeAggression) data.aggression else -1,
-            replacePlayer, settings
-        )
-
-        return missing
     }
 
     fun replacePlayerFleetWith(

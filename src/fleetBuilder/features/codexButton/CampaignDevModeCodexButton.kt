@@ -225,7 +225,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
         if (parsedData != null) {
 
             repeat(count) {
-                ClipboardHotkeyHandlerUtils.fleetPaste(sector, parsedData)
+                ClipboardHotkeyHandlerUtils.pasteIntoPlayerFleetPanel(sector, parsedData)
             }
         }
 

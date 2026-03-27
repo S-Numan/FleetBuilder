@@ -145,7 +145,15 @@ object DataPerson {
 
         val validPortrait = try {
             if (data.portrait == null) {
-                PersonUtils.getRandomPortrait(data.gender)
+                val consistentRandomSeed = buildString {
+                    append(data.first)
+                    data.skills.toSortedMap().forEach { (k, v) ->
+                        append(k)
+                        append(v.toBits())
+                    }
+                }.hashCode().toLong()
+                val random = Random(consistentRandomSeed)
+                PersonUtils.getRandomPortrait(data.gender, random = random)
             } else if (data.portrait.isNotEmpty()) {
                 val sprite = Global.getSettings().getSprite(data.portrait)
                 if (sprite == null || sprite.width == 0f) throw Exception()

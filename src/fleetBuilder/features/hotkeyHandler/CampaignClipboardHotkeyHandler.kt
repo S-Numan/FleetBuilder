@@ -7,8 +7,7 @@ import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
-import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.campaignPaste
-import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.fleetPaste
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteFleet
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleCaptainPickerMouseEvents
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleCreateOfficer
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleDevModeHotkey
@@ -19,8 +18,10 @@ import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRef
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRefitPaste
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleSaveTransfer
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleUIFleetCopy
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteIntoPlayerFleetPanel
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
@@ -130,12 +131,11 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         val missing = MissingElements()
         val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
 
-        if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-            if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
-                fleetPaste(sector, data, missing)
-        } else if (ui.isIdle()) {
-            if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
-                campaignPaste(sector, data, missing)
+        if (ui.getActualCurrentTab() == CoreUITabId.FLEET || ui.isIdle()) {
+            if (data is DataFleet.ParsedFleetData)
+                pasteFleet(data, missing)
+            else if (ui.getActualCurrentTab() == CoreUITabId.FLEET && ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
+                pasteIntoPlayerFleetPanel(sector, data, missing)
         }
 
         event.consume()

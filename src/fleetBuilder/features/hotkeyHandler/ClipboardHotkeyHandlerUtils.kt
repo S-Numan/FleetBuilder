@@ -33,7 +33,6 @@ import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
-import fleetBuilder.serialization.fleet.DataFleet.validateAndCleanFleetData
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember
@@ -395,8 +394,7 @@ internal object ClipboardHotkeyHandlerUtils {
         }
     }
 
-    fun campaignPaste(
-        sector: SectorAPI,
+    fun pasteFleet(
         data: Any,
         missing: MissingElements = MissingElements()
     ): Boolean {
@@ -428,10 +426,10 @@ internal object ClipboardHotkeyHandlerUtils {
             }
         }
 
-        return HotkeyHandlerDialogs.spawnFleetInCampaignDialog(newData as DataFleet.ParsedFleetData, missing)
+        return HotkeyHandlerDialogs.pasteFleetDialog(newData as DataFleet.ParsedFleetData, missing)
     }
 
-    fun fleetPaste(
+    fun pasteIntoPlayerFleetPanel(
         sector: SectorAPI,
         data: Any,
         missing: MissingElements = MissingElements()
@@ -522,19 +520,6 @@ internal object ClipboardHotkeyHandlerUtils {
                 showMessage(message, shipName, Misc.getHighlightColor())
 
                 updateFleetPanelContents()
-            }
-
-            is DataFleet.ParsedFleetData -> {
-                // Fleet
-                val subMissing = MissingElements()
-                val validatedFleet = validateAndCleanFleetData(data, missing = subMissing)
-
-                if (validatedFleet.members.isEmpty()) {
-                    reportMissingElementsIfAny(subMissing, FBTxt.txt("fleet_was_empty_when_pasting"))
-                    return
-                }
-
-                HotkeyHandlerDialogs.pasteFleetIntoPlayerFleetDialog(data, validatedFleet)
             }
 
             else -> {

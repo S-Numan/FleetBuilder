@@ -149,175 +149,7 @@ object HotkeyHandlerDialogs {
     }
 
 
-    fun pasteFleetIntoPlayerFleetDialog(
-        data: DataFleet.ParsedFleetData,
-        validatedData: DataFleet.ParsedFleetData,
-    ) {
-        val buttonHeight = 24f
-
-        val playerFleet = Global.getSector()?.playerFleet?.fleetData ?: return
-
-
-        val dialog = DialogPanel(FBTxt.txt("paste_fleet_into_player_fleet"))
-
-        dialog.show(500f, 380f) { ui ->
-
-            val memberCount = validatedData.members.size
-            val officerCount = validatedData.members.count { it.personData != null }
-
-            val text = if (officerCount > 0) {
-                if (officerCount > 1)
-                    txtPlural("pasted_fleet_members_officers", memberCount, memberCount, officerCount)
-                else
-                    txtPlural("pasted_fleet_members_officer", memberCount, memberCount, officerCount)
-            } else {
-                txtPlural("pasted_fleet_members_only", memberCount)
-            }
-
-            ui.addPara(text, 0f)
-
-            val missingHullCount = validatedData.members.count {
-                it.variantData == null || it.variantData.tags.contains(VariantUtils.getFBVariantErrorTag())
-            }
-
-            if (missingHullCount > 0)
-                ui.addPara(txtPlural("fleet_contains_missing_hull", missingHullCount), 0f)
-
-            ui.addSpacer(8f)
-
-            var excludeShipsFromMissing = false
-            var includeOfficers = true
-            var incCommanderAsOfficer = true
-            var setAggression = true
-            var replacePlayerWithCommander = false
-            var fulfillNeeds = true
-
-            ui.addButton(FBTxt.txt("append_to_player_fleet"), null, ui.width, buttonHeight, 3f).onClick {
-                val missing = MissingElements()
-                val fleet = DataFleet.createCampaignFleetFromData(
-                    data, false,
-                    settings = FleetSettings().apply {
-                        excludeMembersWithMissingHullSpec = excludeShipsFromMissing
-                        memberSettings.includeOfficer = includeOfficers
-                        includeCommanderAsOfficer = incCommanderAsOfficer
-                    },
-                    missing = missing
-                )
-
-                fleet.fleetData.membersListCopy.forEach { member ->
-                    playerFleet.addFleetMember(member)
-
-                    val captain = member.captain
-                    if (!captain.isDefault && !captain.isAICore) {
-                        playerFleet.addOfficer(captain)
-                    }
-                }
-
-                reportMissingElementsIfAny(missing)
-
-                if (fulfillNeeds)
-                    FleetUtils.fulfillPlayerFleet()
-
-                ReflectionMisc.updateFleetPanelContents()
-
-                if (fleet.fleetData.membersListCopy.size > 1)
-                    DisplayMessage.showMessage(FBTxt.txt("members_appended_into_fleet", fleet.fleetData.membersListCopy.size))
-                else
-                    DisplayMessage.showMessage(FBTxt.txt("member_appended_into_fleet", fleet.fleetData.membersListCopy.size))
-
-                dialog.dismiss()
-            }
-            ui.addSpacer(24f)
-
-            ui.addButton(FBTxt.txt("replace_player_fleet"), null, ui.width, buttonHeight, 3f).onClick {
-                val settings = FleetSettings()
-                settings.memberSettings.includeOfficer = includeOfficers
-                settings.excludeMembersWithMissingHullSpec = excludeShipsFromMissing
-                settings.includeCommanderAsOfficer = incCommanderAsOfficer
-                settings.includeAggression = setAggression
-
-                val replaceMissing = FleetUtils.replacePlayerFleetWith(
-                    data,
-                    (replacePlayerWithCommander && settings.includeCommanderAsOfficer),
-                    settings
-                )
-
-                reportMissingElementsIfAny(replaceMissing)
-
-                if (fulfillNeeds)
-                    FleetUtils.fulfillPlayerFleet()
-
-                ReflectionMisc.updateFleetPanelContents()
-
-                DisplayMessage.showMessage(FBTxt.txt("player_fleet_replaced"))
-
-                dialog.dismiss()
-            }
-            ui.addToggle(FBTxt.txt("set_aggression_doctrine"), setAggression).onClick { setAggression = !setAggression }
-            ui.addToggle(FBTxt.txt("replace_player_with_commander"), replacePlayerWithCommander).onClick { replacePlayerWithCommander = !replacePlayerWithCommander }
-
-            ui.addSpacer(48f)
-            ui.addPara(FBTxt.txt("additional_settings"), 0f)
-            ui.addToggle(FBTxt.txt("include_officers"), includeOfficers).onClick { includeOfficers = !includeOfficers }
-            ui.addToggle(FBTxt.txt("include_commander_as_officer"), incCommanderAsOfficer).onClick { incCommanderAsOfficer = !incCommanderAsOfficer }
-            ui.addToggle(FBTxt.txt("exclude_ships_from_missing_mods"), excludeShipsFromMissing).onClick { excludeShipsFromMissing = !excludeShipsFromMissing }
-            ui.addToggle(FBTxt.txt("fulfill_fleet_needs"), fulfillNeeds).onClick { fulfillNeeds = !fulfillNeeds }
-
-
-            dialog.addCloseButton()
-        }
-
-        /*
-                                        val tempFleet = Global.getFactory().createEmptyFleet(Factions.INDEPENDENT, FleetTypes.TASK_FORCE, false)
-                                        buildFleet(validatedFleet, tempFleet.fleetData, settings = FleetSerialization.FleetSettings())
-
-
-                                        val fleetGridClass = FleetGrid::class.java
-                                        //val fleetGrid = fleetBuilder.otherMods.MagicLib.ReflectionUtils.instantiate(fleetGridClass, 2, 2, 32f, 32f, 8f) as? UIComponentAPI
-
-                                        val fleetGridConstructor = fleetBuilder.otherMods.starficz.ReflectionUtils.getConstructorsMatching(fleetGridClass, numOfParams = 6).getOrNull(0)
-                                        val fleetGrid = fleetGridConstructor?.newInstance(2, 2, 32f, 32f, 8f, null) as? UIComponentAPI
-                                        if (fleetGrid != null)
-                                            dialog.addCustom(fleetGrid)*/
-
-        /*val custom = Global.getSettings().createCustom(200f, 200f, null)
-                        val tooltip = custom.createUIElement(200f, 200f, false)
-                        tooltip.addShipList(3, 2, 160f, Misc.getBasePlayerColor(), tempFleet.fleetData.membersListCopy, 0f)
-                        val panel = tooltip.invoke("getPanel") as? UIPanelAPI
-                        val shipList = panel?.getChildrenCopy()?.getOrNull(0) as? S ?: return
-
-                        //shipList.isShowDmods = false
-
-                        //tempFleet.fleetData.membersListCopy.forEach { member ->
-                        //    shipList.removeIconFor(member as FleetMember?)
-                        //}
-                        shipList.clear()
-
-                        shipList.isShowDmods = true
-                        shipList.setUseExpandedTooltip(true)
-                        shipList.members.forEach { member ->
-                            //member.
-                        }
-                        tempFleet.fleetData.membersListCopy.forEach { member ->
-                            shipList.addIconFor(member as FleetMember)
-                            val icon = shipList.invoke("getIconForMember", member)
-                            icon
-
-                        }
-
-                        //shipList?.invoke("setUseBasicTooltip", true)
-                        //val tooltipOptions = shipList?.invoke("getTooltipOptions")
-                        //val shipListItems = shipList?.list?.items
-
-                        //shipList?
-                        //tooltip.isRecreateEveryFrame = true
-
-                        custom.addUIElement(tooltip)
-                        dialog.addCustom(custom)*/
-
-    }
-
-    fun spawnFleetInCampaignDialog(
+    fun pasteFleetDialog(
         inputData: DataFleet.ParsedFleetData,
         missing: MissingElements
     ): Boolean {
@@ -326,17 +158,10 @@ object HotkeyHandlerDialogs {
             members = inputData.members.map { it.copy(id = sector.genUID()) }
         )
 
-        /*val validatedData1 = validateAndCleanFleetData(data, settings = FleetSettings(), missing = missing)
-
-        if (validatedData1.members.isEmpty()) {
-            reportMissingElementsIfAny(missing, FBTxt.txt("fleet_was_empty_when_pasting"))
-            return false
-        }*/
-
         val faction = Global.getSector().allFactions.find { data.factionID == it.id }
             ?: Global.getSector().getFaction("neutral") ?: Global.getSector().playerFaction
 
-        val dialog = DialogPanel()//(FBTxt.txt("spawn_fleet_in_campaign"))
+        val dialog = DialogPanel()
 
         val width = 1280f
         val height = 800f
@@ -390,6 +215,7 @@ object HotkeyHandlerDialogs {
             }
 
             val missingEx = MissingElements()
+            missingEx.add(missing)
             val fleet = DataFleet.createCampaignFleetFromData(
                 data,
                 true, settings = settings, missing = missingEx
@@ -810,6 +636,20 @@ object HotkeyHandlerDialogs {
                     if (excludeMissingShips)
                         excludeMissingShips(fleet)
 
+                    reportMissingElementsIfAny(missingEx)
+
+                    FleetUtils.replacePlayerFleetWith(
+                        fleet,
+                        aggression = if (setAggressionDoctrine) data.aggression else -1,
+                        replacePlayer = includeCommanderAsCommander && fleet.commander != null && !fleet.commander.isDefault && !fleet.commander.isAICore
+                    )
+
+                    if (repairAndSetMaxCR)
+                        FleetUtils.fulfillPlayerFleet()
+
+                    ReflectionMisc.updateFleetPanelContents()
+
+                    DisplayMessage.showMessage(FBTxt.txt("player_fleet_replaced"))
 
                     dialog.dismiss()
                 }
@@ -823,6 +663,29 @@ object HotkeyHandlerDialogs {
                     if (excludeMissingShips)
                         excludeMissingShips(fleet)
 
+                    reportMissingElementsIfAny(missingEx)
+
+                    val playerFleet = Global.getSector().playerFleet.fleetData
+
+                    fleet.fleetData.membersListCopy.forEach { member ->
+                        member.id = Global.getSector().genUID()
+                        playerFleet.addFleetMember(member)
+
+                        val captain = member.captain
+                        if (!captain.isDefault && !captain.isAICore) {
+                            playerFleet.addOfficer(captain)
+                        }
+                    }
+
+                    if (repairAndSetMaxCR)
+                        FleetUtils.fulfillPlayerFleet()
+
+                    ReflectionMisc.updateFleetPanelContents()
+
+                    if (fleet.fleetData.membersListCopy.size > 1)
+                        DisplayMessage.showMessage(FBTxt.txt("members_appended_into_fleet", fleet.fleetData.membersListCopy.size))
+                    else
+                        DisplayMessage.showMessage(FBTxt.txt("member_appended_into_fleet", fleet.fleetData.membersListCopy.size))
 
                     dialog.dismiss()
                 }

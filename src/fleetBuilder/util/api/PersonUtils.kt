@@ -56,14 +56,18 @@ object PersonUtils {
         }
     }
 
-    fun getRandomPortrait(gender: FullName.Gender = FullName.Gender.ANY, faction: String? = null): String {
+    fun getRandomPortrait(
+        gender: FullName.Gender = FullName.Gender.ANY,
+        faction: String? = null,
+        random: Random = Random()
+    ): String {
         val faction = Global.getSettings().getFactionSpec(faction ?: Factions.PLAYER)
         return if (gender == FullName.Gender.MALE)
-            faction.malePortraits.pick()
+            faction.malePortraits.pick(random)
         else if (gender == FullName.Gender.FEMALE)
-            faction.femalePortraits.pick()
+            faction.femalePortraits.pick(random)
         else
-            if (Random().nextBoolean()) faction.malePortraits.pick() else faction.femalePortraits.pick()
+            if (Random().nextBoolean()) faction.malePortraits.pick(random) else faction.femalePortraits.pick(random)
     }
 
     fun randomizePersonCosmetics(
