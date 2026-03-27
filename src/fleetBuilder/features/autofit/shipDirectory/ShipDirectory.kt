@@ -140,9 +140,9 @@ class ShipDirectory(
                 inputVariant,
                 comparisonSettings
             )
-            val variantUnJSON = JSONVariant.extractVariantDataFromJson(variantJSON)
-            if (variantUnJSON != filterParsedVariantData(parsedVariant, comparisonSettings)) // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
-                DisplayMessage.showError("DEBUG: Fleet data mismatch", "DEBUG: Fleet data mismatch\n\nfleetUnJSON:\n${variantUnJSON}\n\nparsedFleet:\n${parsedVariant}")
+            val variantUnJSON = JSONVariant.extractVariantDataFromJson(variantJSON).copy(variantId = parsedVariant.variantId)
+            if (variantUnJSON != filterParsedVariantData(parsedVariant, comparisonSettings)) // If not equal, this means the logic somewhere when saving and getting the variant to/from JSON or COMP is not correct
+                DisplayMessage.showError("DEBUG: Variant data mismatch", "DEBUG: Variant data mismatch\n\nvariantUnJSON:\n${variantUnJSON}\n\nparsedVariant:\n${parsedVariant}")
         }
 
         val savedVariant = buildVariantFull(parsedVariant)

@@ -160,7 +160,9 @@ object HotkeyHandlerDialogs {
     ): Boolean {
         val sector = Global.getSector()
         val data = inputData.copy(
-            members = inputData.members.map { it.copy(id = sector.genUID()) }
+            members = inputData.members.map { member ->
+                member.copy(id = sector.genUID())
+            }
         )
 
         val dialog = DialogPanel()
@@ -289,11 +291,40 @@ object HotkeyHandlerDialogs {
 
             val listPanel = dialog.panel.createCustomPanel(leftWidth, totalHeight, null)
 
-            members.forEachIndexed { index, member ->
+            members.toList().forEachIndexed { index, member ->
                 val col = index % numPerRow
                 val row = index / numPerRow
                 val x = col * (size + padding)
                 val y = row * (size + padding)
+
+                val unknownContents = MissingElements()
+                VariantUtils.whatVariantContentsAreNotKnownToPlayer(member.variant, unknownContents)
+
+                val dataMember = data.members.find { it.id == member.id }
+
+                if (!FBSettings.cheatsEnabled() && member.variant.hasTag(VariantUtils.getFBVariantErrorTag())) {
+                    val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
+                    boxedImage.position.inTL(x, y)
+                    boxedImage.sprite.color = Color.RED
+                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 600f) { tooltip ->
+                        tooltip.addPara("Hull id '${dataMember?.variantData?.hullId}' could not be found.\nThe mod which added this hull may be missing or an update may have removed this hull", 0f)
+                    }
+
+                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    return@forEachIndexed
+                }
+
+                if (!FBSettings.cheatsEnabled() && unknownContents.hullIds.isNotEmpty()) {
+                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
+                    boxedImage.position.inTL(x, y)
+                    boxedImage.sprite.color = Color.RED
+                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
+                        tooltip.addPara("This ship is unknown to you. Explore and unlock new codex entries!")
+                    }
+
+                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    return@forEachIndexed
+                }
 
                 val preview = ShipPreviewOverlayPlugin(
                     member,
@@ -306,7 +337,6 @@ object HotkeyHandlerDialogs {
                 )
                 previewList.add(preview)
 
-                val dataMember = data.members.find { it.id == member.id }
                 if (dataMember != null)
                     DataMember.validateAndCleanMemberData(dataMember, missing = preview.missingElements)
 
@@ -319,13 +349,13 @@ object HotkeyHandlerDialogs {
 
                 var skipMouseOverSoundOnce = false
                 if (currentHoverMemberID == member.id) {
-                    preview.boxedUIShipPreview.getHighlightFader().forceIn()
+                    preview.boxedUIShipPreview?.getHighlightFader()?.forceIn()
                     currentHoverMemberID = null
                     skipMouseOverSoundOnce = true
                 }
 
                 preview.onHoverEnter {
-                    preview.boxedUIShipPreview.highlight()
+                    preview.boxedUIShipPreview?.highlight()
                     if (skipMouseOverSoundOnce)
                         skipMouseOverSoundOnce = false
                     else {
@@ -334,7 +364,7 @@ object HotkeyHandlerDialogs {
                     currentHoverMemberID = member.id
                 }
                 preview.onHoverExit {
-                    preview.boxedUIShipPreview.unhighlight()
+                    preview.boxedUIShipPreview?.unhighlight()
                     currentHoverMemberID = null
                 }
 
@@ -374,6 +404,29 @@ object HotkeyHandlerDialogs {
                 tooltipClass.safeInvoke("addTooltipBelow", preview.panel, memberTooltip)
 
                 listPanel.addComponent(preview.panel).inTL(x, y)
+
+
+                if (!FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
+                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
+                    boxedImage.position.inTL(x, y)
+                    boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
+                    val variant = member.variant
+                    variant.fittedWeaponSlots.forEach { slotID ->
+                        val weaponID = variant.getWeaponId(slotID)
+                        if (weaponID in unknownContents.weaponIds)
+                            variant.clearSlot(slotID)
+                    }
+                    variant.fittedWings.forEach { wingID ->
+                        if (wingID in unknownContents.wingIds)
+                            variant.wings.remove(wingID)
+                    }
+                    variant.hullMods.forEach { hullModID ->
+                        if (variant.hullSpec.isBuiltInMod(hullModID))
+                            return@forEach
+                        if (hullModID in unknownContents.hullModIds)
+                            variant.completelyRemoveMod(hullModID)
+                    }
+                }
             }
 
             listUI.addCustom(listPanel, 10f)
@@ -437,11 +490,11 @@ object HotkeyHandlerDialogs {
                     }
                 }
                 preview.onHoverEnter {
-                    preview.boxedUIShipPreview.highlight()
+                    preview.boxedUIShipPreview?.highlight()
                     UIUtils.playSound("ui_button_mouseover", 1f, 1f)
                 }
                 preview.onHoverExit {
-                    preview.boxedUIShipPreview.unhighlight()
+                    preview.boxedUIShipPreview?.unhighlight()
                 }
 
                 val tooltipClass = StandardTooltipV2Expandable::class.java
@@ -460,6 +513,9 @@ object HotkeyHandlerDialogs {
                 }
                 officerPanel.addComponent(preview.panel).inTL(shipX, shipY)
 
+                val unknownContents = MissingElements()
+                VariantUtils.whatVariantContentsAreNotKnownToPlayer(member.variant, unknownContents)
+
 
                 // =========================
                 // SKILLS PANEL
@@ -471,6 +527,38 @@ object HotkeyHandlerDialogs {
                 val skillsHeight = officerPanelHeight - skillsY - 10f
 
                 val skillsUI = officerPanel.createUIElement(skillsWidth, skillsHeight, true)
+                if (preview.missingElements.weaponIds.isNotEmpty() || preview.missingElements.wingIds.isNotEmpty() || preview.missingElements.hullModIds.isNotEmpty()) {
+                    skillsUI.addPara(preview.missingElements.getMissingElementsString(true), Color.YELLOW, 0f)
+                }
+
+                if (!FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
+                    val boxedImage = officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize)
+                    boxedImage.position.inTL(shipX, shipY)
+                    boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
+
+                    val parts = listOfNotNull(
+                        FBTxt.txt("unknown_weapons").takeIf { unknownContents.weaponIds.isNotEmpty() },
+                        FBTxt.txt("unknown_wings").takeIf { unknownContents.wingIds.isNotEmpty() },
+                        FBTxt.txt("unknown_hullmods").takeIf { unknownContents.hullModIds.isNotEmpty() }
+                    )
+
+                    fun joinNaturalLocalized(parts: List<String>): String {
+                        return when (parts.size) {
+                            0 -> ""
+                            1 -> parts.first()
+                            2 -> FBTxt.txt("list_two", parts[0], parts[1])
+                            else -> {
+                                val allButLast = parts.dropLast(1).joinToString(FBTxt.txt("list_separator"))
+                                FBTxt.txt("list_many", allButLast, parts.last())
+                            }
+                        }
+                    }
+
+                    if (parts.isNotEmpty()) {
+                        val message = FBTxt.txt("unknown_combined", joinNaturalLocalized(parts))
+                        skillsUI.addPara(message, Color.YELLOW, 0f)
+                    }
+                }
 
                 // =========================
                 // ADMIRAL SKILLS (if flagship)
@@ -601,8 +689,9 @@ object HotkeyHandlerDialogs {
             ).apply {
                 setShortcut(Keyboard.KEY_T, true)
                 onClick {
-
                     excludeMissingShips(fleet)
+
+                    reportMissingElementsIfAny(missingEx)
 
                     dialog.dismiss()
                 }
@@ -676,7 +765,7 @@ object HotkeyHandlerDialogs {
                     30f,
                     5f
                 ).onClick {
-                    excludeMissingShips(fleet)
+                    //excludeMissingShips(fleet)
 
                     reportMissingElementsIfAny(missingEx)
 
@@ -702,7 +791,7 @@ object HotkeyHandlerDialogs {
                     30f,
                     5f
                 ).onClick {
-                    excludeMissingShips(fleet)
+                    //excludeMissingShips(fleet)
 
                     reportMissingElementsIfAny(missingEx)
 

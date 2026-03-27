@@ -5,6 +5,7 @@ import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
+import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.*
@@ -141,6 +142,28 @@ object VariantUtils {
         return true
     }
 
+    fun whatVariantContentsAreNotKnownToPlayer(variant: ShipVariantAPI, missing: MissingElements) {
+        if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
+            missing.hullIds.add(variant.hullSpec.hullId)
+
+        variant.fittedWeaponSlots.forEach { slot ->
+            val weapon = variant.getSlot(slot) ?: return@forEach
+            if (LookupUtils.getWeaponSpec(weapon.id)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.id))
+                missing.weaponIds.add(weapon.id)
+        }
+        variant.fittedWings.forEach { wing ->
+            if (LookupUtils.getFighterWingSpec(wing)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfFighter(wing))
+                missing.wingIds.add(wing)
+        }
+        variant.hullMods.forEach { mod ->
+            if (variant.hullSpec.isBuiltInMod(mod))
+                return@forEach
+
+            if (LookupUtils.getHullModSpec(mod)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfHullmod(mod))
+                missing.hullModIds.add(mod)
+        }
+    }
+
     fun makeVariantID(variant: ShipVariantAPI): String {
         val hullId = variant.hullSpec.getCompatibleDLessHullId(true)
         return makeVariantID(hullId, variant.displayName)
@@ -159,9 +182,9 @@ object VariantUtils {
     private const val errorTag = "FB_ERR"
     fun getFBVariantErrorTag() = errorTag
 
-    fun isErrorVariant(variant: ShipVariantAPI): Boolean {
-        return variant.hasTag(errorTag)
-    }
+    //fun isErrorVariant(variant: ShipVariantAPI): Boolean {
+    //    return variant.hasTag(errorTag)
+    //}
 
     fun createErrorVariant(displayName: String = ""): ShipVariantAPI {
         var tempVariant: ShipVariantAPI? = null

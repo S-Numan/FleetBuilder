@@ -28,31 +28,32 @@ class ShipPreviewOverlayPlugin(
     manualScaleShipsToBetterFit: Boolean = false,
     val missingElements: MissingElements = MissingElements()
 ) : StarUIPanelPlugin(panel) {
-    val hasMissingElements: Boolean = missingElements.weaponIds.isNotEmpty() || missingElements.hullModIds.isNotEmpty() || missingElements.wingIds.isNotEmpty()
+    val hasMissingElements: Boolean by lazy { missingElements.weaponIds.isNotEmpty() || missingElements.hullModIds.isNotEmpty() || missingElements.wingIds.isNotEmpty() }
     val isShipMissing: Boolean = member.variant.hasTag(VariantUtils.getFBVariantErrorTag())
 
-    val boxedUIShipPreview: BoxedUIShipPreview
+    var boxedUIShipPreview: BoxedUIShipPreview? = null
 
     init {
 
         panel.setPlugin(this)
+        //if (!isShipMissing) {
         val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(member) as UIPanelAPI
         boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
-        boxedUIShipPreview.uiShipPreview.setSize(width, height)
-        boxedUIShipPreview.setBorderNewStyle(true)
-        boxedUIShipPreview.setShowBorder(false)
-        boxedUIShipPreview.adjustOverlay(0f, 0f)
+        boxedUIShipPreview!!.uiShipPreview.setSize(width, height)
+        boxedUIShipPreview!!.setBorderNewStyle(true)
+        boxedUIShipPreview!!.setShowBorder(false)
+        boxedUIShipPreview!!.adjustOverlay(0f, 0f)
 
         if (showFighters)
-            boxedUIShipPreview.showFighters = true
+            boxedUIShipPreview!!.showFighters = true
 
         if (setSchematicMode)
-            boxedUIShipPreview.setSchematicMode(true)
+            boxedUIShipPreview!!.setSchematicMode(true)
 
         var scaleDownFactor = 1f
 
 
-        boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(1f)
+        boxedUIShipPreview!!.setScaleDownSmallerShipsMagnitude(1f)
         if (scaleDownSmallerShips) {
             val hullSize = member.hullSpec.hullSize
             if (hullSize == ShipAPI.HullSize.FRIGATE) {
@@ -94,13 +95,13 @@ class ShipPreviewOverlayPlugin(
 
         // Apply config
         if (config.disableScissor) {
-            boxedUIShipPreview.setScissor(false)
+            boxedUIShipPreview!!.setScissor(false)
         }
 
         // Scale and set size
         val scaledWidth = width * config.scaleFactor * scaleDownFactor
         val scaledHeight = height * config.scaleFactor * scaleDownFactor
-        boxedUIShipPreview.uiShipPreview.setSize(scaledWidth, scaledHeight)
+        boxedUIShipPreview!!.uiShipPreview.setSize(scaledWidth, scaledHeight)
 
         // Base Y offset from config
         val baseYOffset = config.yOffset
@@ -112,10 +113,11 @@ class ShipPreviewOverlayPlugin(
         // Add shipPreview to container, positioned to center plus offset
         panel.addComponent(shipPreview).inTL(0f, 0f)
         shipPreview.position.inTL(offsetX, offsetY)
+        //}
     }
 
     fun cleanup() {
-        boxedUIShipPreview.cleanupShips()
+        boxedUIShipPreview?.cleanupShips()
     }
 
     private lateinit var pos: PositionAPI
@@ -139,7 +141,7 @@ class ShipPreviewOverlayPlugin(
         if (!isShipMissing) {
             if (hasMissingElements) {
                 val lockSize = 0.7f
-                val lockedSprite = Global.getSettings().getSprite("FleetBuilder", "mission_indicator")
+                val lockedSprite = Global.getSettings().getSprite("FleetBuilder", "mission_indicator")// !
                 lockedSprite.alphaMult = lockAlpha
                 lockedSprite.color = Color.YELLOW
                 val scaleFactor = lockSize * panel.width / max(lockedSprite.width, lockedSprite.height)
@@ -148,7 +150,7 @@ class ShipPreviewOverlayPlugin(
                 lockedSprite.renderAtCenter(panel.centerX, panel.top - panel.width / 2)
             }
         } else {
-            val xSprite = Global.getSettings().getSprite("ui", "checkmark_x")
+            val xSprite = Global.getSettings().getSprite("ui", "checkmark_x") // X
 
             xSprite.color = Misc.interpolateColor(Color.GRAY, Color.RED.darker(), 0.7f)
             xSprite.alphaMult = 0.9f

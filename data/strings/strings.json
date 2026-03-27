@@ -289,6 +289,18 @@
 
 
 
+  # Join Natural / pasteFleetDialog
+  "unknown_weapons": "weapons",
+  "unknown_wings": "fighter wings",
+  "unknown_hullmods": "hullmods",
+
+  "list_separator": ", ",
+  "list_two": "%s and %s",
+  "list_many": "%s, and %s",
+
+  "unknown_combined": "Some %s of this ship are unknown to the player",
+
+
 
 
 
