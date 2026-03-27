@@ -48,6 +48,7 @@ object HotkeyHandlerDialogs {
     fun createDevModeDialog() {
         val dialog = DialogPanel(FBTxt.txt("dev_options_title"))
         dialog.animation = ModalPanel.PanelAnimation.NONE
+        dialog.uiBorderColor = Color(255, 70, 70)
 
         dialog.show(width = 500f, height = 200f) { ui ->
             val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
@@ -173,8 +174,9 @@ object HotkeyHandlerDialogs {
         val rightWidth = 440f
         val leftWidth = width - rightWidth
 
-        val factionColor = faction.baseUIColor
-        val darkColor = faction.darkUIColor
+        val factionColor = Global.getSettings().basePlayerColor//faction.baseUIColor
+        val darkColor = Global.getSettings().darkPlayerColor //faction.darkUIColor
+        //dialog.uiBorderColor = faction.baseUIColor
 
         // IMPORTANT: persist outside UI rebuild
         var isPressedMemberID: String? = null
@@ -573,7 +575,7 @@ object HotkeyHandlerDialogs {
                 spec.isCombatOfficerSkill = !spec.isCombatOfficerSkill
             }
 
-            rightUI.addSectionHeading("Summary", Alignment.MID, 10f)
+            rightUI.addSectionHeading("Summary", factionColor, darkColor, Alignment.MID, 10f)
 
             val dp = members.sumOf { it.deploymentPointsCost.toDouble() }
 
@@ -589,11 +591,11 @@ object HotkeyHandlerDialogs {
                 dp.toInt().toString()
             )
 
-            rightUI.addSectionHeading("Actions", Alignment.MID, 10f)
+            rightUI.addSectionHeading("Actions", factionColor, darkColor, Alignment.MID, 10f)
 
             rightUI.addButton(
                 "Simulated Battle",
-                null,
+                null, factionColor, darkColor,
                 rightWidth - 40f,
                 30f,
                 5f
@@ -607,7 +609,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            rightUI.addToggle("Fight to the last", fightToTheLast).apply {
+            rightUI.addToggle("Fight to the last", fightToTheLast, textColor = factionColor).apply {
                 onClick {
                     fightToTheLast = !fightToTheLast
                     rebuildUI(totalHeight, listUI)
@@ -618,12 +620,12 @@ object HotkeyHandlerDialogs {
             }
             rightUI.addSpacer(10f)
 
-            rightUI.addToggle("Include officers", includeOfficers).onClick {
+            rightUI.addToggle("Include officers", includeOfficers, textColor = factionColor).onClick {
                 includeOfficers = !includeOfficers
                 rebuildUI(totalHeight, listUI)
             }
 
-            rightUI.addToggle("Include commander as commander", includeCommanderAsCommander).apply {
+            rightUI.addToggle("Include commander as commander", includeCommanderAsCommander, textColor = factionColor).apply {
                 onClick {
                     includeCommanderAsCommander = !includeCommanderAsCommander
                     rebuildUI(totalHeight, listUI)
@@ -633,29 +635,29 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            rightUI.addToggle("Fulfill needs and repair", repairAndSetMaxCR).onClick {
+            rightUI.addToggle("Fulfill needs and repair", repairAndSetMaxCR, textColor = factionColor).onClick {
                 repairAndSetMaxCR = !repairAndSetMaxCR
                 rebuildUI(totalHeight, listUI)
             }
 
-            rightUI.addToggle("Set aggression doctrine", setAggressionDoctrine).onClick {
+            rightUI.addToggle("Set aggression doctrine", setAggressionDoctrine, textColor = factionColor).onClick {
                 setAggressionDoctrine = !setAggressionDoctrine
                 rebuildUI(totalHeight, listUI)
             }
 
-            rightUI.addToggle("Exclude ships from missing mods", excludeMissingShips).onClick {
+            rightUI.addToggle("Exclude ships from missing mods", excludeMissingShips, textColor = factionColor).onClick {
                 excludeMissingShips = !excludeMissingShips
                 rebuildUI(totalHeight, listUI)
             }
 
             if (FBSettings.cheatsEnabled()) {
-                rightUI.addSectionHeading("Cheats", Alignment.MID, 10f)
+                rightUI.addSectionHeading("Cheats", factionColor, darkColor, Alignment.MID, 10f)
                 rightUI.addButton(
                     "Spawn Fleet Into Campaign",
-                    null,
+                    null, factionColor, darkColor,
                     rightWidth - 40f,
                     30f,
-                    5f
+                    5f,
                 ).onClick {
                     if (excludeMissingShips)
                         excludeMissingShips(fleet)
@@ -670,7 +672,7 @@ object HotkeyHandlerDialogs {
                 }
                 rightUI.addButton(
                     "Replace Player Fleet With This Fleet",
-                    null,
+                    null, factionColor, darkColor,
                     rightWidth - 40f,
                     30f,
                     5f
@@ -697,7 +699,7 @@ object HotkeyHandlerDialogs {
                 }
                 rightUI.addButton(
                     "Append To Player Fleet",
-                    null,
+                    null, factionColor, darkColor,
                     rightWidth - 40f,
                     30f,
                     5f

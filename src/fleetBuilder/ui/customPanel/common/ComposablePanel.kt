@@ -136,7 +136,7 @@ open class ComposablePanel : BasePanel() {
                 panel.x,
                 panel.y, panel.width,
                 panel.height, background.textureWidth,
-                background.textureHeight, alpha * background.alphaMult, Color.BLACK
+                background.textureHeight, alpha * background.alphaMult, background.color
             )
 
             if (renderUIBorders)
@@ -150,7 +150,11 @@ open class ComposablePanel : BasePanel() {
         val leftX = panel.position.x + 16
 
         listOf(top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight)
-            .forEach { it.alphaMult = alpha }
+            .forEach {
+                it.alphaMult = alpha
+                if (uiBorderColor != null)
+                    it.color = uiBorderColor
+            }
 
         //val rightX = panel.getPosition().getX() + panel.getPosition().getWidth() - 16
         val botX = panel.y + 16

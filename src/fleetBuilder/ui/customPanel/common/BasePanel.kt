@@ -16,6 +16,7 @@ import fleetBuilder.otherMods.starficz.y
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.FBMisc.renderTiledTexture
 import fleetBuilder.util.ReflectionMisc
+import java.awt.Color
 
 //Copied and heavily modified from AshLib
 
@@ -36,9 +37,10 @@ open class BasePanel : CustomUIPanelPlugin {
     protected fun sprite(cat: String, id: String): SpriteAPI =
         settings.getSprite(cat, id)
 
-    open val background = sprite("ui", "panel00_center")
+    open val background by lazy { sprite("ui", "panel00_center").apply { color = Color.BLACK } }
 
     open var renderUIBorders = true
+    open var uiBorderColor: Color? = null
 
     var initOccured = false
         private set
@@ -125,8 +127,11 @@ open class BasePanel : CustomUIPanelPlugin {
             background.textureHeight, alpha * background.alphaMult, background.color
         )
 
-        if (renderUIBorders)
-            UIUtils.renderUILines(panel, alphaMult)
+        if (renderUIBorders) {
+            uiBorderColor?.let { UIUtils.renderUILines(panel, alphaMult, boxColor = it) }
+                ?: UIUtils.renderUILines(panel, alphaMult)
+
+        }
     }
 
     override fun positionChanged(position: PositionAPI?) {
