@@ -47,6 +47,19 @@ object DataPerson {
         person: PersonAPI, settings: PersonSettings = PersonSettings(),
         filterParsed: Boolean = true
     ): ParsedPersonData {
+        val memKeys = person.memoryWithoutUpdate.keys.associateWith { key -> person.memoryWithoutUpdate[key] }.toMutableMap()
+
+        // Vanilla AICore officers in enemy fleets are not marked as built in even if they exceed the usual max level and thus should be considered as so. We fix that here.
+        if (person.isAICore) {
+            val sameTypeAICore = runCatching {
+                Misc.getAICoreOfficerPlugin(person.aiCoreId).createPerson(person.aiCoreId, Factions.PLAYER, Random()).apply {
+                    stats.skillsCopy.forEach { stats.setSkillLevel(it.skill.id, 0f) }
+                }
+            }.getOrNull()
+            if (sameTypeAICore != null && sameTypeAICore.stats.level < person.stats.level) // If the same type AI core has a lower level
+                memKeys[Misc.CAPTAIN_UNREMOVABLE] = true // Then this is a built-in AI core that has had it's level +1'ed
+        }
+
         val data = ParsedPersonData(
             aiCoreId = if (person.isAICore) person.aiCoreId else "",
             first = person.name.first,
@@ -62,7 +75,7 @@ object DataPerson {
             xp = person.stats.xp,
             bonusXp = person.stats.bonusXp,
             points = person.stats.points,
-            memKeys = person.memoryWithoutUpdate.keys.associateWith { key -> person.memoryWithoutUpdate[key] }
+            memKeys = memKeys
         )
         if (filterParsed)
             return filterParsedPersonData(data, settings)

@@ -21,6 +21,7 @@ import fleetBuilder.ui.common.ObservedTextField
 import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.HullUtils
+import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import org.json.JSONArray
 import org.json.JSONObject
@@ -30,6 +31,14 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
 
+
+fun PersonAPI.getMaxOfficerLevel(): Int {
+    return PersonUtils.getMaxOfficerLevel(this)
+}
+
+fun PersonAPI.getMaxOfficerEliteSkills(): Int {
+    return PersonUtils.getMaxOfficerEliteSkills(this)
+}
 
 internal fun UIPanelAPI.whiteBoxForTesting(width: Float? = null, height: Float? = null): ButtonAPI {
     val whiteBox = this.addButton(

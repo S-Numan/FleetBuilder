@@ -11,6 +11,7 @@ import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.UIUtils.easeCubic
 import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
+import java.awt.Color
 
 open class ModalPanel : ComposablePanel() {
 
@@ -49,7 +50,15 @@ open class ModalPanel : ComposablePanel() {
     override var tooltipPadFromTop = 10f
     override var tooltipPadFromBottom = 10f
     override var createUIOnInit: Boolean = false
-    override var darkenBackground: Boolean = true
+    open var darkenBackground: Boolean = true
+    open var darkenBackgroundAlphaMult: Float = 0.6f
+
+    override fun renderBelow(alphaMult: Float) {
+        if (darkenBackground)
+            UIUtils.darkenBackground(alphaMult * (alpha * darkenBackgroundAlphaMult), Color.BLACK)
+
+        super.renderBelow(alphaMult)
+    }
 
     override fun init(
         width: Float,

@@ -6,12 +6,34 @@ import com.fs.starfarer.api.campaign.FactionAPI
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
+import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.PersonSettings
 import fleetBuilder.util.LookupUtils
 import java.util.*
 
+
 object PersonUtils {
+
+    fun getMaxOfficerLevel(person: PersonAPI): Int {
+        if (person.isPlayer) {
+            val levelUpPlugin = Global.getSettings().levelupPlugin
+            return levelUpPlugin.maxLevel
+            //return Global.getSettings().getInt("playerMaxLevel")
+        } else if (!person.isAICore) {
+            val plugin = Global.getSettings().getPlugin("officerLevelUp") as OfficerLevelupPlugin
+            return plugin.getMaxLevel(person)
+        }
+        return person.stats.level
+    }
+
+    fun getMaxOfficerEliteSkills(person: PersonAPI): Int {
+        if (!person.isAICore) {
+            val plugin = Global.getSettings().getPlugin("officerLevelUp") as OfficerLevelupPlugin
+            return plugin.getMaxEliteSkills(person)
+        }
+        return person.stats.level
+    }
 
     fun getAllSourceModsFromPerson(
         person: PersonAPI,
