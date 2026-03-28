@@ -26,6 +26,7 @@ class ShipPreviewOverlayPlugin(
     val showSModAndDModBars: Boolean = false,
     val showOfficersAndFlagship: Boolean = false,
     manualScaleShipsToBetterFit: Boolean = false,
+    disableScissor: Boolean = false,
     val missingElements: MissingElements = MissingElements()
 ) : StarUIPanelPlugin(panel) {
     val hasMissingElements: Boolean by lazy { missingElements.weaponIds.isNotEmpty() || missingElements.hullModIds.isNotEmpty() || missingElements.wingIds.isNotEmpty() }
@@ -79,7 +80,7 @@ class ShipPreviewOverlayPlugin(
         val specialConfigs = if (manualScaleShipsToBetterFit) {
             // Configurations for special hull IDs
             mapOf(
-                "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 12f, disableScissor = true),
+                "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 11f, disableScissor = true),
                 "radiant" to ShipDisplayConfig(scaleFactor = 0.95f, yOffset = 10f, disableScissor = true),
                 "paragon" to ShipDisplayConfig(scaleFactor = 0.94f, yOffset = 15f, disableScissor = true),
                 "pegasus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
@@ -94,7 +95,7 @@ class ShipPreviewOverlayPlugin(
         val config = specialConfigs[effectiveHullId] ?: ShipDisplayConfig()
 
         // Apply config
-        if (config.disableScissor) {
+        if (config.disableScissor || disableScissor) {
             boxedUIShipPreview!!.setScissor(false)
         }
 

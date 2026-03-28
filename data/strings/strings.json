@@ -139,7 +139,7 @@
   # In combat creation
   "cannot_spawn_ship_of_hull":"Cannot spawn ship of hull '%s' ",
   "ship_player_not_aware":"The player is not aware of this ship.",
-  "ship_hidden_in_codex":"This ship is hidden in the codex, which suggests it cannot be simulated.",
+  "ship_is_restricted":"This ship is 'restricted' and thus cannot be simulated.",
   "ship_exceed_fleet_limit":"Would exceed Fleet Point limit.",
   "ship_no_free_location":"Cannot find free location.",
   "ship_no_sim":"Ship is unable to be simulated",

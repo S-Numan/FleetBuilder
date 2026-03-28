@@ -9,6 +9,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetGoal
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
+import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.FaderUtil
@@ -159,7 +160,8 @@ object HotkeyHandlerDialogs {
 
     fun pasteFleetDialog(
         inputData: DataFleet.ParsedFleetData,
-        missing: MissingElements
+        missing: MissingElements,
+        allowSimulationAnyway: Boolean = false
     ): Boolean {
         val sector = Global.getSector()
         val data = inputData.copy(
@@ -231,6 +233,7 @@ object HotkeyHandlerDialogs {
                 data,
                 true, settings = settings, missing = missingEx
             )
+            val fleetData = fleet.fleetData
 
             if (repairAndSetMaxCR)
                 FleetUtils.fullFleetRepair(fleet.fleetData)
@@ -238,25 +241,11 @@ object HotkeyHandlerDialogs {
             if (fightToTheLast)
                 fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
 
-            val members = fleet.fleetData.membersListCopy
-
-            val memberCount = members.size
-            val officerCount = members.count { it.captain != null && !it.captain.isDefault }
-
-            val text = if (officerCount > 0) {
-                if (officerCount > 1)
-                    txtPlural("pasted_fleet_members_officers", memberCount, memberCount, officerCount)
-                else
-                    txtPlural("pasted_fleet_members_officer", memberCount, memberCount, officerCount)
-            } else {
-                txtPlural("pasted_fleet_members_only", memberCount)
-            }
-
-            val missingHullCount = members.count {
+            /*val missingHullCount = fleetData.membersListCopy.count {
                 it.variant.hasTag(VariantUtils.getFBVariantErrorTag())
-            }
+            }*/
 
-            if (members.none { it.id == isPressedMemberID })
+            if (fleetData.membersListCopy.none { it.id == isPressedMemberID })
                 isPressedMemberID = null
 
 
@@ -289,12 +278,12 @@ object HotkeyHandlerDialogs {
             val padding = 10f
             val numPerRow = Math.max(1, (leftWidth / (size + padding)).toInt())
 
-            val rows = (members.size + numPerRow - 1) / numPerRow
+            val rows = (fleetData.membersListCopy.size + numPerRow - 1) / numPerRow
             val totalHeight = rows * (size + padding)
 
             val listPanel = dialog.panel.createCustomPanel(leftWidth, totalHeight, null)
 
-            members.toList().forEachIndexed { index, member ->
+            fleetData.membersListCopy.toList().forEachIndexed { index, member ->
                 val col = index % numPerRow
                 val row = index / numPerRow
                 val x = col * (size + padding)
@@ -305,12 +294,35 @@ object HotkeyHandlerDialogs {
 
                 val dataMember = data.members.find { it.id == member.id }
 
-                if (!FBSettings.cheatsEnabled() && member.variant.hasTag(VariantUtils.getFBVariantErrorTag())) {
+                if (member.variant.hasTag(VariantUtils.getFBVariantErrorTag())) {
                     val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.RED
                     boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 600f) { tooltip ->
                         tooltip.addPara("Hull id '${dataMember?.variantData?.hullId}' could not be found.\nThe mod which added this hull may be missing or an update may have removed this hull", 0f)
+                    }
+
+                    return@forEachIndexed
+                }
+
+                if (!FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.RESTRICTED) || member.variant.hasTag(Tags.RESTRICTED))) {
+                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
+                    boxedImage.position.inTL(x, y)
+                    boxedImage.sprite.color = Color.RED
+                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
+                        tooltip.addPara("This ship is '${Tags.RESTRICTED}' and thus cannot be simulated")
+                    }
+
+                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    return@forEachIndexed
+                }
+
+                if (!FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM))) {
+                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
+                    boxedImage.position.inTL(x, y)
+                    boxedImage.sprite.color = Color.RED
+                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
+                        tooltip.addPara("This ship is unable to be simulated")
                     }
 
                     member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
@@ -336,7 +348,8 @@ object HotkeyHandlerDialogs {
                     scaleDownSmallerShips = true,
                     showOfficersAndFlagship = true,
                     showSModAndDModBars = true,
-                    manualScaleShipsToBetterFit = true
+                    manualScaleShipsToBetterFit = true,
+                    disableScissor = true,
                 )
                 previewList.add(preview)
 
@@ -448,7 +461,7 @@ object HotkeyHandlerDialogs {
             if (isPressedMemberID != null) {
                 val officerPanel = leftPanel.createCustomPanel(leftWidth, officerPanelHeight, null)
 
-                val member = members.find { it.id == isPressedMemberID }!!
+                val member = fleetData.membersListCopy.find { it.id == isPressedMemberID }!!
                 val captain = member.captain
 
                 val officerUI = officerPanel.createUIElement(leftWidth, officerPanelHeight, false)
@@ -463,9 +476,7 @@ object HotkeyHandlerDialogs {
 
                 officerPanel.addUIElement(officerUI).inTL(0f, 0f)
 
-                // =========================
-                // SHIP PREVIEW (PLUGIN)
-                // =========================
+
                 val shipSize = 240f
 
                 val preview = ShipPreviewOverlayPlugin(
@@ -475,6 +486,7 @@ object HotkeyHandlerDialogs {
                     showFighters = true,
                     manualScaleShipsToBetterFit = true,
                     showSModAndDModBars = true,
+                    disableScissor = true,
                 )
                 previewList.add(preview)
                 val dataMember = data.members.find { it.id == member.id }
@@ -667,7 +679,23 @@ object HotkeyHandlerDialogs {
 
             rightUI.addSectionHeading("Summary", factionColor, darkColor, Alignment.MID, 10f)
 
-            val dp = members.sumOf { it.deploymentPointsCost.toDouble() }
+            val allowedMemberList =
+                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(VariantUtils.getFBVariantErrorTag()) }
+                else fleetData.membersListCopy
+
+            val dp = allowedMemberList.sumOf { it.deploymentPointsCost.toDouble() }
+            val memberCount = allowedMemberList.size
+            val officerCount = allowedMemberList.count { it.captain != null && !it.captain.isDefault }
+
+            val text = if (officerCount > 0) {
+                if (officerCount > 1)
+                    txtPlural("pasted_fleet_members_officers", memberCount, memberCount, officerCount)
+                else
+                    txtPlural("pasted_fleet_members_officer", memberCount, memberCount, officerCount)
+            } else {
+                txtPlural("pasted_fleet_members_only", memberCount)
+            }
+
 
             rightUI.addPara(
                 text, 5f,
