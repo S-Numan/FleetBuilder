@@ -143,8 +143,8 @@ internal object AutofitPanel {
                     deleteSelf()
                     event.consume()
                 } else if ((
-                            UIUtils.isMouseHoveringOverComponent(autofitPanel, 8f) // Inside the autofitPanel? (grid that shows ships)
-                                    || (baseVariantPanel != null && UIUtils.isMouseHoveringOverComponent(baseVariantPanel!!, 8f)) // Inside the baseVariantPanel? (current variant)
+                            UIUtils.isMouseHoveringOverComponent(autofitPanel, pad = 8f) // Inside the autofitPanel? (grid that shows ships)
+                                    || (baseVariantPanel != null && UIUtils.isMouseHoveringOverComponent(baseVariantPanel!!, pad = 8f)) // Inside the baseVariantPanel? (current variant)
                                     || !UIUtils.isMouseWithinBounds(parentPanel.x, parentPanel.y, parentPanel.width, parentPanel.height) // Outside parent?
                             ) && (
                             event.isKeyboardEvent

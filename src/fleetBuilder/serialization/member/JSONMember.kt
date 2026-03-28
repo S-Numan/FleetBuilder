@@ -12,6 +12,7 @@ import fleetBuilder.util.FBMisc
 import fleetBuilder.util.roundToDecimals
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
+import java.util.Random
 
 object JSONMember {
     @JvmOverloads
@@ -65,11 +66,12 @@ object JSONMember {
     fun getMemberFromJson(
         json: JSONObject,
         settings: MemberSettings = MemberSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingElements = MissingElements(),
+        random: Random = Random()
     ): FleetMemberAPI {
         val parsed = extractMemberDataFromJson(json, missing)
 
-        return buildMemberFull(parsed, settings, missing)
+        return buildMemberFull(parsed, settings, missing, random)
     }
 
     @JvmOverloads

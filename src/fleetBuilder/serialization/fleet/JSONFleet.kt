@@ -21,6 +21,7 @@ import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.util.FBMisc
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Random
 
 object JSONFleet {
     @JvmOverloads
@@ -122,11 +123,12 @@ object JSONFleet {
         json: JSONObject,
         fleet: FleetDataAPI,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingElements = MissingElements(),
+        random: Random = Random()
     ) {
         val extracted = extractFleetDataFromJson(json)
 
-        buildFleetFull(extracted, fleet, settings, missing)
+        buildFleetFull(extracted, fleet, settings, missing, random)
     }
 
     @JvmOverloads
@@ -134,11 +136,12 @@ object JSONFleet {
         json: JSONObject,
         aiMode: Boolean,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingElements = MissingElements(),
+        random: Random = Random(),
     ): CampaignFleetAPI {
         val extracted = extractFleetDataFromJson(json)
 
-        return createCampaignFleetFromData(extracted, aiMode, settings, missing)
+        return createCampaignFleetFromData(extracted, aiMode, settings, missing, random)
     }
 
     @JvmOverloads

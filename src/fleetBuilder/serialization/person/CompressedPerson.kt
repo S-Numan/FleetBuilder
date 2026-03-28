@@ -15,6 +15,7 @@ import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.roundToDecimals
+import java.util.Random
 
 object CompressedPerson {
     fun isCompressedPerson(comp: String): Boolean {
@@ -30,12 +31,13 @@ object CompressedPerson {
         comp: String,
         settings: PersonSettings = PersonSettings(),
         missing: MissingElements = MissingElements(),
+        random: Random = Random()
     ): PersonAPI {
         val parsed = extractPersonDataFromCompString(comp, missing) ?: run {
             DataPerson.ParsedPersonData()
         }
 
-        return buildPersonFull(parsed, settings, missing)
+        return buildPersonFull(parsed, settings, missing, random)
     }
 
     @JvmOverloads

@@ -124,7 +124,7 @@ open class ModalPanel : ComposablePanel() {
                 if (hotkeyClosesOnRelease && escapeRequested) {
                     if (
                         (event.isKeyUpEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                        (event.isRMBUpEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
+                        (event.isRMBUpEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = 4f))
                     ) {
                         dismiss()
                         event.consume()
@@ -136,7 +136,7 @@ open class ModalPanel : ComposablePanel() {
                         escapeRequested = true
                 } else if (
                     (event.isKeyDownEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                    (event.isRMBDownEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
+                    (event.isRMBDownEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = 4f))
                 ) {
                     if (hotkeyClosesOnRelease)
                         escapeRequested = true

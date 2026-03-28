@@ -45,6 +45,7 @@ import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import java.awt.Color
+import java.util.*
 
 
 object HotkeyHandlerDialogs {
@@ -229,9 +230,12 @@ object HotkeyHandlerDialogs {
 
             val missingEx = MissingElements()
             missingEx.add(missing)
+
+            val deterministicRandom = Random(99999)
+
             val fleet = DataFleet.createCampaignFleetFromData(
                 data,
-                true, settings = settings, missing = missingEx
+                true, settings = settings, missing = missingEx, random = deterministicRandom
             )
             val fleetData = fleet.fleetData
 
@@ -348,7 +352,7 @@ object HotkeyHandlerDialogs {
                     scaleDownSmallerShips = true,
                     showOfficersAndFlagship = true,
                     showSModAndDModBars = true,
-                    manualScaleShipsToBetterFit = true,
+                    //manualScaleShipsToBetterFit = true,
                     disableScissor = true,
                 )
                 previewList.add(preview)
@@ -357,7 +361,7 @@ object HotkeyHandlerDialogs {
                     DataMember.validateAndCleanMemberData(dataMember, missing = preview.missingElements)
 
                 preview.onKeyDown { event ->
-                    if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel)) {
+                    if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel, mouseX = event.x, mouseY = event.y)) {
                         Global.getSettings().showCodex(member)
                         event.consume()
                     }
@@ -484,7 +488,7 @@ object HotkeyHandlerDialogs {
                     shipSize,
                     shipSize,
                     showFighters = true,
-                    manualScaleShipsToBetterFit = true,
+                    //manualScaleShipsToBetterFit = true,
                     showSModAndDModBars = true,
                     disableScissor = true,
                 )
@@ -494,7 +498,7 @@ object HotkeyHandlerDialogs {
                     DataMember.validateAndCleanMemberData(dataMember, missing = preview.missingElements)
 
                 preview.onKeyDown { event ->
-                    if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel)) {
+                    if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel, mouseX = event.x, mouseY = event.y)) {
                         Global.getSettings().showCodex(member)
                         event.consume()
                     }
@@ -521,7 +525,7 @@ object HotkeyHandlerDialogs {
 
                 officerPanel.addPara("Personality: " + member.captain.getPersonalityName())
 
-                if (!captain.isDefault) {
+                if (!captain.isDefault && captain.portraitSprite != null) {
                     val officerSprite = officerPanel.addImage(captain.portraitSprite, 75f, 75f)
                     officerSprite.position.inTL(0f, 20f)
                     officerSprite.opacity = 0.3f
@@ -1075,6 +1079,15 @@ object HotkeyHandlerDialogs {
                 addDescription = false,
                 centerTitle = true
             )
+            selectorPlugin.onKeyDown { event ->
+                if (selectorPlugin.autofitSpec == null)
+                    return@onKeyDown
+
+                if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(selectorPlugin.selectorPanel, mouseX = event.x, mouseY = event.y)) {
+                    Global.getSettings().showCodex(selectorPlugin.autofitSpec!!.variant.createFleetMember())
+                    event.consume()
+                }
+            }
             dialog.onExit {
                 selectorPlugin.cleanup()
             }

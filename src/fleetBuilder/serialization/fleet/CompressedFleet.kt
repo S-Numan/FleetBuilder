@@ -20,6 +20,7 @@ import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.api.FleetUtils.getAllSourceModsFromFleet
 import fleetBuilder.util.lib.CompressionUtil
+import java.util.Random
 
 object CompressedFleet {
     fun isCompressedFleet(comp: String): Boolean {
@@ -36,12 +37,13 @@ object CompressedFleet {
         aiMode: Boolean,
         settings: FleetSettings = FleetSettings(),
         missing: MissingElements = MissingElements(),
+        random: Random = Random(),
     ): CampaignFleetAPI {
         val parsed = extractFleetDataFromCompString(comp, missing) ?: run {
             DataFleet.ParsedFleetData()
         }
 
-        return createCampaignFleetFromData(parsed, aiMode = aiMode, settings, missing)
+        return createCampaignFleetFromData(parsed, aiMode = aiMode, settings, missing, random)
     }
 
     @JvmOverloads

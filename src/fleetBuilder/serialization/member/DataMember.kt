@@ -15,6 +15,7 @@ import fleetBuilder.serialization.variant.DataVariant.filterParsedVariantData
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.serialization.variant.DataVariant.validateAndCleanVariantData
 import fleetBuilder.util.api.VariantUtils
+import java.util.*
 
 object DataMember {
     data class ParsedMemberData(
@@ -80,9 +81,10 @@ object DataMember {
     @JvmOverloads
     fun validateAndCleanMemberData(
         data: ParsedMemberData,
-        missing: MissingElements = MissingElements()
+        missing: MissingElements = MissingElements(),
+        random: Random = Random()
     ): ParsedMemberData {
-        val personData = if (data.personData != null) validateAndCleanPersonData(data.personData, missing) else null
+        val personData = if (data.personData != null) validateAndCleanPersonData(data.personData, missing, random) else null
 
         val variantData = if (data.variantData != null) {
             validateAndCleanVariantData(data.variantData, missing)
@@ -99,7 +101,7 @@ object DataMember {
         )
     }
 
-    fun buildMember(data: ParsedMemberData): FleetMemberAPI {
+    fun buildMember(data: ParsedMemberData, random: Random = Random()): FleetMemberAPI {
         // Variant
         val variant = if (data.variantData != null)
             buildVariant(data.variantData)
@@ -112,7 +114,7 @@ object DataMember {
 
         // Officer
         if (data.personData != null)
-            member.captain = buildPerson(data.personData)
+            member.captain = buildPerson(data.personData, random)
 
         // Set name and CR
         member.shipName = data.shipName
@@ -146,14 +148,15 @@ object DataMember {
     fun buildMemberFull(
         data: ParsedMemberData,
         settings: MemberSettings = MemberSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingElements = MissingElements(),
+        random: Random = Random()
     ): FleetMemberAPI {
         val ourMissing = MissingElements()
 
-        val cleaned = validateAndCleanMemberData(data, ourMissing)
+        val cleaned = validateAndCleanMemberData(data, ourMissing, random)
         val filtered = filterParsedMemberData(cleaned, settings, ourMissing)
 
         missing.add(ourMissing)
-        return buildMember(filtered)
+        return buildMember(filtered, random)
     }
 }

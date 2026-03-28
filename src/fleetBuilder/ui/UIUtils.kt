@@ -182,20 +182,30 @@ object UIUtils {
         GL11.glPopMatrix()
     }
 
-    fun isMouseHoveringOverComponent(component: UIComponentAPI, pad: Float = 0f): Boolean {
+    @JvmOverloads
+    fun isMouseHoveringOverComponent(
+        component: UIComponentAPI,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+        pad: Float = 0f,
+    ): Boolean {
         val x = component.position.x - pad
         val y = component.position.y - pad
         val width = component.position.width + pad * 2
         val height = component.position.height + pad * 2
 
-        return isMouseWithinBounds(x, y, width, height)
+        return isMouseWithinBounds(x, y, width, height, mouseX, mouseY)
     }
 
-    fun isMouseWithinBounds(x: Float, y: Float, width: Float, height: Float): Boolean {
-        val settings = Global.getSettings()
-        val mouseX = settings.mouseX
-        val mouseY = settings.mouseY
-
+    @JvmOverloads
+    fun isMouseWithinBounds(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+    ): Boolean {
         return mouseX >= x && mouseX <= x + width &&
                 mouseY >= y && mouseY <= y + height
     }

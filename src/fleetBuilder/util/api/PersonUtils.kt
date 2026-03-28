@@ -89,7 +89,7 @@ object PersonUtils {
         else if (gender == FullName.Gender.FEMALE)
             faction.femalePortraits.pick(random)
         else
-            if (Random().nextBoolean()) faction.malePortraits.pick(random) else faction.femalePortraits.pick(random)
+            if (random.nextBoolean()) faction.malePortraits.pick(random) else faction.femalePortraits.pick(random)
     }
 
     fun randomizePersonCosmetics(

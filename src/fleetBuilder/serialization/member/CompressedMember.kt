@@ -17,6 +17,7 @@ import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.roundToDecimals
+import java.util.Random
 
 object CompressedMember {
     fun isCompressedMember(comp: String): Boolean {
@@ -32,12 +33,13 @@ object CompressedMember {
         comp: String,
         settings: MemberSettings = MemberSettings(),
         missing: MissingElements = MissingElements(),
+        random: Random = Random(),
     ): FleetMemberAPI {
         val parsed = extractMemberDataFromCompString(comp, missing) ?: run {
             DataMember.ParsedMemberData()
         }
 
-        return buildMemberFull(parsed, settings, missing)
+        return buildMemberFull(parsed, settings, missing, random)
     }
 
     @JvmOverloads

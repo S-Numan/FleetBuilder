@@ -13,6 +13,7 @@ import fleetBuilder.util.roundToDecimals
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
+import java.util.Random
 
 object JSONPerson {
     @JvmOverloads
@@ -91,11 +92,12 @@ object JSONPerson {
     fun getPersonFromJson(
         json: JSONObject,
         settings: PersonSettings = PersonSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingElements = MissingElements(),
+        random: Random = Random()
     ): PersonAPI {
         val data = extractPersonDataFromJson(json, missing)
 
-        return buildPersonFull(data, settings, missing)
+        return buildPersonFull(data, settings, missing, random)
     }
 
     @JvmOverloads

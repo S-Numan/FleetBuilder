@@ -9,9 +9,11 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.MissingElements
+import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.getEffectiveHullId
+import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
 import kotlin.math.max
@@ -27,6 +29,7 @@ class ShipPreviewOverlayPlugin(
     val showOfficersAndFlagship: Boolean = false,
     manualScaleShipsToBetterFit: Boolean = false,
     disableScissor: Boolean = false,
+    val openCodexWithHotkey: Boolean = false,
     val missingElements: MissingElements = MissingElements()
 ) : StarUIPanelPlugin(panel) {
     val hasMissingElements: Boolean by lazy { missingElements.weaponIds.isNotEmpty() || missingElements.hullModIds.isNotEmpty() || missingElements.wingIds.isNotEmpty() }
@@ -115,6 +118,16 @@ class ShipPreviewOverlayPlugin(
         panel.addComponent(shipPreview).inTL(0f, 0f)
         shipPreview.position.inTL(offsetX, offsetY)
         //}
+
+        if (openCodexWithHotkey) {
+            onKeyDown { event ->
+                if (event.isConsumed) return@onKeyDown
+                if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y)) {
+                    Global.getSettings().showCodex(member)
+                    event.consume()
+                }
+            }
+        }
     }
 
     fun cleanup() {

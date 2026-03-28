@@ -148,7 +148,8 @@ object DataPerson {
     @JvmOverloads
     fun validateAndCleanPersonData(
         data: ParsedPersonData,
-        missing: MissingElements = MissingElements()
+        missing: MissingElements = MissingElements(),
+        random: Random = Random()
     ): ParsedPersonData {
         val validSkills = data.skills.filterKeys {
             val exists = Global.getSettings().skillIds.contains(it)
@@ -158,14 +159,6 @@ object DataPerson {
 
         val validPortrait = try {
             if (data.portrait == null) {
-                val consistentRandomSeed = buildString {
-                    append(data.first)
-                    data.skills.toSortedMap().forEach { (k, v) ->
-                        append(k)
-                        append(v.toBits())
-                    }
-                }.hashCode().toLong()
-                val random = Random(consistentRandomSeed)
                 PersonUtils.getRandomPortrait(data.gender, random = random)
             } else if (data.portrait.isNotEmpty()) {
                 val sprite = Global.getSettings().getSprite(data.portrait)
@@ -174,7 +167,7 @@ object DataPerson {
                 data.portrait
             } else data.portrait
         } catch (_: Exception) {
-            PersonUtils.getRandomPortrait(data.gender)
+            PersonUtils.getRandomPortrait(data.gender, random = random)
         }
 
         return data.copy(
@@ -183,10 +176,10 @@ object DataPerson {
         )
     }
 
-    fun buildPerson(data: ParsedPersonData): PersonAPI {
+    fun buildPerson(data: ParsedPersonData, random: Random = Random()): PersonAPI {
         val person = if (data.aiCoreId.isNotEmpty()) {
             try {
-                Misc.getAICoreOfficerPlugin(data.aiCoreId).createPerson(data.aiCoreId, Factions.PLAYER, Random()).apply {
+                Misc.getAICoreOfficerPlugin(data.aiCoreId).createPerson(data.aiCoreId, Factions.PLAYER, random).apply {
                     stats.skillsCopy.forEach { stats.setSkillLevel(it.skill.id, 0f) }
                 }
             } catch (_: Exception) {
@@ -204,13 +197,13 @@ object DataPerson {
         person.setPersonality(data.personality)
 
         if (data.portrait == null) {
-            person.portraitSprite = PersonUtils.getRandomPortrait(data.gender)
+            person.portraitSprite = PersonUtils.getRandomPortrait(data.gender, random = random)
         } else if (data.portrait.isNotEmpty()) {
             person.portraitSprite = data.portrait
         }
 
         data.tags.forEach { person.addTag(it) }
-        data.skills.forEach { (id, level) -> person.stats.setSkillLevel(id, level.toFloat()) }
+        data.skills.forEach { (id, level) -> person.stats.setSkillLevel(id, level) }
 
         val level = if (data.level > 0) data.level else data.skills.count()
         person.stats.level = level
@@ -242,18 +235,19 @@ object DataPerson {
     fun buildPersonFull(
         data: ParsedPersonData,
         settings: PersonSettings = PersonSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingElements = MissingElements(),
+        random: Random = Random()
     ): PersonAPI {
         val ourMissing = MissingElements()
 
         // Validate data (e.g., skills/portraits exist)
-        val validatedData = validateAndCleanPersonData(data, ourMissing)
+        val validatedData = validateAndCleanPersonData(data, ourMissing, random)
 
         // Filter data based on settings (e.g., exclude certain skills)
         val filteredData = filterParsedPersonData(validatedData, settings, ourMissing)
         missing.add(ourMissing)
 
         // Build actual PersonAPI object
-        return buildPerson(filteredData)
+        return buildPerson(filteredData, random)
     }
 }
