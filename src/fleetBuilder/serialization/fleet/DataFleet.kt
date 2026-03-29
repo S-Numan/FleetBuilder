@@ -233,7 +233,6 @@ object DataFleet {
     fun buildFleet(
         data: ParsedFleetData,
         fleet: FleetDataAPI,
-        settings: FleetSettings = FleetSettings(),
         random: Random = Random()
     ) {
         val campFleet: CampaignFleetAPI? = fleet.fleet
@@ -313,7 +312,7 @@ object DataFleet {
         val filtered = filterParsedFleetData(validated, settings, ourMissing)
         missing.add(ourMissing)
 
-        buildFleet(filtered, fleet, settings, random)
+        buildFleet(filtered, fleet, random)
     }
 
     @JvmOverloads
