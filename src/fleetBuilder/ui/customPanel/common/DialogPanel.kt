@@ -25,7 +25,12 @@ open class DialogPanel(
     var cancelButtonShortcut = Keyboard.KEY_ESCAPE
 
     override var dialogStyle: Boolean = true
+    override var tooltipPadFromSide = 12f
+    override var tooltipPadFromTop = 10f
+    override var tooltipPadFromBottom = 10f
+
     override var darkenBackground: Boolean = true
+    override var useCampaignDummyDialogAndPauseCombat = true
 
     override fun createUI() {
         createHeader()

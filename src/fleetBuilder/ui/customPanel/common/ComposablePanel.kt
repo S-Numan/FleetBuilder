@@ -29,6 +29,7 @@ open class ComposablePanel : BasePanel() {
      * Builds the UI for this panel. Occurs after open animation finish, if animation is present.
      */
     open fun buildUI(
+        withScroller: Boolean = false,
         callback: (TooltipMakerAPI) -> Unit
     ) {
         // store a callback
@@ -36,10 +37,11 @@ open class ComposablePanel : BasePanel() {
             // create the tooltip
             val tooltipWidth = panel.width - (tooltipPadFromSide * 2)
             val tooltipHeight = panel.height - tooltipPadFromBottom - tooltipPadFromTop
-            tooltip = panel.createUIElement(tooltipWidth, tooltipHeight, false)
+            tooltip = panel.createUIElement(tooltipWidth, tooltipHeight, withScroller)
             tooltip!!.setSize(tooltipWidth, tooltipHeight)
 
-            // Align new tooltip components to the top left to rid of the mysterious 5f x pad
+            // Align new tooltip components to the top left to rid of the mysterious 5f x pad in some components, such as buttons.
+            // This will cause mis-positioning for components that rely on it, such as headers. I advise using .position.setXAlignOffset(0f) to re-align them.
             tooltip!!.addSpacer(0f).position?.inTL(0f, 0f)
 
             // run the user code
@@ -98,10 +100,11 @@ open class ComposablePanel : BasePanel() {
         parent: UIPanelAPI? = null,
         xOffset: Float? = null,
         yOffset: Float? = null,
+        withScroller: Boolean = false,
         callback: (TooltipMakerAPI) -> Unit
         //ui: TooltipMakerAPI.() -> Unit
     ) {
-        buildUI(callback)
+        buildUI(withScroller, callback)
         show(width = width, height = height, parent = parent, xOffset = xOffset, yOffset = yOffset)
     }
 }

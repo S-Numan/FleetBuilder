@@ -278,7 +278,7 @@ object HotkeyHandlerDialogs {
                 darkColor,
                 Alignment.MID,
                 0f
-            )
+            ).position.setXAlignOffset(0f)
 
             val size = 129f
             val padding = 10f

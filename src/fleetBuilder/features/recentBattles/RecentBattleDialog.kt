@@ -6,7 +6,11 @@ import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.pasteFleetDialog
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectory
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
 import fleetBuilder.otherMods.starficz.onClick
+import fleetBuilder.otherMods.starficz.width
+import fleetBuilder.otherMods.starficz.x
+import fleetBuilder.otherMods.starficz.y
 import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.ui.customPanel.common.ModalPanel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,11 +27,9 @@ object RecentBattleDialog {
     ) {
         val dialog = DialogPanel()
 
-        val width = 1200f
-        val height = 800f
 
-        dialog.show(width = width, height = height) { ui ->
 
+        dialog.show(width = 1200f, height = 800f) { ui ->
             val allEntries = directory.getRawFleetEntries().values.toList()
 
             val factions = allEntries
@@ -45,16 +47,58 @@ object RecentBattleDialog {
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
 
             // ===== Controls =====
-            ui.addSectionHeading("Filters & Sorting", Alignment.MID, 10f)
+            ui.addSectionHeading("Filters & Sorting", Alignment.MID, 0f).position.setXAlignOffset(0f)
 
             val factionLabel = selectedFaction ?: "All"
 
-            ui.addButton("Faction: $factionLabel", null, 250f, 30f, 5f).onClick {
-                val options = listOf<String?>(null) + factions
-                val index = options.indexOf(selectedFaction)
-                val next = options[(index + 1) % options.size]
+            val factionButton = ui.addButton(
+                "Faction: $factionLabel",
+                null,
+                250f,
+                30f,
+                5f
+            )
 
-                showDialog(directory, next, sortNewestFirst)
+            factionButton.onClick {
+                val dropDown = ModalPanel()
+
+                dropDown.show(
+                    width = 300f,
+                    height = 400f,
+                    xOffset = factionButton.x,
+                    yOffset = factionButton.y,
+                    withScroller = true
+                ) { ddUI ->
+                    // ===== "All" option =====
+                    ddUI.addButton("All", null, ddUI.width, 28f, 0f).onClick {
+                        dropDown.dismiss()
+                        dialog.forceDismiss(false)
+                        showDialog(directory, null, sortNewestFirst)
+                    }
+
+                    // ===== Faction options =====
+                    for (factionId in factions) {
+                        val faction = Global.getSector().getFaction(factionId)
+                        val displayName = faction?.displayName ?: factionId
+
+                        val baseColor = faction?.baseUIColor ?: Global.getSettings().basePlayerColor
+                        val darkColor = faction?.darkUIColor ?: Global.getSettings().darkPlayerColor
+
+                        ddUI.addButton(
+                            displayName,
+                            null,
+                            baseColor,
+                            darkColor,
+                            ddUI.width,
+                            28f,
+                            2f
+                        ).onClick {
+                            dropDown.dismiss()
+                            dialog.forceDismiss(false)
+                            showDialog(directory, factionId, sortNewestFirst)
+                        }
+                    }
+                }
             }
 
             ui.addButton(
@@ -64,19 +108,21 @@ object RecentBattleDialog {
                 30f,
                 5f
             ).onClick {
+                dialog.forceDismiss(false)
                 showDialog(directory, selectedFaction, !sortNewestFirst)
             }
 
             // ===== Scrollable Fleet List =====
 
-            ui.addSectionHeading("Saved Fleets", Alignment.MID, 10f)
+            ui.addSectionHeading("Saved Fleets", Alignment.MID, 10f).position.setXAlignOffset(0f)
 
-            val panelHeight = height - 180f
+            val panelHeight = ui.width - 180f
 
-            val scrollPanel = Global.getSettings().createCustom(width, panelHeight, null)
+            val scrollPanel = Global.getSettings().createCustom(ui.width, panelHeight, null)
 
             // TRUE = scrollable
-            val listUI = scrollPanel.createUIElement(width - 20f, panelHeight, true)
+            val listUI = scrollPanel.createUIElement(ui.width, panelHeight, true)
+            listUI.addSpacer(0f).position.inTL(0f, 0f)
 
             if (filtered.isEmpty()) {
                 listUI.addPara("No fleets found.", 10f)
@@ -89,7 +135,7 @@ object RecentBattleDialog {
                     val button = listUI.addButton(
                         "$name  [$faction]  ($date)",
                         entry.id,
-                        width - 40f,
+                        ui.width,
                         28f,
                         3f
                     )
