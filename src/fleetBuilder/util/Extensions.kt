@@ -12,7 +12,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.ui.*
-import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
@@ -485,7 +484,7 @@ fun TooltipMakerAPI.addToggle(
     data: Any? = null,
     pad: Float = 0f,
     font: Font = Font.INSIGNIA_15,
-    textColor: Color = Misc.getButtonTextColor(),
+    textColor: Color = Global.getSettings().brightPlayerColor,
     //onClick: (Boolean) -> Unit = {}
 ): ButtonAPI {
     val checkbox = this.addCheckbox(

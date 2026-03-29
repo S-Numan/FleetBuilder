@@ -9,6 +9,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetGoal
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
+import com.fs.starfarer.api.impl.campaign.ids.Skills
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
@@ -182,6 +183,7 @@ object HotkeyHandlerDialogs {
         val faction = Global.getSector().allFactions.find { data.factionID == it.id }
             ?: Global.getSector().getFaction("neutral") ?: Global.getSector().playerFaction
 
+        val brightColor = Global.getSettings().brightPlayerColor
         val factionColor = Global.getSettings().basePlayerColor//faction.baseUIColor
         val darkColor = Global.getSettings().darkPlayerColor //faction.darkUIColor
         //dialog.uiBorderColor = faction.baseUIColor
@@ -231,7 +233,7 @@ object HotkeyHandlerDialogs {
             val missingEx = MissingElements()
             missingEx.add(missing)
 
-            val deterministicRandom = Random(99999)
+            val deterministicRandom = Random(0) // Doesn't matter, just needs a seed to be deterministic
 
             val fleet = DataFleet.createCampaignFleetFromData(
                 data,
@@ -314,7 +316,7 @@ object HotkeyHandlerDialogs {
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.RED
                     boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
-                        tooltip.addPara("This ship is '${Tags.RESTRICTED}' and thus cannot be simulated")
+                        tooltip.addPara("This ship is '${Tags.RESTRICTED}' and thus cannot be simulated", 0f)
                     }
 
                     member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
@@ -324,9 +326,9 @@ object HotkeyHandlerDialogs {
                 if (!FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM))) {
                     val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
                     boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color.RED
+                    boxedImage.sprite.color = Color.ORANGE
                     boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
-                        tooltip.addPara("This ship is unable to be simulated")
+                        tooltip.addPara("This ship is unable to be simulated", 0f)
                     }
 
                     member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
@@ -338,7 +340,31 @@ object HotkeyHandlerDialogs {
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.RED
                     boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
-                        tooltip.addPara("This ship is unknown to you. Explore and unlock new codex entries!")
+                        tooltip.addPara("This ship is unknown to you. Explore and unlock new codex entries!", 0f)
+                    }
+
+                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    return@forEachIndexed
+                }
+
+                if (!FBSettings.cheatsEnabled() && member.isStation) {
+                    val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
+                    boxedImage.position.inTL(x, y)
+                    boxedImage.sprite.color = Color.BLUE
+                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
+                        tooltip.addPara("Cannot simulate a station.", 0f)
+                    }
+
+                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    return@forEachIndexed
+                }
+
+                if (!FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.DWELLER) || member.hullSpec.hasTag(Tags.THREAT))) {
+                    val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
+                    boxedImage.position.inTL(x, y)
+                    boxedImage.sprite.color = Color(128, 0, 128)
+                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
+                        tooltip.addPara("Cannot simulate what is beyond comprehension.", 0f)
                     }
 
                     member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
@@ -625,7 +651,20 @@ object HotkeyHandlerDialogs {
                     10f
                 )
 
+                val defaultSupportDoctrine = captain.isDefault && fleetData.commander.stats.hasSkill(Skills.SUPPORT_DOCTRINE)
+                if (defaultSupportDoctrine) {
+                    captain.stats.increaseSkill(Skills.HELMSMANSHIP)
+                    captain.stats.increaseSkill(Skills.DAMAGE_CONTROL)
+                    captain.stats.increaseSkill(Skills.COMBAT_ENDURANCE)
+                }
+
                 skillsUI.addSkillPanel(captain, 0f)
+
+                if (defaultSupportDoctrine) {
+                    captain.stats.decreaseSkill(Skills.HELMSMANSHIP)
+                    captain.stats.decreaseSkill(Skills.DAMAGE_CONTROL)
+                    captain.stats.decreaseSkill(Skills.COMBAT_ENDURANCE)
+                }
 
                 officerPanel.addUIElement(skillsUI).inTL(skillsX, skillsY)
 
@@ -754,7 +793,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            rightUI.addToggle("Fight to the last", fightToTheLast, textColor = factionColor).apply {
+            rightUI.addToggle("Fight to the last", fightToTheLast, textColor = brightColor).apply {
                 onClick {
                     fightToTheLast = !fightToTheLast
                     rebuildUI(totalHeight, listUI)
@@ -763,14 +802,14 @@ object HotkeyHandlerDialogs {
                     it.addPara("If checked; no members of the fleet will retreat", 0f)
                 }
             }
-            rightUI.addSpacer(10f)
+            rightUI.addSpacer(5f)
 
-            rightUI.addToggle("Include officers", includeOfficers, textColor = factionColor).onClick {
+            rightUI.addToggle("Include officers", includeOfficers, textColor = brightColor).onClick {
                 includeOfficers = !includeOfficers
                 rebuildUI(totalHeight, listUI)
             }
 
-            rightUI.addToggle("Include commander as commander", includeCommanderAsCommander, textColor = factionColor).apply {
+            rightUI.addToggle("Include commander as commander", includeCommanderAsCommander, textColor = brightColor).apply {
                 onClick {
                     includeCommanderAsCommander = !includeCommanderAsCommander
                     rebuildUI(totalHeight, listUI)
@@ -780,23 +819,23 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            rightUI.addToggle("Fulfill needs and repair", repairAndSetMaxCR, textColor = factionColor).onClick {
+            rightUI.addToggle("Fulfill needs and repair", repairAndSetMaxCR, textColor = brightColor).onClick {
                 repairAndSetMaxCR = !repairAndSetMaxCR
                 rebuildUI(totalHeight, listUI)
             }
 
-            rightUI.addToggle("Set aggression doctrine", setAggressionDoctrine, textColor = factionColor).onClick {
+            rightUI.addToggle("Set aggression doctrine", setAggressionDoctrine, textColor = brightColor).onClick {
                 setAggressionDoctrine = !setAggressionDoctrine
                 rebuildUI(totalHeight, listUI)
             }
 
-            /*rightUI.addToggle("Exclude ships from missing mods", excludeMissingShips, textColor = factionColor).onClick {
+            /*rightUI.addToggle("Exclude ships from missing mods", excludeMissingShips, textColor = brightColor).onClick {
                 excludeMissingShips = !excludeMissingShips
                 rebuildUI(totalHeight, listUI)
             }*/
 
             if (FBSettings.cheatsEnabled()) {
-                rightUI.addSectionHeading("Cheats", factionColor, darkColor, Alignment.MID, 10f)
+                rightUI.addSectionHeading("Cheats", factionColor, darkColor, Alignment.MID, 5f)
                 rightUI.addButton(
                     "Spawn Fleet Into Campaign",
                     null, factionColor, darkColor,
@@ -888,7 +927,13 @@ object HotkeyHandlerDialogs {
             root.addComponent(leftPanel).inTL(0f, 0f)
             root.addComponent(rightPanel).rightOfTop(leftPanel, 0f)
             ui.addCustom(root, 0f)
+
+            //dialog.panel.removeComponent(dialog.cancelButton?.parent)
+            //dialog.panel.bringComponentToTop(dialog.closeButton?.parent)
         }
+        //dialog.addCloseButton()
+        dialog.addActionButtons(addConfirmButton = false, alignment = Alignment.RMID)
+
 
         /*
         val tempPanel = Global.getSettings().createCustom(ui.width - 350f, ui.height, null)
@@ -1152,6 +1197,8 @@ object HotkeyHandlerDialogs {
                     buttonHeight,
                     option.displayName,
                     null,
+                    getFontPath(Font.INSIGNIA_15),
+                    Global.getSettings().brightPlayerColor,
                     ButtonAPI.UICheckboxSize.SMALL,
                     0f
                 )

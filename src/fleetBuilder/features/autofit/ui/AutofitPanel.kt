@@ -495,6 +495,8 @@ internal object AutofitPanel {
                     checkboxHeight,
                     label,
                     null,
+                    getFontPath(Font.INSIGNIA_15),
+                    Global.getSettings().brightPlayerColor,
                     ButtonAPI.UICheckboxSize.SMALL,
                     checkboxPad
                 )

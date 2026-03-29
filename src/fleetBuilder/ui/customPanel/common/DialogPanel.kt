@@ -136,6 +136,7 @@ open class DialogPanel(
 
         // Position in top-right
         panel.addUIElement(ui).inTR(7f, 2f)
+        panel.bringComponentToTop(ui)
 
         closeButton!!.onClick { dismiss() }
     }

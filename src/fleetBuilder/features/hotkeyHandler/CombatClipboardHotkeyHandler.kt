@@ -4,7 +4,6 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.SharedUnlockData
@@ -205,6 +204,9 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
         var loc = Vector2f(worldX, worldY)
 
         if (!FBSettings.cheatsEnabled()) {
+
+            // TODO, if player is considered unaware of ship. Do not include it in the reason for why they cannot spawn it.
+
             if (member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM)) {
                 DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_no_sim"), Color.YELLOW)
                 return
@@ -223,8 +225,12 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                 DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_exceed_fleet_limit"), Color.YELLOW)
                 return
             }
-            if (member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.STATION)) {
+            if (member.isStation) {
                 DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_no_station"), Color.YELLOW)
+                return
+            }
+            if (member.hullSpec.hasTag(Tags.DWELLER) || member.hullSpec.hasTag(Tags.THREAT)) {
+                DisplayMessage.showMessage("Cannot simulate what is beyond comprehension", Color.YELLOW)
                 return
             }
         }
