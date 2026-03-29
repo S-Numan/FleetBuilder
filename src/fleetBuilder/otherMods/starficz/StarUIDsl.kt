@@ -26,7 +26,9 @@ fun UIPanelAPI.CustomPanel(
 }
 
 fun CustomPanelAPI.Plugin(builder: StarUIPanelPlugin.() -> Unit): CustomUIPanelPlugin {
-    val plugin = StarUIPanelPlugin(this)
+    val plugin = StarUIPanelPlugin()
+    plugin.panel = this
+    
     this.setPlugin(plugin)
     plugin.builder()
     return plugin

@@ -105,7 +105,7 @@ object DataVariant {
             displayName = variant.displayName,
             fluxCapacitors = variant.numFluxCapacitors,
             fluxVents = variant.numFluxVents,
-            tags = variant.tags.toList(),
+            tags = variant.tags.filterNot { it.startsWith("#") },
             hullMods = hullMods,
             permaMods = permaMods,
             sMods = sMods,

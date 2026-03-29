@@ -31,14 +31,15 @@ class ShipPreviewOverlayPlugin(
     disableScissor: Boolean = false,
     val openCodexWithHotkey: Boolean = false,
     val missingElements: MissingElements = MissingElements()
-) : StarUIPanelPlugin(panel) {
+) : StarUIPanelPlugin() {
     val hasMissingElements: Boolean by lazy { missingElements.weaponIds.isNotEmpty() || missingElements.hullModIds.isNotEmpty() || missingElements.wingIds.isNotEmpty() }
     val isShipMissing: Boolean = member.variant.hasTag(VariantUtils.getFBVariantErrorTag())
 
     var boxedUIShipPreview: BoxedUIShipPreview? = null
 
     init {
-
+        this.panel = panel
+        
         panel.setPlugin(this)
         //if (!isShipMissing) {
         val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(member) as UIPanelAPI

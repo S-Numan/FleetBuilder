@@ -1,7 +1,10 @@
 package fleetBuilder.features.recentBattles
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CampaignUIAPI
+import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.Alignment
+import fleetBuilder.core.FBSettings
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.pasteFleetDialog
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectory
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
@@ -11,13 +14,19 @@ import fleetBuilder.otherMods.starficz.x
 import fleetBuilder.otherMods.starficz.y
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.isIdle
 import java.text.SimpleDateFormat
 import java.util.*
 
 object RecentBattleDialog {
-    fun recentBattleDialog() {
+    fun recentBattleDialog(event: InputEventAPI, ui: CampaignUIAPI) {
+        if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen())
+            return
         val fleetDirectory = FleetDirectoryService.getDirectory() ?: return
         showDialog(fleetDirectory, null, true)
+
+        event.consume()
     }
 
     private fun showDialog(

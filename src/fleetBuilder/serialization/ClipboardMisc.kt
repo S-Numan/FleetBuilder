@@ -1,5 +1,6 @@
 package fleetBuilder.serialization
 
+import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -7,6 +8,8 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.fleet.CompressedFleet
+import fleetBuilder.serialization.fleet.JSONFleet
 import fleetBuilder.serialization.member.CompressedMember
 import fleetBuilder.serialization.member.JSONMember
 import fleetBuilder.serialization.person.CompressedPerson
@@ -92,6 +95,21 @@ object ClipboardMisc {
             val json = JSONMember.saveMemberToJson(member)
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage(FBTxt.txt("member_copied_to_clipboard"))
+        }
+
+        return true
+    }
+
+    @JvmOverloads
+    fun saveFleetToClipboard(fleet: FleetDataAPI, shift: Boolean = false): Boolean {
+        if (shift) {
+            val comp = CompressedFleet.saveFleetToCompString(fleet)
+            ClipboardUtil.setClipboardText(comp)
+            DisplayMessage.showMessage(FBTxt.txt("copied_entire_fleet_to_clipboard_compressed"))
+        } else {
+            val json = JSONFleet.saveFleetToJson(fleet)
+            ClipboardUtil.setClipboardText(json.toString(4))
+            DisplayMessage.showMessage(FBTxt.txt("copied_entire_fleet_to_clipboard"))
         }
 
         return true

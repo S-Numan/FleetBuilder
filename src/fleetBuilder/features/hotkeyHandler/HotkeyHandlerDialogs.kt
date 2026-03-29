@@ -27,12 +27,14 @@ import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.features.autofit.ui.ShipPreviewOverlayPlugin
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteFleet
 import fleetBuilder.features.recentBattles.RecentBattlesReplay
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.*
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.member.DataMember
+import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
@@ -40,6 +42,7 @@ import fleetBuilder.util.*
 import fleetBuilder.util.FBTxt.txtPlural
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.VariantUtils
+import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
@@ -162,7 +165,7 @@ object HotkeyHandlerDialogs {
 
     fun pasteFleetDialog(
         inputData: DataFleet.ParsedFleetData,
-        missing: MissingElements,
+        inputMissing: MissingElements,
         allowSimulationAnyway: Boolean = false
     ): Boolean {
         val sector = Global.getSector()
@@ -214,7 +217,7 @@ object HotkeyHandlerDialogs {
 
         fun excludeMissingShips(fleet: CampaignFleetAPI) {
             fleet.fleetData.membersListCopy.toList().forEach {
-                if (it.variant.hasTag(VariantUtils.getFBVariantErrorTag()))
+                if (it.variant.hasTag(VariantUtils.getFBVariantErrorTag()) || it.variant.hasTag("#FB_IGNORE"))
                     fleet.fleetData.removeFleetMember(it)
             }
         }
@@ -231,7 +234,7 @@ object HotkeyHandlerDialogs {
             }
 
             val missingEx = MissingElements()
-            missingEx.add(missing)
+            missingEx.add(inputMissing)
 
             val deterministicRandom = Random(0) // Doesn't matter, just needs a seed to be deterministic
 
@@ -246,10 +249,6 @@ object HotkeyHandlerDialogs {
 
             if (fightToTheLast)
                 fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
-
-            /*val missingHullCount = fleetData.membersListCopy.count {
-                it.variant.hasTag(VariantUtils.getFBVariantErrorTag())
-            }*/
 
             if (fleetData.membersListCopy.none { it.id == isPressedMemberID })
                 isPressedMemberID = null
@@ -319,7 +318,7 @@ object HotkeyHandlerDialogs {
                         tooltip.addPara("This ship is '${Tags.RESTRICTED}' and thus cannot be simulated", 0f)
                     }
 
-                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
                     return@forEachIndexed
                 }
 
@@ -331,7 +330,7 @@ object HotkeyHandlerDialogs {
                         tooltip.addPara("This ship is unable to be simulated", 0f)
                     }
 
-                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
                     return@forEachIndexed
                 }
 
@@ -343,7 +342,7 @@ object HotkeyHandlerDialogs {
                         tooltip.addPara("This ship is unknown to you. Explore and unlock new codex entries!", 0f)
                     }
 
-                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
                     return@forEachIndexed
                 }
 
@@ -355,7 +354,7 @@ object HotkeyHandlerDialogs {
                         tooltip.addPara("Cannot simulate a station.", 0f)
                     }
 
-                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
                     return@forEachIndexed
                 }
 
@@ -367,7 +366,7 @@ object HotkeyHandlerDialogs {
                         tooltip.addPara("Cannot simulate what is beyond comprehension.", 0f)
                     }
 
-                    member.variant.addTag(VariantUtils.getFBVariantErrorTag()) // Will cause it to be removed on spawning
+                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
                     return@forEachIndexed
                 }
 
@@ -723,7 +722,7 @@ object HotkeyHandlerDialogs {
             rightUI.addSectionHeading("Summary", factionColor, darkColor, Alignment.MID, 10f)
 
             val allowedMemberList =
-                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(VariantUtils.getFBVariantErrorTag()) }
+                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(VariantUtils.getFBVariantErrorTag()) || it.variant.hasTag("#FB_IGNORE") }
                 else fleetData.membersListCopy
 
             val dp = allowedMemberList.sumOf { it.deploymentPointsCost.toDouble() }
@@ -848,9 +847,9 @@ object HotkeyHandlerDialogs {
                     reportMissingElementsIfAny(missingEx)
 
                     sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
-                    dialog.onExit {
-                        Global.getSector().campaignUI.showInteractionDialog(fleet)
-                    }
+                    //dialog.onExit {
+                    //    Global.getSector().campaignUI.showInteractionDialog(fleet)
+                    //}
                     DisplayMessage.showMessage(FBTxt.txt("clipboard_fleet_added_to_campaign"))
                     dialog.dismiss()
                 }
@@ -868,7 +867,7 @@ object HotkeyHandlerDialogs {
                     FleetUtils.replacePlayerFleetWith(
                         fleet,
                         aggression = if (setAggressionDoctrine) data.aggression else -1,
-                        replacePlayer = includeCommanderAsCommander && fleet.commander != null && !fleet.commander.isDefault && !fleet.commander.isAICore
+                        replacePlayer = includeCommanderAsCommander && fleet.commander != null && !fleet.commander.isDefault && !fleet.commander.isAICore,
                     )
 
                     if (repairAndSetMaxCR)
@@ -902,6 +901,7 @@ object HotkeyHandlerDialogs {
                             playerFleet.addOfficer(captain)
                         }
                     }
+                    fleet.memoryWithoutUpdate.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
 
                     if (repairAndSetMaxCR)
                         FleetUtils.fulfillPlayerFleet()
@@ -914,6 +914,25 @@ object HotkeyHandlerDialogs {
                         DisplayMessage.showMessage(FBTxt.txt("member_appended_into_fleet", fleet.fleetData.membersListCopy.size))
 
                     dialog.dismiss()
+                }
+            }
+
+            dialog.clearStarUIFunctions()
+            dialog.onKeyDown { event ->
+                if (event.isCtrlDown) {
+                    if (event.eventValue == Keyboard.KEY_C) {
+                        excludeMissingShips(fleet)
+                        ClipboardMisc.saveFleetToClipboard(fleet.fleetData, event.isShiftDown)
+                    } else if (event.eventValue == Keyboard.KEY_V) {
+                        dialog.forceDismiss()
+                        val missing = MissingElements()
+                        val data = ClipboardMisc.extractDataFromClipboard(missing)
+                        if (data != null && (data is DataFleet.ParsedFleetData || data is DataMember.ParsedMemberData || data is DataVariant.ParsedVariantData)) {
+                            CampaignDeferredActionPlugin.performLater(0f) {
+                                pasteFleet(data, missing)
+                            }
+                        }
+                    }
                 }
             }
 

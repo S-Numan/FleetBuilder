@@ -471,6 +471,9 @@ internal fun UIPanelAPI.findChildWithPlugin(clazz: Class<*>): CustomPanelAPI? {
 fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> =
     FleetUtils.getUnassignedOfficers(this)
 
+fun FleetDataAPI.getAssignedOfficers(): List<PersonAPI> =
+    FleetUtils.getAssignedOfficers(this)
+
 // Do not show hotkey on button
 fun ButtonAPI.addShortcutNoShow(key: Int) {
     this.safeInvoke("addExtraShortcut", key, false, false, false)

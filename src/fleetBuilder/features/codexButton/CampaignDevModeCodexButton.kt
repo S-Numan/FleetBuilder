@@ -2,7 +2,6 @@ package fleetBuilder.features.codexButton
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.campaign.SpecialItemSpecAPI
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI
@@ -16,13 +15,13 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.createHullVariant
 import org.lwjgl.input.Keyboard
-import fleetBuilder.otherMods.starficz.*
 
 internal class CampaignDevModeCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -99,7 +98,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
                 }
 
                 addToFleetButton!!.onClick { ->
-                    addCodexParamEntryToFleet(Global.getSector(), param!!)
+                    addCodexParamEntryToFleet(param!!)
                 }
             }
 
@@ -144,7 +143,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
         }
     }
 
-    fun addCodexParamEntryToFleet(sector: SectorAPI, param: Any, ctrlCreatesBlueprints: Boolean = true) {
+    fun addCodexParamEntryToFleet(param: Any, ctrlCreatesBlueprints: Boolean = true) {
         val shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)
         val alt = Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)
         val ctrl = ctrlCreatesBlueprints && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
@@ -223,9 +222,8 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
         }
 
         if (parsedData != null) {
-
             repeat(count) {
-                ClipboardHotkeyHandlerUtils.pasteIntoPlayerFleetPanel(sector, parsedData)
+                ClipboardHotkeyHandlerUtils.pasteIntoPlayerFleetPanel(parsedData)
             }
         }
 

@@ -430,11 +430,10 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun pasteIntoPlayerFleetPanel(
-        sector: SectorAPI,
         data: Any,
         missing: MissingElements = MissingElements()
     ) {
-        val playerFleet = sector.playerFleet.fleetData
+        val playerFleet = Global.getSector().playerFleet.fleetData
 
         var uiShowsSubmarketFleet = false
 

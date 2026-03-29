@@ -62,11 +62,12 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         when (event.eventValue) {
             Keyboard.KEY_D -> if (event.isShiftDown) handleDevModeHotkey(event)
             Keyboard.KEY_C -> handleCopyHotkey(event, sector, ui)
-            Keyboard.KEY_V -> handlePasteHotkey(event, ui, sector)
+            Keyboard.KEY_V -> handlePasteHotkey(event, ui)
             Keyboard.KEY_O -> handleCreateOfficer(event, ui)
             Keyboard.KEY_I -> handleSaveTransfer(event, ui)
-            Keyboard.KEY_R -> RecentBattleDialog.recentBattleDialog()
+            Keyboard.KEY_R -> RecentBattleDialog.recentBattleDialog(event, ui)
         }
+
     }
 
     private fun handleMouseDownEvents(
@@ -113,31 +114,29 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handlePasteHotkey(
         event: InputEventAPI,
-        ui: CampaignUIAPI,
-        sector: SectorAPI
+        ui: CampaignUIAPI
     ) {
         if (ReflectionMisc.isCodexOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             if (handleRefitPaste()) event.consume()
         } else {
-            handleOtherPaste(event, sector, ui)
+            handleOtherPaste(event, ui)
         }
     }
 
     private fun handleOtherPaste(
         event: InputEventAPI,
-        sector: SectorAPI,
         ui: CampaignUIAPI
     ) {
         val missing = MissingElements()
         val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET || ui.isIdle()) {
-            if (data is DataFleet.ParsedFleetData)
+            if (ui.getActualCurrentTab() != CoreUITabId.FLEET || data is DataFleet.ParsedFleetData)
                 pasteFleet(data, missing)
-            else if (ui.getActualCurrentTab() == CoreUITabId.FLEET && ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
-                pasteIntoPlayerFleetPanel(sector, data, missing)
+            else if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
+                pasteIntoPlayerFleetPanel(data, missing)
         }
 
         event.consume()

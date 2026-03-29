@@ -9,9 +9,9 @@ import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.getActualCurrentTab
+import fleetBuilder.util.getAssignedOfficers
 import org.lwjgl.input.Mouse
 import org.magiclib.kotlin.getMaxOfficers
-import org.magiclib.kotlin.getNumNonMercOfficers
 import org.magiclib.kotlin.isMercenary
 
 internal class UnstoreOfficersInCargo : EveryFrameScript {
@@ -25,7 +25,9 @@ internal class UnstoreOfficersInCargo : EveryFrameScript {
             val playerFleet = sector.playerFleet ?: return
 
             //Mothball captained ships that go above the officer limit
-            if (playerFleet.getNumNonMercOfficers() > playerFleet.getMaxOfficers()) {
+            if (!playerFleet.memoryWithoutUpdate.getBoolean("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL") && !FBSettings.cheatsEnabled() &&
+                playerFleet.fleetData.getAssignedOfficers().count { !it.isMercenary() } > playerFleet.getMaxOfficers()
+            ) {
                 var nonMothballedOfficerCount = getNonMothballedOfficerCount(playerFleet)
                 val maxOfficers = playerFleet.getMaxOfficers()
 

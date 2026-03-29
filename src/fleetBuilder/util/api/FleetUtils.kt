@@ -13,6 +13,7 @@ import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.serialization.fleet.FleetSettings
+import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.CargoUtils.getFractionHoldableSupplies
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
@@ -55,6 +56,10 @@ object FleetUtils {
         return fleet.officersCopy.map { it.person }.filter { fleet.getMemberWithCaptain(it) == null }
     }
 
+    fun getAssignedOfficers(fleet: FleetDataAPI): List<PersonAPI> {
+        return fleet.officersCopy.map { it.person }.filter { fleet.getMemberWithCaptain(it) != null }
+    }
+
     fun fullFleetRepair(fleet: FleetDataAPI) {
         fleet.membersListCopy.forEach { member ->
             member.status.repairFully()
@@ -66,7 +71,9 @@ object FleetUtils {
     }
 
     fun replacePlayerFleetWith(
-        fleet: CampaignFleetAPI, aggression: Int = -1, replacePlayer: Boolean = false,
+        fleet: CampaignFleetAPI,
+        aggression: Int = -1,
+        replacePlayer: Boolean = false,
         settings: FleetSettings = FleetSettings()
     ) {
         val playerFleet = Global.getSector()?.playerFleet ?: return
@@ -79,19 +86,28 @@ object FleetUtils {
 
         addPlayerShuttle()
 
+        //Copy the fleet over
+        val dataFleet = getFleetDataFromFleet(fleet, settings)
+
+        val playerPerson = Global.getSector().playerPerson
+        var newCommander: PersonAPI? = null
+
+        if (replacePlayer) {
+            val newCommanderData = dataFleet.commanderIfNoFlagship
+                ?: dataFleet.members.find { it.isFlagship }?.personData
+            if (newCommanderData != null) {
+                newCommander = DataPerson.buildPersonFull(newCommanderData, settings = settings.memberSettings.personSettings)
+                copyOfficerDataTo(newCommander, playerPerson)
+                Global.getSector().characterData.setName(newCommander.name.fullName, newCommander.gender)
+            }
+        }
+
         settings.includeCommanderSetFlagship = false//The player is always commanding the flagship. Thus if this isn't false, the player will displace the officer of that ship with themselves.
         settings.includeAggression = false//We do this manually for the player faction
 
-        //Copy the fleet over
-        val dataFleet = getFleetDataFromFleet(fleet, settings)
         buildFleetFull(dataFleet, playerFleet.fleetData, settings)
 
-        if (replacePlayer) {
-            val playerPerson = Global.getSector().playerPerson
-            val newCommander = fleet.commander
-            copyOfficerDataTo(newCommander, playerPerson)
-            Global.getSector().characterData.setName(newCommander.name.fullName, newCommander.gender)
-
+        if (newCommander != null) {
             // Look for a fleet member commanded by an officer matching the new commander
             val matchingMember = playerFleet.membersWithFightersCopy.find { member ->
                 val officer = member.captain
@@ -110,6 +126,8 @@ object FleetUtils {
                 //Console.showMessage("Replaced duplicate officer with player captain: ${playerPerson.nameString}")
             }
         }
+
+        fleet.memoryWithoutUpdate.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
 
         if (playerShuttleExists()) {
             //Need to move the shuttle to the last member in the fleet, but I don't care enough to do this properly.

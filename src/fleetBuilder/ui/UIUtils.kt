@@ -189,12 +189,19 @@ object UIUtils {
         mouseY: Int = Global.getSettings().mouseY,
         pad: Float = 0f,
     ): Boolean {
-        val x = component.position.x - pad
-        val y = component.position.y - pad
-        val width = component.position.width + pad * 2
-        val height = component.position.height + pad * 2
+        return isMouseWithinBounds(component.x, component.y, component.width, component.height, pad, mouseX, mouseY)
+    }
 
-        return isMouseWithinBounds(x, y, width, height, mouseX, mouseY)
+    fun isMouseHoveringOverComponent(
+        component: UIComponentAPI,
+        leftPad: Float = 0f,
+        topPad: Float = 0f,
+        rightPad: Float = 0f,
+        bottomPad: Float = 0f,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+    ): Boolean {
+        return isMouseWithinBounds(component.x, component.y, component.width, component.height, leftPad, topPad, rightPad, bottomPad, mouseX, mouseY)
     }
 
     @JvmOverloads
@@ -208,5 +215,33 @@ object UIUtils {
     ): Boolean {
         return mouseX >= x && mouseX <= x + width &&
                 mouseY >= y && mouseY <= y + height
+    }
+
+    fun isMouseWithinBounds(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        pad: Float = 0f,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+    ): Boolean {
+        return isMouseWithinBounds(x, y, width, height, pad, pad, pad, pad, mouseX, mouseY)
+    }
+
+    fun isMouseWithinBounds(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        leftPad: Float = 0f,
+        topPad: Float = 0f,
+        rightPad: Float = 0f,
+        bottomPad: Float = 0f,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+    ): Boolean {
+        return mouseX >= x - leftPad && mouseX <= x - leftPad + width + leftPad + rightPad &&
+                mouseY >= y - topPad && mouseY <= y - topPad + height + topPad + bottomPad
     }
 }

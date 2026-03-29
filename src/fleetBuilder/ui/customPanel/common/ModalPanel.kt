@@ -41,7 +41,7 @@ open class ModalPanel : ComposablePanel() {
     protected open var goalWidth: Float = 0f
     protected open var goalHeight: Float = 0f
 
-    open var consumeAllInput: Boolean = true
+    override var consumeKeyboardEvents: Boolean = true
     open var allowHotkeyQuit: Boolean = true
     open var hotkeyClosesOnRelease: Boolean = false
 
@@ -49,6 +49,8 @@ open class ModalPanel : ComposablePanel() {
     open var darkenBackground: Boolean = false
     open var darkenBackgroundAlphaMult: Float = 0.6f
     open var useCampaignDummyDialogAndPauseCombat: Boolean = false
+
+    open var consumeAllEvents: Boolean = true
 
     override fun renderBelow(alphaMult: Float) {
         if (darkenBackground)
@@ -92,32 +94,29 @@ open class ModalPanel : ComposablePanel() {
     }
 
     override fun advance(amount: Float) {
+        if (closing || !openAnimationFinished) {
+            val duration = if (closing) closeDuration else openDuration
+            val rate = amount / duration
+
+            anim += rate * animDirection
+            anim = anim.coerceIn(0f, 1f)
+
+            val eased = easeCubic(anim)
+
+            updatePanelVisuals(eased)
+
+            if (!closing && anim >= 1f)
+                setMaxSize()
+
+            if (closing && anim <= 0f)
+                forceDismiss()
+        }
+
         super.advance(amount)
-
-        if (!closing && openAnimationFinished)
-            return // Panel opened and not closing, do not continue.
-
-        val duration = if (closing) closeDuration else openDuration
-        val rate = amount / duration
-
-        anim += rate * animDirection
-        anim = anim.coerceIn(0f, 1f)
-
-        val eased = easeCubic(anim)
-
-        updatePanelVisuals(eased)
-
-        if (!closing && anim >= 1f)
-            setMaxSize()
-
-        if (closing && anim <= 0f)
-            forceDismiss()
     }
 
     protected open var escapeRequested: Boolean = false
     override fun processInput(events: MutableList<InputEventAPI>) {
-        super.processInput(events)
-
         for (event in events) {
             if (event.isConsumed) continue
 
@@ -125,7 +124,7 @@ open class ModalPanel : ComposablePanel() {
                 if (hotkeyClosesOnRelease && escapeRequested) {
                     if (
                         (event.isKeyUpEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                        (event.isRMBUpEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = 4f))
+                        (event.isRMBUpEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
                     ) {
                         dismiss()
                         event.consume()
@@ -137,7 +136,7 @@ open class ModalPanel : ComposablePanel() {
                         escapeRequested = true
                 } else if (
                     (event.isKeyDownEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                    (event.isRMBDownEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = 4f))
+                    (event.isRMBDownEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
                 ) {
                     if (hotkeyClosesOnRelease)
                         escapeRequested = true
@@ -147,9 +146,12 @@ open class ModalPanel : ComposablePanel() {
                     }
                 }
             }
+        }
 
-            if (consumeAllInput)
-                event.consume()
+        super.processInput(events)
+
+        if (consumeAllEvents) {
+            events.forEach { if (!it.isConsumed) it.consume() }
         }
     }
 

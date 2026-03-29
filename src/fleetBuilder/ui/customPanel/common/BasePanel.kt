@@ -2,18 +2,12 @@ package fleetBuilder.ui.customPanel.common
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.SettingsAPI
-import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.graphics.SpriteAPI
-import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.otherMods.starficz.height
-import fleetBuilder.otherMods.starficz.width
-import fleetBuilder.otherMods.starficz.x
-import fleetBuilder.otherMods.starficz.y
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.FBMisc.endStencil
 import fleetBuilder.util.FBMisc.renderTiledTexture
@@ -24,18 +18,17 @@ import java.awt.Color
 
 //Copied and heavily modified from AshLib
 
-open class BasePanel : CustomUIPanelPlugin {
+open class BasePanel : StarUIPanelPlugin() {
     lateinit var parent: UIPanelAPI
-        protected set
-    lateinit var panel: CustomPanelAPI
         protected set
     var tooltip: TooltipMakerAPI? = null
         protected set
 
-    open var consumeMouseEvents: Boolean = true
     protected open var createUIOnInit: Boolean = true
 
-    var initOccured = false
+    override var consumeMouseEvents: Boolean = true
+
+    var hasInitOccurred = false
         private set
 
     @JvmOverloads
@@ -48,7 +41,7 @@ open class BasePanel : CustomUIPanelPlugin {
     ): CustomPanelAPI {
         val inputPanel = Global.getSettings().createCustom(width, height, this)
 
-        if (initOccured) {
+        if (hasInitOccurred) {
             DisplayMessage.showError("init already occurred")
             return inputPanel
         }
@@ -67,7 +60,7 @@ open class BasePanel : CustomUIPanelPlugin {
         if (createUIOnInit)
             createUI()
 
-        initOccured = true
+        hasInitOccurred = true
 
         return panel
     }
@@ -75,29 +68,15 @@ open class BasePanel : CustomUIPanelPlugin {
     open fun createUI() {
     }
 
-    override fun advance(amount: Float) {
-    }
-
-    override fun processInput(events: MutableList<InputEventAPI>) {
-        for (event in events) {
-            if (event.isConsumed) continue
-
-            val hovers = UIUtils.isMouseWithinBounds(panel.x, panel.y, panel.width, panel.height)
-
-            if (hovers && consumeMouseEvents && event.isMouseEvent)
-                event.consume()
-        }
-    }
-
     @JvmOverloads
     open fun forceDismiss(runExitScript: Boolean = true) {
-        if (!initOccured) return
+        if (!hasInitOccurred) return
 
         parent.removeComponent(panel)
         if (runExitScript)
             applyExitScript()
 
-        initOccured = false
+        hasInitOccurred = false
     }
 
     private var exitCallback: (() -> Unit)? = null
@@ -110,10 +89,6 @@ open class BasePanel : CustomUIPanelPlugin {
     fun onExit(callback: () -> Unit) {
         exitCallback = callback
     }
-
-    override fun positionChanged(position: PositionAPI?) {}
-
-    override fun buttonPressed(buttonId: Any?) {}
 
     protected open var alpha: Float = 1f
 
@@ -158,6 +133,8 @@ open class BasePanel : CustomUIPanelPlugin {
                     ?: UIUtils.renderUILines(panel, alphaMult)
             }
         }
+
+        super.renderBelow(alphaMult)
     }
 
     protected open fun renderDialogBorders() {
@@ -194,8 +171,5 @@ open class BasePanel : CustomUIPanelPlugin {
         topRight.renderAtCenter(panel.x + panel.width, panel.y + panel.height)
         bottomLeft.renderAtCenter(leftX - 16, panel.y)
         bottomRight.renderAtCenter(panel.x + panel.width, panel.y)
-    }
-
-    override fun render(alphaMult: Float) {
     }
 }
