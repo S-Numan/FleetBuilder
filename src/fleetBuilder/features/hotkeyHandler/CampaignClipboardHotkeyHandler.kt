@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
-import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteFleet
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleCaptainPickerMouseEvents
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleCreateOfficer
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleDevModeHotkey
@@ -18,7 +17,9 @@ import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRef
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRefitPaste
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleSaveTransfer
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleUIFleetCopy
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteFleet
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteIntoPlayerFleetPanel
+import fleetBuilder.features.recentBattles.RecentBattleDialog
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.DataFleet
@@ -64,6 +65,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             Keyboard.KEY_V -> handlePasteHotkey(event, ui, sector)
             Keyboard.KEY_O -> handleCreateOfficer(event, ui)
             Keyboard.KEY_I -> handleSaveTransfer(event, ui)
+            Keyboard.KEY_R -> RecentBattleDialog.recentBattleDialog()
         }
     }
 

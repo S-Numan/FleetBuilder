@@ -24,6 +24,9 @@ open class DialogPanel(
     var confirmButtonShortcut = Keyboard.KEY_G
     var cancelButtonShortcut = Keyboard.KEY_ESCAPE
 
+    override var dialogStyle: Boolean = true
+    override var darkenBackground: Boolean = true
+
     override fun createUI() {
         createHeader()
 

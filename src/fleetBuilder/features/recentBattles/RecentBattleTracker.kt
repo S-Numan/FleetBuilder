@@ -32,11 +32,10 @@ class RecentBattleTracker : BaseCampaignEventListener(false) {
 
         val battle = result.battle ?: return
 
-        //battle.combinedTwo.id // TODO: Check if id inconsistently changes. If it doesn't, maybe use this instead?
         val id = battle.sideTwo.getOrNull(0)?.id ?: return
 
         try {
-            FleetDirectoryService.saveFleet(battle.combinedTwo, id, settings = FleetSettings().apply {
+            FleetDirectoryService.getDirectory()?.addFleet(battle.combinedTwo, setFleetID = id, settings = FleetSettings().apply {
                 memberSettings.includeCR = false
                 memberSettings.includeHull = false
                 memberSettings.personSettings.handleRankAndPost = false

@@ -111,7 +111,7 @@ internal class EventDispatcher : EveryFrameScript {
             manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
             manageTransientListener(TransponderOff::class.java, FBSettings.transponderOffInHyperspace) { TransponderOff() }
 
-            manageTransientCampaignListener(RecentBattleTracker::class.java, true) { RecentBattleTracker() } // TODO, setting
+            manageTransientCampaignListener(RecentBattleTracker::class.java, FBSettings.recentBattleTracker) { RecentBattleTracker() }
         }
 
         fun onDevModeF8Reload() {
@@ -149,8 +149,8 @@ internal class EventDispatcher : EveryFrameScript {
 
             if (FBSettings.autofitMenuEnabled)
                 ShipDirectoryService.loadAllDirectories()
-            // TODO, setting for this
-            FleetDirectoryService.loadDirectory()
+            if (FBSettings.recentBattleTracker)
+                FleetDirectoryService.loadDirectory()
 
             if (Global.getCurrentState() == GameState.CAMPAIGN)
                 setSectorListeners()

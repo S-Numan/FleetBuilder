@@ -79,6 +79,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             FBSettings.reserveFirstFourAutofitSlots = getBoolean(modID, "reserveFirstFourAutofitSlots")!!
             FBSettings.autoMothballRecoveredShips = getBoolean(modID, "autoMothballRecoveredShips")!!
             FBSettings.transponderOffInHyperspace = getBoolean(modID, "transponderOffInHyperspace")!!
+            FBSettings.recentBattleTracker = getBoolean(modID, "recentBattleTracker")!!
 
             FBSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
 
@@ -101,6 +102,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             FBSettings.transponderOffInHyperspace = false
             FBSettings.addLogsToConsoleModConsoleLevel = Level.OFF
             FBSettings.addLogsToDisplayMessageLevel = Level.OFF
+            FBSettings.recentBattleTracker = false
         }
 
         if (LookupUtils.isSetup())

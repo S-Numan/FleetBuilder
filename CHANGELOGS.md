@@ -1,10 +1,18 @@
 ## 1.32.0
+### Additions
+- Added SMod and DMod bars for ships, notably in the autofit UI.
+- Added completely new UI for pasting fleets. This replaces both former fleet pasting elements.
+- The new fleet pasting UI can be opened without cheats and allows the user to simulate a battle against the pasted fleet without consequences.
 ### Changes
+- Remove all dialog animations by default. Make them all pop up instantly.
 - Moved Cargo Auto Manager "Add Custom" button to outside the scroller tooltip, so the user no longer needs to scroll down to click it if the list of elements is too large.
 - Added default Cargo Auto Manager suggestions for supplies, crew, and fuel.
 - Auto toggle "Take" in Cargo Auto Manager when adding a new custom option.
+- Keep custom error messages even when entering/leaving combat.
 ### Bugfixes
 - Added missing officer_copied_to_clipboard_compressed string.
+- Reorder in what order certain contents of members and fleets are loaded on paste to better account for stats. (E.G captains/commanders load before the Fleet Members, and thus stats such as maxCR get applied properly now.)
+- Automated fleet AI core's now become built in when copying if exceeding their default AI level. This is a fix to a vanilla issue, although it'd never come up normally.
 
 ## 1.31.6
 - Saving Cargo Auto Manager entries is quite finicky.

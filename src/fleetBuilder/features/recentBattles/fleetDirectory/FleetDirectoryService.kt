@@ -1,13 +1,11 @@
 package fleetBuilder.features.recentBattles.fleetDirectory
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
 import fleetBuilder.core.FBSettings.FLEETDIR
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingElements
 import fleetBuilder.serialization.fleet.CompressedFleet.extractFleetDataFromCompString
-import fleetBuilder.serialization.fleet.FleetSettings
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -105,31 +103,5 @@ object FleetDirectoryService {
 
         fleetDirectory = fleetDir
         return fleetDir
-    }
-
-    fun saveFleet(
-        fleet: CampaignFleetAPI,
-        fleetId: String,
-        missing: MissingElements = MissingElements(),
-        settings: FleetSettings = FleetSettings()
-    ): String {
-        return fleetDirectory?.addFleet(
-            fleet,
-            missingFromFleet = missing,
-            settings = settings,
-            setFleetID = fleetId
-        ) ?: ""
-    }
-
-    fun deleteFleet(fleetId: String) {
-        fleetDirectory?.removeFleet(fleetId)
-    }
-
-    fun getFleet(fleetId: String): FleetEntry? {
-        return fleetDirectory?.getFleetEntry(fleetId)
-    }
-
-    fun getAllFleets(): List<FleetEntry> {
-        return fleetDirectory?.getRawFleetEntries()?.values?.toList() ?: emptyList()
     }
 }

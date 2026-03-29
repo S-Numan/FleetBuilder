@@ -36,22 +36,22 @@ open class ModalPanel : ComposablePanel() {
     protected var openAnimationFinished = false
 
     // Unset before init
-    open var goalXOffset: Float = 0f
-    open var goalYOffset: Float = 0f
-    open var goalWidth: Float = 0f
-    open var goalHeight: Float = 0f
+    protected open var goalXOffset: Float = 0f
+    protected open var goalYOffset: Float = 0f
+    protected open var goalWidth: Float = 0f
+    protected open var goalHeight: Float = 0f
 
     open var consumeAllInput: Boolean = true
     open var allowHotkeyQuit: Boolean = true
     open var hotkeyClosesOnRelease: Boolean = false
 
-    override var dialogStyle: Boolean = true
     override var tooltipPadFromSide = 12f
     override var tooltipPadFromTop = 10f
     override var tooltipPadFromBottom = 10f
     override var createUIOnInit: Boolean = false
-    open var darkenBackground: Boolean = true
+    open var darkenBackground: Boolean = false
     open var darkenBackgroundAlphaMult: Float = 0.6f
+    open var useCampaignDummyDialogAndPauseCombat: Boolean = false
 
     override fun renderBelow(alphaMult: Float) {
         if (darkenBackground)
@@ -74,10 +74,12 @@ open class ModalPanel : ComposablePanel() {
 
         super.init(width, height, xOffset, yOffset, parent)
 
-        CampaignUtils.openCampaignDummyDialog()
+        if (useCampaignDummyDialogAndPauseCombat) {
+            CampaignUtils.openCampaignDummyDialog()
 
-        if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
-            Global.getCombatEngine().isPaused = true
+            if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
+                Global.getCombatEngine().isPaused = true
+        }
 
         if (openDuration == 0f || animation == PanelAnimation.NONE)
             setMaxSize()
@@ -86,7 +88,9 @@ open class ModalPanel : ComposablePanel() {
     }
 
     override fun applyExitScript() {
-        CampaignUtils.closeCampaignDummyDialog()
+        if (useCampaignDummyDialogAndPauseCombat)
+            CampaignUtils.closeCampaignDummyDialog()
+
         super.applyExitScript()
     }
 
@@ -113,7 +117,7 @@ open class ModalPanel : ComposablePanel() {
             forceDismiss()
     }
 
-    open var escapeRequested: Boolean = false
+    protected open var escapeRequested: Boolean = false
     override fun processInput(events: MutableList<InputEventAPI>) {
         super.processInput(events)
 

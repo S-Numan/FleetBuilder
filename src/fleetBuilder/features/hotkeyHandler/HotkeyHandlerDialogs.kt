@@ -311,7 +311,7 @@ object HotkeyHandlerDialogs {
                     return@forEachIndexed
                 }
 
-                if (!FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.RESTRICTED) || member.variant.hasTag(Tags.RESTRICTED))) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.RESTRICTED) || member.variant.hasTag(Tags.RESTRICTED))) {
                     val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.RED
@@ -323,7 +323,7 @@ object HotkeyHandlerDialogs {
                     return@forEachIndexed
                 }
 
-                if (!FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM))) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM))) {
                     val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.ORANGE
@@ -335,7 +335,7 @@ object HotkeyHandlerDialogs {
                     return@forEachIndexed
                 }
 
-                if (!FBSettings.cheatsEnabled() && unknownContents.hullIds.isNotEmpty()) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents.hullIds.isNotEmpty()) {
                     val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.RED
@@ -347,7 +347,7 @@ object HotkeyHandlerDialogs {
                     return@forEachIndexed
                 }
 
-                if (!FBSettings.cheatsEnabled() && member.isStation) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && member.isStation) {
                     val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.BLUE
@@ -359,7 +359,7 @@ object HotkeyHandlerDialogs {
                     return@forEachIndexed
                 }
 
-                if (!FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.DWELLER) || member.hullSpec.hasTag(Tags.THREAT))) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.DWELLER) || member.hullSpec.hasTag(Tags.THREAT))) {
                     val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color(128, 0, 128)
@@ -452,7 +452,7 @@ object HotkeyHandlerDialogs {
                 listPanel.addComponent(preview.panel).inTL(x, y)
 
 
-                if (!FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
                     val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
@@ -576,7 +576,7 @@ object HotkeyHandlerDialogs {
                     skillsUI.addPara(preview.missingElements.getMissingElementsString(true), Color.YELLOW, 0f)
                 }
 
-                if (!FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
                     val boxedImage = officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize)
                     boxedImage.position.inTL(shipX, shipY)
                     boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
