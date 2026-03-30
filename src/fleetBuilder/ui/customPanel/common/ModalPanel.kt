@@ -49,6 +49,7 @@ open class ModalPanel : ComposablePanel() {
     open var darkenBackground: Boolean = false
     open var darkenBackgroundAlphaMult: Float = 0.6f
     open var useCampaignDummyDialogAndPauseCombat: Boolean = false
+    protected open var successfullyOpenedCampaignDummyDialog: Boolean = false
 
     open var consumeAllEvents: Boolean = true
 
@@ -74,7 +75,7 @@ open class ModalPanel : ComposablePanel() {
         super.init(width, height, xOffset, yOffset, parent)
 
         if (useCampaignDummyDialogAndPauseCombat) {
-            CampaignUtils.openCampaignDummyDialog()
+            successfullyOpenedCampaignDummyDialog = CampaignUtils.openCampaignDummyDialog()
 
             if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
                 Global.getCombatEngine().isPaused = true
@@ -87,7 +88,7 @@ open class ModalPanel : ComposablePanel() {
     }
 
     override fun applyExitScript() {
-        if (useCampaignDummyDialogAndPauseCombat)
+        if (useCampaignDummyDialogAndPauseCombat && successfullyOpenedCampaignDummyDialog)
             CampaignUtils.closeCampaignDummyDialog()
 
         super.applyExitScript()

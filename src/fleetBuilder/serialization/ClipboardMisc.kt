@@ -102,7 +102,7 @@ object ClipboardMisc {
 
     @JvmOverloads
     fun saveFleetToClipboard(fleet: FleetDataAPI, shift: Boolean = false): Boolean {
-        if (shift) {
+        if (!shift) {
             val comp = CompressedFleet.saveFleetToCompString(fleet)
             ClipboardUtil.setClipboardText(comp)
             DisplayMessage.showMessage(FBTxt.txt("copied_entire_fleet_to_clipboard_compressed"))

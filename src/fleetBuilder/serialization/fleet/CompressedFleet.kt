@@ -20,7 +20,7 @@ import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.api.FleetUtils.getAllSourceModsFromFleet
 import fleetBuilder.util.lib.CompressionUtil
-import java.util.Random
+import java.util.*
 
 object CompressedFleet {
     fun isCompressedFleet(comp: String): Boolean {
@@ -212,12 +212,21 @@ object CompressedFleet {
         includeModInfo: Boolean = true,
         compress: Boolean = true
     ): String {
-        return saveFleetToCompString(getFleetDataFromFleet(fleet, settings), includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
+        return saveFleetToCompString(getFleetDataFromFleet(fleet, settings), fleet.fleet, includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
     }
 
-    @JvmOverloads
     fun saveFleetToCompString(
         data: DataFleet.ParsedFleetData,
+        includePrepend: Boolean = true,
+        includeModInfo: Boolean = true,
+        compress: Boolean = true
+    ): String {
+        return saveFleetToCompString(data, null, includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
+    }
+
+    private fun saveFleetToCompString(
+        data: DataFleet.ParsedFleetData,
+        campFleet: CampaignFleetAPI?,
         includePrepend: Boolean = true,
         includeModInfo: Boolean = true,
         compress: Boolean = true
@@ -320,7 +329,7 @@ object CompressedFleet {
                     addedModDetails +=
                         "${mod.id}$sep${mod.name}$sep${mod.version}$sep"
 
-                    requiredMods += "(${mod.name}) $sep "
+                    requiredMods += "(${mod.name}) $sep"
                 }
 
                 requiredMods = requiredMods.dropLast(3)
@@ -341,9 +350,15 @@ object CompressedFleet {
         /* -------- READABLE PREFIX -------- */
 
         if (includePrepend) {
+            var dp = 0f
+            val campFleet = campFleet ?: DataFleet.createCampaignFleetFromData(data, false)
+
+            campFleet.fleetData.membersListCopy.forEach {
+                dp += it.deploymentPointsCost
+            }
 
             val fleetName = data.fleetName ?: "Fleet"
-            val readable = FBTxt.txt("fleet_summary", fleetName, data.members.size, requiredMods)
+            val readable = FBTxt.txt("fleet_summary", fleetName, dp.toInt(), data.members.size, requiredMods)
 
             fleetString = readable + fleetString
         }

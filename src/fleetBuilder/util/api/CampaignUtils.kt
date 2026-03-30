@@ -25,11 +25,12 @@ object CampaignUtils {
      * Remember to close it via [closeCampaignDummyDialog] when done.
      *
      * @param hideUI If true, the campaign UI will be hidden. Otherwise, no visual changes.
+     * @return Returns true if successful. Returns false if it did not open a dummy dialog, usually due to a dialog already being open or not being in the campaign.
      * @see closeCampaignDummyDialog
      */
     @JvmOverloads
-    fun openCampaignDummyDialog(hideUI: Boolean = false) {
-        val ui = Global.getSector().campaignUI ?: return
+    fun openCampaignDummyDialog(hideUI: Boolean = false): Boolean {
+        val ui = Global.getSector().campaignUI ?: return false
         if (placeholderDialog == null && Global.getSettings().isInCampaignState && !ui.isShowingDialog) {
             if (hideUI) {
                 class PlaceholderDialog : InteractionDialogPlugin {
@@ -53,17 +54,25 @@ object CampaignUtils {
                 placeholderDialog!!.safeInvoke("setBackgroundDimAmount", 0f)
                 placeholderDialog!!.safeInvoke("setAbsorbOutsideEvents", false)
                 placeholderDialog!!.safeInvoke("makeOptionInstant", 0)
+                return true
             }
         }
+        return false
     }
 
     /**
      * Closes the dialog opened by [openCampaignDummyDialog].
      * @see openCampaignDummyDialog
      */
-    fun closeCampaignDummyDialog() {
+    fun closeCampaignDummyDialog(): Boolean {
+        if (placeholderDialog == null) return false
         placeholderDialog?.safeInvoke("dismiss", 0)
         placeholderDialog = null
+        return true
+    }
+
+    fun isCampaignDummyDialogOpen(): Boolean {
+        return placeholderDialog != null
     }
 
     /**

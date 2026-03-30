@@ -655,6 +655,7 @@ object HotkeyHandlerDialogs {
                     captain.stats.increaseSkill(Skills.HELMSMANSHIP)
                     captain.stats.increaseSkill(Skills.DAMAGE_CONTROL)
                     captain.stats.increaseSkill(Skills.COMBAT_ENDURANCE)
+                    captain.stats.increaseSkill(Skills.ORDNANCE_EXPERTISE)
                 }
 
                 skillsUI.addSkillPanel(captain, 0f)
@@ -663,6 +664,7 @@ object HotkeyHandlerDialogs {
                     captain.stats.decreaseSkill(Skills.HELMSMANSHIP)
                     captain.stats.decreaseSkill(Skills.DAMAGE_CONTROL)
                     captain.stats.decreaseSkill(Skills.COMBAT_ENDURANCE)
+                    captain.stats.decreaseSkill(Skills.ORDNANCE_EXPERTISE)
                 }
 
                 officerPanel.addUIElement(skillsUI).inTL(skillsX, skillsY)
