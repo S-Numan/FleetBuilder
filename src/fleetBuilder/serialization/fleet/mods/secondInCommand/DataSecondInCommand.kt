@@ -3,7 +3,7 @@ package fleetBuilder.serialization.fleet.mods.secondInCommand
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson
 import second_in_command.SCData
 import second_in_command.SCUtils
@@ -51,7 +51,7 @@ object DataSecondInCommand {
 
     fun validateSecondInCommandData(
         sicData: SecondInCommandData,
-        missing: MissingElements,
+        missing: MissingContent,
         random: Random
     ): SecondInCommandData {
         sicData.officers.toList().forEach { sicOfficer ->

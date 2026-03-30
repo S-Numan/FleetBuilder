@@ -3,7 +3,7 @@ package fleetBuilder.serialization.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
@@ -27,7 +27,7 @@ object JSONFleet {
     @JvmOverloads
     fun extractFleetDataFromJson(
         json: JSONObject,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataFleet.ParsedFleetData {
         val fleetName = json.optString("fleetName", "Nameless fleet")
 
@@ -116,7 +116,7 @@ object JSONFleet {
         json: JSONObject,
         fleet: CampaignFleetAPI,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ) {
         return getFleetFromJson(json, fleet.fleetData, settings, missing)
     }
@@ -126,7 +126,7 @@ object JSONFleet {
         json: JSONObject,
         fleet: FleetDataAPI,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ) {
         val extracted = extractFleetDataFromJson(json)
@@ -139,7 +139,7 @@ object JSONFleet {
         json: JSONObject,
         aiMode: Boolean,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random(),
     ): CampaignFleetAPI {
         val extracted = extractFleetDataFromJson(json)

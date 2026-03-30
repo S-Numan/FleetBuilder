@@ -8,7 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBSettings
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.PersonUtils
 import org.histidine.chatter.ChatterDataManager
@@ -88,7 +88,7 @@ object DataPerson {
     fun filterParsedPersonData(
         data: ParsedPersonData,
         settings: PersonSettings = PersonSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ParsedPersonData {
 
         fun shouldKeepSkill(skillId: String): Boolean {
@@ -149,7 +149,7 @@ object DataPerson {
     @JvmOverloads
     fun validateAndCleanPersonData(
         data: ParsedPersonData,
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ): ParsedPersonData {
         val validSkills = data.skills.filterKeys {
@@ -236,10 +236,10 @@ object DataPerson {
     fun buildPersonFull(
         data: ParsedPersonData,
         settings: PersonSettings = PersonSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ): PersonAPI {
-        val ourMissing = MissingElements()
+        val ourMissing = MissingContent()
 
         // Validate data (e.g., skills/portraits exist)
         val validatedData = validateAndCleanPersonData(data, ourMissing, random)

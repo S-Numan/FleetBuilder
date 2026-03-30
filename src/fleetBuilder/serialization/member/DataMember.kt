@@ -3,7 +3,7 @@ package fleetBuilder.serialization.member
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.DataPerson.buildPerson
 import fleetBuilder.serialization.person.DataPerson.filterParsedPersonData
@@ -64,7 +64,7 @@ object DataMember {
     fun filterParsedMemberData(
         data: ParsedMemberData,
         settings: MemberSettings = MemberSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ParsedMemberData {
         val personData = if (data.personData != null && settings.includeOfficer) filterParsedPersonData(data.personData, settings.personSettings, missing) else null
         val variantData = if (data.variantData != null) filterParsedVariantData(data.variantData, settings.variantSettings, missing) else null
@@ -81,7 +81,7 @@ object DataMember {
     @JvmOverloads
     fun validateAndCleanMemberData(
         data: ParsedMemberData,
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ): ParsedMemberData {
         val personData = if (data.personData != null) validateAndCleanPersonData(data.personData, missing, random) else null
@@ -148,10 +148,10 @@ object DataMember {
     fun buildMemberFull(
         data: ParsedMemberData,
         settings: MemberSettings = MemberSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ): FleetMemberAPI {
-        val ourMissing = MissingElements()
+        val ourMissing = MissingContent()
 
         val cleaned = validateAndCleanMemberData(data, ourMissing, random)
         val filtered = filterParsedMemberData(cleaned, settings, ourMissing)

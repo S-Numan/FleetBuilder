@@ -2,10 +2,10 @@ package fleetBuilder.console.commands.saveTransfer
 
 import com.fs.starfarer.api.Global
 import fleetBuilder.core.FBSettings
-import fleetBuilder.serialization.MissingElementsExtended
+import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.PlayerSaveUtils.compileSaveAny
 import fleetBuilder.serialization.PlayerSaveUtils.loadCompiledSave
-import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.console.BaseCommand
@@ -52,7 +52,7 @@ class LoadSave : BaseCommand {
             json = ClipboardUtil.getClipboardJson() ?: ClipboardUtil.getClipboardTextSafe()
         }
 
-        val missing = MissingElementsExtended()
+        val missing = MissingContentExtended()
         val compiled = compileSaveAny(json, missing)
 
         if (compiled.isEmpty()) {
@@ -76,7 +76,7 @@ class LoadSave : BaseCommand {
         if (!missing.hasMissing()) {
             Console.showMessage(FBTxt.txt("no_missing_elements"))
         } else {
-            reportMissingElementsIfAny(missing)
+            reportMissingContentIfAny(missing)
         }
 
 

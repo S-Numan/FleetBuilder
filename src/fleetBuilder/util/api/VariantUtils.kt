@@ -5,7 +5,7 @@ import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.*
@@ -119,7 +119,7 @@ object VariantUtils {
         //  If module, replace variant with parent variant. Modules are considered known if their parent is known.
         //  This would need a function to get the parent variant of a module variant ... That isn't easily possible.
 
-        val missing = MissingElements()
+        val missing = MissingContent()
         whatVariantContentsAreNotKnownToPlayer(variant, missing)
         if (missing.hasMissing())
             return false
@@ -127,7 +127,7 @@ object VariantUtils {
         return true
     }
 
-    fun whatVariantContentsAreNotKnownToPlayer(variant: ShipVariantAPI, missing: MissingElements) {
+    fun whatVariantContentsAreNotKnownToPlayer(variant: ShipVariantAPI, missing: MissingContent) {
         if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
             missing.hullIds.add(variant.hullSpec.hullId)
 

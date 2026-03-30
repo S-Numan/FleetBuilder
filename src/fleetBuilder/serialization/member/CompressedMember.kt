@@ -3,7 +3,7 @@ package fleetBuilder.serialization.member
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.memberSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
@@ -32,7 +32,7 @@ object CompressedMember {
     fun getMemberFromCompString(
         comp: String,
         settings: MemberSettings = MemberSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random(),
     ): FleetMemberAPI {
         val parsed = extractMemberDataFromCompString(comp, missing) ?: run {
@@ -45,7 +45,7 @@ object CompressedMember {
     @JvmOverloads
     fun extractMemberDataFromCompString(
         comp: String,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataMember.ParsedMemberData? {
 
         val metaIndexStart = comp.indexOf(metaSep)

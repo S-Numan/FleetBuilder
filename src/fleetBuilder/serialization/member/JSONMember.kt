@@ -1,7 +1,7 @@
 package fleetBuilder.serialization.member
 
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.member.DataMember.buildMemberFull
 import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
@@ -18,7 +18,7 @@ object JSONMember {
     @JvmOverloads
     fun extractMemberDataFromJson(
         json: JSONObject,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataMember.ParsedMemberData {
         val variantJson = json.optJSONObject("variant")
 
@@ -66,7 +66,7 @@ object JSONMember {
     fun getMemberFromJson(
         json: JSONObject,
         settings: MemberSettings = MemberSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ): FleetMemberAPI {
         val parsed = extractMemberDataFromJson(json, missing)

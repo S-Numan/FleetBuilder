@@ -14,9 +14,9 @@ import com.fs.starfarer.api.mission.FleetSide
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.member.DataMember
-import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.FBTxt
@@ -159,7 +159,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
 
         var element: Any? = null
 
-        val missing = MissingElements()
+        val missing = MissingContent()
 
         if (event.eventValue == Keyboard.KEY_V) {
             val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
@@ -241,7 +241,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
             }
         }
 
-        reportMissingElementsIfAny(missing)
+        reportMissingContentIfAny(missing)
 
         fun spawnAt(
             engine: CombatEngineAPI,

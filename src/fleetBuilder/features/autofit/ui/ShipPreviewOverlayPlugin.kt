@@ -8,7 +8,7 @@ import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.starficz.*
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.api.VariantUtils
@@ -30,16 +30,16 @@ class ShipPreviewOverlayPlugin(
     manualScaleShipsToBetterFit: Boolean = false,
     disableScissor: Boolean = false,
     val openCodexWithHotkey: Boolean = false,
-    val missingElements: MissingElements = MissingElements()
+    val missingContent: MissingContent = MissingContent()
 ) : StarUIPanelPlugin() {
-    val hasMissingElements: Boolean by lazy { missingElements.weaponIds.isNotEmpty() || missingElements.hullModIds.isNotEmpty() || missingElements.wingIds.isNotEmpty() }
+    val hasMissingElements: Boolean by lazy { missingContent.weaponIds.isNotEmpty() || missingContent.hullModIds.isNotEmpty() || missingContent.wingIds.isNotEmpty() }
     val isShipMissing: Boolean = member.variant.hasTag(VariantUtils.getFBVariantErrorTag())
 
     var boxedUIShipPreview: BoxedUIShipPreview? = null
 
     init {
         this.panel = panel
-        
+
         panel.setPlugin(this)
         //if (!isShipMissing) {
         val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(member) as UIPanelAPI

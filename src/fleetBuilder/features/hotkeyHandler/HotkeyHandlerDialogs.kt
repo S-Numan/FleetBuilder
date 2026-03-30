@@ -165,7 +165,7 @@ object HotkeyHandlerDialogs {
 
     fun pasteFleetDialog(
         inputData: DataFleet.ParsedFleetData,
-        inputMissing: MissingElements,
+        inputMissing: MissingContent,
         allowSimulationAnyway: Boolean = false
     ): Boolean {
         val sector = Global.getSector()
@@ -233,7 +233,7 @@ object HotkeyHandlerDialogs {
                 memberSettings.applyID = true
             }
 
-            val missingEx = MissingElements()
+            val missingEx = MissingContent()
             missingEx.add(inputMissing)
 
             val deterministicRandom = Random(0) // Doesn't matter, just needs a seed to be deterministic
@@ -294,7 +294,7 @@ object HotkeyHandlerDialogs {
                 val x = col * (size + padding)
                 val y = row * (size + padding)
 
-                val unknownContents = MissingElements()
+                val unknownContents = MissingContent()
                 VariantUtils.whatVariantContentsAreNotKnownToPlayer(member.variant, unknownContents)
 
                 val dataMember = data.members.find { it.id == member.id }
@@ -383,7 +383,7 @@ object HotkeyHandlerDialogs {
                 previewList.add(preview)
 
                 if (dataMember != null)
-                    DataMember.validateAndCleanMemberData(dataMember, missing = preview.missingElements)
+                    DataMember.validateAndCleanMemberData(dataMember, missing = preview.missingContent)
 
                 preview.onKeyDown { event ->
                     if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel, mouseX = event.x, mouseY = event.y)) {
@@ -520,7 +520,7 @@ object HotkeyHandlerDialogs {
                 previewList.add(preview)
                 val dataMember = data.members.find { it.id == member.id }
                 if (dataMember != null)
-                    DataMember.validateAndCleanMemberData(dataMember, missing = preview.missingElements)
+                    DataMember.validateAndCleanMemberData(dataMember, missing = preview.missingContent)
 
                 preview.onKeyDown { event ->
                     if (event.eventValue == Keyboard.KEY_F2 && UIUtils.isMouseHoveringOverComponent(preview.panel, mouseX = event.x, mouseY = event.y)) {
@@ -557,7 +557,7 @@ object HotkeyHandlerDialogs {
                 }
                 officerPanel.addComponent(preview.panel).inTL(shipX, shipY)
 
-                val unknownContents = MissingElements()
+                val unknownContents = MissingContent()
                 VariantUtils.whatVariantContentsAreNotKnownToPlayer(member.variant, unknownContents)
 
 
@@ -571,8 +571,8 @@ object HotkeyHandlerDialogs {
                 val skillsHeight = officerPanelHeight - skillsY - 10f
 
                 val skillsUI = officerPanel.createUIElement(skillsWidth, skillsHeight, true)
-                if (preview.missingElements.weaponIds.isNotEmpty() || preview.missingElements.wingIds.isNotEmpty() || preview.missingElements.hullModIds.isNotEmpty()) {
-                    skillsUI.addPara(preview.missingElements.getMissingElementsString(true), Color.YELLOW, 0f)
+                if (preview.missingContent.weaponIds.isNotEmpty() || preview.missingContent.wingIds.isNotEmpty() || preview.missingContent.hullModIds.isNotEmpty()) {
+                    skillsUI.addPara(preview.missingContent.getMissingContentString(true), Color.YELLOW, 0f)
                 }
 
                 if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
@@ -764,7 +764,7 @@ object HotkeyHandlerDialogs {
                 onClick {
                     excludeMissingShips(fleet)
 
-                    reportMissingElementsIfAny(missingEx)
+                    reportMissingContentIfAny(missingEx)
 
                     // val battle = Global.getFactory().createBattle(Global.getSector().playerFleet, fleet)
 
@@ -844,7 +844,7 @@ object HotkeyHandlerDialogs {
                 ).onClick {
                     excludeMissingShips(fleet)
 
-                    reportMissingElementsIfAny(missingEx)
+                    reportMissingContentIfAny(missingEx)
 
                     sector.playerFleet.containingLocation.spawnFleet(sector.playerFleet, 0f, 0f, fleet)
                     //dialog.onExit {
@@ -862,7 +862,7 @@ object HotkeyHandlerDialogs {
                 ).onClick {
                     //excludeMissingShips(fleet)
 
-                    reportMissingElementsIfAny(missingEx)
+                    reportMissingContentIfAny(missingEx)
 
                     FleetUtils.replacePlayerFleetWith(
                         fleet,
@@ -888,7 +888,7 @@ object HotkeyHandlerDialogs {
                 ).onClick {
                     //excludeMissingShips(fleet)
 
-                    reportMissingElementsIfAny(missingEx)
+                    reportMissingContentIfAny(missingEx)
 
                     val playerFleet = Global.getSector().playerFleet.fleetData
 
@@ -925,7 +925,7 @@ object HotkeyHandlerDialogs {
                         ClipboardMisc.saveFleetToClipboard(fleet.fleetData, event.isShiftDown)
                     } else if (event.eventValue == Keyboard.KEY_V) {
                         dialog.forceDismiss()
-                        val missing = MissingElements()
+                        val missing = MissingContent()
                         val data = ClipboardMisc.extractDataFromClipboard(missing)
                         if (data != null && (data is DataFleet.ParsedFleetData || data is DataMember.ParsedMemberData || data is DataVariant.ParsedVariantData)) {
                             CampaignDeferredActionPlugin.performLater(0f) {
@@ -1120,7 +1120,7 @@ object HotkeyHandlerDialogs {
 
     fun createImportLoadoutDialog(
         variant: ShipVariantAPI,
-        missing: MissingElements
+        missing: MissingContent
     ) {
         val baseHullSpec = variant.hullSpec.getEffectiveHull()
         val loadoutBaseHullName = baseHullSpec.hullName ?: return
@@ -1271,11 +1271,11 @@ object HotkeyHandlerDialogs {
 
                 val json = ClipboardUtil.getClipboardJson() ?: ClipboardUtil.getClipboardTextSafe()
 
-                val missing = MissingElementsExtended()
+                val missing = MissingContentExtended()
                 val compiled = PlayerSaveUtils.compileSaveAny(json, missing)
 
                 if (compiled.isEmpty()) {
-                    reportMissingElementsIfAny(missing)
+                    reportMissingContentIfAny(missing)
                     DisplayMessage.showMessage(
                         FBTxt.txt("failed_to_find_save_in_clipboard"),
                         Color.YELLOW
@@ -1297,7 +1297,7 @@ object HotkeyHandlerDialogs {
                 )
 
                 DisplayMessage.showMessage(FBTxt.txt("save_loaded_from_clipboard"))
-                reportMissingElementsIfAny(missing)
+                reportMissingContentIfAny(missing)
 
                 dialog.dismiss()
             }

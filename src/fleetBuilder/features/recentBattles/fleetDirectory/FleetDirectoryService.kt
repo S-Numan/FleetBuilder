@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
 import fleetBuilder.core.FBSettings.FLEETDIR
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.CompressedFleet.extractFleetDataFromCompString
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -65,7 +65,7 @@ object FleetDirectoryService {
                 Date(0)
             }
 
-            val missing = MissingElements()
+            val missing = MissingContent()
 
             val fleetString: String = try {
                 Global.getSettings().readTextFileFromCommon("$directory$fleetPath")

@@ -12,7 +12,7 @@ data class GameModInfo(
     val version: String
 )
 
-open class MissingElements(
+open class MissingContent(
 ) {
     val weaponIds: MutableSet<String> = mutableSetOf()
     val wingIds: MutableSet<String> = mutableSetOf()
@@ -26,7 +26,7 @@ open class MissingElements(
         return weaponIds.isNotEmpty() || wingIds.isNotEmpty() || hullModIds.isNotEmpty() || hullIds.isNotEmpty() || skillIds.isNotEmpty()
     }
 
-    open fun add(other: MissingElements) {
+    open fun add(other: MissingContent) {
         weaponIds.addAll(other.weaponIds)
         wingIds.addAll(other.wingIds)
         hullIds.addAll(other.hullIds)
@@ -48,7 +48,7 @@ open class MissingElements(
         }
     }
 
-    open fun getMissingElementsString(doNotPrintEnabledMods: Boolean = false): String {
+    open fun getMissingContentString(doNotPrintEnabledMods: Boolean = false): String {
         if (!this.hasMissing()) return ""
 
         val missingMessages = mutableListOf<String>()
@@ -78,7 +78,7 @@ open class MissingElements(
     }
 }
 
-class MissingElementsExtended : MissingElements() {
+class MissingContentExtended : MissingContent() {
     val blueprintWeaponIds: MutableSet<String> = mutableSetOf()
     val blueprintWingIds: MutableSet<String> = mutableSetOf()
     val blueprintHullIds: MutableSet<String> = mutableSetOf()
@@ -92,7 +92,7 @@ class MissingElementsExtended : MissingElements() {
         return super.hasMissing() || hasMissingBlueprints()
     }
 
-    private fun hasMissingBlueprints(): Boolean {
+    fun hasMissingBlueprints(): Boolean {
         return blueprintWeaponIds.isNotEmpty() ||
                 blueprintWingIds.isNotEmpty() ||
                 blueprintHullIds.isNotEmpty() ||
@@ -103,9 +103,9 @@ class MissingElementsExtended : MissingElements() {
                 itemIds.isNotEmpty()
     }
 
-    override fun add(other: MissingElements) {
+    override fun add(other: MissingContent) {
         super.add(other)
-        if (other is MissingElementsExtended) {
+        if (other is MissingContentExtended) {
             blueprintWeaponIds.addAll(other.blueprintWeaponIds)
             blueprintWingIds.addAll(other.blueprintWingIds)
             blueprintHullIds.addAll(other.blueprintHullIds)
@@ -117,8 +117,8 @@ class MissingElementsExtended : MissingElements() {
         }
     }
 
-    override fun getMissingElementsString(doNotPrintEnabledMods: Boolean): String {
-        val base = super.getMissingElementsString(doNotPrintEnabledMods)
+    override fun getMissingContentString(doNotPrintEnabledMods: Boolean): String {
+        val base = super.getMissingContentString(doNotPrintEnabledMods)
         val extra = mutableListOf<String>()
 
         printIfNotEmpty(FBTxt.txt("missing_weapon_blueprints"), extra, blueprintWeaponIds)
@@ -136,13 +136,13 @@ class MissingElementsExtended : MissingElements() {
     }
 }
 
-fun reportMissingElementsIfAny(
-    missingElements: MissingElements,
+fun reportMissingContentIfAny(
+    missingContent: MissingContent,
     defaultShortMessage: String = FBTxt.txt("missing_default_short_message")
 ) {
-    val fullMessage = missingElements.getMissingElementsString()
+    val fullMessage = missingContent.getMissingContentString()
     if (fullMessage.isNotBlank()) {
         DisplayMessage.showMessage(defaultShortMessage, Color.YELLOW)
-        DisplayMessage.logMessage(MissingElements::class.java, "\n" + fullMessage, Level.WARN, displayMessage = false)
+        DisplayMessage.logMessage(MissingContent::class.java, "\n" + fullMessage, Level.WARN, displayMessage = false)
     }
 }

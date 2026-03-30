@@ -8,7 +8,7 @@ import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.api.VariantUtils
@@ -145,7 +145,7 @@ object DataVariant {
     fun filterParsedVariantData(
         data: ParsedVariantData,
         settings: VariantSettings = VariantSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ParsedVariantData {
 
         fun shouldKeepMod(modId: String): Boolean {
@@ -217,7 +217,7 @@ object DataVariant {
     @JvmOverloads
     fun validateAndCleanVariantData(
         data: ParsedVariantData,
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
     ): ParsedVariantData {
         // --- Hull ID ---
         val validHullId = if (data.hullId in LookupUtils.getHullIDSet()) {
@@ -412,9 +412,9 @@ object DataVariant {
     fun buildVariantFull(
         data: ParsedVariantData,
         settings: VariantSettings = VariantSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ShipVariantAPI {
-        val ourMissing = MissingElements()
+        val ourMissing = MissingContent()
 
         val cleanedData = validateAndCleanVariantData(data, ourMissing)
         val filteredData = filterParsedVariantData(cleanedData, settings, ourMissing)

@@ -29,7 +29,7 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
@@ -39,7 +39,7 @@ import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.DataMember.buildMemberFull
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
-import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.util.FBTxt
@@ -300,7 +300,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleRefitPaste(): Boolean {
-        val missing = MissingElements()
+        val missing = MissingContent()
 
         var data = ClipboardMisc.extractDataFromClipboard(missing) ?: return false
 
@@ -396,7 +396,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
     fun pasteFleet(
         data: Any,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): Boolean {
         var newData = data
         if (newData !is DataFleet.ParsedFleetData) {
@@ -431,7 +431,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
     fun pasteIntoPlayerFleetPanel(
         data: Any,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ) {
         val playerFleet = Global.getSector().playerFleet.fleetData
 
@@ -458,7 +458,7 @@ internal object ClipboardHotkeyHandlerUtils {
                 val variant = buildVariantFull(data, missing = missing)
 
                 if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, FBTxt.txt("could_not_find_hullid_when_variant", missing.hullIds.first()))
+                    reportMissingContentIfAny(missing, FBTxt.txt("could_not_find_hullid_when_variant", missing.hullIds.first()))
                     return
                 }
 
@@ -486,7 +486,7 @@ internal object ClipboardHotkeyHandlerUtils {
                 val member = buildMemberFull(data, missing = missing)
 
                 if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, FBTxt.txt("could_not_find_hullid_when_member", missing.hullIds.first()))
+                    reportMissingContentIfAny(missing, FBTxt.txt("could_not_find_hullid_when_member", missing.hullIds.first()))
                     return
                 }
 
@@ -526,6 +526,6 @@ internal object ClipboardHotkeyHandlerUtils {
             }
         }
 
-        reportMissingElementsIfAny(missing)
+        reportMissingContentIfAny(missing)
     }
 }

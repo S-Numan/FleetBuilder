@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
-import fleetBuilder.serialization.MissingElementsExtended
+import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
@@ -87,8 +87,8 @@ object CompressedCargo {
     fun getCargoFromCompString(
         comp: String,
         cargo: CargoAPI
-    ): MissingElementsExtended {
-        val missing = MissingElementsExtended()
+    ): MissingContentExtended {
+        val missing = MissingContentExtended()
 
         val metaIndexStart = comp.indexOf(metaSep)
         val metaIndexEnd = comp.indexOf(metaSep, metaIndexStart + 1)

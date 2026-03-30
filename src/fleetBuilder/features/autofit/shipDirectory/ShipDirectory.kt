@@ -5,7 +5,7 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString
 import fleetBuilder.serialization.variant.DataVariant
@@ -25,7 +25,7 @@ data class ShipEntry(
     val variant: ShipVariantAPI?,
     val variantData: DataVariant.ParsedVariantData,
     val path: String,
-    val missingElements: MissingElements,
+    val missingContent: MissingContent,
     val timeSaved: Date,
     val indexInMenu: Int,
     val isImport: Boolean,
@@ -109,7 +109,7 @@ class ShipDirectory(
 
     fun addShip(
         inputVariant: ShipVariantAPI,
-        missingFromVariant: MissingElements = MissingElements(),
+        missingFromVariant: MissingContent = MissingContent(),
         settings: VariantSettings = VariantSettings(),
         inputDesiredIndexInMenu: Int = -1,
         editDirectoryFile: Boolean = true,
@@ -189,7 +189,7 @@ class ShipDirectory(
 
         variant?.tags?.toList()?.forEach { if (it.startsWith("#PREFIX_")) variant.removeTag(it) }
         variant?.addTag("#PREFIX_$prefix")
-        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, shipEntry.missingElements, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport, this)
+        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, shipEntry.missingContent, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport, this)
     }
 
     private fun updateShipDirectoryJson(modify: (JSONArray) -> Unit) {

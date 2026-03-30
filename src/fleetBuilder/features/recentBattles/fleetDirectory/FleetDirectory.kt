@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.CompressedFleet.extractFleetDataFromCompString
 import fleetBuilder.serialization.fleet.DataFleet
@@ -19,7 +19,7 @@ import java.util.*
 data class FleetEntry(
     val fleetData: DataFleet.ParsedFleetData,
     val path: String,
-    val missingElements: MissingElements,
+    val missingContent: MissingContent,
     val timeSaved: Date,
     val dir: FleetDirectory,
     val id: String,
@@ -67,7 +67,7 @@ class FleetDirectory(
 
     fun addFleet(
         inputFleet: CampaignFleetAPI,
-        missingFromFleet: MissingElements = MissingElements(),
+        missingFromFleet: MissingContent = MissingContent(),
         settings: FleetSettings = FleetSettings(),
         editDirectoryFile: Boolean = true,
         editFleetFile: Boolean = true,
@@ -162,7 +162,7 @@ class FleetDirectory(
         fleetEntries[fleetId] = FleetEntry(
             data,
             fleetPath,
-            fleetEntry.missingElements,
+            fleetEntry.missingContent,
             fleetEntry.timeSaved,
             this,
             fleetId

@@ -152,7 +152,7 @@ object RecentBattleDialog {
                     button.onClick {
                         pasteFleetDialog(
                             entry.fleetData,
-                            entry.missingElements,
+                            entry.missingContent,
                             true
                         )
                     }

@@ -5,7 +5,7 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.util.FBMisc
@@ -19,7 +19,7 @@ object JSONPerson {
     @JvmOverloads
     fun extractPersonDataFromJson(
         json: JSONObject,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataPerson.ParsedPersonData {
         val skills = mutableMapOf<String, Float>()
         json.optJSONObject("skills")?.let { skillsJson ->
@@ -92,7 +92,7 @@ object JSONPerson {
     fun getPersonFromJson(
         json: JSONObject,
         settings: PersonSettings = PersonSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ): PersonAPI {
         val data = extractPersonDataFromJson(json, missing)

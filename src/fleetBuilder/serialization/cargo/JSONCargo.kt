@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.MissingElementsExtended
+import fleetBuilder.serialization.MissingContentExtended
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -16,8 +16,8 @@ object JSONCargo {
      *
      * Please use a JSONObject input
      */
-    fun getCargoFromJson(json: Any, cargo: CargoAPI): MissingElementsExtended {
-        val missingElements = MissingElementsExtended()
+    fun getCargoFromJson(json: Any, cargo: CargoAPI): MissingContentExtended {
+        val missingElements = MissingContentExtended()
 
         when (json) {
             is JSONObject -> {
@@ -53,7 +53,7 @@ object JSONCargo {
         type: String,
         cargoThing: JSONObject,
         cargo: CargoAPI,
-        missingElements: MissingElementsExtended
+        missingElements: MissingContentExtended
     ) {
         val id = cargoThing.optString("id", null) ?: return
         val size = cargoThing.optInt("size", -1)

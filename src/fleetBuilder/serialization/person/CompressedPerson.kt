@@ -5,7 +5,7 @@ import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.joinSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
@@ -30,7 +30,7 @@ object CompressedPerson {
     fun getPersonFromCompString(
         comp: String,
         settings: PersonSettings = PersonSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ): PersonAPI {
         val parsed = extractPersonDataFromCompString(comp, missing) ?: run {
@@ -43,7 +43,7 @@ object CompressedPerson {
     @JvmOverloads
     fun extractPersonDataFromCompString(
         comp: String,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataPerson.ParsedPersonData? {
 
         val metaIndexStart = comp.indexOf(metaSep)

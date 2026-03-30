@@ -7,7 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.core.FBSettings
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.DataMember.buildMember
@@ -94,7 +94,7 @@ object DataFleet {
     fun filterParsedFleetData(
         data: ParsedFleetData,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ParsedFleetData {
 
         var filteredCommander: DataPerson.ParsedPersonData? = null
@@ -162,11 +162,11 @@ object DataFleet {
     fun validateAndCleanFleetData(
         data: ParsedFleetData,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ): ParsedFleetData {
         val validatedMembers = data.members.mapNotNull { member ->
-            val ourMissing = MissingElements()
+            val ourMissing = MissingContent()
             val validated = validateAndCleanMemberData(member, ourMissing, random)
             val variantData = validated.variantData
 
@@ -303,10 +303,10 @@ object DataFleet {
         data: ParsedFleetData,
         fleet: FleetDataAPI,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ) {
-        val ourMissing = MissingElements()
+        val ourMissing = MissingContent()
 
         val validated = validateAndCleanFleetData(data, settings, ourMissing, random)
         val filtered = filterParsedFleetData(validated, settings, ourMissing)
@@ -320,7 +320,7 @@ object DataFleet {
         data: ParsedFleetData,
         aiMode: Boolean,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random()
     ): CampaignFleetAPI {
         val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, aiMode)

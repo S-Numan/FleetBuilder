@@ -70,7 +70,7 @@ object SerializationUtils {
     }
 
     @JvmOverloads
-    fun extractDataFromAny(value: Any, missing: MissingElements = MissingElements()): Any? {
+    fun extractDataFromAny(value: Any, missing: MissingContent = MissingContent()): Any? {
         if (value is String)
             return extractDataFromString(value, missing)
         else if (value is JSONObject)
@@ -80,7 +80,7 @@ object SerializationUtils {
     }
 
     @JvmOverloads
-    fun extractDataFromString(text: String, missing: MissingElements = MissingElements()): Any? {
+    fun extractDataFromString(text: String, missing: MissingContent = MissingContent()): Any? {
         if (text.isEmpty()) return null
         if (text.isJSON()) {
             val json = getJSONFromStringSafe(text)
@@ -120,7 +120,7 @@ object SerializationUtils {
     }
 
     @JvmOverloads
-    fun extractDataFromJSON(json: JSONObject, missing: MissingElements = MissingElements()): Any? {
+    fun extractDataFromJSON(json: JSONObject, missing: MissingContent = MissingContent()): Any? {
         if (json.length() == 0) return null
 
         return when {

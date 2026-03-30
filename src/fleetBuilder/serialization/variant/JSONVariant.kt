@@ -3,7 +3,7 @@ package fleetBuilder.serialization.variant
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.FBMisc
@@ -17,7 +17,7 @@ object JSONVariant {
     @JvmOverloads
     fun extractVariantDataFromJson(
         json: JSONObject,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataVariant.ParsedVariantData {
         val variantId = json.optString("variantId", "")
         val hullId = json.optString("hullId", "")
@@ -160,7 +160,7 @@ object JSONVariant {
     fun getVariantFromJson(
         json: JSONObject,
         settings: VariantSettings = VariantSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ShipVariantAPI {
         val parsed = extractVariantDataFromJson(json, missing)
 

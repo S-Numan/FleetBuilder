@@ -25,7 +25,7 @@ import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getCoreA
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getLoadoutAutofitSpecsForShip
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.copyVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
@@ -740,7 +740,7 @@ internal object AutofitPanel {
 
                     Global.getSoundPlayer().playUISound("ui_button_pressed", 0.94f, 1f)
 
-                    val missing = shipDirectory.getShipEntry(equalVariant.hullVariantId)?.missingElements
+                    val missing = shipDirectory.getShipEntry(equalVariant.hullVariantId)?.missingContent
                     if (missing == null) {
                         val newShipDirectory = ShipDirectoryService.getVariantSourceShipDirectory(equalVariant)
                         if (newShipDirectory != null) {//equalVariant exists, but not from this shipDirectory
@@ -998,7 +998,7 @@ internal object AutofitPanel {
     internal fun makeTooltip(
         selectorPanel: CustomPanelAPI,
         variant: ShipVariantAPI,
-        missingFromVariant: MissingElements? = null,
+        missingFromVariant: MissingContent? = null,
         location: TooltipMakerAPI.TooltipLocation = TooltipMakerAPI.TooltipLocation.RIGHT,
         margin: Float? = null,
         width: Float = if (FBSettings.showDebug) 400f else 350f

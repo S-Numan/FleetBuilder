@@ -10,7 +10,7 @@ import fleetBuilder.core.FBSettings.PACKDIR
 import fleetBuilder.core.FBSettings.defaultPrefix
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitSpec
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
@@ -190,7 +190,7 @@ object ShipDirectoryService {
                     }
 
                     var data: DataVariant.ParsedVariantData? = null
-                    val missing = MissingElements()
+                    val missing = MissingContent()
 
                     val variantString: String
                     try {
@@ -244,7 +244,7 @@ object ShipDirectoryService {
                 if (variant == null) return@forEach
 
                 fun remakeShip() {
-                    val missing = shipDirectory.getShipEntry(variant.hullVariantId)?.missingElements ?: return
+                    val missing = shipDirectory.getShipEntry(variant.hullVariantId)?.missingContent ?: return
                     val isImport = shipDirectory.isShipImported(variant.hullVariantId)
                     shipDirectory.removeShip(variant.hullVariantId, editVariantFile = false)
                     shipDirectory.addShip(
@@ -352,7 +352,7 @@ object ShipDirectoryService {
 
         val ships = dir.getShips(hullSpec)
         ships.forEach { variant ->
-            val missing = dir.getShipEntry(variant.hullVariantId)?.missingElements ?: return@forEach
+            val missing = dir.getShipEntry(variant.hullVariantId)?.missingContent ?: return@forEach
             val index = dir.getShipIndexInMenu(variant.hullVariantId)
 
             autofitSpecs.add(
@@ -409,7 +409,7 @@ object ShipDirectoryService {
     fun saveLoadoutVariant(
         prefix: String,
         variant: ShipVariantAPI,
-        missingFromVariant: MissingElements = MissingElements(),
+        missingFromVariant: MissingContent = MissingContent(),
         settings: VariantSettings = VariantSettings(),
         desiredIndexInMenu: Int = -1,
         tagAsImport: Boolean = false,
@@ -427,7 +427,7 @@ object ShipDirectoryService {
         getShipDirectoryWithPrefix(prefix)?.removeShip(variantId)
     }
 
-    fun importShipLoadout(prefix: String, variant: ShipVariantAPI, missing: MissingElements): Boolean {
+    fun importShipLoadout(prefix: String, variant: ShipVariantAPI, missing: MissingContent): Boolean {
         //variantToSave.hullVariantId = makeVariantID(saveVariant)
 
         if (doesLoadoutExist(prefix, variant))

@@ -21,7 +21,7 @@ import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteFlee
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteIntoPlayerFleetPanel
 import fleetBuilder.features.recentBattles.RecentBattleDialog
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
@@ -129,7 +129,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         event: InputEventAPI,
         ui: CampaignUIAPI
     ) {
-        val missing = MissingElements()
+        val missing = MissingContent()
         val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET || ui.isIdle()) {

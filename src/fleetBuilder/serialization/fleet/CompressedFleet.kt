@@ -4,7 +4,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.fleetSep1
 import fleetBuilder.serialization.SerializationUtils.fleetSep2
@@ -36,7 +36,7 @@ object CompressedFleet {
         comp: String,
         aiMode: Boolean,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
         random: Random = Random(),
     ): CampaignFleetAPI {
         val parsed = extractFleetDataFromCompString(comp, missing) ?: run {
@@ -49,7 +49,7 @@ object CompressedFleet {
     @JvmOverloads
     fun extractFleetDataFromCompString(
         comp: String,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataFleet.ParsedFleetData? {
 
         val metaIndexStart = comp.indexOf(metaSep)
