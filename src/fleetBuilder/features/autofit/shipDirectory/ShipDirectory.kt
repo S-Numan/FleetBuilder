@@ -13,6 +13,7 @@ import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.filterParsedVariantData
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
+import fleetBuilder.util.FBMisc.deepDiff
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
@@ -141,8 +142,16 @@ class ShipDirectory(
                 comparisonSettings
             )
             val variantUnJSON = JSONVariant.extractVariantDataFromJson(variantJSON).copy(variantId = parsedVariant.variantId)
-            if (variantUnJSON != filterParsedVariantData(parsedVariant, comparisonSettings)) // If not equal, this means the logic somewhere when saving and getting the variant to/from JSON or COMP is not correct
+            if (variantUnJSON != filterParsedVariantData(parsedVariant, comparisonSettings)) { // If not equal, this means the logic somewhere when saving and getting the variant to/from JSON or COMP is not correct
                 DisplayMessage.showError("DEBUG: Variant data mismatch", "DEBUG: Variant data mismatch\n\nvariantUnJSON:\n${variantUnJSON}\n\nparsedVariant:\n${parsedVariant}")
+
+                val diffs = deepDiff(parsedVariant, variantUnJSON)
+
+                DisplayMessage.showError(
+                    "DEBUG: Variant data mismatch. DEEP DIFF", "DEBUG: Variant data mismatch. DEEP DIFF\n" +
+                            diffs.joinToString("\n")
+                )
+            }
         }
 
         val savedVariant = buildVariantFull(parsedVariant)

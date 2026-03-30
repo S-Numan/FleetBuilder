@@ -11,6 +11,7 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.util.api.MemberUtils.getMaxSMods
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
@@ -23,6 +24,123 @@ import kotlin.math.min
 
 
 internal object FBMisc {
+
+    fun deepDiff(
+        a: Any?,
+        b: Any?,
+        path: String = "root",
+        visited: MutableSet<Pair<Int, Int>> = mutableSetOf(),
+        depth: Int = 0,
+        maxDepth: Int = 10
+    ): List<String> {
+        try {
+            if (depth > maxDepth) return listOf("$path: <max depth reached>")
+
+            val diffs = mutableListOf<String>()
+
+            // Nulls
+            if (a == null || b == null) {
+                if (a != b) diffs += "$path: $a != $b"
+                return diffs
+            }
+
+            // Prevent cycles
+            val key = System.identityHashCode(a) to System.identityHashCode(b)
+            if (!visited.add(key)) return diffs
+
+            // Enums (EARLY — avoids reflection issues)
+            if (a is Enum<*> && b is Enum<*>) {
+                if (a != b) diffs += "$path: ${a.name} != ${b.name}"
+                return diffs
+            }
+
+            // Primitives (EARLY)
+            if (a is String || a is Number || a is Boolean) {
+                if (a != b) diffs += "$path: $a != $b"
+                return diffs
+            }
+
+            // Maps (BEFORE type check)
+            if (a is Map<*, *> && b is Map<*, *>) {
+                val allKeys = (a.keys + b.keys).toSet() // avoid duplicates
+                for (k in allKeys) {
+                    diffs += deepDiff(
+                        a[k],
+                        b[k],
+                        "$path[$k]",
+                        visited,
+                        depth + 1,
+                        maxDepth
+                    )
+                }
+                return diffs
+            }
+
+            // Lists
+            if (a is List<*> && b is List<*>) {
+                val max = maxOf(a.size, b.size)
+                for (i in 0 until max) {
+                    diffs += deepDiff(
+                        a.getOrNull(i),
+                        b.getOrNull(i),
+                        "$path[$i]",
+                        visited,
+                        depth + 1,
+                        maxDepth
+                    )
+                }
+                return diffs
+            }
+
+            // Sets
+            if (a is Set<*> && b is Set<*>) {
+                if (a != b) diffs += "$path: $a != $b"
+                return diffs
+            }
+
+            // type mismatch
+            if (a::class.java != b::class.java) {
+                diffs += "$path: Type mismatch ${a::class.java} != ${b::class.java}"
+                return diffs
+            }
+
+            // Reflection
+            val skipNames = setOf(
+                "this$0",
+                "this$1",
+                "\$stable",
+                "Companion",
+                "INSTANCE"
+            )
+
+            val fields = a.getFieldsMatching(searchSuperclass = true)
+
+            for (field in fields) {
+                if (field.name in skipNames) continue
+
+                try {
+                    val av = field.get(a)
+                    val bv = field.get(b)
+
+                    diffs += deepDiff(
+                        av,
+                        bv,
+                        "$path.${field.name}",
+                        visited,
+                        depth + 1,
+                        maxDepth
+                    )
+                } catch (e: Exception) {
+                    diffs += "$path.${field.name}: <error: ${e.message}>"
+                }
+            }
+
+            return diffs
+        } catch (e: Exception) {
+            DisplayMessage.showError("DeepDiff failed: ${e.message}")
+        }
+        return emptyList()
+    }
 
     fun replaceVariantWithVariant(
         to: ShipVariantAPI,

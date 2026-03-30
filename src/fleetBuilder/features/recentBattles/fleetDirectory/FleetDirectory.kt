@@ -12,6 +12,7 @@ import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.filterParsedFleetData
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
+import fleetBuilder.util.FBMisc.deepDiff
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -103,8 +104,16 @@ class FleetDirectory(
                 comparisonSettings
             )
             val fleetUnJSON = JSONFleet.extractFleetDataFromJson(fleetJSON)
-            if (fleetUnJSON != filterParsedFleetData(parsedFleet, comparisonSettings)) // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
-                DisplayMessage.showError("DEBUG: Fleet data mismatch", "DEBUG: Fleet data mismatch\n\nfleetUnJSON:\n${fleetUnJSON}\n\nparsedFleet:\n${parsedFleet}")
+            if (fleetUnJSON != filterParsedFleetData(parsedFleet, comparisonSettings)) { // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
+                DisplayMessage.showError("DEBUG: Fleet data mismatch", "DEBUG: Fleet data mismatch\n\nfleetUnJSON:\n${fleetUnJSON}\n\nparsedFleet:\n${parsedFleet}\n")
+
+                val diffs = deepDiff(parsedFleet, fleetUnJSON)
+
+                DisplayMessage.showError(
+                    "DEBUG: Fleet data mismatch. DEEP DIFF", "DEBUG: Fleet data mismatch. DEEP DIFF\n" +
+                            diffs.joinToString("\n")
+                )
+            }
         }
 
         var newParsedFleetEntry: DataFleet.ParsedFleetData? = null

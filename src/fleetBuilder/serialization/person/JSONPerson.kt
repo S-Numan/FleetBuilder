@@ -13,7 +13,7 @@ import fleetBuilder.util.roundToDecimals
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
-import java.util.Random
+import java.util.*
 
 object JSONPerson {
     @JvmOverloads
@@ -42,8 +42,18 @@ object JSONPerson {
             json.optJSONObject("memKeys")?.let { memKeysJson ->
                 memKeysJson.keys().forEach { keyName ->
                     if (keyName !is String) return@forEach
-                    memKeysJson.opt(keyName)?.let { obj ->
-                        put("$$keyName", obj)
+
+                    memKeysJson.opt(keyName)?.let { raw ->
+                        if (raw !is String) return@forEach
+
+                        val value: Any = raw.toIntOrNull()
+                            ?: raw.toLongOrNull()
+                            ?: raw.toFloatOrNull()
+                            ?: raw.toDoubleOrNull()
+                            ?: raw.lowercase().toBooleanStrictOrNull()
+                            ?: raw
+
+                        put("$$keyName", value)
                     }
                 }
             }
@@ -150,13 +160,17 @@ object JSONPerson {
         val memKeysJSON = JSONObject()
 
         data.memKeys.keys.forEach { key ->
-            var value = data.memKeys[key]
-            if (value is Float)
-                value = value.roundToDecimals(2)
-            else if (value is Double)
-                value = value.roundToDecimals(2)
+            val value = data.memKeys[key]
+            val formattedValue = when (value) {
+                is Float -> value.roundToDecimals(2).toString()
+                is Double -> value.roundToDecimals(2).toString()
+                is Boolean, is Int, is Long -> value.toString()
+                is String -> value
+                else -> null
+            }
 
-            memKeysJSON.put(key.removePrefix("$"), value)
+            if (formattedValue != null)
+                memKeysJSON.put(key.removePrefix("$"), formattedValue)
         }
         if (memKeysJSON.length() > 0)
             json.put("memKeys", memKeysJSON)
