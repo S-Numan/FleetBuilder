@@ -35,18 +35,14 @@ object HullUtils {
      */
     fun createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
         return run {
-            val effectiveHullID = hull.getEffectiveHullId()
-            val variants = LookupUtils.getVariantsFromEffectiveHullID(effectiveHullID)
-
-            val exactId = hull.hullId
-            val dLessId = hull.getCompatibleDLessHullId()
+            val variants = LookupUtils.getVariantsForEffectiveHullSpec(hull)
 
             variants.filter { it.source == VariantSource.HULL } // Filter out non hull variants
                 .takeIf { it.isNotEmpty() }
                 ?.let { hullVariants ->
-                    hullVariants.find { it.hullSpec.hullId == exactId }          // Exact match
-                        ?: hullVariants.find { it.hullSpec.hullId == dLessId }   // D-less match
-                        ?: hullVariants.find { it.hullSpec.hullId == effectiveHullID } // Effective match
+                    hullVariants.find { it.hullSpec.hullId == hull.hullId }          // Exact match
+                        ?: hullVariants.find { it.hullSpec.hullId == hull.getCompatibleDLessHullId() }   // D-less match
+                        ?: hullVariants.find { it.hullSpec.hullId == hull.getEffectiveHullId() } // Effective match
                         ?: run {
                             Global.getLogger(javaClass).warn("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'")
                             hullVariants.firstOrNull()// Cannot find a good enough match, just go for whatever

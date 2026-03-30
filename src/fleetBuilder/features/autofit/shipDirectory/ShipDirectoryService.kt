@@ -3,6 +3,7 @@ package fleetBuilder.features.autofit.shipDirectory
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.loading.VariantSource
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
 import fleetBuilder.core.FBSettings.FLEETDIR
@@ -16,7 +17,7 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.LookupUtils.getCoreVariantsForEffectiveHullspec
+import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import fleetBuilder.util.getCompatibleDLessHullId
@@ -309,7 +310,7 @@ object ShipDirectoryService {
 
 
     fun getCoreAutofitSpecsForShip(hullSpec: ShipHullSpecAPI, indexOffset: Int = 0): List<AutofitSpec> {
-        val variants = getCoreVariantsForEffectiveHullspec(hullSpec)
+        val variants = getVariantsForEffectiveHullSpec(hullSpec).filter { it.source == VariantSource.STOCK }
 
         val coreVariantSpecs = mutableListOf<AutofitSpec>()
 
