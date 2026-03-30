@@ -9,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBSettings
 import fleetBuilder.serialization.MissingElements
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.PersonUtils
 import org.histidine.chatter.ChatterDataManager
 import org.histidine.chatter.combat.ChatterCombatPlugin
@@ -90,20 +91,17 @@ object DataPerson {
         missing: MissingElements = MissingElements()
     ): ParsedPersonData {
 
-        // Lambda to decide if a skill should be kept
-        val shouldKeepSkill: (String) -> Boolean = { skillId ->
-            val skillSpec = Global.getSettings().skillIds
-                .firstOrNull { it == skillId }
-                ?.let { Global.getSettings().getSkillSpec(it) }
+        fun shouldKeepSkill(skillId: String): Boolean {
+            val skillSpec = LookupUtils.getSkillSpec(skillId)
 
-            skillSpec != null &&
-                    skillId !in settings.excludeSkillsWithID &&
-                    !skillSpec.isAptitudeEffect &&
-                    (data.skills[skillId] ?: 0f) > 0f
+            if (skillId in settings.excludeSkillsWithID) return false
+            if ((data.skills[skillId] ?: 0f) <= 0f) return false
+            if (skillSpec != null) {
+                if (skillSpec.hasTag(FBSettings.noCopyTag)) return false
+                if (skillSpec.isAptitudeEffect) return false
+            }
+            return true
         }
-
-        // Remove filtered-out skills from missing
-        missing.skillIds.retainAll { shouldKeepSkill(it) }
 
         val excludeKeys = setOf(
             "\$autoPointsMult"
@@ -133,8 +131,11 @@ object DataPerson {
             }
         }
 
+        // Remove filtered-out skills from missing, as they aren't missing if they are filtered out
+        missing.skillIds.retainAll { shouldKeepSkill(it) }
+
         return data.copy(
-            skills = data.skills.filterKeys(shouldKeepSkill),
+            skills = data.skills.filter { shouldKeepSkill(it.key) },
             memKeys = filteredMemory,
             xp = if (settings.handleXpAndPoints) data.xp else 0,
             bonusXp = if (settings.handleXpAndPoints) data.bonusXp else 0,

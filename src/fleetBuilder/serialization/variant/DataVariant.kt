@@ -153,16 +153,20 @@ object DataVariant {
             if (modId in settings.excludeHullModsWithID) return false
             if (!settings.includeDMods && LookupUtils.getAllDMods().contains(modId)) return false
             if (!settings.includeHiddenMods && LookupUtils.getAllHiddenEverywhereMods().contains(modId)) return false
-            if (LookupUtils.getHullModSpec(modId)?.hasTag("FB_no_copy") == true) return false
+            if (LookupUtils.getHullModSpec(modId)?.hasTag(FBSettings.noCopyTag) == true) return false
             return true
         }
 
         fun shouldKeepWeapon(weaponId: String): Boolean {
-            return weaponId !in settings.excludeWeaponsWithID
+            if (weaponId in settings.excludeWeaponsWithID) return false
+            if (LookupUtils.getWeaponSpec(weaponId)?.hasTag(FBSettings.noCopyTag) == true) return false
+            return true
         }
 
         fun shouldKeepWing(wingId: String): Boolean {
-            return wingId !in settings.excludeWingsWithID
+            if (wingId in settings.excludeWingsWithID) return false
+            if (LookupUtils.getFighterWingSpec(wingId)?.hasTag(FBSettings.noCopyTag) == true) return false
+            return true
         }
 
         fun shouldKeepTag(tagId: String): Boolean {

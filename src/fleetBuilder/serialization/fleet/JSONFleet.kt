@@ -21,7 +21,7 @@ import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.util.FBMisc
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Random
+import java.util.*
 
 object JSONFleet {
     @JvmOverloads
@@ -45,13 +45,16 @@ object JSONFleet {
         val members = mutableListOf<DataMember.ParsedMemberData>()
         fun getMember(memberJson: JSONObject) {
             val variantId = memberJson.optString("variantId", "")
-            val variantData = variantById[variantId]?.copy()
+            val originalVariantId = memberJson.optString("originalVariantId", variantId)
 
-            val memberData = extractMemberDataFromJson(memberJson, missing).copy(variantData = variantData)
-
-            members.add(
-                memberData
+            val variantData = variantById[variantId]?.copy(
+                variantId = originalVariantId // in case this variant was deduplicated, override the variant id with the original variant id for parity when comparing between different fleets
             )
+
+            val memberData = extractMemberDataFromJson(memberJson, missing)
+                .copy(variantData = variantData)
+
+            members.add(memberData)
         }
 
         val commander = json.optJSONObject("commander")?.let {
@@ -218,6 +221,10 @@ object JSONFleet {
                 // Add this variant to the variantsJson array
                 variantsJson.put(variant)
                 newId
+            }
+
+            if (uniqueVariantId != baseVariantId) {
+                memberJson.put("originalVariantId", baseVariantId)
             }
 
             // Remove the "variant" object from the memberJson and set the unique variantId

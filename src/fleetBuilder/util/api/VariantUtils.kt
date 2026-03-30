@@ -119,25 +119,10 @@ object VariantUtils {
         //  If module, replace variant with parent variant. Modules are considered known if their parent is known.
         //  This would need a function to get the parent variant of a module variant ... That isn't easily possible.
 
-        if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
+        val missing = MissingElements()
+        whatVariantContentsAreNotKnownToPlayer(variant, missing)
+        if (missing.hasMissing())
             return false
-
-        variant.fittedWeaponSlots.forEach { slot ->
-            val weapon = variant.getSlot(slot) ?: return@forEach
-            if (LookupUtils.getWeaponSpec(weapon.id)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.id))
-                return false
-        }
-        variant.fittedWings.forEach { wing ->
-            if (LookupUtils.getFighterWingSpec(wing)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfFighter(wing))
-                return false
-        }
-        variant.hullMods.forEach { mod ->
-            if (variant.hullSpec.isBuiltInMod(mod))
-                return@forEach
-
-            if (LookupUtils.getHullModSpec(mod)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfHullmod(mod))
-                return false
-        }
 
         return true
     }

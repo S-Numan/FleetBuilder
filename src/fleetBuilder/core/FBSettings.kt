@@ -131,6 +131,7 @@ object FBSettings {
 
     val commandShuttleId = "FB_commandershuttle"
     val storedOfficerTag = "\$FB_stored_officer"
+    val noCopyTag = "FB_no_copy"
 
     var isConsoleModEnabled = false
 

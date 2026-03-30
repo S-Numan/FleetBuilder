@@ -321,7 +321,7 @@ object ShipDirectoryService {
             }.and(
                 FBSettings.cheatsEnabled()
                         || variant.hullSpec.getCompatibleDLessHullId() == hullSpec.getCompatibleDLessHullId() // If this is the hullspec the player is looking at
-                        || isVariantKnownToPlayer(variant) // Or the player knows this hullspec
+                        || isVariantKnownToPlayer(variant) // Or the player knows all the contents of this variant
             )
 
             if (shouldShow) {
