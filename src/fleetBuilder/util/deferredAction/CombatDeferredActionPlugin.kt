@@ -49,6 +49,15 @@ class CombatDeferredActionPlugin : BaseEveryFrameCombatPlugin() {
         fun performOnUnpause(action: () -> Unit) {
             active?.onUnpause?.add(action)
         }
+
+        private val onStart = mutableListOf<() -> Unit>()
+
+        /**
+         * Happens more frequently than you might imagine.
+         */
+        fun performOnPlayerBattleStart(action: () -> Unit) {
+            onStart.add(action)
+        }
     }
 
     private var engine: CombatEngineAPI? = null
@@ -69,6 +78,8 @@ class CombatDeferredActionPlugin : BaseEveryFrameCombatPlugin() {
             active = this
 
             CampaignDeferredActionPlugin.battleStarted()
+            onStart.forEach { it.invoke() }
+            onStart.clear()
 
             init = true
         }

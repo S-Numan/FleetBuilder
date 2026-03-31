@@ -782,18 +782,11 @@ object HotkeyHandlerDialogs {
                     battleContext.enemyDeployAll = true
                     battleContext.objectivesAllowed = true
 
-                    Global.getSector().campaignUI.safeInvoke("setNextTransitionFast", true)
-                    val coreUI = ReflectionMisc.getCoreUI()
-                    //coreUI?.safeInvoke("closeCurrent")
-                    coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
+                    dialog.dismiss()
 
                     RecentBattleReplay.simulateBattle(battleContext)
 
-
                     //battle.finish(null, false)
-
-
-                    dialog.dismiss()
                 }
             }
 

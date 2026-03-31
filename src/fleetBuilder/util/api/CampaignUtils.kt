@@ -31,6 +31,10 @@ object CampaignUtils {
     @JvmOverloads
     fun openCampaignDummyDialog(hideUI: Boolean = false): Boolean {
         val ui = Global.getSector().campaignUI ?: return false
+
+        if (!ui.isShowingDialog && placeholderDialog != null)
+            closeCampaignDummyDialog()
+
         if (placeholderDialog == null && Global.getSettings().isInCampaignState && !ui.isShowingDialog) {
             if (hideUI) {
                 class PlaceholderDialog : InteractionDialogPlugin {
@@ -38,12 +42,15 @@ object CampaignUtils {
                     override fun optionSelected(optionText: String?, optionData: Any?) {}
                     override fun optionMousedOver(optionText: String?, optionData: Any?) {}
                     override fun advance(amount: Float) {}
-                    override fun backFromEngagement(battleResult: EngagementResultAPI?) {}
+                    override fun backFromEngagement(battleResult: EngagementResultAPI?) {
+                        closeCampaignDummyDialog()
+                    }
+
                     override fun getContext(): Any? = null
                     override fun getMemoryMap(): MutableMap<String, MemoryAPI> = hashMapOf()
                 }
                 ui.showInteractionDialog(PlaceholderDialog(), Global.getSector().playerFleet) // While this also works, it hides the campaign UI.
-                placeholderDialog = ui.currentInteractionDialog as UIPanelAPI?
+                placeholderDialog = ui.currentInteractionDialog as? UIPanelAPI
             } else {
                 ui.showMessageDialog(" ")
                 val screenPanel = ui.get("screenPanel") as? UIPanelAPI
