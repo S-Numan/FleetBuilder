@@ -1,12 +1,15 @@
 package fleetBuilder.serialization
 
+import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.serialization.fleet.CompressedFleet
+import fleetBuilder.serialization.fleet.JSONFleet
 import fleetBuilder.serialization.member.CompressedMember
 import fleetBuilder.serialization.member.JSONMember
 import fleetBuilder.serialization.person.CompressedPerson
@@ -26,7 +29,7 @@ object ClipboardMisc {
 
     @JvmOverloads
     fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false): Boolean {
-        if (variant.hasHullMod(ModSettings.commandShuttleId)) {
+        if (variant.hasHullMod(FBSettings.commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return false
         }
@@ -38,7 +41,7 @@ object ClipboardMisc {
             val comp = CompressedVariant.saveVariantToCompString(
                 variantToSave,
                 VariantSettings().apply {
-                    excludeTagsWithID = ModSettings.getDefaultExcludeVariantTags()
+                    excludeTagsWithID = FBSettings.getDefaultExcludeVariantTags()
                 }
             )
             ClipboardUtil.setClipboardText(comp)
@@ -47,7 +50,7 @@ object ClipboardMisc {
             val json = JSONVariant.saveVariantToJson(
                 variantToSave,
                 VariantSettings().apply {
-                    excludeTagsWithID = ModSettings.getDefaultExcludeVariantTags()
+                    excludeTagsWithID = FBSettings.getDefaultExcludeVariantTags()
                 }
             )
             ClipboardUtil.setClipboardText(json.toString(4))
@@ -79,7 +82,7 @@ object ClipboardMisc {
 
     @JvmOverloads
     fun saveMemberToClipboard(member: FleetMemberAPI, shift: Boolean = false): Boolean {
-        if (member.variant.hasHullMod(ModSettings.commandShuttleId)) {
+        if (member.variant.hasHullMod(FBSettings.commandShuttleId)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
             return false
         }
@@ -92,6 +95,21 @@ object ClipboardMisc {
             val json = JSONMember.saveMemberToJson(member)
             ClipboardUtil.setClipboardText(json.toString(4))
             DisplayMessage.showMessage(FBTxt.txt("member_copied_to_clipboard"))
+        }
+
+        return true
+    }
+
+    @JvmOverloads
+    fun saveFleetToClipboard(fleet: FleetDataAPI, shift: Boolean = false): Boolean {
+        if (!shift) {
+            val comp = CompressedFleet.saveFleetToCompString(fleet)
+            ClipboardUtil.setClipboardText(comp)
+            DisplayMessage.showMessage(FBTxt.txt("copied_entire_fleet_to_clipboard_compressed"))
+        } else {
+            val json = JSONFleet.saveFleetToJson(fleet)
+            ClipboardUtil.setClipboardText(json.toString(4))
+            DisplayMessage.showMessage(FBTxt.txt("copied_entire_fleet_to_clipboard"))
         }
 
         return true
@@ -113,7 +131,7 @@ object ClipboardMisc {
     }
 
     @JvmOverloads
-    fun extractDataFromClipboard(missing: MissingElements = MissingElements()): Any? {
+    fun extractDataFromClipboard(missing: MissingContent = MissingContent()): Any? {
         val jsonContents = ClipboardUtil.getClipboardJson()
         if (jsonContents != null)
             return SerializationUtils.extractDataFromJSON(jsonContents, missing)

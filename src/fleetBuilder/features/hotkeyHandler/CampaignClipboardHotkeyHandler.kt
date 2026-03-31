@@ -7,8 +7,6 @@ import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.listeners.CampaignInputListener
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
-import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.campaignPaste
-import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.fleetPaste
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleCaptainPickerMouseEvents
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleCreateOfficer
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleDevModeHotkey
@@ -19,8 +17,12 @@ import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRef
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleRefitPaste
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleSaveTransfer
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.handleUIFleetCopy
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteFleet
+import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteIntoPlayerFleetPanel
+import fleetBuilder.features.recentBattles.RecentBattleDialog
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
+import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
@@ -60,10 +62,12 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         when (event.eventValue) {
             Keyboard.KEY_D -> if (event.isShiftDown) handleDevModeHotkey(event)
             Keyboard.KEY_C -> handleCopyHotkey(event, sector, ui)
-            Keyboard.KEY_V -> handlePasteHotkey(event, ui, sector)
+            Keyboard.KEY_V -> handlePasteHotkey(event, ui)
             Keyboard.KEY_O -> handleCreateOfficer(event, ui)
             Keyboard.KEY_I -> handleSaveTransfer(event, ui)
+            Keyboard.KEY_R -> RecentBattleDialog.recentBattleDialog(event, ui)
         }
+
     }
 
     private fun handleMouseDownEvents(
@@ -110,32 +114,29 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
 
     private fun handlePasteHotkey(
         event: InputEventAPI,
-        ui: CampaignUIAPI,
-        sector: SectorAPI
+        ui: CampaignUIAPI
     ) {
         if (ReflectionMisc.isCodexOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
             if (handleRefitPaste()) event.consume()
         } else {
-            handleOtherPaste(event, sector, ui)
+            handleOtherPaste(event, ui)
         }
     }
 
     private fun handleOtherPaste(
         event: InputEventAPI,
-        sector: SectorAPI,
         ui: CampaignUIAPI
     ) {
-        val missing = MissingElements()
+        val missing = MissingContent()
         val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
 
-        if (ui.getActualCurrentTab() == CoreUITabId.FLEET) {
-            if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
-                fleetPaste(sector, data, missing)
-        } else if (ui.isIdle()) {
-            if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
-                campaignPaste(sector, data, missing)
+        if (ui.getActualCurrentTab() == CoreUITabId.FLEET || ui.isIdle()) {
+            if (ui.getActualCurrentTab() != CoreUITabId.FLEET || data is DataFleet.ParsedFleetData)
+                pasteFleet(data, missing)
+            else if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
+                pasteIntoPlayerFleetPanel(data, missing)
         }
 
         event.consume()

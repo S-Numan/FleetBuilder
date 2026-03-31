@@ -11,6 +11,7 @@ import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.UIUtils.easeCubic
 import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
+import java.awt.Color
 
 open class ModalPanel : ComposablePanel() {
 
@@ -24,7 +25,7 @@ open class ModalPanel : ComposablePanel() {
         NONE
     }
 
-    open var animation = PanelAnimation.RESIZE_FADE
+    open var animation = PanelAnimation.NONE
 
     open var openDuration = 0.15f
     open var closeDuration = 0.05f
@@ -35,20 +36,30 @@ open class ModalPanel : ComposablePanel() {
     protected var openAnimationFinished = false
 
     // Unset before init
-    open var goalXOffset: Float = 0f
-    open var goalYOffset: Float = 0f
-    open var goalWidth: Float = 0f
-    open var goalHeight: Float = 0f
+    protected open var goalXOffset: Float = 0f
+    protected open var goalYOffset: Float = 0f
+    protected open var goalWidth: Float = 0f
+    protected open var goalHeight: Float = 0f
 
-    open var consumeAllInput: Boolean = true
+    override var consumeKeyboardEvents: Boolean = true
     open var allowHotkeyQuit: Boolean = true
     open var hotkeyClosesOnRelease: Boolean = false
 
-    override var dialogStyle: Boolean = true
-    override var xTooltipPad = 10f
-    override var yTooltipPad = 10f
     override var createUIOnInit: Boolean = false
-    override var darkenBackground: Boolean = true
+    open var darkenBackground: Boolean = false
+    open var darkenBackgroundAlphaMult: Float = 0.6f
+    open var useCampaignDummyDialogAndPauseCombat: Boolean = false
+    open var makeCampaignDummyDialogHideUI: Boolean = false
+    protected open var successfullyOpenedCampaignDummyDialog: Boolean = false
+
+    open var consumeAllEvents: Boolean = true
+
+    override fun renderBelow(alphaMult: Float) {
+        if (darkenBackground)
+            UIUtils.darkenBackground(alphaMult * (alpha * darkenBackgroundAlphaMult), Color.BLACK)
+
+        super.renderBelow(alphaMult)
+    }
 
     override fun init(
         width: Float,
@@ -64,10 +75,12 @@ open class ModalPanel : ComposablePanel() {
 
         super.init(width, height, xOffset, yOffset, parent)
 
-        CampaignUtils.openCampaignDummyDialog()
+        if (useCampaignDummyDialogAndPauseCombat) {
+            successfullyOpenedCampaignDummyDialog = CampaignUtils.openCampaignDummyDialog(makeCampaignDummyDialogHideUI)
 
-        if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
-            Global.getCombatEngine().isPaused = true
+            if (Global.getCurrentState() == GameState.COMBAT && Global.getCombatEngine() != null && !Global.getCombatEngine().isPaused)
+                Global.getCombatEngine().isPaused = true
+        }
 
         if (openDuration == 0f || animation == PanelAnimation.NONE)
             setMaxSize()
@@ -76,37 +89,36 @@ open class ModalPanel : ComposablePanel() {
     }
 
     override fun applyExitScript() {
-        CampaignUtils.closeCampaignDummyDialog()
+        if (useCampaignDummyDialogAndPauseCombat && successfullyOpenedCampaignDummyDialog)
+            CampaignUtils.closeCampaignDummyDialog()
+
         super.applyExitScript()
     }
 
     override fun advance(amount: Float) {
+        if (closing || !openAnimationFinished) {
+            val duration = if (closing) closeDuration else openDuration
+            val rate = amount / duration
+
+            anim += rate * animDirection
+            anim = anim.coerceIn(0f, 1f)
+
+            val eased = easeCubic(anim)
+
+            updatePanelVisuals(eased)
+
+            if (!closing && anim >= 1f)
+                setMaxSize()
+
+            if (closing && anim <= 0f)
+                forceDismiss()
+        }
+
         super.advance(amount)
-
-        if (!closing && openAnimationFinished)
-            return // Panel opened and not closing, do not continue.
-
-        val duration = if (closing) closeDuration else openDuration
-        val rate = amount / duration
-
-        anim += rate * animDirection
-        anim = anim.coerceIn(0f, 1f)
-
-        val eased = easeCubic(anim)
-
-        updatePanelVisuals(eased)
-
-        if (!closing && anim >= 1f)
-            setMaxSize()
-
-        if (closing && anim <= 0f)
-            forceDismiss()
     }
 
-    open var escapeRequested: Boolean = false
+    protected open var escapeRequested: Boolean = false
     override fun processInput(events: MutableList<InputEventAPI>) {
-        super.processInput(events)
-
         for (event in events) {
             if (event.isConsumed) continue
 
@@ -114,7 +126,7 @@ open class ModalPanel : ComposablePanel() {
                 if (hotkeyClosesOnRelease && escapeRequested) {
                     if (
                         (event.isKeyUpEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                        (event.isRMBUpEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
+                        (event.isRMBUpEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
                     ) {
                         dismiss()
                         event.consume()
@@ -126,7 +138,7 @@ open class ModalPanel : ComposablePanel() {
                         escapeRequested = true
                 } else if (
                     (event.isKeyDownEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                    (event.isRMBDownEvent && !UIUtils.isMouseHoveringOverComponent(panel, 4f))
+                    (event.isRMBDownEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
                 ) {
                     if (hotkeyClosesOnRelease)
                         escapeRequested = true
@@ -136,9 +148,12 @@ open class ModalPanel : ComposablePanel() {
                     }
                 }
             }
+        }
 
-            if (consumeAllInput)
-                event.consume()
+        super.processInput(events)
+
+        if (consumeAllEvents) {
+            events.forEach { if (!it.isConsumed) it.consume() }
         }
     }
 

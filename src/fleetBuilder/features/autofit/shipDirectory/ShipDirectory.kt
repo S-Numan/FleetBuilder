@@ -1,16 +1,19 @@
-package fleetBuilder.core.shipDirectory
+package fleetBuilder.features.autofit.shipDirectory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
+import fleetBuilder.serialization.variant.DataVariant.filterParsedVariantData
+import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
+import fleetBuilder.util.FBMisc.deepDiff
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.getCompatibleDLessHullId
 import fleetBuilder.util.getEffectiveHullId
@@ -23,7 +26,7 @@ data class ShipEntry(
     val variant: ShipVariantAPI?,
     val variantData: DataVariant.ParsedVariantData,
     val path: String,
-    val missingElements: MissingElements,
+    val missingContent: MissingContent,
     val timeSaved: Date,
     val indexInMenu: Int,
     val isImport: Boolean,
@@ -107,7 +110,7 @@ class ShipDirectory(
 
     fun addShip(
         inputVariant: ShipVariantAPI,
-        missingFromVariant: MissingElements = MissingElements(),
+        missingFromVariant: MissingContent = MissingContent(),
         settings: VariantSettings = VariantSettings(),
         inputDesiredIndexInMenu: Int = -1,
         editDirectoryFile: Boolean = true,
@@ -129,13 +132,35 @@ class ShipDirectory(
             return ""
         }
 
+        // DEBUG!
+        if (FBSettings.enableDebug) {
+            val comparisonSettings = VariantSettings().apply {
+
+            }
+            val variantJSON = JSONVariant.saveVariantToJson(
+                inputVariant,
+                comparisonSettings
+            )
+            val variantUnJSON = JSONVariant.extractVariantDataFromJson(variantJSON).copy(variantId = parsedVariant.variantId)
+            if (variantUnJSON != filterParsedVariantData(parsedVariant, comparisonSettings)) { // If not equal, this means the logic somewhere when saving and getting the variant to/from JSON or COMP is not correct
+                DisplayMessage.showError("DEBUG: Variant data mismatch", "DEBUG: Variant data mismatch\n\nvariantUnJSON:\n${variantUnJSON}\n\nparsedVariant:\n${parsedVariant}")
+
+                val diffs = deepDiff(parsedVariant, variantUnJSON)
+
+                DisplayMessage.showError(
+                    "DEBUG: Variant data mismatch. DEEP DIFF", "DEBUG: Variant data mismatch. DEEP DIFF\n" +
+                            diffs.joinToString("\n")
+                )
+            }
+        }
+
         val savedVariant = buildVariantFull(parsedVariant)
 
 
         val shipPath = "${savedVariant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"
 
         val newIndex = if (inputDesiredIndexInMenu < 0)
-            ShipDirectoryService.getHighestIndexInEffectiveMenu(ModSettings.defaultPrefix, variantToSave.hullSpec) + 1
+            ShipDirectoryService.getHighestIndexInEffectiveMenu(FBSettings.defaultPrefix, variantToSave.hullSpec) + 1
         else
             inputDesiredIndexInMenu
 
@@ -173,7 +198,7 @@ class ShipDirectory(
 
         variant?.tags?.toList()?.forEach { if (it.startsWith("#PREFIX_")) variant.removeTag(it) }
         variant?.addTag("#PREFIX_$prefix")
-        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, shipEntry.missingElements, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport, this)
+        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, shipEntry.missingContent, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport, this)
     }
 
     private fun updateShipDirectoryJson(modify: (JSONArray) -> Unit) {

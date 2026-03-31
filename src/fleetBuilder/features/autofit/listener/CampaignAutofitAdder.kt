@@ -5,7 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.features.autofit.ui.AutofitPanelCreator
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.getActualCurrentTab
@@ -46,12 +46,12 @@ internal class CampaignAutofitAdder : EveryFrameScript {
         val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return
         val bottomLeftPanel = refitPanel.findChildWithMethod("instantiateForSimulation") as? UIPanelAPI ?: return
         val autofitButton = bottomLeftPanel.safeInvoke("getManageButton") as? ButtonAPI ?: return
-        autofitButton.setShortcut(ModSettings.autofitMenuHotkey, false)
+        autofitButton.setShortcut(FBSettings.autofitMenuHotkey, false)
 
         autofitButton.onClick {
-            if (ModSettings.autofitMenuHotkey != Keyboard.KEY_NONE && Keyboard.isKeyDown(ModSettings.autofitMenuHotkey))
+            if (FBSettings.autofitMenuHotkey != Keyboard.KEY_NONE && Keyboard.isKeyDown(FBSettings.autofitMenuHotkey))
                 AutofitPanelCreator.toggleAutofitButton(refitTab, true)
-            else if (ModSettings.replaceVanillaAutofitButton) {
+            else if (FBSettings.replaceVanillaAutofitButton) {
                 AutofitPanelCreator.toggleAutofitButton(refitTab, true)
             } else {
                 bottomLeftPanel.safeInvoke("actionPerformed", null, autofitButton)

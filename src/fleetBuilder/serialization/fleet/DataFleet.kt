@@ -3,11 +3,12 @@ package fleetBuilder.serialization.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import fleetBuilder.core.ModSettings
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.core.FBSettings
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.DataMember.buildMember
@@ -20,8 +21,9 @@ import fleetBuilder.serialization.person.DataPerson.filterParsedPersonData
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.serialization.person.DataPerson.validateAndCleanPersonData
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.util.LookupUtil
-import fleetBuilder.util.LookupUtil.getErrorVariantHullID
+import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.LookupUtils.getErrorVariantHullID
+import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import java.util.*
 
@@ -93,7 +95,7 @@ object DataFleet {
     fun filterParsedFleetData(
         data: ParsedFleetData,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ParsedFleetData {
 
         var filteredCommander: DataPerson.ParsedPersonData? = null
@@ -104,7 +106,7 @@ object DataFleet {
             // Exclude by variant or hull ID
             if (variantData?.hullId in settings.excludeMembersWithHullID ||
                 member.id in settings.excludeMembersWithID ||
-                variantData?.allHullMods()?.contains(ModSettings.commandShuttleId) == true
+                variantData?.allHullMods()?.contains(FBSettings.commandShuttleId) == true
             ) return@mapNotNull null
 
             var processedMember = member
@@ -161,11 +163,12 @@ object DataFleet {
     fun validateAndCleanFleetData(
         data: ParsedFleetData,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
+        random: Random = Random()
     ): ParsedFleetData {
         val validatedMembers = data.members.mapNotNull { member ->
-            val ourMissing = MissingElements()
-            val validated = validateAndCleanMemberData(member, ourMissing)
+            val ourMissing = MissingContent()
+            val validated = validateAndCleanMemberData(member, ourMissing, random)
             val variantData = validated.variantData
 
             // If missing variant data: replace with error variant
@@ -179,7 +182,7 @@ object DataFleet {
             }
 
             // If hull ID does not exist: log missing and maybe replace with error variant
-            if (variantData.hullId !in LookupUtil.getHullIDSet()) {
+            if (variantData.hullId !in LookupUtils.getHullIDSet()) {
                 missing.hullIds.add(variantData.hullId)
 
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
@@ -205,19 +208,19 @@ object DataFleet {
         }
 
         val validatedCommander = data.commanderIfNoFlagship?.let {
-            validateAndCleanPersonData(it, missing)
+            validateAndCleanPersonData(it, missing, random)
         }
 
         val validatedIdleOfficers = data.idleOfficers.map {
-            validateAndCleanPersonData(it, missing)
+            validateAndCleanPersonData(it, missing, random)
         }
 
         val validatedFaction =
-            if (Global.getSettings().allFactionSpecs.any { it.id == data.factionID }) data.factionID
+            if (LookupUtils.getAllFactionIDs().contains(data.factionID)) data.factionID
             else null
 
         if (data.secondInCommandData != null)
-            DataSecondInCommand.validateSecondInCommandData(data.secondInCommandData, missing)
+            DataSecondInCommand.validateSecondInCommandData(data.secondInCommandData, missing, random)
 
         return data.copy(
             members = validatedMembers,
@@ -228,7 +231,11 @@ object DataFleet {
         )
     }
 
-    fun buildFleet(data: ParsedFleetData, fleet: FleetDataAPI) {
+    fun buildFleet(
+        data: ParsedFleetData,
+        fleet: FleetDataAPI,
+        random: Random = Random()
+    ) {
         val campFleet: CampaignFleetAPI? = fleet.fleet
         val isPlayerFleet = campFleet != null && campFleet === Global.getSector()?.playerFleet
 
@@ -239,25 +246,32 @@ object DataFleet {
                 campFleet?.setFaction(data.factionID)
 
             data.commanderIfNoFlagship?.let {
-                campFleet?.commander = buildPerson(it)
+                campFleet?.commander = buildPerson(it, random)
             }
         }
 
         data.idleOfficers.forEach {
-            fleet.addOfficer(buildPerson(it))
+            fleet.addOfficer(buildPerson(it, random))
         }
 
-        data.members.forEach { parsed ->
-            val member = buildMember(parsed)
+        if (data.secondInCommandData != null && campFleet != null) {
+            DataSecondInCommand.buildSecondInCommandData(data.secondInCommandData, campFleet, random)
+        }
 
+        val addedMembers = mutableListOf<FleetMemberAPI>()
+        data.members.forEach { parsed ->
+            val member = buildMember(parsed, random)
             fleet.addFleetMember(member)
+            addedMembers.add(member)
 
             if (parsed.isFlagship) {
-                if (!member.captain.isDefault)
-                    campFleet?.commander = member.captain
+                if (member.captain.isDefault)
+                    member.captain.portraitSprite = PersonUtils.getRandomPortrait(faction = data.factionID, random = random) // The commander of the fleet mustn't be default. May cause issues otherwise.
+
+                campFleet?.commander = member.captain
+                member.isFlagship = true
 
                 fleet.membersListCopy.forEach { it.isFlagship = false }
-                member.isFlagship = true
             }
 
             member.captain?.let { officer ->
@@ -270,7 +284,7 @@ object DataFleet {
                         1 -> Personalities.CAUTIOUS
                         2 -> Personalities.STEADY
                         3 -> Personalities.AGGRESSIVE
-                        4 -> if (Random().nextBoolean()) Personalities.AGGRESSIVE else Personalities.RECKLESS
+                        4 -> if (random.nextBoolean()) Personalities.AGGRESSIVE else Personalities.RECKLESS
                         5 -> Personalities.RECKLESS
                         else -> Personalities.STEADY
                     }
@@ -280,10 +294,15 @@ object DataFleet {
             }
         }
 
+        fleet.setSyncNeeded()
         fleet.syncIfNeeded()
 
-        if (data.secondInCommandData != null && campFleet != null) {
-            DataSecondInCommand.buildSecondInCommandData(data.secondInCommandData, campFleet)
+        data.members.forEachIndexed { index, parsed ->
+            val member = addedMembers[index]
+
+            // Re-run cr check if it's null to account for new stats
+            if (parsed.cr == null)
+                member.repairTracker.cr = member.repairTracker.maxCR
         }
     }
 
@@ -292,15 +311,16 @@ object DataFleet {
         data: ParsedFleetData,
         fleet: FleetDataAPI,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent(),
+        random: Random = Random()
     ) {
-        val ourMissing = MissingElements()
+        val ourMissing = MissingContent()
 
-        val validated = validateAndCleanFleetData(data, settings, ourMissing)
+        val validated = validateAndCleanFleetData(data, settings, ourMissing, random)
         val filtered = filterParsedFleetData(validated, settings, ourMissing)
         missing.add(ourMissing)
 
-        buildFleet(filtered, fleet)
+        buildFleet(filtered, fleet, random)
     }
 
     @JvmOverloads
@@ -308,11 +328,12 @@ object DataFleet {
         data: ParsedFleetData,
         aiMode: Boolean,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent(),
+        random: Random = Random()
     ): CampaignFleetAPI {
         val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, aiMode)
 
-        buildFleetFull(data, fleet.fleetData, settings, missing)
+        buildFleetFull(data, fleet.fleetData, settings, missing, random)
 
         return fleet
     }

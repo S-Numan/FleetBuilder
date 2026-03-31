@@ -6,12 +6,34 @@ import com.fs.starfarer.api.campaign.FactionAPI
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
+import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.PersonSettings
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import java.util.*
 
+
 object PersonUtils {
+
+    fun getMaxOfficerLevel(person: PersonAPI): Int {
+        if (person.isPlayer) {
+            val levelUpPlugin = Global.getSettings().levelupPlugin
+            return levelUpPlugin.maxLevel
+            //return Global.getSettings().getInt("playerMaxLevel")
+        } else if (!person.isAICore) {
+            val plugin = Global.getSettings().getPlugin("officerLevelUp") as OfficerLevelupPlugin
+            return plugin.getMaxLevel(person)
+        }
+        return person.stats.level
+    }
+
+    fun getMaxOfficerEliteSkills(person: PersonAPI): Int {
+        if (!person.isAICore) {
+            val plugin = Global.getSettings().getPlugin("officerLevelUp") as OfficerLevelupPlugin
+            return plugin.getMaxEliteSkills(person)
+        }
+        return person.stats.level
+    }
 
     fun getAllSourceModsFromPerson(
         person: PersonAPI,
@@ -24,7 +46,7 @@ object PersonUtils {
         val sourceMods = mutableSetOf<ModSpecAPI>()
 
         for (skill in data.skills) {
-            LookupUtil.getSkillSpec(skill.key)?.sourceMod?.let { sm ->
+            LookupUtils.getSkillSpec(skill.key)?.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
         }
@@ -56,14 +78,18 @@ object PersonUtils {
         }
     }
 
-    fun getRandomPortrait(gender: FullName.Gender = FullName.Gender.ANY, faction: String? = null): String {
+    fun getRandomPortrait(
+        gender: FullName.Gender = FullName.Gender.ANY,
+        faction: String? = null,
+        random: Random = Random()
+    ): String {
         val faction = Global.getSettings().getFactionSpec(faction ?: Factions.PLAYER)
         return if (gender == FullName.Gender.MALE)
-            faction.malePortraits.pick()
+            faction.malePortraits.pick(random)
         else if (gender == FullName.Gender.FEMALE)
-            faction.femalePortraits.pick()
+            faction.femalePortraits.pick(random)
         else
-            if (Random().nextBoolean()) faction.malePortraits.pick() else faction.femalePortraits.pick()
+            if (random.nextBoolean()) faction.malePortraits.pick(random) else faction.femalePortraits.pick(random)
     }
 
     fun randomizePersonCosmetics(

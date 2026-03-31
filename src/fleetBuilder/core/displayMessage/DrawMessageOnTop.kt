@@ -8,6 +8,7 @@ import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.lastComponent
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.TimeKeeper
@@ -86,8 +87,12 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
 
         if (justLoadedGame > 0) {
             justLoadedGame--
-            if (justLoadedGame == 0)
-                CampaignMessageRenderer()
+            if (justLoadedGame == 0) {
+                clearCurrent()
+                val screenPanel = ReflectionMisc.getScreenPanel()
+                if (screenPanel != null && screenPanel.getChildrenCopy().none { CampaignMessageRenderer::class.java.isInstance((it as? CustomPanelAPI)?.plugin) })
+                    CampaignMessageRenderer()
+            }
         }
 
         advanceAmount(TimeKeeper.campaignDelta(amount))
@@ -105,14 +110,22 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
         val state = Global.getCurrentState()
 
         if (state != curState) {
-            if (toDraw != null) {
-                currentMessage = null
-                toDraw = null
-                messageQueue.clear()
-                messageTimer = 0f
-                fadingOut = false
-            }
+            //clearCurrent()
             curState = state
+
+            val screenPanel = ReflectionMisc.getScreenPanel()
+            if (screenPanel != null && curState == GameState.CAMPAIGN && screenPanel.getChildrenCopy().none { CampaignMessageRenderer::class.java.isInstance((it as? CustomPanelAPI)?.plugin) })
+                CampaignMessageRenderer()
+        }
+    }
+
+    private fun clearCurrent() {
+        if (toDraw != null) {
+            currentMessage = null
+            toDraw = null
+            messageQueue.clear()
+            messageTimer = 0f
+            fadingOut = false
         }
     }
 

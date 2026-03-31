@@ -4,7 +4,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.joinSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
@@ -12,7 +12,7 @@ import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.FBTxt
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.toBinary
@@ -30,7 +30,7 @@ object CompressedVariant {
     fun getVariantFromCompString(
         comp: String,
         settings: VariantSettings = VariantSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
     ): ShipVariantAPI {
         val parsed = extractVariantDataFromCompString(comp, missing) ?: run {
             DataVariant.ParsedVariantData("")
@@ -42,7 +42,7 @@ object CompressedVariant {
     @JvmOverloads
     fun extractVariantDataFromCompString(
         comp: String,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataVariant.ParsedVariantData? {
         val metaIndexStart = comp.indexOf(metaSep)
         val metaIndexEnd = comp.indexOf(metaSep, metaIndexStart + 1)
@@ -247,7 +247,7 @@ object CompressedVariant {
         compressedVariant = "$ver$compressedVariant"//Indicate structure version for compatibility with future compressed format changes
 
         if (includePrepend)
-            compressedVariant = "${data.displayName} ${LookupUtil.getHullSpec(data.hullId)?.hullName} : $requiredMods" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
+            compressedVariant = "${data.displayName} ${LookupUtils.getHullSpec(data.hullId)?.hullName} : $requiredMods" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
 
         return compressedVariant
     }

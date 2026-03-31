@@ -24,6 +24,14 @@ open class DialogPanel(
     var confirmButtonShortcut = Keyboard.KEY_G
     var cancelButtonShortcut = Keyboard.KEY_ESCAPE
 
+    override var dialogStyle: Boolean = true
+    override var tooltipPadFromSide = 12f
+    override var tooltipPadFromTop = 10f
+    override var tooltipPadFromBottom = 10f
+
+    override var darkenBackground: Boolean = true
+    override var useCampaignDummyDialogAndPauseCombat = true
+
     override fun createUI() {
         createHeader()
 
@@ -109,9 +117,9 @@ open class DialogPanel(
 
         val bottom = goalHeight
         val alignX = when (alignment) {
-            Alignment.LMID -> xTooltipPad
+            Alignment.LMID -> tooltipPadFromSide
             Alignment.MID -> 0f
-            Alignment.RMID -> -xTooltipPad
+            Alignment.RMID -> -tooltipPadFromSide
             else -> 0f
         }
         panel.addUIElement(tooltip).inTL(alignX, bottom - 40)
@@ -136,23 +144,22 @@ open class DialogPanel(
 
         // Position in top-right
         panel.addUIElement(ui).inTR(7f, 2f)
+        panel.bringComponentToTop(ui)
 
         closeButton!!.onClick { dismiss() }
-    }
-
-    override fun getYTooltipPadding(): Float {
-        return yTooltipPad + if (headerTitle != null) 30f else 0f
     }
 
     var headerTooltip: TooltipMakerAPI? = null
     protected fun createHeader() {
         if (headerTitle != null && headerTooltip == null) {
-            headerTooltip = panel.createUIElement(panel.position.width - (xTooltipPad * 3f), 20f, false)
+            val headerPad = 4f
+            headerTooltip = panel.createUIElement(panel.position.width - (tooltipPadFromSide * 2f) + headerPad, 20f, false)
             headerTooltip!!.setParaFont(Fonts.ORBITRON_20AABOLD)
             val label = headerTooltip!!.addPara(headerTitle, Misc.getTooltipTitleAndLightHighlightColor(), 5f)
-            panel.addUIElement(headerTooltip).inTL(xTooltipPad * 1.5f, yTooltipPad)
+            panel.addUIElement(headerTooltip).inTL(tooltipPadFromSide - headerPad / 2, tooltipPadFromTop)
             val textWidth = label.computeTextWidth(label.text)
-            label.position.setLocation(0f, 0f).inTL(((panel.position.width - (xTooltipPad * 2)) - textWidth) / 2f, 3f)
+            label.position.setLocation(0f, 0f).inTL(((panel.position.width - (tooltipPadFromSide * 2) - headerPad) - textWidth) / 2f, 3f)
+            tooltipPadFromTop += 30f
         }
     }
 }

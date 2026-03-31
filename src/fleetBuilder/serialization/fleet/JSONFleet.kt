@@ -3,7 +3,7 @@ package fleetBuilder.serialization.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
@@ -21,12 +21,13 @@ import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.util.FBMisc
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
 
 object JSONFleet {
     @JvmOverloads
     fun extractFleetDataFromJson(
         json: JSONObject,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataFleet.ParsedFleetData {
         val fleetName = json.optString("fleetName", "Nameless fleet")
 
@@ -44,13 +45,16 @@ object JSONFleet {
         val members = mutableListOf<DataMember.ParsedMemberData>()
         fun getMember(memberJson: JSONObject) {
             val variantId = memberJson.optString("variantId", "")
-            val variantData = variantById[variantId]?.copy()
+            val originalVariantId = memberJson.optString("originalVariantId", variantId)
 
-            val memberData = extractMemberDataFromJson(memberJson, missing).copy(variantData = variantData)
-
-            members.add(
-                memberData
+            val variantData = variantById[variantId]?.copy(
+                variantId = originalVariantId // in case this variant was deduplicated, override the variant id with the original variant id for parity when comparing between different fleets
             )
+
+            val memberData = extractMemberDataFromJson(memberJson, missing)
+                .copy(variantData = variantData)
+
+            members.add(memberData)
         }
 
         val commander = json.optJSONObject("commander")?.let {
@@ -112,7 +116,7 @@ object JSONFleet {
         json: JSONObject,
         fleet: CampaignFleetAPI,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ) {
         return getFleetFromJson(json, fleet.fleetData, settings, missing)
     }
@@ -122,11 +126,12 @@ object JSONFleet {
         json: JSONObject,
         fleet: FleetDataAPI,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent(),
+        random: Random = Random()
     ) {
         val extracted = extractFleetDataFromJson(json)
 
-        buildFleetFull(extracted, fleet, settings, missing)
+        buildFleetFull(extracted, fleet, settings, missing, random)
     }
 
     @JvmOverloads
@@ -134,11 +139,12 @@ object JSONFleet {
         json: JSONObject,
         aiMode: Boolean,
         settings: FleetSettings = FleetSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent(),
+        random: Random = Random(),
     ): CampaignFleetAPI {
         val extracted = extractFleetDataFromJson(json)
 
-        return createCampaignFleetFromData(extracted, aiMode, settings, missing)
+        return createCampaignFleetFromData(extracted, aiMode, settings, missing, random)
     }
 
     @JvmOverloads
@@ -215,6 +221,10 @@ object JSONFleet {
                 // Add this variant to the variantsJson array
                 variantsJson.put(variant)
                 newId
+            }
+
+            if (uniqueVariantId != baseVariantId) {
+                memberJson.put("originalVariantId", baseVariantId)
             }
 
             // Remove the "variant" object from the memberJson and set the unique variantId

@@ -15,7 +15,6 @@ import fleetBuilder.otherMods.MagicLib.ReflectionUtilsExtra
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.createFleetMember
-import fleetBuilder.util.getEffectiveHullId
 import fleetBuilder.util.safeInvoke
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
@@ -31,6 +30,11 @@ internal object AutofitSelector {
     internal class AutofitSelectorPlugin(var autofitSpec: AutofitSpec?, var addXIfAutofitSpecNull: Boolean = false) :
         BaseCustomUIPanelPlugin() {
         lateinit var selectorPanel: CustomPanelAPI
+        var shipPreview: ShipPreviewOverlayPlugin? = null
+        fun cleanup() {
+            shipPreview?.cleanup()
+        }
+
 
         val defaultBGColor: Color = Color.BLACK
         val clickedBGColor: Color = Misc.getDarkPlayerColor()
@@ -192,7 +196,6 @@ internal object AutofitSelector {
 
         override fun processInput(events: MutableList<InputEventAPI>?) {
             events!!.filter { it.isMouseEvent }.forEach { event ->
-
                 if (event.isConsumed) return@forEach
                 val inElement = event.x.toFloat() in selectorPanel.left..selectorPanel.right &&
                         event.y.toFloat() in selectorPanel.bottom..selectorPanel.top
@@ -225,6 +228,17 @@ internal object AutofitSelector {
                     }
                 }
             }
+
+            events.filter { it.isKeyboardEvent }.forEach { event ->
+                if (event.isConsumed) return@forEach
+                if (event.isKeyDownEvent) onKeyDownFunctions.forEach { it(event) }
+            }
+        }
+
+        private var onKeyDownFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
+
+        fun onKeyDown(function: (InputEventAPI) -> Unit) {
+            onKeyDownFunctions.add(function)
         }
 
         fun onClick(function: (InputEventAPI) -> Unit) {
@@ -296,18 +310,18 @@ internal object AutofitSelector {
         centerTitle: Boolean = false,
         addDescription: Boolean = true,
         addXIfAutofitSpecNull: Boolean = false
-    ): CustomPanelAPI {
-
+    ): AutofitSelectorPlugin {
         val plugin = AutofitSelectorPlugin(autofitSpec, addXIfAutofitSpecNull)
         val selectorPanel = Global.getSettings().createCustom(width, width + (if (addTitle) titleHeight else 0f) + (if (addDescription) descriptionHeight else 0f), plugin)
         plugin.selectorPanel = selectorPanel
 
+
         if (autofitSpec != null)
-            createAutofitSelectorChildren(autofitSpec, width, selectorPanel, addTitle = addTitle, addDescription = addDescription, centerTitle = centerTitle)
+            plugin.shipPreview = createAutofitSelectorChildren(autofitSpec, width, selectorPanel, addTitle = addTitle, addDescription = addDescription, centerTitle = centerTitle)
         else
             plugin.noClickFader = true
 
-        return selectorPanel
+        return plugin
     }
 
     fun createAutofitSelectorChildren(
@@ -317,14 +331,14 @@ internal object AutofitSelector {
         addTitle: Boolean = true,
         centerTitle: Boolean = false,
         addDescription: Boolean = true
-    ) {
+    ): ShipPreviewOverlayPlugin? {
         val descriptionYOffset = 2f
         val topPad = 5f
 
-        val shipPreview = createShipPreview(autofitSpec.variant, width, width, showFighters = true)
-        selectorPanel.addComponent(shipPreview).inTL(0f, topPad)
+        val shipPreview = ShipPreviewOverlayPlugin(autofitSpec.variant.createFleetMember(), width, width, showFighters = true, showSModAndDModBars = true, manualScaleShipsToBetterFit = true)
+        selectorPanel.addComponent(shipPreview.panel).inTL(0f, topPad)
 
-        if (!addTitle && !addDescription) return
+        if (!addTitle && !addDescription) return null
 
         val textElement = selectorPanel.createUIElement(width, (if (addTitle) titleHeight else 0f) + (if (addDescription) descriptionHeight else 0f) - topPad, false)
         selectorPanel.addUIElement(textElement)
@@ -341,89 +355,7 @@ internal object AutofitSelector {
                 description.autoSizeToText(autofitSpec.description)
             }
         }
-    }
-
-    fun createShipPreview(
-        variant: ShipVariantAPI,
-        width: Float, height: Float,
-        scaleDownSmallerShips: Boolean = false,
-        showFighters: Boolean = false,
-        setSchematicMode: Boolean = false,
-    ): UIPanelAPI {
-        // Main container panel
-        val containerPanel = Global.getSettings().createCustom(width, height, null)
-
-        val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(variant.createFleetMember()) as UIPanelAPI
-        val boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
-
-        boxedUIShipPreview.uiShipPreview.setSize(width, height)
-        boxedUIShipPreview.setShowBorder(false)
-
-        if (!scaleDownSmallerShips)
-            boxedUIShipPreview.setScaleDownSmallerShipsMagnitude(1f)
-
-        boxedUIShipPreview.adjustOverlay(0f, 0f)
-
-        if (showFighters)
-            boxedUIShipPreview.showFighters = true
-
-        if (setSchematicMode)
-            boxedUIShipPreview.setSchematicMode(true)
-
-        //Remove this hard coded scaling code when things scale right properly in the base game.
-
-        val effectiveHullId = variant.hullSpec.getEffectiveHullId()
-
-        // Define config for special ships
-        data class ShipDisplayConfig(
-            val scaleFactor: Float = 1f,
-            val yOffset: Float = 0f,
-            val disableScissor: Boolean = false
-        )
-
-        //val padding = computeSpritePaddingPixels(clonedVariant)
-        //val sprite = Global.getSettings().getSprite(clonedVariant.hullSpec.spriteName)
-        //minOf(width / sprite.width, height / sprite.height, 1f)//See https://fractalsoftworks.com/forum/index.php?topic=33818.0 for why this cannot work as intended
-
-        // Configurations for special hull IDs
-        val specialConfigs = mapOf(
-            "apogee" to ShipDisplayConfig(scaleFactor = 0.9f, yOffset = 12f, disableScissor = true),
-            "radiant" to ShipDisplayConfig(scaleFactor = 0.95f, yOffset = 10f, disableScissor = true),
-            "paragon" to ShipDisplayConfig(scaleFactor = 0.94f, yOffset = 15f, disableScissor = true),
-            "pegasus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
-            "executor" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 7f, disableScissor = true),
-            "invictus" to ShipDisplayConfig(scaleFactor = 0.98f, yOffset = 0f, disableScissor = true),
-            "onslaught" to ShipDisplayConfig(scaleFactor = 1.08f, yOffset = 0f, disableScissor = false),
-            "hammerhead" to ShipDisplayConfig(scaleFactor = 1.00f, yOffset = 4f, disableScissor = false) // If autofit panel is too small, this clips into the top.
-        )
-
-        // Get config or default
-        val config = specialConfigs[effectiveHullId] ?: ShipDisplayConfig()
-
-        // Apply config
-        if (config.disableScissor) {
-            boxedUIShipPreview.setScissor(false)
-        }
-
-        // Scale and set size
-        val scaledWidth = width * config.scaleFactor
-        val scaledHeight = height * config.scaleFactor
-        boxedUIShipPreview.uiShipPreview.setSize(scaledWidth, scaledHeight)
-
-        // Prepare ship
-        boxedUIShipPreview.uiShipPreview.safeInvoke("prepareShip")
-
-        // Base Y offset from config
-        val baseYOffset = config.yOffset
-
-        // Center offsets for shipPreview
-        val offsetX = (width - scaledWidth) / 2f
-        val offsetY = (height - scaledHeight) / 2f + baseYOffset
-
-        // Add shipPreview to container, positioned to center plus offset
-        containerPanel.addComponent(shipPreview).inTL(offsetX, offsetY)
-
-        return containerPanel
+        return shipPreview
     }
 
     private fun getExactBounds(variant: ShipVariantAPI): List<BoundsAPI.SegmentAPI>? {

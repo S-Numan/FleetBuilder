@@ -16,7 +16,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySp
 import com.fs.starfarer.campaign.CampaignEngine
 import com.fs.util.container.repo.ObjectRepository
 import fleetBuilder.util.FBMisc.replaceVariantWithVariant
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.FactionUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.completelyRemoveMod
@@ -67,7 +67,7 @@ internal object RemoveFromSave {
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
             .map { it.id }
 
-        val skills = LookupUtil.getAllSkillSpecs()
+        val skills = LookupUtils.getAllSkillSpecs()
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
             .map { it.id }
 

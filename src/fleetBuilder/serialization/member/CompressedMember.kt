@@ -3,7 +3,7 @@ package fleetBuilder.serialization.member
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.memberSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
@@ -13,10 +13,11 @@ import fleetBuilder.serialization.member.DataMember.getMemberDataFromMember
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.util.FBTxt
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.roundToDecimals
+import java.util.Random
 
 object CompressedMember {
     fun isCompressedMember(comp: String): Boolean {
@@ -31,19 +32,20 @@ object CompressedMember {
     fun getMemberFromCompString(
         comp: String,
         settings: MemberSettings = MemberSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
+        random: Random = Random(),
     ): FleetMemberAPI {
         val parsed = extractMemberDataFromCompString(comp, missing) ?: run {
             DataMember.ParsedMemberData()
         }
 
-        return buildMemberFull(parsed, settings, missing)
+        return buildMemberFull(parsed, settings, missing, random)
     }
 
     @JvmOverloads
     fun extractMemberDataFromCompString(
         comp: String,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataMember.ParsedMemberData? {
 
         val metaIndexStart = comp.indexOf(metaSep)
@@ -247,7 +249,7 @@ object CompressedMember {
         if (includePrepend) {
             val shipName = data.shipName
             val displayName = data.variantData?.displayName ?: "null"
-            val hullName = LookupUtil.getHullSpec(data.variantData?.hullId ?: "")?.hullName ?: "null"
+            val hullName = LookupUtils.getHullSpec(data.variantData?.hullId ?: "")?.hullName ?: "null"
 
             val readable = if (data.personData != null) {
                 val personName = data.personData.first + " " + data.personData.last

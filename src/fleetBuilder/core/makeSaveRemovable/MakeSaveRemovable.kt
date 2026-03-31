@@ -6,7 +6,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.CampaignEngine
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 
 //Original code is from AITweaks "MakeAITweaksRemovable", the author being Genrir. Credit to them.
 
@@ -30,7 +30,7 @@ internal object MakeSaveRemovable {
         val mutableHullMods: MutableList<Thing> = mutableListOf()
 
         Global.getSettings().allHullModSpecs.forEach { mod ->
-            if (mod.sourceMod != null && mod.sourceMod.id == ModSettings.getModID()) {//Hullmod is from this mod?
+            if (mod.sourceMod != null && mod.sourceMod.id == FBSettings.getModID()) {//Hullmod is from this mod?
                 mutableHullMods.add(Thing(mod.id, "$${mod.id}"))//Add it for removal
             }
         }

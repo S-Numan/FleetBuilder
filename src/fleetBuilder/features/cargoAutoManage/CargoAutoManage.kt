@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
-import fleetBuilder.core.ModSettings.PRIMARYDIR
+import fleetBuilder.core.FBSettings.PRIMARYDIR
 import fleetBuilder.util.FBMisc.jsonArrayToList
 import org.json.JSONArray
 import org.json.JSONObject

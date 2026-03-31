@@ -17,27 +17,29 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.coreui.CaptainPickerDialog
-import fleetBuilder.core.ModSettings
-import fleetBuilder.core.ModSettings.commandShuttleId
-import fleetBuilder.core.ModSettings.randomPastedCosmetics
+import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBSettings.commandShuttleId
+import fleetBuilder.core.FBSettings.randomPastedCosmetics
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DisplayMessage.showMessage
-import fleetBuilder.core.shipDirectory.ShipDirectoryService.doesLoadoutExist
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.doesLoadoutExist
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
-import fleetBuilder.serialization.fleet.DataFleet.validateAndCleanFleetData
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.DataMember.buildMemberFull
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
-import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.util.FBTxt
@@ -50,9 +52,6 @@ import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.getActualCurrentTab
 import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.safeInvoke
-import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
-import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
-import fleetBuilder.otherMods.starficz.findChildWithMethod
 import java.awt.Color
 
 internal object ClipboardHotkeyHandlerUtils {
@@ -62,16 +61,16 @@ internal object ClipboardHotkeyHandlerUtils {
             block()
         } catch (e: Exception) {
             DisplayMessage.showError(
-                FBTxt.txt("mod_hotkey_failed", ModSettings.getModName()),
+                FBTxt.txt("mod_hotkey_failed", FBSettings.getModName()),
                 e
             )
         }
     }
 
     fun requireCheatsOrWarn(): Boolean {
-        if (!ModSettings.cheatsEnabled()) {
+        if (!FBSettings.cheatsEnabled()) {
             DisplayMessage.showMessage(
-                FBTxt.txt("enable_cheats_to_use_paste", ModSettings.getModName()),
+                FBTxt.txt("enable_cheats_to_use_paste", FBSettings.getModName()),
                 Color.YELLOW
             )
             return false
@@ -193,7 +192,7 @@ internal object ClipboardHotkeyHandlerUtils {
             }
         }
 
-        val key = if (!isShiftDown) {
+        val key = if (isShiftDown) {
             val json = saveFleetToJson(fleetToCopy, settings)
             ClipboardUtil.setClipboardText(json.toString(4))
             when {
@@ -264,7 +263,7 @@ internal object ClipboardHotkeyHandlerUtils {
         }
 
         fleet?.let { fleetToCopy ->
-            val txt = if (!isShiftDown) {
+            val txt = if (isShiftDown) {
                 val json = saveFleetToJson(
                     fleetToCopy,
                     FleetSettings().apply {
@@ -301,7 +300,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleRefitPaste(): Boolean {
-        val missing = MissingElements()
+        val missing = MissingContent()
 
         var data = ClipboardMisc.extractDataFromClipboard(missing) ?: return false
 
@@ -324,7 +323,7 @@ internal object ClipboardHotkeyHandlerUtils {
         }
 
 
-        val loadoutExists = doesLoadoutExist(ModSettings.defaultPrefix, variant)
+        val loadoutExists = doesLoadoutExist(FBSettings.defaultPrefix, variant)
 
         if (!loadoutExists) {
             HotkeyHandlerDialogs.createImportLoadoutDialog(variant, missing)
@@ -370,13 +369,13 @@ internal object ClipboardHotkeyHandlerUtils {
                             CommanderShuttle.removePlayerShuttle()
                     }
 
-                    ModSettings.unassignPlayer() -> {
+                    FBSettings.unassignPlayer() -> {
                         CommanderShuttle.addPlayerShuttle()
                     }
 
                     else -> {
                         DisplayMessage.showMessage(
-                            FBTxt.txt("enable_unassign_player", ModSettings.getModName()),
+                            FBTxt.txt("enable_unassign_player", FBSettings.getModName()),
                             Color.YELLOW
                         )
                     }
@@ -395,10 +394,9 @@ internal object ClipboardHotkeyHandlerUtils {
         }
     }
 
-    fun campaignPaste(
-        sector: SectorAPI,
+    fun pasteFleet(
         data: Any,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): Boolean {
         var newData = data
         if (newData !is DataFleet.ParsedFleetData) {
@@ -428,24 +426,14 @@ internal object ClipboardHotkeyHandlerUtils {
             }
         }
 
-        val validatedData = validateAndCleanFleetData(newData as DataFleet.ParsedFleetData, settings = FleetSettings(), missing = missing)
-
-        if (validatedData.members.isEmpty()) {
-            reportMissingElementsIfAny(missing, FBTxt.txt("fleet_was_empty_when_pasting"))
-            return false
-        }
-
-        HotkeyHandlerDialogs.spawnFleetInCampaignDialog(sector, newData as DataFleet.ParsedFleetData, validatedData)
-
-        return true
+        return HotkeyHandlerDialogs.pasteFleetDialog(newData as DataFleet.ParsedFleetData, missing)
     }
 
-    fun fleetPaste(
-        sector: SectorAPI,
+    fun pasteIntoPlayerFleetPanel(
         data: Any,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ) {
-        val playerFleet = sector.playerFleet.fleetData
+        val playerFleet = Global.getSector().playerFleet.fleetData
 
         var uiShowsSubmarketFleet = false
 
@@ -470,7 +458,7 @@ internal object ClipboardHotkeyHandlerUtils {
                 val variant = buildVariantFull(data, missing = missing)
 
                 if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, FBTxt.txt("could_not_find_hullid_when_variant", missing.hullIds.first()))
+                    reportMissingContentIfAny(missing, FBTxt.txt("could_not_find_hullid_when_variant", missing.hullIds.first()))
                     return
                 }
 
@@ -498,7 +486,7 @@ internal object ClipboardHotkeyHandlerUtils {
                 val member = buildMemberFull(data, missing = missing)
 
                 if (missing.hullIds.size > 1) {
-                    reportMissingElementsIfAny(missing, FBTxt.txt("could_not_find_hullid_when_member", missing.hullIds.first()))
+                    reportMissingContentIfAny(missing, FBTxt.txt("could_not_find_hullid_when_member", missing.hullIds.first()))
                     return
                 }
 
@@ -515,7 +503,7 @@ internal object ClipboardHotkeyHandlerUtils {
                         FBTxt.txt("added_ship_to_submarket", shipName)
                     } else {
                         if (member.captain.faction.id != "tahlan_allmother") {
-                            member.captain.memoryWithoutUpdate.set(ModSettings.storedOfficerTag, true)
+                            member.captain.memoryWithoutUpdate.set(FBSettings.storedOfficerTag, true)
                             member.captain.memoryWithoutUpdate.set(Misc.CAPTAIN_UNREMOVABLE, true)
                         }
                         FBTxt.txt("added_ship_to_submarket_with_officer", shipName)
@@ -533,24 +521,11 @@ internal object ClipboardHotkeyHandlerUtils {
                 updateFleetPanelContents()
             }
 
-            is DataFleet.ParsedFleetData -> {
-                // Fleet
-                val subMissing = MissingElements()
-                val validatedFleet = validateAndCleanFleetData(data, missing = subMissing)
-
-                if (validatedFleet.members.isEmpty()) {
-                    reportMissingElementsIfAny(subMissing, FBTxt.txt("fleet_was_empty_when_pasting"))
-                    return
-                }
-
-                HotkeyHandlerDialogs.pasteFleetIntoPlayerFleetDialog(data, validatedFleet)
-            }
-
             else -> {
                 DisplayMessage.showMessage(FBTxt.txt("data_valid_but_not_fleet_member_variant_person"), Color.YELLOW)
             }
         }
 
-        reportMissingElementsIfAny(missing)
+        reportMissingContentIfAny(missing)
     }
 }

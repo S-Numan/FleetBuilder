@@ -4,7 +4,6 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.SharedUnlockData
@@ -12,12 +11,12 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.mission.FleetSide
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.ClipboardMisc
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.member.DataMember
-import fleetBuilder.serialization.reportMissingElementsIfAny
+import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.FBTxt
@@ -35,7 +34,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
         amount: Float,
         events: List<InputEventAPI>
     ) {
-        if (!ModSettings.fleetClipboardHotkeyHandler) return
+        if (!FBSettings.fleetClipboardHotkeyHandler) return
 
         for (event in events) {
             if (event.isConsumed) continue
@@ -53,7 +52,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                                 event.consume(); continue
                             }
                         } catch (e: Exception) {
-                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", ModSettings.getModName()), e)
+                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", FBSettings.getModName()), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
                         if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
@@ -61,7 +60,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                             event.consume(); continue
                         }
                         val engine = Global.getCombatEngine() ?: return
-                        if (engine.isSimulation || (Global.getCurrentState() == GameState.COMBAT && ModSettings.cheatsEnabled())) {
+                        if (engine.isSimulation || (Global.getCurrentState() == GameState.COMBAT && FBSettings.cheatsEnabled())) {
                             pasteShipIntoCombat(engine, event)
                             event.consume(); continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
@@ -160,7 +159,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
 
         var element: Any? = null
 
-        val missing = MissingElements()
+        val missing = MissingContent()
 
         if (event.eventValue == Keyboard.KEY_V) {
             val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
@@ -204,30 +203,45 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
         val worldY = viewport.convertScreenYToWorldY(sy)
         var loc = Vector2f(worldX, worldY)
 
-        if (!ModSettings.cheatsEnabled()) {
-            if (member.hullSpec.hasTag("codex_unlockable") && (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId))) {
-                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_player_not_aware"), Color.YELLOW)
+        if (!FBSettings.cheatsEnabled()) {
+
+            // TODO, if player is considered unaware of ship. Do not include it in the reason for why they cannot spawn it.
+
+            if (member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM)) {
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_no_sim"), Color.YELLOW)
                 return
             }
-            if (!member.hullSpec.hasTag("codex_unlockable") && member.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
-                || member.variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || member.variant.hasTag(Tags.HIDE_IN_CODEX)
-            ) {
-                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_hidden_in_codex"), Color.YELLOW)
+            if (member.hullSpec.hasTag(Tags.RESTRICTED)) {
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_is_restricted"), Color.YELLOW)
                 return
+            }
+            if (member.hullSpec.hasTag(Tags.CODEX_UNLOCKABLE)) {
+                if (!SharedUnlockData.get().isPlayerAwareOfShip(member.hullId)) {
+                    DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_player_not_aware"), Color.YELLOW)
+                    return
+                }
             }
             if (getDeployedFleetPoints(engine, FleetSide.ENEMY) + member.deployCost > Global.getSettings().battleSize / 2f * 1.2f) {
-                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_exceed_fleet_limit"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_exceed_fleet_limit"), Color.YELLOW)
+                return
+            }
+            if (member.isStation) {
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_no_station"), Color.YELLOW)
+                return
+            }
+            if (member.hullSpec.hasTag(Tags.DWELLER) || member.hullSpec.hasTag(Tags.THREAT)) {
+                DisplayMessage.showMessage("Cannot simulate what is beyond comprehension", Color.YELLOW)
                 return
             }
         }
         if (!isPositionFree(engine, loc.x, loc.y, member.hullSpec.collisionRadius / 2f)) {
             loc = findFreeSpawnLocation(engine, loc.x, loc.y, member.hullSpec.collisionRadius) ?: run {
-                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("hull_no_free_location"), Color.YELLOW)
+                DisplayMessage.showMessage(FBTxt.txt("cannot_spawn_ship_of_hull", member.hullSpec.hullName) + FBTxt.txt("ship_no_free_location"), Color.YELLOW)
                 return
             }
         }
 
-        reportMissingElementsIfAny(missing)
+        reportMissingContentIfAny(missing)
 
         fun spawnAt(
             engine: CombatEngineAPI,

@@ -6,7 +6,8 @@
   "failed_to_read_save_in_clipboard": "Failed to read save in clipboard",
   "no_missing_elements": "No missing elements.",
   "cargo_auto_manage_message": "Cargo auto-managed",
-  "officer_copied_to_clipboard": "Officer copied to clipboard",
+  "officer_copied_to_clipboard": "Officer copied to clipboard without compression",
+  "officer_copied_to_clipboard_compressed": "Officer copied to clipboard",
   "save_copied": "Save copied to clipboard",
   "load_complete": "Load Complete",
   "done": "Done",
@@ -33,8 +34,8 @@
   "copied_visible_submarket_to_clipboard":"Filtered submarket compressed and copied to clipboard",
   "copied_visible_submarket_to_clipboard_compressed":"Filtered submarket compressed and copied to clipboard",
 
-  "member_copied_to_clipboard":"Member copied to clipboard",
-  "member_copied_to_clipboard_compressed":"Member compressed and copied to clipboard",
+  "member_copied_to_clipboard":"Member copied to clipboard without compression",
+  "member_copied_to_clipboard_compressed":"Member copied to clipboard",
 
   "enable_unassign_player": "Unassign Player must be on in the %s mod settings to unassign the player",
 
@@ -53,8 +54,8 @@
 
   "no_valid_data_in_clipboard":"No valid data in clipboard",
 
-  "variant_copied_to_clipboard":"Variant copied to clipboard",
-  "variant_copied_to_clipboard_compressed":"Variant compressed and copied to clipboard",
+  "variant_copied_to_clipboard":"Variant copied to clipboard without compression",
+  "variant_copied_to_clipboard_compressed":"Variant copied to clipboard",
 
   "failed_to_load_cargo":"Failed to load cargo",
   "failed_to_load_credits":"Failed to load credits",
@@ -78,8 +79,8 @@
   "members_appended_into_fleet":"%s members appended to fleet",
   "player_fleet_replaced":"Fleet replaced",
 
-  "used_story_point":"Used %s story point",
-  "used_story_point_plural":"Used %s story point",
+  "used_story_points_one":"Used %s story point",
+  "used_story_points_many":"Used %s story points",
 
   "cannot_apply_smod_lack_build_in_slots":"Cannot apply SMods. Not enough build in slots left",
   "cannot_apply_smod_lack_story_point":"Cannot apply SMods. Not enough Story Points",
@@ -99,23 +100,6 @@
 
   "enable_cheats_to_use_officer_creator":"Enable cheats in %s settings to unlock officer creation functionality",
   "enable_cheats_to_use_paste":"Enable cheats in %s settings to unlock paste functionality",
-
-  "paste_fleet_into_player_fleet":"Paste Fleet into Player Fleet",
-  "replace_player_fleet":"Replace Player Fleet",
-  "append_to_player_fleet":"Append to Player Fleet",
-  "set_aggression_doctrine":"Set Aggression Doctrine",
-  "replace_player_with_commander":"Replace Player with Commander",
-  "additional_settings":"Additional Settings:",
-  "include_commander_as_officer":"Include Commander as Officer",
-  "exclude_ships_from_missing_mods":"Exclude Ships From Missing Mods",
-  "fulfill_fleet_needs":"Fulfill cargo, fuel, crew, and repair for fleet",
-
-  "spawn_fleet_in_campaign":"Spawn Fleet in Campaign",
-  "include_commander_as_commander":"Include Commander as Commander",
-  "spawn_fleet":"Spawn Fleet",
-  "set_faction_to_pirate":"Set Faction to Pirate",
-  "fight_to_the_last":"Fight To The Last",
-  "repair_and_set_max_cr":"Repair and Set Max CR",
 
   "save_transfer":"Save Transfer",
   "include_blueprints":"Include Blueprints",
@@ -154,10 +138,12 @@
 
   # In combat creation
   "cannot_spawn_ship_of_hull":"Cannot spawn ship of hull '%s' ",
-  "hull_player_not_aware":"The player is not aware of this hull.",
-  "hull_hidden_in_codex":"It is hidden in the codex which suggests it cannot be simulated.",
-  "hull_exceed_fleet_limit":"Would exceed Fleet Point limit.",
-  "hull_no_free_location":"Cannot find free location.",
+  "ship_player_not_aware":"The player is not aware of this ship.",
+  "ship_is_restricted":"This ship is 'restricted' and thus cannot be simulated.",
+  "ship_exceed_fleet_limit":"Would exceed Fleet Point limit.",
+  "ship_no_free_location":"Cannot find free location.",
+  "ship_no_sim":"Ship is unable to be simulated",
+  "ship_no_station":"Cannot simulate stations",
 
   # Developer options dialog
   "dev_options_title": "Developer Options",
@@ -175,10 +161,6 @@
   "pasted_fleet_members_officer_one": "Pasted fleet contains %s member and %s officer",
   "pasted_fleet_members_officer_many": "Pasted fleet contains %s members and %s officer",
 
-  "fleet_contains_missing_hull_one": "Fleet contains %s hull from missing mods",
-  "fleet_contains_missing_hull_many": "Fleet contains %s hulls from missing mods",
-
-
   "clipboard_fleet_added_to_campaign": "Fleet from clipboard added to campaign",
 
 
@@ -194,7 +176,7 @@
   # Human readable compression prepend
   "shipReadableWithPerson": "%s (Pilot: %s) – %s %s : %s",
   "shipReadableNoPerson": "%s – %s %s : %s",
-  "fleet_summary": "%s - %d ships : %s",
+  "fleet_summary": "%s - '%s dp' '%s ships' : %s",
 
 
 
@@ -305,6 +287,18 @@
   "missing_default_short_message": "HAD MISSING ELEMENTS: see console for more details",
 
 
+
+
+  # Join Natural / pasteFleetDialog
+  "unknown_weapons": "weapons",
+  "unknown_wings": "fighter wings",
+  "unknown_hullmods": "hullmods",
+
+  "list_separator": ", ",
+  "list_two": "%s and %s",
+  "list_many": "%s, and %s",
+
+  "unknown_combined": "Some %s of this ship are unknown to the player",
 
 
 

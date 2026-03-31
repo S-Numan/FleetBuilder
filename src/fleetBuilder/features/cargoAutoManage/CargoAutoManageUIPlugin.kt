@@ -10,7 +10,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings.PRIMARYDIR
+import fleetBuilder.core.FBSettings.PRIMARYDIR
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromMap
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
@@ -243,10 +243,31 @@ internal class CargoAutoManageUIPlugin(
         val spacing = 10f
         //val entireRowHeight = rowHeight + spacing
 
-        panel = Global.getSettings().createCustom(width - (dialog.getXTooltipPadding() * 2), height - (dialog.getYTooltipPadding() * 2) - 100f, this)
+        panel = Global.getSettings().createCustom(width - (dialog.tooltipPadFromSide * 2), height - (dialog.tooltipPadFromTop * 2) - 100f, this)
+
+        val addCustom = panel.addAreaCheckbox("Add Custom", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), columnWidths[0], rowHeight)
+        addCustom.position.inBL(0f, rowHeight / 2f)
+        addCustom.onClick {
+            dialog.forceDismiss()
+
+            val cargoItemSelector = CargoItemSelector(market, selectedSubmarket)
+
+            val panelAPI = cargoItemSelector.init(
+                325f,
+                20f,
+                Global.getSettings().mouseX.toFloat(),
+                Global.getSettings().mouseY.toFloat(),
+                ReflectionMisc.getScreenPanel()
+            )
+            panelAPI.addPara("Click a cargo item to select it. Right click to cancel.")
+
+            cargoItemSelector.onExit {
+                openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
+            }
+        }
 
         // Create main UI container
-        scrollerTooltip = panel.createUIElement(panel.width, panel.height, true)
+        scrollerTooltip = panel.createUIElement(panel.width, panel.height + 32f - addCustom.height - 8f - rowHeight, true)
 
         // Header row
         val headers = listOf("Item", "Amount", "Percent", "Take", "Put", "Quick Stack")
@@ -269,7 +290,15 @@ internal class CargoAutoManageUIPlugin(
             )
 
             commodities.forEach { commodity ->
-                yOffset = addStack(commodity.name, commodity.iconName, CargoAPI.CargoItemType.RESOURCES, commodity.id, "0", "", false, false, false, scrollerTooltip, rowHeight, yOffset, columnWidths, spacing)
+                val defaultPercent = if (commodity.id == "supplies")
+                    "0.2"
+                else if (commodity.id == "crew")
+                    "0.8"
+                else if (commodity.id == "fuel")
+                    "0.9"
+                else
+                    ""
+                yOffset = addStack(commodity.name, commodity.iconName, CargoAPI.CargoItemType.RESOURCES, commodity.id, "", defaultPercent, false, false, false, scrollerTooltip, rowHeight, yOffset, columnWidths, spacing)
             }
             yOffset = addStack(
                 "Weapons and Wings", defaultIcon,
@@ -291,30 +320,9 @@ internal class CargoAutoManageUIPlugin(
             }
         }
 
-        val addCustom = scrollerTooltip.addAreaCheckbox("Add Custom", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), columnWidths[0], rowHeight, 0f)
-        addCustom.position.inTL(0f, yOffset + (rowHeight - addCustom.position.height) / 2f)
-        addCustom.onClick {
-            dialog.forceDismiss()
+        scrollerTooltip.heightSoFar = yOffset - 12f
 
-            val cargoItemSelector = CargoItemSelector(market, selectedSubmarket)
-
-            val panelAPI = cargoItemSelector.init(
-                325f,
-                20f,
-                Global.getSettings().mouseX.toFloat(),
-                Global.getSettings().mouseY.toFloat(),
-                ReflectionMisc.getScreenPanel()
-            )
-            panelAPI.addPara("Click a cargo item to select it. Right click to cancel.")
-
-            cargoItemSelector.onExit {
-                openSubmarketCargoAutoManagerDialog(selectedSubmarket, instantUp = true)
-            }
-        }
-
-        scrollerTooltip.heightSoFar = -addCustom.yAlignOffset + addCustom.height
-
-        panel.addUIElement(scrollerTooltip).inTL(dialog.getXTooltipPadding(), 0f)
+        panel.addUIElement(scrollerTooltip).inTL(dialog.tooltipPadFromSide, 0f)
 
 
         dialog.show(width, height) { ui ->
@@ -600,6 +608,7 @@ internal class CargoAutoManageUIPlugin(
             }
             position.inTL(xPos1, yOffset1 + (rowHeight - position.height) / 2f)
         }
+        //(percentField as? UIPanelAPI)?.addPara("%", font = Font.ORBITRON_20_AA_BOLD, color = Misc.getButtonTextColor())?.position?.inRMid(-20f)
         xPos1 += columnWidths[2] + spacing
 
         // 4. Take button
@@ -768,7 +777,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                                 stack.displayName,
                                 0,
                                 null,
-                                false,
+                                true,
                                 true,
                                 false
                             )

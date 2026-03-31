@@ -1,22 +1,23 @@
-package fleetBuilder.core.shipDirectory
+package fleetBuilder.features.autofit.shipDirectory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.core.ModSettings
-import fleetBuilder.core.ModSettings.DIRECTORYCONFIGNAME
-import fleetBuilder.core.ModSettings.FLEETDIR
-import fleetBuilder.core.ModSettings.PACKDIR
-import fleetBuilder.core.ModSettings.defaultPrefix
+import com.fs.starfarer.api.loading.VariantSource
+import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
+import fleetBuilder.core.FBSettings.FLEETDIR
+import fleetBuilder.core.FBSettings.PACKDIR
+import fleetBuilder.core.FBSettings.defaultPrefix
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitSpec
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.FBTxt
-import fleetBuilder.util.LookupUtil
-import fleetBuilder.util.LookupUtil.getCoreVariantsForEffectiveHullspec
+import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import fleetBuilder.util.getCompatibleDLessHullId
@@ -190,7 +191,7 @@ object ShipDirectoryService {
                     }
 
                     var data: DataVariant.ParsedVariantData? = null
-                    val missing = MissingElements()
+                    val missing = MissingContent()
 
                     val variantString: String
                     try {
@@ -223,8 +224,8 @@ object ShipDirectoryService {
                         )
                     }
 
-                    if (data.hullId !in LookupUtil.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
-                        || data.moduleVariants.any { it.value.hullId !in LookupUtil.getHullIDSet() } // Also check hullIds from modules
+                    if (data.hullId !in LookupUtils.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
+                        || data.moduleVariants.any { it.value.hullId !in LookupUtils.getHullIDSet() } // Also check hullIds from modules
                     ) {
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     } else {
@@ -244,7 +245,7 @@ object ShipDirectoryService {
                 if (variant == null) return@forEach
 
                 fun remakeShip() {
-                    val missing = shipDirectory.getShipEntry(variant.hullVariantId)?.missingElements ?: return
+                    val missing = shipDirectory.getShipEntry(variant.hullVariantId)?.missingContent ?: return
                     val isImport = shipDirectory.isShipImported(variant.hullVariantId)
                     shipDirectory.removeShip(variant.hullVariantId, editVariantFile = false)
                     shipDirectory.addShip(
@@ -309,19 +310,19 @@ object ShipDirectoryService {
 
 
     fun getCoreAutofitSpecsForShip(hullSpec: ShipHullSpecAPI, indexOffset: Int = 0): List<AutofitSpec> {
-        val variants = getCoreVariantsForEffectiveHullspec(hullSpec)
+        val variants = getVariantsForEffectiveHullSpec(hullSpec).filter { it.source == VariantSource.STOCK }
 
         val coreVariantSpecs = mutableListOf<AutofitSpec>()
 
         var variantCount = 0
         variants.forEach { variant ->
             val shouldShow = when {
-                variant.isGoalVariant -> ModSettings.showCoreGoalVariants
-                else -> ModSettings.showCoreNonGoalVariants
+                variant.isGoalVariant -> FBSettings.showCoreGoalVariants
+                else -> FBSettings.showCoreNonGoalVariants
             }.and(
-                ModSettings.cheatsEnabled()
+                FBSettings.cheatsEnabled()
                         || variant.hullSpec.getCompatibleDLessHullId() == hullSpec.getCompatibleDLessHullId() // If this is the hullspec the player is looking at
-                        || isVariantKnownToPlayer(variant) // Or the player knows this hullspec
+                        || isVariantKnownToPlayer(variant) // Or the player knows all the contents of this variant
             )
 
             if (shouldShow) {
@@ -352,7 +353,7 @@ object ShipDirectoryService {
 
         val ships = dir.getShips(hullSpec)
         ships.forEach { variant ->
-            val missing = dir.getShipEntry(variant.hullVariantId)?.missingElements ?: return@forEach
+            val missing = dir.getShipEntry(variant.hullVariantId)?.missingContent ?: return@forEach
             val index = dir.getShipIndexInMenu(variant.hullVariantId)
 
             autofitSpecs.add(
@@ -409,7 +410,7 @@ object ShipDirectoryService {
     fun saveLoadoutVariant(
         prefix: String,
         variant: ShipVariantAPI,
-        missingFromVariant: MissingElements = MissingElements(),
+        missingFromVariant: MissingContent = MissingContent(),
         settings: VariantSettings = VariantSettings(),
         desiredIndexInMenu: Int = -1,
         tagAsImport: Boolean = false,
@@ -427,7 +428,7 @@ object ShipDirectoryService {
         getShipDirectoryWithPrefix(prefix)?.removeShip(variantId)
     }
 
-    fun importShipLoadout(prefix: String, variant: ShipVariantAPI, missing: MissingElements): Boolean {
+    fun importShipLoadout(prefix: String, variant: ShipVariantAPI, missing: MissingContent): Boolean {
         //variantToSave.hullVariantId = makeVariantID(saveVariant)
 
         if (doesLoadoutExist(prefix, variant))

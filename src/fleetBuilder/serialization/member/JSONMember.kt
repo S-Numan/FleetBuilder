@@ -1,7 +1,7 @@
 package fleetBuilder.serialization.member
 
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.member.DataMember.buildMemberFull
 import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
@@ -12,12 +12,13 @@ import fleetBuilder.util.FBMisc
 import fleetBuilder.util.roundToDecimals
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
+import java.util.Random
 
 object JSONMember {
     @JvmOverloads
     fun extractMemberDataFromJson(
         json: JSONObject,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataMember.ParsedMemberData {
         val variantJson = json.optJSONObject("variant")
 
@@ -43,7 +44,8 @@ object JSONMember {
             cr = if (json.has("cr")) json.optFloat("cr") else null,
             hullFraction = if (json.has("hullFraction")) json.optFloat("hullFraction") else null,
             isMothballed = json.optBoolean("ismothballed", false),
-            isFlagship = isFlagship
+            isFlagship = isFlagship,
+            id = if (json.has("id")) json.optString("id") else null
         )
     }
 
@@ -64,11 +66,12 @@ object JSONMember {
     fun getMemberFromJson(
         json: JSONObject,
         settings: MemberSettings = MemberSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent(),
+        random: Random = Random()
     ): FleetMemberAPI {
         val parsed = extractMemberDataFromJson(json, missing)
 
-        return buildMemberFull(parsed, settings, missing)
+        return buildMemberFull(parsed, settings, missing, random)
     }
 
     @JvmOverloads
@@ -112,6 +115,9 @@ object JSONMember {
             if (includeModInfo)
                 addVariantSourceModsToJson(data.variantData, memberJson)
         }
+
+        if (!data.id.isNullOrEmpty())
+            memberJson.put("id", data.id)
 
         return memberJson
     }

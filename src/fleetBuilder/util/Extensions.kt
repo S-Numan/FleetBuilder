@@ -13,14 +13,14 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.ui.*
 import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
-import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.common.ObservedTextField
-import fleetBuilder.util.LookupUtil.getAllDMods
+import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.HullUtils
+import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import org.json.JSONArray
 import org.json.JSONObject
@@ -30,6 +30,21 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
 
+
+fun PersonAPI.getMaxOfficerLevel(): Int {
+    return PersonUtils.getMaxOfficerLevel(this)
+}
+
+fun PersonAPI.getMaxOfficerEliteSkills(): Int {
+    return PersonUtils.getMaxOfficerEliteSkills(this)
+}
+
+internal fun UIPanelAPI.whiteBoxForTesting(width: Float? = null, height: Float? = null): ButtonAPI {
+    val whiteBox = this.addButton(
+        "", null, Color.BLACK, Color.WHITE, Alignment.MID, CutStyle.NONE, width ?: this.width, height ?: this.height
+    )
+    return whiteBox
+}
 
 // Avoid using getModuleSlots(). It uses getStationModules() internally anyway.
 fun ShipVariantAPI.getModules(): List<ShipVariantAPI> {
@@ -404,6 +419,25 @@ internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
     return null
 }
 
+internal fun Class<*>.safeInvoke(name: String? = null, vararg args: Any?): Any? {
+    val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
+    val reflectedMethods = this.getMethodsMatching(name, parameterTypes = paramTypes)
+    if (reflectedMethods.isEmpty())
+        DisplayMessage.showError(
+            short = "ERROR: No method found on class: ${this::class.java.name}. See console for more details.",
+            full = "No method found for name: '$name' on class: ${this::class.java.name} " +
+                    "with compatible parameter types derived from arguments: ${paramTypes.contentToString()}"
+        )
+    else if (reflectedMethods.size > 1)
+        DisplayMessage.showError(
+            short = "ERROR: Ambiguous method call on class: ${this::class.java.name}. See console for more details.",
+            full = "Ambiguous method call for name: '$name' on class: ${this::class.java.name}. " +
+                    "Multiple methods match parameter types derived from arguments: ${paramTypes.contentToString()}"
+        )
+    else return reflectedMethods[0].invoke(null, *args)
+    return null
+}
+
 internal fun Any.safeGet(name: String? = null, type: Class<*>? = null, searchSuperclass: Boolean = false): Any? {
     val reflectedFields = this.getFieldsMatching(name, fieldAssignableTo = type, searchSuperclass = searchSuperclass)
     if (reflectedFields.isEmpty())
@@ -437,6 +471,9 @@ internal fun UIPanelAPI.findChildWithPlugin(clazz: Class<*>): CustomPanelAPI? {
 fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> =
     FleetUtils.getUnassignedOfficers(this)
 
+fun FleetDataAPI.getAssignedOfficers(): List<PersonAPI> =
+    FleetUtils.getAssignedOfficers(this)
+
 // Do not show hotkey on button
 fun ButtonAPI.addShortcutNoShow(key: Int) {
     this.safeInvoke("addExtraShortcut", key, false, false, false)
@@ -449,19 +486,23 @@ fun TooltipMakerAPI.addToggle(
     size: ButtonAPI.UICheckboxSize = ButtonAPI.UICheckboxSize.SMALL,
     data: Any? = null,
     pad: Float = 0f,
-    onClick: (Boolean) -> Unit = {}
+    font: Font = Font.INSIGNIA_15,
+    textColor: Color = Global.getSettings().brightPlayerColor,
+    //onClick: (Boolean) -> Unit = {}
 ): ButtonAPI {
     val checkbox = this.addCheckbox(
         this.computeStringWidth(name) + buttonHeight + 4f,
         buttonHeight,
         name,
         data,
+        getFontPath(font),
+        textColor,
         size,
         pad
     )
     checkbox.isChecked = isChecked
 
-    checkbox.onClick { onClick(checkbox.isChecked) }
+    //checkbox.onClick { onClick(checkbox.isChecked) }
 
     return checkbox
 }

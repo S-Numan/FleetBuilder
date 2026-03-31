@@ -1,7 +1,7 @@
 package fleetBuilder.serialization.fleet.mods.secondInCommand
 
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
@@ -22,7 +22,7 @@ object CompressedSecondInCommand {
     @JvmOverloads
     fun extractSecondInCommandFromCompString(
         comp: String,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataSecondInCommand.SecondInCommandData? {
 
         val metaStart = comp.indexOf(metaSep)

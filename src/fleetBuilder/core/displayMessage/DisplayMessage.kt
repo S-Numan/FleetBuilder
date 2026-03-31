@@ -4,7 +4,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.features.logMessageAppender.NoDisplayThrowable
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import org.apache.log4j.Level
@@ -41,7 +41,7 @@ object DisplayMessage {
 
         val callerClass: Class<*> = getCallerClass() ?: javaClass
         // Console or logger output
-        if (ModSettings.isConsoleModEnabled) {
+        if (FBSettings.isConsoleModEnabled) {
             if (e != null) {
                 Console.showException(full, e)
             } else {
@@ -52,7 +52,7 @@ object DisplayMessage {
         }
 
         // Show short message to player
-        if (!ModSettings.hideErrorMessages) {
+        if (!FBSettings.hideErrorMessages) {
             showMessageCustom(short, Color.RED)
         }
     }

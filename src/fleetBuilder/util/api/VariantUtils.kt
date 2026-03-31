@@ -2,10 +2,10 @@ package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
-import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.*
@@ -50,7 +50,7 @@ object VariantUtils {
 
         // HullSpec
 
-        LookupUtil.getHullSpec(data.hullId)?.let { hullSpec ->
+        LookupUtils.getHullSpec(data.hullId)?.let { hullSpec ->
             hullSpec.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
@@ -58,7 +58,7 @@ object VariantUtils {
 
         // HullMods
         for (mod in data.hullMods) {
-            LookupUtil.getHullModSpec(mod)?.sourceMod?.let { sm ->
+            LookupUtils.getHullModSpec(mod)?.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
         }
@@ -66,7 +66,7 @@ object VariantUtils {
         // Weapons
         for (group in data.weaponGroups) {
             group.weapons.forEach { (slot, weaponId) ->
-                LookupUtil.getWeaponSpec(weaponId)?.sourceMod?.let { sm ->
+                LookupUtils.getWeaponSpec(weaponId)?.sourceMod?.let { sm ->
                     sourceMods.add(sm)
                 }
             }
@@ -74,7 +74,7 @@ object VariantUtils {
 
         // Fighter Wings
         for (wing in data.wings) {
-            LookupUtil.getFighterWingSpec(wing)?.sourceMod?.let { sm ->
+            LookupUtils.getFighterWingSpec(wing)?.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
         }
@@ -82,7 +82,15 @@ object VariantUtils {
         return sourceMods
     }
 
-    // Returns full amount of xp if this hullmod were to be added to this variant
+    /**
+     * Returns the full bonus XP that would be gained if this hullmod were to be added to this variant.
+     * If the hullmod is already built in, returns the default bonus XP.
+     * If the hullmod is not built in, returns the bonus XP for that hullmod.
+     *
+     * @param variant The ShipVariantAPI to check.
+     * @param modID The ID of the hullmod to check.
+     * @return The bonus XP that would be gained if this hullmod were to be added to this variant.
+     */
     fun getHullModBuildInBonusXP(
         variant: ShipVariantAPI,
         modID: String,
@@ -96,16 +104,49 @@ object VariantUtils {
         }
     }
 
+    /**
+     * Checks if a variant is known to the player.
+     *
+     * Includes the variant's hullspec, all fitted weapons, fitted fighter wings, and non built in hullmods. Does not include modules
+     *
+     * Weapons, wings, and hullmods are checked for if the CODEX_UNLOCKABLE tag is true, and if the player is not aware of it.
+     * HIDE_IN_CODEX is not considered for variant components to avoid being too overzealous with this check.
+     *
+     * @param variant The variant to check.
+     * @return True if all components of the variant are known to the player, false otherwise.
+     */
     fun isVariantKnownToPlayer(variant: ShipVariantAPI): Boolean {
-        if (variant.hullSpec.hasTag("codex_unlockable") && !SharedUnlockData.get().isPlayerAwareOfShip(variant.hullSpec.hullId)) {
+        //  If module, replace variant with parent variant. Modules are considered known if their parent is known.
+        //  This would need a function to get the parent variant of a module variant ... That isn't easily possible.
+
+        val missing = MissingContent()
+        whatVariantContentsAreNotKnownToPlayer(variant, missing)
+        if (missing.hasMissing())
             return false
-        }
-        if (!variant.hullSpec.hasTag("codex_unlockable") && (variant.hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hullSpec.hasTag(Tags.HIDE_IN_CODEX)
-                    || variant.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || variant.hasTag(Tags.HIDE_IN_CODEX))
-        ) {
-            return false
-        }
+
         return true
+    }
+
+    fun whatVariantContentsAreNotKnownToPlayer(variant: ShipVariantAPI, missing: MissingContent) {
+        if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
+            missing.hullIds.add(variant.hullSpec.hullId)
+
+        variant.fittedWeaponSlots.forEach { slot ->
+            val weapon = variant.getSlot(slot) ?: return@forEach
+            if (LookupUtils.getWeaponSpec(weapon.id)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.id))
+                missing.weaponIds.add(weapon.id)
+        }
+        variant.fittedWings.forEach { wing ->
+            if (LookupUtils.getFighterWingSpec(wing)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfFighter(wing))
+                missing.wingIds.add(wing)
+        }
+        variant.hullMods.forEach { mod ->
+            if (variant.hullSpec.isBuiltInMod(mod))
+                return@forEach
+
+            if (LookupUtils.getHullModSpec(mod)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfHullmod(mod))
+                missing.hullModIds.add(mod)
+        }
     }
 
     fun makeVariantID(variant: ShipVariantAPI): String {
@@ -126,9 +167,9 @@ object VariantUtils {
     private const val errorTag = "FB_ERR"
     fun getFBVariantErrorTag() = errorTag
 
-    fun isErrorVariant(variant: ShipVariantAPI): Boolean {
-        return variant.hasTag(errorTag)
-    }
+    //fun isErrorVariant(variant: ShipVariantAPI): Boolean {
+    //    return variant.hasTag(errorTag)
+    //}
 
     fun createErrorVariant(displayName: String = ""): ShipVariantAPI {
         var tempVariant: ShipVariantAPI? = null
@@ -313,8 +354,8 @@ object VariantUtils {
         insertVariant2: ShipVariantAPI,
         options: CompareOptions = CompareOptions(),
     ): Boolean {
-        val allDMods = LookupUtil.getAllDMods()
-        val allHiddenEverywhereMods = LookupUtil.getAllHiddenEverywhereMods()
+        val allDMods = LookupUtils.getAllDMods()
+        val allHiddenEverywhereMods = LookupUtils.getAllHiddenEverywhereMods()
 
         val variant1 = insertVariant1.clone()
         val variant2 = insertVariant2.clone()

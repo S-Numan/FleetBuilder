@@ -1,15 +1,16 @@
 package fleetBuilder.core.listener
 
 import com.fs.starfarer.api.EveryFrameScript
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.ModSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
+import com.fs.starfarer.api.campaign.CampaignEventListener
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
-import fleetBuilder.core.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
 import fleetBuilder.features.autofit.listener.CampaignAutofitAdder
 import fleetBuilder.features.autofit.listener.CodexAutofitButton
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.cargoAutoManage.CargoAutoManager
 import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
 import fleetBuilder.features.codexButton.CampaignDevModeCodexButton
@@ -21,10 +22,13 @@ import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
 import fleetBuilder.features.logMessageAppender.LogMessageAppender
 import fleetBuilder.features.officerStorage.CatchStoreMemberButton
 import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
+import fleetBuilder.features.recentBattles.RecentBattleTracker
+import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.serialization.PlayerSaveUtils
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.listeners.MemberChangeEvents
 import fleetBuilder.util.listeners.MemberChangeTracker
 import fleetBuilder.util.listeners.OfficerChangeEvents
@@ -35,70 +39,101 @@ import org.lazywizard.console.Console
 
 internal class EventDispatcher : EveryFrameScript {
     companion object {
-        fun setSectorListeners() {
+
+        // EveryFrameScript
+        fun <T : EveryFrameScript> manageTransientScript(
+            clazz: Class<T>, enabled: Boolean = true, creator: (() -> T)? = null
+        ) {
             val sector = Global.getSector() ?: return
 
-            val listeners = sector.listenerManager
-
-            // Generic helper for managing listeners
-            fun <T : Any> manageTransientListener(clazz: Class<T>, enabled: Boolean, creator: () -> T) {
-                if (enabled) {
-                    if (!listeners.hasListenerOfClass(clazz)) {
-                        listeners.addListener(creator(), true)
-                    }
-                } else {
-                    listeners.removeListenerOfClass(clazz)
+            if (enabled) {
+                if (!sector.hasTransientScript(clazz) && creator != null) {
+                    sector.addTransientScript(creator())
                 }
+            } else {
+                sector.removeTransientScriptsOfClass(clazz)
             }
+        }
 
-            // Generic helper for managing transient scripts
-            fun <T : EveryFrameScript> manageTransientScript(clazz: Class<T>, enabled: Boolean, creator: () -> T) {
-                if (enabled) {
-                    if (!sector.hasTransientScript(clazz)) {
-                        sector.addTransientScript(creator())
-                    }
-                } else {
-                    sector.removeTransientScriptsOfClass(clazz)
+        // CampaignEventListener
+        fun <T : CampaignEventListener> manageTransientCampaignListener(
+            clazz: Class<T>, enabled: Boolean = true, creator: (() -> T)? = null
+        ) {
+            val sector = Global.getSector() ?: return
+
+            if (enabled) {
+                if (sector.allListeners.none { it.javaClass == clazz } && creator != null) {
+                    sector.addTransientListener(creator())
                 }
+            } else {
+                sector.allListeners
+                    .filter { it.javaClass == clazz }
+                    .forEach { sector.removeListener(it) }
             }
+        }
 
-            manageTransientListener(CampaignClipboardHotkeyHandler::class.java, ModSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
-            manageTransientListener(CatchStoreMemberButton::class.java, ModSettings.storeOfficersInCargo || ModSettings.unassignPlayer()) { CatchStoreMemberButton() }
-            manageTransientListener(CargoAutoManagerOpener::class.java, ModSettings.cargoAutoManager) { CargoAutoManagerOpener() }
-            manageTransientListener(RemoveRefitHullmod::class.java, ModSettings.removeRefitHullmod) { RemoveRefitHullmod() }
+        // Everything else
+        fun <T : Any> manageTransientListener(
+            clazz: Class<T>, enabled: Boolean = true, creator: (() -> T)? = null
+        ) {
+            val sector = Global.getSector() ?: return
+            val listeners = sector.listenerManager ?: return
 
-            manageTransientScript(CampaignAutofitAdder::class.java, ModSettings.autofitMenuEnabled) { CampaignAutofitAdder() }
-            manageTransientScript(CodexAutofitButton::class.java, ModSettings.autofitMenuEnabled && ModSettings.codexAutofitButton) { CodexAutofitButton() }
-            manageTransientScript(CampaignDevModeCodexButton::class.java, ModSettings.devModeCodexButtonEnabled) { CampaignDevModeCodexButton() }
-            manageTransientScript(CampaignFleetScreenFilter::class.java, ModSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }
-            manageTransientScript(CargoAutoManager::class.java, ModSettings.cargoAutoManager) { CargoAutoManager() }
-            manageTransientScript(CampaignModPickerFilter::class.java, ModSettings.modPickerFilter) { CampaignModPickerFilter() }
+            if (enabled) {
+                if (!listeners.hasListenerOfClass(clazz) && creator != null) {
+                    listeners.addListener(creator(), true)
+                }
+            } else {
+                listeners.removeListenerOfClass(clazz)
+            }
+        }
+
+        fun setSectorListeners() {
+            manageTransientListener(CampaignClipboardHotkeyHandler::class.java, FBSettings.fleetClipboardHotkeyHandler) { CampaignClipboardHotkeyHandler() }
+            manageTransientListener(CatchStoreMemberButton::class.java, FBSettings.storeOfficersInCargo || FBSettings.unassignPlayer()) { CatchStoreMemberButton() }
+            manageTransientListener(CargoAutoManagerOpener::class.java, FBSettings.cargoAutoManager) { CargoAutoManagerOpener() }
+            manageTransientListener(RemoveRefitHullmod::class.java, FBSettings.removeRefitHullmod) { RemoveRefitHullmod() }
+
+            manageTransientScript(CampaignAutofitAdder::class.java, FBSettings.autofitMenuEnabled) { CampaignAutofitAdder() }
+            manageTransientScript(CodexAutofitButton::class.java, FBSettings.autofitMenuEnabled && FBSettings.codexAutofitButton) { CodexAutofitButton() }
+            manageTransientScript(CampaignDevModeCodexButton::class.java, FBSettings.devModeCodexButtonEnabled) { CampaignDevModeCodexButton() }
+            manageTransientScript(CampaignFleetScreenFilter::class.java, FBSettings.fleetScreenFilter) { CampaignFleetScreenFilter() }
+            manageTransientScript(CargoAutoManager::class.java, FBSettings.cargoAutoManager) { CargoAutoManager() }
+            manageTransientScript(CampaignModPickerFilter::class.java, FBSettings.modPickerFilter) { CampaignModPickerFilter() }
+
             val cargoScreenFilter = CampaignCargoScreenFilter()
-            manageTransientScript(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { cargoScreenFilter }
-            manageTransientListener(CampaignCargoScreenFilter::class.java, ModSettings.cargoScreenFilter) { cargoScreenFilter }
-            manageTransientScript(AutoMothballRecoveredShips::class.java, ModSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
-            manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
-            manageTransientListener(CommanderShuttle::class.java, true) { CommanderShuttle() } // Should always be enabled
-            manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
+            manageTransientScript(CampaignCargoScreenFilter::class.java, FBSettings.cargoScreenFilter) { cargoScreenFilter }
+            manageTransientListener(CampaignCargoScreenFilter::class.java, FBSettings.cargoScreenFilter) { cargoScreenFilter }
 
-            manageTransientListener(TransponderOff::class.java, ModSettings.transponderOffInHyperspace) { TransponderOff() }
+            manageTransientScript(AutoMothballRecoveredShips::class.java, FBSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
+            manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
+
+            manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
+            manageTransientListener(TransponderOff::class.java, FBSettings.transponderOffInHyperspace) { TransponderOff() }
+
+            manageTransientCampaignListener(RecentBattleTracker::class.java, FBSettings.recentBattleTracker) { RecentBattleTracker() }
         }
 
         fun onDevModeF8Reload() {
-            onApplicationLoad()
-            setSectorListeners()
+            updateApplicationState()
         }
 
         fun onApplicationLoad() {
-            ModSettings.onApplicationLoad()
+            FBSettings.onApplicationLoad()
+            updateApplicationState()
+        }
 
-            if (ModSettings.addLogsToConsoleModConsoleLevel != Level.OFF || ModSettings.addLogsToDisplayMessageLevel != Level.OFF) {
+        fun updateApplicationState() {
+            FBSettings.setNeverSaveHullmods()
+            LookupUtils.setup()
+
+            if (FBSettings.addLogsToConsoleModConsoleLevel != Level.OFF || FBSettings.addLogsToDisplayMessageLevel != Level.OFF) {
                 // Cause the lazy class loader to load these classes preemptively to prevent issues.
                 try {
                     Class.forName("org.apache.log4j.Layout")
                     Class.forName("org.apache.log4j.spi.LoggingEvent")
                     Class.forName("org.apache.log4j.Priority")
-                    if (ModSettings.isConsoleModEnabled)
+                    if (FBSettings.isConsoleModEnabled)
                         Class.forName(Console::class.java.name)
                 } catch (e: ClassNotFoundException) {
                     e.printStackTrace()
@@ -106,15 +141,19 @@ internal class EventDispatcher : EveryFrameScript {
 
                 val rootLogger = Logger.getRootLogger()
 
-                if (rootLogger.getAppender("LogMessageAppender") == null) {
-                    val appender = LogMessageAppender().apply { name = "LogMessageAppender" }
+                if (rootLogger.getAppender("FB_LogMessageAppender") == null) {
+                    val appender = LogMessageAppender().apply { name = "FB_LogMessageAppender" }
                     rootLogger.addAppender(appender)
                 }
             }
 
-            LookupUtil.onApplicationLoad()
+            if (FBSettings.autofitMenuEnabled)
+                ShipDirectoryService.loadAllDirectories()
+            if (FBSettings.recentBattleTracker)
+                FleetDirectoryService.loadDirectory()
 
-            ShipDirectoryService.loadAllDirectories()
+            if (Global.getCurrentState() == GameState.CAMPAIGN)
+                setSectorListeners()
         }
 
         private val officerTracker = OfficerChangeTracker()
@@ -124,12 +163,19 @@ internal class EventDispatcher : EveryFrameScript {
 
         fun onGameLoad(newGame: Boolean) {
             val sector = Global.getSector() ?: run {
-                DisplayMessage.showError("What?"); return
+                throw Error("How was sector null here?")
             }
+
+            if (!sector.memoryWithoutUpdate.contains("\$FB_UNIQUESAVEID"))
+                sector.memoryWithoutUpdate.set("\$FB_UNIQUESAVEID", sector.genUID())
+
+            val deferredActionPlugin = CampaignDeferredActionPlugin()
+            manageTransientScript(CampaignDeferredActionPlugin::class.java) { deferredActionPlugin }
+            CampaignDeferredActionPlugin.setActive(deferredActionPlugin)
 
             sector.addTransientScript(eventDispatcher)
 
-            DrawMessageOnTop.Companion.onGameLoad()
+            DrawMessageOnTop.onGameLoad()
 
             setSectorListeners()
 
@@ -140,22 +186,22 @@ internal class EventDispatcher : EveryFrameScript {
             officerTracker.reset()
             memberTracker.reset()
 
-            CommanderShuttle.Companion.onGameLoad(newGame)
+            CommanderShuttle.onGameLoad(newGame)
         }
 
         fun beforeGameSave() {
-            CommanderShuttle.Companion.beforeGameSave()
+            CommanderShuttle.beforeGameSave()
 
             MakeSaveRemovable.beforeGameSave()
         }
 
         fun backupSave() {
-            if (ModSettings.backupSave) {
+            if (FBSettings.backupSave) {
                 try {
                     val compSave = PlayerSaveUtils.createSaveJson(superCompressSave = true)
 
                     if (compSave.length < 1000000) // Starsector cannot save files over 1MB
-                        Global.getSettings().writeTextFileToCommon("${ModSettings.PRIMARYDIR}/SaveTransfer/lastSave", compSave)
+                        Global.getSettings().writeTextFileToCommon("${FBSettings.PRIMARYDIR}/SaveTransfer/lastSave", compSave)
                     else
                         Global.getLogger(this::class.java).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
 
@@ -172,7 +218,7 @@ internal class EventDispatcher : EveryFrameScript {
         fun afterGameSave() {
             MakeSaveRemovable.afterGameSave()
 
-            CommanderShuttle.Companion.afterGameSave()
+            CommanderShuttle.afterGameSave()
 
             backupSave()
         }
@@ -195,7 +241,7 @@ internal class EventDispatcher : EveryFrameScript {
         //Detect DevMode change
         val currentDevMode = Global.getSettings().isDevMode
         if (lastDevMode != currentDevMode) {
-            setSectorListeners()
+            updateApplicationState()
 
             lastDevMode = currentDevMode
         }

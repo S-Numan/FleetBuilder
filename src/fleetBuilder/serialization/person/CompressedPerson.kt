@@ -5,9 +5,11 @@ import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.joinSep
+import fleetBuilder.serialization.SerializationUtils.memKeyJoinSep
+import fleetBuilder.serialization.SerializationUtils.memKeySep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
@@ -15,6 +17,7 @@ import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.roundToDecimals
+import java.util.*
 
 object CompressedPerson {
     fun isCompressedPerson(comp: String): Boolean {
@@ -29,19 +32,20 @@ object CompressedPerson {
     fun getPersonFromCompString(
         comp: String,
         settings: PersonSettings = PersonSettings(),
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
+        random: Random = Random()
     ): PersonAPI {
         val parsed = extractPersonDataFromCompString(comp, missing) ?: run {
             DataPerson.ParsedPersonData()
         }
 
-        return buildPersonFull(parsed, settings, missing)
+        return buildPersonFull(parsed, settings, missing, random)
     }
 
     @JvmOverloads
     fun extractPersonDataFromCompString(
         comp: String,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): DataPerson.ParsedPersonData? {
 
         val metaIndexStart = comp.indexOf(metaSep)
@@ -91,7 +95,7 @@ object CompressedPerson {
 
             val dataString = fullData.substring(firstFieldSep + 1)
 
-            val fields = dataString.split(fieldSep)
+            val fields = dataString.split(fieldSep, limit = 15)
 
             val aiCoreId = fields[0]
             val first = fields[1]
@@ -136,9 +140,9 @@ object CompressedPerson {
             val memKeys =
                 fields.getOrNull(14)
                     ?.takeIf { it.isNotBlank() }
-                    ?.split(sep)
+                    ?.split(memKeySep)
                     ?.mapNotNull {
-                        val p = it.split(joinSep, limit = 2)
+                        val p = it.split(memKeyJoinSep, limit = 2)
                         if (p.size == 2) {
                             val key = "$" + p[0]
                             val raw = p[1]
@@ -249,8 +253,8 @@ object CompressedPerson {
                 else -> null
             }
 
-            formattedValue?.let { "${key.removePrefix("$")}$joinSep$it" }
-        }.joinToString(sep)
+            formattedValue?.let { "${key.removePrefix("$")}$memKeyJoinSep$it" }
+        }.joinToString(memKeySep)
 
         parts += memKeyString
 

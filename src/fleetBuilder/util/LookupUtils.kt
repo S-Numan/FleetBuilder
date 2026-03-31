@@ -6,16 +6,14 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
-import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import fleetBuilder.util.api.VariantUtils.createErrorVariant
 
-object LookupUtil {
+object LookupUtils {
 
     private lateinit var allDMods: Set<String>
     private lateinit var allHiddenEverywhereMods: Set<String>
     private lateinit var allVariants: Set<ShipVariantAPI>
-    private lateinit var effectiveVariantMap: Map<String, List<ShipVariantAPI>>
     private lateinit var hullIDSet: Set<String>
     private lateinit var effectiveHullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var errorVariantHullID: String
@@ -24,10 +22,11 @@ object LookupUtil {
     private lateinit var IDToWeapon: Map<String, WeaponSpecAPI>
     private lateinit var IDToHullMod: Map<String, HullModSpecAPI>
     private lateinit var IDToSkill: Map<String, SkillSpecAPI>
+    private lateinit var allFactionIDs: Set<String>
     private var init = false
-    fun Loaded() = init
+    fun isSetup() = init
 
-    fun onApplicationLoad() {
+    fun setup() {
         init = true
 
         val settings = Global.getSettings()
@@ -44,6 +43,7 @@ object LookupUtil {
             .map { it.id }
             .toSet()
 
+        /*
         //val variantIdMap = settings.hullIdToVariantListMap//Does not contain every variant
         val tempVariantMap: MutableMap<String, MutableList<ShipVariantAPI>> = mutableMapOf()
         for (variantId in settings.allVariantIds) {
@@ -69,6 +69,7 @@ object LookupUtil {
         }
 
         effectiveVariantMap = tempVariantMap.mapValues { it.value.toList() }
+        */
 
         hullIDSet = settings.allShipHullSpecs.map { it.hullId }.toSet()
 
@@ -94,18 +95,11 @@ object LookupUtil {
         IDToWeapon = settings.actuallyAllWeaponSpecs.associateBy { it.weaponId }
         IDToSkill = settings.skillIds.map { settings.getSkillSpec(it) }.associateBy { it.id }
         allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }.toSet()
+        allFactionIDs = settings.allFactionSpecs.map { it.id }.toSet()
     }
 
-
-    /**
-     * Returns a list of [ShipVariantAPI] clones for the specified [hullId].
-     *
-     * @param hullId The ID of the hull spec to get variants for.
-     * @return A list of [ShipVariantAPI] clones for the specified [hullId]
-     */
-    fun getVariantsFromEffectiveHullID(hullId: String): List<ShipVariantAPI> {
-        val variants = effectiveHullIDToVariant[hullId] ?: emptyList()
-        return variants.map { it.clone() }
+    fun getVariantsForEffectiveHullSpec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
+        return effectiveHullIDToVariant[hullSpec.getEffectiveHullId()].orEmpty().map { it.clone() }
     }
 
     fun getHullSpec(hullId: String) = IDToHullSpec[hullId]
@@ -121,12 +115,9 @@ object LookupUtil {
     fun getAllDMods(): Set<String> = allDMods
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
     fun getAllVariants(): Set<ShipVariantAPI> = allVariants
+    fun getAllFactionIDs(): Set<String> = allFactionIDs
 
     fun getErrorVariantHullID() = errorVariantHullID
-
-    fun getCoreVariantsForEffectiveHullspec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
-        return effectiveVariantMap[hullSpec.getEffectiveHullId()].orEmpty()
-    }
 
     //Is this needed? - Numan
     //No - Future Numan

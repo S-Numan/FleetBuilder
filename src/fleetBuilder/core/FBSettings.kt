@@ -12,7 +12,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 
-object ModSettings {
+object FBSettings {
     fun onApplicationLoad() {
         modSpec = Global.getSettings().modManager.enabledModsCopy.find { it.modPluginClassName == FleetBuilderPlugin::class.java.name }!!
 
@@ -20,11 +20,9 @@ object ModSettings {
             LunaSettings.addSettingsListener(ModSettingsListener())
 
         isConsoleModEnabled = Global.getSettings().modManager.isModEnabled("lw_console")
-
-        setNeverSaveHullmods()
     }
 
-    private fun setNeverSaveHullmods() {
+    fun setNeverSaveHullmods() {
         val neverHullModsPath = "${PRIMARYDIR}HullModsToNeverSave"
         val neverHullModsJson = try {
             if (Global.getSettings().fileExistsInCommon(neverHullModsPath)) {
@@ -38,7 +36,10 @@ object ModSettings {
 
         val hullModsToNeverSaveJSONArray = neverHullModsJson.optJSONArray("HullModsToNeverSave") ?: JSONArray()
 
-        listOf("rat_controller", "rat_artifact_controller", "SCVE_officerdetails_X", "sun_sl_notable", "sun_sl_wellknown", "sun_sl_famous", "sun_sl_legendary", "sun_sl_enemy_reputation").forEach { mod ->
+        listOf(
+            "rat_controller", "rat_artifact_controller", "SCVE_officerdetails_X", "sun_sl_notable",
+            "sun_sl_wellknown", "sun_sl_famous", "sun_sl_legendary", "sun_sl_enemy_reputation",
+        ).forEach { mod ->
             if (!hullModsToNeverSaveJSONArray.containsString(mod)) {
                 hullModsToNeverSaveJSONArray.put(mod)
             }
@@ -87,6 +88,7 @@ object ModSettings {
     var selectorsPerRow = 4
 
     var showDebug = false
+    var enableDebug = false
 
     var showHiddenModsInTooltip = false
 
@@ -129,6 +131,7 @@ object ModSettings {
 
     val commandShuttleId = "FB_commandershuttle"
     val storedOfficerTag = "\$FB_stored_officer"
+    val noCopyTag = "FB_no_copy"
 
     var isConsoleModEnabled = false
 
@@ -153,6 +156,8 @@ object ModSettings {
     var autofitNoSModdedBuiltInWhenNotBuiltInMod = true
 
     var reserveFirstFourAutofitSlots = true
+
+    var recentBattleTracker = false
 
     private var unassignPlayer = false
     fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()

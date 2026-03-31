@@ -4,16 +4,16 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.otherMods.starficz.height
+import fleetBuilder.otherMods.starficz.width
+import fleetBuilder.otherMods.starficz.x
+import fleetBuilder.otherMods.starficz.y
 import fleetBuilder.util.withAlphaMult
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
-import fleetBuilder.otherMods.starficz.height
-import fleetBuilder.otherMods.starficz.width
-import fleetBuilder.otherMods.starficz.x
-import fleetBuilder.otherMods.starficz.y
 import java.awt.Color
 
 object UIUtils {
@@ -182,21 +182,66 @@ object UIUtils {
         GL11.glPopMatrix()
     }
 
-    fun isMouseHoveringOverComponent(component: UIComponentAPI, pad: Float = 0f): Boolean {
-        val x = component.position.x - pad
-        val y = component.position.y - pad
-        val width = component.position.width + pad * 2
-        val height = component.position.height + pad * 2
-
-        return isMouseWithinBounds(x, y, width, height)
+    @JvmOverloads
+    fun isMouseHoveringOverComponent(
+        component: UIComponentAPI,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+        pad: Float = 0f,
+    ): Boolean {
+        return isMouseWithinBounds(component.x, component.y, component.width, component.height, pad, mouseX, mouseY)
     }
 
-    fun isMouseWithinBounds(x: Float, y: Float, width: Float, height: Float): Boolean {
-        val settings = Global.getSettings()
-        val mouseX = settings.mouseX
-        val mouseY = settings.mouseY
+    fun isMouseHoveringOverComponent(
+        component: UIComponentAPI,
+        leftPad: Float = 0f,
+        topPad: Float = 0f,
+        rightPad: Float = 0f,
+        bottomPad: Float = 0f,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+    ): Boolean {
+        return isMouseWithinBounds(component.x, component.y, component.width, component.height, leftPad, topPad, rightPad, bottomPad, mouseX, mouseY)
+    }
 
+    @JvmOverloads
+    fun isMouseWithinBounds(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+    ): Boolean {
         return mouseX >= x && mouseX <= x + width &&
                 mouseY >= y && mouseY <= y + height
+    }
+
+    fun isMouseWithinBounds(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        pad: Float = 0f,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+    ): Boolean {
+        return isMouseWithinBounds(x, y, width, height, pad, pad, pad, pad, mouseX, mouseY)
+    }
+
+    fun isMouseWithinBounds(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        leftPad: Float = 0f,
+        topPad: Float = 0f,
+        rightPad: Float = 0f,
+        bottomPad: Float = 0f,
+        mouseX: Int = Global.getSettings().mouseX,
+        mouseY: Int = Global.getSettings().mouseY,
+    ): Boolean {
+        return mouseX >= x - leftPad && mouseX <= x - leftPad + width + leftPad + rightPad &&
+                mouseY >= y - topPad && mouseY <= y - topPad + height + topPad + bottomPad
     }
 }

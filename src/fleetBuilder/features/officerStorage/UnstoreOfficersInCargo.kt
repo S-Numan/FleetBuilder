@@ -5,13 +5,13 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.FBTxt
 import fleetBuilder.util.getActualCurrentTab
+import fleetBuilder.util.getAssignedOfficers
 import org.lwjgl.input.Mouse
 import org.magiclib.kotlin.getMaxOfficers
-import org.magiclib.kotlin.getNumNonMercOfficers
 import org.magiclib.kotlin.isMercenary
 
 internal class UnstoreOfficersInCargo : EveryFrameScript {
@@ -19,13 +19,15 @@ internal class UnstoreOfficersInCargo : EveryFrameScript {
         val sector = Global.getSector() ?: return
 
         if (!sector.isPaused) {
-            if (!ModSettings.storeOfficersInCargo) // Avoid running this logic if the setting is disabled to avoid unnecessary troubles.
+            if (!FBSettings.storeOfficersInCargo) // Avoid running this logic if the setting is disabled to avoid unnecessary troubles.
                 return
 
             val playerFleet = sector.playerFleet ?: return
 
             //Mothball captained ships that go above the officer limit
-            if (playerFleet.getNumNonMercOfficers() > playerFleet.getMaxOfficers()) {
+            if (!playerFleet.memoryWithoutUpdate.getBoolean("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL") && !FBSettings.cheatsEnabled() &&
+                playerFleet.fleetData.getAssignedOfficers().count { !it.isMercenary() } > playerFleet.getMaxOfficers()
+            ) {
                 var nonMothballedOfficerCount = getNonMothballedOfficerCount(playerFleet)
                 val maxOfficers = playerFleet.getMaxOfficers()
 
@@ -65,13 +67,13 @@ internal class UnstoreOfficersInCargo : EveryFrameScript {
         if (Mouse.isButtonDown(0)) return // Don't do anything if the mouse is down. This is a hack as isLMBUpEvent does not work properly for the use-case I want to use it for
         val playerFleet = sector.playerFleet?.fleetData ?: return
         playerFleet.membersListCopy.forEach { member ->
-            if (member != null && member.captain != null && member.captain.memoryWithoutUpdate.contains(ModSettings.storedOfficerTag)) {
-                member.captain.memoryWithoutUpdate.unset(ModSettings.storedOfficerTag)
+            if (member != null && member.captain != null && member.captain.memoryWithoutUpdate.contains(FBSettings.storedOfficerTag)) {
+                member.captain.memoryWithoutUpdate.unset(FBSettings.storedOfficerTag)
                 member.captain.memoryWithoutUpdate.unset(Misc.CAPTAIN_UNREMOVABLE)
 
                 if (!member.captain.isDefault && !member.captain.isAICore) {
                     playerFleet.addOfficer(member.captain)
-                    if (ModSettings.storeOfficersInCargo && getNonMothballedOfficerCount(playerFleet.fleet) == playerFleet.fleet.getMaxOfficers() + 1)
+                    if (FBSettings.storeOfficersInCargo && getNonMothballedOfficerCount(playerFleet.fleet) == playerFleet.fleet.getMaxOfficers() + 1)
                         DisplayMessage.showMessage(FBTxt.txt("officer_limit_reached"), Misc.getNegativeHighlightColor())
                 }
             }

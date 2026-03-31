@@ -7,8 +7,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.core.FBSettings
+import fleetBuilder.serialization.MissingContent
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.PersonUtils
 import org.histidine.chatter.ChatterDataManager
 import org.histidine.chatter.combat.ChatterCombatPlugin
@@ -47,6 +48,19 @@ object DataPerson {
         person: PersonAPI, settings: PersonSettings = PersonSettings(),
         filterParsed: Boolean = true
     ): ParsedPersonData {
+        val memKeys = person.memoryWithoutUpdate.keys.associateWith { key -> person.memoryWithoutUpdate[key] }.toMutableMap()
+
+        // Vanilla AICore officers in enemy fleets are not marked as built in even if they exceed the usual max level and thus should be considered as so. We fix that here.
+        if (person.isAICore) {
+            val sameTypeAICore = runCatching {
+                Misc.getAICoreOfficerPlugin(person.aiCoreId).createPerson(person.aiCoreId, Factions.PLAYER, Random()).apply {
+                    stats.skillsCopy.forEach { stats.setSkillLevel(it.skill.id, 0f) }
+                }
+            }.getOrNull()
+            if (sameTypeAICore != null && sameTypeAICore.stats.level < person.stats.level) // If the same type AI core has a lower level
+                memKeys[Misc.CAPTAIN_UNREMOVABLE] = true // Then this is a built-in AI core that has had it's level +1'ed
+        }
+
         val data = ParsedPersonData(
             aiCoreId = if (person.isAICore) person.aiCoreId else "",
             first = person.name.first,
@@ -62,7 +76,7 @@ object DataPerson {
             xp = person.stats.xp,
             bonusXp = person.stats.bonusXp,
             points = person.stats.points,
-            memKeys = person.memoryWithoutUpdate.keys.associateWith { key -> person.memoryWithoutUpdate[key] }
+            memKeys = memKeys
         )
         if (filterParsed)
             return filterParsedPersonData(data, settings)
@@ -74,23 +88,20 @@ object DataPerson {
     fun filterParsedPersonData(
         data: ParsedPersonData,
         settings: PersonSettings = PersonSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ParsedPersonData {
 
-        // Lambda to decide if a skill should be kept
-        val shouldKeepSkill: (String) -> Boolean = { skillId ->
-            val skillSpec = Global.getSettings().skillIds
-                .firstOrNull { it == skillId }
-                ?.let { Global.getSettings().getSkillSpec(it) }
+        fun shouldKeepSkill(skillId: String): Boolean {
+            val skillSpec = LookupUtils.getSkillSpec(skillId)
 
-            skillSpec != null &&
-                    skillId !in settings.excludeSkillsWithID &&
-                    !skillSpec.isAptitudeEffect &&
-                    (data.skills[skillId] ?: 0f) > 0f
+            if (skillId in settings.excludeSkillsWithID) return false
+            if ((data.skills[skillId] ?: 0f) <= 0f) return false
+            if (skillSpec != null) {
+                if (skillSpec.hasTag(FBSettings.noCopyTag)) return false
+                if (skillSpec.isAptitudeEffect) return false
+            }
+            return true
         }
-
-        // Remove filtered-out skills from missing
-        missing.skillIds.retainAll { shouldKeepSkill(it) }
 
         val excludeKeys = setOf(
             "\$autoPointsMult"
@@ -105,7 +116,7 @@ object DataPerson {
         )
 
 
-        val storedOfficer = data.memKeys.keys.contains(ModSettings.storedOfficerTag)
+        val storedOfficer = data.memKeys.keys.contains(FBSettings.storedOfficerTag)
 
         // Filter memory keys
         val filteredMemory = data.memKeys.filterKeys { key ->
@@ -115,13 +126,16 @@ object DataPerson {
                 value !is Boolean && value !is String && value !is Int && value !is Float && value !is Double && value !is Long -> return@filterKeys false
                 key in excludeKeys -> return@filterKeys false
                 settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
-                storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == ModSettings.storedOfficerTag) -> return@filterKeys false // Skip including captain unremovable if it was added just for storing the officer in storage.
+                storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == FBSettings.storedOfficerTag) -> return@filterKeys false // Skip including captain unremovable if it was added just for storing the officer in storage.
                 else -> return@filterKeys true
             }
         }
 
+        // Remove filtered-out skills from missing, as they aren't missing if they are filtered out
+        missing.skillIds.retainAll { shouldKeepSkill(it) }
+
         return data.copy(
-            skills = data.skills.filterKeys(shouldKeepSkill),
+            skills = data.skills.filter { shouldKeepSkill(it.key) },
             memKeys = filteredMemory,
             xp = if (settings.handleXpAndPoints) data.xp else 0,
             bonusXp = if (settings.handleXpAndPoints) data.bonusXp else 0,
@@ -135,7 +149,8 @@ object DataPerson {
     @JvmOverloads
     fun validateAndCleanPersonData(
         data: ParsedPersonData,
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent(),
+        random: Random = Random()
     ): ParsedPersonData {
         val validSkills = data.skills.filterKeys {
             val exists = Global.getSettings().skillIds.contains(it)
@@ -145,7 +160,7 @@ object DataPerson {
 
         val validPortrait = try {
             if (data.portrait == null) {
-                PersonUtils.getRandomPortrait(data.gender)
+                PersonUtils.getRandomPortrait(data.gender, random = random)
             } else if (data.portrait.isNotEmpty()) {
                 val sprite = Global.getSettings().getSprite(data.portrait)
                 if (sprite == null || sprite.width == 0f) throw Exception()
@@ -153,7 +168,7 @@ object DataPerson {
                 data.portrait
             } else data.portrait
         } catch (_: Exception) {
-            PersonUtils.getRandomPortrait(data.gender)
+            PersonUtils.getRandomPortrait(data.gender, random = random)
         }
 
         return data.copy(
@@ -162,10 +177,10 @@ object DataPerson {
         )
     }
 
-    fun buildPerson(data: ParsedPersonData): PersonAPI {
+    fun buildPerson(data: ParsedPersonData, random: Random = Random()): PersonAPI {
         val person = if (data.aiCoreId.isNotEmpty()) {
             try {
-                Misc.getAICoreOfficerPlugin(data.aiCoreId).createPerson(data.aiCoreId, Factions.PLAYER, Random()).apply {
+                Misc.getAICoreOfficerPlugin(data.aiCoreId).createPerson(data.aiCoreId, Factions.PLAYER, random).apply {
                     stats.skillsCopy.forEach { stats.setSkillLevel(it.skill.id, 0f) }
                 }
             } catch (_: Exception) {
@@ -183,13 +198,13 @@ object DataPerson {
         person.setPersonality(data.personality)
 
         if (data.portrait == null) {
-            person.portraitSprite = PersonUtils.getRandomPortrait(data.gender)
+            person.portraitSprite = PersonUtils.getRandomPortrait(data.gender, random = random)
         } else if (data.portrait.isNotEmpty()) {
             person.portraitSprite = data.portrait
         }
 
         data.tags.forEach { person.addTag(it) }
-        data.skills.forEach { (id, level) -> person.stats.setSkillLevel(id, level.toFloat()) }
+        data.skills.forEach { (id, level) -> person.stats.setSkillLevel(id, level) }
 
         val level = if (data.level > 0) data.level else data.skills.count()
         person.stats.level = level
@@ -221,18 +236,19 @@ object DataPerson {
     fun buildPersonFull(
         data: ParsedPersonData,
         settings: PersonSettings = PersonSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent(),
+        random: Random = Random()
     ): PersonAPI {
-        val ourMissing = MissingElements()
+        val ourMissing = MissingContent()
 
         // Validate data (e.g., skills/portraits exist)
-        val validatedData = validateAndCleanPersonData(data, ourMissing)
+        val validatedData = validateAndCleanPersonData(data, ourMissing, random)
 
         // Filter data based on settings (e.g., exclude certain skills)
         val filteredData = filterParsedPersonData(validatedData, settings, ourMissing)
         missing.add(ourMissing)
 
         // Build actual PersonAPI object
-        return buildPerson(filteredData)
+        return buildPerson(filteredData, random)
     }
 }

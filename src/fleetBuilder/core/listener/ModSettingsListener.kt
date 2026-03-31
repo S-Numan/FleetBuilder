@@ -1,8 +1,8 @@
 package fleetBuilder.core.listener
 
-import fleetBuilder.core.ModSettings
-import fleetBuilder.core.shipDirectory.ShipDirectoryService
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.core.FBSettings
+import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
+import fleetBuilder.util.LookupUtils
 import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
 import lunalib.lunaSettings.LunaSettings.getString
@@ -11,20 +11,20 @@ import org.apache.log4j.Level
 
 internal class ModSettingsListener : LunaSettingsListener {
     init {
-        settingsChanged(ModSettings.getModID())
+        settingsChanged(FBSettings.getModID())
 
         //Only happens once
 
-        val _defaultPrefix = getString(ModSettings.getModID(), "defaultPrefix")!!
+        val _defaultPrefix = getString(FBSettings.getModID(), "defaultPrefix")!!
 
         if (ShipDirectoryService.generatePrefixes().contains(_defaultPrefix))
-            ModSettings.defaultPrefix = _defaultPrefix
+            FBSettings.defaultPrefix = _defaultPrefix
 
     }
 
     //Gets called whenever settings are saved in the campaign or the main menu.
     override fun settingsChanged(modID: String) {
-        if (modID != ModSettings.getModID())
+        if (modID != FBSettings.getModID())
             return
 
         val featuresDisabled = getBoolean(modID, "featuresDisabled")!!
@@ -43,69 +43,69 @@ internal class ModSettingsListener : LunaSettingsListener {
                 else -> Level.OFF
             }
 
-            ModSettings.addLogsToDisplayMessageLevel = getLevel(messageLevel)
-            ModSettings.addLogsToConsoleModConsoleLevel = getLevel(consoleLevel)
+            FBSettings.addLogsToDisplayMessageLevel = getLevel(messageLevel)
+            FBSettings.addLogsToConsoleModConsoleLevel = getLevel(consoleLevel)
 
-            ModSettings.selectorsPerRow = getInt(modID, "selectorsPerRow")!!
-            ModSettings.showCoreGoalVariants = getBoolean(modID, "showCoreGoalVariants")!!
-            ModSettings.showCoreNonGoalVariants = getBoolean(modID, "showCoreNonGoalVariants")!!
-            ModSettings.showHiddenModsInTooltip = getBoolean(modID, "showHiddenModsInTooltip")!!
-            ModSettings.showDebug = getBoolean(modID, "showDebug")!!
-            ModSettings.saveDMods = getBoolean(modID, "saveDMods")!!
-            ModSettings.saveSMods = getBoolean(modID, "saveSMods")!!
-            ModSettings.saveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
-            ModSettings.forceAutofit = getBoolean(modID, "forceAutofit")!!
-            ModSettings.dontForceClearDMods = getBoolean(modID, "dontForceClearDMods")!!
-            ModSettings.dontForceClearSMods = getBoolean(modID, "dontForceClearSMods")!!
-            ModSettings.randomPastedCosmetics = getBoolean(modID, "randomPastedCosmetics")!!
-            ModSettings.backupSave = getBoolean(modID, "backupSave")!!
-            ModSettings.hideErrorMessages = getBoolean(modID, "hideErrorMessages")!!
-            ModSettings.fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
-            ModSettings.devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
-            ModSettings.fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
-            ModSettings.storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
-            ModSettings.removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
-            ModSettings.cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
-            ModSettings.modPickerFilter = getBoolean(modID, "modPickerFilter")!!
-            ModSettings.cargoScreenFilter = getBoolean(modID, "cargoScreenFilter")!!
-            ModSettings.reportCargoAutoManagerChanges = getBoolean(modID, "reportCargoAutoManagerChanges")!!
-            ModSettings.autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
-            ModSettings.codexAutofitButton = getBoolean(modID, "codexAutofitButton")!!
-            ModSettings.replaceVanillaAutofitButton = getBoolean(modID, "replaceVanillaAutofitButton")!!
-            ModSettings.removeRefitHullmod = getBoolean(modID, "removeRefitHullmod")!!
-            ModSettings.autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
-            ModSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod = getBoolean(modID, "autofitNoSModdedBuiltInWhenNotBuiltInMod")!!
-            ModSettings.reserveFirstFourAutofitSlots = getBoolean(modID, "reserveFirstFourAutofitSlots")!!
-            ModSettings.autoMothballRecoveredShips = getBoolean(modID, "autoMothballRecoveredShips")!!
-            ModSettings.transponderOffInHyperspace = getBoolean(modID, "transponderOffInHyperspace")!!
+            FBSettings.selectorsPerRow = getInt(modID, "selectorsPerRow")!!
+            FBSettings.showCoreGoalVariants = getBoolean(modID, "showCoreGoalVariants")!!
+            FBSettings.showCoreNonGoalVariants = getBoolean(modID, "showCoreNonGoalVariants")!!
+            FBSettings.showHiddenModsInTooltip = getBoolean(modID, "showHiddenModsInTooltip")!!
+            FBSettings.showDebug = getBoolean(modID, "showDebug")!!
+            FBSettings.enableDebug = getBoolean(modID, "enableDebug")!!
+            FBSettings.saveDMods = getBoolean(modID, "saveDMods")!!
+            FBSettings.saveSMods = getBoolean(modID, "saveSMods")!!
+            FBSettings.saveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
+            FBSettings.forceAutofit = getBoolean(modID, "forceAutofit")!!
+            FBSettings.dontForceClearDMods = getBoolean(modID, "dontForceClearDMods")!!
+            FBSettings.dontForceClearSMods = getBoolean(modID, "dontForceClearSMods")!!
+            FBSettings.randomPastedCosmetics = getBoolean(modID, "randomPastedCosmetics")!!
+            FBSettings.backupSave = getBoolean(modID, "backupSave")!!
+            FBSettings.hideErrorMessages = getBoolean(modID, "hideErrorMessages")!!
+            FBSettings.fleetClipboardHotkeyHandler = getBoolean(modID, "fleetClipboardHotkeyHandler")!!
+            FBSettings.devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
+            FBSettings.fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
+            FBSettings.storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
+            FBSettings.removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
+            FBSettings.cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
+            FBSettings.modPickerFilter = getBoolean(modID, "modPickerFilter")!!
+            FBSettings.cargoScreenFilter = getBoolean(modID, "cargoScreenFilter")!!
+            FBSettings.reportCargoAutoManagerChanges = getBoolean(modID, "reportCargoAutoManagerChanges")!!
+            FBSettings.autofitMenuEnabled = getBoolean(modID, "autofitMenuEnabled")!!
+            FBSettings.codexAutofitButton = getBoolean(modID, "codexAutofitButton")!!
+            FBSettings.replaceVanillaAutofitButton = getBoolean(modID, "replaceVanillaAutofitButton")!!
+            FBSettings.removeRefitHullmod = getBoolean(modID, "removeRefitHullmod")!!
+            FBSettings.autofitMenuHotkey = getInt(modID, "autofitMenuHotkey")!!
+            FBSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod = getBoolean(modID, "autofitNoSModdedBuiltInWhenNotBuiltInMod")!!
+            FBSettings.reserveFirstFourAutofitSlots = getBoolean(modID, "reserveFirstFourAutofitSlots")!!
+            FBSettings.autoMothballRecoveredShips = getBoolean(modID, "autoMothballRecoveredShips")!!
+            FBSettings.transponderOffInHyperspace = getBoolean(modID, "transponderOffInHyperspace")!!
+            FBSettings.recentBattleTracker = getBoolean(modID, "recentBattleTracker")!!
 
-            ModSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
+            FBSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
 
-            ModSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
-
-            if (LookupUtil.Loaded())
-                ShipDirectoryService.loadAllDirectories()
+            FBSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
 
         } else {
-            ModSettings.setUnassignPlayer(false)
-            ModSettings.setCheatsEnabled(false)
-            ModSettings.backupSave = false
-            ModSettings.fleetClipboardHotkeyHandler = false
-            ModSettings.devModeCodexButtonEnabled = false
-            ModSettings.fleetScreenFilter = false
-            ModSettings.storeOfficersInCargo = false
-            ModSettings.cargoAutoManager = false
-            ModSettings.modPickerFilter = false
-            ModSettings.cargoScreenFilter = false
-            ModSettings.autofitMenuEnabled = false
-            ModSettings.removeRefitHullmod = false
-            ModSettings.autoMothballRecoveredShips = false
-            ModSettings.transponderOffInHyperspace = false
-            ModSettings.addLogsToConsoleModConsoleLevel = Level.OFF
-            ModSettings.addLogsToDisplayMessageLevel = Level.OFF
+            FBSettings.setUnassignPlayer(false)
+            FBSettings.setCheatsEnabled(false)
+            FBSettings.backupSave = false
+            FBSettings.fleetClipboardHotkeyHandler = false
+            FBSettings.devModeCodexButtonEnabled = false
+            FBSettings.fleetScreenFilter = false
+            FBSettings.storeOfficersInCargo = false
+            FBSettings.cargoAutoManager = false
+            FBSettings.modPickerFilter = false
+            FBSettings.cargoScreenFilter = false
+            FBSettings.autofitMenuEnabled = false
+            FBSettings.removeRefitHullmod = false
+            FBSettings.autoMothballRecoveredShips = false
+            FBSettings.transponderOffInHyperspace = false
+            FBSettings.addLogsToConsoleModConsoleLevel = Level.OFF
+            FBSettings.addLogsToDisplayMessageLevel = Level.OFF
+            FBSettings.recentBattleTracker = false
         }
 
-        if (LookupUtil.Loaded())
-            EventDispatcher.setSectorListeners()
+        if (LookupUtils.isSetup())
+            EventDispatcher.updateApplicationState()
     }
 }

@@ -199,7 +199,7 @@ object PlayerSaveUtils {
     @JvmOverloads
     fun compileSaveAny(
         value: Any?,
-        missing: MissingElementsExtended = MissingElementsExtended()
+        missing: MissingContentExtended = MissingContentExtended()
     ): CompiledSave {
         return when (value) {
             is JSONObject -> compileSaveJson(value, missing)
@@ -211,7 +211,7 @@ object PlayerSaveUtils {
     @JvmOverloads
     fun compileSaveString(
         value: String,
-        missing: MissingElementsExtended = MissingElementsExtended()
+        missing: MissingContentExtended = MissingContentExtended()
     ): CompiledSave {
         val json = getJSONFromStringSafe(value)
         if (json != null) {
@@ -233,7 +233,7 @@ object PlayerSaveUtils {
     @JvmOverloads
     fun compileSaveJson(
         json: JSONObject,
-        missing: MissingElementsExtended = MissingElementsExtended()
+        missing: MissingContentExtended = MissingContentExtended()
     ): CompiledSave {
         val compiled = CompiledSave()
 

@@ -2,13 +2,14 @@ package fleetBuilder.serialization.fleet.mods.secondInCommand
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.serialization.MissingElements
+import fleetBuilder.otherMods.starficz.ReflectionUtils.set
+import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson
 import second_in_command.SCData
 import second_in_command.SCUtils
 import second_in_command.specs.SCOfficer
 import second_in_command.specs.SCSpecStore
-import fleetBuilder.otherMods.starficz.ReflectionUtils.set
+import java.util.*
 
 object DataSecondInCommand {
 
@@ -48,7 +49,11 @@ object DataSecondInCommand {
         return scData
     }
 
-    fun validateSecondInCommandData(sicData: SecondInCommandData, missing: MissingElements): SecondInCommandData {
+    fun validateSecondInCommandData(
+        sicData: SecondInCommandData,
+        missing: MissingContent,
+        random: Random
+    ): SecondInCommandData {
         sicData.officers.toList().forEach { sicOfficer ->
 
             if (SCSpecStore.getAptitudeSpec(sicOfficer.aptitudeId) == null) {
@@ -65,13 +70,13 @@ object DataSecondInCommand {
                 }
             }
 
-            sicOfficer.person = DataPerson.validateAndCleanPersonData(sicOfficer.person, missing)
+            sicOfficer.person = DataPerson.validateAndCleanPersonData(sicOfficer.person, missing, random)
         }
 
         return sicData
     }
 
-    fun buildSecondInCommandData(sicData: SecondInCommandData, fleet: CampaignFleetAPI) {
+    fun buildSecondInCommandData(sicData: SecondInCommandData, fleet: CampaignFleetAPI, random: Random) {
         val storedData = fleet.memoryWithoutUpdate.get(SCUtils.FLEET_DATA_KEY) as? SCData ?: return
 
         storedData.getOfficersInFleet().toList().forEach { storedOfficer ->
@@ -87,7 +92,7 @@ object DataSecondInCommand {
             val activeSkillIDs = sicOfficer.activeSkillIDs
             val assignedSlot = sicOfficer.assignedSlot
 
-            val scOfficer = SCOfficer(DataPerson.buildPerson(person), aptitudeId)
+            val scOfficer = SCOfficer(DataPerson.buildPerson(person, random), aptitudeId)
             activeSkillIDs.forEach { scOfficer.addSkill(it) }
             scOfficer.increaseLevel(level - scOfficer.getCurrentLevel())
             scOfficer.skillPoints = skillPoints

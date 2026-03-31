@@ -6,10 +6,10 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.ModSettings
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
-import fleetBuilder.serialization.MissingElements
-import fleetBuilder.util.LookupUtil
+import fleetBuilder.serialization.MissingContent
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.allDMods
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.createHullVariant
@@ -145,27 +145,32 @@ object DataVariant {
     fun filterParsedVariantData(
         data: ParsedVariantData,
         settings: VariantSettings = VariantSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ParsedVariantData {
 
         fun shouldKeepMod(modId: String): Boolean {
-            if (ModSettings.getHullModsToNeverSave().contains(modId)) return false
+            if (FBSettings.getHullModsToNeverSave().contains(modId)) return false
             if (modId in settings.excludeHullModsWithID) return false
-            if (!settings.includeDMods && LookupUtil.getAllDMods().contains(modId)) return false
-            if (!settings.includeHiddenMods && LookupUtil.getAllHiddenEverywhereMods().contains(modId)) return false
+            if (!settings.includeDMods && LookupUtils.getAllDMods().contains(modId)) return false
+            if (!settings.includeHiddenMods && LookupUtils.getAllHiddenEverywhereMods().contains(modId)) return false
+            if (LookupUtils.getHullModSpec(modId)?.hasTag(FBSettings.noCopyTag) == true) return false
             return true
         }
 
         fun shouldKeepWeapon(weaponId: String): Boolean {
-            return weaponId !in settings.excludeWeaponsWithID
+            if (weaponId in settings.excludeWeaponsWithID) return false
+            if (LookupUtils.getWeaponSpec(weaponId)?.hasTag(FBSettings.noCopyTag) == true) return false
+            return true
         }
 
         fun shouldKeepWing(wingId: String): Boolean {
-            return wingId !in settings.excludeWingsWithID
+            if (wingId in settings.excludeWingsWithID) return false
+            if (LookupUtils.getFighterWingSpec(wingId)?.hasTag(FBSettings.noCopyTag) == true) return false
+            return true
         }
 
         fun shouldKeepTag(tagId: String): Boolean {
-            return tagId !in settings.excludeTagsWithID
+            return tagId !in settings.excludeTagsWithID && !tagId.startsWith("#")
         }
 
         // Remove entries from missing that were filtered out, as they aren't missing if they weren't supposed to be included in the first place.
@@ -212,10 +217,10 @@ object DataVariant {
     @JvmOverloads
     fun validateAndCleanVariantData(
         data: ParsedVariantData,
-        missing: MissingElements = MissingElements(),
+        missing: MissingContent = MissingContent(),
     ): ParsedVariantData {
         // --- Hull ID ---
-        val validHullId = if (data.hullId in LookupUtil.getHullIDSet()) {
+        val validHullId = if (data.hullId in LookupUtils.getHullIDSet()) {
             data.hullId
         } else {
             missing.hullIds.add(data.hullId)
@@ -233,7 +238,7 @@ object DataVariant {
         }
 
         // --- HullMods ---
-        val allHullMods = LookupUtil.getHullModIDSet()
+        val allHullMods = LookupUtils.getHullModIDSet()
 
         val cleanHullMods = data.hullMods.filter { modId ->
             if (modId !in allHullMods) {
@@ -264,7 +269,7 @@ object DataVariant {
         }
 
         // --- Wings ---
-        val allWingIds = LookupUtil.getFighterWingIDSet()
+        val allWingIds = LookupUtils.getFighterWingIDSet()
         val cleanWings = data.wings.mapIndexed { _, wingId ->
             if (wingId !in allWingIds && wingId.isNotBlank()) {
                 missing.wingIds.add(wingId)
@@ -273,7 +278,7 @@ object DataVariant {
         }
 
         // --- Weapon Groups ---
-        val allWeapons = LookupUtil.getActuallyAllWeaponSpecIDSet()
+        val allWeapons = LookupUtils.getActuallyAllWeaponSpecIDSet()
         val cleanWeaponGroups = data.weaponGroups.map { wg ->
             val cleanedSlots = wg.weapons.filter { (_, weaponId) ->
                 val valid = weaponId in allWeapons
@@ -291,7 +296,7 @@ object DataVariant {
         }
 
         val cleanedData = data.copy(
-            hullId = validHullId ?: LookupUtil.getErrorVariantHullID(),
+            hullId = validHullId ?: LookupUtils.getErrorVariantHullID(),
             variantId = fixedVariantId,
             displayName = fixedDisplayName,
             hullMods = cleanHullMods.toList(),
@@ -329,7 +334,7 @@ object DataVariant {
             return loadout
 
         //Remove default DMods
-        if (ModSettings.removeDefaultDMods) {
+        if (FBSettings.removeDefaultDMods) {
             loadout.allDMods().forEach {
                 loadout.hullMods.remove(it)
             }
@@ -407,9 +412,9 @@ object DataVariant {
     fun buildVariantFull(
         data: ParsedVariantData,
         settings: VariantSettings = VariantSettings(),
-        missing: MissingElements = MissingElements()
+        missing: MissingContent = MissingContent()
     ): ShipVariantAPI {
-        val ourMissing = MissingElements()
+        val ourMissing = MissingContent()
 
         val cleanedData = validateAndCleanVariantData(data, ourMissing)
         val filteredData = filterParsedVariantData(cleanedData, settings, ourMissing)

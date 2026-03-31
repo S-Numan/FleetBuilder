@@ -3,10 +3,12 @@ package fleetBuilder.otherMods.starficz
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import fleetBuilder.ui.UIUtils
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 
-open class StarUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPanelPlugin() {
+open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
+    lateinit var panel: CustomPanelAPI
 
     private var onClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
     private var onClickOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
@@ -23,32 +25,42 @@ open class StarUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPane
 
     private var advanceFunctions: MutableList<(Float) -> Unit> = mutableListOf()
 
+    open fun clearStarUIFunctions() {
+        onClickFunctions.clear()
+        onClickOutsideFunctions.clear()
+        onClickReleaseFunctions.clear()
+        onHoverFunctions.clear()
+        onHoverEnterFunctions.clear()
+        onHoverExitFunctions.clear()
+        onMouseButtonHeldFunctions.clear()
+        onKeyDownFunctions.clear()
+        onKeyUpFunctions.clear()
+
+        renderBelowFunctions.clear()
+        renderFunctions.clear()
+
+        advanceFunctions.clear()
+    }
+
     var customData: Any? = null
 
-    var inputCaptureTopPad = 0f
-        private set
-    var inputCaptureBottomPad = 0f
-        private set
-    var inputCaptureLeftPad = 0f
-        private set
-    var inputCaptureRightPad = 0f
+    var inputCapturePad = 0f
         private set
 
-    var isHovering = false
+    protected var isHovering = false
+        private set
+    protected var hasClicked = false
         private set
 
-    var hasClicked = false
-        private set
+    open var consumeMouseEvents = false
+    open var consumeKeyboardEvents = false
+    protected open var ignoreConsumedEvents = true
 
-    var consumeEvents = false
-    var ignoreConsumedEvents = false
+    open fun setMouseCapturePad(pad: Float) {
+        if (!::panel.isInitialized) return
 
-    fun setMouseCapturePad(leftPad: Float, rightPad: Float, topPad: Float, bottomPad: Float) {
-        inputCaptureTopPad = topPad
-        inputCaptureBottomPad = bottomPad
-        inputCaptureLeftPad = leftPad
-        inputCaptureRightPad = rightPad
-        customPanel.setMouseOverPad(leftPad, rightPad, topPad, bottomPad)
+        inputCapturePad = pad
+        panel.setMouseOverPad(pad, pad, pad, pad)
     }
 
     fun renderBelow(function: (alphaMult: Float) -> Unit) {
@@ -92,10 +104,11 @@ open class StarUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPane
     }
 
     override fun processInput(events: MutableList<InputEventAPI>) {
+        if (!::panel.isInitialized) return
+
         events.filter { it.isMouseEvent }.forEach { event ->
             if (ignoreConsumedEvents && event.isConsumed) return@forEach
-            val inElement = event.x.toFloat() in (left - inputCaptureLeftPad)..(right + inputCaptureRightPad) &&
-                    event.y.toFloat() in (bottom - inputCaptureBottomPad)..(top + inputCaptureTopPad)
+            val inElement = UIUtils.isMouseHoveringOverComponent(panel, event.x, event.y, inputCapturePad)
             if (inElement) {
                 onHoverFunctions.forEach { it(event) }
                 if (!isHovering) onHoverEnterFunctions.forEach { it(event) }
@@ -109,7 +122,7 @@ open class StarUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPane
                     onClickReleaseFunctions.forEach { it(event) }
                 }
                 if (Mouse.isButtonDown(0)) onMouseButtonHeldFunctions.forEach { it(event) }
-                if (consumeEvents) event.consume()
+                if (consumeMouseEvents) event.consume()
             } else {
                 if (isHovering) onHoverExitFunctions.forEach { it(event) }
                 isHovering = false
@@ -126,7 +139,7 @@ open class StarUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPane
             if (ignoreConsumedEvents && event.isConsumed) return@forEach
             if (event.isKeyDownEvent) onKeyDownFunctions.forEach { it(event) }
             if (event.isKeyUpEvent) onKeyUpFunctions.forEach { it(event) }
-            if (consumeEvents) event.consume()
+            if (consumeKeyboardEvents) event.consume()
         }
     }
 
@@ -165,5 +178,4 @@ open class StarUIPanelPlugin(var customPanel: CustomPanelAPI) : BaseCustomUIPane
     fun onKeyUp(function: (InputEventAPI) -> Unit) {
         onKeyUpFunctions.add(function)
     }
-
 }
