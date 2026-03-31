@@ -246,7 +246,7 @@ internal class CargoAutoManageUIPlugin(
         panel = Global.getSettings().createCustom(width - (dialog.tooltipPadFromSide * 2), height - (dialog.tooltipPadFromTop * 2) - 100f, this)
 
         val addCustom = panel.addAreaCheckbox("Add Custom", null, Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), columnWidths[0], rowHeight)
-        addCustom.position.inBL(0f, -32f)
+        addCustom.position.inBL(0f, rowHeight / 2f)
         addCustom.onClick {
             dialog.forceDismiss()
 
@@ -267,7 +267,7 @@ internal class CargoAutoManageUIPlugin(
         }
 
         // Create main UI container
-        scrollerTooltip = panel.createUIElement(panel.width, panel.height + 32f - addCustom.height - 8f, true)
+        scrollerTooltip = panel.createUIElement(panel.width, panel.height + 32f - addCustom.height - 8f - rowHeight, true)
 
         // Header row
         val headers = listOf("Item", "Amount", "Percent", "Take", "Put", "Quick Stack")
