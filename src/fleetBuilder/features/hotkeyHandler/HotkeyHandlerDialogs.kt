@@ -468,16 +468,16 @@ object HotkeyHandlerDialogs {
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
                     val variant = member.variant
-                    variant.fittedWeaponSlots.forEach { slotID ->
+                    variant.fittedWeaponSlots.toList().forEach { slotID ->
                         val weaponID = variant.getWeaponId(slotID)
                         if (weaponID in unknownContents.weaponIds)
                             variant.clearSlot(slotID)
                     }
-                    variant.fittedWings.forEach { wingID ->
+                    variant.fittedWings.toList().forEach { wingID ->
                         if (wingID in unknownContents.wingIds)
                             variant.wings.remove(wingID)
                     }
-                    variant.hullMods.forEach { hullModID ->
+                    variant.hullMods.toList().forEach { hullModID ->
                         if (variant.hullSpec.isBuiltInMod(hullModID))
                             return@forEach
                         if (hullModID in unknownContents.hullModIds)
