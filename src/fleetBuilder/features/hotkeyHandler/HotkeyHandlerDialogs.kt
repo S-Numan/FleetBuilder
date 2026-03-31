@@ -176,6 +176,7 @@ object HotkeyHandlerDialogs {
         )
 
         val dialog = DialogPanel()
+        dialog.makeCampaignDummyDialogHideUI = true
 
         val width = 1280f
         val height = 800f
@@ -782,10 +783,21 @@ object HotkeyHandlerDialogs {
                     battleContext.enemyDeployAll = true
                     battleContext.objectivesAllowed = true
 
-                    dialog.dismiss()
+                    val campUI = Global.getSector().campaignUI
+                    if (campUI.currentInteractionDialog == null && campUI.getActualCurrentTab() != null) { // Tab open, but not at interaction?
+                        // Force close the dialog, and the current tab
+                        dialog.forceDismiss()
+                        campUI.safeInvoke("setNextTransitionFast", true)
+                        val coreUI = ReflectionMisc.getCoreUI()
+                        coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
 
-                    RecentBattleReplay.simulateBattle(battleContext) {
-                        pasteFleet(inputData, inputMissing)
+                        //Re-open the dialog, will also open the dummy dialog.
+                        CampaignDeferredActionPlugin.performLater(1f) {
+                            pasteFleet(inputData, inputMissing)
+                            RecentBattleReplay.simulateBattle(battleContext)
+                        }
+                    } else {
+                        RecentBattleReplay.simulateBattle(battleContext)
                     }
 
                     //battle.finish(null, false)

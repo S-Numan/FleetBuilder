@@ -1,13 +1,9 @@
 package fleetBuilder.features.recentBattles
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.InteractionDialogAPI
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin
-import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.BattleCreationContext
 import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.campaign.fleet.FleetMemberStatus
@@ -19,10 +15,8 @@ import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.origCap
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedCR
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedStatuses
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
-import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.deferredAction.CombatDeferredActionPlugin
-import fleetBuilder.util.isIdle
 import fleetBuilder.util.safeInvoke
 
 // Initial code taken from Ship Mastery System by float
@@ -37,18 +31,12 @@ object RecentBattleReplay {
     ) {
         try {
             val campUI = Global.getSector().campaignUI
+            val previousEncounterDialog = campUI.currentInteractionDialog;
 
-            campUI.safeInvoke("setNextTransitionFast", true)
-            val coreUI = ReflectionMisc.getCoreUI()
-            //coreUI?.safeInvoke("closeCurrent")
-            coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
-
-            if (!campUI.isIdle()) {
-                DisplayMessage.showError("Cannot simulate battle, UI is not idle. No dialogs must be open.")
+            if (campUI.currentInteractionDialog == null) {
+                DisplayMessage.showError("Cannot simulate battle, no interaction dialog found.")
                 return
             }
-
-            //val campUI = Global.getSector().campaignUI // as CampaignState
 
             RecentBattleTracker.lastPlayerBattleTimestamp = Global.getSector().lastPlayerBattleTimestamp
             RecentBattleTracker.lastPlayerBattleWon = Global.getSector().isLastPlayerBattleWon
@@ -60,54 +48,45 @@ object RecentBattleReplay {
                 origCaptains[member] = member.captain
             }
 
-            val engine = CombatEngine.getInstance()
-            //engine.isMissionSim = !Global.getSettings().isInCampaignState
-            //AppDriver.getInstance().session["run combat simulator"] = Any()
-            //campUI.startBattle(bcc)
+            CampaignDeferredActionPlugin.performOnPlayerBattleFinish {
 
-            class PlaceholderDialog : InteractionDialogPlugin {
-                override fun init(dialog: InteractionDialogAPI?) {}
-                override fun optionSelected(optionText: String?, optionData: Any?) {}
-                override fun optionMousedOver(optionText: String?, optionData: Any?) {}
-                override fun advance(amount: Float) {}
-                override fun backFromEngagement(battleResult: EngagementResultAPI?) {
-                    val campUI = Global.getSector().campaignUI
-                    val dialog = campUI.currentInteractionDialog
-                    dialog.safeInvoke("makeOptionInstant", 0)
-                    dialog.safeInvoke("dismiss", 0)
+                val campUI = Global.getSector().campaignUI
+                //val dialog = campUI.currentInteractionDialog
+                //dialog.safeInvoke("makeOptionInstant", 0)
+                //dialog.safeInvoke("dismiss", 0)
 
-                    val engine = CombatEngine.getInstance()
-                    engine.customData.remove(isSimulatorKey)
+                val engine = CombatEngine.getInstance()
+                engine.customData.remove(isSimulatorKey)
 
-                    for ((member, captain) in origCaptains) {
-                        if (captain != null) {
-                            member.captain = captain
-                        }
-                    }
-
-                    Global.getSector().campaignUI.set("enemyFleetForBattle", null)
-
-                    for (fm in Global.getSector().playerFleet.fleetData.membersListCopy) {
-                        val member = fm as FleetMember
-                        fm.set("status", savedStatuses[member]!!)
-                        member.repairTracker.cr = savedCR[member] ?: member.repairTracker.maxCR
-                        member.updateStats()
-                    }
-
-                    CampaignDeferredActionPlugin.performLater(0f) {
-                        Global.getSector().lastPlayerBattleTimestamp = lastPlayerBattleTimestamp!!
-                        Global.getSector().isLastPlayerBattleWon = lastPlayerBattleWon!!
-
-                        onBackFromEngagement.invoke()
+                for ((member, captain) in origCaptains) {
+                    if (captain != null) {
+                        member.captain = captain
                     }
                 }
 
-                override fun getContext(): Any? = null
-                override fun getMemoryMap(): MutableMap<String, MemoryAPI> = hashMapOf()
+                campUI.set("enemyFleetForBattle", null)
+                campUI.safeInvoke("setEncounterDialog", previousEncounterDialog)
+
+                for (fm in Global.getSector().playerFleet.fleetData.membersListCopy) {
+                    val member = fm as FleetMember
+                    fm.set("status", savedStatuses[member]!!)
+                    member.repairTracker.cr = savedCR[member] ?: member.repairTracker.maxCR
+                    member.updateStats()
+                }
+
+                CampaignDeferredActionPlugin.performLater(0f) {
+                    Global.getSector().lastPlayerBattleTimestamp = lastPlayerBattleTimestamp!!
+                    Global.getSector().isLastPlayerBattleWon = lastPlayerBattleWon!!
+
+                    onBackFromEngagement.invoke()
+                }
             }
-            campUI.showInteractionDialog(PlaceholderDialog(), Global.getSector().playerFleet)
-            val placeholderDialog = campUI.currentInteractionDialog
-            placeholderDialog!!.startBattle(bcc)
+
+            val engine = CombatEngine.getInstance()
+            //AppDriver.getInstance().session["run combat simulator"] = Any()
+
+            campUI.safeInvoke("setEncounterDialog", campUI.currentInteractionDialog)
+            campUI!!.startBattle(bcc)
 
             engine.customData[isSimulatorKey] = true
 

@@ -42,10 +42,7 @@ object CampaignUtils {
                     override fun optionSelected(optionText: String?, optionData: Any?) {}
                     override fun optionMousedOver(optionText: String?, optionData: Any?) {}
                     override fun advance(amount: Float) {}
-                    override fun backFromEngagement(battleResult: EngagementResultAPI?) {
-                        closeCampaignDummyDialog()
-                    }
-
+                    override fun backFromEngagement(battleResult: EngagementResultAPI?) {}
                     override fun getContext(): Any? = null
                     override fun getMemoryMap(): MutableMap<String, MemoryAPI> = hashMapOf()
                 }
