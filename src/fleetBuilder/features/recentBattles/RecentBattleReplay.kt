@@ -31,10 +31,13 @@ object RecentBattleReplay {
 
     const val isSimulatorKey = "FB_isSimulator"
 
-    fun simulateBattle(bcc: BattleCreationContext) { //, onBackFromEngagement: () -> Unit) {
+    fun simulateBattle(
+        bcc: BattleCreationContext,
+        onBackFromEngagement: () -> Unit = {}
+    ) {
         try {
             val campUI = Global.getSector().campaignUI
-            
+
             campUI.safeInvoke("setNextTransitionFast", true)
             val coreUI = ReflectionMisc.getCoreUI()
             //coreUI?.safeInvoke("closeCurrent")
@@ -94,6 +97,8 @@ object RecentBattleReplay {
                     CampaignDeferredActionPlugin.performLater(0f) {
                         Global.getSector().lastPlayerBattleTimestamp = lastPlayerBattleTimestamp!!
                         Global.getSector().isLastPlayerBattleWon = lastPlayerBattleWon!!
+
+                        onBackFromEngagement.invoke()
                     }
                 }
 

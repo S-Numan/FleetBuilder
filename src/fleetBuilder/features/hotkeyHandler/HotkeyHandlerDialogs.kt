@@ -784,7 +784,9 @@ object HotkeyHandlerDialogs {
 
                     dialog.dismiss()
 
-                    RecentBattleReplay.simulateBattle(battleContext)
+                    RecentBattleReplay.simulateBattle(battleContext) {
+                        pasteFleet(inputData, inputMissing)
+                    }
 
                     //battle.finish(null, false)
                 }
