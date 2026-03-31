@@ -26,6 +26,8 @@ object SerializationUtils {
     const val memberSep = "$$><$$"
     const val fleetSep1 = "$$>>$$"
     const val fleetSep2 = "$$<<$$"
+    const val memKeySep = "$$sep$"
+    const val memKeyJoinSep = "$$joinSep$"
 
     fun cleanJsonStringInput(raw: String): String {
         return raw.lines()

@@ -28,7 +28,7 @@ import fleetBuilder.features.autofit.ui.AutofitSelector
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.features.autofit.ui.ShipPreviewOverlayPlugin
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteFleet
-import fleetBuilder.features.recentBattles.RecentBattlesReplay
+import fleetBuilder.features.recentBattles.RecentBattleReplay
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.*
 import fleetBuilder.serialization.fleet.DataFleet
@@ -280,19 +280,22 @@ object HotkeyHandlerDialogs {
             ).position.setXAlignOffset(0f)
 
             val size = 129f
-            val padding = 10f
-            val numPerRow = Math.max(1, (leftWidth / (size + padding)).toInt())
+            val paddingX = 10f
+            val paddingY = 14f
+
+            val numPerRow = Math.max(1, (leftWidth / (size + paddingX)).toInt())
 
             val rows = (fleetData.membersListCopy.size + numPerRow - 1) / numPerRow
-            val totalHeight = rows * (size + padding)
+            val totalHeight = rows * size + (rows - 1) * paddingY
 
             val listPanel = dialog.panel.createCustomPanel(leftWidth, totalHeight, null)
 
             fleetData.membersListCopy.toList().forEachIndexed { index, member ->
                 val col = index % numPerRow
                 val row = index / numPerRow
-                val x = col * (size + padding)
-                val y = row * (size + padding)
+
+                val x = col * (size + paddingX)
+                val y = row * (size + paddingY)
 
                 val unknownContents = MissingContent()
                 VariantUtils.whatVariantContentsAreNotKnownToPlayer(member.variant, unknownContents)
@@ -784,7 +787,7 @@ object HotkeyHandlerDialogs {
                     //coreUI?.safeInvoke("closeCurrent")
                     coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
 
-                    RecentBattlesReplay.simulateBattle(battleContext)
+                    RecentBattleReplay.simulateBattle(battleContext)
 
 
                     //battle.finish(null, false)

@@ -19,7 +19,7 @@ import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 
 // Initial code taken from Ship Mastery System by float
 
-object RecentBattlesReplay {
+object RecentBattleReplay {
 
     const val isSimulatorKey = "FB_isSimulator"
 

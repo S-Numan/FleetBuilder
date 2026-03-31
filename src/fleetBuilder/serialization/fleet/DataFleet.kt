@@ -3,6 +3,7 @@ package fleetBuilder.serialization.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
@@ -257,9 +258,11 @@ object DataFleet {
             DataSecondInCommand.buildSecondInCommandData(data.secondInCommandData, campFleet, random)
         }
 
+        val addedMembers = mutableListOf<FleetMemberAPI>()
         data.members.forEach { parsed ->
             val member = buildMember(parsed, random)
             fleet.addFleetMember(member)
+            addedMembers.add(member)
 
             if (parsed.isFlagship) {
                 if (member.captain.isDefault)
@@ -289,13 +292,18 @@ object DataFleet {
                     officer.setPersonality(personality)
                 }
             }
+        }
+
+        fleet.setSyncNeeded()
+        fleet.syncIfNeeded()
+
+        data.members.forEachIndexed { index, parsed ->
+            val member = addedMembers[index]
 
             // Re-run cr check if it's null to account for new stats
             if (parsed.cr == null)
                 member.repairTracker.cr = member.repairTracker.maxCR
         }
-
-        fleet.syncIfNeeded()
     }
 
     @JvmOverloads
