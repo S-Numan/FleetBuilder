@@ -11,6 +11,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.graphics.SpriteAPI
+import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.*
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
@@ -49,6 +50,15 @@ internal fun UIPanelAPI.whiteBoxForTesting(width: Float? = null, height: Float? 
 // Avoid using getModuleSlots(). It uses getStationModules() internally anyway.
 fun ShipVariantAPI.getModules(): List<ShipVariantAPI> {
     return this.stationModules.map { getModuleVariant(it.key) }
+}
+
+fun ShipVariantAPI.getFittedWeapons(): List<WeaponSpecAPI> {
+    val weapons = mutableListOf<WeaponSpecAPI>()
+    fittedWeaponSlots.forEach { slot ->
+        val weapon = getWeaponSpec(slot) ?: return@forEach
+        weapons.add(weapon)
+    }
+    return weapons
 }
 
 internal var previouslyLoadedSprite = HashMap<String, Boolean>()

@@ -130,11 +130,10 @@ object VariantUtils {
     fun whatVariantContentsAreNotKnownToPlayer(variant: ShipVariantAPI, missing: MissingContent) {
         if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
             missing.hullIds.add(variant.hullSpec.hullId)
-
-        variant.fittedWeaponSlots.forEach { slot ->
-            val weapon = variant.getSlot(slot) ?: return@forEach
-            if (LookupUtils.getWeaponSpec(weapon.id)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.id))
-                missing.weaponIds.add(weapon.id)
+        
+        variant.getFittedWeapons().forEach { weapon ->
+            if (weapon.hasTag(Tags.CODEX_UNLOCKABLE) && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.weaponId))
+                missing.weaponIds.add(weapon.weaponId)
         }
         variant.fittedWings.forEach { wing ->
             if (LookupUtils.getFighterWingSpec(wing)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfFighter(wing))
