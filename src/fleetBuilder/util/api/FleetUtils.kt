@@ -127,7 +127,7 @@ object FleetUtils {
             }
         }
 
-        fleet.memoryWithoutUpdate.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
+        Global.getSector().playerPerson?.memoryWithoutUpdate?.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
 
         if (playerShuttleExists()) {
             //Need to move the shuttle to the last member in the fleet, but I don't care enough to do this properly.

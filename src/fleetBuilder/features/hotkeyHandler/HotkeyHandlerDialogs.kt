@@ -940,7 +940,7 @@ object HotkeyHandlerDialogs {
                             playerFleet.addOfficer(captain)
                         }
                     }
-                    fleet.memoryWithoutUpdate.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
+                    sector.memoryWithoutUpdate?.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
 
                     if (repairAndSetMaxCR)
                         FleetUtils.fulfillPlayerFleet()

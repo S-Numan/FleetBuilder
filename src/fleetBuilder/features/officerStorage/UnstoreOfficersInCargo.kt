@@ -25,7 +25,7 @@ internal class UnstoreOfficersInCargo : EveryFrameScript {
             val playerFleet = sector.playerFleet ?: return
 
             //Mothball captained ships that go above the officer limit
-            if (!playerFleet.memoryWithoutUpdate.getBoolean("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL") && !FBSettings.cheatsEnabled() &&
+            if (sector.playerPerson?.memoryWithoutUpdate?.getBoolean("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL") != true && !FBSettings.cheatsEnabled() &&
                 playerFleet.fleetData.getAssignedOfficers().count { !it.isMercenary() } > playerFleet.getMaxOfficers()
             ) {
                 var nonMothballedOfficerCount = getNonMothballedOfficerCount(playerFleet)

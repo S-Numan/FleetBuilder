@@ -120,6 +120,8 @@ object DataPerson {
 
         // Filter memory keys
         val filteredMemory = data.memKeys.filterKeys { key ->
+            if (key.startsWith("$#"))
+                return@filterKeys false
             val value = data.memKeys[key]
 
             when {
