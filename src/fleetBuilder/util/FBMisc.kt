@@ -25,6 +25,32 @@ import kotlin.math.min
 
 internal object FBMisc {
 
+    fun getCallerClass(): Class<*>? {
+        val thisClass = this::class.java.name
+        var callerClass: String? = null
+
+        return Throwable().stackTrace
+            .asSequence()
+            .map { it.className }
+            .filter {
+                it != thisClass
+                        && !it.startsWith("java.")
+                        && !it.startsWith("kotlin.")
+                        && !it.contains("reflect")
+            }
+            .firstOrNull { className ->
+                if (callerClass == null) {
+                    // First non-this class = caller class
+                    callerClass = className
+                    false
+                } else {
+                    // Keep skipping while still in caller class
+                    className != callerClass
+                }
+            }
+            ?.let { runCatching { Class.forName(it) }.getOrNull() }
+    }
+
     fun deepDiff(
         a: Any?,
         b: Any?,

@@ -7,6 +7,7 @@ import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.BattleCreationContext
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetGoal
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.impl.campaign.ids.Skills
@@ -225,6 +226,8 @@ object HotkeyHandlerDialogs {
             }
         }
 
+        val seed = Random().nextLong()
+
         dialog.show(width, height) { ui ->
             if (previewList.isNotEmpty())
                 cleanupShipList()
@@ -239,7 +242,7 @@ object HotkeyHandlerDialogs {
             val missingEx = MissingContent()
             missingEx.add(inputMissing)
 
-            val deterministicRandom = Random(0) // Doesn't matter, just needs a seed to be deterministic
+            val deterministicRandom = Random(seed)
 
             val fleet = DataFleet.createCampaignFleetFromData(
                 data,
@@ -293,6 +296,8 @@ object HotkeyHandlerDialogs {
 
             val listPanel = dialog.panel.createCustomPanel(leftWidth, totalHeight, null)
 
+            val unknownContentsMap = mutableMapOf<FleetMemberAPI, MissingContent>()
+
             fleetData.membersListCopy.toList().forEachIndexed { index, member ->
                 val col = index % numPerRow
                 val row = index / numPerRow
@@ -302,6 +307,7 @@ object HotkeyHandlerDialogs {
 
                 val unknownContents = MissingContent()
                 VariantUtils.whatVariantContentsAreNotKnownToPlayer(member.variant, unknownContents)
+                unknownContentsMap[member] = unknownContents
 
                 val dataMember = data.members.find { it.id == member.id }
 
@@ -340,18 +346,6 @@ object HotkeyHandlerDialogs {
                     return@forEachIndexed
                 }
 
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents.hullIds.isNotEmpty()) {
-                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
-                    boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color.RED
-                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
-                        tooltip.addPara("This ship is unknown to you. Explore and unlock new codex entries!", 0f)
-                    }
-
-                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
-                    return@forEachIndexed
-                }
-
                 if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && member.isStation) {
                     val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
                     boxedImage.position.inTL(x, y)
@@ -370,6 +364,18 @@ object HotkeyHandlerDialogs {
                     boxedImage.sprite.color = Color(128, 0, 128)
                     boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
                         tooltip.addPara("Cannot simulate what is beyond comprehension.", 0f)
+                    }
+
+                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
+                    return@forEachIndexed
+                }
+
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents.hullIds.isNotEmpty()) {
+                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
+                    boxedImage.position.inTL(x, y)
+                    boxedImage.sprite.color = Color.RED
+                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
+                        tooltip.addPara("This ship is unknown to you. Explore and unlock new codex entries!", 0f)
                     }
 
                     member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
@@ -462,16 +468,16 @@ object HotkeyHandlerDialogs {
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
                     val variant = member.variant
-                    variant.fittedWeaponSlots.forEach { slotID ->
+                    variant.fittedWeaponSlots.toList().forEach { slotID ->
                         val weaponID = variant.getWeaponId(slotID)
                         if (weaponID in unknownContents.weaponIds)
                             variant.clearSlot(slotID)
                     }
-                    variant.fittedWings.forEach { wingID ->
+                    variant.fittedWings.toList().forEach { wingID ->
                         if (wingID in unknownContents.wingIds)
                             variant.wings.remove(wingID)
                     }
-                    variant.hullMods.forEach { hullModID ->
+                    variant.hullMods.toList().forEach { hullModID ->
                         if (variant.hullSpec.isBuiltInMod(hullModID))
                             return@forEach
                         if (hullModID in unknownContents.hullModIds)
@@ -563,8 +569,7 @@ object HotkeyHandlerDialogs {
                 }
                 officerPanel.addComponent(preview.panel).inTL(shipX, shipY)
 
-                val unknownContents = MissingContent()
-                VariantUtils.whatVariantContentsAreNotKnownToPlayer(member.variant, unknownContents)
+                val unknownContents = unknownContentsMap[member]
 
 
                 // =========================
@@ -581,7 +586,7 @@ object HotkeyHandlerDialogs {
                     skillsUI.addPara(preview.missingContent.getMissingContentString(true), Color.YELLOW, 0f)
                 }
 
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents != null && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
                     val boxedImage = officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize)
                     boxedImage.position.inTL(shipX, shipY)
                     boxedImage.sprite.color = Color.YELLOW.setAlpha(70)

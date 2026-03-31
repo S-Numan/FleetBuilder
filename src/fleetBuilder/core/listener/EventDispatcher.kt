@@ -27,6 +27,7 @@ import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.serialization.PlayerSaveUtils
+import fleetBuilder.util.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.listeners.MemberChangeEvents
@@ -115,11 +116,13 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun onDevModeF8Reload() {
+            FBTxt.setup()
             updateApplicationState()
         }
 
         fun onApplicationLoad() {
             FBSettings.onApplicationLoad()
+            FBTxt.setup()
             updateApplicationState()
         }
 

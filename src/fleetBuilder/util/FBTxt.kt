@@ -4,6 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.TextPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import fleetBuilder.core.FBSettings
+import fleetBuilder.util.FBMisc.getCallerClass
+import org.json.JSONObject
 import org.magiclib.util.StringCreator
 import java.awt.Color
 import java.util.*
@@ -11,12 +13,41 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 object FBTxt {
+    lateinit var FBStrings: JSONObject
+        private set
+    lateinit var missingString: String
+        private set
+
+    internal fun setup() {
+        FBStrings = Global.getSettings().getMergedJSONForMod("data/strings/strings.json", FBSettings.getModID()).getJSONObject(FBSettings.getModID())
+        if (FBStrings.has("missing_string"))
+            missingString = FBStrings.getString("missing_string")
+        else
+            missingString = "Missing string: [%s]"
+    }
+
+    fun hasTxt(id: String): Boolean = FBStrings.has(id)
+
     fun txt(id: String): String {
-        return Global.getSettings().getString(FBSettings.getModID(), id)
+        return try {
+            FBStrings.getString(id)
+        } catch (_: Exception) {
+            val callerClass: Class<*> = getCallerClass() ?: javaClass
+            val miss = String.format(missingString, id)
+            Global.getLogger(callerClass).warn(miss)
+            miss
+        }
     }
 
     fun txt(id: String, vararg args: Any?): String {
-        return String.format(Global.getSettings().getString(FBSettings.getModID(), id), *args)
+        if (!FBStrings.has(id)) {
+            val callerClass: Class<*> = getCallerClass() ?: javaClass
+            val miss = String.format(missingString, id)
+            Global.getLogger(callerClass).warn(miss)
+            return miss
+        }
+
+        return String.format(txt(id), *args)
     }
 
     /**
@@ -40,12 +71,10 @@ object FBTxt {
 
         val key = pluralKey(count)
 
-        return runCatching {
+        return if (!FBStrings.has(key))
+            if (args.isEmpty()) txt("${baseKey}_many", count) else txt("${baseKey}_many", *args)
+        else
             if (args.isEmpty()) FBTxt.txt(key, count) else FBTxt.txt(key, *args)
-        }.getOrElse {
-            // fallback to _many if key does not exist
-            if (args.isEmpty()) FBTxt.txt("${baseKey}_many", count) else FBTxt.txt("${baseKey}_many", *args)
-        }
     }
 
 
@@ -109,7 +138,7 @@ object FBTxt {
     }
 
     /**
-     * Uses [MagicDisplayableText] to add a paragraph to the given [com.fs.starfarer.api.campaign.TextPanelAPI].
+     * Uses [MagicDisplayableText] to add a paragraph to the given [TextPanelAPI].
      * \n may be used to add multiple paragraphs.
      * You can use Misc.getTextColor() and Misc.getHighlightColor() to get default colors.
      */
@@ -141,7 +170,7 @@ object FBTxt {
     }
 
     /**
-     * Uses [MagicDisplayableText] to add a paragraph to the given [com.fs.starfarer.api.ui.TooltipMakerAPI].
+     * Uses [MagicDisplayableText] to add a paragraph to the given [TooltipMakerAPI].
      * \n may be used to add multiple paragraphs.
      * You can use Misc.getTextColor() and Misc.getHighlightColor() to get default colors.
      */

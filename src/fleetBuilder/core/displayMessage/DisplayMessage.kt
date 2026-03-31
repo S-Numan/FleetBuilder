@@ -7,6 +7,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBSettings
 import fleetBuilder.features.logMessageAppender.NoDisplayThrowable
 import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.util.FBMisc.getCallerClass
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
 import java.awt.Color
@@ -169,11 +170,5 @@ object DisplayMessage {
                 Level.DEBUG -> Global.getLogger(javaClass).debug(message, NoDisplayThrowable())
             }
         }
-    }
-
-    private fun getCallerClass(): Class<*>? {
-        return Throwable().stackTrace
-            .firstOrNull { it.className != this::class.java.name }
-            ?.let { runCatching { Class.forName(it.className) }.getOrNull() }
     }
 }

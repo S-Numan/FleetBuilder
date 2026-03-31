@@ -1,6 +1,8 @@
 {
   "SN_FleetBuilder": {
 
+  "missing_string": "Missing string: [%s]",
+
   "backup_save_not_found": "Backup save not found",
   "backup_save_read_error": "Failed to read backup save json",
   "failed_to_read_save_in_clipboard": "Failed to read save in clipboard",
