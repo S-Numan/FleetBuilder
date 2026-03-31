@@ -12,7 +12,7 @@
 - Many more changes far too numerous for me to remember.
 ### Bugfixes
 - Added missing officer_copied_to_clipboard_compressed string.
-- Reorder in what order certain contents of members and fleets are loaded on paste to better account for stats. (E.G captains/commanders load before the Fleet Members, and thus stats such as maxCR get applied properly now.)
+- Reorder in what order certain contents of members and fleets are loaded on paste to better account for stats. (E.G captains/commanders load before the Fleet Members, and thus stats such as maxCR get applied properly now)
 - Automated fleet AI core's now become built in when copying if exceeding their default AI level. This is a fix to a vanilla issue, although it'd never come up normally.
 - etc
 
