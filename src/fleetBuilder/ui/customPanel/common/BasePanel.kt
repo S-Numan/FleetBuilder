@@ -26,7 +26,7 @@ open class BasePanel : StarUIPanelPlugin() {
 
     protected open var createUIOnInit: Boolean = true
 
-    override var consumeMouseEvents: Boolean = true
+    override var consumeInnerMouseEvents: Boolean = true
 
     var hasInitOccurred = false
         private set

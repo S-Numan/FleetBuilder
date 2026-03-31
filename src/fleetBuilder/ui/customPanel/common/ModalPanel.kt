@@ -40,8 +40,7 @@ open class ModalPanel : ComposablePanel() {
     protected open var goalYOffset: Float = 0f
     protected open var goalWidth: Float = 0f
     protected open var goalHeight: Float = 0f
-
-    override var consumeKeyboardEvents: Boolean = true
+    
     open var allowHotkeyQuit: Boolean = true
     open var hotkeyClosesOnRelease: Boolean = false
 
