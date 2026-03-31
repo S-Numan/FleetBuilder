@@ -52,13 +52,18 @@ fun ShipVariantAPI.getModules(): List<ShipVariantAPI> {
     return this.stationModules.map { getModuleVariant(it.key) }
 }
 
-fun ShipVariantAPI.getFittedWeapons(): List<WeaponSpecAPI> {
-    val weapons = mutableListOf<WeaponSpecAPI>()
+fun ShipVariantAPI.forEachFittedWeapons(action: (slot: String, weapon: WeaponSpecAPI) -> Unit) {
     fittedWeaponSlots.forEach { slot ->
         val weapon = getWeaponSpec(slot) ?: return@forEach
-        weapons.add(weapon)
+        action(slot, weapon)
     }
-    return weapons
+}
+
+fun ShipVariantAPI.forEachNonBuiltInWeapons(action: (slot: String, weapon: WeaponSpecAPI) -> Unit) {
+    this.nonBuiltInWeaponSlots.forEach { slot ->
+        val weapon = getWeaponSpec(slot) ?: return@forEach
+        action(slot, weapon)
+    }
 }
 
 internal var previouslyLoadedSprite = HashMap<String, Boolean>()
