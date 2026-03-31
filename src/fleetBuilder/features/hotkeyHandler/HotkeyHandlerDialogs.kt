@@ -204,6 +204,8 @@ object HotkeyHandlerDialogs {
         dialog.onExit { cleanupShipList() }
 
         var fightToTheLast = true
+        var allowObjectives = true
+        var forceObjectives = false
         var includeOfficers = true
         var includeCommanderAsCommander = true
         var repairAndSetMaxCR = true
@@ -759,7 +761,7 @@ object HotkeyHandlerDialogs {
 
             rightUI.addSectionHeading("Actions", factionColor, darkColor, Alignment.MID, 10f)
 
-            rightUI.addButton(
+            val simulatedBattleButton = rightUI.addButton(
                 "Simulated Battle",
                 null, factionColor, darkColor,
                 rightWidth - 40f,
@@ -779,9 +781,11 @@ object HotkeyHandlerDialogs {
 
                     val battleContext = BattleCreationContext(Global.getSector().playerFleet, FleetGoal.ATTACK, fleet, FleetGoal.ATTACK)
                     battleContext.fightToTheLast = fightToTheLast
-                    battleContext.aiRetreatAllowed = false
+                    battleContext.aiRetreatAllowed = !fightToTheLast
                     battleContext.enemyDeployAll = true
-                    battleContext.objectivesAllowed = true
+                    battleContext.objectivesAllowed = allowObjectives
+                    battleContext.forceObjectivesOnMap = forceObjectives
+                    battleContext.playerCommandPoints = 5
 
                     val campUI = Global.getSector().campaignUI
                     if (campUI.currentInteractionDialog == null && campUI.getActualCurrentTab() != null) { // Tab open, but not at interaction?
@@ -804,7 +808,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            rightUI.addToggle("Fight to the last", fightToTheLast, textColor = brightColor).apply {
+            val fightToTheLastButton = rightUI.addToggle("Fight to the last", fightToTheLast, textColor = brightColor).apply {
                 onClick {
                     fightToTheLast = !fightToTheLast
                     rebuildUI(totalHeight, listUI)
@@ -812,12 +816,35 @@ object HotkeyHandlerDialogs {
                 addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
                     it.addPara("If checked; no members of the fleet will retreat", 0f)
                 }
+                position.belowLeft(simulatedBattleButton, 2f)
             }
-            rightUI.addSpacer(5f)
+            rightUI.addToggle("Allow Objectives", allowObjectives, textColor = brightColor).apply {
+                onClick {
+                    allowObjectives = !allowObjectives
+                    rebuildUI(totalHeight, listUI)
+                }
+                addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
+                    it.addPara("If unchecked; objectives wont be allowed in the simulation", 0f)
+                }
+                position.belowMid(simulatedBattleButton, 2f)
+            }
+            rightUI.addToggle("Force Objectives", forceObjectives, textColor = brightColor).apply {
+                onClick {
+                    forceObjectives = !forceObjectives
+                    rebuildUI(totalHeight, listUI)
+                }
+                addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
+                    it.addPara("If checked; objectives will always be present", 0f)
+                }
+                position.belowRight(simulatedBattleButton, 2f)
+            }
 
-            rightUI.addToggle("Include officers", includeOfficers, textColor = brightColor).onClick {
-                includeOfficers = !includeOfficers
-                rebuildUI(totalHeight, listUI)
+            rightUI.addToggle("Include officers", includeOfficers, textColor = brightColor).apply {
+                onClick {
+                    includeOfficers = !includeOfficers
+                    rebuildUI(totalHeight, listUI)
+                }
+                position.belowLeft(fightToTheLastButton, 3f)
             }
 
             rightUI.addToggle("Include commander as commander", includeCommanderAsCommander, textColor = brightColor).apply {
