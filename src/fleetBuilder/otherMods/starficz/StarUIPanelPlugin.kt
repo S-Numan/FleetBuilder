@@ -52,7 +52,7 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     protected var hasClicked = false
         private set
 
-    open var consumeMouseEvents = false
+    open var consumeInnerMouseEvents = false
     open var consumeKeyboardEvents = false
     protected open var ignoreConsumedEvents = true
 
@@ -122,7 +122,7 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
                     onClickReleaseFunctions.forEach { it(event) }
                 }
                 if (Mouse.isButtonDown(0)) onMouseButtonHeldFunctions.forEach { it(event) }
-                if (consumeMouseEvents) event.consume()
+                if (consumeInnerMouseEvents) event.consume()
             } else {
                 if (isHovering) onHoverExitFunctions.forEach { it(event) }
                 isHovering = false

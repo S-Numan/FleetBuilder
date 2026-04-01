@@ -130,8 +130,8 @@ object VariantUtils {
     fun whatVariantContentsAreNotKnownToPlayer(variant: ShipVariantAPI, missing: MissingContent) {
         if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
             missing.hullIds.add(variant.hullSpec.hullId)
-        
-        variant.getFittedWeapons().forEach { weapon ->
+
+        variant.forEachNonBuiltInWeapons { _, weapon ->
             if (weapon.hasTag(Tags.CODEX_UNLOCKABLE) && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.weaponId))
                 missing.weaponIds.add(weapon.weaponId)
         }
