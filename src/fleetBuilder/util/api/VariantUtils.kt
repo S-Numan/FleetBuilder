@@ -355,15 +355,10 @@ object VariantUtils {
         }
 
         if (options.modules) {
-            variant1.moduleSlots.forEach { slot ->
-                val moduleVariant1 = runCatching { variant1.getModuleVariant(slot) }.getOrNull()
+            variant1.getModules().forEach { (slot, moduleVariant1) ->
                 val moduleVariant2 = runCatching { variant2.getModuleVariant(slot) }.getOrNull()
                 when {
-                    moduleVariant1 == null && moduleVariant2 == null -> {
-                        // Both null.
-                    }
-
-                    moduleVariant1 == null || moduleVariant2 == null -> {
+                    moduleVariant2 == null -> {
                         return false // One null, the other isn't
                     }
 

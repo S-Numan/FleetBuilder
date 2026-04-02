@@ -15,6 +15,7 @@ import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.kotlin.allDMods
 import fleetBuilder.util.kotlin.createHullVariant
 import fleetBuilder.util.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.kotlin.getModules
 
 object DataVariant {
 
@@ -23,8 +24,8 @@ object DataVariant {
         val hullId: String,
         val variantId: String = "",
         val displayName: String = "",
-        val fluxCapacitors: Int = 0,
-        val fluxVents: Int = 0,
+        val fluxCapacitors: Int = -1,
+        val fluxVents: Int = -1,
         val tags: List<String> = emptyList(),
         val hullMods: List<String> = emptyList(),
         val permaMods: Set<String> = emptySet(),
@@ -127,12 +128,9 @@ object DataVariant {
                         }.toMap()
                 )
             },
-            moduleVariants = variant.moduleSlots
-                .mapNotNull { slotId ->
-                    val module = variant.getModuleVariant(slotId) ?: return@mapNotNull null
-                    val parsedModule = getVariantDataFromVariant(module, settings)
-                    slotId to parsedModule
-                }.toMap(),
+            moduleVariants = variant.getModules().map { (slot, module) ->
+                slot to getVariantDataFromVariant(module, settings)
+            }.toMap(),
             isGoalVariant = variant.isGoalVariant,
         )
 
@@ -175,34 +173,44 @@ object DataVariant {
         }
 
         // Remove entries from missing that were filtered out, as they aren't missing if they weren't supposed to be included in the first place.
-        missing.hullModIds.retainAll { shouldKeepMod(it) }
-        missing.weaponIds.retainAll { shouldKeepWeapon(it) }
-        missing.wingIds.retainAll { shouldKeepWing(it) }
+        if (!settings.includeHullMods) missing.hullModIds.clear() else
+            missing.hullModIds.retainAll { shouldKeepMod(it) }
+
+        if (!settings.includeWeapons) missing.weaponIds.clear() else
+            missing.weaponIds.retainAll { shouldKeepWeapon(it) }
+
+        if (!settings.includeWings) missing.wingIds.clear() else
+            missing.wingIds.retainAll { shouldKeepWing(it) }
 
         // Filter hull mods
-        val filteredHullMods = data.hullMods.filter(::shouldKeepMod).toMutableList()
-        val filteredPermaMods = data.permaMods.filter(::shouldKeepMod)
-        val filteredSMods = if (settings.applySMods) {
-            data.sMods.filter(::shouldKeepMod)
-        } else {
-            filteredHullMods.addAll(data.sMods.filter { it !in filteredHullMods })
-            emptyList()
-        }
+        val filteredHullMods = if (!settings.includeHullMods) mutableListOf() else
+            data.hullMods.filter(::shouldKeepMod).toMutableList()
+        val filteredPermaMods = if (!settings.includeHullMods) emptyList() else
+            data.permaMods.filter(::shouldKeepMod)
+        val filteredSMods = if (!settings.includeHullMods) emptyList() else
+            if (settings.applySMods) {
+                data.sMods.filter(::shouldKeepMod)
+            } else {
+                filteredHullMods.addAll(data.sMods.filter { it !in filteredHullMods })
+                emptyList()
+            }
 
-        val filteredSModdedBuiltIns = if (settings.applySMods) {
-            data.sModdedBuiltIns.filter(::shouldKeepMod)
-        } else emptyList()
+        val filteredSModdedBuiltIns = if (!settings.includeHullMods) emptyList() else
+            if (settings.applySMods) {
+                data.sModdedBuiltIns.filter(::shouldKeepMod)
+            } else emptyList()
 
-        val filteredWings = data.wings.filter(::shouldKeepWing)
+        val filteredWings = if (!settings.includeWings) emptyList() else
+            data.wings.filter(::shouldKeepWing)
 
-        val filteredWeaponGroups = data.weaponGroups.map { group ->
-            val filteredSlots = group.weapons.filterValues(::shouldKeepWeapon)
-            group.copy(weapons = filteredSlots)
-        }
+        val filteredWeaponGroups = if (!settings.includeWeapons) emptyList() else
+            data.weaponGroups.map { group ->
+                val filteredSlots = group.weapons.filterValues(::shouldKeepWeapon)
+                group.copy(weapons = filteredSlots)
+            }
 
-        val filteredTags = if (settings.includeTags) {
+        val filteredTags = if (!settings.includeTags) emptySet() else
             data.tags.filter(::shouldKeepTag)
-        } else emptySet()
 
         return data.copy(
             hullMods = filteredHullMods,
@@ -211,7 +219,11 @@ object DataVariant {
             sModdedBuiltIns = filteredSModdedBuiltIns.toSet(),
             wings = filteredWings,
             weaponGroups = filteredWeaponGroups,
-            tags = filteredTags.toList()
+            tags = filteredTags.toList(),
+            fluxCapacitors = if (!settings.includeFlux) -1 else
+                data.fluxCapacitors,
+            fluxVents = if (!settings.includeFlux) -1 else
+                data.fluxVents
         )
     }
 
@@ -326,8 +338,10 @@ object DataVariant {
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
-        loadout.numFluxCapacitors = data.fluxCapacitors
-        loadout.numFluxVents = data.fluxVents
+        if (data.fluxCapacitors > 0)
+            loadout.numFluxCapacitors = data.fluxCapacitors
+        if (data.fluxVents > 0)
+            loadout.numFluxVents = data.fluxVents
 
         data.tags.forEach { loadout.addTag(it) }
 
@@ -390,7 +404,7 @@ object DataVariant {
         data.moduleVariants.forEach { (slotId, moduleData) ->
             val variant = buildVariant(moduleData)
 
-            if (loadout.stationModules.contains(slotId)) {
+            if (loadout.stationModules.containsKey(slotId)) {
                 loadout.setModuleVariant(slotId, variant)
             } else {
                 showError("${loadout.hullSpec.hullId} Does not contain module slot $slotId.")

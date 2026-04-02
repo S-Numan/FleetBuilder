@@ -99,7 +99,9 @@ object FleetUtils {
             val newCommanderData = dataFleet.commanderIfNoFlagship
                 ?: dataFleet.members.find { it.isFlagship }?.personData
             if (newCommanderData != null) {
-                newCommander = DataPerson.buildPersonFull(newCommanderData, settings = settings.memberSettings.personSettings)
+                newCommander = DataPerson.buildPersonFull(newCommanderData, settings = settings.memberSettings.personSettings.apply {
+                    includeMemKeys = false // Avoid including memKeys as some mods store data there.
+                })
                 copyOfficerDataTo(newCommander, playerPerson)
                 Global.getSector().characterData.setName(newCommander.name.fullName, newCommander.gender)
             }

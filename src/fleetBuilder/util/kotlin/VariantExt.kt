@@ -2,6 +2,7 @@ package fleetBuilder.util.kotlin
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.loading.WeaponSpecAPI
@@ -15,10 +16,24 @@ import fleetBuilder.util.api.VariantUtils
  * The map key is the module slot ID, and the value is the corresponding
  * [ShipVariantAPI] for that module.
  */
-fun ShipVariantAPI.getModules(): Map<String, ShipVariantAPI> {
-    return this.stationModules.mapValues { getModuleVariant(it.key) }
+fun ShipVariantAPI.getModules(onlyThoseInHullspec: Boolean = false): Map<String, ShipVariantAPI> {
+    val modules = stationModules
+        ?.mapNotNull { (slot, _) ->
+            val variant = getModuleVariant(slot)
+            if (variant != null) slot to variant else null
+        }
+        ?.toMap() // converts the list of pairs back into a Map
+        ?: emptyMap()
+
+    return if (onlyThoseInHullspec)
+        modules.filter { hullSpec.getWeaponSlot(it.key).weaponType == WeaponAPI.WeaponType.STATION_MODULE }
+    else
+        modules
 }
 // Avoid using ShipVariantAPI.getModuleSlots(). It uses ShipVariantAPI.getStationModules() internally anyway.
+// Only thing getModuleSlots checks differently is checking if the hullspec has the slot for the module
+//Y var4 = this.getHullSpec().getWeaponSlot(var2);
+//if (var4.getWeaponType() == WeaponType.STATION_MODULE
 
 /**
  * Returns all fitted weapons on this variant.

@@ -12,13 +12,11 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.util.*
+import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.MemberUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.kotlin.allDMods
-import fleetBuilder.util.kotlin.completelyRemoveMod
-import fleetBuilder.util.kotlin.getEffectiveHullId
-import fleetBuilder.util.kotlin.getRegularHullMods
+import fleetBuilder.util.kotlin.*
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.opengl.GL11
@@ -287,11 +285,10 @@ internal object FBMisc {
         to.setVariantDisplayName(from.displayName)
         to.source = from.source
 
-        for (slot in from.moduleSlots) {
+        from.getModules(true).forEach { (slot, fromVariant) ->
             val toVariant = runCatching { to.getModuleVariant(slot) }.getOrNull()
-            val fromVariant = runCatching { from.getModuleVariant(slot) }.getOrNull()
-            if (toVariant == null || fromVariant == null)
-                continue
+            if (toVariant == null)
+                return@forEach
 
             replaceVariantWithVariant(
                 toVariant,
