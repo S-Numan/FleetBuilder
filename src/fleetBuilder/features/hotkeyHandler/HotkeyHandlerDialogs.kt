@@ -20,6 +20,7 @@ import com.fs.starfarer.campaign.CharacterStats
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.ui.impl.StandardTooltipV2
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
+import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.FBTxt.txtPlural
@@ -213,7 +214,7 @@ object HotkeyHandlerDialogs {
         if (allowSimulationAnyway || FBSettings.cheatsEnabled()) return null
 
         return when {
-            member.variant.hasTag(VariantUtils.FB_ERROR_TAG) -> SimulationBlockReason.MissingHull
+            member.variant.hasTag(FBConst.FB_ERROR_TAG) -> SimulationBlockReason.MissingHull
             member.hullSpec.hasTag(Tags.RESTRICTED) || member.variant.hasTag(Tags.RESTRICTED) -> SimulationBlockReason.Restricted
             member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM) -> SimulationBlockReason.NoSim
             member.isStation -> SimulationBlockReason.Station
@@ -271,7 +272,7 @@ object HotkeyHandlerDialogs {
 
         fun excludeMissingShips(fleet: CampaignFleetAPI) {
             fleet.fleetData.membersListCopy.toList().forEach {
-                if (it.variant.hasTag(VariantUtils.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE"))
+                if (it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE"))
                     fleet.fleetData.removeFleetMember(it)
             }
         }
@@ -310,7 +311,7 @@ object HotkeyHandlerDialogs {
             }
 
             if (repairAndSetMaxCR)
-                FleetUtils.fullFleetRepair(fleet.fleetData)
+                FleetUtils.repairAndRestoreCR(fleet.fleetData)
 
             if (fightToTheLast)
                 fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
@@ -725,7 +726,7 @@ object HotkeyHandlerDialogs {
             rightUI.addSectionHeading(FBTxt.txt("summary"), factionColor, darkColor, Alignment.MID, 10f)
 
             val allowedMemberList =
-                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(VariantUtils.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
+                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
                 else fleetData.membersListCopy
 
             val dp = allowedMemberList.sumOf { it.deploymentPointsCost.toDouble() }

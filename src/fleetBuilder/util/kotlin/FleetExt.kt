@@ -9,3 +9,11 @@ fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> =
 
 fun FleetDataAPI.getAssignedOfficers(): List<PersonAPI> =
     FleetUtils.getAssignedOfficers(this)
+
+/**
+ * Repairs all ships in the fleet and restores their CR to maximum
+ *
+ * This function is a delegate to [FleetUtils.repairAndRestoreCR].
+ */
+fun FleetDataAPI.repairAndRestoreCR() =
+    FleetUtils.repairAndRestoreCR(this)

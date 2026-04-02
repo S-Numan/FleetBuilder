@@ -4,7 +4,19 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.impl.items.BlueprintProviderItem
 import com.fs.starfarer.api.campaign.impl.items.ModSpecItemPlugin
+import fleetBuilder.util.api.CargoUtils
 
+
+/**
+ * Returns the manufacturer of the item this stack represents.
+ *
+ * This function delegates to the [CargoUtils.getItemTech]
+ *
+ * Due to the way the game handles special items, this function may return null for some items when you might expect it to not.
+ * @return The manufacturer of the item, or null if the item is not recognized.
+ */
+fun CargoStackAPI.getItemTech(): String? =
+    CargoUtils.getItemTech(this)
 
 fun CargoStackAPI.moveStack(to: CargoAPI, inputAmount: Float = -1f) {
     if (!this.isNull && this.cargo !== to && inputAmount != 0f) {

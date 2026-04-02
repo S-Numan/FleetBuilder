@@ -5,6 +5,7 @@ import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
+import fleetBuilder.core.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
@@ -189,8 +190,6 @@ object VariantUtils {
         return "${hullId}_$cleanName"
     }
 
-    const val FB_ERROR_TAG = "FB_ERR"
-
     //fun isErrorVariant(variant: ShipVariantAPI): Boolean {
     //    return variant.hasTag(errorTag)
     //}
@@ -218,7 +217,7 @@ object VariantUtils {
         else
             tempVariant.setVariantDisplayName("ERROR")
 
-        tempVariant.addTag(FB_ERROR_TAG)
+        tempVariant.addTag(FBConst.FB_ERROR_TAG)
 
         return tempVariant
     }

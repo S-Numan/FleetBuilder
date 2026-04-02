@@ -24,7 +24,6 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getErrorVariantHullID
 import fleetBuilder.util.api.PersonUtils
-import fleetBuilder.util.api.VariantUtils
 import java.util.*
 
 object DataFleet {
@@ -201,7 +200,7 @@ object DataFleet {
             }
 
             // Error-tagged variant
-            if (VariantUtils.FB_ERROR_TAG in variantData.tags) {
+            if (FBConst.FB_ERROR_TAG in variantData.tags) {
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
             }
 

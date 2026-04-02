@@ -10,8 +10,9 @@ import fleetBuilder.ui.common.ObservedTextField
 import org.magiclib.kotlin.setAlpha
 import java.awt.Color
 
-
-// Do not show hotkey on button
+/**
+ * Add shortcut to button, but do not show the shortcut in the UI
+ */
 fun ButtonAPI.addShortcutNoShow(key: Int) {
     this.safeInvoke("addExtraShortcut", key, false, false, false)
 }
