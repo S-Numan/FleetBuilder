@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.campaign.FactionAPI
 import com.fs.starfarer.api.characters.FullName
+import com.fs.starfarer.api.characters.FullName.Gender
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
@@ -54,6 +55,13 @@ object PersonUtils {
         return sourceMods
     }
 
+    /**
+     * Copies the data from one PersonAPI instance to another. This includes name, portraitSprite,
+     * level, xp, bonusXp, points, and skill levels.
+     *
+     * @param from the source PersonAPI instance
+     * @param to the destination PersonAPI instance
+     */
     fun copyOfficerDataTo(from: PersonAPI, to: PersonAPI) {
         //to.id = from.id
         to.name = from.name
@@ -78,34 +86,43 @@ object PersonUtils {
         }
     }
 
+    @JvmOverloads
     fun getRandomPortrait(
         gender: FullName.Gender = FullName.Gender.ANY,
-        faction: String? = null,
+        factionID: String? = null,
         random: Random = Random()
     ): String {
-        val faction = Global.getSettings().getFactionSpec(faction ?: Factions.PLAYER)
-        return if (gender == FullName.Gender.MALE)
-            faction.malePortraits.pick(random)
-        else if (gender == FullName.Gender.FEMALE)
-            faction.femalePortraits.pick(random)
-        else
-            if (random.nextBoolean()) faction.malePortraits.pick(random) else faction.femalePortraits.pick(random)
+        val faction = Global.getSettings().getFactionSpec(factionID ?: Factions.PLAYER)
+        val playerFaction = Global.getSettings().getFactionSpec(Factions.PLAYER)
+
+        return if (gender == Gender.MALE) {
+            faction.malePortraits?.pick(random) ?: playerFaction.malePortraits.pick(random)
+        } else if (gender == Gender.FEMALE) {
+            faction.femalePortraits.pick(random) ?: playerFaction.femalePortraits.pick(random)
+        } else {
+            if (random.nextBoolean())
+                faction.malePortraits.pick(random) ?: playerFaction.malePortraits.pick(random)
+            else
+                faction.femalePortraits.pick(random) ?: playerFaction.femalePortraits.pick(random)
+        }
+        Factions.CUSTOM_ENGAGE_EVEN
     }
 
     fun randomizePersonCosmetics(
         officer: PersonAPI,
         faction: FactionAPI?
     ) {
-        if (!officer.isDefault && !officer.isAICore) {
-            val randomPerson = faction?.createRandomPerson()
-            if (randomPerson != null) {
-                officer.name = randomPerson.name
-                officer.portraitSprite = randomPerson.portraitSprite
-            } else {
-                officer.name.gender = FullName.Gender.ANY
-                officer.portraitSprite = PersonUtils.getRandomPortrait(officer.name.gender, faction = faction?.id)
-                officer.name.first = "Unknown"
-            }
+        if (officer.isDefault || officer.isAICore)
+            return
+
+        val randomPerson = faction?.createRandomPerson()
+        if (randomPerson != null) {
+            officer.name = randomPerson.name
+            officer.portraitSprite = randomPerson.portraitSprite
+        } else {
+            officer.name.gender = FullName.Gender.ANY
+            officer.portraitSprite = PersonUtils.getRandomPortrait(officer.name.gender, factionID = faction?.id)
+            officer.name.first = "Unknown"
         }
     }
 }

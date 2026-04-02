@@ -18,7 +18,7 @@ object CargoUtils {
         }
     }
 
-    fun getSpecialItemTech(data: SpecialItemData): String? {
+    private fun getSpecialItemTech(data: SpecialItemData): String? {
         return when (data.id) {
             "fighter_bp" ->
                 Global.getSettings().allFighterWingSpecs.find { it.id == data.data }?.variant?.hullSpec?.manufacturer
@@ -33,8 +33,11 @@ object CargoUtils {
         }
     }
 
-    // Calculate number of supplies needed to reach maxCargoFraction
-    // Cap quantity to 100% remaining cargo space, don't go below 0 either
+    /**
+     * Calculate number of supplies needed to reach maxCargoFraction
+     *
+     * Cap quantity to 100% remaining cargo space, don't go below 0 either
+     */
     fun getFractionHoldableSupplies(cargo: CargoAPI, maxCargoFraction: Float = 1f): Int {
         var total = Math.min(
             cargo.getSpaceLeft(),

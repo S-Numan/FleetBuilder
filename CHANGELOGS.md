@@ -1,3 +1,8 @@
+## 1.32.5
+### Bugfixes
+- Now checks for modules when checking if the player knows all the contents of a ship
+- Replace fleet now works with the tournament fleets in the mod files.
+
 ## 1.32.0
 ### Additions
 - Added SMod and DMod bars for ships, notably in the autofit UI.

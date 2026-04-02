@@ -42,6 +42,7 @@ import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.*
 import fleetBuilder.util.FBTxt.txtPlural
 import fleetBuilder.util.api.FleetUtils
+import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.lib.ClipboardUtil
@@ -221,7 +222,7 @@ object HotkeyHandlerDialogs {
 
         fun excludeMissingShips(fleet: CampaignFleetAPI) {
             fleet.fleetData.membersListCopy.toList().forEach {
-                if (it.variant.hasTag(VariantUtils.getFBVariantErrorTag()) || it.variant.hasTag("#FB_IGNORE"))
+                if (it.variant.hasTag(VariantUtils.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE"))
                     fleet.fleetData.removeFleetMember(it)
             }
         }
@@ -249,6 +250,10 @@ object HotkeyHandlerDialogs {
                 true, settings = settings, missing = missingEx, random = deterministicRandom
             )
             val fleetData = fleet.fleetData
+
+            if (fleet.commander.isDefault && fleet.commander.stats.skillsCopy.count { it.level > 0f } > 0) { // Default commander but has skills?
+                fleet.commander.portraitSprite = PersonUtils.getRandomPortrait(factionID = fleet.faction.id, random = deterministicRandom) // Set a random portrait, making isDefault false.
+            }
 
             if (repairAndSetMaxCR)
                 FleetUtils.fullFleetRepair(fleet.fleetData)
@@ -311,7 +316,7 @@ object HotkeyHandlerDialogs {
 
                 val dataMember = data.members.find { it.id == member.id }
 
-                if (member.variant.hasTag(VariantUtils.getFBVariantErrorTag())) {
+                if (member.variant.hasTag(VariantUtils.FB_ERROR_TAG)) {
                     val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.RED
@@ -735,7 +740,7 @@ object HotkeyHandlerDialogs {
             rightUI.addSectionHeading("Summary", factionColor, darkColor, Alignment.MID, 10f)
 
             val allowedMemberList =
-                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(VariantUtils.getFBVariantErrorTag()) || it.variant.hasTag("#FB_IGNORE") }
+                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(VariantUtils.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
                 else fleetData.membersListCopy
 
             val dp = allowedMemberList.sumOf { it.deploymentPointsCost.toDouble() }

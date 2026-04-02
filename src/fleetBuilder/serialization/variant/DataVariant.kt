@@ -306,7 +306,7 @@ object DataVariant {
             wings = cleanWings,
             weaponGroups = cleanWeaponGroups,
             moduleVariants = cleanedModuleVariants,
-            tags = if (validHullId == null) (data.tags + VariantUtils.getFBVariantErrorTag()) else data.tags
+            tags = if (validHullId == null) (data.tags + VariantUtils.FB_ERROR_TAG) else data.tags
         )
 
         return cleanedData
@@ -330,7 +330,7 @@ object DataVariant {
 
         data.tags.forEach { loadout.addTag(it) }
 
-        if (loadout.hasTag(VariantUtils.getFBVariantErrorTag()))
+        if (loadout.hasTag(VariantUtils.FB_ERROR_TAG))
             return loadout
 
         //Remove default DMods
