@@ -9,10 +9,10 @@ import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.VariantUtils
 
 
-// Avoid using getModuleSlots(). It uses getStationModules() internally anyway.
 fun ShipVariantAPI.getModules(): Map<String, ShipVariantAPI> {
     return this.stationModules.mapValues { getModuleVariant(it.key) }
 }
+// Avoid using ShipVariantAPI.getModuleSlots(). It uses ShipVariantAPI.getStationModules() internally anyway.
 
 fun ShipVariantAPI.getFittedWeapons(): Map<String, WeaponSpecAPI> {
     val weapons = mutableMapOf<String, WeaponSpecAPI>()
