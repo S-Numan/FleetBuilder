@@ -21,6 +21,8 @@ Interaction screen: Copies fleet encounter (hold alt to avoid copying supporting
 Refit screen: Copies variant
 Codex: Copies variant/member
 
+Hold shift when copying if you want to copy a user viewable and editable version in JSON instead of the default behavior of copying a compressed string.
+
 CTRL + V in
 Refit Screen: Add variant in clipboard to the corresponding ship hull’s autofit menu.
 
@@ -159,7 +161,8 @@ personHeader,Person Header,Header,Person Saving Settings,,,,,Misc
 ,,,,,,,,
 addLogsToConsoleModConsoleLevel,Add logs to Console,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL","Add logs in ./starsector.log of input level and above to the ConsoleCommands Console, provided that mod is enabled.
 Does not show logs from before onApplicationLoad of this mod is called.",,,Developer Options
-addLogsToDisplayMessageLevel,Add logs to Display Message,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL",Show logs in ./starsector.log of input level and above as a message on the top of the screen.,,,Developer Options
+addLogsToDisplayMessageLevel,Add logs to Display Message,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL","Show logs in ./starsector.log of input level and above as a message on the top of the screen.
+Does not show logs from before onApplicationLoad of this mod is called.",,,Developer Options
 recentBattleTracker,Recent Battle Tracker,Boolean,false,,"If true, enables saving and viewing recent battles. ‘CTRL + R’ to open the recent battle viewer.
 Unfinished feature, here for testing purposes.",,,Developer Options
 cargoScreenFilter,Cargo Screen Filter,Boolean,false,,"DOES NOT WORK CORRECTLY.
@@ -168,10 +171,16 @@ A filter box to the right of the Other (4) tab when viewing cargo. Input values 
 I couldn’t get this one to work properly, but I left it in case anyone would like to try it out anyway. It technically works somewhat.",,,Developer Options
 ,,,,,,,,
 ,,,,,,,,
-removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?",,,Developer Options
+removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?
+
+When an autofit variant is being created from file after being saved, it creates a new “HULL” variant with nothing on it to place the contents of the variant on it.
+The “HULL” variant of certain ships, such as Lion Guard ships, by default come with a DMod.
+This causes newly loaded autofit variants to come with DMods despite the data for what the autofit variant should have on it not having it.
+
+This being true simply makes the behavior expected, only have a DMod if the saved variant has one.",,,Developer Options
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
-This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as hullmod is an sModdedBuiltIn without the ship having MIDAS built in.",,,Developer Options
+This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as that hullmod is an sModdedBuiltIn without the ship having the MIDAS hullmod in the hullspec of the ship",,,Developer Options
 ,,,,,,,,
 showDebug,Show Debug,Boolean,false,,Show debug elements,,,Developer Options
 enableDebug,Enable Debug,Boolean,false,,"Enable debug elements. While not limited to this, it causes some redundant code to run to check my results.
