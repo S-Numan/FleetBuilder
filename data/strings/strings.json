@@ -46,8 +46,13 @@
   "added_officer_to_fleet":"Added officer to fleet",
   "member_appended_into_fleet":"%s member appended to fleet",
   "members_appended_into_fleet":"%s members appended to fleet",
-  "player_fleet_replaced":"Fleet replaced",
-  # Paste fleet dialogs
+  "player_fleet_replaced":"Player fleet replaced",
+  # Extract compressed data
+  "failed_extract_variant": "Failed to extract the detected variant",
+  "failed_extract_person": "Failed to extract the detected person",
+  "failed_extract_member": "Failed to extract the detected member",
+  "failed_extract_fleet": "Failed to extract the detected fleet",
+  # Paste fleet dialog
   "pasted_fleet_members_only_one": "Pasted fleet contains %s member",
   "pasted_fleet_members_only_many": "Pasted fleet contains %s members",
 
@@ -57,13 +62,6 @@
   "pasted_fleet_members_officer_many": "Pasted fleet contains %s members and %s officer",
 
   "clipboard_fleet_added_to_campaign": "Fleet from clipboard added to campaign",
-  # Extract compressed data
-  "failed_extract_variant": "Failed to extract the detected variant",
-  "failed_extract_person": "Failed to extract the detected person",
-  "failed_extract_member": "Failed to extract the detected member",
-  "failed_extract_fleet": "Failed to extract the detected fleet",
-
-
 
 
 
