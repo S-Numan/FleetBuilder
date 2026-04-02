@@ -8,14 +8,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.*
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
-import fleetBuilder.util.kotlin.completelyRemoveMod
-import fleetBuilder.util.kotlin.forEachNonBuiltInWeapon
-import fleetBuilder.util.kotlin.getCompatibleDLessHullId
-import fleetBuilder.util.kotlin.getEffectiveHullId
-import fleetBuilder.util.kotlin.getModules
-import fleetBuilder.util.kotlin.getRegularHullMods
+import fleetBuilder.util.kotlin.*
 import org.magiclib.kotlin.getBuildInBonusXP
 
 object VariantUtils {
@@ -142,7 +137,7 @@ object VariantUtils {
             missing.hullIds.add(variant.hullSpec.hullId)
 
         fun addMissingContents(va: ShipVariantAPI) {
-            va.forEachNonBuiltInWeapon { _, weapon ->
+            va.getNonBuiltInWeapons().forEach { (_, weapon) ->
                 if (weapon.hasTag(Tags.CODEX_UNLOCKABLE) && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.weaponId))
                     missing.weaponIds.add(weapon.weaponId)
             }
@@ -161,7 +156,7 @@ object VariantUtils {
 
         addMissingContents(variant)
 
-        variant.getModules().forEach { moduleVariant ->
+        variant.getModules().forEach { (_, moduleVariant) ->
             addMissingContents(moduleVariant)
         }
     }

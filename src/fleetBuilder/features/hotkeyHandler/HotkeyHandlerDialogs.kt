@@ -20,8 +20,9 @@ import com.fs.starfarer.campaign.CharacterStats
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.ui.impl.StandardTooltipV2
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
-import fleetBuilder.core.FBTxt
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBTxt
+import fleetBuilder.core.FBTxt.txtPlural
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
@@ -40,19 +41,12 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
-import fleetBuilder.util.*
-import fleetBuilder.core.FBTxt.txtPlural
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.kotlin.addNumericTextField
-import fleetBuilder.util.kotlin.addCheckboxD
-import fleetBuilder.util.kotlin.completelyRemoveMod
-import fleetBuilder.util.kotlin.createFleetMember
-import fleetBuilder.util.kotlin.getActualCurrentTab
-import fleetBuilder.util.kotlin.getEffectiveHull
-import fleetBuilder.util.kotlin.safeInvoke
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
+import fleetBuilder.util.kotlin.*
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
@@ -471,9 +465,10 @@ object HotkeyHandlerDialogs {
 
 
                 if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
-                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
-                    boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
+                    listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size).apply {
+                        position.inTL(x, y)
+                        sprite.color = Color.YELLOW.setAlpha(70)
+                    }
 
                     removeUnknownContent(member, unknownContents)
                 }
@@ -580,9 +575,10 @@ object HotkeyHandlerDialogs {
                 }
 
                 if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents != null && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
-                    val boxedImage = officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize)
-                    boxedImage.position.inTL(shipX, shipY)
-                    boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
+                    officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize).apply {
+                        position.inTL(shipX, shipY)
+                        sprite.color = Color.YELLOW.setAlpha(70)
+                    }
 
                     val parts = listOfNotNull(
                         FBTxt.txt("unknown_weapons").takeIf { unknownContents.weaponIds.isNotEmpty() },

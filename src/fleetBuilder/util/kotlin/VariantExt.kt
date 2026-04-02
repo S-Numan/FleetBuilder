@@ -10,23 +10,28 @@ import fleetBuilder.util.api.VariantUtils
 
 
 // Avoid using getModuleSlots(). It uses getStationModules() internally anyway.
-fun ShipVariantAPI.getModules(): List<ShipVariantAPI> {
-    return this.stationModules.map { getModuleVariant(it.key) }
+fun ShipVariantAPI.getModules(): Map<String, ShipVariantAPI> {
+    return this.stationModules.mapValues { getModuleVariant(it.key) }
 }
 
-fun ShipVariantAPI.forEachFittedWeapon(action: (slot: String, weapon: WeaponSpecAPI) -> Unit) {
+fun ShipVariantAPI.getFittedWeapons(): Map<String, WeaponSpecAPI> {
+    val weapons = mutableMapOf<String, WeaponSpecAPI>()
     fittedWeaponSlots.forEach { slot ->
         val weapon = getWeaponSpec(slot) ?: return@forEach
-        action(slot, weapon)
+        weapons[slot] = weapon
     }
+    return weapons
 }
 
-fun ShipVariantAPI.forEachNonBuiltInWeapon(action: (slot: String, weapon: WeaponSpecAPI) -> Unit) {
-    this.nonBuiltInWeaponSlots.forEach { slot ->
+fun ShipVariantAPI.getNonBuiltInWeapons(): Map<String, WeaponSpecAPI> {
+    val weapons = mutableMapOf<String, WeaponSpecAPI>()
+    nonBuiltInWeaponSlots.forEach { slot ->
         val weapon = getWeaponSpec(slot) ?: return@forEach
-        action(slot, weapon)
+        weapons[slot] = weapon
     }
+    return weapons
 }
+//fun ShipVariantAPI.forEachNonBuiltInWeapon(action: (slot: String, weapon: WeaponSpecAPI) -> Unit) {
 
 
 /**

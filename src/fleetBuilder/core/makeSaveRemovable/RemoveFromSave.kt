@@ -340,10 +340,10 @@ internal object RemoveFromSave {
                 }
             }
             removeWeapon(variant)
-            variant.getModules().forEach { removeWeapon(it) }
+            variant.getModules().forEach { removeWeapon(it.value) }
             if (perShipData?.variant != null) {
                 removeWeapon(perShipData.variant)
-                perShipData.variant.getModules().forEach { removeWeapon(it) }
+                perShipData.variant.getModules().forEach { removeWeapon(it.value) }
             }
         }
 
@@ -351,12 +351,12 @@ internal object RemoveFromSave {
             if (variant == null) return
 
             variant.wings.removeMatching(value)
-            variant.getModules().forEach { variant ->
+            variant.getModules().forEach { (_, variant) ->
                 variant.wings.removeMatching(value)
             }
             if (perShipData?.variant != null) {
                 perShipData.variant.wings.removeMatching(value)
-                perShipData.variant.getModules().forEach { it.wings.removeMatching(value) }
+                perShipData.variant.getModules().forEach { it.value.wings.removeMatching(value) }
             }
         }
 
@@ -386,14 +386,14 @@ internal object RemoveFromSave {
                 }
             }
             removeWeapon(member.variant)
-            member.variant.getModules().forEach { variant ->
+            member.variant.getModules().forEach { (_, variant) ->
                 removeWeapon(variant)
             }
         }
 
         override fun removeWings(value: String) {
             member.variant.wings.removeMatching(value)
-            member.variant.getModules().forEach { variant ->
+            member.variant.getModules().forEach { (_, variant) ->
                 variant.wings.removeMatching(value)
             }
         }
