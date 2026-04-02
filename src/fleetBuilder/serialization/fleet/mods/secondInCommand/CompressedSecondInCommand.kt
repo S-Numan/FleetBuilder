@@ -7,7 +7,7 @@ import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.util.lib.CompressionUtil
-import fleetBuilder.util.roundToDecimals
+import fleetBuilder.util.kotlin.roundToDecimals
 
 object CompressedSecondInCommand {
 

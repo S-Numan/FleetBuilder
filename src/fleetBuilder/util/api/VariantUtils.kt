@@ -10,6 +10,12 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.*
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
+import fleetBuilder.util.kotlin.completelyRemoveMod
+import fleetBuilder.util.kotlin.forEachNonBuiltInWeapon
+import fleetBuilder.util.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.kotlin.getEffectiveHullId
+import fleetBuilder.util.kotlin.getModules
+import fleetBuilder.util.kotlin.getRegularHullMods
 import org.magiclib.kotlin.getBuildInBonusXP
 
 object VariantUtils {
@@ -136,7 +142,7 @@ object VariantUtils {
             missing.hullIds.add(variant.hullSpec.hullId)
 
         fun addMissingContents(va: ShipVariantAPI) {
-            va.forEachNonBuiltInWeapons { _, weapon ->
+            va.forEachNonBuiltInWeapon { _, weapon ->
                 if (weapon.hasTag(Tags.CODEX_UNLOCKABLE) && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.weaponId))
                     missing.weaponIds.add(weapon.weaponId)
             }

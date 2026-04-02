@@ -9,7 +9,7 @@ import com.fs.starfarer.api.campaign.listeners.CargoScreenListener
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.features.filters.filterPanels.CargoFilterPanel
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.safeInvoke
 
 internal class CampaignCargoScreenFilter : CargoScreenListener, EveryFrameScript {
     var marketOpened = false

@@ -20,6 +20,7 @@ import com.fs.starfarer.campaign.CharacterStats
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.ui.impl.StandardTooltipV2
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
@@ -40,10 +41,17 @@ import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.*
-import fleetBuilder.util.FBTxt.txtPlural
+import fleetBuilder.core.FBTxt.txtPlural
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
+import fleetBuilder.util.kotlin.addNumericTextField
+import fleetBuilder.util.kotlin.addCheckboxD
+import fleetBuilder.util.kotlin.completelyRemoveMod
+import fleetBuilder.util.kotlin.createFleetMember
+import fleetBuilder.util.kotlin.getActualCurrentTab
+import fleetBuilder.util.kotlin.getEffectiveHull
+import fleetBuilder.util.kotlin.safeInvoke
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
@@ -62,7 +70,7 @@ object HotkeyHandlerDialogs {
         dialog.uiBorderColor = Color(255, 70, 70)
 
         dialog.show(width = 500f, height = 200f) { ui ->
-            val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
+            val toggleDev = ui.addCheckboxD(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
             toggleDev.setButtonPressedSound("FB_NONE")
             toggleDev.onClick {
                 Global.getSettings().isDevMode = toggleDev.isChecked
@@ -124,11 +132,11 @@ object HotkeyHandlerDialogs {
             dialog.show(width = 800f, height = 800f) { ui ->
                 ui.addPara("HERE BE DRAGONS!\nPlease note that these are very unsafe options and are very likely to cause issues.", Color.RED, 0f)
                 ui.addSpacer(8f)
-                val removeListeners = ui.addToggle("Remove all listeners")
+                val removeListeners = ui.addCheckboxD("Remove all listeners")
                 removeListeners.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
                     it.addPara("May crash the game", Color.RED, 0f)
                 }
-                val removeEntities = ui.addToggle("Remove all faction owned entities", isChecked = true)
+                val removeEntities = ui.addCheckboxD("Remove all faction owned entities", isChecked = true)
 
                 val tempPanel = Global.getSettings().createCustom(ui.width, ui.height - ui.heightSoFar, null)
                 val tempTMAPI = tempPanel.createUIElement(ui.width, tempPanel.height, true)
@@ -799,7 +807,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            val fightToTheLastButton = rightUI.addToggle(
+            val fightToTheLastButton = rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.fight_to_last"),
                 fightToTheLast,
                 textColor = brightColor
@@ -814,7 +822,7 @@ object HotkeyHandlerDialogs {
                 position.belowLeft(simulatedBattleButton, 2f)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.allow_objectives"),
                 allowObjectives,
                 textColor = brightColor
@@ -829,7 +837,7 @@ object HotkeyHandlerDialogs {
                 position.belowMid(simulatedBattleButton, 2f)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.force_objectives"),
                 forceObjectives,
                 textColor = brightColor
@@ -844,7 +852,7 @@ object HotkeyHandlerDialogs {
                 position.belowRight(simulatedBattleButton, 2f)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.include_officers"),
                 includeOfficers,
                 textColor = brightColor
@@ -856,7 +864,7 @@ object HotkeyHandlerDialogs {
                 position.belowLeft(fightToTheLastButton, 3f)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.include_commander"),
                 includeCommanderAsCommander,
                 textColor = brightColor
@@ -870,7 +878,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.repair_and_cr"),
                 repairAndSetMaxCR,
                 textColor = brightColor
@@ -879,7 +887,7 @@ object HotkeyHandlerDialogs {
                 rebuildUI(totalHeight, listUI)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.set_aggression"),
                 setAggressionDoctrine,
                 textColor = brightColor
@@ -1069,8 +1077,8 @@ object HotkeyHandlerDialogs {
             val maxEliteSkills = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
             ui.addSpacer(buttonHeight / 3)
-            val maxXP = ui.addToggle(FBTxt.txt("max_xp"), isChecked = true)
-            val maxSkillPicksPerLevel = ui.addToggle(FBTxt.txt("max_skill_picks_per_level"), isChecked = true)
+            val maxXP = ui.addCheckboxD(FBTxt.txt("max_xp"), isChecked = true)
+            val maxSkillPicksPerLevel = ui.addCheckboxD(FBTxt.txt("max_skill_picks_per_level"), isChecked = true)
 
             ui.addSpacer(8f)
             ui.addPara(FBTxt.txt("personality"), 0f)
@@ -1083,7 +1091,7 @@ object HotkeyHandlerDialogs {
                 val internalName = internalPersonalities[index]
                 val externalName = externalPersonalities.getOrNull(index) ?: "ERROR"
 
-                ui.addToggle(name = externalName, data = internalName, isChecked = internalName == currentPersonality)
+                ui.addCheckboxD(name = externalName, data = internalName, isChecked = internalName == currentPersonality)
             }
 
             toggles.forEach { toggle ->

@@ -1,8 +1,8 @@
 package fleetBuilder.features.recentBattles.fleetDirectory
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
-import fleetBuilder.core.FBSettings.FLEETDIR
+import fleetBuilder.core.FBConst.DIRECTORY_CONFIG_FILE_NAME
+import fleetBuilder.core.FBConst.FLEET_DIR
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.CompressedFleet.extractFleetDataFromCompString
@@ -16,21 +16,21 @@ object FleetDirectoryService {
 
     fun getDirectory(): FleetDirectory? = fleetDirectory
 
-    private const val directory: String = "$FLEETDIR/BattleTracker/"
+    private const val directory: String = "$FLEET_DIR/BattleTracker/"
     fun loadDirectory(): FleetDirectory? {
         // Ensure config exists
-        if (!Global.getSettings().fileExistsInCommon("$directory$DIRECTORYCONFIGNAME")) {
+        if (!Global.getSettings().fileExistsInCommon("$directory$DIRECTORY_CONFIG_FILE_NAME")) {
             val json = JSONObject()
             json.put("fleets", JSONObject())
-            Global.getSettings().writeJSONToCommon("$directory$DIRECTORYCONFIGNAME", json, false)
+            Global.getSettings().writeJSONToCommon("$directory$DIRECTORY_CONFIG_FILE_NAME", json, false)
         }
 
         val directoryJson: JSONObject = try {
-            Global.getSettings().readJSONFromCommon("$directory$DIRECTORYCONFIGNAME", false)
+            Global.getSettings().readJSONFromCommon("$directory$DIRECTORY_CONFIG_FILE_NAME", false)
         } catch (e: Exception) {
             DisplayMessage.showError(
                 "Failed to read fleet directory",
-                "Failed to read fleet directory at /saves/common/$directory$DIRECTORYCONFIGNAME\n",
+                "Failed to read fleet directory at /saves/common/$directory$DIRECTORY_CONFIG_FILE_NAME\n",
                 e
             )
             return null
@@ -87,7 +87,7 @@ object FleetDirectoryService {
 
             if (fleetDir.containsFleet(fleetId)) {
                 throw Error(
-                    "Duplicate fleet ID detected: \"$fleetId\" in /saves/common/$directory$DIRECTORYCONFIGNAME"
+                    "Duplicate fleet ID detected: \"$fleetId\" in /saves/common/$directory$DIRECTORY_CONFIG_FILE_NAME"
                 )
             }
 
@@ -99,7 +99,7 @@ object FleetDirectoryService {
 
         // Save cleaned JSON (in case missing files were removed)
         directoryJson.put("fleets", fleetsJson)
-        Global.getSettings().writeJSONToCommon("$directory$DIRECTORYCONFIGNAME", directoryJson, false)
+        Global.getSettings().writeJSONToCommon("$directory$DIRECTORY_CONFIG_FILE_NAME", directoryJson, false)
 
         fleetDirectory = fleetDir
         return fleetDir

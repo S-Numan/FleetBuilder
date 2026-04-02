@@ -7,7 +7,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBSettings
 import fleetBuilder.features.logMessageAppender.NoDisplayThrowable
 import fleetBuilder.ui.customPanel.common.DialogPanel
-import fleetBuilder.util.FBMisc.getCallerClass
+import fleetBuilder.core.FBMisc.getCallerClass
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
 import java.awt.Color

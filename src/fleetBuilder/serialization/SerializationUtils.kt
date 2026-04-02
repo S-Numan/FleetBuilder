@@ -13,8 +13,8 @@ import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.CompressedVariant.isCompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
-import fleetBuilder.util.FBTxt
-import fleetBuilder.util.isJSON
+import fleetBuilder.core.FBTxt
+import fleetBuilder.util.kotlin.isJSON
 import org.json.JSONObject
 import java.awt.Color
 

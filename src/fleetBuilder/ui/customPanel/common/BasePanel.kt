@@ -9,10 +9,10 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.FBMisc.endStencil
-import fleetBuilder.util.FBMisc.renderTiledTexture
-import fleetBuilder.util.FBMisc.startStencilWithXPad
-import fleetBuilder.util.FBMisc.startStencilWithYPad
+import fleetBuilder.core.FBMisc.endStencil
+import fleetBuilder.core.FBMisc.renderTiledTexture
+import fleetBuilder.core.FBMisc.startStencilWithXPad
+import fleetBuilder.core.FBMisc.startStencilWithYPad
 import fleetBuilder.util.ReflectionMisc
 import java.awt.Color
 

@@ -20,7 +20,7 @@ import com.fs.starfarer.coreui.refit.WeaponPickerDialog
 import com.fs.starfarer.loading.specs.BaseWeaponSpec
 import com.fs.starfarer.loading.specs.FighterWingSpec
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.safeInvoke
 
 internal class FBPlayerAutofitDelegate(
     private val fleetMember: FleetMemberAPI,

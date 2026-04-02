@@ -4,7 +4,9 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
+import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
@@ -27,7 +29,6 @@ import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.serialization.PlayerSaveUtils
-import fleetBuilder.util.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.listeners.MemberChangeEvents
@@ -204,7 +205,7 @@ internal class EventDispatcher : EveryFrameScript {
                     val compSave = PlayerSaveUtils.createSaveJson(superCompressSave = true)
 
                     if (compSave.length < 1000000) // Starsector cannot save files over 1MB
-                        Global.getSettings().writeTextFileToCommon("${FBSettings.PRIMARYDIR}/SaveTransfer/lastSave", compSave)
+                        Global.getSettings().writeTextFileToCommon("${FBConst.PRIMARY_DIR}/SaveTransfer/lastSave", compSave)
                     else
                         Global.getLogger(this::class.java).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
 

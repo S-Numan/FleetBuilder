@@ -6,7 +6,8 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBConst
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.JSONFleet
@@ -17,10 +18,9 @@ import fleetBuilder.serialization.person.JSONPerson
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.createHullVariant
+import fleetBuilder.util.kotlin.createHullVariant
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lwjgl.input.Keyboard
 import java.awt.Color
@@ -29,8 +29,8 @@ object ClipboardMisc {
 
     @JvmOverloads
     fun saveVariantToClipboard(variant: ShipVariantAPI, shift: Boolean = false): Boolean {
-        if (variant.hasHullMod(FBSettings.commandShuttleId)) {
-            DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
+        if (variant.hasTag(FBConst.NO_COPY_TAG) || variant.hullSpec.hasTag(FBConst.NO_COPY_TAG)) {
+            DisplayMessage.showMessage(FBTxt.txt("no_copy_no_copy_tag"), Color.YELLOW)
             return false
         }
 
@@ -41,7 +41,7 @@ object ClipboardMisc {
             val comp = CompressedVariant.saveVariantToCompString(
                 variantToSave,
                 VariantSettings().apply {
-                    excludeTagsWithID = FBSettings.getDefaultExcludeVariantTags()
+                    excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
                 }
             )
             ClipboardUtil.setClipboardText(comp)
@@ -50,7 +50,7 @@ object ClipboardMisc {
             val json = JSONVariant.saveVariantToJson(
                 variantToSave,
                 VariantSettings().apply {
-                    excludeTagsWithID = FBSettings.getDefaultExcludeVariantTags()
+                    excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
                 }
             )
             ClipboardUtil.setClipboardText(json.toString(4))
@@ -62,6 +62,10 @@ object ClipboardMisc {
 
     @JvmOverloads
     fun savePersonToClipboard(person: PersonAPI, shift: Boolean = false): Boolean {
+        if (person.hasTag(FBConst.NO_COPY_TAG)) {
+            DisplayMessage.showMessage(FBTxt.txt("no_copy_no_copy_tag"), Color.YELLOW)
+            return false
+        }
         if (person.isDefault) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_default_officer"), Color.YELLOW)
             return false
@@ -82,8 +86,8 @@ object ClipboardMisc {
 
     @JvmOverloads
     fun saveMemberToClipboard(member: FleetMemberAPI, shift: Boolean = false): Boolean {
-        if (member.variant.hasHullMod(FBSettings.commandShuttleId)) {
-            DisplayMessage.showMessage(FBTxt.txt("no_copy_command_shuttle"), Color.YELLOW)
+        if (member.variant.hasTag(FBConst.NO_COPY_TAG) || member.variant.hullSpec.hasTag(FBConst.NO_COPY_TAG)) {
+            DisplayMessage.showMessage(FBTxt.txt("no_copy_no_copy_tag"), Color.YELLOW)
             return false
         }
 

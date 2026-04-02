@@ -10,7 +10,9 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBSettings.PRIMARYDIR
+import fleetBuilder.core.FBConst.PRIMARY_DIR
+import fleetBuilder.core.FBMisc.jsonArrayToList
+import fleetBuilder.core.FBMisc.listToJsonArray
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromMap
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
@@ -22,12 +24,10 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
 import fleetBuilder.ui.customPanel.common.BasePanel
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
-import fleetBuilder.util.FBMisc.jsonArrayToList
-import fleetBuilder.util.FBMisc.listToJsonArray
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.addToggle
-import fleetBuilder.util.loadTextureCached
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.addCheckboxD
+import fleetBuilder.util.kotlin.loadTextureCached
+import fleetBuilder.util.kotlin.safeInvoke
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
@@ -345,10 +345,10 @@ internal class CargoAutoManageUIPlugin(
                 }
             }
 
-            interactToggle = ui.addToggle(
+            interactToggle = ui.addCheckboxD(
                 "Apply when player fleet interacts with this station", isChecked = cargoAutoManage.applyOnInteraction
             )
-            leaveToggle = ui.addToggle(
+            leaveToggle = ui.addCheckboxD(
                 "Apply when the player fleet leaves this station", isChecked = cargoAutoManage.applyOnLeave
             )
 
@@ -371,7 +371,7 @@ internal class CargoAutoManageUIPlugin(
 
                         val currentAutoManage = createCargoAutoManage()
 
-                        val cargoAutoManagerPoliciesPath = "${PRIMARYDIR}CargoAutoManagerPolicies"
+                        val cargoAutoManagerPoliciesPath = "${PRIMARY_DIR}CargoAutoManagerPolicies"
                         var cargoAutoManagerPoliciesJSON = runCatching {
                             if (Global.getSettings().fileExistsInCommon(cargoAutoManagerPoliciesPath))
                                 Global.getSettings().readJSONFromCommon(cargoAutoManagerPoliciesPath, false)

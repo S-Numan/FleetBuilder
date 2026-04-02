@@ -6,14 +6,15 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.allDMods
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.createHullVariant
-import fleetBuilder.util.getCompatibleDLessHullId
+import fleetBuilder.util.kotlin.allDMods
+import fleetBuilder.util.kotlin.createHullVariant
+import fleetBuilder.util.kotlin.getCompatibleDLessHullId
 
 object DataVariant {
 
@@ -153,19 +154,19 @@ object DataVariant {
             if (modId in settings.excludeHullModsWithID) return false
             if (!settings.includeDMods && LookupUtils.getAllDMods().contains(modId)) return false
             if (!settings.includeHiddenMods && LookupUtils.getAllHiddenEverywhereMods().contains(modId)) return false
-            if (LookupUtils.getHullModSpec(modId)?.hasTag(FBSettings.noCopyTag) == true) return false
+            if (LookupUtils.getHullModSpec(modId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
             return true
         }
 
         fun shouldKeepWeapon(weaponId: String): Boolean {
             if (weaponId in settings.excludeWeaponsWithID) return false
-            if (LookupUtils.getWeaponSpec(weaponId)?.hasTag(FBSettings.noCopyTag) == true) return false
+            if (LookupUtils.getWeaponSpec(weaponId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
             return true
         }
 
         fun shouldKeepWing(wingId: String): Boolean {
             if (wingId in settings.excludeWingsWithID) return false
-            if (LookupUtils.getFighterWingSpec(wingId)?.hasTag(FBSettings.noCopyTag) == true) return false
+            if (LookupUtils.getFighterWingSpec(wingId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
             return true
         }
 

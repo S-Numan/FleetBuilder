@@ -2,7 +2,7 @@
 ### Changes
 - Externalized some more strings and organized them a bit more.
 ### Bugfixes
-- Fixed Second In Command data not saving. Please report bugs like this to me, they aren't difficult fixes.
+- Fixed Second In Command data not loading.
 - Now checks for modules when checking if the player knows all the contents of a ship
 - Replace fleet now works with the tournament fleets in the mod files.
 
@@ -59,7 +59,7 @@
 - No more fleet info prepend in SaveTransfer json files.
 - Backup SaveTransfer now uses compression on the entire file to save space.
 ### Bugfixes
-- Fixed SoC data not saving in compressed fleets such as in SaveTransfer.
+- Fixed SiC data not saving in compressed fleets such as in SaveTransfer.
 - Fixed holding shift to copy compressed fleet not working in fleet tab.
 - Fix bad autofit functionality in the title-screen mission refit.
 

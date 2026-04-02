@@ -5,8 +5,9 @@
 
 
   # Hotkey Handler
-  "enable_cheats_to_use_paste":"Enable cheats in %s settings to unlock paste functionality",
-  "no_valid_data_in_clipboard":"No valid data in clipboard",
+  "enable_cheats_to_use_paste": "Enable cheats in %s settings to unlock paste functionality",
+  "no_valid_data_in_clipboard": "No valid data in clipboard",
+  "no_copy_no_copy_tag": "Cannot copy this entity",
 
   "copied_interaction_fleet_to_clipboard": "Interaction fleet copied to clipboard as JSON",
   "copied_interaction_fleet_to_clipboard_compressed": "Interaction fleet copied to clipboard",
@@ -154,7 +155,6 @@
   # Commander Shuttle
   "command_shuttle":"Command Shuttle",
   "no_command_shuttle_jump_alone": "Your command shuttle cannot jump alone",
-  "no_copy_command_shuttle": "The commander's shuttle cannot be copied",
   "command_shuttle_transfer_message": "Refunding market %s credits",
   "cannot_remove_last_ship_in_fleet": "Cannot remove last ship in fleet",
 

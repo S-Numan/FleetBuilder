@@ -7,10 +7,10 @@ import com.fs.starfarer.api.loading.WeaponGroupType
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.util.FBMisc
+import fleetBuilder.core.FBMisc
 import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.optJSONArrayToStringList
+import fleetBuilder.util.kotlin.optJSONArrayToStringList
 import org.json.JSONArray
 import org.json.JSONObject
 

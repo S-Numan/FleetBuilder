@@ -6,12 +6,12 @@ import com.fs.starfarer.api.campaign.InteractionDialogPlugin
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.core.FBTxt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.get
 import fleetBuilder.otherMods.starficz.findChildWithMethod
-import fleetBuilder.util.FBTxt
 import fleetBuilder.util.api.CampaignUtils.closeCampaignDummyDialog
 import fleetBuilder.util.api.CampaignUtils.openCampaignDummyDialog
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.safeInvoke
 
 object CampaignUtils {
 

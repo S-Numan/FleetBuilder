@@ -12,13 +12,13 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.FBMisc.replaceVariantWithVariant
-import fleetBuilder.util.FBMisc.sModHandlerTemp
-import fleetBuilder.util.FBTxt
+import fleetBuilder.core.FBMisc.replaceVariantWithVariant
+import fleetBuilder.core.FBMisc.sModHandlerTemp
+import fleetBuilder.core.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.safeInvoke
 import java.awt.Color
 import java.util.*
 

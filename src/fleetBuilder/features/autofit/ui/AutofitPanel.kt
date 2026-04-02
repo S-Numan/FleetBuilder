@@ -14,8 +14,11 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
+import fleetBuilder.core.FBConst
+import fleetBuilder.core.FBMisc.sModHandlerTemp
 import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBSettings.getDefaultExcludeVariantTags
+import fleetBuilder.core.FBTxt.txt
+import fleetBuilder.core.FBTxt.txtPlural
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectory
@@ -30,15 +33,16 @@ import fleetBuilder.serialization.variant.DataVariant.copyVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
-import fleetBuilder.util.*
-import fleetBuilder.util.FBMisc.sModHandlerTemp
-import fleetBuilder.util.FBTxt.txt
-import fleetBuilder.util.FBTxt.txtPlural
 import fleetBuilder.util.LookupUtils.getAllDMods
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
 import fleetBuilder.util.api.VariantUtils.processSModsForComparison
+import fleetBuilder.util.kotlin.allDMods
+import fleetBuilder.util.kotlin.completelyRemoveMod
+import fleetBuilder.util.kotlin.createFleetMember
+import fleetBuilder.util.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
@@ -704,13 +708,13 @@ internal object AutofitPanel {
                 var shipDirectory: ShipDirectory?
 
                 if (autofitPlugin.draggedAutofitSpec!!.source == null) {
-                    settings = FBSettings.getConfiguredVariantSettings()
+                    settings = FBSettings.getConfiguredAutofitSaveSettings()
 
                     shipDirectory = ShipDirectoryService.getShipDirectoryWithPrefix(currentPrefix)
 
                 } else {
                     settings = VariantSettings().apply {
-                        excludeTagsWithID = getDefaultExcludeVariantTags()
+                        excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
                     }
 
                     shipDirectory = autofitPlugin.draggedAutofitSpec!!.source

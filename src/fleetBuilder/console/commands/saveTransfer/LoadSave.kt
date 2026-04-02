@@ -1,12 +1,12 @@
 package fleetBuilder.console.commands.saveTransfer
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBConst
+import fleetBuilder.core.FBTxt
 import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.PlayerSaveUtils.compileSaveAny
 import fleetBuilder.serialization.PlayerSaveUtils.loadCompiledSave
 import fleetBuilder.serialization.reportMissingContentIfAny
-import fleetBuilder.util.FBTxt
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
@@ -36,7 +36,7 @@ class LoadSave : BaseCommand {
         val argList = args.lowercase().split(" ")
 
         if (argList.contains("-backup")) {
-            val configPath = "${FBSettings.PRIMARYDIR}/SaveTransfer/lastSave"
+            val configPath = "${FBConst.PRIMARY_DIR}/SaveTransfer/lastSave"
 
             if (!Global.getSettings().fileExistsInCommon(configPath)) {
                 Console.showMessage(FBTxt.txt("backup_save_not_found"))

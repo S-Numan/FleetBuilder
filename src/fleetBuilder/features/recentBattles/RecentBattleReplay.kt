@@ -17,7 +17,7 @@ import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedSt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.deferredAction.CombatDeferredActionPlugin
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.safeInvoke
 
 // Initial code taken from Ship Mastery System by float
 

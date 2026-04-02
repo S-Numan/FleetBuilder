@@ -25,8 +25,8 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.util.isIdle
+import fleetBuilder.util.kotlin.getActualCurrentTab
+import fleetBuilder.util.kotlin.isIdle
 import org.lwjgl.input.Keyboard
 
 

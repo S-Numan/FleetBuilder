@@ -2,8 +2,9 @@ package fleetBuilder.features.recentBattles.fleetDirectory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
+import fleetBuilder.core.FBConst.DIRECTORY_CONFIG_FILE_NAME
+import fleetBuilder.core.FBMisc.deepDiff
 import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.CompressedFleet
@@ -12,7 +13,6 @@ import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.filterParsedFleetData
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
-import fleetBuilder.util.FBMisc.deepDiff
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -180,11 +180,11 @@ class FleetDirectory(
 
     private fun updateFleetDirectoryJson(modify: (JSONObject) -> Unit) {
         val fleetDirJson = try {
-            Global.getSettings().readJSONFromCommon("$directory$DIRECTORYCONFIGNAME", false)
+            Global.getSettings().readJSONFromCommon("$directory$DIRECTORY_CONFIG_FILE_NAME", false)
         } catch (e: Exception) {
             DisplayMessage.showError(
                 "Failed to update fleet directory.",
-                "Failed to read fleet directory at /saves/common/$$directory$DIRECTORYCONFIGNAME\n",
+                "Failed to read fleet directory at /saves/common/$$directory$DIRECTORY_CONFIG_FILE_NAME\n",
                 e
             )
             return
@@ -194,7 +194,7 @@ class FleetDirectory(
         modify(fleetsJson)
         fleetDirJson.put("fleets", fleetsJson)
 
-        Global.getSettings().writeJSONToCommon("$directory$DIRECTORYCONFIGNAME", fleetDirJson, false)
+        Global.getSettings().writeJSONToCommon("$directory$DIRECTORY_CONFIG_FILE_NAME", fleetDirJson, false)
     }
 
     private fun updateDirectory(

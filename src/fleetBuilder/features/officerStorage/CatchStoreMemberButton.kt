@@ -10,18 +10,19 @@ import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
+import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
-import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.FBTxt
-import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.util.safeInvoke
-import org.lwjgl.input.Keyboard
-import org.lwjgl.input.Mouse
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.ui.UIUtils
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.kotlin.getActualCurrentTab
+import fleetBuilder.util.kotlin.safeInvoke
+import org.lwjgl.input.Keyboard
+import org.lwjgl.input.Mouse
 
 internal class CatchStoreMemberButton : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 10
@@ -49,7 +50,7 @@ internal class CatchStoreMemberButton : CampaignInputListener {
             if (!captain.isDefault && !captain.isPlayer && !captain.memoryWithoutUpdate.contains(Misc.CAPTAIN_UNREMOVABLE)
                 && captain.faction.id != "tahlan_allmother" // Mod specific support to avoid issues. Storing the Rigveda and other Lostech ships like it with the non AI, non built in yet non-removable captain causes issues.
             ) {
-                captain.memoryWithoutUpdate.set(FBSettings.storedOfficerTag, true)
+                captain.memoryWithoutUpdate.set(FBConst.STORED_OFFICER_TAG, true)
                 captain.memoryWithoutUpdate.set(Misc.CAPTAIN_UNREMOVABLE, true)
                 playerFleetData.removeOfficer(captain)
             }
@@ -104,7 +105,7 @@ internal class CatchStoreMemberButton : CampaignInputListener {
                     ?: return@forEach
                 val captain = mouseOverMember.captain
 
-                if (captain.isPlayer && FBSettings.unassignPlayer() && !mouseOverMember.variant.hasHullMod(FBSettings.commandShuttleId)) {
+                if (captain.isPlayer && FBSettings.unassignPlayer() && !mouseOverMember.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
                     storePlayerDelay = true
                     lastStoreHoverStatus = mouseOverMember
                 } else if (FBSettings.storeOfficersInCargo)
@@ -113,7 +114,7 @@ internal class CatchStoreMemberButton : CampaignInputListener {
             } else if (event.isLMBDownEvent) {
                 val member = hoveringOverStore()
                 if (member != null) {
-                    if (member.captain.isPlayer && FBSettings.unassignPlayer() && !member.variant.hasHullMod(FBSettings.commandShuttleId))
+                    if (member.captain.isPlayer && FBSettings.unassignPlayer() && !member.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID))
                         storePlayerDelay = true
                     else if (FBSettings.storeOfficersInCargo)
                         storeOfficer(member.captain)

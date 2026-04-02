@@ -7,7 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.PersonUtils
@@ -61,6 +61,11 @@ object DataPerson {
                 memKeys[Misc.CAPTAIN_UNREMOVABLE] = true // Then this is a built-in AI core that has had it's level +1'ed
         }
 
+        if (memKeys.containsKey(FBConst.STORED_OFFICER_TAG)) {
+            memKeys.remove(FBConst.STORED_OFFICER_TAG)
+            memKeys.remove(Misc.CAPTAIN_UNREMOVABLE)
+        }
+
         val data = ParsedPersonData(
             aiCoreId = if (person.isAICore) person.aiCoreId else "",
             first = person.name.first,
@@ -97,7 +102,7 @@ object DataPerson {
             if (skillId in settings.excludeSkillsWithID) return false
             if ((data.skills[skillId] ?: 0f) <= 0f) return false
             if (skillSpec != null) {
-                if (skillSpec.hasTag(FBSettings.noCopyTag)) return false
+                if (skillSpec.hasTag(FBConst.NO_COPY_TAG)) return false
                 if (skillSpec.isAptitudeEffect) return false
             }
             return true
@@ -115,9 +120,6 @@ object DataPerson {
             "\$rankId", "\$relName", "\$rel", "\$relValue"
         )
 
-
-        val storedOfficer = data.memKeys.keys.contains(FBSettings.storedOfficerTag)
-
         // Filter memory keys
         val filteredMemory = data.memKeys.filterKeys { key ->
             if (key.startsWith("$#"))
@@ -128,7 +130,6 @@ object DataPerson {
                 value !is Boolean && value !is String && value !is Int && value !is Float && value !is Double && value !is Long -> return@filterKeys false
                 key in excludeKeys -> return@filterKeys false
                 settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
-                storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == FBSettings.storedOfficerTag) -> return@filterKeys false // Skip including captain unremovable if it was added just for storing the officer in storage.
                 else -> return@filterKeys true
             }
         }

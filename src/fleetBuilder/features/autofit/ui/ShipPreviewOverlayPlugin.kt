@@ -10,9 +10,9 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.allDMods
+import fleetBuilder.util.kotlin.allDMods
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.getEffectiveHullId
+import fleetBuilder.util.kotlin.getEffectiveHullId
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color

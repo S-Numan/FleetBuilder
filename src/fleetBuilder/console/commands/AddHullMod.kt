@@ -1,7 +1,11 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
+import fleetBuilder.core.FBTxt
 import fleetBuilder.util.*
+import fleetBuilder.util.kotlin.completelyRemoveMod
+import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.kotlin.toBoolean
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommandWithSuggestion

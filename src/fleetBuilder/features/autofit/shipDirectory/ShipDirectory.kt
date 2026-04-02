@@ -13,10 +13,10 @@ import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.filterParsedVariantData
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.FBMisc.deepDiff
+import fleetBuilder.core.FBMisc.deepDiff
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.getCompatibleDLessHullId
-import fleetBuilder.util.getEffectiveHullId
+import fleetBuilder.util.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.kotlin.getEffectiveHullId
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat

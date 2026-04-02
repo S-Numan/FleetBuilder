@@ -15,13 +15,13 @@ import com.fs.starfarer.api.impl.campaign.ids.Items
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial
 import com.fs.starfarer.campaign.CampaignEngine
 import com.fs.util.container.repo.ObjectRepository
-import fleetBuilder.util.FBMisc.replaceVariantWithVariant
+import fleetBuilder.core.FBMisc.replaceVariantWithVariant
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.FactionUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.completelyRemoveMod
-import fleetBuilder.util.getModules
-import fleetBuilder.util.safeGet
+import fleetBuilder.util.kotlin.completelyRemoveMod
+import fleetBuilder.util.kotlin.getModules
+import fleetBuilder.util.kotlin.safeGet
 
 // Jank code alert!
 

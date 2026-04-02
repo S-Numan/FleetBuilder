@@ -6,10 +6,10 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.ui.trade.CargoItemStack
 import com.fs.starfarer.campaign.ui.trade.CargoStackView
 import com.fs.starfarer.campaign.util.CollectionView
-import fleetBuilder.util.FBMisc.getSpecialItemName
+import fleetBuilder.core.FBMisc.getSpecialItemName
 import fleetBuilder.util.api.CargoUtils
-import fleetBuilder.util.safeGet
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.safeGet
+import fleetBuilder.util.kotlin.safeInvoke
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 
 class CargoFilterPanel(

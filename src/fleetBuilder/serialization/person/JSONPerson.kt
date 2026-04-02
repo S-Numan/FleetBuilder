@@ -8,8 +8,8 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
-import fleetBuilder.util.FBMisc
-import fleetBuilder.util.roundToDecimals
+import fleetBuilder.core.FBMisc
+import fleetBuilder.util.kotlin.roundToDecimals
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
