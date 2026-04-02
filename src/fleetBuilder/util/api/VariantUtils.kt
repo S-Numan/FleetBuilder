@@ -9,6 +9,7 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.*
+import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import org.magiclib.kotlin.getBuildInBonusXP
 
 object VariantUtils {
@@ -29,12 +30,12 @@ object VariantUtils {
      * Returns all source mods from a variant. Including the hullspec, all weapons, wings, hullmods, and the contents of modules.
      *
      * @param variant the variant to get the source mods from
-     * @param settings the settings to use when checking for source mods (default: VariantSettings())
+     * @param settings the settings to use when checking for source mods
      * @return a set of all source mods from the variant
      */
     fun getAllSourceModsFromVariant(
         variant: ShipVariantAPI,
-        settings: VariantSettings = VariantSettings()
+        settings: VariantSettings
     ): Set<ModSpecAPI> {
         return getAllSourceModsFromVariant(DataVariant.getVariantDataFromVariant(variant, settings))
     }
@@ -43,13 +44,11 @@ object VariantUtils {
         val sourceMods = mutableSetOf<ModSpecAPI>()
 
         // Check modules first
-
         data.moduleVariants.forEach { (_, module) ->
             sourceMods.addAll(getAllSourceModsFromVariant(module))
         }
 
         // HullSpec
-
         LookupUtils.getHullSpec(data.hullId)?.let { hullSpec ->
             hullSpec.sourceMod?.let { sm ->
                 sourceMods.add(sm)
@@ -83,9 +82,9 @@ object VariantUtils {
     }
 
     /**
-     * Returns the full bonus XP that would be gained if this hullmod were to be added to this variant.
-     * If the hullmod is already built in, returns the default bonus XP.
-     * If the hullmod is not built in, returns the bonus XP for that hullmod.
+     * Returns the full bonus XP that would be gained if this hullmod were to be built in to this variant as an sModdedBuiltIn.
+     * If the hullmod is built into the hullspec, returns the default bonus XP.
+     * If the hullmod is not built into the hullspec, returns the bonus XP for that hullmod.
      *
      * @param variant The ShipVariantAPI to check.
      * @param modID The ID of the hullmod to check.
@@ -105,12 +104,12 @@ object VariantUtils {
     }
 
     /**
-     * Checks if a variant is known to the player.
+     * Checks if a variant is known to the player. This function is intentionally very restrained and only lightly checks the variant.
      *
-     * Includes the variant's hullspec, all fitted weapons, fitted fighter wings, and non built in hullmods. Does not include modules
+     * Includes the variant's hullspec, all non built in weapons, non built in fighter wings, and non built in hullmods. Includes modules, but does not check the module's hullspec.
      *
      * Weapons, wings, and hullmods are checked for if the CODEX_UNLOCKABLE tag is true, and if the player is not aware of it.
-     * HIDE_IN_CODEX is not considered for variant components to avoid being too overzealous with this check.
+     * HIDE_IN_CODEX and other tags are not considered to avoid being overzealous with this check.
      *
      * @param variant The variant to check.
      * @return True if all components of the variant are known to the player, false otherwise.
@@ -123,53 +122,84 @@ object VariantUtils {
         whatVariantContentsAreNotKnownToPlayer(variant, missing)
         if (missing.hasMissing())
             return false
-
-        return true
+        else
+            return true
     }
 
+    /**
+     * Returns every element the player is not aware of in a variant in a [MissingContent].
+     *
+     * See [isVariantKnownToPlayer] for more details. That function calls this one.
+     */
     fun whatVariantContentsAreNotKnownToPlayer(variant: ShipVariantAPI, missing: MissingContent) {
         if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
             missing.hullIds.add(variant.hullSpec.hullId)
 
-        variant.forEachNonBuiltInWeapons { _, weapon ->
-            if (weapon.hasTag(Tags.CODEX_UNLOCKABLE) && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.weaponId))
-                missing.weaponIds.add(weapon.weaponId)
-        }
-        variant.fittedWings.forEach { wing ->
-            if (LookupUtils.getFighterWingSpec(wing)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfFighter(wing))
-                missing.wingIds.add(wing)
-        }
-        variant.hullMods.forEach { mod ->
-            if (variant.hullSpec.isBuiltInMod(mod))
-                return@forEach
+        fun addMissingContents(va: ShipVariantAPI) {
+            va.forEachNonBuiltInWeapons { _, weapon ->
+                if (weapon.hasTag(Tags.CODEX_UNLOCKABLE) && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.weaponId))
+                    missing.weaponIds.add(weapon.weaponId)
+            }
+            va.nonBuiltInWings.forEach { wing ->
+                if (LookupUtils.getFighterWingSpec(wing)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfFighter(wing))
+                    missing.wingIds.add(wing)
+            }
+            va.nonBuiltInHullmods.forEach { mod ->
+                if (va.hullSpec.isBuiltInMod(mod))
+                    return@forEach
 
-            if (LookupUtils.getHullModSpec(mod)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfHullmod(mod))
-                missing.hullModIds.add(mod)
+                if (LookupUtils.getHullModSpec(mod)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfHullmod(mod))
+                    missing.hullModIds.add(mod)
+            }
+        }
+
+        addMissingContents(variant)
+
+        variant.getModules().forEach { moduleVariant ->
+            addMissingContents(moduleVariant)
         }
     }
 
+    /**
+     * Generates a variant ID based on the hull ID and the variant's display name.
+     *
+     * @param variant The variant to generate the ID for.
+     * @return The generated variant ID.
+     */
     fun makeVariantID(variant: ShipVariantAPI): String {
         val hullId = variant.hullSpec.getCompatibleDLessHullId(true)
         return makeVariantID(hullId, variant.displayName)
     }
 
+    /**
+     * Generates a variant ID based on a hull ID and a display name.
+     *
+     * @param hullId The ID of the hull.
+     * @param displayName The display name of the variant.
+     * @return The generated variant ID.
+     */
     fun makeVariantID(hullId: String, displayName: String): String {
         val cleanName = displayName
-            .replace(" ", "_")                       // replace spaces with underscores
+            .replace(" ", "_")                 // replace spaces with underscores
             .replace(Regex("[^A-Za-z0-9_-]"), "")   // remove anything not a-z, A-Z, 0-9, dash, or underscore
-            .trim('.')                                          // remove leading/trailing dots
-            .trim()                                                     // remove leading/trailing whitespace
+            .trim('.')                        // remove leading/trailing dots
+            .trim()                           // remove leading/trailing whitespace
 
         return "${hullId}_$cleanName"
     }
 
-    private const val errorTag = "FB_ERR"
-    fun getFBVariantErrorTag() = errorTag
+    const val FB_ERROR_TAG = "FB_ERR"
 
     //fun isErrorVariant(variant: ShipVariantAPI): Boolean {
     //    return variant.hasTag(errorTag)
     //}
-
+    /**
+     * Creates an error variant and marks it as so.
+     *
+     * Tags the variant to keep track that it is an error variant, and optionally changes the display name for the player to see why the error variant occurred.
+     *
+     * This function exists mostly for convenience.
+     */
     fun createErrorVariant(displayName: String = ""): ShipVariantAPI {
         var tempVariant: ShipVariantAPI? = null
         try {
@@ -187,7 +217,7 @@ object VariantUtils {
         else
             tempVariant.setVariantDisplayName("ERROR")
 
-        tempVariant.addTag(errorTag)
+        tempVariant.addTag(FB_ERROR_TAG)
 
         return tempVariant
     }

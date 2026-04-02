@@ -33,7 +33,7 @@ class ShipPreviewOverlayPlugin(
     val missingContent: MissingContent = MissingContent()
 ) : StarUIPanelPlugin() {
     val hasMissingElements: Boolean by lazy { missingContent.weaponIds.isNotEmpty() || missingContent.hullModIds.isNotEmpty() || missingContent.wingIds.isNotEmpty() }
-    val isShipMissing: Boolean = member.variant.hasTag(VariantUtils.getFBVariantErrorTag())
+    val isShipMissing: Boolean = member.variant.hasTag(VariantUtils.FB_ERROR_TAG)
 
     var boxedUIShipPreview: BoxedUIShipPreview? = null
 

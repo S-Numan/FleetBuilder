@@ -13,12 +13,20 @@ import fleetBuilder.util.getEffectiveHullId
 
 object HullUtils {
 
+    /**
+     * Checks if a hull is known to the player.
+     *
+     * If the hull is tagged with [Tags.CODEX_UNLOCKABLE] and the player is not aware of it, the function returns false.
+     * Otherwise, it returns true.
+     *
+     * @param hull The hull to check.
+     * @return True if the hull is known to the player, false otherwise.
+     */
     fun isHullKnownToPlayer(hull: ShipHullSpecAPI): Boolean {
         if (hull.hasTag(Tags.CODEX_UNLOCKABLE)) {
             if (!SharedUnlockData.get().isPlayerAwareOfShip(hull.hullId))
                 return false
-        } //else if (hull.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX) || hull.hasTag(Tags.HIDE_IN_CODEX))// || hull.hasTag(Tags.RESTRICTED))
-        //return false
+        }
 
         return true
     }
@@ -26,11 +34,11 @@ object HullUtils {
     /**
      * Creates a ShipVariantAPI for a given ShipHullSpecAPI.
      *
-     * This function exists because createEmptyVariant does not create modules.
      * Remember to change the source of the variant to VariantSource.REFIT if you don't want the variant to be forgotten between save games.
      *
-     * @param hull The hull spec for which to create a variant
+     * This function exists because createEmptyVariant does not create modules.
      *
+     * @param hull The hull spec for which to create a variant
      * @return A variant for the given hull spec.
      */
     fun createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
@@ -109,7 +117,6 @@ object HullUtils {
         hull: ShipHullSpecAPI,
         keepDModSkin: Boolean = false
     ): ShipHullSpecAPI {
-
         if (!hull.isDHull) return hull
 
         if (keepDModSkin && (hull.baseHull != null && hull.baseHull.spriteName != hull.spriteName))

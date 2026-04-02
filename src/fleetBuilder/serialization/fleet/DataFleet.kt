@@ -197,7 +197,7 @@ object DataFleet {
             }
 
             // Error-tagged variant
-            if (VariantUtils.getFBVariantErrorTag() in variantData.tags) {
+            if (VariantUtils.FB_ERROR_TAG in variantData.tags) {
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
             }
 
@@ -266,7 +266,7 @@ object DataFleet {
 
             if (parsed.isFlagship) {
                 if (member.captain.isDefault)
-                    member.captain.portraitSprite = PersonUtils.getRandomPortrait(faction = data.factionID, random = random) // The commander of the fleet mustn't be default. May cause issues otherwise.
+                    member.captain.portraitSprite = PersonUtils.getRandomPortrait(factionID = data.factionID, random = random) // The commander of the fleet mustn't be default. May cause issues otherwise.
 
                 campFleet?.commander = member.captain
                 member.isFlagship = true
