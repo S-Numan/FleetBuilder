@@ -164,6 +164,43 @@ object HotkeyHandlerDialogs {
         }
     }
 
+    private sealed class SimulationBlockReason(val color: Color, val message: String, val image: String) {
+        object Restricted :
+            SimulationBlockReason(Color.RED, "This ship is 'RESTRICTED' and cannot be simulated", "graphics/icons/more_info_buttonless.png")
+
+        object NoSim :
+            SimulationBlockReason(Color.ORANGE, "This ship cannot be simulated", "graphics/icons/more_info_buttonless.png")
+
+        object Station :
+            SimulationBlockReason(Color.BLUE, "Cannot simulate a station.", "graphics/icons/mission_marker.png")
+
+        object Cosmic :
+            SimulationBlockReason(Color(128, 0, 128), "Cannot simulate what is beyond comprehension.", "graphics/icons/mission_marker.png")
+
+        object MissingHull :
+            SimulationBlockReason(Color.RED, "", "graphics/icons/mission_marker.png")
+
+        object UnknownHull :
+            SimulationBlockReason(Color.RED, "This ship is unknown to you.", "graphics/icons/more_info_buttonless.png")
+    }
+
+    private fun getBlockReason(
+        member: FleetMemberAPI,
+        unknown: MissingContent,
+        allowSimulationAnyway: Boolean
+    ): SimulationBlockReason? {
+        if (allowSimulationAnyway || FBSettings.cheatsEnabled()) return null
+
+        return when {
+            member.variant.hasTag(VariantUtils.FB_ERROR_TAG) -> SimulationBlockReason.MissingHull
+            member.hullSpec.hasTag(Tags.RESTRICTED) || member.variant.hasTag(Tags.RESTRICTED) -> SimulationBlockReason.Restricted
+            member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM) -> SimulationBlockReason.NoSim
+            member.isStation -> SimulationBlockReason.Station
+            member.hullSpec.hasTag(Tags.DWELLER) || member.hullSpec.hasTag(Tags.THREAT) -> SimulationBlockReason.Cosmic
+            unknown.hullIds.isNotEmpty() -> SimulationBlockReason.UnknownHull
+            else -> null
+        }
+    }
 
     fun pasteFleetDialog(
         inputData: DataFleet.ParsedFleetData,
@@ -316,71 +353,16 @@ object HotkeyHandlerDialogs {
 
                 val dataMember = data.members.find { it.id == member.id }
 
-                if (member.variant.hasTag(VariantUtils.FB_ERROR_TAG)) {
-                    val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
-                    boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color.RED
-                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 600f) { tooltip ->
-                        tooltip.addPara("Hull id '${dataMember?.variantData?.hullId}' could not be found.\nThe mod which added this hull may be missing or an update may have removed this hull", 0f)
-                    }
-
-                    return@forEachIndexed
-                }
-
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.RESTRICTED) || member.variant.hasTag(Tags.RESTRICTED))) {
-                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
-                    boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color.RED
-                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
-                        tooltip.addPara("This ship is '${Tags.RESTRICTED}' and thus cannot be simulated", 0f)
-                    }
-
-                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
-                    return@forEachIndexed
-                }
-
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM))) {
-                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
-                    boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color.ORANGE
-                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
-                        tooltip.addPara("This ship is unable to be simulated", 0f)
-                    }
-
-                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
-                    return@forEachIndexed
-                }
-
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && member.isStation) {
-                    val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
-                    boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color.BLUE
-                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
-                        tooltip.addPara("Cannot simulate a station.", 0f)
-                    }
-
-                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
-                    return@forEachIndexed
-                }
-
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (member.hullSpec.hasTag(Tags.DWELLER) || member.hullSpec.hasTag(Tags.THREAT))) {
-                    val boxedImage = listPanel.addImage("graphics/icons/mission_marker.png", size, size)
-                    boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color(128, 0, 128)
-                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
-                        tooltip.addPara("Cannot simulate what is beyond comprehension.", 0f)
-                    }
-
-                    member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
-                    return@forEachIndexed
-                }
-
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents.hullIds.isNotEmpty()) {
-                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
-                    boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color.RED
-                    boxedImage.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) { tooltip ->
-                        tooltip.addPara("This ship is unknown to you. Explore and unlock new codex entries!", 0f)
+                val reason = getBlockReason(member, unknownContents, allowSimulationAnyway)
+                if (reason != null) {
+                    val img = listPanel.addImage(reason.image, size, size)
+                    img.position.inTL(x, y)
+                    img.sprite.color = reason.color
+                    img.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) {
+                        if (reason is SimulationBlockReason.MissingHull)
+                            it.addPara("Hull id '${dataMember?.variantData?.hullId}' could not be found.\nThe mod which added this hull may be missing or an update may have removed this hull", 0f)
+                        else
+                            it.addPara(reason.message, 0f)
                     }
 
                     member.variant.addTag("#FB_IGNORE") // Will cause it to be removed on spawning
@@ -507,7 +489,7 @@ object HotkeyHandlerDialogs {
             if (isPressedMemberID != null) {
                 val officerPanel = leftPanel.createCustomPanel(leftWidth, officerPanelHeight, null)
 
-                val member = fleetData.membersListCopy.find { it.id == isPressedMemberID }!!
+                val member = fleetData.membersListCopy.find { it.id == isPressedMemberID } ?: return@show
                 val captain = member.captain
 
                 val officerUI = officerPanel.createUIElement(leftWidth, officerPanelHeight, false)
@@ -1003,6 +985,18 @@ object HotkeyHandlerDialogs {
         dialog.addActionButtons(addConfirmButton = false, alignment = Alignment.RMID)
 
         return true
+    }
+
+    private fun pasteFleetDialogLeftPanel(): UIPanelAPI {
+
+    }
+
+    private fun pasteFleetDialogLeftPanelMember(): UIPanelAPI {
+
+    }
+
+    private fun pasteFleetDialogRightPanel(): UIPanelAPI {
+
     }
 
     fun createOfficerCreatorDialog() {
