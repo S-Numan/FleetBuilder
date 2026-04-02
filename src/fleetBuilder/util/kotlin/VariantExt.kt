@@ -9,11 +9,23 @@ import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.VariantUtils
 
 
+/**
+ * Returns a map of all modules attached to this variant.
+ *
+ * The map key is the module slot ID, and the value is the corresponding
+ * [ShipVariantAPI] for that module.
+ */
 fun ShipVariantAPI.getModules(): Map<String, ShipVariantAPI> {
     return this.stationModules.mapValues { getModuleVariant(it.key) }
 }
 // Avoid using ShipVariantAPI.getModuleSlots(). It uses ShipVariantAPI.getStationModules() internally anyway.
 
+/**
+ * Returns all fitted weapons on this variant.
+ *
+ * The map key is the weapon slot ID, and the value is the [WeaponSpecAPI]
+ * of the weapon installed in that slot.
+ */
 fun ShipVariantAPI.getFittedWeapons(): Map<String, WeaponSpecAPI> {
     val weapons = mutableMapOf<String, WeaponSpecAPI>()
     fittedWeaponSlots.forEach { slot ->
@@ -23,6 +35,12 @@ fun ShipVariantAPI.getFittedWeapons(): Map<String, WeaponSpecAPI> {
     return weapons
 }
 
+/**
+ * Returns all non-built-in weapons on this variant.
+ *
+ * The map key is the weapon slot ID, and the value is the [WeaponSpecAPI]
+ * of the weapon installed in that slot.
+ */
 fun ShipVariantAPI.getNonBuiltInWeapons(): Map<String, WeaponSpecAPI> {
     val weapons = mutableMapOf<String, WeaponSpecAPI>()
     nonBuiltInWeaponSlots.forEach { slot ->
