@@ -1,5 +1,8 @@
 ## 1.32.5
+### Changes
+- Externalized some more strings and organized them a bit more.
 ### Bugfixes
+- Fixed Second In Command data not saving. Please report bugs like this to me, they aren't difficult fixes.
 - Now checks for modules when checking if the player knows all the contents of a ship
 - Replace fleet now works with the tournament fleets in the mod files.
 

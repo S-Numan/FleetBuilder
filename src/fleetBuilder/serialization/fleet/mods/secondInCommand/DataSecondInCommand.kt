@@ -77,7 +77,7 @@ object DataSecondInCommand {
     }
 
     fun buildSecondInCommandData(sicData: SecondInCommandData, fleet: CampaignFleetAPI, random: Random) {
-        val storedData = fleet.memoryWithoutUpdate.get(SCUtils.FLEET_DATA_KEY) as? SCData ?: return
+        val storedData = SCUtils.getFleetData(fleet)
 
         storedData.getOfficersInFleet().toList().forEach { storedOfficer ->
             storedData.removeOfficerFromFleet(storedOfficer)

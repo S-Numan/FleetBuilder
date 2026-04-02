@@ -63,6 +63,37 @@
 
   "clipboard_fleet_added_to_campaign": "Fleet from clipboard added to campaign",
 
+  "sim_block_restricted": "This ship is 'RESTRICTED' and cannot be simulated",
+  "sim_block_no_sim": "This ship cannot be simulated",
+  "sim_block_station": "Cannot simulate a station.",
+  "sim_block_cosmic": "Cannot simulate what is beyond comprehension.",
+  "sim_block_unknown_hull": "This ship is unknown to you.",
+  "sim_block_missing_hull_detail": "Hull id '%s' could not be found.\nThe mod which added this hull may be missing or an update may have removed this hull",
+  "fleet_members": "Fleet Members",
+  "officer_data": "Officer Data",
+  "admiral_skills": "Admiral Skills",
+  "combat_skills": "Combat Skills",
+  "summary": "Summary",
+  "deployment_points": "Deployment Points: %s",
+  "actions": "Actions",
+  "simulated_battle": "Simulated Battle",
+
+  "ui.toggle.fight_to_last": "Fight to the last",
+  "ui.toggle.fight_to_last.tooltip": "If checked; no members of the fleet will retreat",
+  "ui.toggle.allow_objectives": "Allow Objectives",
+  "ui.toggle.allow_objectives.tooltip": "If unchecked; objectives wont be allowed in the simulation",
+  "ui.toggle.force_objectives": "Force Objectives",
+  "ui.toggle.force_objectives.tooltip": "If checked; objectives will always be present",
+  "ui.toggle.include_officers": "Include officers",
+  "ui.toggle.include_commander": "Include commander as commander",
+  "ui.toggle.include_commander.tooltip": "If unchecked; the commander will be unset as the commander of the fleet. Their admiral skills will not apply",
+  "ui.toggle.repair_and_cr": "Fulfill needs and repair",
+  "ui.toggle.set_aggression": "Set aggression doctrine",
+
+  "cheats": "Cheats",
+  "spawn_fleet_into_campaign": "Spawn Fleet Into Campaign",
+  "replace_player_fleet_with_this_fleet": "Replace Player Fleet With This Fleet",
+  "append_to_player_fleet": "Append To Player Fleet",
 
 
   # Codex Button
@@ -319,6 +350,6 @@
     ".": ".",
     "(": "(",
     ")": ")",
-    "an": "an",
+    "an": "an"
   }
 }

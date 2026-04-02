@@ -165,23 +165,42 @@ object HotkeyHandlerDialogs {
     }
 
     private sealed class SimulationBlockReason(val color: Color, val message: String, val image: String) {
-        object Restricted :
-            SimulationBlockReason(Color.RED, "This ship is 'RESTRICTED' and cannot be simulated", "graphics/icons/more_info_buttonless.png")
 
-        object NoSim :
-            SimulationBlockReason(Color.ORANGE, "This ship cannot be simulated", "graphics/icons/more_info_buttonless.png")
+        object Restricted : SimulationBlockReason(
+            Color.RED,
+            FBTxt.txt("sim_block_restricted"),
+            "graphics/icons/more_info_buttonless.png"
+        )
 
-        object Station :
-            SimulationBlockReason(Color.BLUE, "Cannot simulate a station.", "graphics/icons/mission_marker.png")
+        object NoSim : SimulationBlockReason(
+            Color.ORANGE,
+            FBTxt.txt("sim_block_no_sim"),
+            "graphics/icons/more_info_buttonless.png"
+        )
 
-        object Cosmic :
-            SimulationBlockReason(Color(128, 0, 128), "Cannot simulate what is beyond comprehension.", "graphics/icons/mission_marker.png")
+        object Station : SimulationBlockReason(
+            Color.BLUE,
+            FBTxt.txt("sim_block_station"),
+            "graphics/icons/mission_marker.png"
+        )
 
-        object MissingHull :
-            SimulationBlockReason(Color.RED, "", "graphics/icons/mission_marker.png")
+        object Cosmic : SimulationBlockReason(
+            Color(128, 0, 128),
+            FBTxt.txt("sim_block_cosmic"),
+            "graphics/icons/mission_marker.png"
+        )
 
-        object UnknownHull :
-            SimulationBlockReason(Color.RED, "This ship is unknown to you.", "graphics/icons/more_info_buttonless.png")
+        object MissingHull : SimulationBlockReason(
+            Color.RED,
+            FBTxt.txt("sim_block_missing_hull"),
+            "graphics/icons/mission_marker.png"
+        )
+
+        object UnknownHull : SimulationBlockReason(
+            Color.RED,
+            FBTxt.txt("sim_block_unknown_hull"),
+            "graphics/icons/more_info_buttonless.png"
+        )
     }
 
     private fun getBlockReason(
@@ -217,19 +236,10 @@ object HotkeyHandlerDialogs {
         val dialog = DialogPanel()
         dialog.makeCampaignDummyDialogHideUI = true
 
-        val width = 1280f
-        val height = 800f
-
-        val rightWidth = 440f
-        val leftWidth = width - rightWidth
-
-        val faction = Global.getSector().allFactions.find { data.factionID == it.id }
-            ?: Global.getSector().getFaction("neutral") ?: Global.getSector().playerFaction
-
         val brightColor = Global.getSettings().brightPlayerColor
         val factionColor = Global.getSettings().basePlayerColor//faction.baseUIColor
         val darkColor = Global.getSettings().darkPlayerColor //faction.darkUIColor
-        //dialog.uiBorderColor = faction.baseUIColor
+
 
         // IMPORTANT: persist outside UI rebuild
         var isPressedMemberID: String? = null
@@ -266,7 +276,12 @@ object HotkeyHandlerDialogs {
 
         val seed = Random().nextLong()
 
-        dialog.show(width, height) { ui ->
+        dialog.show(1280f, 800f) { ui ->
+            ui.setSize(1280f, 800f) // Probably shouldn't be doing this, I should account for side pad properly, but it's too time-consuming to fix this mess of a function.
+
+            val rightWidth = 440f
+            val leftWidth = ui.width - rightWidth
+
             if (previewList.isNotEmpty())
                 cleanupShipList()
 
@@ -302,25 +317,22 @@ object HotkeyHandlerDialogs {
                 isPressedMemberID = null
 
 
-            val root = dialog.panel.createCustomPanel(width, height, null)
+            val root = dialog.panel.createCustomPanel(ui.width, ui.height, null)
 
-            // =========================
-            // LEFT PANEL
-            // =========================
-            val leftPanel = dialog.panel.createCustomPanel(leftWidth, height, null)
+            val leftPanel = dialog.panel.createCustomPanel(leftWidth, ui.height, null)
 
-            val officerPanelHeight = if (isPressedMemberID != null) height * 0.4f else 20f
-            val listHeight = height - officerPanelHeight
+            val officerPanelHeight = if (isPressedMemberID != null) ui.height * 0.4f else 20f
+            val listHeight = ui.height - officerPanelHeight
 
-            val leftRoot = leftPanel.createUIElement(leftWidth, height, false)
+            val leftRoot = leftPanel.createUIElement(leftPanel.width, ui.height, false)
 
             // -------------------------
             // SHIP LIST (SCROLLABLE)
             // -------------------------
-            val listUI = leftPanel.createUIElement(leftWidth, listHeight, true)
+            val listUI = leftPanel.createUIElement(leftPanel.width, listHeight, true)
 
             listUI.addSectionHeading(
-                "Fleet Members",
+                FBTxt.txt("fleet_members"),
                 factionColor,
                 darkColor,
                 Alignment.MID,
@@ -360,7 +372,7 @@ object HotkeyHandlerDialogs {
                     img.sprite.color = reason.color
                     img.uiImage.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 420f) {
                         if (reason is SimulationBlockReason.MissingHull)
-                            it.addPara("Hull id '${dataMember?.variantData?.hullId}' could not be found.\nThe mod which added this hull may be missing or an update may have removed this hull", 0f)
+                            it.addPara(FBTxt.txt("sim_block_missing_hull_detail", dataMember?.variantData?.hullId), 0f)
                         else
                             it.addPara(reason.message, 0f)
                     }
@@ -454,22 +466,8 @@ object HotkeyHandlerDialogs {
                     val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
                     boxedImage.position.inTL(x, y)
                     boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
-                    val variant = member.variant
-                    variant.fittedWeaponSlots.toList().forEach { slotID ->
-                        val weaponID = variant.getWeaponId(slotID)
-                        if (weaponID in unknownContents.weaponIds)
-                            variant.clearSlot(slotID)
-                    }
-                    variant.fittedWings.toList().forEach { wingID ->
-                        if (wingID in unknownContents.wingIds)
-                            variant.wings.remove(wingID)
-                    }
-                    variant.hullMods.toList().forEach { hullModID ->
-                        if (variant.hullSpec.isBuiltInMod(hullModID))
-                            return@forEach
-                        if (hullModID in unknownContents.hullModIds)
-                            variant.completelyRemoveMod(hullModID)
-                    }
+
+                    removeUnknownContent(member, unknownContents)
                 }
             }
 
@@ -495,7 +493,7 @@ object HotkeyHandlerDialogs {
                 val officerUI = officerPanel.createUIElement(leftWidth, officerPanelHeight, false)
 
                 officerUI.addSectionHeading(
-                    "Officer Data",
+                    FBTxt.txt("officer_data"),
                     factionColor,
                     darkColor,
                     Alignment.MID,
@@ -607,7 +605,7 @@ object HotkeyHandlerDialogs {
                 // =========================
                 if (member.isFlagship) {
                     skillsUI.addSectionHeading(
-                        "Admiral Skills",
+                        FBTxt.txt("admiral_skills"),
                         factionColor,
                         darkColor,
                         Alignment.MID,
@@ -641,7 +639,7 @@ object HotkeyHandlerDialogs {
                 // COMBAT SKILLS
                 // =========================
                 skillsUI.addSectionHeading(
-                    "Combat Skills",
+                    FBTxt.txt("combat_skills"),
                     factionColor,
                     darkColor,
                     Alignment.MID,
@@ -675,12 +673,13 @@ object HotkeyHandlerDialogs {
 
             leftPanel.addUIElement(leftRoot).inTL(0f, 0f)
 
+
             // =========================
             // RIGHT PANEL
             // =========================
-            val rightPanel = dialog.panel.createCustomPanel(rightWidth, height, null)
+            val rightPanel = dialog.panel.createCustomPanel(rightWidth, ui.height, null)
 
-            val rightUI = rightPanel.createUIElement(rightWidth - 30f, height, false)
+            val rightUI = rightPanel.createUIElement(rightWidth - 30f, ui.height, false)
 
             val tempModified = mutableListOf<SkillSpecAPI>()
 
@@ -702,7 +701,7 @@ object HotkeyHandlerDialogs {
             val rightUIAdmiral = rightPanel.createUIElement(rightWidth - 20f, rightUIAdmiralHeight, true)
             if (fleet.commander != null) {
                 rightUIAdmiral.addSectionHeading(
-                    "Admiral Skills",
+                    FBTxt.txt("admiral_skills"),
                     factionColor,
                     darkColor,
                     Alignment.MID,
@@ -719,7 +718,7 @@ object HotkeyHandlerDialogs {
                 spec.isCombatOfficerSkill = !spec.isCombatOfficerSkill
             }
 
-            rightUI.addSectionHeading("Summary", factionColor, darkColor, Alignment.MID, 10f)
+            rightUI.addSectionHeading(FBTxt.txt("summary"), factionColor, darkColor, Alignment.MID, 10f)
 
             val allowedMemberList =
                 if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(VariantUtils.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
@@ -745,16 +744,16 @@ object HotkeyHandlerDialogs {
                 memberCount.toString(), officerCount.toString()
             )
             rightUI.addPara(
-                "Deployment Points: %s",
+                FBTxt.txt("deployment_points"),
                 5f,
                 Misc.getHighlightColor(),
                 dp.toInt().toString()
             )
 
-            rightUI.addSectionHeading("Actions", factionColor, darkColor, Alignment.MID, 10f)
+            rightUI.addSectionHeading(FBTxt.txt("actions"), factionColor, darkColor, Alignment.MID, 7f)
 
             val simulatedBattleButton = rightUI.addButton(
-                "Simulated Battle",
+                FBTxt.txt("simulated_battle"),
                 null, factionColor, darkColor,
                 rightWidth - 40f,
                 30f,
@@ -800,38 +799,56 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            val fightToTheLastButton = rightUI.addToggle("Fight to the last", fightToTheLast, textColor = brightColor).apply {
+            val fightToTheLastButton = rightUI.addToggle(
+                FBTxt.txt("ui.toggle.fight_to_last"),
+                fightToTheLast,
+                textColor = brightColor
+            ).apply {
                 onClick {
                     fightToTheLast = !fightToTheLast
                     rebuildUI(totalHeight, listUI)
                 }
                 addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
-                    it.addPara("If checked; no members of the fleet will retreat", 0f)
+                    it.addPara(FBTxt.txt("ui.toggle.fight_to_last.tooltip"), 0f)
                 }
                 position.belowLeft(simulatedBattleButton, 2f)
             }
-            rightUI.addToggle("Allow Objectives", allowObjectives, textColor = brightColor).apply {
+
+            rightUI.addToggle(
+                FBTxt.txt("ui.toggle.allow_objectives"),
+                allowObjectives,
+                textColor = brightColor
+            ).apply {
                 onClick {
                     allowObjectives = !allowObjectives
                     rebuildUI(totalHeight, listUI)
                 }
                 addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
-                    it.addPara("If unchecked; objectives wont be allowed in the simulation", 0f)
+                    it.addPara(FBTxt.txt("ui.toggle.allow_objectives.tooltip"), 0f)
                 }
                 position.belowMid(simulatedBattleButton, 2f)
             }
-            rightUI.addToggle("Force Objectives", forceObjectives, textColor = brightColor).apply {
+
+            rightUI.addToggle(
+                FBTxt.txt("ui.toggle.force_objectives"),
+                forceObjectives,
+                textColor = brightColor
+            ).apply {
                 onClick {
                     forceObjectives = !forceObjectives
                     rebuildUI(totalHeight, listUI)
                 }
                 addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
-                    it.addPara("If checked; objectives will always be present", 0f)
+                    it.addPara(FBTxt.txt("ui.toggle.force_objectives.tooltip"), 0f)
                 }
                 position.belowRight(simulatedBattleButton, 2f)
             }
 
-            rightUI.addToggle("Include officers", includeOfficers, textColor = brightColor).apply {
+            rightUI.addToggle(
+                FBTxt.txt("ui.toggle.include_officers"),
+                includeOfficers,
+                textColor = brightColor
+            ).apply {
                 onClick {
                     includeOfficers = !includeOfficers
                     rebuildUI(totalHeight, listUI)
@@ -839,35 +856,42 @@ object HotkeyHandlerDialogs {
                 position.belowLeft(fightToTheLastButton, 3f)
             }
 
-            rightUI.addToggle("Include commander as commander", includeCommanderAsCommander, textColor = brightColor).apply {
+            rightUI.addToggle(
+                FBTxt.txt("ui.toggle.include_commander"),
+                includeCommanderAsCommander,
+                textColor = brightColor
+            ).apply {
                 onClick {
                     includeCommanderAsCommander = !includeCommanderAsCommander
                     rebuildUI(totalHeight, listUI)
                 }
                 addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
-                    it.addPara("If unchecked; the commander will be unset as the commander of the fleet. Their admiral skills will not apply", 0f)
+                    it.addPara(FBTxt.txt("ui.toggle.include_commander.tooltip"), 0f)
                 }
             }
 
-            rightUI.addToggle("Fulfill needs and repair", repairAndSetMaxCR, textColor = brightColor).onClick {
+            rightUI.addToggle(
+                FBTxt.txt("ui.toggle.repair_and_cr"),
+                repairAndSetMaxCR,
+                textColor = brightColor
+            ).onClick {
                 repairAndSetMaxCR = !repairAndSetMaxCR
                 rebuildUI(totalHeight, listUI)
             }
 
-            rightUI.addToggle("Set aggression doctrine", setAggressionDoctrine, textColor = brightColor).onClick {
+            rightUI.addToggle(
+                FBTxt.txt("ui.toggle.set_aggression"),
+                setAggressionDoctrine,
+                textColor = brightColor
+            ).onClick {
                 setAggressionDoctrine = !setAggressionDoctrine
                 rebuildUI(totalHeight, listUI)
             }
 
-            /*rightUI.addToggle("Exclude ships from missing mods", excludeMissingShips, textColor = brightColor).onClick {
-                excludeMissingShips = !excludeMissingShips
-                rebuildUI(totalHeight, listUI)
-            }*/
-
             if (FBSettings.cheatsEnabled()) {
-                rightUI.addSectionHeading("Cheats", factionColor, darkColor, Alignment.MID, 5f)
+                rightUI.addSectionHeading(FBTxt.txt("cheats"), factionColor, darkColor, Alignment.MID, 5f)
                 rightUI.addButton(
-                    "Spawn Fleet Into Campaign",
+                    FBTxt.txt("spawn_fleet_into_campaign"),
                     null, factionColor, darkColor,
                     rightWidth - 40f,
                     30f,
@@ -885,7 +909,7 @@ object HotkeyHandlerDialogs {
                     dialog.dismiss()
                 }
                 rightUI.addButton(
-                    "Replace Player Fleet With This Fleet",
+                    FBTxt.txt("replace_player_fleet_with_this_fleet"),
                     null, factionColor, darkColor,
                     rightWidth - 40f,
                     30f,
@@ -911,7 +935,7 @@ object HotkeyHandlerDialogs {
                     dialog.dismiss()
                 }
                 rightUI.addButton(
-                    "Append To Player Fleet",
+                    FBTxt.txt("append_to_player_fleet"),
                     null, factionColor, darkColor,
                     rightWidth - 40f,
                     30f,
@@ -987,7 +1011,7 @@ object HotkeyHandlerDialogs {
         return true
     }
 
-    private fun pasteFleetDialogLeftPanel(): UIPanelAPI {
+    /*private fun pasteFleetDialogLeftPanel(leftPanel: CustomPanelAPI, fleetData: FleetDataAPI, isPressedMemberID: String?): UIPanelAPI {
 
     }
 
@@ -997,6 +1021,24 @@ object HotkeyHandlerDialogs {
 
     private fun pasteFleetDialogRightPanel(): UIPanelAPI {
 
+    }*/
+
+    private fun removeUnknownContent(member: FleetMemberAPI, unknown: MissingContent) {
+        val variant = member.variant
+
+        variant.fittedWeaponSlots.toList().forEach { slot ->
+            if (variant.getWeaponId(slot) in unknown.weaponIds) {
+                variant.clearSlot(slot)
+            }
+        }
+
+        variant.fittedWings.removeAll { it in unknown.wingIds }
+
+        variant.hullMods.toList().forEach {
+            if (!variant.hullSpec.isBuiltInMod(it) && it in unknown.hullModIds) {
+                variant.completelyRemoveMod(it)
+            }
+        }
     }
 
     fun createOfficerCreatorDialog() {
