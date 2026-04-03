@@ -3,6 +3,7 @@ package fleetBuilder.features.hotkeyHandler
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
+import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.BattleCreationContext
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -43,6 +44,7 @@ import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
@@ -228,7 +230,7 @@ object HotkeyHandlerDialogs {
         inputData: DataFleet.ParsedFleetData,
         inputMissing: MissingContent,
         allowSimulationAnyway: Boolean = false
-    ): Boolean {
+    ): DialogPanel {
         val sector = Global.getSector()
         val data = inputData.copy(
             members = inputData.members.map { member ->
@@ -237,7 +239,6 @@ object HotkeyHandlerDialogs {
         )
 
         val dialog = DialogPanel()
-        dialog.makeCampaignDummyDialogHideUI = true
 
         val brightColor = Global.getSettings().brightPlayerColor
         val factionColor = Global.getSettings().basePlayerColor//faction.baseUIColor
@@ -784,18 +785,36 @@ object HotkeyHandlerDialogs {
                     battleContext.playerCommandPoints = 5
 
                     val campUI = Global.getSector().campaignUI
-                    if (campUI.currentInteractionDialog == null && campUI.getActualCurrentTab() != null) { // Tab open, but not at interaction?
-                        // Force close the dialog, and the current tab
-                        dialog.forceDismiss()
-                        campUI.safeInvoke("setNextTransitionFast", true)
-                        val coreUI = ReflectionMisc.getCoreUI()
-                        coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
+                    if (campUI.currentInteractionDialog == null) { // not at interaction?
+                        //Campaign Dialog Shenanigans
+                        val coreUITadId: CoreUITabId? = campUI.getActualCurrentTab()
+                        if (coreUITadId == CoreUITabId.FLEET) {
+                            dialog.forceDismiss()
 
-                        //Re-open the dialog, will also open the dummy dialog.
-                        CampaignDeferredActionPlugin.performLater(1f) {
-                            pasteFleet(inputData, inputMissing)
-                            RecentBattleReplay.simulateBattle(battleContext)
+                            campUI.safeInvoke("setNextTransitionFast", true)
+                            val coreUI = ReflectionMisc.getCoreUI()
+                            coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
                         }
+
+                        var dialog: DialogPanel? = dialog
+                        if (coreUITadId == CoreUITabId.FLEET) {
+                            dialog = pasteFleet(inputData, inputMissing)
+                        }
+                        CampaignUtils.closeCampaignDummyDialog()
+                        CampaignUtils.openCampaignDummyDialog(true)
+                        RecentBattleReplay.simulateBattle(battleContext)
+
+                        CampaignDeferredActionPlugin.performOnPlayerBattleFinish {
+                            CampaignUtils.closeCampaignDummyDialog()
+                            Global.getSector().isPaused = true
+                            if (coreUITadId == CoreUITabId.FLEET) {
+                                campUI.safeInvoke("setNextTransitionFast", true)
+                                campUI.showCoreUITab(coreUITadId)
+                                dialog?.parent?.bringComponentToTop(dialog.panel)
+                            }
+                            CampaignUtils.openCampaignDummyDialog(false)
+                        }
+
                     } else {
                         RecentBattleReplay.simulateBattle(battleContext)
                     }
@@ -1013,7 +1032,7 @@ object HotkeyHandlerDialogs {
         //dialog.addCloseButton()
         dialog.addActionButtons(addConfirmButton = false, alignment = Alignment.RMID)
 
-        return true
+        return dialog
     }
 
     /*private fun pasteFleetDialogLeftPanel(leftPanel: CustomPanelAPI, fleetData: FleetDataAPI, isPressedMemberID: String?): UIPanelAPI {

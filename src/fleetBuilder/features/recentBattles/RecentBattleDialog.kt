@@ -35,7 +35,6 @@ object RecentBattleDialog {
         sortNewestFirst: Boolean
     ) {
         val dialog = DialogPanel()
-        dialog.makeCampaignDummyDialogHideUI = true
 
         dialog.show(width = 1200f, height = 800f) { ui ->
             val allEntries = directory.getRawFleetEntries().values.toList()

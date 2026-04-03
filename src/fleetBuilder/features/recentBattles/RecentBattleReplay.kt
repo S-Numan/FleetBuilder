@@ -23,7 +23,7 @@ import fleetBuilder.util.kotlin.safeInvoke
 
 object RecentBattleReplay {
 
-    const val isSimulatorKey = "FB_isSimulator"
+    const val IS_SIMULATOR_KEY = "FB_isSimulator"
 
     fun simulateBattle(
         bcc: BattleCreationContext,
@@ -56,7 +56,7 @@ object RecentBattleReplay {
                 //dialog.safeInvoke("dismiss", 0)
 
                 val engine = CombatEngine.getInstance()
-                engine.customData.remove(isSimulatorKey)
+                engine.customData.remove(IS_SIMULATOR_KEY)
 
                 for ((member, captain) in origCaptains) {
                     if (captain != null) {
@@ -88,7 +88,7 @@ object RecentBattleReplay {
             campUI.safeInvoke("setEncounterDialog", campUI.currentInteractionDialog)
             campUI!!.startBattle(bcc)
 
-            engine.customData[isSimulatorKey] = true
+            engine.customData[IS_SIMULATOR_KEY] = true
 
             CombatDeferredActionPlugin.performOnPlayerBattleStart {
                 val engine = CombatEngine.getInstance()

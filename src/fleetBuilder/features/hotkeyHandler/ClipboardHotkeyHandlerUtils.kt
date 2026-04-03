@@ -43,6 +43,7 @@ import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
+import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
@@ -397,7 +398,7 @@ internal object ClipboardHotkeyHandlerUtils {
     fun pasteFleet(
         data: Any,
         missing: MissingContent = MissingContent()
-    ): Boolean {
+    ): DialogPanel? {
         var newData = data
         if (newData !is DataFleet.ParsedFleetData) {
             fun hackTogetherFleet(member: FleetMemberAPI) {
@@ -419,10 +420,10 @@ internal object ClipboardHotkeyHandlerUtils {
                 hackTogetherFleet(member)
             } else if (newData is DataPerson.ParsedPersonData) {
                 DisplayMessage.showMessage(FBTxt.txt("campaign_officer_spawn"), Color.YELLOW)
-                return false
+                return null
             } else {
                 DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_campaign_paste"), Color.YELLOW)
-                return false
+                return null
             }
         }
 
