@@ -1,4 +1,4 @@
-## 1.32.6
+## 1.33.0
 ### Additions
 - Show Tags setting for the autofit tooltips.
 - Added the CTRL+F hotkey to every filter. Note that due to technical reasons, the fleet filter is slightly scuffed. @Numan in discord or make a forum post if you have any issues
