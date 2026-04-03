@@ -17,7 +17,7 @@ import fleetBuilder.serialization.member.CompressedMember
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.person.DataPerson
-import fleetBuilder.util.FBTxt
+import fleetBuilder.core.FBTxt
 import fleetBuilder.util.api.FleetUtils.getAllSourceModsFromFleet
 import fleetBuilder.util.lib.CompressionUtil
 import java.util.*

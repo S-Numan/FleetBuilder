@@ -3,11 +3,19 @@ package fleetBuilder.features.filters.filterPanels
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShieldAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.*
+import fleetBuilder.core.FBTxt
 import fleetBuilder.otherMods.starficz.*
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.kotlin.allDMods
+import fleetBuilder.util.kotlin.allSMods
+import fleetBuilder.util.kotlin.getShipNameWithoutPrefix
+import fleetBuilder.util.kotlin.safeInvoke
+import org.lwjgl.input.Keyboard
+import org.lwjgl.input.Mouse
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
 
@@ -18,7 +26,7 @@ class FleetFilterPanel(
     width = fleetSidePanel.getChildrenCopy().minByOrNull { it.x }?.width ?: 32f,
     height = height,
     parent = fleetSidePanel,
-    defaultText = "Search for a ship"
+    defaultText = FBTxt.txt("ctrl_f_to_search")
 ) {
 
     private val yPad = 5f
@@ -66,6 +74,7 @@ class FleetFilterPanel(
                         "cruiser\n" +
                         "capital\n" +
                         "automated\n" +
+                        "modules (If the ship has modules\n" +
                         "marines / transport\n" +
                         "fuel / tanker\n" +
                         "crew / liner\n" +
@@ -91,12 +100,22 @@ class FleetFilterPanel(
             mainPanel.opacity = 1f
         }
 
-        if (textField.hasFocus()) {
-            if (textField.text != defaultText) {//On focus
+        if (textField.hasFocus() || !textField.enabled) {
+            if (textField.text != defaultText) { // On focus
                 val fleetPanel = ReflectionMisc.getFleetPanel() ?: return
                 //Unfocus textField if mouse is inside fleetPanel
                 if (Global.getSettings().mouseX > fleetPanel.x) {
-                    textField.safeInvoke("releaseFocus", null)
+                    if (textField.enabled && textField.hasFocus()) {
+                        //ReflectionMisc.updateFleetPanelContents()
+                        textField.safeInvoke("releaseFocus", null)
+                        textField.enabled = false
+                    }
+                } else if (!textField.hasFocus()) {
+                    textField.enabled = true
+                    val text = textField.text
+                    textField.text = defaultText
+                    textField.grabFocus(false)
+                    textField.text = text
                 }
             }
         }
@@ -104,12 +123,48 @@ class FleetFilterPanel(
         super.advance(amount)
     }
 
+    override fun processInput(events: List<InputEventAPI>) {
+        super.processInput(events)
+
+        if (textField.enabled)
+            return
+        if (Mouse.isButtonDown(0)) {
+            textField.enabled = true
+            return
+        }
+        events.forEach { event ->
+            if (event.isConsumed) return@forEach
+            if (event.isKeyDownEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
+                textField.enabled = true
+                resetText()
+                ReflectionMisc.updateFleetPanelContents()
+                event.consume()
+                return
+            }
+        }
+        textField.enabled = true
+        textField.grabFocus(false)
+        textField.safeInvoke("processInput", events)
+        textField.safeInvoke("releaseFocus", null)
+        textField.enabled = false
+    }
+
+    override fun handleFocus() {
+        if (!textField.enabled)
+            textField.grabFocus(false)
+        super.handleFocus()
+        if (!textField.enabled)
+            textField.safeInvoke("releaseFocus", null)
+    }
+
     override fun onFilterChanged(text: String) {
         ReflectionMisc.updateFleetPanelContents()
     }
 
     override fun onMiddleMouseReset() {
+        super.onMiddleMouseReset()
         ReflectionMisc.updateFleetPanelContents()
+        textField.enabled = true
     }
 
     private fun filterFleetGrid() {
@@ -124,7 +179,7 @@ class FleetFilterPanel(
         val descriptions = parseSearchTokens(textField.text)
 
         descriptions.forEach { desc ->
-            val toRemove = mutableListOf<UIPanelAPI?>()
+            val toRemove = mutableListOf<UIPanelAPI>()
 
             items.forEach { item ->
                 val member = item?.safeInvoke("getMember") as? FleetMemberAPI ?: return@forEach
@@ -137,6 +192,7 @@ class FleetFilterPanel(
                 }
             }
 
+            //toRemove.forEach { fleetPanel.safeInvoke("removeListItemFor", it, true) }
             toRemove.forEach { fleetGrid.safeInvoke("removeItem", it) }
         }
 
@@ -149,7 +205,7 @@ class FleetFilterPanel(
             //h ullSpec.getCompatibleDLessHullId().lowercase().contains(desc) -> true
             hullSpec.hullName.lowercase().contains(desc) -> true
             getShipNameWithoutPrefix().lowercase().startsWith(desc) -> true
-            hullSpec.manufacturer.lowercase().startsWith(desc) -> true
+            hullSpec.manufacturer.lowercase().contains(desc) -> true
 
             // Types
             !(hullSpec.isCivilianNonCarrier || variant.hasHullMod("civgrade")) && !variant.hasHullMod("militarized_subsystems") && "combat".startsWith(desc) -> true
@@ -179,9 +235,11 @@ class FleetFilterPanel(
             !captain.isDefault && ("officered".startsWith(desc) || "captained".startsWith(desc)) -> true
 
             // Ship systems
-            Global.getSettings().allShipSystemSpecs.find { it.id == hullSpec.shipSystemId }?.name?.lowercase()?.startsWith(desc) == true -> true
+            Global.getSettings().allShipSystemSpecs.find { it.id == hullSpec.shipSystemId }?.name?.lowercase()?.contains(desc) == true -> true
 
-            hullSpec.shipDefenseId.isNotEmpty() && hullSpec.shipDefenseId != "phasecloak" && Global.getSettings().allShipSystemSpecs.find { it.id == hullSpec.shipDefenseId }?.name?.lowercase()?.startsWith(desc) == true -> true
+            hullSpec.shipDefenseId.isNotEmpty() && hullSpec.shipDefenseId != "phasecloak" && Global.getSettings().allShipSystemSpecs.find { it.id == hullSpec.shipDefenseId }?.name?.lowercase()?.contains(desc) == true -> true
+
+            variant.stationModules.isNotEmpty() && ("modules".startsWith(desc)) -> true
 
             else -> false
         }

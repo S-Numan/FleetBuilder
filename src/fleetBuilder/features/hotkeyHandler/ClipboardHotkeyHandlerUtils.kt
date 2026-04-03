@@ -17,9 +17,10 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.coreui.CaptainPickerDialog
+import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBSettings.commandShuttleId
 import fleetBuilder.core.FBSettings.randomPastedCosmetics
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.displayMessage.DisplayMessage.showMessage
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.doesLoadoutExist
@@ -42,16 +43,16 @@ import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
-import fleetBuilder.util.FBTxt
+import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.MemberUtils.randomizeMemberCosmetics
 import fleetBuilder.util.api.PersonUtils
-import fleetBuilder.util.getActualCurrentTab
+import fleetBuilder.util.kotlin.getActualCurrentTab
+import fleetBuilder.util.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
-import fleetBuilder.util.safeInvoke
 import java.awt.Color
 
 internal object ClipboardHotkeyHandlerUtils {
@@ -354,7 +355,7 @@ internal object ClipboardHotkeyHandlerUtils {
         }
         if (event.isRMBDownEvent) {
             if (person.isPlayer) {
-                val isShuttle = Global.getSector().playerFleet.fleetData.membersListCopy.find { it.captain === person }?.variant?.hasHullMod(commandShuttleId) == true
+                val isShuttle = Global.getSector().playerFleet.fleetData.membersListCopy.find { it.captain === person }?.variant?.hasHullMod(FBConst.COMMAND_SHUTTLE_ID) == true
 
                 /*if (event.isLMBDownEvent && isShuttle) { // Eat attempt to open captain picker dialog for shuttle. The shuttle is player only
                     event.consume()
@@ -397,7 +398,7 @@ internal object ClipboardHotkeyHandlerUtils {
     fun pasteFleet(
         data: Any,
         missing: MissingContent = MissingContent()
-    ): Boolean {
+    ): DialogPanel? {
         var newData = data
         if (newData !is DataFleet.ParsedFleetData) {
             fun hackTogetherFleet(member: FleetMemberAPI) {
@@ -419,10 +420,10 @@ internal object ClipboardHotkeyHandlerUtils {
                 hackTogetherFleet(member)
             } else if (newData is DataPerson.ParsedPersonData) {
                 DisplayMessage.showMessage(FBTxt.txt("campaign_officer_spawn"), Color.YELLOW)
-                return false
+                return null
             } else {
                 DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_campaign_paste"), Color.YELLOW)
-                return false
+                return null
             }
         }
 
@@ -503,7 +504,7 @@ internal object ClipboardHotkeyHandlerUtils {
                         FBTxt.txt("added_ship_to_submarket", shipName)
                     } else {
                         if (member.captain.faction.id != "tahlan_allmother") {
-                            member.captain.memoryWithoutUpdate.set(FBSettings.storedOfficerTag, true)
+                            member.captain.memoryWithoutUpdate.set(FBConst.STORED_OFFICER_TAG, true)
                             member.captain.memoryWithoutUpdate.set(Misc.CAPTAIN_UNREMOVABLE, true)
                         }
                         FBTxt.txt("added_ship_to_submarket_with_officer", shipName)

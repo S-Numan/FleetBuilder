@@ -91,10 +91,11 @@ selectorsPerRow,Selectors Per Row,Int,4,,"Amount of autofit loadouts you see per
 Setting this to a lower number will increase the size of your autofit options.",1,10,Autofit Menu
 showCoreGoalVariants,Show Core Goal Variants,Boolean,true,,Shows core game variants that are shown in the vanilla autofit menu,,,Autofit Menu
 showCoreNonGoalVariants,Show Core Non Goal Variants,Boolean,false,,Shows core game variants that aren’t shown in the vanila autofit menu,,,Autofit Menu
-showHiddenModsInTooltip,Show Hidden HullMods,Boolean,false,,Shows hullmods that are usually hidden in the tooltip,,,Autofit Menu
+,,,,,,,,
 reserveFirstFourAutofitSlots,Reserve First Four Slots,Boolean,true,,"Reserve the first four autofit slots, making them unable to be saved to.
 If a game or mod update adds or removes goal variants, the slot positioning would be pushed around and thus messed up. This prevents that.",,,Autofit Menu
-,,,,,,,,
+showHiddenModsInTooltip,Show Hidden HullMods,Boolean,false,,Shows hullmods that are usually hidden in the tooltip,,,Autofit Menu
+showTagsInTooltip,Show Tags,Boolean,false,,Shows tags that are usually hidden in the tooltip,,,Autofit Menu
 ,,,,,,,,
 autofitDevHeader,Cheats,Header,Cheats,,,,,Autofit Menu
 forceAutofit,Overwrite Variant on Autofit,Boolean,false,,"Enabling this causes an autofit to remove all contents of your current variant and replace it with the selected one. At no cost.

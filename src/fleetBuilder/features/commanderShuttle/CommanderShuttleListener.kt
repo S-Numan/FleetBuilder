@@ -8,9 +8,9 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBConst
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.FBTxt
 import java.awt.Color
 
 internal class CommanderShuttleListener :
@@ -43,10 +43,7 @@ internal class CommanderShuttleListener :
 
                 makeCommanderShuttleNonCombat(playerFleet)
 
-                if (playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(
-                        FBSettings.commandShuttleId
-                    )
-                ) {
+                if (playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
                     //No getting around jumping with only the command shuttle
 
                     if (interactionDialog.plugin is JumpPointInteractionDialogPluginImpl
@@ -67,7 +64,7 @@ internal class CommanderShuttleListener :
 
         val playerFleet = Global.getSector()?.playerFleet ?: return
 
-        if (prevLocationSetter != null && playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(FBSettings.commandShuttleId)) {
+        if (prevLocationSetter != null && playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
             playerFleet.containingLocation.removeEntity(playerFleet)
             prevLocationSetter!!.addEntity(playerFleet)
 
@@ -107,7 +104,7 @@ internal class CommanderShuttleListener :
 
     private fun makeCommanderShuttleNonCombat(playerFleet: CampaignFleetAPI) {
         for (member in playerFleet.fleetData.membersListCopy) {
-            if (member.variant.hasHullMod(FBSettings.commandShuttleId)) {
+            if (member.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
                 member.repairTracker.isMothballed = true
             }
         }
@@ -115,7 +112,7 @@ internal class CommanderShuttleListener :
 
     private fun makeCommanderShuttleGood(playerFleet: CampaignFleetAPI) {
         for (member in playerFleet.fleetData.membersListCopy) {
-            if (member.repairTracker.isMothballed && member.variant.hasHullMod(FBSettings.commandShuttleId)) {
+            if (member.repairTracker.isMothballed && member.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
                 member.repairTracker.isMothballed = false
                 member.repairTracker.cr = member.repairTracker.maxCR
                 member.stats.fuelUseMod.flatBonus = 0f
@@ -132,7 +129,7 @@ internal class CommanderShuttleListener :
 
         if (transaction.shipsSold.isNotEmpty()) {
             val member = transaction.shipsSold.first().member
-            if (member.variant.hasHullMod(FBSettings.commandShuttleId)) {
+            if (member.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
                 transaction.submarket.cargo.mothballedShips.removeFleetMember(member)
 
                 if (transaction.creditValue > 0) {

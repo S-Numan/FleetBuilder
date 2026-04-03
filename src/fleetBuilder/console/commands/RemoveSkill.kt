@@ -1,7 +1,7 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.FBTxt
+import fleetBuilder.core.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext

@@ -7,7 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.DataMember
@@ -24,7 +24,6 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getErrorVariantHullID
 import fleetBuilder.util.api.PersonUtils
-import fleetBuilder.util.api.VariantUtils
 import java.util.*
 
 object DataFleet {
@@ -103,18 +102,20 @@ object DataFleet {
         val filteredMembers = data.members.mapNotNull { member ->
             val variantData = member.variantData
 
-            // Exclude by variant or hull ID
+            // Exclude by
             if (variantData?.hullId in settings.excludeMembersWithHullID ||
                 member.id in settings.excludeMembersWithID ||
-                variantData?.allHullMods()?.contains(FBSettings.commandShuttleId) == true
+                variantData?.tags?.contains(FBConst.NO_COPY_TAG) == true
+                || variantData?.let { LookupUtils.getHullSpec(it.hullId)?.hasTag(FBConst.NO_COPY_TAG) == true } == true
             ) return@mapNotNull null
 
             var processedMember = member
 
             // Commander handling
             if (member.isFlagship && (!settings.includeCommanderAsOfficer || !settings.memberSettings.includeOfficer)) {
-                if (settings.includeCommanderSetFlagship &&
-                    member.personData != null
+                if (settings.includeCommanderSetFlagship
+                    && member.personData != null
+                    && !member.personData.tags.contains(FBConst.NO_COPY_TAG)
                 ) {
                     filteredCommander = filterParsedPersonData(
                         member.personData,
@@ -125,7 +126,9 @@ object DataFleet {
                 processedMember = processedMember.copy(personData = null, isFlagship = false)
             }
             // Officer exclusion
-            else if (!settings.memberSettings.includeOfficer) {
+            else if (!settings.memberSettings.includeOfficer
+                || processedMember.personData?.tags?.contains(FBConst.NO_COPY_TAG) == true
+            ) {
                 processedMember = processedMember.copy(personData = null)
             }
             // Remove flagship if set to be not included
@@ -197,7 +200,7 @@ object DataFleet {
             }
 
             // Error-tagged variant
-            if (VariantUtils.FB_ERROR_TAG in variantData.tags) {
+            if (FBConst.FB_ERROR_TAG in variantData.tags) {
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
             }
 

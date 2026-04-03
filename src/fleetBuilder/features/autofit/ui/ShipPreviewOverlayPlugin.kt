@@ -7,12 +7,12 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.core.FBConst
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.allDMods
-import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.getEffectiveHullId
+import fleetBuilder.util.kotlin.allDMods
+import fleetBuilder.util.kotlin.getEffectiveHullId
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
@@ -33,7 +33,7 @@ class ShipPreviewOverlayPlugin(
     val missingContent: MissingContent = MissingContent()
 ) : StarUIPanelPlugin() {
     val hasMissingElements: Boolean by lazy { missingContent.weaponIds.isNotEmpty() || missingContent.hullModIds.isNotEmpty() || missingContent.wingIds.isNotEmpty() }
-    val isShipMissing: Boolean = member.variant.hasTag(VariantUtils.FB_ERROR_TAG)
+    val isShipMissing: Boolean = member.variant.hasTag(FBConst.FB_ERROR_TAG)
 
     var boxedUIShipPreview: BoxedUIShipPreview? = null
 

@@ -12,11 +12,11 @@ import fleetBuilder.serialization.member.DataMember.buildMemberFull
 import fleetBuilder.serialization.member.DataMember.getMemberDataFromMember
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.variant.CompressedVariant
-import fleetBuilder.util.FBTxt
+import fleetBuilder.core.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.lib.CompressionUtil
-import fleetBuilder.util.roundToDecimals
+import fleetBuilder.util.kotlin.roundToDecimals
 import java.util.Random
 
 object CompressedMember {

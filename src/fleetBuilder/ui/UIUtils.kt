@@ -8,7 +8,7 @@ import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.width
 import fleetBuilder.otherMods.starficz.x
 import fleetBuilder.otherMods.starficz.y
-import fleetBuilder.util.withAlphaMult
+import fleetBuilder.util.kotlin.withAlphaMult
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef

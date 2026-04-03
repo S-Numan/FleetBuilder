@@ -2,10 +2,10 @@ package fleetBuilder.core
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
-import com.fs.starfarer.api.impl.campaign.ids.Tags
+import fleetBuilder.core.FBConst.PRIMARY_DIR
 import fleetBuilder.core.listener.ModSettingsListener
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.containsString
+import fleetBuilder.util.kotlin.containsString
 import lunalib.lunaSettings.LunaSettings
 import org.apache.log4j.Level
 import org.json.JSONArray
@@ -23,7 +23,7 @@ object FBSettings {
     }
 
     fun setNeverSaveHullmods() {
-        val neverHullModsPath = "${PRIMARYDIR}HullModsToNeverSave"
+        val neverHullModsPath = "${PRIMARY_DIR}HullModsToNeverSave"
         val neverHullModsJson = try {
             if (Global.getSettings().fileExistsInCommon(neverHullModsPath)) {
                 Global.getSettings().readJSONFromCommon(neverHullModsPath, false)
@@ -56,25 +56,18 @@ object FBSettings {
             .toSet()
     }
 
-    const val PRIMARYDIR = "FleetBuilder/"
-    const val PACKDIR = (PRIMARYDIR + "LoadoutPacks/")
-    const val FLEETDIR = (PRIMARYDIR + "Fleets/")
-    const val DIRECTORYCONFIGNAME = "directory"
-
     private var hullModsToNeverSave = setOf<String>()
 
     fun getHullModsToNeverSave(): Set<String> = hullModsToNeverSave
 
-    fun getConfiguredVariantSettings(): VariantSettings {
+    fun getConfiguredAutofitSaveSettings(): VariantSettings {
         return VariantSettings().apply {
             applySMods = saveSMods
             includeDMods = saveDMods
             includeHiddenMods = saveHiddenMods
-            excludeTagsWithID = getDefaultExcludeVariantTags()
+            excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
         }
     }
-
-    fun getDefaultExcludeVariantTags(): MutableSet<String> = mutableSetOf(Tags.SHIP_RECOVERABLE, Tags.TAG_RETAIN_SMODS_ON_RECOVERY, Tags.TAG_NO_AUTOFIT, Tags.VARIANT_CONSISTENT_WEAPON_DROPS)
 
     private lateinit var modSpec: ModSpecAPI
     fun getModSpec(): ModSpecAPI = modSpec
@@ -129,10 +122,6 @@ object FBSettings {
 
     var fleetScreenFilter = false
 
-    val commandShuttleId = "FB_commandershuttle"
-    val storedOfficerTag = "\$FB_stored_officer"
-    val noCopyTag = "FB_no_copy"
-
     var isConsoleModEnabled = false
 
     var storeOfficersInCargo = false
@@ -158,6 +147,8 @@ object FBSettings {
     var reserveFirstFourAutofitSlots = true
 
     var recentBattleTracker = false
+
+    var showTagsInTooltip = false
 
     private var unassignPlayer = false
     fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()

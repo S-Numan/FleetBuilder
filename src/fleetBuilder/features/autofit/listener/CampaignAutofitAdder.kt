@@ -8,8 +8,8 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.FBSettings
 import fleetBuilder.features.autofit.ui.AutofitPanelCreator
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.getActualCurrentTab
+import fleetBuilder.util.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.onClick

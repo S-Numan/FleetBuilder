@@ -80,6 +80,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             FBSettings.autoMothballRecoveredShips = getBoolean(modID, "autoMothballRecoveredShips")!!
             FBSettings.transponderOffInHyperspace = getBoolean(modID, "transponderOffInHyperspace")!!
             FBSettings.recentBattleTracker = getBoolean(modID, "recentBattleTracker")!!
+            FBSettings.showTagsInTooltip = getBoolean(modID, "showTagsInTooltip")!!
 
             FBSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
 

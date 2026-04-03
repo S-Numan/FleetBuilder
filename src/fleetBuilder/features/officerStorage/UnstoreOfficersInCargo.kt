@@ -5,11 +5,12 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.FBTxt
-import fleetBuilder.util.getActualCurrentTab
-import fleetBuilder.util.getAssignedOfficers
+import fleetBuilder.util.kotlin.getActualCurrentTab
+import fleetBuilder.util.kotlin.getAssignedOfficers
 import org.lwjgl.input.Mouse
 import org.magiclib.kotlin.getMaxOfficers
 import org.magiclib.kotlin.isMercenary
@@ -67,8 +68,8 @@ internal class UnstoreOfficersInCargo : EveryFrameScript {
         if (Mouse.isButtonDown(0)) return // Don't do anything if the mouse is down. This is a hack as isLMBUpEvent does not work properly for the use-case I want to use it for
         val playerFleet = sector.playerFleet?.fleetData ?: return
         playerFleet.membersListCopy.forEach { member ->
-            if (member != null && member.captain != null && member.captain.memoryWithoutUpdate.contains(FBSettings.storedOfficerTag)) {
-                member.captain.memoryWithoutUpdate.unset(FBSettings.storedOfficerTag)
+            if (member != null && member.captain != null && member.captain.memoryWithoutUpdate.contains(FBConst.STORED_OFFICER_TAG)) {
+                member.captain.memoryWithoutUpdate.unset(FBConst.STORED_OFFICER_TAG)
                 member.captain.memoryWithoutUpdate.unset(Misc.CAPTAIN_UNREMOVABLE)
 
                 if (!member.captain.isDefault && !member.captain.isAICore) {

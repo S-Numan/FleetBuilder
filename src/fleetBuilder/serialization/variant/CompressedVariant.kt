@@ -11,11 +11,11 @@ import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.util.FBTxt
+import fleetBuilder.core.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.CompressionUtil
-import fleetBuilder.util.toBinary
+import fleetBuilder.util.kotlin.toBinary
 
 object CompressedVariant {
     fun isCompressedVariant(comp: String): Boolean {

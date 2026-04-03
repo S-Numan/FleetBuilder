@@ -8,8 +8,8 @@ import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
 import fleetBuilder.serialization.variant.JSONVariant.addVariantSourceModsToJson
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.serialization.variant.JSONVariant.saveVariantToJson
-import fleetBuilder.util.FBMisc
-import fleetBuilder.util.roundToDecimals
+import fleetBuilder.core.FBMisc
+import fleetBuilder.util.kotlin.roundToDecimals
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
 import java.util.Random

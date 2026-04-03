@@ -4,23 +4,23 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.VariantSource
+import fleetBuilder.core.FBConst.DIRECTORY_CONFIG_FILE_NAME
+import fleetBuilder.core.FBConst.FLEET_DIR
+import fleetBuilder.core.FBConst.LOADOUT_DIR
 import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBSettings.DIRECTORYCONFIGNAME
-import fleetBuilder.core.FBSettings.FLEETDIR
-import fleetBuilder.core.FBSettings.PACKDIR
 import fleetBuilder.core.FBSettings.defaultPrefix
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitSpec
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
-import fleetBuilder.util.getCompatibleDLessHullId
+import fleetBuilder.util.kotlin.getCompatibleDLessHullId
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -45,20 +45,20 @@ object ShipDirectoryService {
         val json = JSONObject()
         json.put("description", FBTxt.txt("default_directory_default_description"))
         json.put("name", FBTxt.txt("default_directory_default_name"))
-        Global.getSettings().writeJSONToCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME", json, false)
+        Global.getSettings().writeJSONToCommon("$LOADOUT_DIR$defaultPrefix/$DIRECTORY_CONFIG_FILE_NAME", json, false)
     }
 
     fun loadAllDirectories() {
 
         //Make directories
-        Global.getSettings().writeTextFileToCommon("$FLEETDIR/deleteme", ".")
-        Global.getSettings().deleteTextFileFromCommon("$FLEETDIR/deleteme")
-        Global.getSettings().writeTextFileToCommon("${PACKDIR}IN/deleteme", ".")
-        Global.getSettings().deleteTextFileFromCommon("${PACKDIR}IN/deleteme")
+        Global.getSettings().writeTextFileToCommon("$FLEET_DIR/deleteme", ".")
+        Global.getSettings().deleteTextFileFromCommon("$FLEET_DIR/deleteme")
+        Global.getSettings().writeTextFileToCommon("${LOADOUT_DIR}IN/deleteme", ".")
+        Global.getSettings().deleteTextFileFromCommon("${LOADOUT_DIR}IN/deleteme")
 
         // Ensure default exists
 
-        if (!Global.getSettings().fileExistsInCommon("$PACKDIR$defaultPrefix/$DIRECTORYCONFIGNAME")) {
+        if (!Global.getSettings().fileExistsInCommon("$LOADOUT_DIR$defaultPrefix/$DIRECTORY_CONFIG_FILE_NAME")) {
             setupDefaultDirectory()
         }
 
@@ -66,7 +66,7 @@ object ShipDirectoryService {
 
         // Load all prefixed ship directories
         generatePrefixes().forEach { prefix ->
-            loadShipDirectory(PACKDIR, prefix)
+            loadShipDirectory(LOADOUT_DIR, prefix)
         }
 
         // Import all import directory variants into default directory, then remove import directory.
@@ -80,7 +80,7 @@ object ShipDirectoryService {
             }
 
             shipDirectories.remove(importDirectory)
-            Global.getSettings().deleteTextFileFromCommon("${PACKDIR}IN/$DIRECTORYCONFIGNAME")
+            Global.getSettings().deleteTextFileFromCommon("${LOADOUT_DIR}IN/$DIRECTORY_CONFIG_FILE_NAME")
 
             Global.getLogger(this.javaClass).info("Deleting IN directory")
         }
@@ -88,7 +88,7 @@ object ShipDirectoryService {
 
     fun loadShipDirectory(dirPath: String, prefix: String): ShipDirectory? {
 
-        val configFilePath = "$dirPath$prefix/$DIRECTORYCONFIGNAME"
+        val configFilePath = "$dirPath$prefix/$DIRECTORY_CONFIG_FILE_NAME"
         if (!Global.getSettings().fileExistsInCommon(configFilePath)) {
             return null
         }

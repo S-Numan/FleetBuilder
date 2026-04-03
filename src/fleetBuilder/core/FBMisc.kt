@@ -1,4 +1,4 @@
-package fleetBuilder.util
+package fleetBuilder.core
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUIAPI
@@ -9,19 +9,20 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.ui.CustomPanelAPI
-import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.util.api.MemberUtils.getMaxSMods
-import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
+import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.api.MemberUtils
+import fleetBuilder.util.api.VariantUtils
+import fleetBuilder.util.kotlin.*
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
 import java.awt.Color
 import kotlin.math.min
-
 
 internal object FBMisc {
 
@@ -284,11 +285,10 @@ internal object FBMisc {
         to.setVariantDisplayName(from.displayName)
         to.source = from.source
 
-        for (slot in from.moduleSlots) {
+        from.getModules(true).forEach { (slot, fromVariant) ->
             val toVariant = runCatching { to.getModuleVariant(slot) }.getOrNull()
-            val fromVariant = runCatching { from.getModuleVariant(slot) }.getOrNull()
-            if (toVariant == null || fromVariant == null)
-                continue
+            if (toVariant == null)
+                return@forEach
 
             replaceVariantWithVariant(
                 toVariant,
@@ -597,7 +597,7 @@ internal object FBMisc {
 
         val playerSPLeft = Global.getSector().playerStats.storyPoints
 
-        var maxSMods = getMaxSMods(ship.mutableStats)
+        var maxSMods = MemberUtils.getMaxSMods(ship.mutableStats)
         val currentSMods = (baseVariant.sMods + baseVariant.sModdedBuiltIns).toSet()
         val newSMods = (loadout.sMods + loadout.sModdedBuiltIns).toSet()
         var sModsToApply = newSMods.filter { it !in currentSMods }
@@ -658,7 +658,7 @@ internal object FBMisc {
 
         var bonusXpToGrant = 0f
         sModsToApply.forEach { modID ->
-            bonusXpToGrant += getHullModBuildInBonusXP(baseVariant, modID)
+            bonusXpToGrant += VariantUtils.getHullModBuildInBonusXP(baseVariant, modID)
         }
 
         return sModsToApply to bonusXpToGrant

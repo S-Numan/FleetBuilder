@@ -15,7 +15,7 @@ import fleetBuilder.otherMods.starficz.y
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.isIdle
+import fleetBuilder.util.kotlin.isIdle
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,7 +35,6 @@ object RecentBattleDialog {
         sortNewestFirst: Boolean
     ) {
         val dialog = DialogPanel()
-        dialog.makeCampaignDummyDialogHideUI = true
 
         dialog.show(width = 1200f, height = 800f) { ui ->
             val allEntries = directory.getRawFleetEntries().values.toList()

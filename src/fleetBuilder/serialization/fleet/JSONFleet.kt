@@ -18,7 +18,7 @@ import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.JSONVariant.addVariantSourceModsToJson
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
-import fleetBuilder.util.FBMisc
+import fleetBuilder.core.FBMisc
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*

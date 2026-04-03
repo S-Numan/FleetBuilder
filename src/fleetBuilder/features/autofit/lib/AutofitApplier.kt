@@ -10,15 +10,16 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.core.FBMisc.replaceVariantWithVariant
+import fleetBuilder.core.FBMisc.sModHandlerTemp
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.FBMisc.replaceVariantWithVariant
-import fleetBuilder.util.FBMisc.sModHandlerTemp
-import fleetBuilder.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.getModules
+import fleetBuilder.util.kotlin.safeInvoke
 import java.awt.Color
 import java.util.*
 
@@ -44,7 +45,7 @@ internal object AutofitApplier {
         try {
             baseVariant.source = VariantSource.REFIT
 
-            if (baseVariant.moduleSlots != loadout.moduleSlots) {
+            if (baseVariant.getModules().keys != loadout.getModules().keys) {
                 DisplayMessage.showError("Module slots between loadout and base variant's do not match. Stopping autofit to prevent crash.")
                 return
             }
@@ -105,13 +106,9 @@ internal object AutofitApplier {
 
                 stripVaraint(baseVariant, loadout)
 
-                for (moduleSlot in baseVariant.moduleSlots) {
-                    val baseModule = baseVariant.getModuleVariant(moduleSlot)
-                    val loadoutModule = loadout.getModuleVariant(moduleSlot)
-                    if (baseModule == null)
-                        throw Exception("base ship module was null")
-                    else if (loadoutModule == null)
-                        throw Exception("loadout ship module was null")
+                baseVariant.getModules().forEach { (slot, baseModule) ->
+                    val loadoutModule = loadout.getModuleVariant(slot)
+                        ?: throw Exception("loadout ship module was null")
 
                     stripVaraint(baseModule, loadoutModule)
                 }
@@ -199,8 +196,7 @@ internal object AutofitApplier {
                     auto.doFit(baseVariant, loadout, 0, delegate)
 
                     //For some reason, vanilla starsector autofit does not fit hullmods into modules. I'm not sure why. So it has to be done ourselves.
-                    loadout.moduleSlots.forEach { slot ->
-                        val loadoutModVariant = loadout.getModuleVariant(slot)
+                    loadout.getModules().forEach { (slot, loadoutModVariant) ->
                         val baseModVariant = baseVariant.getModuleVariant(slot)
                         baseModVariant.numFluxVents = 0
                         baseModVariant.numFluxCapacitors = 0

@@ -7,7 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.PersonUtils
@@ -61,6 +61,11 @@ object DataPerson {
                 memKeys[Misc.CAPTAIN_UNREMOVABLE] = true // Then this is a built-in AI core that has had it's level +1'ed
         }
 
+        if (memKeys.containsKey(FBConst.STORED_OFFICER_TAG)) {
+            memKeys.remove(FBConst.STORED_OFFICER_TAG)
+            memKeys.remove(Misc.CAPTAIN_UNREMOVABLE)
+        }
+
         val data = ParsedPersonData(
             aiCoreId = if (person.isAICore) person.aiCoreId else "",
             first = person.name.first,
@@ -90,14 +95,13 @@ object DataPerson {
         settings: PersonSettings = PersonSettings(),
         missing: MissingContent = MissingContent()
     ): ParsedPersonData {
-
         fun shouldKeepSkill(skillId: String): Boolean {
-            val skillSpec = LookupUtils.getSkillSpec(skillId)
-
             if (skillId in settings.excludeSkillsWithID) return false
             if ((data.skills[skillId] ?: 0f) <= 0f) return false
+
+            val skillSpec = LookupUtils.getSkillSpec(skillId)
             if (skillSpec != null) {
-                if (skillSpec.hasTag(FBSettings.noCopyTag)) return false
+                if (skillSpec.hasTag(FBConst.NO_COPY_TAG)) return false
                 if (skillSpec.isAptitudeEffect) return false
             }
             return true
@@ -115,29 +119,36 @@ object DataPerson {
             "\$rankId", "\$relName", "\$rel", "\$relValue"
         )
 
-
-        val storedOfficer = data.memKeys.keys.contains(FBSettings.storedOfficerTag)
-
         // Filter memory keys
-        val filteredMemory = data.memKeys.filterKeys { key ->
-            if (key.startsWith("$#"))
-                return@filterKeys false
-            val value = data.memKeys[key]
+        val filteredMemory = if (!settings.includeMemKeys) emptyMap() else
+            data.memKeys.filterKeys { key ->
+                if (!settings.includeMemKeys) return@filterKeys false
+                if (key.startsWith("$#")) return@filterKeys false
 
-            when {
-                value !is Boolean && value !is String && value !is Int && value !is Float && value !is Double && value !is Long -> return@filterKeys false
-                key in excludeKeys -> return@filterKeys false
-                settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
-                storedOfficer && (key == Misc.CAPTAIN_UNREMOVABLE || key == FBSettings.storedOfficerTag) -> return@filterKeys false // Skip including captain unremovable if it was added just for storing the officer in storage.
-                else -> return@filterKeys true
+                val value = data.memKeys[key]
+
+                when {
+                    value !is Boolean && value !is String && value !is Int && value !is Float && value !is Double && value !is Long -> return@filterKeys false
+                    key in excludeKeys -> return@filterKeys false
+                    settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
+                    else -> return@filterKeys true
+                }
             }
+
+
+        val newSkills = if (!settings.includeSkills) {
+            missing.skillIds.clear()
+
+            emptyMap()
+        } else {
+            missing.skillIds.retainAll { shouldKeepSkill(it) }
+            // Remove filtered-out skills from missing, as they aren't missing if they are filtered out
+
+            data.skills.filter { shouldKeepSkill(it.key) }
         }
 
-        // Remove filtered-out skills from missing, as they aren't missing if they are filtered out
-        missing.skillIds.retainAll { shouldKeepSkill(it) }
-
         return data.copy(
-            skills = data.skills.filter { shouldKeepSkill(it.key) },
+            skills = newSkills,
             memKeys = filteredMemory,
             xp = if (settings.handleXpAndPoints) data.xp else 0,
             bonusXp = if (settings.handleXpAndPoints) data.bonusXp else 0,

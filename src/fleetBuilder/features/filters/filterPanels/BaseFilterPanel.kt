@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
+import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 
 abstract class BaseFilterPanel(
@@ -49,7 +50,7 @@ abstract class BaseFilterPanel(
         prevString = textField.text
     }
 
-    private fun handleFocus() {
+    protected open fun handleFocus() {
         if (textField.hasFocus()) {
             if (textField.text == defaultText) {
                 textField.text = ""
@@ -80,12 +81,25 @@ abstract class BaseFilterPanel(
 
     override fun processInput(events: List<InputEventAPI>) {
         if (Mouse.isButtonDown(2)) {
-            resetText()
             onMiddleMouseReset()
+        }
+        events.forEach { event ->
+            if (event.isConsumed) return@forEach
+
+            if (event.isCtrlDown && event.isKeyDownEvent && event.eventValue == Keyboard.KEY_F) {
+                onCtrlF(event)
+            }
         }
     }
 
-    protected open fun onMiddleMouseReset() {}
+    protected open fun onMiddleMouseReset() {
+        resetText()
+    }
+
+    protected open fun onCtrlF(event: InputEventAPI) {
+        textField.grabFocus()
+        event.consume()
+    }
 
     protected abstract fun onFilterChanged(text: String)
 

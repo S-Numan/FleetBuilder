@@ -14,9 +14,9 @@ import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
-import fleetBuilder.util.FBTxt
+import fleetBuilder.core.FBTxt
 import fleetBuilder.util.lib.CompressionUtil
-import fleetBuilder.util.roundToDecimals
+import fleetBuilder.util.kotlin.roundToDecimals
 import java.util.*
 
 object CompressedPerson {

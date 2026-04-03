@@ -1,7 +1,7 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.getUnassignedOfficers
+import fleetBuilder.util.kotlin.getUnassignedOfficers
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console

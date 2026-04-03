@@ -3,6 +3,7 @@ package fleetBuilder.features.hotkeyHandler
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
+import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.BattleCreationContext
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -20,7 +21,10 @@ import com.fs.starfarer.campaign.CharacterStats
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.ui.impl.StandardTooltipV2
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
+import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBTxt
+import fleetBuilder.core.FBTxt.txtPlural
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
@@ -39,12 +43,13 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
-import fleetBuilder.util.*
-import fleetBuilder.util.FBTxt.txtPlural
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
+import fleetBuilder.util.kotlin.*
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
@@ -62,7 +67,7 @@ object HotkeyHandlerDialogs {
         dialog.uiBorderColor = Color(255, 70, 70)
 
         dialog.show(width = 500f, height = 200f) { ui ->
-            val toggleDev = ui.addToggle(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
+            val toggleDev = ui.addCheckboxD(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
             toggleDev.setButtonPressedSound("FB_NONE")
             toggleDev.onClick {
                 Global.getSettings().isDevMode = toggleDev.isChecked
@@ -124,11 +129,11 @@ object HotkeyHandlerDialogs {
             dialog.show(width = 800f, height = 800f) { ui ->
                 ui.addPara("HERE BE DRAGONS!\nPlease note that these are very unsafe options and are very likely to cause issues.", Color.RED, 0f)
                 ui.addSpacer(8f)
-                val removeListeners = ui.addToggle("Remove all listeners")
+                val removeListeners = ui.addCheckboxD("Remove all listeners")
                 removeListeners.addTooltip(TooltipMakerAPI.TooltipLocation.BELOW, 400f) {
                     it.addPara("May crash the game", Color.RED, 0f)
                 }
-                val removeEntities = ui.addToggle("Remove all faction owned entities", isChecked = true)
+                val removeEntities = ui.addCheckboxD("Remove all faction owned entities", isChecked = true)
 
                 val tempPanel = Global.getSettings().createCustom(ui.width, ui.height - ui.heightSoFar, null)
                 val tempTMAPI = tempPanel.createUIElement(ui.width, tempPanel.height, true)
@@ -211,7 +216,7 @@ object HotkeyHandlerDialogs {
         if (allowSimulationAnyway || FBSettings.cheatsEnabled()) return null
 
         return when {
-            member.variant.hasTag(VariantUtils.FB_ERROR_TAG) -> SimulationBlockReason.MissingHull
+            member.variant.hasTag(FBConst.FB_ERROR_TAG) -> SimulationBlockReason.MissingHull
             member.hullSpec.hasTag(Tags.RESTRICTED) || member.variant.hasTag(Tags.RESTRICTED) -> SimulationBlockReason.Restricted
             member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM) -> SimulationBlockReason.NoSim
             member.isStation -> SimulationBlockReason.Station
@@ -225,7 +230,7 @@ object HotkeyHandlerDialogs {
         inputData: DataFleet.ParsedFleetData,
         inputMissing: MissingContent,
         allowSimulationAnyway: Boolean = false
-    ): Boolean {
+    ): DialogPanel {
         val sector = Global.getSector()
         val data = inputData.copy(
             members = inputData.members.map { member ->
@@ -234,7 +239,6 @@ object HotkeyHandlerDialogs {
         )
 
         val dialog = DialogPanel()
-        dialog.makeCampaignDummyDialogHideUI = true
 
         val brightColor = Global.getSettings().brightPlayerColor
         val factionColor = Global.getSettings().basePlayerColor//faction.baseUIColor
@@ -269,7 +273,7 @@ object HotkeyHandlerDialogs {
 
         fun excludeMissingShips(fleet: CampaignFleetAPI) {
             fleet.fleetData.membersListCopy.toList().forEach {
-                if (it.variant.hasTag(VariantUtils.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE"))
+                if (it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE"))
                     fleet.fleetData.removeFleetMember(it)
             }
         }
@@ -308,7 +312,7 @@ object HotkeyHandlerDialogs {
             }
 
             if (repairAndSetMaxCR)
-                FleetUtils.fullFleetRepair(fleet.fleetData)
+                FleetUtils.repairAndRestoreCR(fleet.fleetData)
 
             if (fightToTheLast)
                 fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
@@ -463,9 +467,10 @@ object HotkeyHandlerDialogs {
 
 
                 if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
-                    val boxedImage = listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size)
-                    boxedImage.position.inTL(x, y)
-                    boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
+                    listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size).apply {
+                        position.inTL(x, y)
+                        sprite.color = Color.YELLOW.setAlpha(70)
+                    }
 
                     removeUnknownContent(member, unknownContents)
                 }
@@ -572,9 +577,10 @@ object HotkeyHandlerDialogs {
                 }
 
                 if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents != null && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
-                    val boxedImage = officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize)
-                    boxedImage.position.inTL(shipX, shipY)
-                    boxedImage.sprite.color = Color.YELLOW.setAlpha(70)
+                    officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize).apply {
+                        position.inTL(shipX, shipY)
+                        sprite.color = Color.YELLOW.setAlpha(70)
+                    }
 
                     val parts = listOfNotNull(
                         FBTxt.txt("unknown_weapons").takeIf { unknownContents.weaponIds.isNotEmpty() },
@@ -721,7 +727,7 @@ object HotkeyHandlerDialogs {
             rightUI.addSectionHeading(FBTxt.txt("summary"), factionColor, darkColor, Alignment.MID, 10f)
 
             val allowedMemberList =
-                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(VariantUtils.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
+                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
                 else fleetData.membersListCopy
 
             val dp = allowedMemberList.sumOf { it.deploymentPointsCost.toDouble() }
@@ -779,18 +785,36 @@ object HotkeyHandlerDialogs {
                     battleContext.playerCommandPoints = 5
 
                     val campUI = Global.getSector().campaignUI
-                    if (campUI.currentInteractionDialog == null && campUI.getActualCurrentTab() != null) { // Tab open, but not at interaction?
-                        // Force close the dialog, and the current tab
-                        dialog.forceDismiss()
-                        campUI.safeInvoke("setNextTransitionFast", true)
-                        val coreUI = ReflectionMisc.getCoreUI()
-                        coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
+                    if (campUI.currentInteractionDialog == null) { // not at interaction?
+                        //Campaign Dialog Shenanigans
+                        val coreUITadId: CoreUITabId? = campUI.getActualCurrentTab()
+                        if (coreUITadId == CoreUITabId.FLEET) {
+                            dialog.forceDismiss()
 
-                        //Re-open the dialog, will also open the dummy dialog.
-                        CampaignDeferredActionPlugin.performLater(1f) {
-                            pasteFleet(inputData, inputMissing)
-                            RecentBattleReplay.simulateBattle(battleContext)
+                            campUI.safeInvoke("setNextTransitionFast", true)
+                            val coreUI = ReflectionMisc.getCoreUI()
+                            coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
                         }
+
+                        var dialog: DialogPanel? = dialog
+                        if (coreUITadId == CoreUITabId.FLEET) {
+                            dialog = pasteFleet(inputData, inputMissing)
+                        }
+                        CampaignUtils.closeCampaignDummyDialog()
+                        CampaignUtils.openCampaignDummyDialog(true)
+                        RecentBattleReplay.simulateBattle(battleContext)
+
+                        CampaignDeferredActionPlugin.performOnPlayerBattleFinish {
+                            CampaignUtils.closeCampaignDummyDialog()
+                            Global.getSector().isPaused = true
+                            if (coreUITadId == CoreUITabId.FLEET) {
+                                campUI.safeInvoke("setNextTransitionFast", true)
+                                campUI.showCoreUITab(coreUITadId)
+                                dialog?.parent?.bringComponentToTop(dialog.panel)
+                            }
+                            CampaignUtils.openCampaignDummyDialog(false)
+                        }
+
                     } else {
                         RecentBattleReplay.simulateBattle(battleContext)
                     }
@@ -799,7 +823,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            val fightToTheLastButton = rightUI.addToggle(
+            val fightToTheLastButton = rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.fight_to_last"),
                 fightToTheLast,
                 textColor = brightColor
@@ -814,7 +838,7 @@ object HotkeyHandlerDialogs {
                 position.belowLeft(simulatedBattleButton, 2f)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.allow_objectives"),
                 allowObjectives,
                 textColor = brightColor
@@ -829,7 +853,7 @@ object HotkeyHandlerDialogs {
                 position.belowMid(simulatedBattleButton, 2f)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.force_objectives"),
                 forceObjectives,
                 textColor = brightColor
@@ -844,7 +868,7 @@ object HotkeyHandlerDialogs {
                 position.belowRight(simulatedBattleButton, 2f)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.include_officers"),
                 includeOfficers,
                 textColor = brightColor
@@ -856,7 +880,7 @@ object HotkeyHandlerDialogs {
                 position.belowLeft(fightToTheLastButton, 3f)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.include_commander"),
                 includeCommanderAsCommander,
                 textColor = brightColor
@@ -870,7 +894,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.repair_and_cr"),
                 repairAndSetMaxCR,
                 textColor = brightColor
@@ -879,7 +903,7 @@ object HotkeyHandlerDialogs {
                 rebuildUI(totalHeight, listUI)
             }
 
-            rightUI.addToggle(
+            rightUI.addCheckboxD(
                 FBTxt.txt("ui.toggle.set_aggression"),
                 setAggressionDoctrine,
                 textColor = brightColor
@@ -1008,7 +1032,7 @@ object HotkeyHandlerDialogs {
         //dialog.addCloseButton()
         dialog.addActionButtons(addConfirmButton = false, alignment = Alignment.RMID)
 
-        return true
+        return dialog
     }
 
     /*private fun pasteFleetDialogLeftPanel(leftPanel: CustomPanelAPI, fleetData: FleetDataAPI, isPressedMemberID: String?): UIPanelAPI {
@@ -1069,8 +1093,8 @@ object HotkeyHandlerDialogs {
             val maxEliteSkills = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
             ui.addSpacer(buttonHeight / 3)
-            val maxXP = ui.addToggle(FBTxt.txt("max_xp"), isChecked = true)
-            val maxSkillPicksPerLevel = ui.addToggle(FBTxt.txt("max_skill_picks_per_level"), isChecked = true)
+            val maxXP = ui.addCheckboxD(FBTxt.txt("max_xp"), isChecked = true)
+            val maxSkillPicksPerLevel = ui.addCheckboxD(FBTxt.txt("max_skill_picks_per_level"), isChecked = true)
 
             ui.addSpacer(8f)
             ui.addPara(FBTxt.txt("personality"), 0f)
@@ -1083,7 +1107,7 @@ object HotkeyHandlerDialogs {
                 val internalName = internalPersonalities[index]
                 val externalName = externalPersonalities.getOrNull(index) ?: "ERROR"
 
-                ui.addToggle(name = externalName, data = internalName, isChecked = internalName == currentPersonality)
+                ui.addCheckboxD(name = externalName, data = internalName, isChecked = internalName == currentPersonality)
             }
 
             toggles.forEach { toggle ->

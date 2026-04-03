@@ -60,7 +60,10 @@ object FleetUtils {
         return fleet.officersCopy.map { it.person }.filter { fleet.getMemberWithCaptain(it) != null }
     }
 
-    fun fullFleetRepair(fleet: FleetDataAPI) {
+    /**
+     * Repairs all ships in the fleet and restores their CR to maximum
+     */
+    fun repairAndRestoreCR(fleet: FleetDataAPI) {
         fleet.membersListCopy.forEach { member ->
             member.status.repairFully()
 
@@ -96,7 +99,9 @@ object FleetUtils {
             val newCommanderData = dataFleet.commanderIfNoFlagship
                 ?: dataFleet.members.find { it.isFlagship }?.personData
             if (newCommanderData != null) {
-                newCommander = DataPerson.buildPersonFull(newCommanderData, settings = settings.memberSettings.personSettings)
+                newCommander = DataPerson.buildPersonFull(newCommanderData, settings = settings.memberSettings.personSettings.apply {
+                    includeMemKeys = false // Avoid including memKeys as some mods store data there.
+                })
                 copyOfficerDataTo(newCommander, playerPerson)
                 Global.getSector().characterData.setName(newCommander.name.fullName, newCommander.gender)
             }
@@ -140,6 +145,11 @@ object FleetUtils {
         }
     }
 
+    /**
+     * Fills the player fleet with crew, supplies, fuel and repairs the fleet.
+     *
+     * Any excess crew, supplies or fuel are removed.
+     */
     fun fulfillPlayerFleet() {
         val playerFleet = Global.getSector()?.playerFleet ?: return
 
@@ -180,7 +190,7 @@ object FleetUtils {
             }
         }
         // Repair
-        fullFleetRepair(playerFleet.fleetData)
+        repairAndRestoreCR(playerFleet.fleetData)
 
         updateFleetPanelContents()
     }

@@ -5,11 +5,13 @@ import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
+import fleetBuilder.core.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.*
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
+import fleetBuilder.util.kotlin.*
 import org.magiclib.kotlin.getBuildInBonusXP
 
 object VariantUtils {
@@ -136,7 +138,7 @@ object VariantUtils {
             missing.hullIds.add(variant.hullSpec.hullId)
 
         fun addMissingContents(va: ShipVariantAPI) {
-            va.forEachNonBuiltInWeapons { _, weapon ->
+            va.getNonBuiltInWeapons().forEach { (_, weapon) ->
                 if (weapon.hasTag(Tags.CODEX_UNLOCKABLE) && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.weaponId))
                     missing.weaponIds.add(weapon.weaponId)
             }
@@ -155,7 +157,7 @@ object VariantUtils {
 
         addMissingContents(variant)
 
-        variant.getModules().forEach { moduleVariant ->
+        variant.getModules().forEach { (_, moduleVariant) ->
             addMissingContents(moduleVariant)
         }
     }
@@ -188,8 +190,6 @@ object VariantUtils {
         return "${hullId}_$cleanName"
     }
 
-    const val FB_ERROR_TAG = "FB_ERR"
-
     //fun isErrorVariant(variant: ShipVariantAPI): Boolean {
     //    return variant.hasTag(errorTag)
     //}
@@ -217,7 +217,7 @@ object VariantUtils {
         else
             tempVariant.setVariantDisplayName("ERROR")
 
-        tempVariant.addTag(FB_ERROR_TAG)
+        tempVariant.addTag(FBConst.FB_ERROR_TAG)
 
         return tempVariant
     }
@@ -355,15 +355,10 @@ object VariantUtils {
         }
 
         if (options.modules) {
-            variant1.moduleSlots.forEach { slot ->
-                val moduleVariant1 = runCatching { variant1.getModuleVariant(slot) }.getOrNull()
+            variant1.getModules().forEach { (slot, moduleVariant1) ->
                 val moduleVariant2 = runCatching { variant2.getModuleVariant(slot) }.getOrNull()
                 when {
-                    moduleVariant1 == null && moduleVariant2 == null -> {
-                        // Both null.
-                    }
-
-                    moduleVariant1 == null || moduleVariant2 == null -> {
+                    moduleVariant2 == null -> {
                         return false // One null, the other isn't
                     }
 

@@ -15,11 +15,11 @@ import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
 import fleetBuilder.serialization.person.JSONPerson
-import fleetBuilder.util.FBTxt
+import fleetBuilder.core.FBTxt
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.lib.CompressionUtil
-import fleetBuilder.util.optJSONArrayToStringList
-import fleetBuilder.util.safeInvoke
+import fleetBuilder.util.kotlin.optJSONArrayToStringList
+import fleetBuilder.util.kotlin.safeInvoke
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat

@@ -8,8 +8,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.VariantSource
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.getCompatibleDLessHullId
-import fleetBuilder.util.getEffectiveHullId
+import fleetBuilder.util.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.kotlin.getEffectiveHullId
 
 object HullUtils {
 

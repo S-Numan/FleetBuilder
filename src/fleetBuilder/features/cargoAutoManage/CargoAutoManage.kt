@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
-import fleetBuilder.core.FBSettings.PRIMARYDIR
-import fleetBuilder.util.FBMisc.jsonArrayToList
+import fleetBuilder.core.FBConst.PRIMARY_DIR
+import fleetBuilder.core.FBMisc.jsonArrayToList
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -57,7 +57,7 @@ internal object CargoAutoManage {
     }
 
     fun getSavedPolicies(): List<CargoAutoManage.AutoManage> {
-        val cargoAutoManagerPoliciesPath = "${PRIMARYDIR}CargoAutoManagerPolicies"
+        val cargoAutoManagerPoliciesPath = "${PRIMARY_DIR}CargoAutoManagerPolicies"
         var cargoAutoManagerPoliciesJSON = runCatching {
             if (Global.getSettings().fileExistsInCommon(cargoAutoManagerPoliciesPath))
                 Global.getSettings().readJSONFromCommon(cargoAutoManagerPoliciesPath, false)

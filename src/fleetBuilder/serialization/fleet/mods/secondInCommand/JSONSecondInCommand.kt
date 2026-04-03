@@ -1,7 +1,7 @@
 package fleetBuilder.serialization.fleet.mods.secondInCommand
 
 import fleetBuilder.serialization.person.JSONPerson
-import fleetBuilder.util.roundToDecimals
+import fleetBuilder.util.kotlin.roundToDecimals
 import org.json.JSONArray
 import org.json.JSONObject
 

@@ -1,10 +1,9 @@
-package fleetBuilder.util
+package fleetBuilder.core
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.TextPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
-import fleetBuilder.core.FBSettings
-import fleetBuilder.util.FBMisc.getCallerClass
+import fleetBuilder.core.FBMisc
 import org.json.JSONObject
 import org.magiclib.util.StringCreator
 import java.awt.Color
@@ -32,7 +31,7 @@ object FBTxt {
         return try {
             FBStrings.getString(id)
         } catch (_: Exception) {
-            val callerClass: Class<*> = getCallerClass() ?: javaClass
+            val callerClass: Class<*> = FBMisc.getCallerClass() ?: javaClass
             val miss = String.format(missingString, id)
             Global.getLogger(callerClass).warn(miss)
             miss
@@ -41,7 +40,7 @@ object FBTxt {
 
     fun txt(id: String, vararg args: Any?): String {
         if (!FBStrings.has(id)) {
-            val callerClass: Class<*> = getCallerClass() ?: javaClass
+            val callerClass: Class<*> = FBMisc.getCallerClass() ?: javaClass
             val miss = String.format(missingString, id)
             Global.getLogger(callerClass).warn(miss)
             return miss
@@ -74,7 +73,7 @@ object FBTxt {
         return if (!FBStrings.has(key))
             if (args.isEmpty()) txt("${baseKey}_many", count) else txt("${baseKey}_many", *args)
         else
-            if (args.isEmpty()) FBTxt.txt(key, count) else FBTxt.txt(key, *args)
+            if (args.isEmpty()) txt(key, count) else txt(key, *args)
     }
 
 
@@ -138,7 +137,7 @@ object FBTxt {
     }
 
     /**
-     * Uses [MagicDisplayableText] to add a paragraph to the given [TextPanelAPI].
+     * Uses [MagicDisplayableText] to add a paragraph to the given [com.fs.starfarer.api.campaign.TextPanelAPI].
      * \n may be used to add multiple paragraphs.
      * You can use Misc.getTextColor() and Misc.getHighlightColor() to get default colors.
      */
@@ -170,7 +169,7 @@ object FBTxt {
     }
 
     /**
-     * Uses [MagicDisplayableText] to add a paragraph to the given [TooltipMakerAPI].
+     * Uses [MagicDisplayableText] to add a paragraph to the given [com.fs.starfarer.api.ui.TooltipMakerAPI].
      * \n may be used to add multiple paragraphs.
      * You can use Misc.getTextColor() and Misc.getHighlightColor() to get default colors.
      */

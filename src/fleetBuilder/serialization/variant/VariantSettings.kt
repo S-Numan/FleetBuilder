@@ -12,9 +12,13 @@ package fleetBuilder.serialization.variant
  */
 data class VariantSettings(
     var applySMods: Boolean = true,
+    var includeWeapons: Boolean = true,
+    var includeWings: Boolean = true,
+    var includeHullMods: Boolean = true,
     var includeDMods: Boolean = true,
     var includeHiddenMods: Boolean = true,
     var includeTags: Boolean = true,
+    var includeFlux: Boolean = true,
     var excludeWeaponsWithID: MutableSet<String> = mutableSetOf(),
     var excludeWingsWithID: MutableSet<String> = mutableSetOf(),
     var excludeHullModsWithID: MutableSet<String> = mutableSetOf(),

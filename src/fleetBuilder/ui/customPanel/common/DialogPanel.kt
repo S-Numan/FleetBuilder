@@ -5,7 +5,7 @@ import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.UIUtils.drawRectangleFilledForTooltip
-import fleetBuilder.util.FBTxt
+import fleetBuilder.core.FBTxt
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
