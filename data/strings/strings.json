@@ -3,6 +3,13 @@
 
   "missing_string": "Missing string: [%s]",
 
+  # Misc,
+  "ctrl_f_to_search": "CTRL-F to search",
+  "mod_hotkey_failed": "%s hotkey failed",
+  "enable_unassign_player": "Unassign Player must be on in the %s mod settings to unassign the player",
+  "cargo_auto_manage_message": "Cargo auto-managed",
+  "mods_used_prefix": "Mods Used: ",
+
 
   # Hotkey Handler
   "enable_cheats_to_use_paste": "Enable cheats in %s settings to unlock paste functionality",
@@ -283,14 +290,6 @@
   "create": "Create",
   "confirm": "Confirm",
   "cancel": "Cancel",
-
-
-  # Misc
-  "mod_hotkey_failed": "%s hotkey failed",
-  "enable_unassign_player": "Unassign Player must be on in the %s mod settings to unassign the player",
-  "cargo_auto_manage_message": "Cargo auto-managed",
-  "mods_used_prefix": "Mods Used: ",
-
 
 
 

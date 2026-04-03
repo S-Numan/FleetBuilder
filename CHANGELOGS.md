@@ -1,3 +1,12 @@
+## 1.32.6
+### Additions
+- Show Tags setting for the autofit tooltips.
+- Added the CTRL+F hotkey to every filter. Note that due to technical reasons, the fleet filter is slightly scuffed. @Numan in discord or make a forum post if you have any issues
+- Made the fleet filter more generous in what can match your input, and added the "modules" keyword to the filter.
+### Bugfixes
+- The fleet paste dialog no longer changes the music playing, no longer hides the UI, and no longer closes the fleet UI tab after leaving simulation.
+
+
 ## 1.32.5
 ### Changes
 - Externalized some more strings and organized them a bit more.

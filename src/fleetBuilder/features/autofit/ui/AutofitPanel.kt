@@ -1226,6 +1226,16 @@ internal object AutofitPanel {
                 addModLines(hiddenMods)
             }
 
+            if (FBSettings.showTagsInTooltip) {
+                val tagsToShow = variant.tags.filter { !it.startsWith("#PREFIX") }
+                if (tagsToShow.isNotEmpty()) {
+                    tooltip.addPara("Tags:", 0f)
+                    tagsToShow.forEach { tag ->
+                        tooltip.addPara("$spaces$tag", 0f)
+                    }
+                }
+            }
+
             val capWidth = tooltip.computeStringWidth(variant.numFluxCapacitors.toString()) * 2
             val ventWidth = tooltip.computeStringWidth(variant.numFluxVents.toString()) * 2
             var usualWidth = tooltip.computeStringWidth("99") * 2

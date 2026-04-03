@@ -3,6 +3,7 @@ package fleetBuilder.features.filters.filterPanels
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.ui.UITable
+import fleetBuilder.core.FBTxt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.util.kotlin.safeInvoke
@@ -16,7 +17,7 @@ class ModPickerFilterPanel(
     width = width,
     height = height,
     parent = parentPanel,
-    defaultText = "Search for a modspec"
+    defaultText = FBTxt.txt("ctrl_f_to_search")
 ) {
 
     init {
@@ -28,6 +29,7 @@ class ModPickerFilterPanel(
     }
 
     override fun onMiddleMouseReset() {
+        super.onMiddleMouseReset()
         filterModPickerList()
     }
 

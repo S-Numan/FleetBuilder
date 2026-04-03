@@ -7,10 +7,11 @@ import com.fs.starfarer.campaign.ui.trade.CargoItemStack
 import com.fs.starfarer.campaign.ui.trade.CargoStackView
 import com.fs.starfarer.campaign.util.CollectionView
 import fleetBuilder.core.FBMisc.getSpecialItemName
+import fleetBuilder.core.FBTxt
+import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.util.api.CargoUtils
 import fleetBuilder.util.kotlin.safeGet
 import fleetBuilder.util.kotlin.safeInvoke
-import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 
 class CargoFilterPanel(
     width: Float,
@@ -20,7 +21,7 @@ class CargoFilterPanel(
     width = width,
     height = height,
     parent = cargoDisplay,
-    defaultText = "Search"
+    defaultText = FBTxt.txt("ctrl_f_to_search")
 ) {
     var otherButtonTab: ButtonAPI? = null
     var cargoDataGridView: UIPanelAPI? = null
@@ -39,6 +40,7 @@ class CargoFilterPanel(
     }
 
     override fun onMiddleMouseReset() {
+        super.onMiddleMouseReset()
         filterCargoList()
     }
 

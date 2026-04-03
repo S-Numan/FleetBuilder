@@ -148,6 +148,8 @@ object FBSettings {
 
     var recentBattleTracker = false
 
+    var showTagsInTooltip = false
+
     private var unassignPlayer = false
     fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()
     fun setUnassignPlayer(value: Boolean) {
