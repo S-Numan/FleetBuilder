@@ -8,6 +8,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBTxt
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.kotlin.allDMods
@@ -31,7 +32,6 @@ class FleetFilterPanel(
 
     private val yPad = 5f
     private val xOffset = -10f
-    private var advanceInit = false
 
     companion object {
         var fleetPanelFilterCallback: (() -> Unit)? = null
@@ -83,22 +83,22 @@ class FleetFilterPanel(
         }
     }
 
+    val lowestChild = fleetSidePanel.findChildWithMethod("createStoryPointsLabel")
+    val wideChild = fleetSidePanel.getChildrenCopy().minByOrNull { it.x }
     override fun advance(amount: Float) {
-        if (!advanceInit) {
-            advanceInit = true
 
-            //Reposition again in case other mods mess with the UI
-            val lowestChild = fleetSidePanel.findChildWithMethod("createStoryPointsLabel")
-            val wideChild = fleetSidePanel.getChildrenCopy().minByOrNull { it.x }
-
+        try {
             if (lowestChild != null)
                 mainPanel.position.belowLeft(lowestChild, yPad)
 
             if (wideChild != null)
                 mainPanel.position.setXAlignOffset(xOffset)
-
-            mainPanel.opacity = 1f
+        } catch (e: Exception) {
+            DisplayMessage.showError("Failed to position filter panel", e)
         }
+
+        mainPanel.opacity = 1f
+
 
         if (textField.hasFocus() || !textField.enabled) {
             if (textField.text != defaultText) { // On focus

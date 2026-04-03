@@ -22,7 +22,8 @@ class CampaignDeferredActionPlugin : EveryFrameScript {
         }
 
         // Does not persist on load
-        fun performLater(delayInMilli: Float, action: () -> Unit): TaskHandle {
+        @JvmOverloads
+        fun performLater(delayInMilli: Float = 0f, action: () -> Unit): TaskHandle {
             val handle = TaskHandle()
             val inst = active ?: return handle
 
