@@ -771,7 +771,7 @@ object HotkeyHandlerDialogs {
 
                     reportMissingContentIfAny(missingEx)
 
-                    // val battle = Global.getFactory().createBattle(Global.getSector().playerFleet, fleet)
+                    //val battle = Global.getFactory().createBattle(Global.getSector().playerFleet, fleet)
 
                     // Fleet is not alive (location is null), so battle will see it as empty
                     //battle.genCombinedDoNotRemoveEmpty()
@@ -800,11 +800,8 @@ object HotkeyHandlerDialogs {
                         if (coreUITadId == CoreUITabId.FLEET) {
                             dialog = pasteFleet(inputData, inputMissing)
                         }
-                        CampaignUtils.closeCampaignDummyDialog()
-                        CampaignUtils.openCampaignDummyDialog(true)
-                        RecentBattleReplay.simulateBattle(battleContext)
-
-                        CampaignDeferredActionPlugin.performOnPlayerBattleFinish {
+                        RecentBattleReplay.simulateBattle(battleContext) {
+                            //battle.finish(null, false)
                             CampaignUtils.closeCampaignDummyDialog()
                             Global.getSector().isPaused = true
                             if (coreUITadId == CoreUITabId.FLEET) {
@@ -812,14 +809,15 @@ object HotkeyHandlerDialogs {
                                 campUI.showCoreUITab(coreUITadId)
                                 dialog?.parent?.bringComponentToTop(dialog.panel)
                             }
-                            CampaignUtils.openCampaignDummyDialog(false)
+                            CampaignUtils.openCampaignDummyDialog()
                         }
 
                     } else {
-                        RecentBattleReplay.simulateBattle(battleContext)
+                        RecentBattleReplay.simulateBattle(battleContext) {
+                            //battle.finish(null, false)
+                            dialog.parent.bringComponentToTop(dialog.panel)
+                        }
                     }
-
-                    //battle.finish(null, false)
                 }
             }
 

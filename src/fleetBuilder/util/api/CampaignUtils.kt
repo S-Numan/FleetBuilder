@@ -24,25 +24,31 @@ object CampaignUtils {
      *
      * Remember to close it via [closeCampaignDummyDialog] when done.
      *
-     * @param hideUI If true, the campaign UI will be hidden. Otherwise, no visual changes.
+     * @param isInteractionDialog If true, the campaign UI will be hidden. Otherwise, no visual changes.
      * @return Returns true if successful. Returns false if it did not open a dummy dialog, usually due to a dialog already being open or not being in the campaign.
      * @see closeCampaignDummyDialog
      */
     @JvmOverloads
-    fun openCampaignDummyDialog(hideUI: Boolean = false): Boolean {
+    fun openCampaignDummyDialog(
+        isInteractionDialog: Boolean = false,
+        onBackFromEngagement: () -> Unit = {}
+    ): Boolean {
         val ui = Global.getSector().campaignUI ?: return false
 
         if (!ui.isShowingDialog && placeholderDialog != null)
             closeCampaignDummyDialog()
 
         if (placeholderDialog == null && Global.getSettings().isInCampaignState && !ui.isShowingDialog) {
-            if (hideUI) {
+            if (isInteractionDialog) {
                 class PlaceholderDialog : InteractionDialogPlugin {
                     override fun init(dialog: InteractionDialogAPI?) {}
                     override fun optionSelected(optionText: String?, optionData: Any?) {}
                     override fun optionMousedOver(optionText: String?, optionData: Any?) {}
                     override fun advance(amount: Float) {}
-                    override fun backFromEngagement(battleResult: EngagementResultAPI?) {}
+                    override fun backFromEngagement(battleResult: EngagementResultAPI?) {
+                        onBackFromEngagement.invoke()
+                    }
+
                     override fun getContext(): Any? = null
                     override fun getMemoryMap(): MutableMap<String, MemoryAPI> = hashMapOf()
                 }
