@@ -74,7 +74,7 @@ class FleetFilterPanel(
                         "cruiser\n" +
                         "capital\n" +
                         "automated\n" +
-                        "modules (If the ship has modules\n" +
+                        "modules (If a ship has modules)\n" +
                         "marines / transport\n" +
                         "fuel / tanker\n" +
                         "crew / liner\n" +
