@@ -17,6 +17,7 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManager
 import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
 import fleetBuilder.features.codexButton.CampaignDevModeCodexButton
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
+import fleetBuilder.features.displayRecoveryEarly.DisplayDerelictRecoveryEarly
 import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
 import fleetBuilder.features.filters.injection.CampaignFleetScreenFilter
 import fleetBuilder.features.filters.injection.CampaignModPickerFilter
@@ -108,6 +109,7 @@ internal class EventDispatcher : EveryFrameScript {
             manageTransientListener(CampaignCargoScreenFilter::class.java, FBSettings.cargoScreenFilter) { cargoScreenFilter }
 
             manageTransientScript(AutoMothballRecoveredShips::class.java, FBSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
+            manageTransientScript(DisplayDerelictRecoveryEarly::class.java, FBSettings.displayDerelictRecoveryEarly) { DisplayDerelictRecoveryEarly() }//TODO: Setting
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
 
             manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled

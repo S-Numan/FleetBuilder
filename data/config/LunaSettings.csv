@@ -110,7 +110,9 @@ unassignPlayer,Unassign Player,Boolean,false,,"Remove your player officer with a
 This is enabled by default if Cheats are enabled.",,,Misc
 autoMothballRecoveredShips,Mothball Recovered Ships,Boolean,false,,When recovering a new ship: mothball it.,,,Misc
 transponderOffInHyperspace,Transponder Off,Boolean,false,,Turn the transponder off when entering hyperspace,,,Misc
-,,,,,,,,
+displayDerelictRecoveryEarly,Display Derelict Recovery Early,Boolean,false,,"You know when you’re salvaging a derelict ship, and you need to press the ""consider special measures"" button to actually see the ship?
+
+Enabling this setting puts a ship display one step earlier, allowing you to see the ship you're salvaging right away.",,,Misc
 cargoAutoManager,Enable Cargo Auto Manager,Boolean,true,,"Right click a storage submarket to pull up the Cargo Auto Manager.
 
 This menu allows you to configure automatically taking and/or depositing cargo items on entering or leaving a market.

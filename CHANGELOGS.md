@@ -1,11 +1,14 @@
+## 1.34.0
+### Additions
+- Added Display Derelict Recovery Early. You know when you’re salvaging a derelict ship, and you need to press the "consider special measures" button to actually see the ship? Enabling this setting puts a ship display one step earlier, allowing you to see the ship you're salvaging right away.
+
 ## 1.33.0
 ### Additions
 - Show Tags setting for the autofit tooltips.
-- Added the CTRL+F hotkey to every filter. Note that due to technical reasons, the fleet filter is slightly scuffed. @Numan in discord or make a forum post if you have any issues
+- Added the CTRL+F hotkey to every filter. Note that due to technical reasons, the fleet filter is slightly scuffed. @Numan me in discord or make a forum post if you have any issues
 - Made the fleet filter more generous in what can match your input, and added the "modules" keyword to the filter.
 ### Bugfixes
 - The fleet paste dialog no longer changes the music playing, no longer hides the UI, and no longer closes the fleet UI tab after leaving simulation.
-
 
 ## 1.32.5
 ### Changes

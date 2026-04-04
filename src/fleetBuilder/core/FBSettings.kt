@@ -142,6 +142,8 @@ object FBSettings {
 
     var transponderOffInHyperspace = false
 
+    var displayDerelictRecoveryEarly = false
+
     var autofitNoSModdedBuiltInWhenNotBuiltInMod = true
 
     var reserveFirstFourAutofitSlots = true
