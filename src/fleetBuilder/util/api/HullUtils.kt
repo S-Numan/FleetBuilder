@@ -8,6 +8,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.VariantSource
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.api.HullUtils.getCompatibleDLessHull
+import fleetBuilder.util.api.HullUtils.isDHullFixed
 import fleetBuilder.util.kotlin.getCompatibleDLessHullId
 import fleetBuilder.util.kotlin.getEffectiveHullId
 
@@ -109,7 +111,7 @@ object HullUtils {
      * - Some fake D-hulls have no custom assets and simply reference a parent hull.
      *
      * @param hull The hull spec to resolve.
-     * @param keepDModSkin If true, preserves D-hull skins when they differ visually.
+     * @param keepDModSkin If true, preserves D-hull skins when they differ visually (and sometimes in function as well, such as missing weapon mounts)
      * @return A compatible non-D hull when possible.
      */
     @JvmOverloads
@@ -117,18 +119,59 @@ object HullUtils {
         hull: ShipHullSpecAPI,
         keepDModSkin: Boolean = false
     ): ShipHullSpecAPI {
-        if (!hull.isDHull) return hull
+        if (!hull.isCompatibleWithBase) return hull
+        if (!hull.isDefaultDHull && (!isDSkin(hull) || keepDModSkin)) return hull
+        return getDLessHull(hull)
+    }
 
-        if (keepDModSkin && (hull.baseHull != null && hull.baseHull.spriteName != hull.spriteName))
-            return hull
 
-        if (hull.isCompatibleWithBase) {
-            if (hull.dParentHull != null)
-                return hull.dParentHull
-            else if (!keepDModSkin && hull.baseHull != null)
-                return hull.baseHull
-        }
+    /**
+     * Returns the base hull if the hull is a D-Hull.
+     *
+     * Note that this does not consider if the non D-Hull is compatible with the current hull. If you want compatibility or are simply unsure of what you're doing, use [getCompatibleDLessHull] instead.
+     *
+     * @param hull The hull spec to resolve.
+     * @return A non D-Hull when possible. If the input hull is not a D-Hull, it is returned unchanged.
+     */
+    fun getDLessHull(hull: ShipHullSpecAPI): ShipHullSpecAPI {
+        if (!isDHullFixed(hull)) return hull
 
-        return hull
+        if (hull.dParentHull != null) return hull.dParentHull
+
+        return hull.baseHull ?: hull
+    }
+
+    /**
+     * Vanilla isDHull considers any hull with built-in D-Mods to be a D-Hull. This makes lion guard ships D-Hulls.
+     *
+     * I consider that incorrect behavior. Additional behavior added: If the D-Hull is a skin, it must have the isRestoreToBase value set to true as D-Mod skins typically have that set as true.
+     */
+    fun isDHullFixed(hull: ShipHullSpecAPI): Boolean {
+        if (hull.isDefaultDHull) return true
+        return isDSkin(hull)
+    }
+
+    /**
+     * A D-skin is a hull skin that has built-in D-Mods and has the isRestoreToBase value set to true.
+     *
+     * This explicitly only returns true if this hull is a skin. It does not consider D-Hulls with default D-Mods. Please use [isDHullFixed] to check for all types of DHulls.
+     *
+     * @param hull The hull to check.
+     * @return True if the hull is a D-Skin, false otherwise.
+     */
+    // Marked as private to avoid confusion
+    private fun isDSkin(hull: ShipHullSpecAPI): Boolean {
+        return isSkin(hull) && hull.builtInMods.any { LookupUtils.getHullModSpec(it)?.hasTag(Tags.HULLMOD_DMOD) == true } // Has DMod as built in mod
+                && hull.isRestoreToBase // And is restorable
+    }
+
+    /**
+     * A skin is a hull that is a variation of another hull. Skins are made from .skin files.
+     *
+     * @param hull The hull to check.
+     * @return True if the hull is a skin, false otherwise.
+     */
+    fun isSkin(hull: ShipHullSpecAPI): Boolean {
+        return hull.dParentHullId.isNullOrEmpty() && hull.baseHullId != hull.hullId
     }
 }

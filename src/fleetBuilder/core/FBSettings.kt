@@ -152,6 +152,8 @@ object FBSettings {
 
     var showTagsInTooltip = false
 
+    var fixShipSkinSourceMod = true
+
     private var unassignPlayer = false
     fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()
     fun setUnassignPlayer(value: Boolean) {

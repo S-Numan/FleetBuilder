@@ -8,6 +8,7 @@ import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import fleetBuilder.util.api.VariantUtils.createErrorVariant
+import fleetBuilder.util.kotlin.getCompatibleDLessHullId
 import fleetBuilder.util.kotlin.getEffectiveHullId
 
 object LookupUtils {
@@ -15,8 +16,12 @@ object LookupUtils {
     private lateinit var allDMods: Set<String>
     private lateinit var allHiddenEverywhereMods: Set<String>
     private lateinit var allVariants: Set<ShipVariantAPI>
-    private lateinit var hullIDSet: Set<String>
+    private lateinit var hullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var effectiveHullIDToVariant: Map<String, List<ShipVariantAPI>>
+    private lateinit var baseHullIDToVariant: Map<String, List<ShipVariantAPI>>
+    private lateinit var compatibleDLessHullIDToVariant: Map<String, List<ShipVariantAPI>>
+    private lateinit var compatibleDLessKeepSkinHullIDToVariant: Map<String, List<ShipVariantAPI>>
+    private lateinit var hullIDSet: Set<String>
     private lateinit var errorVariantHullID: String
     private lateinit var IDToHullSpec: Map<String, ShipHullSpecAPI>
     private lateinit var IDToWing: Map<String, FighterWingSpecAPI>
@@ -28,8 +33,6 @@ object LookupUtils {
     fun isSetup() = init
 
     fun setup() {
-        init = true
-
         val settings = Global.getSettings()
 
         allDMods = settings.allHullModSpecs
@@ -73,34 +76,49 @@ object LookupUtils {
         */
 
         hullIDSet = settings.allShipHullSpecs.map { it.hullId }.toSet()
-
-        val fullEffectiveHullIdToVariantIdMap: Map<String, List<String>> =
-            settings.allVariantIds
-                .groupBy { variantId ->
-                    // Convert variant ID -> ShipVariantAPI -> hullSpec -> hullId
-                    settings.getVariant(variantId).hullSpec.getEffectiveHullId()
-                }
-
-        effectiveHullIDToVariant = fullEffectiveHullIdToVariantIdMap.mapValues { (_, variantIDs) ->
-            variantIDs.mapNotNull { id ->
-                runCatching { settings.getVariant(id) }.getOrNull()
-            }
-        }
-
         errorVariantHullID = createErrorVariant().hullSpec.hullId
-
         IDToHullSpec = settings.allShipHullSpecs.associateBy { it.hullId }
-
         IDToWing = settings.allFighterWingSpecs.associateBy { it.id }
         IDToHullMod = settings.allHullModSpecs.associateBy { it.id }
         IDToWeapon = settings.actuallyAllWeaponSpecs.associateBy { it.weaponId }
         IDToSkill = settings.skillIds.map { settings.getSkillSpec(it) }.associateBy { it.id }
-        allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }.toSet()
         allFactionIDs = settings.allFactionSpecs.map { it.id }.toSet()
+
+
+        allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }.toSet()
+        hullIDToVariant = allVariants.groupBy { it.hullSpec.hullId }
+        effectiveHullIDToVariant = allVariants.groupBy { it.hullSpec.getEffectiveHullId() }
+        baseHullIDToVariant = allVariants.groupBy { it.hullSpec.baseHullId }
+        compatibleDLessHullIDToVariant = allVariants.groupBy { it.hullSpec.getCompatibleDLessHullId(false) }
+        compatibleDLessKeepSkinHullIDToVariant = allVariants.groupBy { it.hullSpec.getCompatibleDLessHullId(true) }
+
+        init = true
     }
 
     fun getVariantsForEffectiveHullSpec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         return effectiveHullIDToVariant[hullSpec.getEffectiveHullId()].orEmpty().map { it.clone() }
+    }
+
+    fun getVariantsForHullSpec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
+        return hullIDToVariant[hullSpec.hullId].orEmpty().map { it.clone() }
+    }
+
+    fun getVariantsForBaseHullSpec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
+        return hullIDToVariant[hullSpec.baseHullId].orEmpty().map { it.clone() }
+    }
+
+    @JvmOverloads
+    fun getVariantsForCompatibleDLessHullSpec(
+        hullSpec: ShipHullSpecAPI,
+        keepDModSkin: Boolean = false
+    ): List<ShipVariantAPI> {
+        return if (!keepDModSkin)
+            compatibleDLessHullIDToVariant[hullSpec.getCompatibleDLessHullId(false)].orEmpty().map {
+                it.clone()
+            } else
+            compatibleDLessKeepSkinHullIDToVariant[hullSpec.getCompatibleDLessHullId(true)].orEmpty().map {
+                it.clone()
+            }
     }
 
     fun getHullSpec(hullId: String) = IDToHullSpec[hullId]

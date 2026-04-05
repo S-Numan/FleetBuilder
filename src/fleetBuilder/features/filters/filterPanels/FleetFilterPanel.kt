@@ -202,7 +202,7 @@ class FleetFilterPanel(
     private fun FleetMemberAPI.matchesDescription(desc: String): Boolean {
         return when {
             // Names
-            //h ullSpec.getCompatibleDLessHullId().lowercase().contains(desc) -> true
+            //hullSpec.getCompatibleDLessHull(true).lowercase().contains(desc) -> true
             hullSpec.hullName.lowercase().contains(desc) -> true
             getShipNameWithoutPrefix().lowercase().startsWith(desc) -> true
             hullSpec.manufacturer.lowercase().contains(desc) -> true

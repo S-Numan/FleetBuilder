@@ -6,9 +6,11 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
 import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBSettings.fixShipSkinSourceMod
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
+import fleetBuilder.core.shipSkinSourceMod.ShipSkinSourceMod
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
 import fleetBuilder.features.autofit.listener.CampaignAutofitAdder
 import fleetBuilder.features.autofit.listener.CodexAutofitButton
@@ -120,18 +122,26 @@ internal class EventDispatcher : EveryFrameScript {
 
         fun onDevModeF8Reload() {
             FBTxt.setup()
+
+            LookupUtils.setup()
+
             updateApplicationState()
         }
 
         fun onApplicationLoad() {
             FBSettings.onApplicationLoad()
             FBTxt.setup()
+
+            LookupUtils.setup()
+
             updateApplicationState()
         }
 
         fun updateApplicationState() {
+            if (fixShipSkinSourceMod)
+                ShipSkinSourceMod.setShipSkinSourceMods()
+
             FBSettings.setNeverSaveHullmods()
-            LookupUtils.setup()
 
             if (FBSettings.addLogsToConsoleModConsoleLevel != Level.OFF || FBSettings.addLogsToDisplayMessageLevel != Level.OFF) {
                 // Cause the lazy class loader to load these classes preemptively to prevent issues.

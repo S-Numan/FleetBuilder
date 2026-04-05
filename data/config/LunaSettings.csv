@@ -110,9 +110,9 @@ unassignPlayer,Unassign Player,Boolean,false,,"Remove your player officer with a
 This is enabled by default if Cheats are enabled.",,,Misc
 autoMothballRecoveredShips,Mothball Recovered Ships,Boolean,false,,When recovering a new ship: mothball it.,,,Misc
 transponderOffInHyperspace,Transponder Off,Boolean,false,,Turn the transponder off when entering hyperspace,,,Misc
-displayDerelictRecoveryEarly,Display Derelict Recovery Early,Boolean,false,,"You know when you’re salvaging a derelict ship and you need to press the ""consider special measures"" button to actually see the ship?
+displayDerelictRecoveryEarly,Display Derelict Recovery Early,Boolean,false,,"Shows the ship preview earlier during derelict salvage.
 
-Enabling this setting puts a ship display one step earlier, allowing you to see the ship you're salvaging right away.",,,Misc
+Instead of requiring “Consider Special Measures” to view the ship, the preview is available a step earlier when you get the option to salvage it.",,,Misc
 cargoAutoManager,Enable Cargo Auto Manager,Boolean,true,,"Right click a storage submarket to pull up the Cargo Auto Manager.
 
 This menu allows you to configure automatically taking and/or depositing cargo items on entering or leaving a market.
@@ -124,6 +124,11 @@ reportCargoAutoManagerChanges,Report Cargo Auto Manager Changes,Boolean,true,,"I
 ,,,,,,,,
 ,,,,,,,,
 extraHeader,Extra Header,Header,Extra,,,,,Misc
+fixShipSkinSourceMod,Fix Missing Source Mods on Ship Skins,Boolean,true,,"Ensures ship skins correctly display their originating mod in the codex.
+
+By default, ship skins (e.g. Sunder XIV from ship weapon pack) do not have a source mod assigned; this option fixes that so the source mod is shown in the UI.
+As this is considered fixing a base game issue, it is enabled by default.
+Disabling this setting will only take effect after game restart.",,,Misc
 devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When cheats are enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
 Hold Shift or Alt to multiply the added value by 10
 Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,Misc
