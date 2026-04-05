@@ -8,8 +8,8 @@ import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipRecoverySpecialData
 import com.fs.starfarer.campaign.CustomCampaignEntity
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
-import fleetBuilder.util.kotlin.safeGet
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.safeGet
+import fleetBuilder.util.api.kotlin.safeInvoke
 
 internal class DisplayDerelictRecoveryEarly : EveryFrameScript {
     override fun isDone(): Boolean = false

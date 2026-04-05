@@ -16,7 +16,7 @@ import fleetBuilder.core.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.lib.CompressionUtil
-import fleetBuilder.util.kotlin.roundToDecimals
+import fleetBuilder.util.api.kotlin.roundToDecimals
 import java.util.Random
 
 object CompressedMember {

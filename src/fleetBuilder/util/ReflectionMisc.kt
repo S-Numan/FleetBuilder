@@ -24,9 +24,9 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.util.kotlin.getActualCurrentTab
-import fleetBuilder.util.kotlin.safeGet
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.getActualCurrentTab
+import fleetBuilder.util.api.kotlin.safeGet
+import fleetBuilder.util.api.kotlin.safeInvoke
 
 object ReflectionMisc {
 

@@ -11,10 +11,10 @@ import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.kotlin.allDMods
-import fleetBuilder.util.kotlin.allSMods
-import fleetBuilder.util.kotlin.getShipNameWithoutPrefix
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.allDMods
+import fleetBuilder.util.api.kotlin.allSMods
+import fleetBuilder.util.api.kotlin.getShipNameWithoutPrefix
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 

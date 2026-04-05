@@ -19,9 +19,9 @@ import fleetBuilder.core.FBMisc.replaceVariantWithVariant
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.FactionUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.kotlin.completelyRemoveMod
-import fleetBuilder.util.kotlin.getModules
-import fleetBuilder.util.kotlin.safeGet
+import fleetBuilder.util.api.kotlin.completelyRemoveMod
+import fleetBuilder.util.api.kotlin.getModules
+import fleetBuilder.util.api.kotlin.safeGet
 
 // Jank code alert!
 

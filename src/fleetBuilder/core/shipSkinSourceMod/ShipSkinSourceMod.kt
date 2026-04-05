@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
-import fleetBuilder.util.kotlin.isSkin
+import fleetBuilder.util.api.kotlin.isSkin
 import org.json.JSONObject
 
 internal object ShipSkinSourceMod {

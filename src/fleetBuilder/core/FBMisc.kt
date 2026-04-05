@@ -16,7 +16,7 @@ import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.MemberUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.kotlin.*
+import fleetBuilder.util.api.kotlin.*
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.opengl.GL11

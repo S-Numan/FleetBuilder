@@ -15,7 +15,7 @@ import fleetBuilder.core.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.lib.CompressionUtil
-import fleetBuilder.util.kotlin.toBinary
+import fleetBuilder.util.api.kotlin.toBinary
 
 object CompressedVariant {
     fun isCompressedVariant(comp: String): Boolean {

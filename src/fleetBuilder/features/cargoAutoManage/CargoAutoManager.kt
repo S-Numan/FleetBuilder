@@ -9,11 +9,11 @@ import fleetBuilder.core.FBTxt
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
-import fleetBuilder.util.kotlin.getBlueprintAndModSpecQuantity
-import fleetBuilder.util.kotlin.getWeaponAndWingQuantity
-import fleetBuilder.util.kotlin.moveBlueprintAndModSpec
-import fleetBuilder.util.kotlin.moveItem
-import fleetBuilder.util.kotlin.moveWeaponAndWings
+import fleetBuilder.util.api.kotlin.getBlueprintAndModSpecQuantity
+import fleetBuilder.util.api.kotlin.getWeaponAndWingQuantity
+import fleetBuilder.util.api.kotlin.moveBlueprintAndModSpec
+import fleetBuilder.util.api.kotlin.moveItem
+import fleetBuilder.util.api.kotlin.moveWeaponAndWings
 
 internal class CargoAutoManager : EveryFrameScript {
     override fun isDone(): Boolean {

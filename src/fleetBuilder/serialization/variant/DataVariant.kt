@@ -12,10 +12,10 @@ import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.kotlin.allDMods
-import fleetBuilder.util.kotlin.createHullVariant
-import fleetBuilder.util.kotlin.getCompatibleDLessHullId
-import fleetBuilder.util.kotlin.getModules
+import fleetBuilder.util.api.kotlin.allDMods
+import fleetBuilder.util.api.kotlin.createHullVariant
+import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.api.kotlin.getModules
 
 object DataVariant {
 

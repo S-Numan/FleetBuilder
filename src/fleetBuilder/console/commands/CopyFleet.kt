@@ -16,9 +16,9 @@ import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember.copyMember
 import fleetBuilder.serialization.person.DataPerson.copyPerson
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.kotlin.getActualCurrentTab
+import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.lib.ClipboardUtil
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.Console
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching

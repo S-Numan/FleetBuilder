@@ -16,7 +16,7 @@ import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.core.FBTxt
 import fleetBuilder.util.lib.CompressionUtil
-import fleetBuilder.util.kotlin.roundToDecimals
+import fleetBuilder.util.api.kotlin.roundToDecimals
 import java.util.*
 
 object CompressedPerson {

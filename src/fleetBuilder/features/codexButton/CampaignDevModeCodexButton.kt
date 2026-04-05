@@ -20,7 +20,7 @@ import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.core.FBTxt
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.kotlin.createHullVariant
+import fleetBuilder.util.api.kotlin.createHullVariant
 import org.lwjgl.input.Keyboard
 
 internal class CampaignDevModeCodexButton : EveryFrameScript {

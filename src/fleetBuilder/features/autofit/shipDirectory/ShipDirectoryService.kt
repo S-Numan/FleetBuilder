@@ -20,7 +20,7 @@ import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
-import fleetBuilder.util.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat

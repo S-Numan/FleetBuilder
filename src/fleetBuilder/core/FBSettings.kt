@@ -5,7 +5,7 @@ import com.fs.starfarer.api.ModSpecAPI
 import fleetBuilder.core.FBConst.PRIMARY_DIR
 import fleetBuilder.core.listener.ModSettingsListener
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.kotlin.containsString
+import fleetBuilder.util.api.kotlin.containsString
 import lunalib.lunaSettings.LunaSettings
 import org.apache.log4j.Level
 import org.json.JSONArray

@@ -18,8 +18,8 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
-import fleetBuilder.util.kotlin.getModules
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.getModules
+import fleetBuilder.util.api.kotlin.safeInvoke
 import java.awt.Color
 import java.util.*
 

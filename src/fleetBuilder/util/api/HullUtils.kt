@@ -10,8 +10,8 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.HullUtils.getCompatibleDLessHull
 import fleetBuilder.util.api.HullUtils.isDHullFixed
-import fleetBuilder.util.kotlin.getCompatibleDLessHullId
-import fleetBuilder.util.kotlin.getEffectiveHullId
+import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.api.kotlin.getEffectiveHullId
 
 object HullUtils {
 

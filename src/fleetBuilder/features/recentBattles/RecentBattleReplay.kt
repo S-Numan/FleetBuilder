@@ -19,7 +19,7 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.deferredAction.CombatDeferredActionPlugin
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.safeInvoke
 
 // Initial code taken from Ship Mastery System by float
 

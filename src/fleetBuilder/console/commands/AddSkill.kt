@@ -3,7 +3,7 @@ package fleetBuilder.console.commands
 import com.fs.starfarer.api.Global
 import fleetBuilder.core.FBTxt
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.kotlin.toBoolean
+import fleetBuilder.util.api.kotlin.toBoolean
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommandWithSuggestion

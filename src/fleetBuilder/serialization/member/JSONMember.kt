@@ -9,7 +9,7 @@ import fleetBuilder.serialization.variant.JSONVariant.addVariantSourceModsToJson
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
 import fleetBuilder.serialization.variant.JSONVariant.saveVariantToJson
 import fleetBuilder.core.FBMisc
-import fleetBuilder.util.kotlin.roundToDecimals
+import fleetBuilder.util.api.kotlin.roundToDecimals
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
 import java.util.Random

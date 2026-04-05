@@ -10,7 +10,7 @@ import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.core.FBMisc
 import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.kotlin.optJSONArrayToStringList
+import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
 import org.json.JSONArray
 import org.json.JSONObject
 

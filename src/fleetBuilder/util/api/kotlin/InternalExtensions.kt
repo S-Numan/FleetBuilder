@@ -1,4 +1,4 @@
-package fleetBuilder.util.kotlin
+package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.SettingsAPI
 import com.fs.starfarer.api.graphics.SpriteAPI

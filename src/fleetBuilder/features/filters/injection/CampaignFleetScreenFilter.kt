@@ -8,7 +8,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.features.filters.filterPanels.FleetFilterPanel
 import fleetBuilder.features.filters.filterPanels.FleetFilterPanel.Companion.removePreviousIfAny
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.kotlin.getActualCurrentTab
+import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 internal class CampaignFleetScreenFilter : EveryFrameScript {

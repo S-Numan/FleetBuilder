@@ -11,8 +11,8 @@ import fleetBuilder.core.FBConst
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.kotlin.allDMods
-import fleetBuilder.util.kotlin.getEffectiveHullId
+import fleetBuilder.util.api.kotlin.allDMods
+import fleetBuilder.util.api.kotlin.getEffectiveHullId
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
