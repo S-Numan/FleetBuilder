@@ -134,12 +134,13 @@ internal class EventDispatcher : EveryFrameScript {
 
             LookupUtils.setup()
 
+            if (fixShipSkinSourceMod)
+                ShipSkinSourceMod.setShipSkinSourceMods()
+
             updateApplicationState()
         }
 
         fun updateApplicationState() {
-            if (fixShipSkinSourceMod)
-                ShipSkinSourceMod.setShipSkinSourceMods()
 
             FBSettings.setNeverSaveHullmods()
 
