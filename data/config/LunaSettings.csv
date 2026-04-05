@@ -124,11 +124,15 @@ reportCargoAutoManagerChanges,Report Cargo Auto Manager Changes,Boolean,true,,"I
 ,,,,,,,,
 ,,,,,,,,
 extraHeader,Extra Header,Header,Extra,,,,,Misc
-fixShipSkinSourceMod,Fix Missing Source Mods on Ship Skins,Boolean,true,,"Ensures ship skins correctly display their originating mod in the codex.
-
-By default, ship skins (e.g. Sunder XIV from ship weapon pack) do not have a source mod assigned; this option fixes that so the source mod is shown in the UI.
+fixShipSkinSourceMod,Fix Missing Source Mods on Ship Skins,Boolean,true,,"Fixes various issues where a source mod would be expected but not present.
+By default, ship skins (e.g. Sunder XIV from ship weapon pack) do not have a source mod assigned; this option applies a source mod to each hull skin where relevant.
 As this is considered fixing a base game issue, it is enabled by default.
-Disabling this setting will only take effect after game restart.",,,Misc
+Disabling this setting will only take effect after game restart.
+
+Examples:
+Ensures ship skins correctly display their originating mod in the codex.
+Ensures ships save/copy in this mod with their sourceMod noted down, allowing the user to know where a ship originated if missing the mod that added it.
+And more.",,,Misc
 devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When cheats are enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
 Hold Shift or Alt to multiply the added value by 10
 Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,Misc
