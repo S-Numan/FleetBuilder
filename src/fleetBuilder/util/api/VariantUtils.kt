@@ -169,7 +169,7 @@ object VariantUtils {
      * @return The generated variant ID.
      */
     fun makeVariantID(variant: ShipVariantAPI): String {
-        val hullId = variant.hullSpec.getCompatibleDLessHullId(true)
+        val hullId = variant.hullSpec.getActualHullId()
         return makeVariantID(hullId, variant.displayName)
     }
 

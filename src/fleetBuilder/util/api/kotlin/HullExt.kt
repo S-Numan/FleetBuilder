@@ -19,20 +19,32 @@ fun ShipHullSpecAPI.getEffectiveHullId(): String =
 /**
  * Delegates to [HullUtils.getCompatibleDLessHull].
  */
-fun ShipHullSpecAPI.getCompatibleDLessHull(keepDModSkin: Boolean = false): ShipHullSpecAPI =
-    HullUtils.getCompatibleDLessHull(this, keepDModSkin)
+fun ShipHullSpecAPI.getCompatibleDLessHull(): ShipHullSpecAPI =
+    HullUtils.getCompatibleDLessHull(this)
 
 /**
  * Returns the compatible D less hull ID of this [ShipHullSpecAPI]. See [HullUtils.getCompatibleDLessHull].
  */
-fun ShipHullSpecAPI.getCompatibleDLessHullId(keepDModSkin: Boolean = false): String =
-    HullUtils.getCompatibleDLessHull(this, keepDModSkin).hullId
+fun ShipHullSpecAPI.getCompatibleDLessHullId(): String =
+    HullUtils.getCompatibleDLessHull(this).hullId
 
 /**
- * Delegates to [HullUtils.isDHullFixed]. See that function for details on why this exists.
+ * Returns the HullSpec from its source file (.ship or .skin), without any extra modifications such as default D-Hull variations.
  */
-fun ShipHullSpecAPI.isDHullFixed(): Boolean =
-    HullUtils.isDHullFixed(this)
+fun ShipHullSpecAPI.getActualHull(): ShipHullSpecAPI =
+    HullUtils.getActualHull(this)
+
+/**
+ * Returns the HullSpec id from its source file (.ship or .skin), without any extra modifications such as default D-Hull variations.
+ */
+fun ShipHullSpecAPI.getActualHullId(): String =
+    HullUtils.getActualHull(this).hullId
+
+/**
+ * Delegates to [HullUtils.isDHullFix]. See that function for details on why this exists.
+ */
+fun ShipHullSpecAPI.isDHullFix(): Boolean =
+    HullUtils.isDHullFix(this)
 
 /**
  * Delegates to [HullUtils.isSkin].

@@ -9,7 +9,8 @@ import com.fs.starfarer.api.loading.VariantSource
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.HullUtils.getCompatibleDLessHull
-import fleetBuilder.util.api.HullUtils.isDHullFixed
+import fleetBuilder.util.api.HullUtils.isDHullFix
+import fleetBuilder.util.api.kotlin.getActualHullId
 import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
 import fleetBuilder.util.api.kotlin.getEffectiveHullId
 
@@ -51,11 +52,12 @@ object HullUtils {
                 .takeIf { it.isNotEmpty() }
                 ?.let { hullVariants ->
                     hullVariants.find { it.hullSpec.hullId == hull.hullId }                             // Exact match
+                        ?: hullVariants.find { it.hullSpec.hullId == hull.getActualHullId() }            // Actual match
                         ?: hullVariants.find { it.hullSpec.hullId == hull.getCompatibleDLessHullId() }  // D-less match
                         ?: hullVariants.find { it.hullSpec.hullId == hull.getEffectiveHullId() }        // Effective match
                         ?: run {
                             Global.getLogger(javaClass).warn("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'")
-                            hullVariants.firstOrNull()// Cannot find a good enough match, just go for whatever
+                            hullVariants.firstOrNull() // Cannot find a good enough match, just go for whatever
                         }
                 }
         } ?: runCatching {
@@ -111,19 +113,29 @@ object HullUtils {
      * - Some fake D-hulls have no custom assets and simply reference a parent hull.
      *
      * @param hull The hull spec to resolve.
-     * @param keepDModSkin If true, preserves D-hull skins when they differ visually (and sometimes in function as well, such as missing weapon mounts)
      * @return A compatible non-D hull when possible.
      */
-    @JvmOverloads
     fun getCompatibleDLessHull(
         hull: ShipHullSpecAPI,
-        keepDModSkin: Boolean = false
     ): ShipHullSpecAPI {
         if (!hull.isCompatibleWithBase) return hull
-        if (!hull.isDefaultDHull && (!isDSkin(hull) || keepDModSkin)) return hull
+        if (!hull.isDefaultDHull && !isDSkin(hull)) return hull
         return getDLessHull(hull)
     }
 
+    /**
+     *  Returns the HullSpec from its source file (.ship or .skin), without any extra modifications such as default D-Hull variations.
+     *
+     * @param hull The hull spec to resolve.
+     * @return The actual hull spec.
+     */
+    fun getActualHull(
+        hull: ShipHullSpecAPI
+    ): ShipHullSpecAPI {
+        if (!hull.isCompatibleWithBase) return hull
+        if (isSkin(hull)) return hull
+        return getDLessHull(hull)
+    }
 
     /**
      * Returns the base hull if the hull is a D-Hull.
@@ -134,7 +146,7 @@ object HullUtils {
      * @return A non D-Hull when possible. If the input hull is not a D-Hull, it is returned unchanged.
      */
     fun getDLessHull(hull: ShipHullSpecAPI): ShipHullSpecAPI {
-        if (!isDHullFixed(hull)) return hull
+        if (!isDHullFix(hull)) return hull
 
         if (hull.dParentHull != null) return hull.dParentHull
 
@@ -146,7 +158,7 @@ object HullUtils {
      *
      * I consider that incorrect behavior. Additional behavior added: If the D-Hull is a skin, it must have the isRestoreToBase value set to true as D-Mod skins typically have that set as true.
      */
-    fun isDHullFixed(hull: ShipHullSpecAPI): Boolean {
+    fun isDHullFix(hull: ShipHullSpecAPI): Boolean {
         if (hull.isDefaultDHull) return true
         return isDSkin(hull)
     }
@@ -154,7 +166,7 @@ object HullUtils {
     /**
      * A D-skin is a hull skin that has built-in D-Mods and has the isRestoreToBase value set to true.
      *
-     * This explicitly only returns true if this hull is a skin. It does not consider D-Hulls with default D-Mods. Please use [isDHullFixed] to check for all types of DHulls.
+     * This explicitly only returns true if this hull is a skin. It does not consider D-Hulls with default D-Mods. Please use [isDHullFix] to check for all types of DHulls.
      *
      * @param hull The hull to check.
      * @return True if the hull is a D-Skin, false otherwise.

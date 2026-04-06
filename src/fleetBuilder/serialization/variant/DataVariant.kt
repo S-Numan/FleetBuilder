@@ -14,7 +14,7 @@ import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.allDMods
 import fleetBuilder.util.api.kotlin.createHullVariant
-import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.api.kotlin.getActualHullId
 import fleetBuilder.util.api.kotlin.getModules
 
 object DataVariant {
@@ -110,7 +110,7 @@ object DataVariant {
             .forEach { hullMods += it }
 
         val data = ParsedVariantData(
-            hullId = variant.hullSpec.getCompatibleDLessHullId(true), //DMods are already included, get the D less ID for simplicity.
+            hullId = variant.hullSpec.getActualHullId(), //DMods are already included, get the D less ID for simplicity.
             variantId = variant.hullVariantId,
             displayName = variant.displayName,
             fluxCapacitors = variant.numFluxCapacitors,
