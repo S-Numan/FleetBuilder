@@ -295,7 +295,7 @@ object HotkeyHandlerDialogs {
                 includeAggression = setAggressionDoctrine
                 memberSettings.includeOfficer = includeOfficers
                 includeCommanderSetFlagship = includeCommanderAsCommander
-                memberSettings.applyID = true
+                memberSettings.includeID = true
             }
 
             val missingEx = MissingContent()

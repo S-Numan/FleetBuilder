@@ -6,9 +6,17 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.loading.WeaponSpecAPI
+import fleetBuilder.serialization.variant.DataVariant
+import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.VariantUtils
 
+/**
+ * Creates a copy of this variant with the specified settings.
+ */
+fun ShipVariantAPI.clone(settings: VariantSettings): ShipVariantAPI {
+    return DataVariant.cloneVariant(this, settings = settings)
+}
 
 /**
  * Returns a map of all modules attached to this variant.

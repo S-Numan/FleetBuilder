@@ -2,6 +2,26 @@ package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import fleetBuilder.serialization.member.DataMember
+import fleetBuilder.serialization.member.MemberSettings
+
+/**
+ * Creates an exact copy of this member.
+ *
+ * Note that memKey reference types will copy the reference, not the object itself.
+ */
+fun FleetMemberAPI.clone(filterParsed: Boolean = false): FleetMemberAPI {
+    return DataMember.cloneMember(this, filterParsed = filterParsed)
+}
+
+/**
+ * Creates a copy of this member with the specified settings.
+ *
+ * Will apply a filter pass based on the settings, enabling this to be serializable. This will remove non value types memKeys if present.
+ */
+fun FleetMemberAPI.clone(settings: MemberSettings): FleetMemberAPI {
+    return DataMember.cloneMember(this, settings = settings)
+}
 
 /**
  * Returns the ship name without any faction prefixes.

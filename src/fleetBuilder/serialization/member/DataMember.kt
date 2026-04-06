@@ -30,7 +30,7 @@ object DataMember {
     )
 
     @JvmOverloads
-    fun copyMember(
+    fun cloneMember(
         member: FleetMemberAPI,
         filterParsed: Boolean = false
     ): FleetMemberAPI {
@@ -38,7 +38,7 @@ object DataMember {
         return buildMember(data)
     }
 
-    fun copyMember(
+    fun cloneMember(
         member: FleetMemberAPI,
         settings: MemberSettings
     ): FleetMemberAPI {
@@ -82,7 +82,7 @@ object DataMember {
             variantData = variantData,
             cr = if (settings.includeCR) data.cr else null,
             hullFraction = if (settings.includeHull) data.hullFraction else null,
-            id = if (settings.applyID) data.id else null
+            id = if (settings.includeID) data.id else null
         )
     }
 

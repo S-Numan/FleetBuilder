@@ -36,7 +36,7 @@ object DataVariant {
         val moduleVariants: Map<String, ParsedVariantData> = emptyMap(),
         val isGoalVariant: Boolean = false,
     ) {
-        fun allHullMods() = hullMods + sMods + sModdedBuiltIns + permaMods
+        fun allHullMods() = (hullMods + sMods + sModdedBuiltIns + permaMods).toSet()
     }
 
     data class ParsedWeaponGroup(
@@ -46,7 +46,7 @@ object DataVariant {
     )
 
     @JvmOverloads
-    fun copyVariant(
+    fun cloneVariant(
         variant: ShipVariantAPI,
         filterParsed: Boolean = false
     ): ShipVariantAPI {
@@ -54,7 +54,7 @@ object DataVariant {
         return buildVariant(data)
     }
 
-    fun copyVariant(
+    fun cloneVariant(
         variant: ShipVariantAPI,
         settings: VariantSettings
     ): ShipVariantAPI {
@@ -231,7 +231,9 @@ object DataVariant {
             fluxCapacitors = if (!settings.includeFlux) -1 else
                 data.fluxCapacitors,
             fluxVents = if (!settings.includeFlux) -1 else
-                data.fluxVents
+                data.fluxVents,
+            variantId = if (!settings.includeVariantID) "" else
+                data.variantId
         )
     }
 
@@ -250,7 +252,7 @@ object DataVariant {
 
         // --- Variant ID ---
         val fixedVariantId = data.variantId.ifBlank {
-            "MissingVariantID_" + Misc.genUID()
+            "BlankID_" + Misc.genUID()
         }
 
         // --- Display Name ---

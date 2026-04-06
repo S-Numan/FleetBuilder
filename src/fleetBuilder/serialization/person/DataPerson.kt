@@ -35,7 +35,7 @@ object DataPerson {
     )
 
     @JvmOverloads
-    fun copyPerson(
+    fun clonePerson(
         person: PersonAPI,
         filterParsed: Boolean = false
     ): PersonAPI {
@@ -43,7 +43,7 @@ object DataPerson {
         return buildPerson(data)
     }
 
-    fun copyPerson(
+    fun clonePerson(
         person: PersonAPI,
         settings: PersonSettings
     ): PersonAPI {

@@ -29,7 +29,7 @@ import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getLoado
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingContent
-import fleetBuilder.serialization.variant.DataVariant.copyVariant
+import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
@@ -727,7 +727,7 @@ internal object AutofitPanel {
 
                 val indexInMenu = index - coreEffectiveHullAutofitSpecs.size
 
-                val draggedVariant = copyVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would be loaded if brought up later
+                val draggedVariant = cloneVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would be loaded if brought up later
 
                 if (FBSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod) {
                     draggedVariant.sModdedBuiltIns.toList().forEach {
@@ -774,7 +774,7 @@ internal object AutofitPanel {
                         it.autofitSpec?.source != null && it.autofitSpec?.variant != null &&
                                 compareVariantContents(
                                     shipDirectory.getShip(shipVariantID)!!,
-                                    copyVariant(it.autofitSpec!!.variant, settings) // Copied to apply settings
+                                    cloneVariant(it.autofitSpec!!.variant, settings) // Copied to apply settings
                                 )
                     })
                 } else {

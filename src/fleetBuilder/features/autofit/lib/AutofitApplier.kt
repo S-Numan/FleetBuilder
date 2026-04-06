@@ -51,7 +51,7 @@ internal object AutofitApplier {
             }
 
             if (Global.getCurrentState() != GameState.CAMPAIGN) {
-                replaceVariantWithVariant(baseVariant, loadout, FBSettings.dontForceClearDMods, FBSettings.dontForceClearSMods)
+                replaceVariantWithVariant(baseVariant, loadout, false, FBSettings.dontForceClearDMods, FBSettings.dontForceClearSMods)
             } else {
                 val coreUI = ReflectionMisc.getCoreUI() ?: return
 
@@ -114,7 +114,7 @@ internal object AutofitApplier {
                 }
 
                 if (FBSettings.forceAutofit) {
-                    replaceVariantWithVariant(baseVariant, loadout, FBSettings.dontForceClearDMods, FBSettings.dontForceClearSMods)
+                    replaceVariantWithVariant(baseVariant, loadout, false, FBSettings.dontForceClearDMods, FBSettings.dontForceClearSMods)
                     //baseVariant.addTag(Tags.SHIP_RECOVERABLE)
                     //baseVariant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE)
                 } else {

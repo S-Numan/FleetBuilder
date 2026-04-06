@@ -38,7 +38,7 @@ object DataFleet {
     )
 
     @JvmOverloads
-    fun copyFleet(
+    fun cloneFleet(
         fleet: CampaignFleetAPI,
         aiMode: Boolean,
         filterParsed: Boolean = false
@@ -47,7 +47,7 @@ object DataFleet {
         return createCampaignFleetFromData(data, aiMode)
     }
 
-    fun copyFleet(
+    fun cloneFleet(
         fleet: CampaignFleetAPI,
         aiMode: Boolean,
         settings: FleetSettings,

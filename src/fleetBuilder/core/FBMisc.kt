@@ -172,6 +172,7 @@ internal object FBMisc {
     fun replaceVariantWithVariant(
         to: ShipVariantAPI,
         from: ShipVariantAPI,
+        copyVariantID: Boolean = true,
         dontForceClearDMods: Boolean = false,
         dontForceClearSMods: Boolean = false
     ) {
@@ -281,7 +282,8 @@ internal object FBMisc {
         to.numFluxCapacitors = from.numFluxCapacitors
 
         // Copy variant ID and display name
-        to.hullVariantId = from.hullVariantId
+        if (copyVariantID)
+            to.hullVariantId = from.hullVariantId
         to.setVariantDisplayName(from.displayName)
         to.source = from.source
 
@@ -293,6 +295,7 @@ internal object FBMisc {
             replaceVariantWithVariant(
                 toVariant,
                 fromVariant,
+                copyVariantID,
                 dontForceClearDMods,
                 dontForceClearSMods
             )
