@@ -97,6 +97,13 @@ If a game or mod update adds or removes goal variants, the slot positioning woul
 showHiddenModsInTooltip,Show Hidden HullMods,Boolean,false,,Shows hullmods that are usually hidden in the tooltip,,,Autofit Menu
 showTagsInTooltip,Show Tags,Boolean,false,,Shows tags that are usually hidden in the tooltip,,,Autofit Menu
 ,,,,,,,,
+autofitSavingHeader,Autofit Variant Header,Header,Autofit Saving Settings,,,,,Autofit Menu
+saveSMods,Apply SMods,Boolean,true,,"If false: SMods will still be included when saving, but as regular hullmods rather than being SMods.",,,Autofit Menu
+saveDMods,Save DMods,Boolean,false,,If false: DMods will be excluded when saving.,,,Autofit Menu
+saveHiddenMods,Save Hidden Mods,Boolean,true,,"If false: hullmods that do not show up in the hullmods list will be excluded when saving.
+Enable the setting ‘Show Hidden HullMods’ in the ‘Autofit Menu’ tab and hover over a ship in the autofit menu to see its hidden hullmods, provided it has them.",,,Autofit Menu
+,,,,,,,,
+,,,,,,,,
 autofitDevHeader,Cheats,Header,Cheats,,,,,Autofit Menu
 forceAutofit,Overwrite Variant on Autofit,Boolean,false,,"Enabling this causes an autofit to remove all contents of your current variant and replace it with the selected one. At no cost.
 This is default behavior in the main menu missions, as there is no cargo or story points in that context.",,,Autofit Menu
@@ -150,19 +157,18 @@ Error messages will still appear in the console and logs.",,,Misc
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
-variantHeader,Variant Header,Header,Variant Saving Settings,,,,,Misc
-variantTextField,Variant Text Field,Text,"The settings below apply when saving/copying a variant alone.
+#variantHeader,Variant Header,Header,Variant Saving Settings,,,,,Misc
+#variantTextField,Variant Text Field,Text,"The settings below apply when saving/copying a variant alone.
 They do not apply when saving/copying anything else that may contain a variant, such as a fleet member or an entire fleet.",,,,,Misc
-saveSMods,Save SMods,Boolean,true,,"If false: SMods will still be included when saving, but as regular hullmods rather than being SMods.",,,Misc
-saveDMods,Save DMods,Boolean,false,,If false: DMods will be excluded when saving.,,,Misc
-saveHiddenMods,Save Hidden Mods,Boolean,true,,"If false: hullmods that do not show up in the hullmods list will be excluded when saving.
-Enable the setting ‘Show Hidden HullMods’ in the ‘Autofit Menu’ tab and hover over a ship in the autofit menu to see its hidden hullmods, provided it has them.",,,Misc
 ,,,,,,,,
 ,,,,,,,,
-memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
-fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
 ,,,,,,,,
-personHeader,Person Header,Header,Person Saving Settings,,,,,Misc
+,,,,,,,,
+,,,,,,,,
+#memberHeader,Member Header,Header,Member Saving Settings,,,,,Misc
+#fleetHeader,Fleet Header,Header,Fleet Saving Settings,,,,,Misc
+,,,,,,,,
+#personHeader,Person Header,Header,Person Saving Settings,,,,,Misc
 #handleRankAndPost,Handle Rank And Post,Boolean,false,,If false: do not include rank and post when saving or loading a PersonAPI,,,Misc
 ,,,,,,,,
 ,,,,,,,,

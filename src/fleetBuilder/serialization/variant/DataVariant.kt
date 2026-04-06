@@ -48,7 +48,15 @@ object DataVariant {
     @JvmOverloads
     fun copyVariant(
         variant: ShipVariantAPI,
-        settings: VariantSettings = VariantSettings()
+        filterParsed: Boolean = false
+    ): ShipVariantAPI {
+        val data = getVariantDataFromVariant(variant, filterParsed = filterParsed)
+        return buildVariant(data)
+    }
+
+    fun copyVariant(
+        variant: ShipVariantAPI,
+        settings: VariantSettings
     ): ShipVariantAPI {
         val data = getVariantDataFromVariant(variant, settings)
         return buildVariant(data)
@@ -107,7 +115,7 @@ object DataVariant {
             displayName = variant.displayName,
             fluxCapacitors = variant.numFluxCapacitors,
             fluxVents = variant.numFluxVents,
-            tags = variant.tags.filterNot { it.startsWith("#") },
+            tags = variant.tags.toList(),
             hullMods = hullMods,
             permaMods = permaMods,
             sMods = sMods,
@@ -338,9 +346,9 @@ object DataVariant {
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
-        if (data.fluxCapacitors > 0)
+        if (data.fluxCapacitors > -1)
             loadout.numFluxCapacitors = data.fluxCapacitors
-        if (data.fluxVents > 0)
+        if (data.fluxVents > -1)
             loadout.numFluxVents = data.fluxVents
 
         data.tags.forEach { loadout.addTag(it) }

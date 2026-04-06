@@ -52,9 +52,9 @@ internal class ModSettingsListener : LunaSettingsListener {
             FBSettings.showHiddenModsInTooltip = getBoolean(modID, "showHiddenModsInTooltip")!!
             FBSettings.showDebug = getBoolean(modID, "showDebug")!!
             FBSettings.enableDebug = getBoolean(modID, "enableDebug")!!
-            FBSettings.saveDMods = getBoolean(modID, "saveDMods")!!
-            FBSettings.saveSMods = getBoolean(modID, "saveSMods")!!
-            FBSettings.saveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
+            FBSettings.autofitSaveDMods = getBoolean(modID, "saveDMods")!!
+            FBSettings.autofitApplySMods = getBoolean(modID, "saveSMods")!!
+            FBSettings.autofitSaveHiddenMods = getBoolean(modID, "saveHiddenMods")!!
             FBSettings.forceAutofit = getBoolean(modID, "forceAutofit")!!
             FBSettings.dontForceClearDMods = getBoolean(modID, "dontForceClearDMods")!!
             FBSettings.dontForceClearSMods = getBoolean(modID, "dontForceClearSMods")!!

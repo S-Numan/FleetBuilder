@@ -32,7 +32,15 @@ object DataMember {
     @JvmOverloads
     fun copyMember(
         member: FleetMemberAPI,
-        settings: MemberSettings = MemberSettings()
+        filterParsed: Boolean = false
+    ): FleetMemberAPI {
+        val data = getMemberDataFromMember(member, filterParsed = filterParsed)
+        return buildMember(data)
+    }
+
+    fun copyMember(
+        member: FleetMemberAPI,
+        settings: MemberSettings
     ): FleetMemberAPI {
         val data = getMemberDataFromMember(member, settings)
         return buildMember(data)

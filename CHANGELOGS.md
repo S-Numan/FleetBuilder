@@ -1,6 +1,7 @@
 ## 1.34.0
 ### Additions
-- Added Display Derelict Recovery Early. You know when you’re salvaging a derelict ship, and you need to press the "consider special measures" button to actually see the ship? Enabling this setting puts a ship display one step earlier, allowing you to see the ship you're salvaging right away.
+- Added Display Derelict Recovery Early. Shows the ship preview earlier during derelict salvage. Instead of requiring “Consider Special Measures” to view the ship, the preview is available a step earlier when you get the option to salvage it.
+- Fix Ship Skin Source Mod. Ensures ship skins correctly display their originating mod in the codex. By default, ship skins (e.g. Sunder XIV from ship weapon pack) do not have a source mod assigned; this option resolves that so the source mod is shown in the UI.
 
 ## 1.33.0
 ### Additions

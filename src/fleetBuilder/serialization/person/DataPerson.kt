@@ -37,7 +37,15 @@ object DataPerson {
     @JvmOverloads
     fun copyPerson(
         person: PersonAPI,
-        settings: PersonSettings = PersonSettings()
+        filterParsed: Boolean = false
+    ): PersonAPI {
+        val data = getPersonDataFromPerson(person, filterParsed = filterParsed)
+        return buildPerson(data)
+    }
+
+    fun copyPerson(
+        person: PersonAPI,
+        settings: PersonSettings
     ): PersonAPI {
         val data = getPersonDataFromPerson(person, settings)
         return buildPerson(data)
@@ -72,7 +80,7 @@ object DataPerson {
             last = person.name.last,
             gender = person.name.gender,
             portrait = person.portraitSprite,
-            tags = person.tags.filterNot { it.startsWith("#") }.toSet(),
+            tags = person.tags.toSet(),
             rankId = person.rankId ?: Ranks.SPACE_LIEUTENANT,
             postId = person.postId ?: Ranks.POST_OFFICER,
             personality = person.personalityAPI.id,
@@ -105,6 +113,10 @@ object DataPerson {
                 if (skillSpec.isAptitudeEffect) return false
             }
             return true
+        }
+
+        fun shouldKeepTag(tagId: String): Boolean {
+            return tagId !in settings.excludeTagsWithID && !tagId.startsWith("#")
         }
 
         val excludeKeys = setOf(
@@ -147,6 +159,9 @@ object DataPerson {
             data.skills.filter { shouldKeepSkill(it.key) }
         }
 
+        val filteredTags = if (!settings.includeTags) emptySet() else
+            data.tags.filter(::shouldKeepTag)
+
         return data.copy(
             skills = newSkills,
             memKeys = filteredMemory,
@@ -155,6 +170,7 @@ object DataPerson {
             points = if (settings.handleXpAndPoints) data.points else 0,
             rankId = if (settings.handleRankAndPost) data.rankId else Ranks.SPACE_LIEUTENANT,
             postId = if (settings.handleRankAndPost) data.postId else Ranks.POST_OFFICER,
+            tags = filteredTags.toSet()
         )
     }
 

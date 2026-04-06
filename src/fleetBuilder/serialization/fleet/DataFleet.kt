@@ -41,7 +41,16 @@ object DataFleet {
     fun copyFleet(
         fleet: CampaignFleetAPI,
         aiMode: Boolean,
-        settings: FleetSettings = FleetSettings()
+        filterParsed: Boolean = false
+    ): CampaignFleetAPI {
+        val data = getFleetDataFromFleet(fleet, filterParsed = filterParsed)
+        return createCampaignFleetFromData(data, aiMode)
+    }
+
+    fun copyFleet(
+        fleet: CampaignFleetAPI,
+        aiMode: Boolean,
+        settings: FleetSettings,
     ): CampaignFleetAPI {
         val data = getFleetDataFromFleet(fleet, settings)
         return createCampaignFleetFromData(data, aiMode, settings)

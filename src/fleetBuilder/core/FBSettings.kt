@@ -62,9 +62,9 @@ object FBSettings {
 
     fun getConfiguredAutofitSaveSettings(): VariantSettings {
         return VariantSettings().apply {
-            applySMods = saveSMods
-            includeDMods = saveDMods
-            includeHiddenMods = saveHiddenMods
+            applySMods = autofitApplySMods
+            includeDMods = autofitSaveDMods
+            includeHiddenMods = autofitSaveHiddenMods
             excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
         }
     }
@@ -89,11 +89,11 @@ object FBSettings {
 
     var showCoreNonGoalVariants = false
 
-    var saveDMods = false
+    var autofitSaveDMods = false
 
-    var saveSMods = true
+    var autofitApplySMods = true
 
-    var saveHiddenMods = true
+    var autofitSaveHiddenMods = true
 
     var autofitMenuEnabled = false
 
