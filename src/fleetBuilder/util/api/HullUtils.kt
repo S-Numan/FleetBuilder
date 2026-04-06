@@ -52,7 +52,7 @@ object HullUtils {
                 .takeIf { it.isNotEmpty() }
                 ?.let { hullVariants ->
                     hullVariants.find { it.hullSpec.hullId == hull.hullId }                             // Exact match
-                        ?: hullVariants.find { it.hullSpec.hullId == hull.getActualHullId() }            // Actual match
+                        ?: hullVariants.find { it.hullSpec.hullId == hull.getActualHullId() }           // Actual match
                         ?: hullVariants.find { it.hullSpec.hullId == hull.getCompatibleDLessHullId() }  // D-less match
                         ?: hullVariants.find { it.hullSpec.hullId == hull.getEffectiveHullId() }        // Effective match
                         ?: run {
