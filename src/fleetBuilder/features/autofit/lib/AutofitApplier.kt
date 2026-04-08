@@ -10,6 +10,7 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
+import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.core.FBMisc.replaceVariantWithVariant
 import fleetBuilder.core.FBMisc.sModHandlerTemp
 import fleetBuilder.core.FBSettings
@@ -18,7 +19,9 @@ import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
+import fleetBuilder.util.api.kotlin.createHullVariant
 import fleetBuilder.util.api.kotlin.getModules
+import fleetBuilder.util.api.kotlin.getSlotsForModules
 import fleetBuilder.util.api.kotlin.safeInvoke
 import java.awt.Color
 import java.util.*
@@ -41,6 +44,8 @@ internal object AutofitApplier {
         shipDisplay.safeInvoke("setSuppressMessages", true)
 
         var appliedSMods = false
+
+        val baseVariantContainsModules = baseVariant.getModules().keys.isNotEmpty()
 
         try {
             baseVariant.source = VariantSource.REFIT
@@ -225,17 +230,30 @@ internal object AutofitApplier {
                 refitPanel.safeInvoke("saveCurrentVariant") // Prevent undo. Refunding SMods is difficult.
                 refitPanel.safeInvoke("setEditedSinceSave", false)
             }
+            if (baseVariantContainsModules && baseVariant.safeInvoke("getModuleVariants") == null) {
+                DisplayMessage.showError(
+                    "Modules were null. Remaking modules to avoid game crash.", "Modules were null. Remaking modules to avoid game crash." +
+                            "\nHULLID: ${baseVariant.hullSpec.hullId}\nSourceMod: ${baseVariant.hullSpec.sourceMod.name}"
+                )
+                baseVariant.safeInvoke("setModuleVariants", mutableMapOf<String, HullVariantSpec>())
+
+                val templateVariant = baseVariant.hullSpec.createHullVariant()
+                baseVariant.getSlotsForModules().forEach { slot ->
+                    baseVariant.setModuleVariant(slot, templateVariant.getModuleVariant(slot).apply { source = VariantSource.REFIT }) // Need to apply refit or game will remove it.
+                }
+            }
+
             refitPanel.safeInvoke("syncWithCurrentVariant")
 
-            //try {
-            shipDisplay.safeInvoke("updateModules")
-            /*} catch (e: Exception) {
-                DisplayMessage.showError("ERROR: " + FBTxt.txt("failed_to_apply_variant_update_modules"), e)
-                baseVariant.stationModules.forEach { (slot, variantID) ->
-                    //val moduleVariant = Global.getSettings().getVariant(variantID)
-                    //baseVariant.setModuleVariant(slot, null)
-                }
-            }*/
+            try {
+                shipDisplay.safeInvoke("updateModules")
+            } catch (e: Exception) {
+                DisplayMessage.showError(
+                    "MODULE ERROR: Game has probably already crashed." +
+                            "\nHULLID: ${baseVariant.hullSpec.hullId}\nSourceMod: ${baseVariant.hullSpec.sourceMod.name}", e
+                )
+            }
+
 
             shipDisplay.safeInvoke("updateButtonPositionsToZoomLevel")
             //refitPanel.safeInvoke("recreateUI")

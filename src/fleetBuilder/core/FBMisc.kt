@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.HullModItemManager
+import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
@@ -288,13 +289,12 @@ internal object FBMisc {
         to.source = from.source
 
         from.getModules(true).forEach { (slot, fromVariant) ->
-            val toVariant = runCatching { to.getModuleVariant(slot) }.getOrNull()
-            if (toVariant == null)
-                return@forEach
+            val toVariant = runCatching { to.getModuleVariant(slot) }.getOrNull()?.clone()
+            if (toVariant == null) return@forEach
 
             replaceVariantWithVariant(
                 toVariant,
-                fromVariant,
+                fromVariant.clone().apply { if (isStockVariant) source = VariantSource.REFIT }, // Have to avoid stock module variants, they will cause a game crash due to vanilla code removing them.
                 copyVariantID,
                 dontForceClearDMods,
                 dontForceClearSMods
