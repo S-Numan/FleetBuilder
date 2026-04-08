@@ -2,9 +2,11 @@
 ### Additions
 - Added Display Derelict Recovery Early. Shows the ship preview earlier during derelict salvage. Instead of requiring “Consider Special Measures” to view the ship, the preview is available a step earlier when you get the option to salvage it.
 - Fix Ship Skin Source Mod. Ensures ship skins correctly display their originating mod in the codex. By default, ship skins (e.g. Sunder XIV from ship weapon pack) do not have a source mod assigned; this option resolves that so the source mod is shown in the UI.
+### Changes
+- Some backend changes
 ### Bugfixes
 - Fix "Overwrite Variant on Autofit" causing ships with modules to crash the game in some circumstances. Reported by randalflagg231 on the forums.
-- Fix "Overwrite Variant on Autofit" altering module variants globally when it shouldn't
+- Fix "Overwrite Variant on Autofit" altering module variants globally when it shouldn't.
 
 ## 1.33.0
 ### Additions
