@@ -20,7 +20,8 @@ import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
-import fleetBuilder.util.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.api.kotlin.getActualHullId
+import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -321,7 +322,7 @@ object ShipDirectoryService {
                 else -> FBSettings.showCoreNonGoalVariants
             }.and(
                 FBSettings.cheatsEnabled()
-                        || variant.hullSpec.getCompatibleDLessHullId() == hullSpec.getCompatibleDLessHullId() // If this is the hullspec the player is looking at
+                        || variant.hullSpec.getActualHullId() == hullSpec.getActualHullId() // If this is the hullspec the player is looking at
                         || isVariantKnownToPlayer(variant) // Or the player knows all the contents of this variant
             )
 

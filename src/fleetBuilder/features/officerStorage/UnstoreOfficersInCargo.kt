@@ -9,8 +9,8 @@ import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.util.kotlin.getActualCurrentTab
-import fleetBuilder.util.kotlin.getAssignedOfficers
+import fleetBuilder.util.api.kotlin.getActualCurrentTab
+import fleetBuilder.util.api.kotlin.getAssignedOfficers
 import org.lwjgl.input.Mouse
 import org.magiclib.kotlin.getMaxOfficers
 import org.magiclib.kotlin.isMercenary

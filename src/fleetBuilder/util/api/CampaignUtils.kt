@@ -11,7 +11,7 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.get
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.util.api.CampaignUtils.closeCampaignDummyDialog
 import fleetBuilder.util.api.CampaignUtils.openCampaignDummyDialog
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.safeInvoke
 
 object CampaignUtils {
 

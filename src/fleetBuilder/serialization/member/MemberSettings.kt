@@ -16,7 +16,7 @@ data class MemberSettings(
     var includeOfficer: Boolean = true,
     var includeHull: Boolean = true,
     var includeCR: Boolean = true,
-    var applyID: Boolean = false,
+    var includeID: Boolean = false,
     var personSettings: PersonSettings = PersonSettings(),
     var variantSettings: VariantSettings = VariantSettings(),
 )

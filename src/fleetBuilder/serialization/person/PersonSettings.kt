@@ -10,6 +10,8 @@ package fleetBuilder.serialization.person
 data class PersonSettings(
     var handleXpAndPoints: Boolean = true,
     var excludeSkillsWithID: MutableSet<String> = mutableSetOf(),
+    var includeTags: Boolean = true,
+    var excludeTagsWithID: MutableSet<String> = mutableSetOf(),
     var includeMemKeys: Boolean = true,
     var includeSkills: Boolean = true,
     var excludePeopleMemoryKeys: Boolean = true,

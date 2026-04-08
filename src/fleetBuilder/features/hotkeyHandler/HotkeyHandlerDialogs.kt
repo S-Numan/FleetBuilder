@@ -41,6 +41,8 @@ import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.UIUtils
+import fleetBuilder.ui.addCheckboxD
+import fleetBuilder.ui.addNumericTextField
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
@@ -49,7 +51,7 @@ import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
-import fleetBuilder.util.kotlin.*
+import fleetBuilder.util.api.kotlin.*
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
@@ -293,7 +295,7 @@ object HotkeyHandlerDialogs {
                 includeAggression = setAggressionDoctrine
                 memberSettings.includeOfficer = includeOfficers
                 includeCommanderSetFlagship = includeCommanderAsCommander
-                memberSettings.applyID = true
+                memberSettings.includeID = true
             }
 
             val missingEx = MissingContent()

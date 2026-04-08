@@ -32,7 +32,18 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
         private var curState = GameState.TITLE
         private var justLoadedGame = 0
         fun onGameLoad() {
-            justLoadedGame = 2 // Delay a tick for the screen panel
+            justLoadedGame = 2 // Delay a tick for the screen panel+
+            clearCurrent()
+        }
+
+        private fun clearCurrent() {
+            if (toDraw != null) {
+                currentMessage = null
+                toDraw = null
+                messageQueue.clear()
+                messageTimer = 0f
+                fadingOut = false
+            }
         }
 
         fun renderStatic() {
@@ -88,7 +99,6 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
         if (justLoadedGame > 0) {
             justLoadedGame--
             if (justLoadedGame == 0) {
-                clearCurrent()
                 val screenPanel = ReflectionMisc.getScreenPanel()
                 if (screenPanel != null && screenPanel.getChildrenCopy().none { CampaignMessageRenderer::class.java.isInstance((it as? CustomPanelAPI)?.plugin) })
                     CampaignMessageRenderer()
@@ -118,17 +128,6 @@ internal class DrawMessageOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin()
                 CampaignMessageRenderer()
         }
     }
-
-    private fun clearCurrent() {
-        if (toDraw != null) {
-            currentMessage = null
-            toDraw = null
-            messageQueue.clear()
-            messageTimer = 0f
-            fadingOut = false
-        }
-    }
-
 
     private fun advanceAmount(amount: Float) {
         if (!init)

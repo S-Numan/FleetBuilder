@@ -6,9 +6,11 @@ package fleetBuilder.serialization.variant
  * @param includeDMods If false, DMods will be excluded from the variant's hullmods.
  * @param includeHiddenMods If false, hidden mods will be excluded from the variant's hullmods.
  * @param includeTags If false, the variant's tags will not be included.
+ * @param includeFlux If false, the variant's flux will not be included.
  * @param excludeWeaponsWithID A set of weapon IDs to exclude from the variant's weapons.
  * @param excludeWingsWithID A set of wing IDs to exclude from the variant's wings.
  * @param excludeHullModsWithID A set of hullmod IDs to exclude from the variant's hullmods.
+ * @param excludeTagsWithID A set of tag IDs to exclude from the variant's tags.
  */
 data class VariantSettings(
     var applySMods: Boolean = true,
@@ -19,6 +21,7 @@ data class VariantSettings(
     var includeHiddenMods: Boolean = true,
     var includeTags: Boolean = true,
     var includeFlux: Boolean = true,
+    var includeVariantID: Boolean = true,
     var excludeWeaponsWithID: MutableSet<String> = mutableSetOf(),
     var excludeWingsWithID: MutableSet<String> = mutableSetOf(),
     var excludeHullModsWithID: MutableSet<String> = mutableSetOf(),

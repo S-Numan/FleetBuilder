@@ -29,7 +29,7 @@ import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getLoado
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingContent
-import fleetBuilder.serialization.variant.DataVariant.copyVariant
+import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
@@ -39,10 +39,10 @@ import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
 import fleetBuilder.util.api.VariantUtils.processSModsForComparison
-import fleetBuilder.util.kotlin.allDMods
-import fleetBuilder.util.kotlin.completelyRemoveMod
-import fleetBuilder.util.kotlin.createFleetMember
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.allDMods
+import fleetBuilder.util.api.kotlin.completelyRemoveMod
+import fleetBuilder.util.api.kotlin.createFleetMember
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
@@ -627,9 +627,9 @@ internal object AutofitPanel {
 
                 if (selectorPlugin.autofitSpec == null || autofitPlugin.draggedAutofitSpec != null || event.isCtrlDown || selectorPlugin.noClickFader) return@onClickRelease // If no variant. or dragging self, do nothing
 
-                fun applyVariant(autofitSpec: AutofitSpec?, applySMods: Boolean = false) {
+                fun applyVariant(autofitSpec: AutofitSpec, applySMods: Boolean = false) {
                     applyVariantInRefitScreen(
-                        baseVariant, autofitSpec!!.variant, fleetMember, ship!!, shipDisplay!!, refitPanel!!,
+                        baseVariant, autofitSpec.variant, fleetMember, ship!!, shipDisplay!!, refitPanel!!,
                         allowCargo = cargoButton?.isChecked == true, allowStorage = storageButton?.isChecked == true, allowMarket = marketButton?.isChecked == true, allowBlackMarket = blackMarketButton?.isChecked == true, applySMods = applySMods
                     )
 
@@ -677,11 +677,15 @@ internal object AutofitPanel {
                         )
                     }
                     dialog.onConfirm { ->
-                        applyVariant(selectorPlugin.autofitSpec, true)
+                        selectorPlugin.autofitSpec?.let {
+                            applyVariant(it, true)
+                        }
                     }
 
                 } else {
-                    applyVariant(selectorPlugin.autofitSpec)
+                    selectorPlugin.autofitSpec?.let {
+                        applyVariant(it)
+                    }
                 }
 
             }
@@ -727,7 +731,7 @@ internal object AutofitPanel {
 
                 val indexInMenu = index - coreEffectiveHullAutofitSpecs.size
 
-                val draggedVariant = copyVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would be loaded if brought up later
+                val draggedVariant = cloneVariant(autofitPlugin.draggedAutofitSpec!!.variant, settings) // Copied to apply settings and ensure is variant that would be loaded if brought up later
 
                 if (FBSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod) {
                     draggedVariant.sModdedBuiltIns.toList().forEach {
@@ -774,7 +778,7 @@ internal object AutofitPanel {
                         it.autofitSpec?.source != null && it.autofitSpec?.variant != null &&
                                 compareVariantContents(
                                     shipDirectory.getShip(shipVariantID)!!,
-                                    copyVariant(it.autofitSpec!!.variant, settings) // Copied to apply settings
+                                    cloneVariant(it.autofitSpec!!.variant, settings) // Copied to apply settings
                                 )
                     })
                 } else {

@@ -12,10 +12,10 @@ import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.kotlin.allDMods
-import fleetBuilder.util.kotlin.createHullVariant
-import fleetBuilder.util.kotlin.getCompatibleDLessHullId
-import fleetBuilder.util.kotlin.getModules
+import fleetBuilder.util.api.kotlin.allDMods
+import fleetBuilder.util.api.kotlin.createHullVariant
+import fleetBuilder.util.api.kotlin.getActualHullId
+import fleetBuilder.util.api.kotlin.getModules
 
 object DataVariant {
 
@@ -36,7 +36,7 @@ object DataVariant {
         val moduleVariants: Map<String, ParsedVariantData> = emptyMap(),
         val isGoalVariant: Boolean = false,
     ) {
-        fun allHullMods() = hullMods + sMods + sModdedBuiltIns + permaMods
+        fun allHullMods() = (hullMods + sMods + sModdedBuiltIns + permaMods).toSet()
     }
 
     data class ParsedWeaponGroup(
@@ -46,9 +46,17 @@ object DataVariant {
     )
 
     @JvmOverloads
-    fun copyVariant(
+    fun cloneVariant(
         variant: ShipVariantAPI,
-        settings: VariantSettings = VariantSettings()
+        filterParsed: Boolean = false
+    ): ShipVariantAPI {
+        val data = getVariantDataFromVariant(variant, filterParsed = filterParsed)
+        return buildVariant(data)
+    }
+
+    fun cloneVariant(
+        variant: ShipVariantAPI,
+        settings: VariantSettings
     ): ShipVariantAPI {
         val data = getVariantDataFromVariant(variant, settings)
         return buildVariant(data)
@@ -102,12 +110,12 @@ object DataVariant {
             .forEach { hullMods += it }
 
         val data = ParsedVariantData(
-            hullId = variant.hullSpec.getCompatibleDLessHullId(true), //DMods are already included, get the D less ID for simplicity.
+            hullId = variant.hullSpec.getActualHullId(), //DMods are already included, get the D less ID for simplicity.
             variantId = variant.hullVariantId,
             displayName = variant.displayName,
             fluxCapacitors = variant.numFluxCapacitors,
             fluxVents = variant.numFluxVents,
-            tags = variant.tags.filterNot { it.startsWith("#") },
+            tags = variant.tags.toList(),
             hullMods = hullMods,
             permaMods = permaMods,
             sMods = sMods,
@@ -223,7 +231,9 @@ object DataVariant {
             fluxCapacitors = if (!settings.includeFlux) -1 else
                 data.fluxCapacitors,
             fluxVents = if (!settings.includeFlux) -1 else
-                data.fluxVents
+                data.fluxVents,
+            variantId = if (!settings.includeVariantID) "" else
+                data.variantId
         )
     }
 
@@ -242,7 +252,7 @@ object DataVariant {
 
         // --- Variant ID ---
         val fixedVariantId = data.variantId.ifBlank {
-            "MissingVariantID_" + Misc.genUID()
+            "BlankID_" + Misc.genUID()
         }
 
         // --- Display Name ---
@@ -338,9 +348,9 @@ object DataVariant {
         loadout.hullVariantId = data.variantId
         loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
-        if (data.fluxCapacitors > 0)
+        if (data.fluxCapacitors > -1)
             loadout.numFluxCapacitors = data.fluxCapacitors
-        if (data.fluxVents > 0)
+        if (data.fluxVents > -1)
             loadout.numFluxVents = data.fluxVents
 
         data.tags.forEach { loadout.addTag(it) }

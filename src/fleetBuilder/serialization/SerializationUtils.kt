@@ -1,5 +1,6 @@
 package fleetBuilder.serialization
 
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.CompressedFleet.isCompressedFleet
@@ -13,8 +14,6 @@ import fleetBuilder.serialization.person.JSONPerson.extractPersonDataFromJson
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.CompressedVariant.isCompressedVariant
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
-import fleetBuilder.core.FBTxt
-import fleetBuilder.util.kotlin.isJSON
 import org.json.JSONObject
 import java.awt.Color
 
@@ -83,13 +82,10 @@ object SerializationUtils {
 
     @JvmOverloads
     fun extractDataFromString(text: String, missing: MissingContent = MissingContent()): Any? {
-        if (text.isEmpty()) return null
-        if (text.isJSON()) {
-            val json = getJSONFromStringSafe(text)
-            return if (json != null)
-                extractDataFromJSON(json, missing)
-            else
-                null
+        if (text.isBlank()) return null
+        val json = getJSONFromStringSafe(text)
+        if (json != null) {
+            return extractDataFromJSON(json, missing)
         }
 
         return when {

@@ -14,8 +14,8 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.MagicLib.ReflectionUtilsExtra
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.kotlin.createFleetMember
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.createFleetMember
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*

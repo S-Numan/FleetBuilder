@@ -1,11 +1,18 @@
+## 1.34.0
+### Additions
+- Added Display Derelict Recovery Early. Shows the ship preview earlier during derelict salvage. Instead of requiring “Consider Special Measures” to view the ship, the preview is available a step earlier when you get the option to salvage it.
+- Fix Ship Skin Source Mod. Ensures ship skins correctly display their originating mod in the codex. By default, ship skins (e.g. Sunder XIV from ship weapon pack) do not have a source mod assigned; this option resolves that so the source mod is shown in the UI.
+### Bugfixes
+- Fix "Overwrite Variant on Autofit" causing ships with modules to crash the game in some circumstances. Reported by randalflagg231 on the forums.
+- Fix "Overwrite Variant on Autofit" altering module variants globally when it shouldn't
+
 ## 1.33.0
 ### Additions
 - Show Tags setting for the autofit tooltips.
-- Added the CTRL+F hotkey to every filter. Note that due to technical reasons, the fleet filter is slightly scuffed. @Numan in discord or make a forum post if you have any issues
+- Added the CTRL+F hotkey to every filter. Note that due to technical reasons, the fleet filter is slightly scuffed. @Numan me in discord or make a forum post if you have any issues
 - Made the fleet filter more generous in what can match your input, and added the "modules" keyword to the filter.
 ### Bugfixes
 - The fleet paste dialog no longer changes the music playing, no longer hides the UI, and no longer closes the fleet UI tab after leaving simulation.
-
 
 ## 1.32.5
 ### Changes

@@ -1,4 +1,4 @@
-package fleetBuilder.util.kotlin
+package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.SettingsAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
@@ -33,6 +33,7 @@ val String.toBoolean: Boolean?
         }
 
 
+/*
 fun String.isJSON(): Boolean {
     this.lineSequence()
         .map { it.substringBefore("#") }           // Remove inline comments
@@ -45,6 +46,7 @@ fun String.isJSON(): Boolean {
         }
     return false
 }
+ */
 
 /**
  * Delegates to [HullUtils.createHullVariant].

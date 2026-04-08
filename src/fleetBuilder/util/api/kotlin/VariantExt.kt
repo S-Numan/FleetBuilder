@@ -1,4 +1,4 @@
-package fleetBuilder.util.kotlin
+package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -6,27 +6,43 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.loading.WeaponSpecAPI
+import fleetBuilder.serialization.variant.DataVariant
+import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.VariantUtils
 
+/**
+ * Creates a copy of this variant with the specified settings.
+ */
+fun ShipVariantAPI.clone(settings: VariantSettings): ShipVariantAPI {
+    return DataVariant.cloneVariant(this, settings = settings)
+}
 
 /**
  * Returns a map of all modules attached to this variant.
  *
+ * Any slots with null variants are filtered out. Use [getModulesAllowNull] if you want to include null variants.
+ *
  * The map key is the module slot ID, and the value is the corresponding
  * [ShipVariantAPI] for that module.
  */
-fun ShipVariantAPI.getModules(onlyThoseInHullspec: Boolean = false): Map<String, ShipVariantAPI> {
+fun ShipVariantAPI.getModules(onlyThoseInHullSpec: Boolean = false): Map<String, ShipVariantAPI> {
+    return getModulesAllowNull(onlyThoseInHullSpec)
+        .mapNotNull { (k, v) -> v?.let { k to it } }
+        .toMap()
+}
+
+fun ShipVariantAPI.getModulesAllowNull(onlyThoseInHullSpec: Boolean = false): Map<String, ShipVariantAPI?> {
     val modules = stationModules
-        ?.mapNotNull { (slot, _) ->
-            val variant = getModuleVariant(slot)
-            if (variant != null) slot to variant else null
+        ?.map { (slot, _) ->
+            val variant: ShipVariantAPI? = getModuleVariant(slot)
+            slot to variant
         }
         ?.toMap() // converts the list of pairs back into a Map
         ?: emptyMap()
 
-    return if (onlyThoseInHullspec)
-        modules.filter { hullSpec.getWeaponSlot(it.key).weaponType == WeaponAPI.WeaponType.STATION_MODULE }
+    return if (onlyThoseInHullSpec)
+        modules.filter { hullSpec.getWeaponSlot(it.key)?.weaponType == WeaponAPI.WeaponType.STATION_MODULE }
     else
         modules
 }
@@ -34,6 +50,15 @@ fun ShipVariantAPI.getModules(onlyThoseInHullspec: Boolean = false): Map<String,
 // Only thing getModuleSlots checks differently is checking if the hullspec has the slot for the module
 //Y var4 = this.getHullSpec().getWeaponSlot(var2);
 //if (var4.getWeaponType() == WeaponType.STATION_MODULE
+
+fun ShipVariantAPI.getSlotsForModules(onlyThoseInHullSpec: Boolean = false): Set<String> {
+    val slots = stationModules?.keys ?: emptySet()
+
+    return if (onlyThoseInHullSpec)
+        slots.filter { hullSpec.getWeaponSlot(it).weaponType == WeaponAPI.WeaponType.STATION_MODULE }.toSet()
+    else
+        slots
+}
 
 /**
  * Returns all fitted weapons on this variant.

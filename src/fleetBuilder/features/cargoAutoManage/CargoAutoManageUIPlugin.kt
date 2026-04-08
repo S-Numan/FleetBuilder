@@ -25,9 +25,9 @@ import fleetBuilder.ui.customPanel.common.BasePanel
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.kotlin.addCheckboxD
-import fleetBuilder.util.kotlin.loadTextureCached
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.ui.addCheckboxD
+import fleetBuilder.util.api.kotlin.loadTextureCached
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard

@@ -1,4 +1,4 @@
-package fleetBuilder.util.kotlin
+package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.SettingsAPI
 import com.fs.starfarer.api.graphics.SpriteAPI
@@ -98,6 +98,24 @@ internal fun Any.safeGet(name: String? = null, type: Class<*>? = null, searchSup
     else return reflectedFields[0].get(this)
 
     return null
+}
+
+fun Any.safeSet(name: String? = null, value: Any?, searchSuperclass: Boolean = false) {
+    val valueType = value?.let { it::class.javaPrimitiveType ?: it::class.java }
+    val reflectedFields = this.getFieldsMatching(name, fieldAccepts = valueType, searchSuperclass = searchSuperclass)
+    if (reflectedFields.isEmpty())
+        DisplayMessage.showError(
+            short = "ERROR: No field found on class: ${this::class.java.name}. See console for more details.",
+            full = "No field found for name: '${name ?: "<any>"}' on class: ${this::class.java.name} " +
+                    "that is accepts type: '${valueType?.name ?: "null"}'."
+        )
+    else if (reflectedFields.size > 1)
+        DisplayMessage.showError(
+            short = "ERROR: Ambiguous fields on class: ${this::class.java.name}. See console for more details.",
+            full = "Ambiguous fields with name: '${name ?: "<any>"}' on class ${this::class.java.name} " +
+                    "assignable to type: '${valueType?.name ?: "null"}'. Multiple fields match."
+        )
+    else return reflectedFields[0].set(this, value)
 }
 
 //For optimization purposes

@@ -11,10 +11,10 @@ import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.kotlin.allDMods
-import fleetBuilder.util.kotlin.allSMods
-import fleetBuilder.util.kotlin.getShipNameWithoutPrefix
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.allDMods
+import fleetBuilder.util.api.kotlin.allSMods
+import fleetBuilder.util.api.kotlin.getShipNameWithoutPrefix
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 
@@ -74,7 +74,7 @@ class FleetFilterPanel(
                         "cruiser\n" +
                         "capital\n" +
                         "automated\n" +
-                        "modules (If the ship has modules\n" +
+                        "modules (If a ship has modules)\n" +
                         "marines / transport\n" +
                         "fuel / tanker\n" +
                         "crew / liner\n" +
@@ -202,7 +202,7 @@ class FleetFilterPanel(
     private fun FleetMemberAPI.matchesDescription(desc: String): Boolean {
         return when {
             // Names
-            //h ullSpec.getCompatibleDLessHullId().lowercase().contains(desc) -> true
+            //hullSpec.getCompatibleDLessHull(true).lowercase().contains(desc) -> true
             hullSpec.hullName.lowercase().contains(desc) -> true
             getShipNameWithoutPrefix().lowercase().startsWith(desc) -> true
             hullSpec.manufacturer.lowercase().contains(desc) -> true

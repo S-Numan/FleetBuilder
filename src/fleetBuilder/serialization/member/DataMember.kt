@@ -30,9 +30,17 @@ object DataMember {
     )
 
     @JvmOverloads
-    fun copyMember(
+    fun cloneMember(
         member: FleetMemberAPI,
-        settings: MemberSettings = MemberSettings()
+        filterParsed: Boolean = false
+    ): FleetMemberAPI {
+        val data = getMemberDataFromMember(member, filterParsed = filterParsed)
+        return buildMember(data)
+    }
+
+    fun cloneMember(
+        member: FleetMemberAPI,
+        settings: MemberSettings
     ): FleetMemberAPI {
         val data = getMemberDataFromMember(member, settings)
         return buildMember(data)
@@ -74,7 +82,7 @@ object DataMember {
             variantData = variantData,
             cr = if (settings.includeCR) data.cr else null,
             hullFraction = if (settings.includeHull) data.hullFraction else null,
-            id = if (settings.applyID) data.id else null
+            id = if (settings.includeID) data.id else null
         )
     }
 

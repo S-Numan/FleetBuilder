@@ -6,9 +6,11 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
 import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBSettings.fixShipSkinSourceMod
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
+import fleetBuilder.core.shipSkinSourceMod.ShipSkinSourceMod
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
 import fleetBuilder.features.autofit.listener.CampaignAutofitAdder
 import fleetBuilder.features.autofit.listener.CodexAutofitButton
@@ -17,6 +19,7 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManager
 import fleetBuilder.features.cargoAutoManage.CargoAutoManagerOpener
 import fleetBuilder.features.codexButton.CampaignDevModeCodexButton
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
+import fleetBuilder.features.displayRecoveryEarly.DisplayDerelictRecoveryEarly
 import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
 import fleetBuilder.features.filters.injection.CampaignFleetScreenFilter
 import fleetBuilder.features.filters.injection.CampaignModPickerFilter
@@ -108,6 +111,7 @@ internal class EventDispatcher : EveryFrameScript {
             manageTransientListener(CampaignCargoScreenFilter::class.java, FBSettings.cargoScreenFilter) { cargoScreenFilter }
 
             manageTransientScript(AutoMothballRecoveredShips::class.java, FBSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
+            manageTransientScript(DisplayDerelictRecoveryEarly::class.java, FBSettings.displayDerelictRecoveryEarly) { DisplayDerelictRecoveryEarly() }//TODO: Setting
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
 
             manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
@@ -118,18 +122,27 @@ internal class EventDispatcher : EveryFrameScript {
 
         fun onDevModeF8Reload() {
             FBTxt.setup()
+
+            LookupUtils.setup()
+
             updateApplicationState()
         }
 
         fun onApplicationLoad() {
             FBSettings.onApplicationLoad()
             FBTxt.setup()
+
+            LookupUtils.setup()
+
+            if (fixShipSkinSourceMod)
+                ShipSkinSourceMod.setShipSkinSourceMods()
+
             updateApplicationState()
         }
 
         fun updateApplicationState() {
+
             FBSettings.setNeverSaveHullmods()
-            LookupUtils.setup()
 
             if (FBSettings.addLogsToConsoleModConsoleLevel != Level.OFF || FBSettings.addLogsToDisplayMessageLevel != Level.OFF) {
                 // Cause the lazy class loader to load these classes preemptively to prevent issues.

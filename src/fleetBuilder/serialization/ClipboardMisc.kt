@@ -20,7 +20,7 @@ import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.kotlin.createHullVariant
+import fleetBuilder.util.api.kotlin.createHullVariant
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lwjgl.input.Keyboard
 import java.awt.Color

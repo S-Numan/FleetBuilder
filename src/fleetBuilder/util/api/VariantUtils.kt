@@ -11,7 +11,7 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
-import fleetBuilder.util.kotlin.*
+import fleetBuilder.util.api.kotlin.*
 import org.magiclib.kotlin.getBuildInBonusXP
 
 object VariantUtils {
@@ -169,7 +169,7 @@ object VariantUtils {
      * @return The generated variant ID.
      */
     fun makeVariantID(variant: ShipVariantAPI): String {
-        val hullId = variant.hullSpec.getCompatibleDLessHullId(true)
+        val hullId = variant.hullSpec.getActualHullId()
         return makeVariantID(hullId, variant.displayName)
     }
 

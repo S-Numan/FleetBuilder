@@ -1,4 +1,4 @@
-package fleetBuilder.util.kotlin
+package fleetBuilder.ui
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.ButtonAPI
@@ -7,6 +7,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import fleetBuilder.otherMods.starficz.Font
 import fleetBuilder.otherMods.starficz.getFontPath
 import fleetBuilder.ui.common.ObservedTextField
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.magiclib.kotlin.setAlpha
 import java.awt.Color
 

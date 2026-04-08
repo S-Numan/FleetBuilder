@@ -5,7 +5,7 @@ import com.fs.starfarer.api.ModSpecAPI
 import fleetBuilder.core.FBConst.PRIMARY_DIR
 import fleetBuilder.core.listener.ModSettingsListener
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.kotlin.containsString
+import fleetBuilder.util.api.kotlin.containsString
 import lunalib.lunaSettings.LunaSettings
 import org.apache.log4j.Level
 import org.json.JSONArray
@@ -62,9 +62,9 @@ object FBSettings {
 
     fun getConfiguredAutofitSaveSettings(): VariantSettings {
         return VariantSettings().apply {
-            applySMods = saveSMods
-            includeDMods = saveDMods
-            includeHiddenMods = saveHiddenMods
+            applySMods = autofitApplySMods
+            includeDMods = autofitSaveDMods
+            includeHiddenMods = autofitSaveHiddenMods
             excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
         }
     }
@@ -89,11 +89,11 @@ object FBSettings {
 
     var showCoreNonGoalVariants = false
 
-    var saveDMods = false
+    var autofitSaveDMods = false
 
-    var saveSMods = true
+    var autofitApplySMods = true
 
-    var saveHiddenMods = true
+    var autofitSaveHiddenMods = true
 
     var autofitMenuEnabled = false
 
@@ -142,6 +142,8 @@ object FBSettings {
 
     var transponderOffInHyperspace = false
 
+    var displayDerelictRecoveryEarly = false
+
     var autofitNoSModdedBuiltInWhenNotBuiltInMod = true
 
     var reserveFirstFourAutofitSlots = true
@@ -149,6 +151,8 @@ object FBSettings {
     var recentBattleTracker = false
 
     var showTagsInTooltip = false
+
+    var fixShipSkinSourceMod = true
 
     private var unassignPlayer = false
     fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()

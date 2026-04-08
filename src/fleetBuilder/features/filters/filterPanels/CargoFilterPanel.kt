@@ -10,8 +10,8 @@ import fleetBuilder.core.FBMisc.getSpecialItemName
 import fleetBuilder.core.FBTxt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.util.api.CargoUtils
-import fleetBuilder.util.kotlin.safeGet
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.safeGet
+import fleetBuilder.util.api.kotlin.safeInvoke
 
 class CargoFilterPanel(
     width: Float,

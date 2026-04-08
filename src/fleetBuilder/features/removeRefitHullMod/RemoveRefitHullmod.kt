@@ -20,9 +20,9 @@ import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.width
-import fleetBuilder.util.kotlin.completelyRemoveMod
-import fleetBuilder.util.kotlin.getActualCurrentTab
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.completelyRemoveMod
+import fleetBuilder.util.api.kotlin.getActualCurrentTab
+import fleetBuilder.util.api.kotlin.safeInvoke
 
 internal class RemoveRefitHullmod : CampaignInputListener {
 

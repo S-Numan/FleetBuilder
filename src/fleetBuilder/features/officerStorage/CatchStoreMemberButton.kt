@@ -19,8 +19,8 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.kotlin.getActualCurrentTab
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.getActualCurrentTab
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 

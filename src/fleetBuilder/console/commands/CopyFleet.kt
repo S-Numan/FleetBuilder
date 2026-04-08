@@ -13,12 +13,12 @@ import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
-import fleetBuilder.serialization.member.DataMember.copyMember
-import fleetBuilder.serialization.person.DataPerson.copyPerson
+import fleetBuilder.serialization.member.DataMember.cloneMember
+import fleetBuilder.serialization.person.DataPerson.clonePerson
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.kotlin.getActualCurrentTab
+import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.lib.ClipboardUtil
-import fleetBuilder.util.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.Console
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
@@ -58,7 +58,7 @@ class CopyFleet : BaseCommand {
 
             var hasFlagship = false
             allShips.forEach { (id, tempMember) ->
-                val member = copyMember(tempMember)
+                val member = cloneMember(tempMember)
                 fleet.fleetData.addFleetMember(member)
 
                 if (member.captain.id == commander.id) {
@@ -82,7 +82,7 @@ class CopyFleet : BaseCommand {
             }
 
             if (!hasFlagship)
-                fleet.commander = copyPerson(commander)
+                fleet.commander = clonePerson(commander)
 
 
             val json = saveFleetToJson(
@@ -133,7 +133,7 @@ class CopyFleet : BaseCommand {
                 ?: run {
                     val fleet = Global.getFactory().createEmptyFleet(Factions.NEUTRAL, FleetTypes.TASK_FORCE, false)
                     members.forEach { member ->
-                        fleet.fleetData.addFleetMember(copyMember(member))
+                        fleet.fleetData.addFleetMember(cloneMember(member))
                     }
                     fleet.fleetData
                 }

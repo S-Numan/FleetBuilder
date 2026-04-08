@@ -3,6 +3,7 @@ package fleetBuilder.features.autofit.shipDirectory
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import fleetBuilder.core.FBMisc.deepDiff
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingContent
@@ -13,10 +14,9 @@ import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.filterParsedVariantData
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.core.FBMisc.deepDiff
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.kotlin.getCompatibleDLessHullId
-import fleetBuilder.util.kotlin.getEffectiveHullId
+import fleetBuilder.util.api.kotlin.getActualHullId
+import fleetBuilder.util.api.kotlin.getEffectiveHullId
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -248,7 +248,7 @@ class ShipDirectory(
     }
 
     fun makeVariantID(variant: ShipVariantAPI): String {
-        return makeVariantID(variant.hullSpec.getCompatibleDLessHullId(true), variant.displayName)
+        return makeVariantID(variant.hullSpec.getActualHullId(), variant.displayName)
     }
 
     fun makeVariantID(hullId: String, displayName: String): String {
