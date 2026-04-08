@@ -627,9 +627,9 @@ internal object AutofitPanel {
 
                 if (selectorPlugin.autofitSpec == null || autofitPlugin.draggedAutofitSpec != null || event.isCtrlDown || selectorPlugin.noClickFader) return@onClickRelease // If no variant. or dragging self, do nothing
 
-                fun applyVariant(autofitSpec: AutofitSpec?, applySMods: Boolean = false) {
+                fun applyVariant(autofitSpec: AutofitSpec, applySMods: Boolean = false) {
                     applyVariantInRefitScreen(
-                        baseVariant, autofitSpec!!.variant, fleetMember, ship!!, shipDisplay!!, refitPanel!!,
+                        baseVariant, autofitSpec.variant, fleetMember, ship!!, shipDisplay!!, refitPanel!!,
                         allowCargo = cargoButton?.isChecked == true, allowStorage = storageButton?.isChecked == true, allowMarket = marketButton?.isChecked == true, allowBlackMarket = blackMarketButton?.isChecked == true, applySMods = applySMods
                     )
 
@@ -677,11 +677,15 @@ internal object AutofitPanel {
                         )
                     }
                     dialog.onConfirm { ->
-                        applyVariant(selectorPlugin.autofitSpec, true)
+                        selectorPlugin.autofitSpec?.let {
+                            applyVariant(it, true)
+                        }
                     }
 
                 } else {
-                    applyVariant(selectorPlugin.autofitSpec)
+                    selectorPlugin.autofitSpec?.let {
+                        applyVariant(it)
+                    }
                 }
 
             }
