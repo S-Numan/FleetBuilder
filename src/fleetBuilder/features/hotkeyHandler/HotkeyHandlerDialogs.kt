@@ -50,8 +50,8 @@ import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.api.kotlin.*
+import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
@@ -102,6 +102,7 @@ object HotkeyHandlerDialogs {
             testMessageTrigger.onClick {
                 DisplayMessage.showMessageCustom("Test Message!", Color.RED)
 
+                //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
                 /*val state = AppDriver.getInstance().currentState
                 if (state is CampaignState) {
                     state.cmdCodex()
