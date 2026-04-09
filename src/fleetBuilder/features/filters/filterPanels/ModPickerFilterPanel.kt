@@ -80,8 +80,12 @@ class ModPickerFilterPanel(
 
     private fun HullModSpecAPI.matchesDescription(desc: String): Boolean {
         return when {
+            //FuzzySearch.fuzzyMatch(desc, displayName).second >= 75 -> true
+            //FuzzySearch.fuzzyMatch(desc, manufacturer).second >= 80 -> true
+            //sourceMod?.let { FuzzySearch.fuzzyMatch(desc, it.name).second >= 95 } ?: "vanilla".startsWith(desc) -> true
             displayName.lowercase().contains(desc) -> true
             manufacturer.lowercase().startsWith(desc) -> true
+            sourceMod?.name?.lowercase()?.startsWith(desc) ?: "vanilla".startsWith(desc) -> true
             else -> false
         }
     }

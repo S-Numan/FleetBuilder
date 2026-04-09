@@ -10,6 +10,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.allDMods
 import fleetBuilder.util.api.kotlin.allSMods
@@ -50,15 +51,21 @@ class FleetFilterPanel(
         ReflectionMisc.addPostUpdateFleetPanelCallback(fleetPanelFilterCallback!!)
 
         mainPanel.opacity = 0f
-        mainPanel.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 500f) {
+        mainPanel.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 670f) {
             it.addPara(
-                "Valid Inputs:\n" +
+                "You can enter hull names like 'Hammerhead', or ship types such as 'phase', 'carrier', or 'frigate'.\n" +
+                        "\n" +
+                        "Ships that do not match any of the entered keywords will be hidden.\n" +
+                        "To exclude specific matches, prepend a dash (-) to your entry; for example, '-frigate' will hide all frigates.\n" +
+                        "Keywords are separated by spaces. Surround your filter with quotes to be more exact. (E.G -\"low tech\")\n\n" +
+                        "Valid Inputs:" +
                         "\n" +
                         "\n" +
-                        "Name of the ship hull (E.G “Hammerhead”)\n" +
+                        "Name of the ship hull (E.G 'Hammerhead')\n" +
                         "Name of the ship (E.G “Apologies To Goddard”)\n" +
-                        "Design Type (E.G “Midline”)\n" +
+                        "Design Type (E.G 'Midline')\n" +
                         "Name of the ship system (E.G “Maneuvering Jets”)\n" +
+                        "Source Mod (E.G “Diable Avionics”)\n" +
                         "\n" +
                         "smodded (Has SMods)\n" +
                         "dmodded (Has DMods)\n" +
@@ -67,7 +74,7 @@ class FleetFilterPanel(
                         "combat (If a ship adds to the combat ship deployment point cost)\n" +
                         "civilian\n" +
                         "carrier\n" +
-                        "phase\n" +
+                        "phase / cloak\n" +
                         "shields\n" +
                         "frigate\n" +
                         "destroyer\n" +
@@ -75,7 +82,7 @@ class FleetFilterPanel(
                         "capital\n" +
                         "automated\n" +
                         "modules (If a ship has modules)\n" +
-                        "marines / transport\n" +
+                        "marine / transport\n" +
                         "fuel / tanker\n" +
                         "crew / liner\n" +
                         "cargo / freighter", 0f
@@ -134,12 +141,14 @@ class FleetFilterPanel(
         }
         events.forEach { event ->
             if (event.isConsumed) return@forEach
-            if (event.isKeyDownEvent && event.eventValue == Keyboard.KEY_ESCAPE) {
-                textField.enabled = true
-                resetText()
-                ReflectionMisc.updateFleetPanelContents()
-                event.consume()
-                return
+            if (event.isKeyDownEvent) {
+                if (event.eventValue == Keyboard.KEY_ESCAPE) {
+                    textField.enabled = true
+                    resetText()
+                    ReflectionMisc.updateFleetPanelContents()
+                    event.consume()
+                    return
+                }
             }
         }
         textField.enabled = true
@@ -201,21 +210,16 @@ class FleetFilterPanel(
 
     private fun FleetMemberAPI.matchesDescription(desc: String): Boolean {
         return when {
-            // Names
-            //hullSpec.getCompatibleDLessHull(true).lowercase().contains(desc) -> true
-            hullSpec.hullName.lowercase().contains(desc) -> true
-            getShipNameWithoutPrefix().lowercase().startsWith(desc) -> true
-            hullSpec.manufacturer.lowercase().contains(desc) -> true
-
             // Types
             !(hullSpec.isCivilianNonCarrier || variant.hasHullMod("civgrade")) && !variant.hasHullMod("militarized_subsystems") && "combat".startsWith(desc) -> true
 
             hullSpec.isCivilianNonCarrier && !variant.hasHullMod("militarized_subsystems") && "civilian".startsWith(desc) -> true
 
             isCarrier && "carrier".startsWith(desc) -> true
-            isPhaseShip && "phase".startsWith(desc) -> true
+            isPhaseShip && ("phase".startsWith(desc) || "cloak".startsWith(desc)) -> true
 
-            !isPhaseShip && (hullSpec.shieldType == ShieldAPI.ShieldType.OMNI || hullSpec.shieldType == ShieldAPI.ShieldType.FRONT) && !variant.hasHullMod("shield_shunt") && "shields".startsWith(desc) -> true
+            !isPhaseShip && (hullSpec.shieldType == ShieldAPI.ShieldType.OMNI || hullSpec.shieldType == ShieldAPI.ShieldType.FRONT)
+                    && !variant.hasHullMod("shield_shunt") && "shields".startsWith(desc) -> true
 
             isFrigate && "frigate".startsWith(desc) -> true
             isDestroyer && "destroyer".startsWith(desc) -> true
@@ -234,12 +238,32 @@ class FleetFilterPanel(
             variant.allDMods().isNotEmpty() && "dmodded".startsWith(desc) -> true
             !captain.isDefault && ("officered".startsWith(desc) || "captained".startsWith(desc)) -> true
 
-            // Ship systems
-            Global.getSettings().allShipSystemSpecs.find { it.id == hullSpec.shipSystemId }?.name?.lowercase()?.contains(desc) == true -> true
-
-            hullSpec.shipDefenseId.isNotEmpty() && hullSpec.shipDefenseId != "phasecloak" && Global.getSettings().allShipSystemSpecs.find { it.id == hullSpec.shipDefenseId }?.name?.lowercase()?.contains(desc) == true -> true
-
             variant.stationModules.isNotEmpty() && ("modules".startsWith(desc)) -> true
+
+            // Names
+            //FuzzySearch.fuzzyMatch(desc, hullSpec.getActualHull().hullName).second >= 80 -> true
+            //FuzzySearch.fuzzyMatch(desc, getShipNameWithoutPrefix()).second >= 95 -> true
+            //FuzzySearch.fuzzyMatch(desc, hullSpec.manufacturer).second >= 90 -> true
+            hullSpec.hullName.lowercase().contains(desc) -> true
+            getShipNameWithoutPrefix().lowercase().startsWith(desc) -> true
+            hullSpec.manufacturer.lowercase().contains(desc) -> true
+
+            hullSpec.sourceMod?.name?.lowercase()?.startsWith(desc) ?: "vanilla".startsWith(desc) -> true
+
+            // Ship systems
+            LookupUtils.getShipSystemSpec(hullSpec.shipSystemId)?.name?.lowercase()?.contains(desc) == true -> true
+
+            hullSpec.shipDefenseId.isNotEmpty() && hullSpec.shipDefenseId != "phasecloak" &&
+                    LookupUtils.getShipSystemSpec(hullSpec.shipDefenseId)?.name?.lowercase()?.contains(desc) == true -> true
+
+            //LookupUtils.getShipSystemSpec(hullSpec.shipSystemId)?.let { FuzzySearch.fuzzyMatch(desc, it.name).second >= 90 } == true
+            //        && desc.startsWith("marines") -> true
+
+            //hullSpec.shipDefenseId.isNotEmpty() && hullSpec.shipDefenseId != "phasecloak"
+            //        && LookupUtils.getShipSystemSpec(hullSpec.shipDefenseId)?.let { FuzzySearch.fuzzyMatch(desc, it.name).second >= 90 } == true -> true
+
+            //variant.hullSpec.sourceMod?.let { FuzzySearch.fuzzyMatch(desc, it.name).second >= 90 }
+            //    ?: "vanilla".startsWith(desc) -> true
 
             else -> false
         }
