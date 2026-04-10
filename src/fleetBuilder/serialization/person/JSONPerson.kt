@@ -5,11 +5,10 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.core.FBMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
-import fleetBuilder.core.FBMisc
-import fleetBuilder.util.api.kotlin.roundToDecimals
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
@@ -26,7 +25,7 @@ object JSONPerson {
             val keys = skillsJson.keys()
             while (keys.hasNext()) {
                 val key = keys.next() as? String ?: continue
-                skills[key] = skillsJson.optFloat(key, 0f).coerceIn(0f, 2f)
+                skills[key] = skillsJson.optFloat(key, 0f)
             }
         }
 
@@ -39,6 +38,8 @@ object JSONPerson {
         }
 
         val memKeys = buildMap<String, Any> {
+
+            // DEPRECIATED
             json.optJSONObject("memKeys")?.let { memKeysJson ->
                 memKeysJson.keys().forEach { keyName ->
                     if (keyName !is String) return@forEach
@@ -46,12 +47,44 @@ object JSONPerson {
                     memKeysJson.opt(keyName)?.let { raw ->
                         if (raw !is String) return@forEach
 
-                        val value: Any = raw.toIntOrNull()
-                            ?: raw.toLongOrNull()
-                            ?: raw.toFloatOrNull()
-                            ?: raw.toDoubleOrNull()
-                            ?: raw.lowercase().toBooleanStrictOrNull()
-                            ?: raw
+                        val value =
+                            raw.toIntOrNull()
+                                ?: raw.toLongOrNull()
+                                ?: raw.toFloatOrNull()
+                                ?: raw.toDoubleOrNull()
+                                ?: raw.toShortOrNull()
+                                ?: raw.toByteOrNull()
+                                ?: raw.lowercase().toBooleanStrictOrNull()
+                                ?: raw
+
+                        put("$$keyName", value)
+                    }
+                }
+            }
+
+            json.optJSONObject("memKeysV2")?.let { memKeysJson ->
+                memKeysJson.keys().forEach { keyName ->
+                    if (keyName !is String) return@forEach
+
+                    memKeysJson.opt(keyName)?.let { raw ->
+                        if (raw !is String) return@forEach
+
+                        val rawFirst = raw.firstOrNull()
+                        val body = raw.drop(1)
+                        val value = when (rawFirst) {
+                            'F' -> body.toFloatOrNull()
+                            'D' -> body.toDoubleOrNull()
+                            'B' -> body.lowercase().toBooleanStrictOrNull()
+                            'I' -> body.toIntOrNull()
+                            'L' -> body.toLongOrNull()
+                            'l' -> body.toShortOrNull()
+                            'b' -> body.toByteOrNull()
+                            'C' -> body.firstOrNull()
+                            'S' -> body
+                            else -> null
+                        }
+                        if (value == null)
+                            return@forEach
 
                         put("$$keyName", value)
                     }
@@ -162,10 +195,15 @@ object JSONPerson {
         data.memKeys.keys.forEach { key ->
             val value = data.memKeys[key]
             val formattedValue = when (value) {
-                is Float -> value.roundToDecimals(2).toString()
-                is Double -> value.roundToDecimals(2).toString()
-                is Boolean, is Int, is Long -> value.toString()
-                is String -> value
+                is Float -> "F$value"
+                is Double -> "D$value"
+                is Boolean -> "B$value"
+                is Int -> "I$value"
+                is Long -> "L$value"
+                is Short -> "l$value"
+                is Byte -> "b$value"
+                is Char -> "C$value"
+                is String -> "S$value"
                 else -> null
             }
 
@@ -173,11 +211,11 @@ object JSONPerson {
                 memKeysJSON.put(key.removePrefix("$"), formattedValue)
         }
         if (memKeysJSON.length() > 0)
-            json.put("memKeys", memKeysJSON)
+            json.put("memKeysV2", memKeysJSON)
 
         val skillsObject = JSONObject()
         for (skill in data.skills) {
-            skillsObject.put(skill.key, skill.value.toInt())
+            skillsObject.put(skill.key, skill.value)
         }
         if (skillsObject.length() > 0)
             json.put("skills", skillsObject)

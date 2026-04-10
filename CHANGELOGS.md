@@ -1,3 +1,8 @@
+## 1.35.0
+### Changes
+- Update Compressed Person from p0 to p1. Memkeys now keep the correct type.
+### Bugfixes
+
 ## 1.34.0
 ### Additions
 - Added Display Derelict Recovery Early. Shows the ship preview earlier during derelict salvage. Instead of requiring “Consider Special Measures” to view the ship, the preview is available a step earlier when you get the option to salvage it.

@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Abilities
 import com.fs.starfarer.campaign.CampaignUIPersistentData
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.SerializationUtils.getJSONFromStringSafe
 import fleetBuilder.serialization.cargo.CompressedCargo
@@ -15,11 +16,11 @@ import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
 import fleetBuilder.serialization.person.JSONPerson
-import fleetBuilder.core.FBTxt
+import fleetBuilder.serialization.person.PersonSettings
 import fleetBuilder.util.api.FleetUtils
-import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
 import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.util.lib.CompressionUtil
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
@@ -71,7 +72,9 @@ object PlayerSaveUtils {
         }
 
         if (handlePlayer) {
-            val playerJson = JSONPerson.savePersonToJson(sector.playerPerson)
+            val playerJson = JSONPerson.savePersonToJson(sector.playerPerson, settings = PersonSettings().apply {
+                includeMemKeys = false
+            })
             playerJson.put("storyPoints", sector.playerStats.storyPoints)
             json.put("player", playerJson)
         }

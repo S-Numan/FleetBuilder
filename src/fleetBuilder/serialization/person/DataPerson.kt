@@ -26,7 +26,7 @@ object DataPerson {
         val rankId: String = Ranks.SPACE_LIEUTENANT,
         val postId: String = Ranks.POST_OFFICER,
         val personality: String = Personalities.STEADY,
-        val level: Int = 0,
+        val level: Int = -1,
         val skills: Map<String, Float> = emptyMap(),
         val xp: Long = 0,
         val bonusXp: Long = 0,
@@ -140,7 +140,7 @@ object DataPerson {
                 val value = data.memKeys[key]
 
                 when {
-                    value !is Boolean && value !is String && value !is Int && value !is Float && value !is Double && value !is Long -> return@filterKeys false
+                    value !is Boolean && value !is String && value !is Int && value !is Float && value !is Double && value !is Long && value !is Short && value !is Byte && value !is Char -> return@filterKeys false
                     key in excludeKeys -> return@filterKeys false
                     settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
                     else -> return@filterKeys true
@@ -235,7 +235,7 @@ object DataPerson {
         data.tags.forEach { person.addTag(it) }
         data.skills.forEach { (id, level) -> person.stats.setSkillLevel(id, level) }
 
-        val level = if (data.level > 0) data.level else data.skills.count()
+        val level = if (data.level > -1) data.level else data.skills.count()
         person.stats.level = level
 
         person.stats.xp = data.xp
