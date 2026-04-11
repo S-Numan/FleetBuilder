@@ -13,6 +13,7 @@ object CargoUtils {
      * Due to the way the game handles special items, this function may return null for some items when you might expect it to not.
      * @return The manufacturer of the item, or null if the item is not recognized.
      */
+    @JvmStatic
     fun getItemTech(cargo: CargoStackAPI): String? {
         return when {
             cargo.isWeaponStack -> cargo.weaponSpecIfWeapon.manufacturer
@@ -44,6 +45,7 @@ object CargoUtils {
      *
      * Cap quantity to 100% remaining cargo space, don't go below 0 either
      */
+    @JvmStatic
     fun getFractionHoldableSupplies(cargo: CargoAPI, maxCargoFraction: Float = 1f): Int {
         var total = Math.min(
             cargo.getSpaceLeft(),

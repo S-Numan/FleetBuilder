@@ -34,11 +34,6 @@ object DataPerson {
         val memKeys: Map<String, Any> = emptyMap()
     )
 
-    @Deprecated("Use clonePerson instead")
-    fun copyPerson(person: PersonAPI): PersonAPI { // TODO, remove on new game update
-        return clonePerson(person)
-    }
-
     @JvmOverloads
     fun clonePerson(
         person: PersonAPI,
@@ -64,7 +59,7 @@ object DataPerson {
         val memKeys = person.memoryWithoutUpdate.keys.associateWith { key -> person.memoryWithoutUpdate[key] }.toMutableMap()
 
         // Vanilla AICore officers in enemy fleets are not marked as built in even if they exceed the usual max level and thus should be considered as so. We fix that here.
-        if (person.isAICore) {
+        if (person.isAICore && (person.aiCoreId == "alpha_core" || person.aiCoreId == "beta_core" || person.aiCoreId == "gamma_core")) {
             val sameTypeAICore = runCatching {
                 Misc.getAICoreOfficerPlugin(person.aiCoreId).createPerson(person.aiCoreId, Factions.PLAYER, Random()).apply {
                     stats.skillsCopy.forEach { stats.setSkillLevel(it.skill.id, 0f) }

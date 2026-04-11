@@ -16,6 +16,7 @@ import java.util.*
 
 object PersonUtils {
 
+    @JvmStatic
     fun getMaxOfficerLevel(person: PersonAPI): Int {
         if (person.isPlayer) {
             val levelUpPlugin = Global.getSettings().levelupPlugin
@@ -28,6 +29,7 @@ object PersonUtils {
         return person.stats.level
     }
 
+    @JvmStatic
     fun getMaxOfficerEliteSkills(person: PersonAPI): Int {
         if (!person.isAICore) {
             val plugin = Global.getSettings().getPlugin("officerLevelUp") as OfficerLevelupPlugin
@@ -36,6 +38,7 @@ object PersonUtils {
         return person.stats.level
     }
 
+    @JvmStatic
     fun getAllSourceModsFromPerson(
         person: PersonAPI,
         settings: PersonSettings = PersonSettings()
@@ -43,6 +46,7 @@ object PersonUtils {
         return getAllSourceModsFromPerson(DataPerson.getPersonDataFromPerson(person, settings))
     }
 
+    @JvmStatic
     fun getAllSourceModsFromPerson(data: DataPerson.ParsedPersonData): Set<ModSpecAPI> {
         val sourceMods = mutableSetOf<ModSpecAPI>()
 
@@ -62,6 +66,7 @@ object PersonUtils {
      * @param from the source PersonAPI instance
      * @param to the destination PersonAPI instance
      */
+    @JvmStatic
     fun copyOfficerDataTo(from: PersonAPI, to: PersonAPI) {
         //to.id = from.id
         to.name = from.name
@@ -87,6 +92,7 @@ object PersonUtils {
     }
 
     @JvmOverloads
+    @JvmStatic
     fun getRandomPortrait(
         gender: FullName.Gender = FullName.Gender.ANY,
         factionID: String? = null,
@@ -108,6 +114,7 @@ object PersonUtils {
         Factions.CUSTOM_ENGAGE_EVEN
     }
 
+    @JvmStatic
     fun randomizePersonCosmetics(
         officer: PersonAPI,
         faction: FactionAPI?

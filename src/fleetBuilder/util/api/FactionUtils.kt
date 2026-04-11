@@ -2,8 +2,8 @@ package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
-import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBMisc
+import fleetBuilder.core.FBSettings
 
 object FactionUtils {
 
@@ -13,6 +13,7 @@ object FactionUtils {
      * WARNING: This method is not very accurate. Do not rely on it.
      * This assumes the faction file name is the same as the faction id.
      **/
+    @JvmStatic
     fun getSourceModFromFaction(factionId: String): ModSpecAPI? {
         if (factionToModMap == null)
             factionToModMap = buildFactionToModMap()

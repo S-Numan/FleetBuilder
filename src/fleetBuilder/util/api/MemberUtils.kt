@@ -12,6 +12,7 @@ import java.util.*
 
 object MemberUtils {
 
+    @JvmStatic
     fun getAllSourceModsFromMember(
         member: FleetMemberAPI,
         settings: MemberSettings = MemberSettings()
@@ -19,6 +20,7 @@ object MemberUtils {
         return getAllSourceModsFromMember(DataMember.getMemberDataFromMember(member, settings))
     }
 
+    @JvmStatic
     fun getAllSourceModsFromMember(data: DataMember.ParsedMemberData): Set<ModSpecAPI> {
         val sourceMods = mutableSetOf<ModSpecAPI>()
 
@@ -30,6 +32,7 @@ object MemberUtils {
         return sourceMods
     }
 
+    @JvmStatic
     fun randomizeMemberCosmetics(
         member: FleetMemberAPI,
         fleet: FleetDataAPI
@@ -38,10 +41,12 @@ object MemberUtils {
         PersonUtils.randomizePersonCosmetics(member.captain, fleet.fleet?.faction)
     }
 
+    @JvmStatic
     fun getMaxSMods(fleetMember: FleetMemberAPI): Int {
         return getMaxSMods(fleetMember.stats)
     }
 
+    @JvmStatic
     fun getMaxSMods(stats: MutableShipStatsAPI): Int {
         return stats.dynamic
             .getMod(Stats.MAX_PERMANENT_HULLMODS_MOD)

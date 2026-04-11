@@ -347,6 +347,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun personClick(event: InputEventAPI, person: PersonAPI) {
+
         if (event.isLMBDownEvent) {
             if (event.isCtrlDown) {
                 ClipboardMisc.savePersonToClipboard(person, event.isShiftDown)

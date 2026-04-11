@@ -25,6 +25,7 @@ object HullUtils {
      * @param hull The hull to check.
      * @return True if the hull is known to the player, false otherwise.
      */
+    @JvmStatic
     fun isHullKnownToPlayer(hull: ShipHullSpecAPI): Boolean {
         if (hull.hasTag(Tags.CODEX_UNLOCKABLE)) {
             if (!SharedUnlockData.get().isPlayerAwareOfShip(hull.hullId))
@@ -44,6 +45,7 @@ object HullUtils {
      * @param hull The hull spec for which to create a variant
      * @return A variant for the given hull spec.
      */
+    @JvmStatic
     fun createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
         return run {
             val variants = LookupUtils.getVariantsForEffectiveHullSpec(hull)
@@ -87,6 +89,7 @@ object HullUtils {
      * @param hull The hull spec to resolve.
      * @return The effective hull spec.
      */
+    @JvmStatic
     fun getEffectiveHull(hull: ShipHullSpecAPI): ShipHullSpecAPI {
         return if (hull.isCompatibleWithBase) {
             if (hull.dParentHull != null) {
@@ -115,6 +118,7 @@ object HullUtils {
      * @param hull The hull spec to resolve.
      * @return A compatible non-D hull when possible.
      */
+    @JvmStatic
     fun getCompatibleDLessHull(
         hull: ShipHullSpecAPI,
     ): ShipHullSpecAPI {
@@ -129,6 +133,7 @@ object HullUtils {
      * @param hull The hull spec to resolve.
      * @return The actual hull spec.
      */
+    @JvmStatic
     fun getActualHull(
         hull: ShipHullSpecAPI
     ): ShipHullSpecAPI {
@@ -145,6 +150,7 @@ object HullUtils {
      * @param hull The hull spec to resolve.
      * @return A non D-Hull when possible. If the input hull is not a D-Hull, it is returned unchanged.
      */
+    @JvmStatic
     fun getDLessHull(hull: ShipHullSpecAPI): ShipHullSpecAPI {
         if (!isDHullFix(hull)) return hull
 
@@ -158,6 +164,7 @@ object HullUtils {
      *
      * I consider that incorrect behavior. Additional behavior added: If the D-Hull is a skin, it must have the isRestoreToBase value set to true as D-Mod skins typically have that set as true.
      */
+    @JvmStatic
     fun isDHullFix(hull: ShipHullSpecAPI): Boolean {
         if (hull.isDefaultDHull) return true
         return isDSkin(hull)
@@ -183,6 +190,7 @@ object HullUtils {
      * @param hull The hull to check.
      * @return True if the hull is a skin, false otherwise.
      */
+    @JvmStatic
     fun isSkin(hull: ShipHullSpecAPI): Boolean {
         val hull = hull.dParentHull ?: hull
         return hull.baseHullId != hull.hullId

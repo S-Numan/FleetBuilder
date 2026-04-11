@@ -24,6 +24,7 @@ object VariantUtils {
      * @return a set of all source mods from the variant
      */
     @JvmOverloads
+    @JvmStatic
     fun getAllSourceModsFromVariant(variant: ShipVariantAPI, filterParsed: Boolean = false): Set<ModSpecAPI> {
         return getAllSourceModsFromVariant(DataVariant.getVariantDataFromVariant(variant, filterParsed = filterParsed))
     }
@@ -35,6 +36,7 @@ object VariantUtils {
      * @param settings the settings to use when checking for source mods
      * @return a set of all source mods from the variant
      */
+    @JvmStatic
     fun getAllSourceModsFromVariant(
         variant: ShipVariantAPI,
         settings: VariantSettings
@@ -42,6 +44,7 @@ object VariantUtils {
         return getAllSourceModsFromVariant(DataVariant.getVariantDataFromVariant(variant, settings))
     }
 
+    @JvmStatic
     fun getAllSourceModsFromVariant(data: DataVariant.ParsedVariantData): Set<ModSpecAPI> {
         val sourceMods = mutableSetOf<ModSpecAPI>()
 
@@ -92,6 +95,7 @@ object VariantUtils {
      * @param modID The ID of the hullmod to check.
      * @return The bonus XP that would be gained if this hullmod were to be added to this variant.
      */
+    @JvmStatic
     fun getHullModBuildInBonusXP(
         variant: ShipVariantAPI,
         modID: String,
@@ -116,6 +120,7 @@ object VariantUtils {
      * @param variant The variant to check.
      * @return True if all components of the variant are known to the player, false otherwise.
      */
+    @JvmStatic
     fun isVariantKnownToPlayer(variant: ShipVariantAPI): Boolean {
         //  If module, replace variant with parent variant. Modules are considered known if their parent is known.
         //  This would need a function to get the parent variant of a module variant ... That isn't easily possible.
@@ -133,6 +138,7 @@ object VariantUtils {
      *
      * See [isVariantKnownToPlayer] for more details. That function calls this one.
      */
+    @JvmStatic
     fun whatVariantContentsAreNotKnownToPlayer(variant: ShipVariantAPI, missing: MissingContent) {
         if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
             missing.hullIds.add(variant.hullSpec.hullId)
@@ -168,7 +174,7 @@ object VariantUtils {
      * @param variant The variant to generate the ID for.
      * @return The generated variant ID.
      */
-    fun makeVariantID(variant: ShipVariantAPI): String {
+    internal fun makeVariantID(variant: ShipVariantAPI): String {
         val hullId = variant.hullSpec.getActualHullId()
         return makeVariantID(hullId, variant.displayName)
     }
@@ -180,7 +186,7 @@ object VariantUtils {
      * @param displayName The display name of the variant.
      * @return The generated variant ID.
      */
-    fun makeVariantID(hullId: String, displayName: String): String {
+    internal fun makeVariantID(hullId: String, displayName: String): String {
         val cleanName = displayName
             .replace(" ", "_")                 // replace spaces with underscores
             .replace(Regex("[^A-Za-z0-9_-]"), "")   // remove anything not a-z, A-Z, 0-9, dash, or underscore
@@ -200,6 +206,7 @@ object VariantUtils {
      *
      * This function exists mostly for convenience.
      */
+    @JvmStatic
     fun createErrorVariant(displayName: String = ""): ShipVariantAPI {
         var tempVariant: ShipVariantAPI? = null
         try {
@@ -268,6 +275,7 @@ object VariantUtils {
 
 
     @JvmOverloads
+    @JvmStatic
     fun compareVariantContents(
         insertVariant1: ShipVariantAPI,
         insertVariant2: ShipVariantAPI,
@@ -373,6 +381,7 @@ object VariantUtils {
     }
 
     @JvmOverloads
+    @JvmStatic
     fun compareVariantHullMods(
         insertVariant1: ShipVariantAPI,
         insertVariant2: ShipVariantAPI,
