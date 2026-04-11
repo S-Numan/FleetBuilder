@@ -88,7 +88,7 @@ internal object ClipboardHotkeyHandlerUtils {
     fun handleCaptainPickerMouseEvents(
         event: InputEventAPI,
         captainPicker: CaptainPickerDialog
-    ) = hotkeySafe {
+    ): Unit = hotkeySafe {
         val officers =
             captainPicker.safeInvoke("getListOfficers")
                 ?.safeInvoke("getItems") as? MutableList<*> ?: return
@@ -112,7 +112,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
     fun handleFleetMouseEvents(
         event: InputEventAPI
-    ) = hotkeySafe {
+    ): Unit = hotkeySafe {
         val memberUI = getMemberUIHoveredInFleetTabLowerPanel() ?: return
 
         val member =
@@ -132,7 +132,7 @@ internal object ClipboardHotkeyHandlerUtils {
         }
     }
 
-    fun handleRefitMouseEvents(event: InputEventAPI) = hotkeySafe {
+    fun handleRefitMouseEvents(event: InputEventAPI): Unit = hotkeySafe {
         val refitTab = ReflectionMisc.getRefitTab() ?: return
         val children = refitTab.safeInvoke("getChildrenCopy") as? MutableList<*> ?: return
 
