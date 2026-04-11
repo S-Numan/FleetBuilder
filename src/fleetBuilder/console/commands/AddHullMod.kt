@@ -17,7 +17,7 @@ class AddHullMod : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
         val refitPanel = ReflectionMisc.getRefitPanel()
         if (refitPanel == null && !context.isInCampaign) {
-            Console.showMessage("Error: This command must be used in the refit tab or the campaign.")
+            Console.showMessage("Error: This command can only be used in the campaign or refit tab.")
             return CommandResult.WRONG_CONTEXT
         }
         if (args.isEmpty()) {
