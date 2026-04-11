@@ -1,13 +1,13 @@
 package fleetBuilder.console.commands.saveTransfer
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBTxt
+import fleetBuilder.core.saveBackupManager.SaveBackupManager
 import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.PlayerSaveUtils.compileSaveAny
 import fleetBuilder.serialization.PlayerSaveUtils.loadCompiledSave
 import fleetBuilder.serialization.reportMissingContentIfAny
-import fleetBuilder.util.lib.ClipboardUtil
+import fleetBuilder.util.lib.ClipboardUtil.getClipboardContentsAutoJSON
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
@@ -31,29 +31,29 @@ class LoadSave : BaseCommand {
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
 
-        val json: Any?
+        val saveTransfer: Any?
 
         val argList = args.lowercase().split(" ")
 
         if (argList.contains("-backup")) {
-            val configPath = "${FBConst.PRIMARY_DIR}/SaveTransfer/lastSave"
+            val configPath = SaveBackupManager.getNewestBackupPath()
 
             if (!Global.getSettings().fileExistsInCommon(configPath)) {
                 Console.showMessage(FBTxt.txt("backup_save_not_found"))
                 return BaseCommand.CommandResult.ERROR
             }
             try {
-                json = Global.getSettings().readJSONFromCommon(configPath, false)
+                saveTransfer = Global.getSettings().readTextFileFromCommon(configPath)
             } catch (e: Exception) {
                 Console.showMessage("${FBTxt.txt("backup_save_read_error")}\n$e")
                 return BaseCommand.CommandResult.ERROR
             }
         } else {
-            json = ClipboardUtil.getClipboardJson() ?: ClipboardUtil.getClipboardTextSafe()
+            saveTransfer = getClipboardContentsAutoJSON()
         }
 
         val missing = MissingContentExtended()
-        val compiled = compileSaveAny(json, missing)
+        val compiled = compileSaveAny(saveTransfer, missing)
 
         if (compiled.isEmpty()) {
             Console.showMessage(FBTxt.txt("failed_to_read_save_in_clipboard") + "\n")

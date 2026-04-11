@@ -1,7 +1,13 @@
 ## 1.35.0
+### Additions
+- SetPersonality changes the personality of the officer captaining the ship viewed in the refit screen.
 ### Changes
 - Update Compressed Person from p0 to p1. Memkeys now keep the correct type.
+- AddHullMod now adds hullmods to the ship viewed in the refit screen
+- AddXP now adds XP to the officer captaining the ship viewed in the refit screen.
+- Expanded upon and fixed backup saves.
 ### Bugfixes
+- Fixed compressed fleets being unable if copied to clipboard as a file
 
 ## 1.34.0
 ### Additions

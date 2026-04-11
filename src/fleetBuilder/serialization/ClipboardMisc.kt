@@ -22,6 +22,7 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.createHullVariant
 import fleetBuilder.util.lib.ClipboardUtil
+import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
@@ -136,13 +137,13 @@ object ClipboardMisc {
 
     @JvmOverloads
     fun extractDataFromClipboard(missing: MissingContent = MissingContent()): Any? {
-        val jsonContents = ClipboardUtil.getClipboardJson()
-        if (jsonContents != null)
-            return SerializationUtils.extractDataFromJSON(jsonContents, missing)
+        val contents = ClipboardUtil.getClipboardContentsAutoJSON() ?: return null
 
-        val stringContents = ClipboardUtil.getClipboardTextSafe()
-        if (stringContents != null)
-            return SerializationUtils.extractDataFromString(stringContents, missing)
+        if (contents is JSONObject)
+            return SerializationUtils.extractDataFromJSON(contents, missing)
+
+        if (contents is String)
+            return SerializationUtils.extractDataFromString(contents, missing)
 
         return null
     }

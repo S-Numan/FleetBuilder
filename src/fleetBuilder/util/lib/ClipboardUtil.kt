@@ -1,7 +1,6 @@
 package fleetBuilder.util.lib
 
 import fleetBuilder.serialization.SerializationUtils.getJSONFromStringSafe
-import org.json.JSONObject
 import org.lwjgl.Sys
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
@@ -22,6 +21,44 @@ object ClipboardUtil {
         } catch (_: Exception) {
             null
         }
+    }
+
+    fun getClipboardContents(): String? {
+        val path = getClipboardFilePath()
+        return if (path != null) {
+            try {
+                BufferedReader(FileReader(path)).use { reader ->
+                    val builder = StringBuilder()
+                    var totalCharsRead = 0
+
+                    var intChar = reader.read()
+                    while (intChar != -1) {
+                        val ch = intChar.toChar()
+                        
+                        totalCharsRead++
+                        if (totalCharsRead > CHAR_LIMIT) {
+                            return null
+                        }
+
+                        builder.append(ch)
+
+                        intChar = reader.read()
+                    }
+
+                    builder.toString()
+                }
+            } catch (_: Exception) {
+                null
+            }
+        } else {
+            getClipboardTextSafe()
+        }
+    }
+
+    fun getClipboardContentsAutoJSON(): Any? {
+        val contents = getClipboardContents() ?: return null
+        val json = getJSONFromStringSafe(contents)
+        return json ?: contents
     }
 
     const val CHAR_LIMIT = 1_000_000
@@ -111,11 +148,11 @@ object ClipboardUtil {
         }
     }
 
-    fun getClipboardJson(): JSONObject? {
+    /*fun getClipboardJson(): JSONObject? {
         val filePath = getClipboardFilePath()
         val contents = filePath?.let { readJSONContentsSafe(it) }
 
         val clipboardText = contents ?: getClipboardTextSafe() ?: return null
         return getJSONFromStringSafe(clipboardText)
-    }
+    }*/
 }

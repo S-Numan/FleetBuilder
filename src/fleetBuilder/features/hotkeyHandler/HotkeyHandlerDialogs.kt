@@ -1304,10 +1304,10 @@ object HotkeyHandlerDialogs {
 
             ui.addButton(FBTxt.txt("load_save_from_clipboard"), null, ui.width, buttonHeight, 3f).onClick {
 
-                val json = ClipboardUtil.getClipboardJson() ?: ClipboardUtil.getClipboardTextSafe()
+                val saveTransfer = ClipboardUtil.getClipboardContentsAutoJSON()
 
                 val missing = MissingContentExtended()
-                val compiled = PlayerSaveUtils.compileSaveAny(json, missing)
+                val compiled = PlayerSaveUtils.compileSaveAny(saveTransfer, missing)
 
                 if (compiled.isEmpty()) {
                     reportMissingContentIfAny(missing)
