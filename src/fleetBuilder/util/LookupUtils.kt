@@ -35,7 +35,7 @@ object LookupUtils {
     private var init = false
     fun isSetup() = init
 
-    fun setup() {
+    internal fun setup() {
         val settings = Global.getSettings()
 
         allDMods = settings.allHullModSpecs
@@ -99,6 +99,7 @@ object LookupUtils {
         init = true
     }
 
+    @JvmStatic
     fun getVariantsForEffectiveHullSpec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         return effectiveHullIDToVariant[hullSpec.getEffectiveHullId()].orEmpty().map { it.clone() }
     }
@@ -107,10 +108,12 @@ object LookupUtils {
     //     return hullIDToVariant[hullSpec.hullId].orEmpty().map { it.clone() }
     //}
 
+    @JvmStatic
     fun getVariantsForBaseHullSpec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         return hullIDToVariant[hullSpec.baseHullId].orEmpty().map { it.clone() }
     }
 
+    @JvmStatic
     fun getVariantsForCompatibleDLessHullSpec(
         hullSpec: ShipHullSpecAPI
     ): List<ShipVariantAPI> {
@@ -119,6 +122,7 @@ object LookupUtils {
         }
     }
 
+    @JvmStatic
     fun getVariantsForActualHullSpec(
         hullSpec: ShipHullSpecAPI
     ): List<ShipVariantAPI> {
@@ -127,23 +131,49 @@ object LookupUtils {
         }
     }
 
+    @JvmStatic
     fun getHullSpec(hullId: String) = IDToHullSpec[hullId]
+
+    @JvmStatic
     fun getHullIDSet(): Set<String> = IDToHullSpec.keys
     fun getFighterWingSpec(wingId: String) = IDToWing[wingId]
+
+    @JvmStatic
     fun getFighterWingIDSet(): Set<String> = IDToWing.keys
+
+    @JvmStatic
     fun getWeaponSpec(weaponId: String) = IDToWeapon[weaponId]
+
+    @JvmStatic
     fun getActuallyAllWeaponSpecIDSet(): Set<String> = IDToWeapon.keys
+
+    @JvmStatic
     fun getHullModSpec(hullModId: String) = IDToHullMod[hullModId]
+
+    @JvmStatic
     fun getHullModIDSet(): Set<String> = IDToHullMod.keys
+
+    @JvmStatic
     fun getSkillSpec(skillId: String) = IDToSkill[skillId]
+
+    @JvmStatic
     fun getAllSkillSpecs(): Collection<SkillSpecAPI> = IDToSkill.values
+
+    @JvmStatic
     fun getAllDMods(): Set<String> = allDMods
+
+    @JvmStatic
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
-    fun getAllVariants(): Set<ShipVariantAPI> = allVariants
+
+    //@JvmStatic
+    //fun getAllVariants(): Set<ShipVariantAPI> = allVariants
+    @JvmStatic
     fun getAllFactionIDs(): Set<String> = allFactionIDs
+
+    @JvmStatic
     fun getShipSystemSpec(systemId: String): ShipSystemSpecAPI? = IDToShipSystem[systemId]
 
-    fun getErrorVariantHullID() = errorVariantHullID
+    internal fun getErrorVariantHullID() = errorVariantHullID
 
     //Is this needed? - Numan
     //No - Future Numan
