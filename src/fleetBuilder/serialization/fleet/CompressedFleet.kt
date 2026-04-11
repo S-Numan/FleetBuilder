@@ -2,6 +2,7 @@ package fleetBuilder.serialization.fleet
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
@@ -17,7 +18,6 @@ import fleetBuilder.serialization.member.CompressedMember
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.person.DataPerson
-import fleetBuilder.core.FBTxt
 import fleetBuilder.util.api.FleetUtils.getAllSourceModsFromFleet
 import fleetBuilder.util.lib.CompressionUtil
 import java.util.*
@@ -329,7 +329,7 @@ object CompressedFleet {
                     addedModDetails +=
                         "${mod.id}$sep${mod.name}$sep${mod.version}$sep"
 
-                    requiredMods += "(${mod.name}) $sep"
+                    requiredMods += "(${mod.name}) $sep "
                 }
 
                 requiredMods = requiredMods.dropLast(3)
@@ -360,7 +360,7 @@ object CompressedFleet {
             val fleetName = data.fleetName ?: "Fleet"
             val readable = FBTxt.txt("fleet_summary", fleetName, dp.toInt(), data.members.size, requiredMods)
 
-            fleetString = readable + fleetString
+            fleetString = readable + "\n" + fleetString
         }
 
         return fleetString

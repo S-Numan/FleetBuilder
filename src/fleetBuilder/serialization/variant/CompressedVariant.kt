@@ -247,7 +247,7 @@ object CompressedVariant {
         compressedVariant = "$ver$compressedVariant"//Indicate structure version for compatibility with future compressed format changes
 
         if (includePrepend)
-            compressedVariant = "${data.displayName} ${LookupUtils.getHullSpec(data.hullId)?.hullName} : $requiredMods" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
+            compressedVariant = "${data.displayName} ${LookupUtils.getHullSpec(data.hullId)?.hullName} : $requiredMods\n" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
 
         return compressedVariant
     }

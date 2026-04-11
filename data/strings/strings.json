@@ -52,6 +52,7 @@
   "added_ship_to_submarket":"Added '%s' to submarket",
   "added_ship_to_submarket_with_officer":"Added '%s' to submarket, with an officer",
   "added_officer_to_fleet":"Added officer to fleet",
+  "no_ai_core_officer": "Unable to add AI core as officer",
   "member_appended_into_fleet":"%s member appended to fleet",
   "members_appended_into_fleet":"%s members appended to fleet",
   "player_fleet_replaced":"Player fleet replaced",

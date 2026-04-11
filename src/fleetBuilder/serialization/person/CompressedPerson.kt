@@ -347,8 +347,8 @@ object CompressedPerson {
 
         // Readable prepend
         if (includePrepend) {
-            val readable = "${data.first} ${data.last} : $requiredMods"
-            personString = readable + personString
+            val readable = "${data.first}${if (data.last.isNotEmpty()) " " + data.last else ""} : $requiredMods"
+            personString = readable + "\n" + personString
         }
 
         return personString
