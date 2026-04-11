@@ -231,8 +231,7 @@ object CompressedPerson {
         includeModInfo: Boolean = true,
         compress: Boolean = true
     ): String {
-        val personData = getPersonDataFromPerson(person, settings)
-        return savePersonToCompString(personData, includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
+        return savePersonToCompString(getPersonDataFromPerson(person, settings), includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
     }
 
     @JvmOverloads
