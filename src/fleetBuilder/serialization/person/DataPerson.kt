@@ -235,7 +235,7 @@ object DataPerson {
         data.tags.forEach { person.addTag(it) }
         data.skills.forEach { (id, level) -> person.stats.setSkillLevel(id, level) }
 
-        val level = if (data.level > -1) data.level else data.skills.count()
+        val level = if (data.level > -1) data.level else data.skills.count { it.value >= 1f }
         person.stats.level = level
 
         person.stats.xp = data.xp
