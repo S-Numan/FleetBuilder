@@ -451,8 +451,12 @@ internal object ClipboardHotkeyHandlerUtils {
                 if (randomPastedCosmetics) {
                     PersonUtils.randomizePersonCosmetics(person, playerFleet.fleet.faction)
                 }
-                playerFleet.addOfficer(person)
-                showMessage(FBTxt.txt("added_officer_to_fleet"))
+                if (!person.isAICore) {
+                    playerFleet.addOfficer(person)
+                    showMessage(FBTxt.txt("added_officer_to_fleet"))
+                } else {
+                    showMessage(FBTxt.txt("no_ai_core_officer"))
+                }
             }
 
             is DataVariant.ParsedVariantData -> {

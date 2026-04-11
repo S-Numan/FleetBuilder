@@ -252,7 +252,7 @@ object CompressedMember {
             val hullName = LookupUtils.getHullSpec(data.variantData?.hullId ?: "")?.hullName ?: "null"
 
             val readable = if (data.personData != null) {
-                val personName = data.personData.first + " " + data.personData.last
+                val personName = data.personData.first + if (data.personData.last.isNotEmpty()) " " + data.personData.last else ""
                 FBTxt.txt(
                     "shipReadableWithPerson",
                     shipName,
@@ -270,7 +270,7 @@ object CompressedMember {
                     requiredMods
                 )
             }
-            memberString = readable + memberString
+            memberString = readable + "\n" + memberString
         }
 
         return memberString
