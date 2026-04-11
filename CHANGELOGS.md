@@ -1,14 +1,18 @@
+## 1.35.1
+### Bufixes
+- Fix one off ai cores from mods from losing all their skills
+
 ## 1.35.0
 ### Additions
-- SetPersonality changes the personality of the officer captaining the ship viewed in the refit screen.
+- SetPersonality Console Command: changes the personality of the officer captaining the ship viewed in the refit 
 ### Changes
-- Update Compressed Person from p0 to p1. Memkeys now keep the correct type.
+- Update Compressed Person from version p0 to p1. Memkeys now keep the correct type.
 - AddHullMod now adds hullmods to the ship viewed in the refit screen
 - AddXP now adds XP to the officer captaining the ship viewed in the refit screen.
 - Expanded upon and fixed backup saves.
-- Temporarily revert fleet's automatically compressing instead of using JSON for compatability reasons.
+- Temporarily revert fleet's compressing automatically on copy, copied fleets now use JSON. This is for compatability reasons and will be changed back next starsector release.
 ### Bugfixes
-- Fixed compressed fleets being unable if copied to clipboard as a file
+- Fixed compressed fleets being unable to be used if copied to clipboard as a file
 
 ## 1.34.0
 ### Additions
