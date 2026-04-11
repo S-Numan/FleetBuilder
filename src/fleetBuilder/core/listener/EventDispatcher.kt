@@ -4,12 +4,12 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
-import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBSettings.fixShipSkinSourceMod
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
 import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
+import fleetBuilder.core.saveBackupManager.SaveBackupManager
 import fleetBuilder.core.shipSkinSourceMod.ShipSkinSourceMod
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
 import fleetBuilder.features.autofit.listener.CampaignAutofitAdder
@@ -31,7 +31,6 @@ import fleetBuilder.features.recentBattles.RecentBattleTracker
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
-import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.listeners.MemberChangeEvents
@@ -111,7 +110,7 @@ internal class EventDispatcher : EveryFrameScript {
             manageTransientListener(CampaignCargoScreenFilter::class.java, FBSettings.cargoScreenFilter) { cargoScreenFilter }
 
             manageTransientScript(AutoMothballRecoveredShips::class.java, FBSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
-            manageTransientScript(DisplayDerelictRecoveryEarly::class.java, FBSettings.displayDerelictRecoveryEarly) { DisplayDerelictRecoveryEarly() }//TODO: Setting
+            manageTransientScript(DisplayDerelictRecoveryEarly::class.java, FBSettings.displayDerelictRecoveryEarly) { DisplayDerelictRecoveryEarly() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
 
             manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
@@ -212,24 +211,8 @@ internal class EventDispatcher : EveryFrameScript {
             MakeSaveRemovable.beforeGameSave()
         }
 
-        fun backupSave() {
-            if (FBSettings.backupSave) {
-                try {
-                    val compSave = PlayerSaveUtils.createSaveJson(superCompressSave = true)
-
-                    if (compSave.length < 1000000) // Starsector cannot save files over 1MB
-                        Global.getSettings().writeTextFileToCommon("${FBConst.PRIMARY_DIR}/SaveTransfer/lastSave", compSave)
-                    else
-                        Global.getLogger(this::class.java).warn("FleetBuilder: Backup Save is too large. Please make a SaveTransfer of your save and send it to the mod author.")
-
-                } catch (e: Exception) {
-                    Global.getLogger(this::class.java).error("FleetBuilder: Backup Save failed.", e)
-                }
-            }
-        }
-
         fun onGameSaveFailed() {
-            backupSave()
+            SaveBackupManager.createBackup()
         }
 
         fun afterGameSave() {
@@ -237,7 +220,7 @@ internal class EventDispatcher : EveryFrameScript {
 
             CommanderShuttle.afterGameSave()
 
-            backupSave()
+            SaveBackupManager.createBackup()
         }
     }
 

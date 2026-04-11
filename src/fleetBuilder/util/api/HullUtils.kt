@@ -184,6 +184,7 @@ object HullUtils {
      * @return True if the hull is a skin, false otherwise.
      */
     fun isSkin(hull: ShipHullSpecAPI): Boolean {
-        return hull.dParentHullId.isNullOrEmpty() && hull.baseHullId != hull.hullId
+        val hull = hull.dParentHull ?: hull
+        return hull.baseHullId != hull.hullId
     }
 }

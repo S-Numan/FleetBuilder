@@ -48,36 +48,12 @@ This avoids pasted members looking like a clone army, and makes them look like a
 ,,,,,,,,
 fleetScreenFilter,Enable Fleet Screen Filter,Boolean,false,,A clickable filter on the fleet screen that allows you to type in keywords to filter visible ships.,,,Filters
 fleetScreenFilterField,Fleet Screen Filter Field,Text,"You can enter hull names like ""Hammerhead"", or ship types such as ""phase"", ""carrier"", or ""frigate"".
+
 Ships that do not match any of the entered keywords will be hidden.
 To exclude specific matches, prepend a dash (-) to your entry; for example, -frigate will hide all frigates.
+Filters are separated by spaces. Surround your filter with quotes “ “ to be more exact.
 
-
-Valid Inputs:
-
-
-Name of the ship hull (E.G “Hammerhead”)
-Name of the ship (E.G “Apologies To Goddard”)
-Design Type (E.G “Midline”)
-Name of the ship system (E.G “Maneuvering Jets”)
-
-smodded (Has SMods)
-dmodded (Has DMods)
-officer (Has Officer)
-
-combat (If a ship adds to the combat ship deployment point cost)
-civilian
-carrier
-phase
-shields
-frigate
-destroyer
-cruiser
-capital
-automated
-marines / transport
-fuel / tanker
-crew / liner
-cargo / freighter",fleetScreenFilterField,Fleet Screen Filter Field,,,Filters
+See the entire list of inputs by hovering over the filter to see the tooltip.",fleetScreenFilterField,Fleet Screen Filter Field,,,Filters
 modPickerFilter,Enable Mod Picker Filter,Boolean,false,,"Functions similar to the Fleet Filter, but for the hull mod picker.",,,Filters
 autofitMainHeader,Autofit Main Header,Header,Main,,,,,Autofit Menu
 autofitMenuEnabled,Enable Autofit Menu,Boolean,false,,A custom autofit menu for the refit screen with unlimited variant slots that stay between saves.,,,Autofit Menu

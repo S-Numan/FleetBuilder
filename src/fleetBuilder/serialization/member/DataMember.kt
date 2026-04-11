@@ -59,7 +59,7 @@ object DataMember {
             hullFraction = member.status.hullFraction,
             isMothballed = member.repairTracker.isMothballed,
             isFlagship = member.isFlagship,
-            id = member.id
+            id = if (settings.includeID) member.id else null
         )
 
         if (filterParsed)
@@ -81,7 +81,7 @@ object DataMember {
             personData = personData,
             variantData = variantData,
             cr = if (settings.includeCR) data.cr else null,
-            hullFraction = if (settings.includeHull) data.hullFraction else null,
+            hullFraction = if (settings.includeHullFraction) data.hullFraction else null,
             id = if (settings.includeID) data.id else null
         )
     }
@@ -109,7 +109,11 @@ object DataMember {
         )
     }
 
-    fun buildMember(data: ParsedMemberData, random: Random = Random()): FleetMemberAPI {
+    @JvmOverloads
+    fun buildMember(
+        data: ParsedMemberData,
+        random: Random = Random()
+    ): FleetMemberAPI {
         // Variant
         val variant = if (data.variantData != null)
             buildVariant(data.variantData)

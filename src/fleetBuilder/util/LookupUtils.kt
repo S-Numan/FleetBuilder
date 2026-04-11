@@ -3,6 +3,7 @@ package fleetBuilder.util
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
+import com.fs.starfarer.api.combat.ShipSystemSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
@@ -30,6 +31,7 @@ object LookupUtils {
     private lateinit var IDToHullMod: Map<String, HullModSpecAPI>
     private lateinit var IDToSkill: Map<String, SkillSpecAPI>
     private lateinit var allFactionIDs: Set<String>
+    private lateinit var IDToShipSystem: Map<String, ShipSystemSpecAPI>
     private var init = false
     fun isSetup() = init
 
@@ -84,6 +86,7 @@ object LookupUtils {
         IDToWeapon = settings.actuallyAllWeaponSpecs.associateBy { it.weaponId }
         IDToSkill = settings.skillIds.map { settings.getSkillSpec(it) }.associateBy { it.id }
         allFactionIDs = settings.allFactionSpecs.map { it.id }.toSet()
+        IDToShipSystem = settings.allShipSystemSpecs.associateBy { it.id }
 
 
         allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }.toSet()
@@ -138,6 +141,7 @@ object LookupUtils {
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
     fun getAllVariants(): Set<ShipVariantAPI> = allVariants
     fun getAllFactionIDs(): Set<String> = allFactionIDs
+    fun getShipSystemSpec(systemId: String): ShipSystemSpecAPI? = IDToShipSystem[systemId]
 
     fun getErrorVariantHullID() = errorVariantHullID
 

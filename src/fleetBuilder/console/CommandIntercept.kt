@@ -1,5 +1,7 @@
 package fleetBuilder.console
 
+import fleetBuilder.console.commands.AddHullMod
+import fleetBuilder.console.commands.AddXP
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
 import org.lazywizard.console.BaseCommand
@@ -13,6 +15,11 @@ class CommandIntercept : CommandListener {
         context: BaseCommand.CommandContext,
         alreadyIntercepted: Boolean
     ): Boolean {
+        if (!alreadyIntercepted) {
+            if (command.lowercase() == "addhullmod" || command.lowercase() == "addxp")
+                return true // intercept
+        }
+
         return false // do nothing
     }
 
@@ -21,6 +28,11 @@ class CommandIntercept : CommandListener {
         args: String,
         context: BaseCommand.CommandContext
     ): BaseCommand.CommandResult {
+        if (command.lowercase() == "addhullmod")
+            return AddHullMod().runCommand(args, context)
+        else if (command.lowercase() == "addxp")
+            return AddXP().runCommand(args, context)
+
         return BaseCommand.CommandResult.SUCCESS // do nothing
     }
 

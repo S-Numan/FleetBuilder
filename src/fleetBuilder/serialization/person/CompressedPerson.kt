@@ -3,6 +3,7 @@ package fleetBuilder.serialization.person
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
@@ -14,9 +15,7 @@ import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
-import fleetBuilder.core.FBTxt
 import fleetBuilder.util.lib.CompressionUtil
-import fleetBuilder.util.api.kotlin.roundToDecimals
 import java.util.*
 
 object CompressedPerson {
@@ -54,16 +53,19 @@ object CompressedPerson {
         if (metaIndexStart == -1 || metaIndexEnd == -1)
             return null
 
-        val metaVersion = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        val metaVersionFull = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        if (!metaVersionFull.lowercase().startsWith('p'))
+            return null
+        val metaVersionNumber = metaVersionFull.substring(1).toInt()
+        val metaVersionCompressed = metaVersionFull.startsWith('p')
 
-        val fullData = when (metaVersion) {
-            "p0" -> {
-                val compressedData = comp.substring(metaIndexEnd + 1)
-                CompressionUtil.base64Inflate(compressedData)
-            }
-            "P0" -> comp.substring(metaIndexEnd + 1)
-            else -> return null
+        val fullData = if (metaVersionCompressed) {
+            val compressedData = comp.substring(metaIndexEnd + 1)
+            CompressionUtil.base64Inflate(compressedData)
+        } else {
+            comp.substring(metaIndexEnd + 1)
         } ?: return null
+
 
         if (fullData.isBlank())
             return null
@@ -123,7 +125,7 @@ object CompressedPerson {
                 fields[8].takeIf { it.isNotBlank() }
                     ?.split(sep)
                     ?.mapNotNull {
-                        val p = it.split(joinSep)
+                        val p = it.split(joinSep, limit = 2)
                         if (p.size == 2)
                             p[0] to p[1].toFloat()
                         else null
@@ -138,28 +140,64 @@ object CompressedPerson {
             val points = fields[13].toInt()
 
             val memKeys =
-                fields.getOrNull(14)
-                    ?.takeIf { it.isNotBlank() }
-                    ?.split(memKeySep)
-                    ?.mapNotNull {
-                        val p = it.split(memKeyJoinSep, limit = 2)
-                        if (p.size == 2) {
-                            val key = "$" + p[0]
-                            val raw = p[1]
+                if (metaVersionNumber == 0) {
+                    // DEPRECIATED
+                    fields.getOrNull(14)
+                        ?.takeIf { it.isNotBlank() }
+                        ?.split(memKeySep)
+                        ?.mapNotNull {
+                            val p = it.split(memKeyJoinSep, limit = 2)
+                            if (p.size == 2) {
+                                val key = "$" + p[0]
+                                val raw = p[1]
 
-                            val value: Any =
-                                raw.toIntOrNull()
-                                    ?: raw.toLongOrNull()
-                                    ?: raw.toFloatOrNull()
-                                    ?: raw.toDoubleOrNull()
-                                    ?: raw.lowercase().toBooleanStrictOrNull()
-                                    ?: raw
+                                val value: Any =
+                                    raw.toIntOrNull()
+                                        ?: raw.toLongOrNull()
+                                        ?: raw.toFloatOrNull()
+                                        ?: raw.toDoubleOrNull()
+                                        ?: raw.toShortOrNull()
+                                        ?: raw.toByteOrNull()
+                                        ?: raw.lowercase().toBooleanStrictOrNull()
+                                        ?: raw
 
-                            key to value
-                        } else null
-                    }
-                    ?.toMap()
-                    ?: emptyMap()
+                                key to value
+                            } else null
+                        }
+                        ?.toMap()
+                        ?: emptyMap()
+                } else {
+                    fields.getOrNull(14)
+                        ?.takeIf { it.isNotBlank() }
+                        ?.split(memKeySep)
+                        ?.mapNotNull {
+                            val p = it.split(memKeyJoinSep, limit = 2)
+                            if (p.size == 2) {
+                                val key = "$" + p[0]
+                                val raw = p[1]
+                                val rawFirst = raw.firstOrNull()
+                                val body = raw.drop(1)
+                                val value = when (rawFirst) {
+                                    'F' -> body.toFloatOrNull()
+                                    'D' -> body.toDoubleOrNull()
+                                    'B' -> body.lowercase().toBooleanStrictOrNull()
+                                    'I' -> body.toIntOrNull()
+                                    'L' -> body.toLongOrNull()
+                                    'l' -> body.toShortOrNull()
+                                    'b' -> body.toByteOrNull()
+                                    'C' -> body.firstOrNull()
+                                    'S' -> body
+                                    else -> null
+                                }
+                                if (value == null)
+                                    return@mapNotNull null
+
+                                key to value
+                            } else null
+                        }
+                        ?.toMap()
+                        ?: emptyMap()
+                }
 
             return DataPerson.ParsedPersonData(
                 aiCoreId = aiCoreId,
@@ -204,8 +242,8 @@ object CompressedPerson {
         compress: Boolean = true
     ): String {
         val structureVersion =
-            if (compress) "p0"
-            else "P0"
+            if (compress) "p1"
+            else "P1"
 
         val ver = "$metaSep$structureVersion$metaSep"
 
@@ -246,10 +284,15 @@ object CompressedPerson {
             val value = entry.value
 
             val formattedValue = when (value) {
-                is Float -> value.roundToDecimals(2).toString()
-                is Double -> value.roundToDecimals(2).toString()
-                is Boolean, is Int, is Long -> value.toString()
-                is String -> value
+                is Float -> "F$value"
+                is Double -> "D$value"
+                is Boolean -> "B$value"
+                is Int -> "I$value"
+                is Long -> "L$value"
+                is Short -> "l$value"
+                is Byte -> "b$value"
+                is Char -> "C$value"
+                is String -> "S$value"
                 else -> null
             }
 

@@ -1,3 +1,15 @@
+## 1.35.0
+### Additions
+- SetPersonality changes the personality of the officer captaining the ship viewed in the refit screen.
+### Changes
+- Update Compressed Person from p0 to p1. Memkeys now keep the correct type.
+- AddHullMod now adds hullmods to the ship viewed in the refit screen
+- AddXP now adds XP to the officer captaining the ship viewed in the refit screen.
+- Expanded upon and fixed backup saves.
+- Temporarily revert fleet's automatically compressing instead of using JSON for compatability reasons.
+### Bugfixes
+- Fixed compressed fleets being unable if copied to clipboard as a file
+
 ## 1.34.0
 ### Additions
 - Added Display Derelict Recovery Early. Shows the ship preview earlier during derelict salvage. Instead of requiring “Consider Special Measures” to view the ship, the preview is available a step earlier when you get the option to salvage it.

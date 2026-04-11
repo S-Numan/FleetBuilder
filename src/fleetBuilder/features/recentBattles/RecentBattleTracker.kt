@@ -37,7 +37,7 @@ class RecentBattleTracker : BaseCampaignEventListener(false) {
         try {
             FleetDirectoryService.getDirectory()?.addFleet(battle.combinedTwo, setFleetID = id, settings = FleetSettings().apply {
                 memberSettings.includeCR = false
-                memberSettings.includeHull = false
+                memberSettings.includeHullFraction = false
                 memberSettings.personSettings.handleRankAndPost = false
             })
         } catch (e: Exception) {

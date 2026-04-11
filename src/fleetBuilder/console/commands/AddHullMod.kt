@@ -1,55 +1,69 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.FBTxt
-import fleetBuilder.util.*
+import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.completelyRemoveMod
+import fleetBuilder.util.api.kotlin.getActualHull
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.api.kotlin.toBoolean
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
+import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.Console
 
 class AddHullMod : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
         val refitPanel = ReflectionMisc.getRefitPanel()
-        if (refitPanel == null) {
-            Console.showMessage("Must be in refit tab")
-            return BaseCommand.CommandResult.WRONG_CONTEXT
+        if (refitPanel == null && !context.isInCampaign) {
+            Console.showMessage("Error: This command can only be used in the campaign or refit tab.")
+            return CommandResult.WRONG_CONTEXT
+        }
+        if (args.isEmpty()) {
+            return CommandResult.BAD_SYNTAX
         }
 
         val argList = args.lowercase().split(" ")
 
         val modIdInput = argList.getOrNull(0)
-        val modId = Global.getSettings().allHullModSpecs.firstOrNull { it.id == modIdInput }?.id
+        val modId = modIdInput?.let { LookupUtils.getHullModSpec(modIdInput) }?.id
 
         if (modId == null) {
-            Console.showMessage("Could not find hullmod_id with id '$modIdInput'")
+            Console.showMessage("No modspec found with id '$modId'! Use 'list hullmods' for a complete list of valid ids.")
             return BaseCommand.CommandResult.ERROR
         }
 
-        val isPerma = argList.getOrNull(1)?.toBoolean ?: false
-        val isSMod = argList.getOrNull(2)?.toBoolean ?: false
+        if (refitPanel == null) {
+            val cargo = Global.getSector()?.playerFleet?.cargo ?: return BaseCommand.CommandResult.ERROR
 
-        val variant = ReflectionMisc.getCurrentVariantInRefitTab()
-        if (variant == null) {
-            Console.showMessage("Failed to get variant in refit screen")
-            return BaseCommand.CommandResult.ERROR
-        }
-
-        variant.completelyRemoveMod(modId)
-
-        if (!isPerma && !isSMod) {
-            variant.addMod(modId)
+            cargo.addHullmods(modId, 1)
+            Console.showMessage("Added modspec $modId to player inventory.")
+            return CommandResult.SUCCESS
         } else {
-            variant.addPermaMod(modId, isSMod)
+            val isPerma = argList.getOrNull(1)?.toBoolean ?: false
+            val isSMod = argList.getOrNull(2)?.toBoolean ?: false
+
+            val variant = ReflectionMisc.getCurrentVariantInRefitTab()
+            if (variant == null) {
+                Console.showMessage("Failed to get variant in refit screen")
+                return BaseCommand.CommandResult.ERROR
+            }
+
+            variant.completelyRemoveMod(modId)
+
+            if (!isPerma && !isSMod) {
+                variant.addMod(modId)
+            } else {
+                variant.addPermaMod(modId, isSMod)
+            }
+            refitPanel.safeInvoke("syncWithCurrentVariant")
+
+            val addType = if (isPerma && isSMod) "Perma and S " else if (isPerma) "Perma " else if (isSMod) "S " else ""
+            Console.showMessage("Added ${addType}modspec of id '$modId' to currently viewed variant of hull '${variant.hullSpec.getActualHull().hullName}'")
+
+            return BaseCommand.CommandResult.SUCCESS
         }
-        refitPanel.safeInvoke("syncWithCurrentVariant")
-
-        Console.showMessage(FBTxt.txt("done"))
-
-        return BaseCommand.CommandResult.SUCCESS
     }
 
     override fun getSuggestions(
