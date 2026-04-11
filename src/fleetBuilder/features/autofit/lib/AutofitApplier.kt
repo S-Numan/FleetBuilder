@@ -239,7 +239,7 @@ internal object AutofitApplier {
 
                 val templateVariant = baseVariant.hullSpec.createHullVariant()
                 baseVariant.getSlotsForModules().forEach { slot ->
-                    baseVariant.setModuleVariant(slot, templateVariant.getModuleVariant(slot).apply { source = VariantSource.REFIT }) // Need to apply refit or game will remove it.
+                    baseVariant.setModuleVariant(slot, templateVariant.getModuleVariant(slot).clone().apply { source = VariantSource.REFIT }) // Need to apply refit or game will remove it.
                 }
             }
 
