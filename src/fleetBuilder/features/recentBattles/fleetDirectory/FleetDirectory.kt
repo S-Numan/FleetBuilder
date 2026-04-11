@@ -93,7 +93,7 @@ class FleetDirectory(
 
         val comparisonSettings = FleetSettings().apply {
             memberSettings.includeCR = false
-            memberSettings.includeHull = false
+            memberSettings.includeHullFraction = false
             memberSettings.personSettings.handleRankAndPost = false
         }
 

@@ -81,7 +81,7 @@ object DataMember {
             personData = personData,
             variantData = variantData,
             cr = if (settings.includeCR) data.cr else null,
-            hullFraction = if (settings.includeHull) data.hullFraction else null,
+            hullFraction = if (settings.includeHullFraction) data.hullFraction else null,
             id = if (settings.includeID) data.id else null
         )
     }
