@@ -29,6 +29,7 @@ object CampaignUtils {
      * @see closeCampaignDummyDialog
      */
     @JvmOverloads
+    @JvmStatic
     fun openCampaignDummyDialog(
         isInteractionDialog: Boolean = false,
         onBackFromEngagement: () -> Unit = {}
@@ -74,6 +75,7 @@ object CampaignUtils {
      * Closes the dialog opened by [openCampaignDummyDialog].
      * @see openCampaignDummyDialog
      */
+    @JvmStatic
     fun closeCampaignDummyDialog(): Boolean {
         if (placeholderDialog == null) return false
         placeholderDialog?.safeInvoke("dismiss", 0)
@@ -81,6 +83,7 @@ object CampaignUtils {
         return true
     }
 
+    @JvmStatic
     fun isCampaignDummyDialogOpen(): Boolean {
         return placeholderDialog != null
     }
@@ -91,6 +94,7 @@ object CampaignUtils {
      * @param points the amount of story points to spend
      * @param experiencePointsGained the amount of experience points to gain per story point (before any bonus)
      */
+    @JvmStatic
     fun spendStoryPoint(points: Int, experiencePointsGained: Float) {
         if (points <= 0)
             return

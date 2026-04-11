@@ -81,6 +81,8 @@ internal object RemoveFromSave {
         if (modsToRemoveStuffFrom.isNotEmpty() && removeListeners) {
             val listenerManager = sector.listenerManager
             val listenerManagerObjectRepository = (listenerManager.safeGet("listeners") as? ObjectRepository)
+
+            @Suppress("UNCHECKED_CAST")
             val listenersManagerListeners = (listenerManagerObjectRepository?.safeGet("lists") as? Map<Class<*>, *>)?.keys?.toList()
 
             val sectorScripts = sector.scripts.map { it.javaClass }

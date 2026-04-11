@@ -23,6 +23,7 @@ import kotlin.math.max
 
 object FleetUtils {
 
+    @JvmStatic
     fun getAllSourceModsFromFleet(
         fleet: FleetDataAPI,
         settings: FleetSettings = FleetSettings()
@@ -30,6 +31,7 @@ object FleetUtils {
         return getAllSourceModsFromFleet(getFleetDataFromFleet(fleet, settings))
     }
 
+    @JvmStatic
     fun getAllSourceModsFromFleet(data: DataFleet.ParsedFleetData): Set<ModSpecAPI> {
         val sourceMods = mutableSetOf<ModSpecAPI>()
 
@@ -52,10 +54,12 @@ object FleetUtils {
         return sourceMods
     }
 
+    @JvmStatic
     fun getUnassignedOfficers(fleet: FleetDataAPI): List<PersonAPI> {
         return fleet.officersCopy.map { it.person }.filter { fleet.getMemberWithCaptain(it) == null }
     }
 
+    @JvmStatic
     fun getAssignedOfficers(fleet: FleetDataAPI): List<PersonAPI> {
         return fleet.officersCopy.map { it.person }.filter { fleet.getMemberWithCaptain(it) != null }
     }
@@ -63,6 +67,7 @@ object FleetUtils {
     /**
      * Repairs all ships in the fleet and restores their CR to maximum
      */
+    @JvmStatic
     fun repairAndRestoreCR(fleet: FleetDataAPI) {
         fleet.membersListCopy.forEach { member ->
             member.status.repairFully()
@@ -73,6 +78,7 @@ object FleetUtils {
         }
     }
 
+    @JvmStatic
     fun replacePlayerFleetWith(
         fleet: CampaignFleetAPI,
         aggression: Int = -1,
@@ -150,6 +156,7 @@ object FleetUtils {
      *
      * Any excess crew, supplies or fuel are removed.
      */
+    @JvmStatic
     fun fulfillPlayerFleet() {
         val playerFleet = Global.getSector()?.playerFleet ?: return
 
