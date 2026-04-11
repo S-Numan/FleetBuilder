@@ -6,6 +6,7 @@
 - AddHullMod now adds hullmods to the ship viewed in the refit screen
 - AddXP now adds XP to the officer captaining the ship viewed in the refit screen.
 - Expanded upon and fixed backup saves.
+- Temporarily revert fleet's automatically compressing instead of using JSON for compatability reasons.
 ### Bugfixes
 - Fixed compressed fleets being unable if copied to clipboard as a file
 

@@ -34,6 +34,11 @@ object DataPerson {
         val memKeys: Map<String, Any> = emptyMap()
     )
 
+    @Deprecated("Use clonePerson instead")
+    fun copyPerson(person: PersonAPI): PersonAPI { // TODO, remove on new game update
+        return clonePerson(person)
+    }
+
     @JvmOverloads
     fun clonePerson(
         person: PersonAPI,
