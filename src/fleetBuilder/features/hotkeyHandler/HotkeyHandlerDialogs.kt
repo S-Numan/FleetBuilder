@@ -101,7 +101,7 @@ object HotkeyHandlerDialogs {
             testMessageTrigger.position.inTR(0f, ui.height - testMessageTrigger.height)
             testMessageTrigger.onClick {
                 DisplayMessage.showMessageCustom("Test Message!", Color.RED)
-
+                
                 //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
                 /*val state = AppDriver.getInstance().currentState
                 if (state is CampaignState) {

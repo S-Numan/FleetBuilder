@@ -38,4 +38,5 @@ RemoveSkill,fleetBuilder.console.commands.RemoveSkill,"cheat,campaign,fleetbuild
 ,,,,
 ,,,,
 AddHullMod,fleetBuilder.console.commands.AddHullMod,"cheat,campaign,fleetbuilder",addhullmod <hullmod_ID> [optionalIsPerma] [OptionalIsSMod],"Adds the specified hullmod to the ship viewed in the refit screen.
-Set isPerma and isSMod to true or false to add the hullmod as described."
+Set isPerma and isSMod to true or false to add the hullmod as described.
+If not in the refit screen, adds the specified modspec to your fleet's cargo."

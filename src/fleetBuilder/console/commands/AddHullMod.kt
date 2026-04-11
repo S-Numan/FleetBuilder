@@ -1,10 +1,10 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.completelyRemoveMod
+import fleetBuilder.util.api.kotlin.getActualHull
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.api.kotlin.toBoolean
 import org.lazywizard.console.BaseCommand
@@ -59,7 +59,8 @@ class AddHullMod : BaseCommandWithSuggestion {
             }
             refitPanel.safeInvoke("syncWithCurrentVariant")
 
-            Console.showMessage(FBTxt.txt("done"))
+            val addType = if (isPerma && isSMod) "Perma and S " else if (isPerma) "Perma " else if (isSMod) "S " else ""
+            Console.showMessage("Added ${addType}modspec of id '$modId' to currently viewed variant of hull '${variant.hullSpec.getActualHull().hullName}'")
 
             return BaseCommand.CommandResult.SUCCESS
         }
