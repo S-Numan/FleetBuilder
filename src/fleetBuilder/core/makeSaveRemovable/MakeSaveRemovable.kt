@@ -7,6 +7,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.CampaignEngine
 import fleetBuilder.core.FBSettings
+import fleetBuilder.util.api.kotlin.getModules
 
 //Original code is from AITweaks "MakeAITweaksRemovable", the author being Genrir. Credit to them.
 
@@ -85,13 +86,9 @@ internal object MakeSaveRemovable {
             fleetMembers.map { Ship(it) }, // Ships.
             CampaignEngine.getInstance().savedVariantData.variantMap.map { Variant(it.key, it.value) }, // Global variants.
             fleetMembers.flatMap { ship ->
-                ship.moduleVariants().map { Variant("${it.key} ${ship.id}", it.value) }
+                ship.variant.getModules().map { Variant("${it.key} ${ship.id}", it.value) }
             }, // Ship modules.
         ).flatten()
-    }
-
-    private fun FleetMemberAPI.moduleVariants(): Map<String, ShipVariantAPI> {
-        return this.variant.stationModules.mapValues { this.variant.getModuleVariant(it.key) }
     }
 
     private fun makeMemoryKey(hullmodKey: String, entityKey: String): String {

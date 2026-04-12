@@ -330,7 +330,7 @@ internal object ClipboardHotkeyHandlerUtils {
             HotkeyHandlerDialogs.createImportLoadoutDialog(variant, missing)
         } else {
             DisplayMessage.showMessage(
-                FBTxt.txt("loadout_already_exists", variant.hullSpec.hullId),
+                FBTxt.txt("loadout_already_exists", variant.hullSpec.hullName),
                 variant.hullSpec.hullName,
                 Misc.getHighlightColor()
             )
