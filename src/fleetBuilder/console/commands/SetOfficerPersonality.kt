@@ -51,7 +51,7 @@ class SetOfficerPersonality : BaseCommandWithSuggestion {
         previous: MutableList<String?>?,
         context: CommandContext?
     ): MutableList<String?> {
-        if (parameter != 0) return ArrayList<String?>()
+        if (parameter != 0) return ArrayList()
 
         return personalities.toMutableList()
     }

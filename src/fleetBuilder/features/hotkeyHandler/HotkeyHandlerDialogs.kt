@@ -101,6 +101,16 @@ object HotkeyHandlerDialogs {
             testMessageTrigger.position.inTR(0f, ui.height - testMessageTrigger.height)
             testMessageTrigger.onClick {
                 DisplayMessage.showMessageCustom("Test Message!", Color.RED)
+                val sector = Global.getSector()
+                val memory = sector.memoryWithoutUpdate
+
+                /*
+                val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
+                val memberMemory = member.getMemberMemory()
+
+                if (!memberMemory.containsKey("test"))
+                    memberMemory["test"] = "test"*/
+
 
                 //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
                 /*val state = AppDriver.getInstance().currentState

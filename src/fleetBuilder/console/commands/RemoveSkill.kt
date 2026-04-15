@@ -53,8 +53,10 @@ class RemoveSkill : BaseCommandWithSuggestion {
         previous: MutableList<String?>?,
         context: CommandContext?
     ): MutableList<String?> {
-        if (parameter != 0) return ArrayList<String?>()
-
-        return Global.getSettings().skillIds
+        return when (parameter) {
+            0 -> Global.getSettings().skillIds
+            1 -> mutableListOf("true", "false")
+            else -> ArrayList()
+        }
     }
 }
