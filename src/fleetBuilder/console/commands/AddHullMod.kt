@@ -11,6 +11,7 @@ import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.BaseCommandWithSuggestion
+import org.lazywizard.console.CommandUtils.findBestStringMatch
 import org.lazywizard.console.Console
 
 class AddHullMod : BaseCommandWithSuggestion {
@@ -24,13 +25,12 @@ class AddHullMod : BaseCommandWithSuggestion {
             return CommandResult.BAD_SYNTAX
         }
 
-        val argList = args.lowercase().split(" ")
+        val argList = args.split(" ")
 
-        val modIdInput = argList.getOrNull(0)
-        val modId = modIdInput?.let { LookupUtils.getHullModSpec(modIdInput) }?.id
+        val modId = findBestStringMatch(args, LookupUtils.getHullModIDSet())
 
         if (modId == null) {
-            Console.showMessage("No modspec found with id '$modId'! Use 'list hullmods' for a complete list of valid ids.")
+            Console.showMessage("No modspec found with id '${argList.getOrNull(0)}'! Use 'list hullmods' for a complete list of valid ids.")
             return BaseCommand.CommandResult.ERROR
         }
 
@@ -71,8 +71,11 @@ class AddHullMod : BaseCommandWithSuggestion {
         previous: MutableList<String?>?,
         context: CommandContext?
     ): MutableList<String?> {
-        if (parameter != 0) return ArrayList<String?>()
-
-        return LookupUtils.getHullModIDSet().toMutableList()
+        return when (parameter) {
+            0 -> LookupUtils.getHullModIDSet().toMutableList()//.filterNot { LookupUtils.getHullModSpec(it)?.isHidden == true }.toMutableList()
+            //1 -> mutableListOf("true", "false")
+            //2 -> mutableListOf("true", "false")
+            else -> ArrayList()
+        }
     }
 }
