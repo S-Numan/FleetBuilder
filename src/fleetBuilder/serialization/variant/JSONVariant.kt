@@ -4,10 +4,10 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupType
+import fleetBuilder.core.FBMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.core.FBMisc
 import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
@@ -54,13 +54,15 @@ object JSONVariant {
         val fluxVents = json.optInt("fluxVents", 0)
         val isGoalVariant = json.optBoolean("goalVariant", false)
 
-        val hullMods = json.optJSONArrayToStringList("hullMods")
-        val permaMods = json.optJSONArrayToStringList("permaMods")
-        val sMods = json.optJSONArrayToStringList("sMods")
+        val hullMods = json.optJSONArrayToStringList("hullMods").toMutableSet()
+        val permaMods = json.optJSONArrayToStringList("permaMods").toMutableSet()
+        val sMods = json.optJSONArrayToStringList("sMods").toMutableSet()
 
-        var sModdedBuiltIns = json.optJSONArrayToStringList("sModdedBuiltIns")
+        var sModdedBuiltIns = json.optJSONArrayToStringList("sModdedBuiltIns").toMutableSet()
         if (sModdedBuiltIns.isEmpty())
-            sModdedBuiltIns = json.optJSONArrayToStringList("sModdedbuiltins") // Legacy code due to unfortunate typo
+            sModdedBuiltIns = json.optJSONArrayToStringList("sModdedbuiltins").toMutableSet() // Legacy code due to unfortunate typo
+
+        DataVariant.normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns)
 
         val wings = json.optJSONArrayToStringList("wings")
 
@@ -152,7 +154,7 @@ object JSONVariant {
 
         return DataVariant.ParsedVariantData(
             variantId = variantId, hullId = hullId, displayName = displayName, fluxCapacitors = fluxCapacitors, fluxVents = fluxVents,
-            tags = tags.toList(), hullMods = hullMods.toList(), permaMods = permaMods.toSet(), sMods = sMods.toSet(), sModdedBuiltIns = sModdedBuiltIns.toSet(), wings = wings,
+            tags = tags, hullMods = hullMods, permaMods = permaMods, sMods = sMods, sModdedBuiltIns = sModdedBuiltIns, wings = wings,
             weaponGroups = weaponGroups, moduleVariants = moduleVariants, isGoalVariant = isGoalVariant
         )
     }
