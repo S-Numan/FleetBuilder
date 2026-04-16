@@ -7,6 +7,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.CampaignEngine
 import fleetBuilder.core.FBSettings
+import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.kotlin.getModules
 
 //Original code is from AITweaks "MakeAITweaksRemovable", the author being Genrir. Credit to them.
@@ -73,11 +74,12 @@ internal object MakeSaveRemovable {
     private fun getEntitiesWithThings(): List<HasThing> {
         val locations = Global.getSector().allLocations
 
-        val submarkets = locations.flatMap { it.allEntities }.mapNotNull { it.market }.flatMap { it.submarketsCopy }
+        val submarkets = CampaignUtils.getSectorSubmarkets()
+        val cargos = CampaignUtils.getCargoFromSubmarkets(submarkets)
 
         val fleetMembers = listOf(
             locations.flatMap { it.fleets }.map { it.fleetData }, // Ships in active fleets.
-            submarkets.mapNotNull { it.cargo?.mothballedShips },  // Ships in storage.
+            cargos.mapNotNull { it.mothballedShips },  // Ships in storage.
         ).flatten().flatMap { it.membersListCopy }
 
         return listOf(

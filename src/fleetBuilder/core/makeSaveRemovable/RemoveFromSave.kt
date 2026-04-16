@@ -17,6 +17,7 @@ import com.fs.starfarer.campaign.CampaignEngine
 import com.fs.util.container.repo.ObjectRepository
 import fleetBuilder.core.FBMisc.replaceVariantWithVariant
 import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FactionUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.completelyRemoveMod
@@ -266,13 +267,14 @@ internal object RemoveFromSave {
 
     private fun getEntitiesWithThings(): List<HasThing> {
         val locations = Global.getSector().allLocations
-
-        val submarkets = locations.flatMap { it.allEntities }.mapNotNull { it.market }.flatMap { it.submarketsCopy }
-        val markets = locations.flatMap { it.allEntities }.mapNotNull { it.market }
+        
+        val markets = CampaignUtils.getSectorMarkets()
+        val submarkets = CampaignUtils.getSubmarkets(markets)
+        val cargos = CampaignUtils.getCargoFromSubmarkets(submarkets)
 
         val fleetMembers = listOf(
             locations.flatMap { it.fleets }.map { it.fleetData }, // Ships in active fleets.
-            submarkets.mapNotNull { it.cargo?.mothballedShips },  // Ships in storage.
+            cargos.mapNotNull { it.mothballedShips },  // Ships in storage.
         ).flatten().flatMap { it.membersListCopy }
 
         val derelicts = locations.flatMap { it.allEntities }.mapNotNull { if (it.customPlugin is DerelictShipEntityPlugin) it.customPlugin as DerelictShipEntityPlugin else null }
