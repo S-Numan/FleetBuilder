@@ -239,11 +239,30 @@ object HotkeyHandlerDialogs {
         }
     }
 
+    // Un-maintainable mess
     fun pasteFleetDialog(
         inputData: DataFleet.ParsedFleetData,
         inputMissing: MissingContent,
         allowSimulationAnyway: Boolean = false
     ): DialogPanel {
+        fun removeUnknownContent(member: FleetMemberAPI, unknown: MissingContent) {
+            val variant = member.variant
+
+            variant.fittedWeaponSlots.toList().forEach { slot ->
+                if (variant.getWeaponId(slot) in unknown.weaponIds) {
+                    variant.clearSlot(slot)
+                }
+            }
+
+            variant.fittedWings.removeAll { it in unknown.wingIds }
+
+            variant.hullMods.toList().forEach {
+                if (!variant.hullSpec.isBuiltInMod(it) && it in unknown.hullModIds) {
+                    variant.completelyRemoveMod(it)
+                }
+            }
+        }
+
         val sector = Global.getSector()
         val data = inputData.copy(
             members = inputData.members.map { member ->
@@ -1057,24 +1076,6 @@ object HotkeyHandlerDialogs {
     private fun pasteFleetDialogRightPanel(): UIPanelAPI {
 
     }*/
-
-    private fun removeUnknownContent(member: FleetMemberAPI, unknown: MissingContent) {
-        val variant = member.variant
-
-        variant.fittedWeaponSlots.toList().forEach { slot ->
-            if (variant.getWeaponId(slot) in unknown.weaponIds) {
-                variant.clearSlot(slot)
-            }
-        }
-
-        variant.fittedWings.removeAll { it in unknown.wingIds }
-
-        variant.hullMods.toList().forEach {
-            if (!variant.hullSpec.isBuiltInMod(it) && it in unknown.hullModIds) {
-                variant.completelyRemoveMod(it)
-            }
-        }
-    }
 
     fun createOfficerCreatorDialog() {
         val width = 500f

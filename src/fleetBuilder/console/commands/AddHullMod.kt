@@ -24,13 +24,14 @@ class AddHullMod : BaseCommandWithSuggestion {
             return CommandResult.BAD_SYNTAX
         }
 
-        val argList = args.lowercase().split(" ")
+
+        val argList = args.split(" ")
 
         val modIdInput = argList.getOrNull(0)
-        val modId = modIdInput?.let { LookupUtils.getHullModSpec(modIdInput) }?.id
+        val modId = modIdInput?.lowercase()?.let { LookupUtils.getHullModSpec(it) }?.id
 
         if (modId == null) {
-            Console.showMessage("No modspec found with id '$modId'! Use 'list hullmods' for a complete list of valid ids.")
+            Console.showMessage("No modspec found with id '$modIdInput'! Use 'list hullmods' for a complete list of valid ids.")
             return BaseCommand.CommandResult.ERROR
         }
 
@@ -63,6 +64,7 @@ class AddHullMod : BaseCommandWithSuggestion {
             Console.showMessage("Added ${addType}modspec of id '$modId' to currently viewed variant of hull '${variant.hullSpec.getActualHull().hullName}'")
 
             return BaseCommand.CommandResult.SUCCESS
+            //Global.getSector().getPlayerFaction().addKnownHullMod("SKR_ancientArmor");
         }
     }
 
@@ -72,7 +74,7 @@ class AddHullMod : BaseCommandWithSuggestion {
         context: CommandContext?
     ): MutableList<String?> {
         return when (parameter) {
-            0 -> LookupUtils.getHullModIDSet().toMutableList()
+            0 -> LookupUtils.getHullModIDSet().filterNot { LookupUtils.getHullModSpec(it)?.isHidden == true }.toMutableList()
             //1 -> mutableListOf("true", "false")
             //2 -> mutableListOf("true", "false")
             else -> ArrayList()
