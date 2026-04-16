@@ -4,9 +4,7 @@ import com.fs.starfarer.api.Global
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.completelyRemoveMod
-import fleetBuilder.util.api.kotlin.getActualHull
 import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.util.api.kotlin.toBoolean
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
@@ -27,10 +25,11 @@ class AddHullMod : BaseCommandWithSuggestion {
 
         val argList = args.split(" ")
 
-        val modId = findBestStringMatch(args, LookupUtils.getHullModIDSet())
+        val modIdInput = argList.getOrNull(0)
+        val modId = findBestStringMatch(modIdInput, LookupUtils.getHullModIDSet())
 
         if (modId == null) {
-            Console.showMessage("No modspec found with id '${argList.getOrNull(0)}'! Use 'list hullmods' for a complete list of valid ids.")
+            Console.showMessage("No modspec found with id '$modIdInput'! Use 'list hullmods' for a complete list of valid ids.")
             return BaseCommand.CommandResult.ERROR
         }
 
@@ -41,8 +40,7 @@ class AddHullMod : BaseCommandWithSuggestion {
             Console.showMessage("Added modspec $modId to player inventory.")
             return CommandResult.SUCCESS
         } else {
-            val isPerma = argList.getOrNull(1)?.toBoolean ?: false
-            val isSMod = argList.getOrNull(2)?.toBoolean ?: false
+            val isOf = argList.getOrNull(1)?.lowercase()
 
             val variant = ReflectionMisc.getCurrentVariantInRefitTab()
             if (variant == null) {
@@ -52,18 +50,28 @@ class AddHullMod : BaseCommandWithSuggestion {
 
             variant.completelyRemoveMod(modId)
 
-            if (!isPerma && !isSMod) {
-                variant.addMod(modId)
-            } else {
-                variant.addPermaMod(modId, isSMod)
+            val addType: String = when {
+                isOf == null -> ""
+                "smod".startsWith(isOf) -> {
+                    variant.addPermaMod(modId, true)
+                    "S-Mod "
+                }
+                "perma".startsWith(isOf) -> {
+                    variant.addPermaMod(modId, false)
+                    "Perma "
+                }
+                else -> {
+                    variant.addMod(modId)
+                    ""
+                }
             }
+
             refitPanel.safeInvoke("syncWithCurrentVariant")
 
-            val addType = if (isPerma && isSMod) "Perma and S " else if (isPerma) "Perma " else if (isSMod) "S " else ""
-            Console.showMessage("Added ${addType}modspec of id '$modId' to currently viewed variant of hull '${variant.hullSpec.getActualHull().hullName}'")
+
+            Console.showMessage("Added ${addType}hull-mod of id '$modId' to currently viewed variant of hull '${variant.hullSpec.hullName}'")
 
             return BaseCommand.CommandResult.SUCCESS
-            //Global.getSector().getPlayerFaction().addKnownHullMod("SKR_ancientArmor");
         }
     }
 
