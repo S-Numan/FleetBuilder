@@ -83,7 +83,8 @@
   "admiral_skills": "Admiral Skills",
   "combat_skills": "Combat Skills",
   "summary": "Summary",
-  "deployment_points": "Deployment Points: %s",
+  "deployment_points": "Total DP: %s",
+  "combat_deployment_points": "Total Combat DP: %s",
   "actions": "Actions",
   "simulated_battle": "Simulated Battle",
 

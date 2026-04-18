@@ -40,9 +40,11 @@ open class ModalPanel : ComposablePanel() {
     protected open var goalYOffset: Float = 0f
     protected open var goalWidth: Float = 0f
     protected open var goalHeight: Float = 0f
-    
+
     open var allowHotkeyQuit: Boolean = true
-    open var hotkeyClosesOnRelease: Boolean = false
+    open var hotkeyQuitConsumesInput: Boolean = true
+    open var anyOuterMouseClickQuits: Boolean = false
+    open var quitHotkeyClosesOnRelease: Boolean = false
 
     override var createUIOnInit: Boolean = false
     open var darkenBackground: Boolean = false
@@ -122,28 +124,34 @@ open class ModalPanel : ComposablePanel() {
             if (event.isConsumed) continue
 
             if (allowHotkeyQuit) {
-                if (hotkeyClosesOnRelease && escapeRequested) {
+                val mouseEvent = if (!anyOuterMouseClickQuits) event.isRMBEvent else event.isMouseDownEvent
+                val mouseDown = if (!anyOuterMouseClickQuits) event.isRMBDownEvent else event.isMouseDownEvent
+                val mouseUp = if (!anyOuterMouseClickQuits) event.isRMBUpEvent else event.isRMBUpEvent
+
+                if (quitHotkeyClosesOnRelease && escapeRequested) {
                     if (
                         (event.isKeyUpEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                        (event.isRMBUpEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
+                        (mouseUp && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
                     ) {
                         dismiss()
-                        event.consume()
+                        if (hotkeyQuitConsumesInput)
+                            event.consume()
                         escapeRequested = false
                     } else if (
                         !(event.isKeyboardEvent && event.eventValue == Keyboard.KEY_ESCAPE) && // Escape not being held down?
-                        !(event.isRMBEvent) // RMB not being held down?
+                        !(mouseEvent) // RMB not being held down?
                     )
                         escapeRequested = true
                 } else if (
                     (event.isKeyDownEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                    (event.isRMBDownEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
+                    (mouseDown && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
                 ) {
-                    if (hotkeyClosesOnRelease)
+                    if (quitHotkeyClosesOnRelease)
                         escapeRequested = true
                     else {
                         dismiss()
-                        event.consume()
+                        if (hotkeyQuitConsumesInput)
+                            event.consume()
                     }
                 }
             }

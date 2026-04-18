@@ -762,7 +762,14 @@ object HotkeyHandlerDialogs {
                 if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
                 else fleetData.membersListCopy
 
-            val dp = allowedMemberList.sumOf { it.deploymentPointsCost.toDouble() }
+            val combatDP = allowedMemberList.sumOf {
+                if (!(it.hullSpec.isCivilianNonCarrier || it.variant.hasHullMod("civgrade")) && !it.variant.hasHullMod("militarized_subsystems"))
+                    it.deploymentPointsCost.toDouble()
+                else 0.0
+            }
+            val totalDP = allowedMemberList.sumOf {
+                it.deploymentPointsCost.toDouble()
+            }
             val memberCount = allowedMemberList.size
             val officerCount = allowedMemberList.count { it.captain != null && !it.captain.isDefault }
 
@@ -785,7 +792,7 @@ object HotkeyHandlerDialogs {
                 FBTxt.txt("deployment_points"),
                 5f,
                 Misc.getHighlightColor(),
-                dp.toInt().toString()
+                totalDP.toInt().toString()
             )
 
             rightUI.addSectionHeading(FBTxt.txt("actions"), factionColor, darkColor, Alignment.MID, 7f)

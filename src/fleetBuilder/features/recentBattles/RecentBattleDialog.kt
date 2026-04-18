@@ -8,10 +8,7 @@ import fleetBuilder.core.FBSettings
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.pasteFleetDialog
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectory
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
-import fleetBuilder.otherMods.starficz.onClick
-import fleetBuilder.otherMods.starficz.width
-import fleetBuilder.otherMods.starficz.x
-import fleetBuilder.otherMods.starficz.y
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
@@ -75,6 +72,9 @@ object RecentBattleDialog {
 
             factionButton.onClick {
                 val dropDown = ModalPanel()
+                dropDown.consumeAllEvents = false
+                dropDown.anyOuterMouseClickQuits = true
+                dropDown.hotkeyQuitConsumesInput = false
 
                 dropDown.show(
                     width = 300f,
@@ -115,7 +115,7 @@ object RecentBattleDialog {
             }
 
             ui.addButton(
-                if (onlyPersonBounty) "Fleet Type: Person Bounties" else "Fleet Type: All",
+                if (onlyPersonBounty) "Fleet Type: Bounty" else "Fleet Type: All",
                 null,
                 250f,
                 30f,
@@ -140,7 +140,7 @@ object RecentBattleDialog {
 
             ui.addSectionHeading("Saved Fleets", Alignment.MID, 10f).position.setXAlignOffset(0f)
 
-            val panelHeight = ui.width - 180f
+            val panelHeight = ui.height - 180f
 
             val scrollPanel = Global.getSettings().createCustom(ui.width, panelHeight, null)
 

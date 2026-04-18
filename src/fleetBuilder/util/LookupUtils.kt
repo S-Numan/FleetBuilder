@@ -109,6 +109,8 @@ object LookupUtils {
                             }
                         }
                         variant.wings.toList().forEach { wing ->
+                            if (wing.isEmpty())
+                                return@forEach
                             if (getFighterWingSpec(wing) == null) {
                                 variant.wings.remove(wing)
                                 Global.getLogger(this.javaClass).info("Cleaned missing wing '$wing' from variant-id '${variant.hullVariantId}' of hull-id '${variant.hullSpec.hullId}'")
