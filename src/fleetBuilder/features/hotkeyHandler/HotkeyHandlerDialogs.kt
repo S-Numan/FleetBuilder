@@ -498,7 +498,7 @@ object HotkeyHandlerDialogs {
                 listPanel.addComponent(preview.panel).inTL(x, y)
 
 
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.hasMissingVariantElements())) {
                     listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size).apply {
                         position.inTL(x, y)
                         sprite.color = Color.YELLOW.setAlpha(70)
@@ -604,11 +604,11 @@ object HotkeyHandlerDialogs {
                 val skillsHeight = officerPanelHeight - skillsY - 10f
 
                 val skillsUI = officerPanel.createUIElement(skillsWidth, skillsHeight, true)
-                if (preview.missingContent.weaponIds.isNotEmpty() || preview.missingContent.wingIds.isNotEmpty() || preview.missingContent.hullModIds.isNotEmpty()) {
+                if (preview.missingContent.hasMissingVariantElements()) {
                     skillsUI.addPara(preview.missingContent.getMissingContentString(true), Color.YELLOW, 0f)
                 }
 
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents != null && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents != null && (unknownContents.hasMissingVariantElements())) {
                     officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize).apply {
                         position.inTL(shipX, shipY)
                         sprite.color = Color.YELLOW.setAlpha(70)

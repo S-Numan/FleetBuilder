@@ -89,6 +89,7 @@ object LookupUtils {
 
 
         allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }
+
         if (FBSettings.cleanGameVariantsForRemovedElements) {
             Global.getLogger(this.javaClass).info("Cleaning variants for removed weapons, wings, and hull-mods")
             allVariants.forEach { varianty ->

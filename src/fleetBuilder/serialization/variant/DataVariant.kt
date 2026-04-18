@@ -42,7 +42,7 @@ object DataVariant {
     data class ParsedWeaponGroup(
         val autofire: Boolean = false,
         val mode: WeaponGroupType = WeaponGroupType.LINKED,
-        val weapons: Map<String, String> = emptyMap()
+        val weapons: Map<String, String> = emptyMap() // Slot -> Weapon
     )
 
     @JvmOverloads
@@ -259,6 +259,7 @@ object DataVariant {
             missing.hullIds.add(data.hullId)
             null
         }
+        val validHull = validHullId?.let { LookupUtils.getHullSpec(it) }
 
         // --- Variant ID ---
         val fixedVariantId = data.variantId.ifBlank {
@@ -313,9 +314,25 @@ object DataVariant {
         // --- Weapon Groups ---
         val allWeapons = LookupUtils.getActuallyAllWeaponSpecIDSet()
         val cleanWeaponGroups = data.weaponGroups.map { wg ->
-            val cleanedSlots = wg.weapons.filter { (_, weaponId) ->
-                val valid = weaponId in allWeapons
+            val cleanedSlots = wg.weapons.filter { (slotId, weaponId) ->
+                var valid = weaponId in allWeapons
                 if (!valid) missing.weaponIds.add(weaponId)
+                if (validHull != null) {
+                    // Does slot exist?
+                    if (validHull.allWeaponSlotsCopy.none { it.id == slotId }) {
+                        missing.weaponSlotIds.add(slotId)
+                        valid = false
+                    } else {
+                        // Can weapon fit in slot?
+                        val weapon = LookupUtils.getWeaponSpec(weaponId)
+                        val slot = validHull.getWeaponSlot(slotId)
+                        if (weapon != null && slot != null) {
+                            if (!slot.weaponFits(weapon))
+                                valid = false
+                        }
+                    }
+
+                }
                 valid
             }
             wg.copy(weapons = cleanedSlots)
@@ -408,26 +425,9 @@ object DataVariant {
             val wg = WeaponGroupSpec()
 
             wgData.weapons.forEach { (slotId, weaponId) ->
-                val slot = hullSpec.getWeaponSlot(slotId) ?: run {
-                    Global.getLogger(this.javaClass).warn("weaponSlot was null, skipping weapon with ID $weaponId on slot $slotId on hull-id ${hullSpec.hullId} on variant-id ${data.variantId}")
-                    return@forEach
-                }
-                val weaponSpec = LookupUtils.getWeaponSpec(weaponId) ?: run {
-                    Global.getLogger(this.javaClass).warn("weaponSpec was null, skipping weapon with ID $weaponId on slot $slotId on hull-id ${hullSpec.hullId} on variant-id ${data.variantId}")
-                    return@forEach
-                }
+                if (!hullSpec.isBuiltIn(slotId))
+                    loadout.addWeapon(slotId, weaponId)
 
-                if (hullSpec.isBuiltIn(slotId)) {
-                    wg.addSlot(slotId)
-                    return@forEach
-                }
-
-                if (!slot.weaponFits(weaponSpec)) {
-                    Global.getLogger(this.javaClass).warn("weapon does not fit, skipping weapon with ID $weaponId on slot $slotId on hull-id ${hullSpec.hullId} on variant-id ${data.variantId}")
-                    return@forEach
-                }
-
-                loadout.addWeapon(slotId, weaponId)
                 wg.addSlot(slotId)
             }
 

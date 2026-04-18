@@ -1312,6 +1312,7 @@ internal object AutofitPanel {
                     txt(
                         "tooltip_failed_to_load",
                         missingFromVariant.weaponIds,
+                        missingFromVariant.weaponSlotIds,
                         missingFromVariant.wingIds,
                         missingFromVariant.hullModIds
                     ),
