@@ -8,10 +8,7 @@ import fleetBuilder.core.FBSettings
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.pasteFleetDialog
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectory
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
-import fleetBuilder.otherMods.starficz.onClick
-import fleetBuilder.otherMods.starficz.width
-import fleetBuilder.otherMods.starficz.x
-import fleetBuilder.otherMods.starficz.y
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
@@ -24,7 +21,7 @@ object RecentBattleDialog {
         if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen())
             return
         val fleetDirectory = FleetDirectoryService.getDirectory() ?: return
-        showDialog(fleetDirectory, null, true)
+        showDialog(fleetDirectory, null, sortNewestFirst = true, onlyPersonBounty = false)
 
         event.consume()
     }
@@ -32,11 +29,17 @@ object RecentBattleDialog {
     private fun showDialog(
         directory: FleetDirectory,
         selectedFaction: String?,
-        sortNewestFirst: Boolean
+        sortNewestFirst: Boolean,
+        onlyPersonBounty: Boolean
     ) {
+        var selectedFaction: String? = selectedFaction
+        var sortNewestFirst = sortNewestFirst
+        var onlyPersonBounty = onlyPersonBounty
+
         val dialog = DialogPanel()
 
         dialog.show(width = 1200f, height = 800f) { ui ->
+
             val allEntries = directory.getRawFleetEntries().values.toList()
 
             val factions = allEntries
@@ -46,7 +49,8 @@ object RecentBattleDialog {
 
             val filtered = allEntries
                 .filter {
-                    selectedFaction == null || it.fleetData.factionID == selectedFaction
+                    (selectedFaction == null || it.fleetData.factionID == selectedFaction) &&
+                            (!onlyPersonBounty || it.fleetData.memKeys["\$fleetType"] == "personBounty")
                 }
                 .sortedBy { it.timeSaved }
                 .let { if (sortNewestFirst) it.reversed() else it }
@@ -68,6 +72,9 @@ object RecentBattleDialog {
 
             factionButton.onClick {
                 val dropDown = ModalPanel()
+                dropDown.consumeAllEvents = false
+                dropDown.anyOuterMouseClickQuits = true
+                dropDown.hotkeyQuitConsumesInput = false
 
                 dropDown.show(
                     width = 300f,
@@ -79,15 +86,14 @@ object RecentBattleDialog {
                     // ===== "All" option =====
                     ddUI.addButton("All", null, ddUI.width, 28f, 0f).onClick {
                         dropDown.dismiss()
-                        dialog.forceDismiss(false)
-                        showDialog(directory, null, sortNewestFirst)
+                        selectedFaction = null
+                        dialog.recreateUI()
                     }
 
                     // ===== Faction options =====
                     for (factionId in factions) {
                         val faction = Global.getSector().getFaction(factionId)
                         val displayName = faction?.displayName ?: factionId
-
                         val baseColor = faction?.baseUIColor ?: Global.getSettings().basePlayerColor
                         val darkColor = faction?.darkUIColor ?: Global.getSettings().darkPlayerColor
 
@@ -101,11 +107,22 @@ object RecentBattleDialog {
                             2f
                         ).onClick {
                             dropDown.dismiss()
-                            dialog.forceDismiss(false)
-                            showDialog(directory, factionId, sortNewestFirst)
+                            selectedFaction = factionId
+                            dialog.recreateUI()
                         }
                     }
                 }
+            }
+
+            ui.addButton(
+                if (onlyPersonBounty) "Fleet Type: Bounty" else "Fleet Type: All",
+                null,
+                250f,
+                30f,
+                5f
+            ).onClick {
+                onlyPersonBounty = !onlyPersonBounty
+                dialog.recreateUI()
             }
 
             ui.addButton(
@@ -115,15 +132,15 @@ object RecentBattleDialog {
                 30f,
                 5f
             ).onClick {
-                dialog.forceDismiss(false)
-                showDialog(directory, selectedFaction, !sortNewestFirst)
+                sortNewestFirst = !sortNewestFirst
+                dialog.recreateUI()
             }
 
             // ===== Scrollable Fleet List =====
 
             ui.addSectionHeading("Saved Fleets", Alignment.MID, 10f).position.setXAlignOffset(0f)
 
-            val panelHeight = ui.width - 180f
+            val panelHeight = ui.height - 180f
 
             val scrollPanel = Global.getSettings().createCustom(ui.width, panelHeight, null)
 

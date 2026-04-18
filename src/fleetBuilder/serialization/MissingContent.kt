@@ -1,8 +1,8 @@
 package fleetBuilder.serialization
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.FBTxt
+import fleetBuilder.core.displayMessage.DisplayMessage
 import org.apache.log4j.Level
 import java.awt.Color
 
@@ -15,6 +15,7 @@ data class GameModInfo(
 open class MissingContent(
 ) {
     val weaponIds: MutableSet<String> = mutableSetOf()
+    val weaponSlotIds: MutableSet<String> = mutableSetOf()
     val wingIds: MutableSet<String> = mutableSetOf()
     val hullIds: MutableSet<String> = mutableSetOf()
     val hullModIds: MutableSet<String> = mutableSetOf()
@@ -23,11 +24,16 @@ open class MissingContent(
 
     // Function to check if anything was missing from the variant.
     open fun hasMissing(): Boolean {
-        return weaponIds.isNotEmpty() || wingIds.isNotEmpty() || hullModIds.isNotEmpty() || hullIds.isNotEmpty() || skillIds.isNotEmpty()
+        return hasMissingVariantElements() || skillIds.isNotEmpty()
+    }
+
+    fun hasMissingVariantElements(): Boolean {
+        return weaponIds.isNotEmpty() || weaponSlotIds.isNotEmpty() || wingIds.isNotEmpty() || hullModIds.isNotEmpty() || hullIds.isNotEmpty()
     }
 
     open fun add(other: MissingContent) {
         weaponIds.addAll(other.weaponIds)
+        weaponSlotIds.addAll(other.weaponSlotIds)
         wingIds.addAll(other.wingIds)
         hullIds.addAll(other.hullIds)
         hullModIds.addAll(other.hullModIds)
@@ -54,6 +60,7 @@ open class MissingContent(
         val missingMessages = mutableListOf<String>()
 
         printIfNotEmpty(FBTxt.txt("missing_weapons"), missingMessages, weaponIds)
+        printIfNotEmpty(FBTxt.txt("missing_weapon_slots"), missingMessages, weaponSlotIds)
         printIfNotEmpty(FBTxt.txt("missing_wings"), missingMessages, wingIds)
         printIfNotEmpty(FBTxt.txt("missing_hullmods"), missingMessages, hullModIds)
         printIfNotEmpty(FBTxt.txt("missing_hulls"), missingMessages, hullIds)

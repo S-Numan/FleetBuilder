@@ -3,6 +3,9 @@ package fleetBuilder.serialization.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
+import fleetBuilder.core.FBMisc
+import fleetBuilder.core.FBMisc.fromPrefixedString
+import fleetBuilder.core.FBMisc.toPrefixedString
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.createCampaignFleetFromData
@@ -18,7 +21,6 @@ import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.JSONVariant.addVariantSourceModsToJson
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
-import fleetBuilder.core.FBMisc
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
@@ -100,6 +102,24 @@ object JSONFleet {
 
         val factionID = json.optString("factionID", "")
 
+        val memKeys = buildMap<String, Any?> {
+            json.optJSONObject("memKeys")?.let { memKeysJson ->
+                memKeysJson.keys().forEach { keyName ->
+                    if (keyName !is String) return@forEach
+
+                    memKeysJson.opt(keyName)?.let { raw ->
+                        if (raw !is String) return@forEach
+
+                        val parsedValue = fromPrefixedString(raw)
+                        if (!parsedValue.first) return@forEach
+
+                        put("$$keyName", parsedValue.second)
+                    }
+                }
+            }
+        }
+
+
         return DataFleet.ParsedFleetData(
             fleetName = fleetName,
             aggression = aggression,
@@ -108,6 +128,7 @@ object JSONFleet {
             members = members,
             idleOfficers = idleOfficers,
             secondInCommandData = sicData,
+            memKeys = memKeys
         )
     }
 
@@ -267,6 +288,21 @@ object JSONFleet {
             if (data.factionID != null)
                 fleetJson.put("factionID", data.factionID)
         }
+
+        val memKeysJSON = JSONObject()
+
+        data.memKeys.entries.forEach { entry ->
+            val key = entry.key
+            val value = entry.value
+
+            val formattedValue = toPrefixedString(value)
+
+            if (formattedValue != null) {
+                memKeysJSON.put(key.removePrefix("$"), formattedValue)
+            }
+        }
+        if (memKeysJSON.length() > 0)
+            fleetJson.put("memKeys", memKeysJSON)
 
         return fleetJson
     }

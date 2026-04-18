@@ -71,7 +71,7 @@ object FBSettings {
 
     private lateinit var modSpec: ModSpecAPI
     fun getModSpec(): ModSpecAPI = modSpec
-    fun getModName(): String = modSpec.name
+    fun getModName(): String = modSpec.name.trim()
     fun getModID(): String = modSpec.id
 
     var addLogsToConsoleModConsoleLevel = Level.OFF
@@ -153,6 +153,8 @@ object FBSettings {
     var showTagsInTooltip = false
 
     var fixShipSkinSourceMod = true
+
+    var cleanGameVariantsForRemovedElements = true
 
     private var unassignPlayer = false
     fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()

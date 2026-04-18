@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.core.FBConst
+import fleetBuilder.core.FBMisc.isPrefixable
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.DataMember
@@ -34,6 +35,7 @@ object DataFleet {
         val commanderIfNoFlagship: DataPerson.ParsedPersonData? = null, // null if flagship exists, as commander is on flagship
         val members: List<DataMember.ParsedMemberData> = emptyList(),
         val idleOfficers: List<DataPerson.ParsedPersonData> = emptyList(),
+        val memKeys: Map<String, Any?> = emptyMap(),
         val secondInCommandData: DataSecondInCommand.SecondInCommandData? = null,
     )
 
@@ -73,6 +75,9 @@ object DataFleet {
     ): ParsedFleetData {
         val campFleet: CampaignFleetAPI? = fleet.fleet
 
+        val memKeys = if (!settings.includeMemKeys) emptyMap() else
+            campFleet?.let { it.memoryWithoutUpdate.keys.associateWith { key -> it.memoryWithoutUpdate[key] }.toMutableMap() }
+
         //val hasFlagship = fleet.membersListCopy.any { it.isFlagship && !it.variant.hullMods.contains(ModSettings.commandShuttleId) }
 
         val data = ParsedFleetData(
@@ -90,7 +95,8 @@ object DataFleet {
             secondInCommandData = run {
                 if (!Global.getSettings().modManager.isModEnabled("second_in_command") || campFleet == null) return@run null
                 DataSecondInCommand.getSecondInCommandDataFromFleet(campFleet)
-            }
+            },
+            memKeys = memKeys ?: emptyMap()
         )
 
         return if (filterParsed)
@@ -105,6 +111,14 @@ object DataFleet {
         settings: FleetSettings = FleetSettings(),
         missing: MissingContent = MissingContent()
     ): ParsedFleetData {
+        val filteredMemory = if (!settings.includeMemKeys) emptyMap() else
+            data.memKeys.filterKeys { key ->
+                if (key.startsWith("$#")) return@filterKeys false
+
+                val value = data.memKeys[key]
+
+                return@filterKeys isPrefixable(value)
+            }
 
         var filteredCommander: DataPerson.ParsedPersonData? = null
 
@@ -168,7 +182,8 @@ object DataFleet {
             members = filteredMembers,
             commanderIfNoFlagship = filteredCommander,
             idleOfficers = filteredIdleOfficers,
-            aggression = filteredAggression
+            aggression = filteredAggression,
+            memKeys = filteredMemory
         )
     }
 
@@ -260,6 +275,10 @@ object DataFleet {
             data.commanderIfNoFlagship?.let {
                 campFleet?.commander = buildPerson(it, random)
             }
+        }
+
+        data.memKeys.forEach { (key, value) ->
+            campFleet?.memoryWithoutUpdate?.set(key, value)
         }
 
         data.idleOfficers.forEach {

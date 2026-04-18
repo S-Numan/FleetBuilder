@@ -101,6 +101,16 @@ object HotkeyHandlerDialogs {
             testMessageTrigger.position.inTR(0f, ui.height - testMessageTrigger.height)
             testMessageTrigger.onClick {
                 DisplayMessage.showMessageCustom("Test Message!", Color.RED)
+                val sector = Global.getSector()
+                val memory = sector.memoryWithoutUpdate
+
+                /*
+                val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
+                val memberMemory = member.getMemberMemory()
+
+                if (!memberMemory.containsKey("test"))
+                    memberMemory["test"] = "test"*/
+
 
                 //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
                 /*val state = AppDriver.getInstance().currentState
@@ -229,11 +239,30 @@ object HotkeyHandlerDialogs {
         }
     }
 
+    // Un-maintainable mess
     fun pasteFleetDialog(
         inputData: DataFleet.ParsedFleetData,
         inputMissing: MissingContent,
         allowSimulationAnyway: Boolean = false
     ): DialogPanel {
+        fun removeUnknownContent(member: FleetMemberAPI, unknown: MissingContent) {
+            val variant = member.variant
+
+            variant.fittedWeaponSlots.toList().forEach { slot ->
+                if (variant.getWeaponId(slot) in unknown.weaponIds) {
+                    variant.clearSlot(slot)
+                }
+            }
+
+            variant.fittedWings.removeAll { it in unknown.wingIds }
+
+            variant.hullMods.toList().forEach {
+                if (!variant.hullSpec.isBuiltInMod(it) && it in unknown.hullModIds) {
+                    variant.completelyRemoveMod(it)
+                }
+            }
+        }
+
         val sector = Global.getSector()
         val data = inputData.copy(
             members = inputData.members.map { member ->
@@ -469,7 +498,7 @@ object HotkeyHandlerDialogs {
                 listPanel.addComponent(preview.panel).inTL(x, y)
 
 
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.hasMissingVariantElements())) {
                     listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size).apply {
                         position.inTL(x, y)
                         sprite.color = Color.YELLOW.setAlpha(70)
@@ -575,11 +604,11 @@ object HotkeyHandlerDialogs {
                 val skillsHeight = officerPanelHeight - skillsY - 10f
 
                 val skillsUI = officerPanel.createUIElement(skillsWidth, skillsHeight, true)
-                if (preview.missingContent.weaponIds.isNotEmpty() || preview.missingContent.wingIds.isNotEmpty() || preview.missingContent.hullModIds.isNotEmpty()) {
+                if (preview.missingContent.hasMissingVariantElements()) {
                     skillsUI.addPara(preview.missingContent.getMissingContentString(true), Color.YELLOW, 0f)
                 }
 
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents != null && (unknownContents.weaponIds.isNotEmpty() || unknownContents.wingIds.isNotEmpty() || unknownContents.hullModIds.isNotEmpty())) {
+                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents != null && (unknownContents.hasMissingVariantElements())) {
                     officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize).apply {
                         position.inTL(shipX, shipY)
                         sprite.color = Color.YELLOW.setAlpha(70)
@@ -733,7 +762,14 @@ object HotkeyHandlerDialogs {
                 if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
                 else fleetData.membersListCopy
 
-            val dp = allowedMemberList.sumOf { it.deploymentPointsCost.toDouble() }
+            val combatDP = allowedMemberList.sumOf {
+                if (!(it.hullSpec.isCivilianNonCarrier || it.variant.hasHullMod("civgrade")) && !it.variant.hasHullMod("militarized_subsystems"))
+                    it.deploymentPointsCost.toDouble()
+                else 0.0
+            }
+            val totalDP = allowedMemberList.sumOf {
+                it.deploymentPointsCost.toDouble()
+            }
             val memberCount = allowedMemberList.size
             val officerCount = allowedMemberList.count { it.captain != null && !it.captain.isDefault }
 
@@ -756,7 +792,7 @@ object HotkeyHandlerDialogs {
                 FBTxt.txt("deployment_points"),
                 5f,
                 Misc.getHighlightColor(),
-                dp.toInt().toString()
+                totalDP.toInt().toString()
             )
 
             rightUI.addSectionHeading(FBTxt.txt("actions"), factionColor, darkColor, Alignment.MID, 7f)
@@ -1047,24 +1083,6 @@ object HotkeyHandlerDialogs {
     private fun pasteFleetDialogRightPanel(): UIPanelAPI {
 
     }*/
-
-    private fun removeUnknownContent(member: FleetMemberAPI, unknown: MissingContent) {
-        val variant = member.variant
-
-        variant.fittedWeaponSlots.toList().forEach { slot ->
-            if (variant.getWeaponId(slot) in unknown.weaponIds) {
-                variant.clearSlot(slot)
-            }
-        }
-
-        variant.fittedWings.removeAll { it in unknown.wingIds }
-
-        variant.hullMods.toList().forEach {
-            if (!variant.hullSpec.isBuiltInMod(it) && it in unknown.hullModIds) {
-                variant.completelyRemoveMod(it)
-            }
-        }
-    }
 
     fun createOfficerCreatorDialog() {
         val width = 500f

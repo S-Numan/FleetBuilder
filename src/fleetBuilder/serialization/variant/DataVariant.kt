@@ -27,7 +27,7 @@ object DataVariant {
         val fluxCapacitors: Int = -1,
         val fluxVents: Int = -1,
         val tags: List<String> = emptyList(),
-        val hullMods: List<String> = emptyList(),
+        val hullMods: Set<String> = emptySet(),
         val permaMods: Set<String> = emptySet(),
         val sMods: Set<String> = emptySet(),
         val sModdedBuiltIns: Set<String> = emptySet(),
@@ -42,7 +42,7 @@ object DataVariant {
     data class ParsedWeaponGroup(
         val autofire: Boolean = false,
         val mode: WeaponGroupType = WeaponGroupType.LINKED,
-        val weapons: Map<String, String> = emptyMap()
+        val weapons: Map<String, String> = emptyMap() // Slot -> Weapon
     )
 
     @JvmOverloads
@@ -62,6 +62,36 @@ object DataVariant {
         return buildVariant(data)
     }
 
+    internal fun normalizeHullModSets(
+        hullMods: MutableSet<String>,
+        permaMods: MutableSet<String>,
+        sMods: MutableSet<String>,
+        sModdedBuiltIns: MutableSet<String>,
+        builtInMods: Set<String>? = null
+    ) {
+        if (builtInMods != null) {
+            hullMods.removeAll(builtInMods)
+            permaMods.removeAll(builtInMods)
+            sMods.removeAll(builtInMods)
+            sModdedBuiltIns.toList().forEach {
+                // If not a permaMod or hullspec built-in-mod, it isn't a proper sModdedBuiltIn
+                if (it !in permaMods && it !in builtInMods) {
+                    sModdedBuiltIns.remove(it)
+                    sMods.add(it) // Turn it back into a regular S-Mod
+                }
+            }
+        }
+
+        hullMods.removeAll(permaMods)
+        hullMods.removeAll(sMods)
+        hullMods.removeAll(sModdedBuiltIns)
+
+        permaMods.removeAll(sMods)
+        permaMods.removeAll(sModdedBuiltIns)
+
+        sMods.removeAll(sModdedBuiltIns)
+    }
+
     @JvmOverloads
     fun getVariantDataFromVariant(
         inputVariant: ShipVariantAPI,
@@ -77,32 +107,12 @@ object DataVariant {
                 inputVariant
             }
 
-        // Set of all hullmods IDs on the variant
-        val allModIds = buildSet {
-            addAll(variant.hullMods)
-            addAll(variant.sMods)
-            addAll(variant.sModdedBuiltIns)
-            addAll(variant.permaMods)
-        }
+        val hullMods = variant.hullMods.toMutableSet()
+        val permaMods = variant.permaMods.toMutableSet()
+        val sMods = variant.sMods.toMutableSet()
+        val sModdedBuiltIns = variant.sModdedBuiltIns.toMutableSet()
 
-        val sMods = mutableSetOf<String>()
-        val sModdedBuiltIns = mutableSetOf<String>()
-        val permaMods = mutableSetOf<String>()
-        val hullMods = mutableListOf<String>()
-
-        for (mod in allModIds) {
-            when {
-                mod in variant.sModdedBuiltIns && (mod in variant.hullSpec.builtInMods || mod in variant.permaMods) -> sModdedBuiltIns += mod
-                mod in variant.sMods -> sMods += mod
-                mod in variant.permaMods &&
-                        mod !in variant.hullSpec.builtInMods &&
-                        mod !in sMods && mod !in sModdedBuiltIns -> permaMods += mod
-
-                mod in variant.hullMods &&
-                        mod !in variant.hullSpec.builtInMods &&
-                        mod !in sMods && mod !in sModdedBuiltIns && mod !in permaMods -> hullMods += mod
-            }
-        }
+        normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns, variant.hullSpec.builtInMods.toSet())
 
         // Add built-in DMods as default behavior is to exclude these.
         variant.allDMods()
@@ -221,7 +231,7 @@ object DataVariant {
             data.tags.filter(::shouldKeepTag)
 
         return data.copy(
-            hullMods = filteredHullMods,
+            hullMods = filteredHullMods.toSet(),
             permaMods = filteredPermaMods.toSet(),
             sMods = filteredSMods.toSet(),
             sModdedBuiltIns = filteredSModdedBuiltIns.toSet(),
@@ -249,6 +259,7 @@ object DataVariant {
             missing.hullIds.add(data.hullId)
             null
         }
+        val validHull = validHullId?.let { LookupUtils.getHullSpec(it) }
 
         // --- Variant ID ---
         val fixedVariantId = data.variantId.ifBlank {
@@ -303,9 +314,25 @@ object DataVariant {
         // --- Weapon Groups ---
         val allWeapons = LookupUtils.getActuallyAllWeaponSpecIDSet()
         val cleanWeaponGroups = data.weaponGroups.map { wg ->
-            val cleanedSlots = wg.weapons.filter { (_, weaponId) ->
-                val valid = weaponId in allWeapons
+            val cleanedSlots = wg.weapons.filter { (slotId, weaponId) ->
+                var valid = weaponId in allWeapons
                 if (!valid) missing.weaponIds.add(weaponId)
+                if (validHull != null) {
+                    // Does slot exist?
+                    if (validHull.allWeaponSlotsCopy.none { it.id == slotId }) {
+                        missing.weaponSlotIds.add(slotId)
+                        valid = false
+                    } else {
+                        // Can weapon fit in slot?
+                        val weapon = LookupUtils.getWeaponSpec(weaponId)
+                        val slot = validHull.getWeaponSlot(slotId)
+                        if (weapon != null && slot != null) {
+                            if (!slot.weaponFits(weapon))
+                                valid = false
+                        }
+                    }
+
+                }
                 valid
             }
             wg.copy(weapons = cleanedSlots)
@@ -322,7 +349,7 @@ object DataVariant {
             hullId = validHullId ?: LookupUtils.getErrorVariantHullID(),
             variantId = fixedVariantId,
             displayName = fixedDisplayName,
-            hullMods = cleanHullMods.toList(),
+            hullMods = cleanHullMods.toSet(),
             permaMods = cleanPermaMods.toSet(),
             sMods = cleanSMods.toSet(),
             sModdedBuiltIns = cleanSModdedBuiltIns.toSet(),
@@ -398,12 +425,10 @@ object DataVariant {
             val wg = WeaponGroupSpec()
 
             wgData.weapons.forEach { (slotId, weaponId) ->
-                if (hullSpec.isBuiltIn(slotId)) {
-                    wg.addSlot(slotId)
-                } else {
+                if (!hullSpec.isBuiltIn(slotId))
                     loadout.addWeapon(slotId, weaponId)
-                    wg.addSlot(slotId)
-                }
+
+                wg.addSlot(slotId)
             }
 
             wg.isAutofireOnByDefault = wgData.autofire

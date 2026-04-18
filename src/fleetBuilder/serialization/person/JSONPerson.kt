@@ -6,6 +6,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBMisc
+import fleetBuilder.core.FBMisc.fromPrefixedString
+import fleetBuilder.core.FBMisc.toPrefixedString
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
@@ -37,7 +39,7 @@ object JSONPerson {
             }
         }
 
-        val memKeys = buildMap<String, Any> {
+        val memKeys = buildMap<String, Any?> {
 
             // DEPRECIATED
             json.optJSONObject("memKeys")?.let { memKeysJson ->
@@ -69,24 +71,10 @@ object JSONPerson {
                     memKeysJson.opt(keyName)?.let { raw ->
                         if (raw !is String) return@forEach
 
-                        val rawFirst = raw.firstOrNull()
-                        val body = raw.drop(1)
-                        val value = when (rawFirst) {
-                            'F' -> body.toFloatOrNull()
-                            'D' -> body.toDoubleOrNull()
-                            'B' -> body.lowercase().toBooleanStrictOrNull()
-                            'I' -> body.toIntOrNull()
-                            'L' -> body.toLongOrNull()
-                            'l' -> body.toShortOrNull()
-                            'b' -> body.toByteOrNull()
-                            'C' -> body.firstOrNull()
-                            'S' -> body
-                            else -> null
-                        }
-                        if (value == null)
-                            return@forEach
+                        val parsedValue = fromPrefixedString(raw)
+                        if (!parsedValue.first) return@forEach
 
-                        put("$$keyName", value)
+                        put("$$keyName", parsedValue.second)
                     }
                 }
             }
@@ -192,23 +180,15 @@ object JSONPerson {
 
         val memKeysJSON = JSONObject()
 
-        data.memKeys.keys.forEach { key ->
-            val value = data.memKeys[key]
-            val formattedValue = when (value) {
-                is Float -> "F$value"
-                is Double -> "D$value"
-                is Boolean -> "B$value"
-                is Int -> "I$value"
-                is Long -> "L$value"
-                is Short -> "l$value"
-                is Byte -> "b$value"
-                is Char -> "C$value"
-                is String -> "S$value"
-                else -> null
-            }
+        data.memKeys.entries.forEach { entry ->
+            val key = entry.key
+            val value = entry.value
 
-            if (formattedValue != null)
+            val formattedValue = toPrefixedString(value)
+
+            if (formattedValue != null) {
                 memKeysJSON.put(key.removePrefix("$"), formattedValue)
+            }
         }
         if (memKeysJSON.length() > 0)
             json.put("memKeysV2", memKeysJSON)

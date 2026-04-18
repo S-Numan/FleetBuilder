@@ -17,9 +17,9 @@ import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedCR
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedStatuses
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.util.api.CampaignUtils
+import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.deferredAction.CombatDeferredActionPlugin
-import fleetBuilder.util.api.kotlin.safeInvoke
 
 // Initial code taken from Ship Mastery System by float
 
@@ -33,7 +33,7 @@ object RecentBattleReplay {
     ) {
         try {
             var previousEncounterDialog: InteractionDialogAPI? = null
-            val musicID = Global.getSoundPlayer().currentMusicId
+            //val musicID = Global.getSoundPlayer().currentMusicId
 
             fun onBackFromEngagement(fromDummyDialog: Boolean) {
                 val campUI = Global.getSector().campaignUI

@@ -11,19 +11,20 @@ import com.fs.starfarer.api.mission.MissionDefinitionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember.cloneMember
 import fleetBuilder.serialization.person.DataPerson.clonePerson
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.getActualCurrentTab
-import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.console.BaseCommand
+import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.Console
-import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 
-class CopyFleet : BaseCommand {
+class CopyFleet : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
         val sector = Global.getSector() ?: return BaseCommand.CommandResult.ERROR
         val ui = sector.campaignUI ?: return BaseCommand.CommandResult.ERROR
@@ -189,5 +190,15 @@ class CopyFleet : BaseCommand {
             Console.showMessage("Context not supported")
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
+    }
+
+    override fun getSuggestions(
+        parameter: Int,
+        previous: List<String?>?,
+        context: BaseCommand.CommandContext
+    ): List<String?> {
+        return if (parameter == 0 && (context.isInMainMenu || context.isInCombat)) {
+            mutableListOf("player", "enemy")
+        } else mutableListOf()
     }
 }

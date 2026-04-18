@@ -1,8 +1,12 @@
 package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.InteractionDialogAPI
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin
+import com.fs.starfarer.api.campaign.SectorEntityToken
+import com.fs.starfarer.api.campaign.econ.MarketAPI
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -10,10 +14,83 @@ import fleetBuilder.core.FBTxt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.get
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.util.api.CampaignUtils.closeCampaignDummyDialog
+import fleetBuilder.util.api.CampaignUtils.getMarkets
+import fleetBuilder.util.api.CampaignUtils.getSectorEntities
+import fleetBuilder.util.api.CampaignUtils.getSubmarkets
 import fleetBuilder.util.api.CampaignUtils.openCampaignDummyDialog
 import fleetBuilder.util.api.kotlin.safeInvoke
 
 object CampaignUtils {
+
+    /**
+     * Returns all entities across all locations in the sector.
+     */
+    @JvmStatic
+    fun getSectorEntities(): List<SectorEntityToken> {
+        return Global.getSector().allLocations
+            .flatMap { it.allEntities }
+    }
+
+    /**
+     * Returns all unique markets in the sector.
+     *
+     * Markets are collected from all [getSectorEntities] and deduplicated by market ID.
+     */
+    @JvmStatic
+    fun getSectorMarkets(): List<MarketAPI> {
+        return getMarkets(getSectorEntities())
+    }
+
+    /**
+     * Returns markets from a precomputed entity list.
+     */
+    @JvmStatic
+    fun getMarkets(entities: List<SectorEntityToken>): List<MarketAPI> {
+        return entities
+            .mapNotNull { it.market }
+            .distinctBy { it.id }
+    }
+
+    /**
+     * Returns all unique submarkets in the sector.
+     *
+     * Submarkets are collected from all [getMarkets] and deduplicated by reference.
+     */
+    @JvmStatic
+    fun getSectorSubmarkets(): List<SubmarketAPI> {
+        return getSubmarkets(getSectorMarkets())
+    }
+
+    /**
+     * Returns submarkets from a precomputed market list.
+     */
+    @JvmStatic
+    fun getSubmarkets(markets: List<MarketAPI>): List<SubmarketAPI> {
+        return markets
+            .flatMap { it.submarketsCopy }
+            .distinctBy { it }
+    }
+
+    /**
+     * Returns all unique cargo instances from sector submarkets.
+     *
+     * Cargo is collected from all [getSubmarkets] and deduplicated by reference.
+     */
+    @JvmStatic
+    fun getCargoFromSectorSubmarkets(): List<CargoAPI> {
+        return getCargoFromSubmarkets(getSectorSubmarkets())
+    }
+
+    /**
+     * Returns cargo from a precomputed submarket list.
+     */
+    @JvmStatic
+    fun getCargoFromSubmarkets(submarkets: List<SubmarketAPI>): List<CargoAPI> {
+        return submarkets
+            .mapNotNull { it.cargo }
+            .distinctBy { it }
+    }
+
 
     private var placeholderDialog: UIPanelAPI? = null
 

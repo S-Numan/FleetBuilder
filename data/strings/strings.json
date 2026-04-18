@@ -83,7 +83,8 @@
   "admiral_skills": "Admiral Skills",
   "combat_skills": "Combat Skills",
   "summary": "Summary",
-  "deployment_points": "Deployment Points: %s",
+  "deployment_points": "Total DP: %s",
+  "combat_deployment_points": "Total Combat DP: %s",
   "actions": "Actions",
   "simulated_battle": "Simulated Battle",
 
@@ -245,7 +246,7 @@
   "tooltip_missing_mod": "%s (MISSING)\n       %s %s",
   "tooltip_version_diff_mod": "%s (VERSION DIFFERENCE)\n        %s %s",
   "tooltip_exact_mod": "%s (EXACT)\n     %s %s",
-  "tooltip_failed_to_load": "Failed to load:\nWeapons: %s\nWings: %s\nHullMods: %s",
+  "tooltip_failed_to_load": "Failed to load:\nWeapons: %s\nWeapon Slots: %s\nWings: %s\nHullMods: %s",
   "tag_suppressed": "(Suppressed)",
   "tag_hidden": "(Hidden)",
 
@@ -297,6 +298,7 @@
 
   # MissingElements
   "missing_weapons": "Missing Weapons",
+  "missing_weapon_slots": "Missing Weapon Slots",
   "missing_wings": "Missing Wings",
   "missing_hullmods": "Missing Hullmods",
   "missing_hulls": "Missing Hulls",

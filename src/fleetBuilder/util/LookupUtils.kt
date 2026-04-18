@@ -8,16 +8,15 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
+import fleetBuilder.core.FBSettings
 import fleetBuilder.util.api.VariantUtils.createErrorVariant
-import fleetBuilder.util.api.kotlin.getActualHullId
-import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
-import fleetBuilder.util.api.kotlin.getEffectiveHullId
+import fleetBuilder.util.api.kotlin.*
 
 object LookupUtils {
 
     private lateinit var allDMods: Set<String>
     private lateinit var allHiddenEverywhereMods: Set<String>
-    private lateinit var allVariants: Set<ShipVariantAPI>
+    private lateinit var allVariants: List<ShipVariantAPI>
     private lateinit var hullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var effectiveHullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var baseHullIDToVariant: Map<String, List<ShipVariantAPI>>
@@ -89,7 +88,46 @@ object LookupUtils {
         IDToShipSystem = settings.allShipSystemSpecs.associateBy { it.id }
 
 
-        allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }.toSet()
+        allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }
+
+        if (FBSettings.cleanGameVariantsForRemovedElements) {
+            Global.getLogger(this.javaClass).info("Cleaning variants for removed weapons, wings, and hull-mods")
+            allVariants.forEach { varianty ->
+                try {
+                    fun cleanVariant(variant: ShipVariantAPI) {
+                        variant.hullMods.toList().forEach { hullMod ->
+                            if (getHullModSpec(hullMod) == null) {
+                                variant.completelyRemoveMod(hullMod)
+                                Global.getLogger(this.javaClass).info("Cleaned missing hull-mod '$hullMod' from variant-id '${variant.hullVariantId}' of hull-id '${variant.hullSpec.hullId}'")
+                            }
+                        }
+                        variant.nonBuiltInWeaponSlots.toList().forEach { slot ->
+                            val weapon = variant.getWeaponId(slot)
+                            if (getWeaponSpec(weapon) == null) {
+                                variant.clearSlot(slot)
+                                Global.getLogger(this.javaClass).info("Cleaned missing weapon '$weapon' from variant-id '${variant.hullVariantId}' of hull-id '${variant.hullSpec.hullId}'")
+                            }
+                        }
+                        variant.wings.toList().forEach { wing ->
+                            if (wing.isEmpty())
+                                return@forEach
+                            if (getFighterWingSpec(wing) == null) {
+                                variant.wings.remove(wing)
+                                Global.getLogger(this.javaClass).info("Cleaned missing wing '$wing' from variant-id '${variant.hullVariantId}' of hull-id '${variant.hullSpec.hullId}'")
+                            }
+                        }
+                    }
+                    cleanVariant(varianty)
+                    varianty.getModules().forEach { (_, moduleVariant) ->
+                        cleanVariant(moduleVariant)
+                    }
+                } catch (e: Exception) {
+                    Global.getLogger(this.javaClass).error("Error while cleaning variant-id '${varianty.hullVariantId}' of hull-id '${varianty.hullSpec.hullId}'", e)
+                }
+            }
+        }
+
+
         hullIDToVariant = allVariants.groupBy { it.hullSpec.hullId }
         effectiveHullIDToVariant = allVariants.groupBy { it.hullSpec.getEffectiveHullId() }
         baseHullIDToVariant = allVariants.groupBy { it.hullSpec.baseHullId }

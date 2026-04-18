@@ -4,6 +4,7 @@ import fleetBuilder.console.commands.AddHullMod
 import fleetBuilder.console.commands.AddXP
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.api.CampaignUtils
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommandListener
 import org.lazywizard.console.Console
@@ -44,9 +45,11 @@ class CommandIntercept : CommandListener {
         interceptedBy: CommandListener?
     ) {
         if (command.lowercase() == "forcedismissdialog") {
-            if (DialogUtils.forceCloseAllDialogs()) {
+            if (DialogUtils.forceCloseAllDialogs())
                 Console.showMessage("Forcibly closed CustomUIPanel dialog")
-            }
+
+            if (CampaignUtils.closeCampaignDummyDialog())
+                Console.showMessage("Forcibly closed Campaign Dummy Dialog")
         }
 
         if (result != BaseCommand.CommandResult.SUCCESS) return

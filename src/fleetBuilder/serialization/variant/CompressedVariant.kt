@@ -2,6 +2,7 @@ package fleetBuilder.serialization.variant
 
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
@@ -11,11 +12,10 @@ import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.core.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.api.kotlin.toBinary
+import fleetBuilder.util.lib.CompressionUtil
 
 object CompressedVariant {
     fun isCompressedVariant(comp: String): Boolean {
@@ -134,10 +134,13 @@ object CompressedVariant {
 
         val weaponGroupString = fields[5]
         val fittedWings = fields[6].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
-        val hullMods = fields[7].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
-        val sMods = fields[8].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
-        val sModdedBuiltIns = fields[9].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
-        val permaMods = fields[10].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
+
+        val hullMods = fields[7].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+        val sMods = fields[8].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+        val sModdedBuiltIns = fields[9].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+        val permaMods = fields[10].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+        DataVariant.normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns)
+
         val tags = fields.getOrNull(11)?.takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
 
         val weaponGroups = if (weaponGroupString.isNotBlank()) {
@@ -175,9 +178,9 @@ object CompressedVariant {
             fluxVents = fluxVents,
             tags = tags,
             hullMods = hullMods,
-            permaMods = permaMods.toSet(),
-            sMods = sMods.toSet(),
-            sModdedBuiltIns = sModdedBuiltIns.toSet(),
+            permaMods = permaMods,
+            sMods = sMods,
+            sModdedBuiltIns = sModdedBuiltIns,
             wings = fittedWings,
             weaponGroups = weaponGroups,
             moduleVariants = modules,

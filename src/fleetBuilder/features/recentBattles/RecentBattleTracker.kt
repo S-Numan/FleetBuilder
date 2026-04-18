@@ -34,12 +34,22 @@ class RecentBattleTracker : BaseCampaignEventListener(false) {
 
         val id = battle.sideTwo.getOrNull(0)?.id ?: return
 
+        val battledFleet = battle.combinedTwo
+
+        val additionalMemKeys = mutableMapOf<String, Any?>()
+        if (battledFleet.memoryWithoutUpdate["\$fleetType"] == "personBounty")
+            additionalMemKeys["\$fleetType"] = "personBounty"
+        if (battledFleet.memoryWithoutUpdate["\$MagicLib_Bounty_target_fleet"] == true)
+            additionalMemKeys["\$MagicLib_Bounty_target_fleet"] = true
+
         try {
-            FleetDirectoryService.getDirectory()?.addFleet(battle.combinedTwo, setFleetID = id, settings = FleetSettings().apply {
-                memberSettings.includeCR = false
-                memberSettings.includeHullFraction = false
-                memberSettings.personSettings.handleRankAndPost = false
-            })
+            FleetDirectoryService.getDirectory()?.addFleet(
+                battledFleet, setFleetID = id, settings = FleetSettings().apply {
+                    memberSettings.includeCR = false
+                    memberSettings.includeHullFraction = false
+                    memberSettings.personSettings.handleRankAndPost = false
+                }, additionalMemKeysToAdd = additionalMemKeys
+            )
         } catch (e: Exception) {
             DisplayMessage.showError("Failed to save fleet after battle", e)
         }

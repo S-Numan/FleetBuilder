@@ -63,6 +63,8 @@ fun ShipVariantAPI.getSlotsForModules(onlyThoseInHullSpec: Boolean = false): Set
 /**
  * Returns all fitted weapons on this variant.
  *
+ * This includes built in weapons, it does not include decorative weapons.
+ *
  * The map key is the weapon slot ID, and the value is the [WeaponSpecAPI]
  * of the weapon installed in that slot.
  */
@@ -77,6 +79,8 @@ fun ShipVariantAPI.getFittedWeapons(): Map<String, WeaponSpecAPI> {
 
 /**
  * Returns all non-built-in weapons on this variant.
+ *
+ * This only excludes built in weapons
  *
  * The map key is the weapon slot ID, and the value is the [WeaponSpecAPI]
  * of the weapon installed in that slot.

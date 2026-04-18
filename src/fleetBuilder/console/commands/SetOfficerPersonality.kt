@@ -6,6 +6,7 @@ import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.BaseCommandWithSuggestion
+import org.lazywizard.console.CommandUtils.findBestStringMatch
 import org.lazywizard.console.Console
 
 class SetOfficerPersonality : BaseCommandWithSuggestion {
@@ -31,9 +32,11 @@ class SetOfficerPersonality : BaseCommandWithSuggestion {
         }
 
         val argList = args.lowercase().split(" ")
-        val personality = argList.getOrNull(0)
-        if (personality !in personalities) {
-            Console.showMessage("Invalid personality: $personality")
+        val inputPersonality = argList.getOrNull(0)
+
+        val personality = findBestStringMatch(inputPersonality, personalities)
+        if (personality == null) {
+            Console.showMessage("Invalid personality: $inputPersonality")
             return CommandResult.BAD_SYNTAX
         }
         if (member.captain.personalityAPI.id.lowercase() != personality) {
@@ -51,7 +54,7 @@ class SetOfficerPersonality : BaseCommandWithSuggestion {
         previous: MutableList<String?>?,
         context: CommandContext?
     ): MutableList<String?> {
-        if (parameter != 0) return ArrayList<String?>()
+        if (parameter != 0) return ArrayList()
 
         return personalities.toMutableList()
     }
