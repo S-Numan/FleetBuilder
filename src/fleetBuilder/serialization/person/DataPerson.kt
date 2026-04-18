@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBConst
+import fleetBuilder.core.FBMisc.isPrefixable
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.PersonUtils
@@ -31,7 +32,7 @@ object DataPerson {
         val xp: Long = 0,
         val bonusXp: Long = 0,
         val points: Int = 0,
-        val memKeys: Map<String, Any> = emptyMap()
+        val memKeys: Map<String, Any?> = emptyMap()
     )
 
     @Deprecated("Use clonePerson instead")
@@ -62,7 +63,6 @@ object DataPerson {
         filterParsed: Boolean = true
     ): ParsedPersonData {
         val memKeys = person.memoryWithoutUpdate.keys.associateWith { key -> person.memoryWithoutUpdate[key] }.toMutableMap()
-
         // Vanilla AICore officers in enemy fleets are not marked as built in even if they exceed the usual max level and thus should be considered as so. We fix that here.
         if (person.isAICore && memKeys[Misc.CAPTAIN_UNREMOVABLE] != true && (person.aiCoreId == "alpha_core" || person.aiCoreId == "beta_core" || person.aiCoreId == "gamma_core")) {
             val sameTypeAICore = runCatching {
@@ -137,16 +137,14 @@ object DataPerson {
         // Filter memory keys
         val filteredMemory = if (!settings.includeMemKeys) emptyMap() else
             data.memKeys.filterKeys { key ->
-                if (!settings.includeMemKeys) return@filterKeys false
                 if (key.startsWith("$#")) return@filterKeys false
 
                 val value = data.memKeys[key]
 
                 when {
-                    value !is Boolean && value !is String && value !is Int && value !is Float && value !is Double && value !is Long && value !is Short && value !is Byte && value !is Char -> return@filterKeys false
                     key in excludeKeys -> return@filterKeys false
                     settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
-                    else -> return@filterKeys true
+                    else -> isPrefixable(value)
                 }
             }
 

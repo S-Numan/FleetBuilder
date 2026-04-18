@@ -3,6 +3,8 @@ package fleetBuilder.serialization.person
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
+import fleetBuilder.core.FBMisc.fromPrefixedString
+import fleetBuilder.core.FBMisc.toPrefixedString
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
@@ -175,24 +177,11 @@ object CompressedPerson {
                             if (p.size == 2) {
                                 val key = "$" + p[0]
                                 val raw = p[1]
-                                val rawFirst = raw.firstOrNull()
-                                val body = raw.drop(1)
-                                val value = when (rawFirst) {
-                                    'F' -> body.toFloatOrNull()
-                                    'D' -> body.toDoubleOrNull()
-                                    'B' -> body.lowercase().toBooleanStrictOrNull()
-                                    'I' -> body.toIntOrNull()
-                                    'L' -> body.toLongOrNull()
-                                    'l' -> body.toShortOrNull()
-                                    'b' -> body.toByteOrNull()
-                                    'C' -> body.firstOrNull()
-                                    'S' -> body
-                                    else -> null
-                                }
-                                if (value == null)
-                                    return@mapNotNull null
 
-                                key to value
+                                val parsedValue = fromPrefixedString(raw)
+                                if (!parsedValue.first) return@mapNotNull null
+
+                                key to parsedValue.second
                             } else null
                         }
                         ?.toMap()
@@ -283,18 +272,7 @@ object CompressedPerson {
             val key = entry.key
             val value = entry.value
 
-            val formattedValue = when (value) {
-                is Float -> "F$value"
-                is Double -> "D$value"
-                is Boolean -> "B$value"
-                is Int -> "I$value"
-                is Long -> "L$value"
-                is Short -> "l$value"
-                is Byte -> "b$value"
-                is Char -> "C$value"
-                is String -> "S$value"
-                else -> null
-            }
+            val formattedValue = toPrefixedString(value)
 
             formattedValue?.let { "${key.removePrefix("$")}$memKeyJoinSep$it" }
         }.joinToString(memKeySep)

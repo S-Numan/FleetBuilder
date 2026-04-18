@@ -2,6 +2,8 @@ package fleetBuilder.serialization.fleet
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
+import fleetBuilder.core.FBMisc.fromPrefixedString
+import fleetBuilder.core.FBMisc.toPrefixedString
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
@@ -9,11 +11,14 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.fleetSep1
 import fleetBuilder.serialization.SerializationUtils.fleetSep2
+import fleetBuilder.serialization.SerializationUtils.memKeyJoinSep
+import fleetBuilder.serialization.SerializationUtils.memKeySep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.fleet.DataFleet.createCampaignFleetFromData
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.serialization.fleet.mods.secondInCommand.CompressedSecondInCommand
+import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.CompressedMember
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.person.CompressedPerson
@@ -58,15 +63,17 @@ object CompressedFleet {
         if (metaIndexStart == -1 || metaIndexEnd == -1)
             return null
 
-        val metaVersion = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        val metaVersionFull = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        if (!metaVersionFull.lowercase().startsWith('f'))
+            return null
+        val metaVersionNumber = metaVersionFull.substring(1).toInt()
+        val metaVersionCompressed = metaVersionFull.startsWith('f')
 
-        val fullData = when (metaVersion) {
-            "f0" -> {
-                val compressedData = comp.substring(metaIndexEnd + 1)
-                CompressionUtil.base64Inflate(compressedData)
-            }
-            "F0" -> comp.substring(metaIndexEnd + 1)
-            else -> return null
+        val fullData = if (metaVersionCompressed) {
+            val compressedData = comp.substring(metaIndexEnd + 1)
+            CompressionUtil.base64Inflate(compressedData)
+        } else {
+            comp.substring(metaIndexEnd + 1)
         } ?: return null
 
         if (fullData.isBlank())
@@ -166,18 +173,50 @@ object CompressedFleet {
                             idleOfficers += officer
                     }
             }
+            val sicData: DataSecondInCommand.SecondInCommandData?
+            val memKeys: Map<String, Any?>?
 
-            /* -------- SECOND IN COMMAND -------- */
+            if (metaVersionNumber == 0) {
+                sicData =
+                    blocks.getOrNull(5)
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let {
+                            CompressedSecondInCommand.extractSecondInCommandFromCompString(
+                                it,
+                                missing
+                            )
+                        }
+                memKeys = null
+            } else {
+                memKeys =
+                    blocks.getOrNull(5)
+                        ?.takeIf { it.isNotBlank() }
+                        ?.split(memKeySep)
+                        ?.mapNotNull {
+                            val p = it.split(memKeyJoinSep, limit = 2)
+                            if (p.size == 2) {
+                                val key = "$" + p[0]
+                                val raw = p[1]
 
-            val sicData =
-                blocks.getOrNull(5)
-                    ?.takeIf { it.isNotBlank() }
-                    ?.let {
-                        CompressedSecondInCommand.extractSecondInCommandFromCompString(
-                            it,
-                            missing
-                        )
-                    }
+                                val parsedValue = fromPrefixedString(raw)
+                                if (!parsedValue.first) return@mapNotNull null
+
+                                key to parsedValue.second
+                            } else null
+                        }
+                        ?.toMap()
+                        ?: emptyMap()
+
+                sicData =
+                    blocks.getOrNull(6)
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let {
+                            CompressedSecondInCommand.extractSecondInCommandFromCompString(
+                                it,
+                                missing
+                            )
+                        }
+            }
 
             return DataFleet.ParsedFleetData(
                 fleetName = fleetName,
@@ -186,7 +225,8 @@ object CompressedFleet {
                 commanderIfNoFlagship = commander,
                 members = members,
                 idleOfficers = idleOfficers,
-                secondInCommandData = sicData
+                memKeys = memKeys ?: emptyMap(),
+                secondInCommandData = sicData,
             )
 
         } catch (e: Exception) {
@@ -233,8 +273,8 @@ object CompressedFleet {
     ): String {
 
         val structureVersion =
-            if (compress) "f0"
-            else "F0"
+            if (compress) "f1"
+            else "F1"
 
         val ver = "$metaSep$structureVersion$metaSep"
 
@@ -307,6 +347,19 @@ object CompressedFleet {
         blocks += membersBlock
         blocks += commanderString
         blocks += officersBlock
+
+        // Memory keys
+        val memKeyString = data.memKeys.entries.mapNotNull { entry ->
+            val key = entry.key
+            val value = entry.value
+
+            val formattedValue = toPrefixedString(value)
+
+            formattedValue?.let { "${key.removePrefix("$")}$memKeyJoinSep$it" }
+        }.joinToString(memKeySep)
+
+        blocks += memKeyString
+
         blocks += sicString
 
         var fleetString = blocks.joinToString(fleetSep2)

@@ -72,18 +72,19 @@ class FleetDirectory(
         settings: FleetSettings = FleetSettings(),
         editDirectoryFile: Boolean = true,
         editFleetFile: Boolean = true,
-        setFleetID: String
+        setFleetID: String,
+        additionalMemKeysToAdd: Map<String, Any?> = emptyMap()
     ): String {
         val currentTime = Date()
         var fleetID = setFleetID
 
-        val comp = CompressedFleet.saveFleetToCompString(
+        var comp = CompressedFleet.saveFleetToCompString(
             inputFleet,
             settings,
             includePrepend = false
         )
 
-        val parsedFleet = extractFleetDataFromCompString(comp) ?: run {
+        var parsedFleet = extractFleetDataFromCompString(comp) ?: run {
             DisplayMessage.showError(
                 "Failed to save fleet",
                 "Failed to extract fleet data from comp string after just saving: $comp"
@@ -95,6 +96,37 @@ class FleetDirectory(
             memberSettings.includeCR = false
             memberSettings.includeHullFraction = false
             memberSettings.personSettings.handleRankAndPost = false
+            includeMemKeys = false
+        }
+
+        if (additionalMemKeysToAdd.isNotEmpty()) {
+            val newComp = CompressedFleet.saveFleetToCompString(
+                parsedFleet.copy(
+                    memKeys = parsedFleet.memKeys + additionalMemKeysToAdd
+                ),
+                includePrepend = false
+            )
+
+            val newParsedFleet = extractFleetDataFromCompString(newComp) ?: run {
+                DisplayMessage.showError(
+                    "Failed to save fleet",
+                    "Failed to extract fleet data from comp string after just saving: $newComp"
+                )
+                return ""
+            }
+
+            if (FBSettings.enableDebug) {
+                if (filterParsedFleetData(newParsedFleet, comparisonSettings) != filterParsedFleetData(parsedFleet, comparisonSettings)) {
+                    val diffs = deepDiff(parsedFleet, newParsedFleet)
+                    DisplayMessage.showError(
+                        "DEBUG: Fleet data mismatch. DEEP DIFF", "DEBUG: Fleet data mismatch. DEEP DIFF\n" +
+                                diffs.joinToString("\n")
+                    )
+                }
+            }
+
+            comp = newComp
+            parsedFleet = newParsedFleet
         }
 
         // DEBUG!

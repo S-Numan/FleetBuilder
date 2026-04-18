@@ -32,5 +32,6 @@ data class FleetSettings(
     var excludeMembersWithMissingHullSpec: Boolean = false,
     var excludeMembersWithID: MutableSet<String> = mutableSetOf(),
     var excludeMembersWithHullID: MutableSet<String> = mutableSetOf(),
+    var includeMemKeys: Boolean = false,
     var memberSettings: MemberSettings = MemberSettings(),
 )
