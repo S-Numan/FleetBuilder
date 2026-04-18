@@ -1,3 +1,6 @@
+# 1.35.6
+- Clean game variants for removed elements. All variants within the game are checked for removed elements (usually from removed/updated mods), and have those elements removed on game start to prevent errors.
+
 ## 1.35.1
 ### Bufixes
 - Fix one off ai cores from mods from losing all their skills

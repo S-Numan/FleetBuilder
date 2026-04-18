@@ -154,6 +154,8 @@ object FBSettings {
 
     var fixShipSkinSourceMod = true
 
+    var cleanGameVariantsForRemovedElements = true
+
     private var unassignPlayer = false
     fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()
     fun setUnassignPlayer(value: Boolean) {

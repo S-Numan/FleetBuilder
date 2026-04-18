@@ -83,6 +83,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             FBSettings.recentBattleTracker = getBoolean(modID, "recentBattleTracker")!!
             FBSettings.showTagsInTooltip = getBoolean(modID, "showTagsInTooltip")!!
             FBSettings.fixShipSkinSourceMod = getBoolean(modID, "fixShipSkinSourceMod")!!
+            FBSettings.cleanGameVariantsForRemovedElements = getBoolean(modID, "cleanGameVariantsForRemovedElements")!!
 
             FBSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
 
@@ -108,6 +109,7 @@ internal class ModSettingsListener : LunaSettingsListener {
             FBSettings.addLogsToDisplayMessageLevel = Level.OFF
             FBSettings.recentBattleTracker = false
             FBSettings.fixShipSkinSourceMod = false
+            FBSettings.cleanGameVariantsForRemovedElements = false
         }
 
         if (LookupUtils.isSetup())

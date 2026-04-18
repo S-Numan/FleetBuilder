@@ -408,12 +408,27 @@ object DataVariant {
             val wg = WeaponGroupSpec()
 
             wgData.weapons.forEach { (slotId, weaponId) ->
+                val slot = hullSpec.getWeaponSlot(slotId) ?: run {
+                    Global.getLogger(this.javaClass).warn("weaponSlot was null, skipping weapon with ID $weaponId on slot $slotId on hull-id ${hullSpec.hullId} on variant-id ${data.variantId}")
+                    return@forEach
+                }
+                val weaponSpec = LookupUtils.getWeaponSpec(weaponId) ?: run {
+                    Global.getLogger(this.javaClass).warn("weaponSpec was null, skipping weapon with ID $weaponId on slot $slotId on hull-id ${hullSpec.hullId} on variant-id ${data.variantId}")
+                    return@forEach
+                }
+
                 if (hullSpec.isBuiltIn(slotId)) {
                     wg.addSlot(slotId)
-                } else {
-                    loadout.addWeapon(slotId, weaponId)
-                    wg.addSlot(slotId)
+                    return@forEach
                 }
+
+                if (!slot.weaponFits(weaponSpec)) {
+                    Global.getLogger(this.javaClass).warn("weapon does not fit, skipping weapon with ID $weaponId on slot $slotId on hull-id ${hullSpec.hullId} on variant-id ${data.variantId}")
+                    return@forEach
+                }
+
+                loadout.addWeapon(slotId, weaponId)
+                wg.addSlot(slotId)
             }
 
             wg.isAutofireOnByDefault = wgData.autofire

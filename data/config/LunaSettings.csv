@@ -175,6 +175,10 @@ This being true simply makes the behavior expected, only have a DMod if the save
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
 This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as that hullmod is an sModdedBuiltIn without the ship having the MIDAS hullmod in the hullspec of the ship",,,Developer Options
+cleanGameVariantsForRemovedElements,Clean game variants for removed elements,Boolean,true,,"On application load, look through every variant loaded within the entire game and remove any elements which cannot be found.
+Includes removed weapons, wings, and hull-mods.
+This will, for example, prevent saved mission variants from causing the mission to fail to load.
+It may also prevent game crashes in rare examples.",,,Developer Options
 ,,,,,,,,
 showDebug,Show Debug,Boolean,false,,Show debug elements,,,Developer Options
 enableDebug,Enable Debug,Boolean,false,,"Enable debug elements. While not limited to this, it causes some redundant code to run to check my results.
