@@ -120,6 +120,8 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun onDevModeF8Reload() {
+            Global.getLogger(this.javaClass).info("F8 Reload")
+
             FBTxt.setup()
 
             LookupUtils.setup()
@@ -128,7 +130,10 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun onApplicationLoad() {
+            Global.getLogger(this.javaClass).info("onApplicationLoad")
+
             FBSettings.onApplicationLoad()
+
             FBTxt.setup()
 
             LookupUtils.setup()
