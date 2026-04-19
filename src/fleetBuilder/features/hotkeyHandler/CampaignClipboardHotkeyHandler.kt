@@ -62,7 +62,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         when (event.eventValue) {
             Keyboard.KEY_D -> if (event.isShiftDown) handleDevModeHotkey(event)
             Keyboard.KEY_C -> handleCopyHotkey(event, sector, ui)
-            Keyboard.KEY_V -> handlePasteHotkey(event, ui)
+            Keyboard.KEY_V -> handlePasteHotkey(ui, event)
             Keyboard.KEY_O -> handleCreateOfficer(event, ui)
             Keyboard.KEY_I -> handleSaveTransfer(event, ui)
             Keyboard.KEY_R -> RecentBattleDialog.recentBattleDialog(event, ui)
@@ -112,34 +112,31 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         }
     }
 
-    private fun handlePasteHotkey(
-        event: InputEventAPI,
-        ui: CampaignUIAPI
-    ) {
-        if (ReflectionMisc.isCodexOpen()) return
+    internal companion object {
+        internal fun handlePasteHotkey(
+            ui: CampaignUIAPI,
+            event: InputEventAPI?,
+        ) {
+            if (ReflectionMisc.isCodexOpen()) return
 
-        if (ui.getActualCurrentTab() == CoreUITabId.REFIT) {
-            if (handleRefitPaste()) event.consume()
-        } else {
-            handleOtherPaste(event, ui)
+            val currentTab = ui.getActualCurrentTab()
+
+            if (currentTab == CoreUITabId.REFIT) {
+                if (handleRefitPaste()) event?.consume()
+            } else {
+                val missing = MissingContent()
+                val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
+
+                if (currentTab == CoreUITabId.FLEET || ui.isIdle()) {
+                    if (currentTab != CoreUITabId.FLEET || data is DataFleet.ParsedFleetData)
+                        pasteFleet(data, missing)
+                    else if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
+                        pasteIntoPlayerFleetPanel(data, missing)
+                }
+
+                event?.consume()
+            }
         }
-    }
-
-    private fun handleOtherPaste(
-        event: InputEventAPI,
-        ui: CampaignUIAPI
-    ) {
-        val missing = MissingContent()
-        val data = ClipboardMisc.extractDataFromClipboard(missing) ?: return
-
-        if (ui.getActualCurrentTab() == CoreUITabId.FLEET || ui.isIdle()) {
-            if (ui.getActualCurrentTab() != CoreUITabId.FLEET || data is DataFleet.ParsedFleetData)
-                pasteFleet(data, missing)
-            else if (ClipboardHotkeyHandlerUtils.requireCheatsOrWarn())
-                pasteIntoPlayerFleetPanel(data, missing)
-        }
-
-        event.consume()
     }
 
     override fun processCampaignInputPreFleetControl(events: MutableList<InputEventAPI>) = Unit

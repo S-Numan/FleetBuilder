@@ -20,12 +20,19 @@ import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.*
 import org.json.JSONArray
 import org.json.JSONObject
+import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
 import java.awt.Color
 import kotlin.math.min
 
 internal object FBMisc {
+
+    fun isConsoleOpen(): Boolean {
+        if (!FBSettings.isConsoleModEnabled)
+            return false
+        return runCatching { ConsoleOverlayPanel.instance }.getOrNull() != null
+    }
 
     fun isPrefixable(value: Any?): Boolean = value is Boolean || value is String || value is Int || value is Float || value is Double || value is Long || value is Short || value is Byte || value is Char || value == null
 

@@ -41,3 +41,4 @@ RemoveSkill,fleetBuilder.console.commands.RemoveSkill,"cheat,campaign,fleetbuild
 Set isPerma and isSMod to true or false to add the hullmod as described.
 If not in the refit screen, adds the specified modspec to your fleet's cargo."
 SetPersonality,fleetBuilder.console.commands.SetOfficerPersonality,"cheat,campaign,fleetbuilder",setpersonality <personality>,Changes the personality of the officer captaining the ship viewed in the refit screen.
+Paste,fleetBuilder.console.commands.ForcePaste,"cheat,campaign,fleetbuilder",paste,"Functions the same as using CTRL + V, but assumes cheats are enabled."

@@ -28,5 +28,4 @@ class RemoveIdleOfficers : BaseCommand {
 
         return BaseCommand.CommandResult.SUCCESS
     }
-
 }

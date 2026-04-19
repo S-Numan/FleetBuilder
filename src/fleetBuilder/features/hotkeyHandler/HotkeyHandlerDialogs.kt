@@ -224,9 +224,10 @@ object HotkeyHandlerDialogs {
     private fun getBlockReason(
         member: FleetMemberAPI,
         unknown: MissingContent,
-        allowSimulationAnyway: Boolean
+        allowSimulationAnyway: Boolean,
+        cheatsEnabled: Boolean,
     ): SimulationBlockReason? {
-        if (allowSimulationAnyway || FBSettings.cheatsEnabled()) return null
+        if (allowSimulationAnyway || cheatsEnabled) return null
 
         return when {
             member.variant.hasTag(FBConst.FB_ERROR_TAG) -> SimulationBlockReason.MissingHull
@@ -243,7 +244,8 @@ object HotkeyHandlerDialogs {
     fun pasteFleetDialog(
         inputData: DataFleet.ParsedFleetData,
         inputMissing: MissingContent,
-        allowSimulationAnyway: Boolean = false
+        allowSimulationAnyway: Boolean = false,
+        forceCheatsEnabled: Boolean = false,
     ): DialogPanel {
         fun removeUnknownContent(member: FleetMemberAPI, unknown: MissingContent) {
             val variant = member.variant
@@ -269,6 +271,7 @@ object HotkeyHandlerDialogs {
                 member.copy(id = sector.genUID())
             }
         )
+        val cheatsEnabled = FBSettings.cheatsEnabled() || forceCheatsEnabled // Store this value for if some other logic temporarily enables it to mimic cheats being on without them actually being on.
 
         val dialog = DialogPanel()
 
@@ -401,7 +404,7 @@ object HotkeyHandlerDialogs {
 
                 val dataMember = data.members.find { it.id == member.id }
 
-                val reason = getBlockReason(member, unknownContents, allowSimulationAnyway)
+                val reason = getBlockReason(member, unknownContents, allowSimulationAnyway, cheatsEnabled)
                 if (reason != null) {
                     val img = listPanel.addImage(reason.image, size, size)
                     img.position.inTL(x, y)
@@ -498,7 +501,7 @@ object HotkeyHandlerDialogs {
                 listPanel.addComponent(preview.panel).inTL(x, y)
 
 
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && (unknownContents.hasMissingVariantElements())) {
+                if (!allowSimulationAnyway && !cheatsEnabled && (unknownContents.hasMissingVariantElements())) {
                     listPanel.addImage("graphics/icons/more_info_buttonless.png", size, size).apply {
                         position.inTL(x, y)
                         sprite.color = Color.YELLOW.setAlpha(70)
@@ -608,7 +611,7 @@ object HotkeyHandlerDialogs {
                     skillsUI.addPara(preview.missingContent.getMissingContentString(true), Color.YELLOW, 0f)
                 }
 
-                if (!allowSimulationAnyway && !FBSettings.cheatsEnabled() && unknownContents != null && (unknownContents.hasMissingVariantElements())) {
+                if (!allowSimulationAnyway && !cheatsEnabled && unknownContents != null && (unknownContents.hasMissingVariantElements())) {
                     officerPanel.addImage("graphics/icons/more_info_buttonless.png", shipSize, shipSize).apply {
                         position.inTL(shipX, shipY)
                         sprite.color = Color.YELLOW.setAlpha(70)
@@ -759,7 +762,7 @@ object HotkeyHandlerDialogs {
             rightUI.addSectionHeading(FBTxt.txt("summary"), factionColor, darkColor, Alignment.MID, 10f)
 
             val allowedMemberList =
-                if (!FBSettings.cheatsEnabled()) fleetData.membersListCopy.filterNot { it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
+                if (!cheatsEnabled) fleetData.membersListCopy.filterNot { it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
                 else fleetData.membersListCopy
 
             val combatDP = allowedMemberList.sumOf {
@@ -837,7 +840,7 @@ object HotkeyHandlerDialogs {
 
                         var dialog: DialogPanel? = dialog
                         if (coreUITadId == CoreUITabId.FLEET) {
-                            dialog = pasteFleet(inputData, inputMissing)
+                            dialog = pasteFleetDialog(inputData, inputMissing, forceCheatsEnabled = cheatsEnabled)
                         }
                         RecentBattleReplay.simulateBattle(battleContext) {
                             //battle.finish(null, false)
@@ -949,7 +952,7 @@ object HotkeyHandlerDialogs {
                 rebuildUI(totalHeight, listUI)
             }
 
-            if (FBSettings.cheatsEnabled()) {
+            if (cheatsEnabled) {
                 rightUI.addSectionHeading(FBTxt.txt("cheats"), factionColor, darkColor, Alignment.MID, 5f)
                 rightUI.addButton(
                     FBTxt.txt("spawn_fleet_into_campaign"),
