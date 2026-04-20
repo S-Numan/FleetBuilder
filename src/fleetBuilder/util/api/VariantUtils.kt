@@ -224,7 +224,8 @@ object VariantUtils {
         else
             tempVariant.setVariantDisplayName("ERROR")
 
-        tempVariant.addTag(FBConst.FB_ERROR_TAG)
+        if (!tempVariant.hasTag(FBConst.VARIANT_MADE_IN_ERROR))
+            tempVariant.addTag(FBConst.VARIANT_MADE_IN_ERROR)
 
         return tempVariant
     }

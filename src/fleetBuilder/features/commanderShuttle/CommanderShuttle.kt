@@ -83,7 +83,7 @@ internal object CommanderShuttle {
         val shuttleMember = Global.getSettings().createFleetMember(FleetMemberType.SHIP, "shuttlepod_Hull")
 
         shuttleMember.shipName = FBTxt.txt("command_shuttle")
-        shuttleMember.variant.addMod(FBConst.COMMAND_SHUTTLE_ID)
+        shuttleMember.variant.addPermaMod(FBConst.COMMAND_SHUTTLE_ID, false)
         shuttleMember.variant.addTag(Tags.NO_SELL)
         shuttleMember.variant.addTag(Tags.RESTRICTED)
         shuttleMember.variant.addTag(Tags.NO_SIM)

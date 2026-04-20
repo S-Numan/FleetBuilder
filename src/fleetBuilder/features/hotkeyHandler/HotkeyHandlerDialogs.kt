@@ -230,7 +230,7 @@ object HotkeyHandlerDialogs {
         if (allowSimulationAnyway || cheatsEnabled) return null
 
         return when {
-            member.variant.hasTag(FBConst.FB_ERROR_TAG) -> SimulationBlockReason.MissingHull
+            member.variant.hasTag(FBConst.VARIANT_MADE_IN_ERROR) -> SimulationBlockReason.MissingHull
             member.hullSpec.hasTag(Tags.RESTRICTED) || member.variant.hasTag(Tags.RESTRICTED) -> SimulationBlockReason.Restricted
             member.hullSpec.hasTag(Tags.NO_SIM) || member.variant.hasTag(Tags.NO_SIM) -> SimulationBlockReason.NoSim
             member.isStation -> SimulationBlockReason.Station
@@ -308,7 +308,7 @@ object HotkeyHandlerDialogs {
 
         fun excludeMissingShips(fleet: CampaignFleetAPI) {
             fleet.fleetData.membersListCopy.toList().forEach {
-                if (it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE"))
+                if (it.variant.hasTag(FBConst.VARIANT_MADE_IN_ERROR) || it.variant.hasTag("#FB_IGNORE"))
                     fleet.fleetData.removeFleetMember(it)
             }
         }
@@ -762,7 +762,7 @@ object HotkeyHandlerDialogs {
             rightUI.addSectionHeading(FBTxt.txt("summary"), factionColor, darkColor, Alignment.MID, 10f)
 
             val allowedMemberList =
-                if (!cheatsEnabled) fleetData.membersListCopy.filterNot { it.variant.hasTag(FBConst.FB_ERROR_TAG) || it.variant.hasTag("#FB_IGNORE") }
+                if (!cheatsEnabled) fleetData.membersListCopy.filterNot { it.variant.hasTag(FBConst.VARIANT_MADE_IN_ERROR) || it.variant.hasTag("#FB_IGNORE") }
                 else fleetData.membersListCopy
 
             val combatDP = allowedMemberList.sumOf {

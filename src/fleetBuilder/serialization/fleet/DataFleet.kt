@@ -224,7 +224,7 @@ object DataFleet {
             }
 
             // Error-tagged variant
-            if (FBConst.FB_ERROR_TAG in variantData.tags) {
+            if (FBConst.VARIANT_MADE_IN_ERROR in variantData.tags) {
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
             }
 
