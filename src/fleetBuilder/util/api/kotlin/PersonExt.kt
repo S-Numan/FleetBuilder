@@ -5,22 +5,14 @@ import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.PersonSettings
 import fleetBuilder.util.api.PersonUtils
 
-
 /**
- * Creates an exact copy of this person.
+ * Creates a copy of this person
  *
- * Note that memKey reference types will copy the reference, not the object itself.
- */
-fun PersonAPI.clone(filterParsed: Boolean = false): PersonAPI {
-    return DataPerson.clonePerson(this, filterParsed = filterParsed)
-}
-
-/**
- * Creates a copy of this person with the specified settings.
+ * Has optional settings to specify what you want to copy and what you do not.
  *
  * Will apply a filter pass based on the settings, enabling this person to be serializable. This will remove non value type memKeys if present
  */
-fun PersonAPI.clone(settings: PersonSettings): PersonAPI {
+fun PersonAPI.clone(settings: PersonSettings = PersonSettings()): PersonAPI {
     return DataPerson.clonePerson(this, settings = settings)
 }
 

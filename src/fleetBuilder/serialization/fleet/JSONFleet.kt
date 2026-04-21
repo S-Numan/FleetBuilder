@@ -3,6 +3,7 @@ package fleetBuilder.serialization.fleet
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
+import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
@@ -218,7 +219,7 @@ object JSONFleet {
                 ?: throw Exception("Failed to read variant from json after just creating it")
 
             // Base variantId before any modification
-            val baseVariantId = variant.optString("variantId", "variant")
+            val baseVariantId = variant.optString("variantId", Misc.genUID())
 
             // Remove the "variantId" field before stringifying the variant for comparison
             val variantWithoutId = variant.apply { remove("variantId") }

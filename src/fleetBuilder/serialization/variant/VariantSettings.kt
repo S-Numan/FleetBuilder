@@ -21,7 +21,7 @@ data class VariantSettings(
     var includeHiddenMods: Boolean = true,
     var includeTags: Boolean = true,
     var includeFlux: Boolean = true,
-    var includeVariantID: Boolean = true,
+    var includeVariantID: Boolean = false,
     var excludeWeaponsWithID: MutableSet<String> = mutableSetOf(),
     var excludeWingsWithID: MutableSet<String> = mutableSetOf(),
     var excludeHullModsWithID: MutableSet<String> = mutableSetOf(),

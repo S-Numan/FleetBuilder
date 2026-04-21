@@ -46,6 +46,9 @@ fun UIComponentAPI.setMouseOverPad(pad1: Float, pad2: Float, pad3: Float, pad4: 
 val UIComponentAPI.mouseoverHighlightFader: Fader?
     get() = invoke("getMouseoverHighlightFader") as Fader?
 
+val UIComponentAPI.highlightFader: Fader?
+    get() = invoke("getHighlightFader") as Fader?
+
 val UIComponentAPI.topAncestor: UIPanelAPI?
     get() = invoke("findTopAncestor") as UIPanelAPI?
 

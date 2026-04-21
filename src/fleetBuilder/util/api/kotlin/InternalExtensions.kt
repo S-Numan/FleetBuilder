@@ -36,10 +36,25 @@ internal fun SettingsAPI.loadTextureCached(filename: String) {
     }
 }
 
-// Why was this commented out? Does it have an issue?
-//internal fun UIPanelAPI.findChildWithField(fieldName: String): UIComponentAPI? {
-//    return getChildrenCopy().find { it.getFieldsMatching(name = fieldName).isNotEmpty() }
-//}
+
+internal fun List<UIComponentAPI>.findChildWithField(
+    name: String? = null,
+    type: Class<*>? = null,
+    fieldAssignableTo: Class<*>? = null,
+    fieldAccepts: Class<*>? = null,
+    searchSuperclass: Boolean = false
+): UIComponentAPI? {
+    return find { it.getFieldsMatching(name = name, type = type, fieldAssignableTo = fieldAssignableTo, fieldAccepts = fieldAccepts, searchSuperclass = searchSuperclass).isNotEmpty() }
+}
+
+internal fun List<UIComponentAPI>.findChildWithMethod(
+    name: String? = null,
+    returnType: Class<*>? = null,
+    numOfParams: Int? = null,
+    parameterTypes: Array<Class<*>?>? = null
+): UIComponentAPI? {
+    return find { it.getMethodsMatching(name = name, returnType = returnType, numOfParams = numOfParams, parameterTypes = parameterTypes).isNotEmpty() }
+}
 
 
 internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {

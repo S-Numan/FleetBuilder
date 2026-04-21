@@ -42,20 +42,10 @@ object DataFleet {
     @JvmOverloads
     fun cloneFleet(
         fleet: CampaignFleetAPI,
-        aiMode: Boolean,
-        filterParsed: Boolean = false
-    ): CampaignFleetAPI {
-        val data = getFleetDataFromFleet(fleet, filterParsed = filterParsed)
-        return createCampaignFleetFromData(data, aiMode)
-    }
-
-    fun cloneFleet(
-        fleet: CampaignFleetAPI,
-        aiMode: Boolean,
-        settings: FleetSettings,
+        settings: FleetSettings = FleetSettings(),
     ): CampaignFleetAPI {
         val data = getFleetDataFromFleet(fleet, settings)
-        return createCampaignFleetFromData(data, aiMode, settings)
+        return createCampaignFleetFromData(data, fleet.isAIMode, settings)
     }
 
     @JvmOverloads

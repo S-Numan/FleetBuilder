@@ -262,9 +262,9 @@ object DataVariant {
         val validHull = validHullId?.let { LookupUtils.getHullSpec(it) }
 
         // --- Variant ID ---
-        val fixedVariantId = data.variantId.ifBlank {
-            "BlankID_" + Misc.genUID()
-        }
+        /*val fixedVariantId = data.variantId.ifBlank {
+            Misc.genUID()
+        }*/
 
         // --- Display Name ---
         val fixedDisplayName = data.displayName.ifBlank {
@@ -347,7 +347,7 @@ object DataVariant {
 
         val cleanedData = data.copy(
             hullId = validHullId ?: LookupUtils.getErrorVariantHullID(),
-            variantId = fixedVariantId,
+            //variantId = fixedVariantId,
             displayName = fixedDisplayName,
             hullMods = cleanHullMods.toSet(),
             permaMods = cleanPermaMods.toSet(),
@@ -372,7 +372,11 @@ object DataVariant {
         loadout.weaponGroups.clear()
 
         loadout.source = VariantSource.REFIT
-        loadout.hullVariantId = data.variantId
+        if (data.variantId.isNotEmpty())
+            loadout.hullVariantId = data.variantId
+        else
+            loadout.hullVariantId = Misc.genUID()
+
         loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
         if (data.fluxCapacitors > -1)

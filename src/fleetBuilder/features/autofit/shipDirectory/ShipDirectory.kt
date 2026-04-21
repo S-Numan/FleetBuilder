@@ -118,6 +118,8 @@ class ShipDirectory(
         tagAsImport: Boolean = false,
         setVariantID: String? = null
     ): String {
+        val settings = settings.copy(includeVariantID = true)
+
         val currentTime = Date()
 
         val variantToSave = inputVariant.clone().apply {
@@ -135,7 +137,7 @@ class ShipDirectory(
         // DEBUG!
         if (FBSettings.enableDebug) {
             val comparisonSettings = VariantSettings().apply {
-
+                includeVariantID = true
             }
             val variantJSON = JSONVariant.saveVariantToJson(
                 inputVariant,
