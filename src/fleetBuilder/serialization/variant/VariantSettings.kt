@@ -7,6 +7,9 @@ package fleetBuilder.serialization.variant
  * @param includeHiddenMods If false, hidden mods will be excluded from the variant's hullmods.
  * @param includeTags If false, the variant's tags will not be included.
  * @param includeFlux If false, the variant's flux will not be included.
+ * @param includeVariantID If false, the variant's ID will not be included. Disabled by default due to typically not being needed. If enabled, try to keep the variant id unique for modified variants on building a variant.
+ * Complete uniqueness is not so important here, but for example; if you have a variant id the same as the default _Hull variant in the game files, it will be overwritten to that variant on game save thus roughly .clear()'ing the variant.
+ * Sort of like if you left a variant source as "STOCK" instead of "REFIT" on game save.
  * @param excludeWeaponsWithID A set of weapon IDs to exclude from the variant's weapons.
  * @param excludeWingsWithID A set of wing IDs to exclude from the variant's wings.
  * @param excludeHullModsWithID A set of hullmod IDs to exclude from the variant's hullmods.
