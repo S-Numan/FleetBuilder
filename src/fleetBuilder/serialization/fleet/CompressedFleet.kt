@@ -2,8 +2,6 @@ package fleetBuilder.serialization.fleet
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
-import fleetBuilder.core.FBMisc.fromPrefixedString
-import fleetBuilder.core.FBMisc.toPrefixedString
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
@@ -25,6 +23,7 @@ import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.util.api.FleetUtils.getAllSourceModsFromFleet
 import fleetBuilder.util.lib.CompressionUtil
+import fleetBuilder.util.lib.PrefixedCodec
 import java.util.*
 
 object CompressedFleet {
@@ -198,10 +197,10 @@ object CompressedFleet {
                                 val key = "$" + p[0]
                                 val raw = p[1]
 
-                                val parsedValue = fromPrefixedString(raw)
-                                if (!parsedValue.first) return@mapNotNull null
+                                val parsedValue = PrefixedCodec.decodeAny(raw)
+                                if (!parsedValue.success) return@mapNotNull null
 
-                                key to parsedValue.second
+                                key to parsedValue.value
                             } else null
                         }
                         ?.toMap()
@@ -353,9 +352,9 @@ object CompressedFleet {
             val key = entry.key
             val value = entry.value
 
-            val formattedValue = toPrefixedString(value)
+            val formattedValue = PrefixedCodec.encode(value) ?: return@mapNotNull null
 
-            formattedValue?.let { "${key.removePrefix("$")}$memKeyJoinSep$it" }
+            "${key.removePrefix("$")}$memKeyJoinSep$formattedValue"
         }.joinToString(memKeySep)
 
         blocks += memKeyString

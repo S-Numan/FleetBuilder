@@ -36,12 +36,12 @@ internal object AutofitPanelCreator {
         //    button.customData is String && button.customData == "REFIT_BUTTON"
         //}
 
-        val coreUI = refitPanel.safeInvoke("getCoreUI") as? UIPanelAPI ?: return false
-
         val shipDisplay = refitPanel.safeInvoke("getShipDisplay") as? UIPanelAPI ?: return false
 
         val dialogShowing = shipDisplay.safeInvoke("isShowingDialog") as Boolean
         if (dialogShowing) return false
+
+        val coreUI = refitPanel.safeInvoke("getCoreUI") as? UIPanelAPI ?: return false
 
         val curAutofitPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->
             panel.plugin != null && panel.plugin is AutofitPanel.AutofitPanelPlugin

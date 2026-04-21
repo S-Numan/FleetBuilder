@@ -34,43 +34,6 @@ internal object FBMisc {
         return runCatching { ConsoleOverlayPanel.instance }.getOrNull() != null
     }
 
-    fun isPrefixable(value: Any?): Boolean = value is Boolean || value is String || value is Int || value is Float || value is Double || value is Long || value is Short || value is Byte || value is Char || value == null
-
-    fun toPrefixedString(value: Any?): String? = when (value) {
-        is Float -> "F$value"
-        is Double -> "D$value"
-        is Boolean -> "B$value"
-        is Int -> "I$value"
-        is Long -> "L$value"
-        is Short -> "l$value"
-        is Byte -> "b$value"
-        is Char -> "C$value"
-        is String -> "S$value"
-        null -> "N"
-        else -> null
-    }
-
-    fun fromPrefixedString(value: String?): Pair<Boolean, Any?> {
-        if (value.isNullOrEmpty()) return false to null
-
-        val prefix = value.firstOrNull() ?: return false to null
-        val body = value.drop(1)
-
-        return when (prefix) {
-            'N' -> true to null
-            'F' -> true to body.toFloatOrNull()
-            'D' -> true to body.toDoubleOrNull()
-            'B' -> true to body.lowercase().toBooleanStrictOrNull()
-            'I' -> true to body.toIntOrNull()
-            'L' -> true to body.toLongOrNull()
-            'l' -> true to body.toShortOrNull()
-            'b' -> true to body.toByteOrNull()
-            'C' -> true to body.firstOrNull()
-            'S' -> true to body
-            else -> false to null
-        }
-    }
-
     fun getCallerClass(): Class<*>? {
         val thisClass = this::class.java.name
         var callerClass: String? = null

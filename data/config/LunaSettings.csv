@@ -114,8 +114,12 @@ Changes to this setting will only take effect after game restart.
 
 Examples:
 Ensures ship skins correctly display their originating mod in the codex.
-Ensures ships save/copy in this mod with their sourceMod noted down, allowing the user to know where a ship originated if missing the mod that added it.
-And more.",,,Misc
+Ensures ships save/copy in this mod with their sourceMod noted down. This allows the user to know where a ship originated even if missing the mod that added it.
+And some other niche cases.",,,Misc
+cleanGameVariantsForRemovedElements,Clean game variants for removed elements,Boolean,true,,"On application load, look through every variant loaded within the entire game and remove any elements which cannot be found.
+Includes removed weapons, wings, and hull-mods.
+This will, for example, prevent saved mission variants from causing the mission to fail to load due to lacking the mod the mission variant was saved with.
+It may also prevent game crashes in rare examples.",,,Misc
 devModeCodexButtonEnabled,Dev Mode Codex Button,Boolean,true,,"When cheats are enabled, a button is added to the Codex that lets you add the currently viewed entry to your fleet.
 Hold Shift or Alt to multiply the added value by 10
 Hold CTRL to add a blueprint of the codex entry to your fleet’s cargo instead of the entry itself. Provided the entry has a blueprint.",,,Misc
@@ -175,10 +179,7 @@ This being true simply makes the behavior expected, only have a DMod if the save
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
 This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as that hullmod is an sModdedBuiltIn without the ship having the MIDAS hullmod in the hullspec of the ship",,,Developer Options
-cleanGameVariantsForRemovedElements,Clean game variants for removed elements,Boolean,true,,"On application load, look through every variant loaded within the entire game and remove any elements which cannot be found.
-Includes removed weapons, wings, and hull-mods.
-This will, for example, prevent saved mission variants from causing the mission to fail to load.
-It may also prevent game crashes in rare examples.",,,Developer Options
+,,,,,,,,
 ,,,,,,,,
 showDebug,Show Debug,Boolean,false,,Show debug elements,,,Developer Options
 enableDebug,Enable Debug,Boolean,false,,"Enable debug elements. While not limited to this, it causes some redundant code to run to check my results.

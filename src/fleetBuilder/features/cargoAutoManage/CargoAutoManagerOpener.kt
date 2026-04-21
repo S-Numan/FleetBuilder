@@ -2,7 +2,6 @@ package fleetBuilder.features.cargoAutoManage
 
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.SectorAPI
 import com.fs.starfarer.api.campaign.SubmarketPlugin
@@ -13,13 +12,14 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.findChildWithMethod
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
-import fleetBuilder.otherMods.starficz.findChildWithMethod
-import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 internal class CargoAutoManagerOpener : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 1
@@ -38,34 +38,40 @@ internal class CargoAutoManagerOpener : CampaignInputListener {
     }
 
     private fun handleCargoMouseEvents(event: InputEventAPI, sector: SectorAPI) {
-        if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtils.Companion.isPopUpPanelOpen()) return
+        // This try-catch may be unnecessary, but as this is a non-vital feature typically enabled by default, keep it to avoid possible future troubles.
+        try {
+            if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
 
-        val cargoPanel = ReflectionMisc.getCargoPanel() ?: return
+            val cargoPanel = ReflectionMisc.getCargoPanel() ?: return
 
-        val submarketButtonParent = cargoPanel.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI ?: return
-        val submarketButtons = submarketButtonParent.getChildrenCopy()
+            val submarketButtonParent = cargoPanel.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI
+                ?: return
+            val submarketButtons = submarketButtonParent.getChildrenCopy()
 
-        submarketButtons.forEach { submarketButton ->
-            val fader = submarketButton.safeInvoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
+            submarketButtons.forEach { submarketButton ->
+                val fader = submarketButton.safeInvoke("getMouseoverHighlightFader") as? Fader ?: return@forEach
 
-            if (fader.isFadingIn || fader.brightness == 1f) {
+                if (fader.isFadingIn || fader.brightness == 1f) {
 
-                val tool = submarketButton.safeInvoke("getTooltip") as? TooltipMakerAPI ?: return@forEach
-                val pluginField = tool.getFieldsMatching(fieldAccepts = SubmarketPlugin::class.java, searchSuperclass = true).getOrNull(0)
-                val submarketPlugin = pluginField?.get(tool) as? SubmarketPlugin
-                    ?: return@forEach
-                val selectedSubmarket = submarketPlugin.submarket
+                    val tool = submarketButton.safeInvoke("getTooltip") as? TooltipMakerAPI ?: return@forEach
+                    val pluginField = tool.getFieldsMatching(fieldAccepts = SubmarketPlugin::class.java, searchSuperclass = true).getOrNull(0)
+                    val submarketPlugin = pluginField?.get(tool) as? SubmarketPlugin
+                        ?: return@forEach
+                    val selectedSubmarket = submarketPlugin.submarket
 
-                val coreUI = ReflectionMisc.getCoreUI() as CoreUIAPI
-                if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach
-                if (!submarketPlugin.isEnabled(coreUI)) return@forEach
-                if (!submarketPlugin.isFreeTransfer) return@forEach//Temporary to avoid cheating when WIP
-                if (submarketPlugin is LocalResourcesSubmarketPlugin) return@forEach
+                    val coreUI = ReflectionMisc.getCoreUI() ?: return@forEach
+                    if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach
+                    if (!submarketPlugin.isEnabled(coreUI)) return@forEach
+                    if (!submarketPlugin.isFreeTransfer) return@forEach//Temporary to avoid cheating when WIP
+                    if (submarketPlugin is LocalResourcesSubmarketPlugin) return@forEach
 
-                openSubmarketCargoAutoManagerDialog(selectedSubmarket)
+                    openSubmarketCargoAutoManagerDialog(selectedSubmarket)
 
-                event.consume()
+                    event.consume()
+                }
             }
+        } catch (e: Exception) {
+            DisplayMessage.showError("Error opening or checking if the player tried to open the cargo auto manager", e)
         }
     }
 

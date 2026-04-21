@@ -4,8 +4,6 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import fleetBuilder.core.FBMisc
-import fleetBuilder.core.FBMisc.fromPrefixedString
-import fleetBuilder.core.FBMisc.toPrefixedString
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.createCampaignFleetFromData
@@ -21,6 +19,7 @@ import fleetBuilder.serialization.person.JSONPerson.savePersonToJson
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.JSONVariant.addVariantSourceModsToJson
 import fleetBuilder.serialization.variant.JSONVariant.extractVariantDataFromJson
+import fleetBuilder.util.lib.PrefixedCodec
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
@@ -110,10 +109,10 @@ object JSONFleet {
                     memKeysJson.opt(keyName)?.let { raw ->
                         if (raw !is String) return@forEach
 
-                        val parsedValue = fromPrefixedString(raw)
-                        if (!parsedValue.first) return@forEach
+                        val parsedValue = PrefixedCodec.decodeAny(raw)
+                        if (!parsedValue.success) return@forEach
 
-                        put("$$keyName", parsedValue.second)
+                        put("$$keyName", parsedValue.value)
                     }
                 }
             }
@@ -295,11 +294,9 @@ object JSONFleet {
             val key = entry.key
             val value = entry.value
 
-            val formattedValue = toPrefixedString(value)
+            val formattedValue = PrefixedCodec.encode(value) ?: return@forEach
 
-            if (formattedValue != null) {
-                memKeysJSON.put(key.removePrefix("$"), formattedValue)
-            }
+            memKeysJSON.put(key.removePrefix("$"), formattedValue)
         }
         if (memKeysJSON.length() > 0)
             fleetJson.put("memKeys", memKeysJSON)

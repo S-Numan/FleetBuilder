@@ -8,7 +8,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBMisc.isPrefixable
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.DataMember
@@ -25,6 +24,7 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getErrorVariantHullID
 import fleetBuilder.util.api.PersonUtils
+import fleetBuilder.util.lib.PrefixedCodec
 import java.util.*
 
 object DataFleet {
@@ -117,7 +117,7 @@ object DataFleet {
 
                 val value = data.memKeys[key]
 
-                return@filterKeys isPrefixable(value)
+                return@filterKeys PrefixedCodec.isPrefixable(value)
             }
 
         var filteredCommander: DataPerson.ParsedPersonData? = null
