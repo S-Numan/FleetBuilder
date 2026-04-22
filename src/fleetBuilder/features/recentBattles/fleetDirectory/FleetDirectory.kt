@@ -131,12 +131,9 @@ class FleetDirectory(
 
         // DEBUG!
         if (FBSettings.enableDebug) {
-            val fleetJSON = JSONFleet.saveFleetToJson(
-                inputFleet,
-                comparisonSettings
-            )
+            val fleetJSON = JSONFleet.saveFleetToJson(inputFleet)
             val fleetUnJSON = JSONFleet.extractFleetDataFromJson(fleetJSON)
-            if (fleetUnJSON != filterParsedFleetData(parsedFleet, comparisonSettings)) { // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
+            if (filterParsedFleetData(fleetUnJSON, comparisonSettings) != filterParsedFleetData(parsedFleet, comparisonSettings)) { // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
                 DisplayMessage.showError("DEBUG: Fleet data mismatch", "DEBUG: Fleet data mismatch\n\nfleetUnJSON:\n${fleetUnJSON}\n\nparsedFleet:\n${parsedFleet}\n")
 
                 val diffs = deepDiff(parsedFleet, fleetUnJSON)

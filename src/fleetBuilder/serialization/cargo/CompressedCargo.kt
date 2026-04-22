@@ -4,11 +4,16 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
+import fleetBuilder.core.FBSettings
+import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.lib.CompressionUtil
+import org.lazywizard.console.Console
+import java.awt.Color
 
 object CompressedCargo {
     fun isCompressedCargo(comp: String): Boolean {
@@ -22,7 +27,8 @@ object CompressedCargo {
     @JvmOverloads
     fun saveCargoToCompString(
         inputStacks: List<CargoStackAPI>,
-        compress: Boolean = true
+        compress: Boolean = true,
+        showErrorMessages: Boolean = true
     ): String {
         val structureVersion =
             if (compress) "c0"
@@ -35,6 +41,9 @@ object CompressedCargo {
         var currentType: String? = null
 
         val stacks = inputStacks.sortedBy { it.type }
+
+        val templateCargo = Global.getFactory().createCargo(true)
+        val failedToSaveItems = mutableListOf<String>()
 
         for (stack in stacks) {
             val size = stack.size.toInt()
@@ -56,7 +65,20 @@ object CompressedCargo {
 
                 CargoAPI.CargoItemType.SPECIAL -> {
                     val special = stack.specialDataIfSpecial ?: continue
-                    Triple("SPECIAL", special.id, special.data)
+                    val errorResult = runCatching {
+                        templateCargo.removeEmptyStacks()
+                        templateCargo.addSpecial(SpecialItemData(special.id, special.data), 1f)
+                        val scroller = Global.getSettings().createCustom(800f, 800f, null).createUIElement(800f, 800f, false)
+                        templateCargo.stacksCopy[0].plugin.createTooltip(scroller, true, null, true)
+                        templateCargo.stacksCopy[0].subtract(1f)
+                    }
+
+                    if (errorResult.isSuccess) {
+                        Triple("SPECIAL", special.id, special.data)
+                    } else {
+                        failedToSaveItems.add("Name: '${stack.specialItemSpecIfSpecial?.name}'   ID/DATA:(${special.id}, ${special.data})\n${errorResult.exceptionOrNull()?.message}\n")
+                        continue
+                    }
                 }
 
                 else -> continue
@@ -74,6 +96,12 @@ object CompressedCargo {
                     listOf(id, size).joinToString(sep)
 
             parts += entry
+        }
+
+        if (failedToSaveItems.isNotEmpty() && showErrorMessages) {
+            DisplayMessage.showMessageCustom("Failed to save some cargo items: see console for details", Color.YELLOW)
+            if (FBSettings.isConsoleModEnabled)
+                Console.showMessage("Failed to save some cargo items:\n${failedToSaveItems.joinToString("\n")}")
         }
 
         var cargoString = parts.joinToString(fieldSep)
@@ -158,19 +186,40 @@ object CompressedCargo {
                         missing.cargoWingIds.add(id)
                 }
                 "SPECIAL" -> {
-                    val spec = runCatching {
-                        Global.getSettings().getSpecialItemSpec(id)
-                    }.getOrNull()
+                    when {
+                        id == "fighter_bp" && data?.let { LookupUtils.getFighterWingSpec(it) } == null ->
+                            missing.blueprintWingIds.add(data ?: "null")
 
-                    if (spec != null) {
-                        try {
-                            cargo.addSpecial(SpecialItemData(id, data), size.toFloat())
-                        } catch (_: Exception) {
-                            missing.itemIds.add("$id:$data")
+                        id == "weapon_bp" && data?.let { LookupUtils.getWeaponSpec(it) } == null ->
+                            missing.blueprintWeaponIds.add(data ?: "null")
+
+                        id == "ship_bp" && data?.let { LookupUtils.getHullSpec(it) } == null ->
+                            missing.blueprintHullIds.add(data ?: "null")
+
+                        id == "modspec" && data?.let { LookupUtils.getHullModSpec(it) } == null ->
+                            missing.hullModIdsKnown.add(data ?: "null")
+
+                        id == "industry_bp" && Global.getSettings().allIndustrySpecs.none { it.id == data } ->
+                            missing.blueprintIndustryIds.add(data ?: "null")
+
+                        else -> {
+                            val spec = runCatching {
+                                Global.getSettings().getSpecialItemSpec(id)
+                            }.getOrNull()
+
+                            if (spec != null) {
+                                try {
+                                    cargo.addSpecial(SpecialItemData(id, data), size.toFloat())
+                                } catch (_: Exception) {
+                                    missing.itemIds.add("$id:$data")
+                                }
+                            } else {
+                                missing.itemIds.add(id)
+                            }
                         }
-                    } else {
-                        missing.itemIds.add(id)
                     }
+
+
                 }
             }
         }

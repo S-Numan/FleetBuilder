@@ -57,7 +57,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         sector: SectorAPI,
         ui: CampaignUIAPI
     ) {
-        if (!event.isCtrlDown || DialogUtils.isPopUpPanelOpen()) return
+        if (!event.isCtrlDown) return
 
         when (event.eventValue) {
             Keyboard.KEY_D -> if (event.isShiftDown) handleDevModeHotkey(event)
@@ -100,12 +100,15 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         ui: CampaignUIAPI
     ) {
         val codex = ReflectionMisc.getCodexDialog()
+        if (codex != null) {
+            ClipboardMisc.codexEntryToClipboard(codex)
+            event.consume()
+            return
+        }
+        if (DialogUtils.isPopUpPanelOpen())
+            return
 
         when {
-            codex != null -> {
-                ClipboardMisc.codexEntryToClipboard(codex)
-                event.consume()
-            }
             ui.getActualCurrentTab() == CoreUITabId.FLEET -> if (handleUIFleetCopy(sector, event.isShiftDown)) event.consume()
             ui.getActualCurrentTab() == CoreUITabId.REFIT -> if (handleRefitCopy(event.isShiftDown)) event.consume()
             ui.currentInteractionDialog != null -> if (handleInteractionCopy(ui, event.isAltDown, event.isShiftDown)) event.consume()
@@ -117,7 +120,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             ui: CampaignUIAPI,
             event: InputEventAPI?,
         ) {
-            if (ReflectionMisc.isCodexOpen()) return
+            if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
 
             val currentTab = ui.getActualCurrentTab()
 

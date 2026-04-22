@@ -368,7 +368,11 @@ object DataVariant {
         val settings = Global.getSettings()
 
         val hullSpec = settings.getHullSpec(data.hullId)
-        val loadout = settings.createHullVariant(hullSpec)
+        val loadout = if (!data.tags.contains(FBConst.VARIANT_MADE_IN_ERROR))
+            settings.createHullVariant(hullSpec)
+        else
+            VariantUtils.createErrorVariant()
+
         loadout.weaponGroups.clear()
 
         loadout.source = VariantSource.REFIT

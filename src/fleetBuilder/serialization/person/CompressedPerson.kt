@@ -12,6 +12,7 @@ import fleetBuilder.serialization.SerializationUtils.joinSep
 import fleetBuilder.serialization.SerializationUtils.memKeyJoinSep
 import fleetBuilder.serialization.SerializationUtils.memKeySep
 import fleetBuilder.serialization.SerializationUtils.metaSep
+import fleetBuilder.serialization.SerializationUtils.personSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
@@ -98,32 +99,49 @@ object CompressedPerson {
 
             val dataString = fullData.substring(firstFieldSep + 1)
 
-            val fields = dataString.split(fieldSep, limit = 15)
+            val fields = dataString.split(
+                fieldSep,
+                limit = if (metaVersionNumber < 2) 15
+                else 14
+            )
 
-            val aiCoreId = fields[0]
-            val first = fields[1]
-            val last = fields[2]
+            var cur = 0
+
+            val aiCoreId = fields[cur]
+            cur++
+            val first = fields[cur]
+            cur++
+            val last = fields[cur]
+            cur++
 
             val gender = try {
-                FullName.Gender.valueOf(fields[3])
+                FullName.Gender.valueOf(fields[cur])
             } catch (e: Exception) {
                 FullName.Gender.ANY
             }
+            cur++
 
-            val portrait = fields[4].ifBlank { null }
+            val portrait = fields[cur].ifBlank { null }
+            cur++
 
-            val tags =
-                fields[5].takeIf { it.isNotBlank() }
+            var tags: Set<String> = emptySet()
+
+            if (metaVersionNumber < 2) {
+                tags = fields[cur].takeIf { it.isNotBlank() }
                     ?.split(sep)
                     ?.toSet()
                     ?: emptySet()
+                cur++
+            }
 
-            val personality = fields[6]
+            val personality = fields[cur]
+            cur++
 
-            val level = fields[7].toInt()
+            val level = fields[cur].toInt()
+            cur++
 
             val skills =
-                fields[8].takeIf { it.isNotBlank() }
+                fields[cur].takeIf { it.isNotBlank() }
                     ?.split(sep)
                     ?.mapNotNull {
                         val p = it.split(joinSep, limit = 2)
@@ -132,18 +150,36 @@ object CompressedPerson {
                         else null
                     }?.toMap()
                     ?: emptyMap()
+            cur++
 
-            val rankId = fields[9]
-            val postId = fields[10]
+            val rankId = fields[cur]
+            cur++
+            val postId = fields[cur]
+            cur++
 
-            val xp = fields[11].toLong()
-            val bonusXp = fields[12].toLong()
-            val points = fields[13].toInt()
+            val xp = fields[cur].toLong()
+            cur++
+            val bonusXp = fields[cur].toLong()
+            cur++
+            val points = fields[cur].toInt()
+            cur++
+
+            val metaMemKeys = if (metaVersionNumber == 2) {
+                val tagsAndMemKeys = fields.getOrNull(cur)?.split(personSep + fieldSep)
+                tags = tagsAndMemKeys?.getOrNull(0).takeIf { it?.isNotBlank() == true }
+                    ?.split(memKeyJoinSep)
+                    ?.toSet()
+                    ?: emptySet()
+                tagsAndMemKeys?.getOrNull(1)
+            } else {
+                fields.getOrNull(cur)
+            }
+
 
             val memKeys =
                 if (metaVersionNumber == 0) {
                     // DEPRECIATED
-                    fields.getOrNull(14)
+                    metaMemKeys
                         ?.takeIf { it.isNotBlank() }
                         ?.split(memKeySep)
                         ?.mapNotNull {
@@ -168,7 +204,7 @@ object CompressedPerson {
                         ?.toMap()
                         ?: emptyMap()
                 } else {
-                    fields.getOrNull(14)
+                    metaMemKeys
                         ?.takeIf { it.isNotBlank() }
                         ?.split(memKeySep)
                         ?.mapNotNull {
@@ -230,8 +266,8 @@ object CompressedPerson {
         compress: Boolean = true
     ): String {
         val structureVersion =
-            if (compress) "p1"
-            else "P1"
+            if (compress) "p2"
+            else "P2"
 
         val ver = "$metaSep$structureVersion$metaSep"
 
@@ -243,7 +279,6 @@ object CompressedPerson {
         parts += data.last
         parts += data.gender.name
         parts += (data.portrait ?: "")
-        parts += data.tags.joinToString(sep)
 
         // Personality
         parts += data.personality
@@ -265,6 +300,8 @@ object CompressedPerson {
         parts += data.xp.toString()
         parts += data.bonusXp.toString()
         parts += data.points.toString()
+
+        parts += data.tags.joinToString(memKeyJoinSep) + personSep
 
         // Memory keys
         val memKeyString = data.memKeys.entries.mapNotNull { entry ->

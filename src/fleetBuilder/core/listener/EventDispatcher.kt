@@ -217,7 +217,8 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun onGameSaveFailed() {
-            SaveBackupManager.createBackup()
+            if (FBSettings.backupSave)
+                SaveBackupManager.createBackup()
         }
 
         fun afterGameSave() {
@@ -225,7 +226,8 @@ internal class EventDispatcher : EveryFrameScript {
 
             CommanderShuttle.afterGameSave()
 
-            SaveBackupManager.createBackup()
+            if (FBSettings.backupSave)
+                SaveBackupManager.createBackup()
         }
     }
 
