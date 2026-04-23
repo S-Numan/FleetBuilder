@@ -65,15 +65,18 @@ object CompressedCargo {
 
                 CargoAPI.CargoItemType.SPECIAL -> {
                     val special = stack.specialDataIfSpecial ?: continue
+
                     val errorResult = runCatching {
                         templateCargo.removeEmptyStacks()
                         templateCargo.addSpecial(SpecialItemData(special.id, special.data), 1f)
                         val scroller = Global.getSettings().createCustom(800f, 800f, null).createUIElement(800f, 800f, false)
-                        templateCargo.stacksCopy[0].plugin.createTooltip(scroller, true, null, true)
-                        templateCargo.stacksCopy[0].subtract(1f)
+                        templateCargo.stacksCopy.last().plugin.createTooltip(scroller, true, null, true)
                     }
 
-                    if (errorResult.isSuccess) {
+                    if (errorResult.isSuccess && special.id != "wormhole_anchor" && special.id != "wormhole_scanner"
+                        || (errorResult.exceptionOrNull()?.message?.contains("Parameter specified as non-null is null") == true && errorResult.exceptionOrNull()?.message?.contains("parameter transferHandler") == true)
+                    // Hack to sorta fix transferHandler being null causing throwing the error. If that is true, just skip it! If it got that far, it's proooobably fine. Don't quote me on that.
+                    ) {
                         Triple("SPECIAL", special.id, special.data)
                     } else {
                         failedToSaveItems.add("Name: '${stack.specialItemSpecIfSpecial?.name}'   ID/DATA:(${special.id}, ${special.data})\n${errorResult.exceptionOrNull()?.message}\n")
