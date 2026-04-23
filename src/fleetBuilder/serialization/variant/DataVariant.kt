@@ -384,15 +384,16 @@ object DataVariant {
 
         loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
-        if (data.fluxCapacitors > -1)
-            loadout.numFluxCapacitors = data.fluxCapacitors
-        if (data.fluxVents > -1)
-            loadout.numFluxVents = data.fluxVents
 
         data.tags.forEach { loadout.addTag(it) }
 
         if (loadout.hasTag(FBConst.VARIANT_MADE_IN_ERROR))
             return loadout
+
+        if (data.fluxCapacitors > -1)
+            loadout.numFluxCapacitors = data.fluxCapacitors
+        if (data.fluxVents > -1)
+            loadout.numFluxVents = data.fluxVents
 
         //Remove default DMods
         if (FBSettings.removeDefaultDMods) {
