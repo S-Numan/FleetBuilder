@@ -164,8 +164,7 @@ object ShipDirectoryService {
                     val shipPath = shipJson.getString("shipPath")
 
                     if (!Global.getSettings().fileExistsInCommon("$dirPath$prefix/$shipPath")) {
-                        Global.getLogger(this.javaClass)
-                            .warn("shipPath in path directory /saves/common/$dirPath$prefix\nlinked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location. Removing entry from directory.")
+                        //Global.getLogger(this.javaClass).warn("shipPath in path directory /saves/common/$dirPath$prefix\nlinked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location. Removing entry from directory.")
 
                         linksMissing += shipPath
 
@@ -225,7 +224,6 @@ object ShipDirectoryService {
                                     "Ship path 2: $dirPath$prefix/${shipDirectory.getShipEntry(data.variantId)?.path}\n" +
                                     "The variantID must be changed on one or the other, or one must be removed."
                         )
-                        // TODO, make dialog option that opens on game start and asks which one to remove (or ignore and exclude both), and thus shouldn't dumbly crash the game
                     }
 
                     if (data.hullId !in LookupUtils.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
