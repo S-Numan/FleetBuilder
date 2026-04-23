@@ -140,7 +140,7 @@ class ShipDirectory(
                 includeVariantID = true
             }
             val variantJSON = JSONVariant.saveVariantToJson(
-                inputVariant,
+                variantToSave,
                 comparisonSettings
             )
             val variantUnJSON = JSONVariant.extractVariantDataFromJson(variantJSON).copy(variantId = parsedVariant.variantId)
@@ -156,7 +156,7 @@ class ShipDirectory(
             }
         }
 
-        val savedVariant = buildVariantFull(parsedVariant)
+        val savedVariant = buildVariantFull(parsedVariant, VariantSettings(includeVariantID = true))
 
 
         val shipPath = "${savedVariant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"

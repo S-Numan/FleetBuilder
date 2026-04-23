@@ -1,7 +1,8 @@
-# 1.36.1
+# 1.37.0
 ### Changes
 - Update both the variant and person serialization to be more robust.
 ### Bugfixes
+- Fix built in weapons not saving their weapon groups
 - Improve cargo saving/loading logic in Save Transfer by temporarily adding items to cargo and safely testing if they crash when opening the tooltip. If they do, don't include them in the save and report which items weren't included in the console.
 - Exotica no longer saves bugged cargo which cause crashes when hovering over due to the above. I've also fixed it so the mod can save and load ships which some exotica stats.
 - Various other fixes.

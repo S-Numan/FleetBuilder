@@ -231,9 +231,7 @@ object ShipDirectoryService {
                     ) {
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     } else {
-                        val variant = DataVariant.buildVariantFull(data, missing = missing, settings = VariantSettings().apply {
-                            includeVariantID = true
-                        })
+                        val variant = DataVariant.buildVariantFull(data, missing = missing, settings = VariantSettings(includeVariantID = true))
                         variant.addTag("#PREFIX_$prefix")
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(variant, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     }

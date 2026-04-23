@@ -318,11 +318,12 @@ object DataVariant {
                 var valid = weaponId in allWeapons
                 if (!valid) missing.weaponIds.add(weaponId)
                 if (validHull != null) {
+                    val validWeaponSlot = validHull.allWeaponSlotsCopy.find { it.id == slotId }
                     // Does slot exist?
-                    if (validHull.allWeaponSlotsCopy.none { it.id == slotId }) {
+                    if (validWeaponSlot == null) {
                         missing.weaponSlotIds.add(slotId)
                         valid = false
-                    } else {
+                    } else if (!validWeaponSlot.isBuiltIn) {
                         // Can weapon fit in slot?
                         val weapon = LookupUtils.getWeaponSpec(weaponId)
                         val slot = validHull.getWeaponSlot(slotId)
