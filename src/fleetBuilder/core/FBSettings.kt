@@ -3,6 +3,7 @@ package fleetBuilder.core
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import fleetBuilder.core.FBConst.PRIMARY_DIR
+import fleetBuilder.core.FBSettings.cheatsEnabled
 import fleetBuilder.core.listener.ModSettingsListener
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.api.kotlin.containsString
@@ -66,6 +67,7 @@ object FBSettings {
             includeDMods = autofitSaveDMods
             includeHiddenMods = autofitSaveHiddenMods
             excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
+            includeVariantID = true
         }
     }
 
@@ -163,6 +165,12 @@ object FBSettings {
     }
 
     private var cheatsEnabled = false
+
+    /**
+     * Use [cheatsEnabled] instead if you don't know what you're doing.
+     */
+    fun cheatsEnabledRaw(): Boolean = cheatsEnabled
+
     fun cheatsEnabled(): Boolean = cheatsEnabled || Global.getSettings().isDevMode
     fun setCheatsEnabled(value: Boolean) {
         cheatsEnabled = value

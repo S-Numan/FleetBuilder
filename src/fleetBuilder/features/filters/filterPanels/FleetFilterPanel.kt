@@ -156,6 +156,12 @@ class FleetFilterPanel(
         textField.safeInvoke("processInput", events)
         textField.safeInvoke("releaseFocus", null)
         textField.enabled = false
+
+        // Consome all keyboard input
+        events.forEach { event ->
+            if (event.isConsumed || !event.isKeyboardEvent) return@forEach
+            event.consume()
+        }
     }
 
     override fun handleFocus() {

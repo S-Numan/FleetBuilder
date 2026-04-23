@@ -6,11 +6,10 @@ import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBMisc
-import fleetBuilder.core.FBMisc.fromPrefixedString
-import fleetBuilder.core.FBMisc.toPrefixedString
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
+import fleetBuilder.util.lib.PrefixedCodec
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.optFloat
@@ -71,10 +70,10 @@ object JSONPerson {
                     memKeysJson.opt(keyName)?.let { raw ->
                         if (raw !is String) return@forEach
 
-                        val parsedValue = fromPrefixedString(raw)
-                        if (!parsedValue.first) return@forEach
+                        val parsedValue = PrefixedCodec.decodeAny(raw)
+                        if (!parsedValue.success) return@forEach
 
-                        put("$$keyName", parsedValue.second)
+                        put("$$keyName", parsedValue.value)
                     }
                 }
             }
@@ -184,11 +183,10 @@ object JSONPerson {
             val key = entry.key
             val value = entry.value
 
-            val formattedValue = toPrefixedString(value)
+            val formattedValue = PrefixedCodec.encode(value) ?: return@forEach
+            
+            memKeysJSON.put(key.removePrefix("$"), formattedValue)
 
-            if (formattedValue != null) {
-                memKeysJSON.put(key.removePrefix("$"), formattedValue)
-            }
         }
         if (memKeysJSON.length() > 0)
             json.put("memKeysV2", memKeysJSON)

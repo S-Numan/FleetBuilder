@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.combat.EngagementResultAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.FBTxt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.get
@@ -21,6 +22,61 @@ import fleetBuilder.util.api.CampaignUtils.openCampaignDummyDialog
 import fleetBuilder.util.api.kotlin.safeInvoke
 
 object CampaignUtils {
+
+    // Taken from Logistics Notifications by SafariJohn
+    /**
+     * Calculates how many days of supply the player has left, accounting for repairs and recovery.
+     * @return days of supply
+     */
+    fun getPlayerSupplyDays(): Float {
+        // Calculate days of supply remaining
+        val playerFleet = Global.getSector().playerFleet
+        val supplies = playerFleet.cargo.supplies
+        val logistics = playerFleet.logistics
+        val recoveryCost = logistics.totalRepairAndRecoverySupplyCost
+        val totalPerDay = logistics.totalSuppliesPerDay
+        val suDays: Float
+        // Running out
+        if (recoveryCost >= supplies) {
+            suDays = supplies / totalPerDay
+        } else {
+
+            // Total up maintenance costs per day for fleet
+            var maintPerDay = 0f
+            for (mem: FleetMemberAPI in playerFleet.membersWithFightersCopy) {
+                val maint = mem.stats.suppliesPerMonth.modifiedValue / 30
+                maintPerDay += maint
+            }
+            // Account for extra cost from over-capacity
+            // Not going to try to do cargo because it's reductive as it consumes supplies
+            maintPerDay += logistics.excessPersonnelCapacitySupplyCost
+            maintPerDay += logistics.excessFuelCapacitySupplyCost
+
+            // And finally: compute!
+            suDays = (recoveryCost / totalPerDay) + ((supplies - recoveryCost.toInt()) / maintPerDay)
+        }
+        return suDays
+    }
+
+    // Taken from Logistics Notifications by SafariJohn
+    /**
+     * Calculates how far the player's fleet can travel, minus amount needed to jump to hyper if in-system.
+     * @return distance in lightyears
+     */
+    fun getPlayerFuelLY(): Float {
+        // Calculate lightyears of fuel remaining
+        val playerFleet = Global.getSector().playerFleet
+        val fuel = playerFleet.cargo.fuel
+        val fuelPerDay = playerFleet.logistics.baseFuelCostPerLightYear
+        var ly: Float
+        if (playerFleet.isInHyperspace) {
+            ly = fuel / fuelPerDay
+        } else {
+            ly = (fuel - fuelPerDay) / fuelPerDay
+        }
+        if (ly < 0) ly = 0f
+        return ly
+    }
 
     /**
      * Returns all entities across all locations in the sector.

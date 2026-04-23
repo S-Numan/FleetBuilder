@@ -77,6 +77,7 @@
   "sim_block_station": "Cannot simulate a station.",
   "sim_block_cosmic": "Cannot simulate what is beyond comprehension.",
   "sim_block_unknown_hull": "This ship is unknown to you.",
+  "sim_block_missing_hull": "Hull could not be found.",
   "sim_block_missing_hull_detail": "Hull id '%s' could not be found.\nThe mod which added this hull may be missing or an update may have removed this hull",
   "fleet_members": "Fleet Members",
   "officer_data": "Officer Data",

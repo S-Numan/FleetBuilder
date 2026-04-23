@@ -4,10 +4,11 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.core.FBMisc.getCallerClass
+import fleetBuilder.core.FBMisc.isConsoleOpen
 import fleetBuilder.core.FBSettings
 import fleetBuilder.features.logMessageAppender.NoDisplayThrowable
 import fleetBuilder.ui.customPanel.common.DialogPanel
-import fleetBuilder.core.FBMisc.getCallerClass
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
 import java.awt.Color
@@ -100,8 +101,13 @@ object DisplayMessage {
                     defaultColor, after
                 )
             }
-        } else
+        } else { // Title-Screen state?
             DrawMessageOnTop.addMessage(short, color ?: Misc.getTextColor())
+        }
+
+        // Show messages in console if console is open
+        if (isConsoleOpen())
+            Console.showMessage(short)
 
         //Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)
     }
@@ -135,10 +141,10 @@ object DisplayMessage {
 
     @JvmOverloads
     fun dialogMessage(title: String, message: String, messageColor: Color = Misc.getTextColor()) {
-        val dialog = DialogPanel(headerTitle = title)
+        val dialog = DialogPanel(title)
         dialog.allowHotkeyQuit = false
 
-        dialog.show(width = 800f, height = 400f) { ui ->
+        dialog.show(width = 800f, height = 400f, withScroller = true) { ui ->
             ui.addPara(message, messageColor, 0f)
 
             dialog.addActionButtons(alignment = Alignment.MID, addCancelButton = false)

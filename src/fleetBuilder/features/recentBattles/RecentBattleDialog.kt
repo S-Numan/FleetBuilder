@@ -9,6 +9,7 @@ import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.pasteFleetDialog
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectory
 import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
 import fleetBuilder.otherMods.starficz.*
+import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
@@ -18,7 +19,7 @@ import java.util.*
 
 object RecentBattleDialog {
     fun recentBattleDialog(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen())
+        if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen())
             return
         val fleetDirectory = FleetDirectoryService.getDirectory() ?: return
         showDialog(fleetDirectory, null, sortNewestFirst = true, onlyPersonBounty = false)

@@ -21,7 +21,6 @@ import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import fleetBuilder.util.api.kotlin.getActualHullId
-import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -153,6 +152,8 @@ object ShipDirectoryService {
 
             val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, name = name, description = description)
 
+            val linksMissing: MutableList<String> = mutableListOf()
+
             directory.optJSONArray("shipPaths")?.let { shipJsonPaths ->
                 val seenPaths = mutableSetOf<String>()
 
@@ -163,8 +164,9 @@ object ShipDirectoryService {
                     val shipPath = shipJson.getString("shipPath")
 
                     if (!Global.getSettings().fileExistsInCommon("$dirPath$prefix/$shipPath")) {
-                        Global.getLogger(this.javaClass)
-                            .warn("shipPath in path directory /saves/common/$dirPath$prefix\nlinked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location. Removing entry from directory.")
+                        //Global.getLogger(this.javaClass).warn("shipPath in path directory /saves/common/$dirPath$prefix\nlinked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location. Removing entry from directory.")
+
+                        linksMissing += shipPath
 
                         shipJsonPaths.remove(i)
 
@@ -215,7 +217,6 @@ object ShipDirectoryService {
                         continue
                     }
 
-
                     if (shipDirectory.containsShip(data.variantId)) {
                         throw Error(
                             "Duplicate variant ID in ships directory $prefix\n" +
@@ -230,13 +231,24 @@ object ShipDirectoryService {
                     ) {
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     } else {
-                        val variant = DataVariant.buildVariantFull(data, missing = missing)
+                        val variant = DataVariant.buildVariantFull(data, missing = missing, settings = VariantSettings(includeVariantID = true))
                         variant.addTag("#PREFIX_$prefix")
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(variant, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     }
 
                     i++
                 }
+            }
+
+            if (linksMissing.isNotEmpty()) {
+                DisplayMessage.dialogMessage(
+                    "Missing Autofit Loadout Links",
+                    "Some saved autofit loadouts could not be found.\n" +
+                            "The following linked variant files are missing the dir /saves/common/$dirPath$prefix:\n\n" +
+                            linksMissing.joinToString("\n") +
+                            "\n\n" +
+                            "These links have been removed because their associated variant files are no longer available."
+                )
             }
 
             shipDirectories.add(shipDirectory)

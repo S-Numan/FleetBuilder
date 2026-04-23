@@ -188,7 +188,9 @@ object JSONVariant {
     ): JSONObject {
         val jsonVariant = JSONObject()
 
-        jsonVariant.put("variantId", data.variantId)
+        if (data.variantId.isNotEmpty())
+            jsonVariant.put("variantId", data.variantId)
+
         jsonVariant.put("displayName", data.displayName)
         jsonVariant.put("hullId", data.hullId)
         jsonVariant.put("fluxCapacitors", data.fluxCapacitors)

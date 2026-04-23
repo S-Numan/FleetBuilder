@@ -8,10 +8,10 @@ import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBMisc.isPrefixable
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.PersonUtils
+import fleetBuilder.util.lib.PrefixedCodec
 import org.histidine.chatter.ChatterDataManager
 import org.histidine.chatter.combat.ChatterCombatPlugin
 import java.util.*
@@ -43,15 +43,7 @@ object DataPerson {
     @JvmOverloads
     fun clonePerson(
         person: PersonAPI,
-        filterParsed: Boolean = false
-    ): PersonAPI {
-        val data = getPersonDataFromPerson(person, filterParsed = filterParsed)
-        return buildPerson(data)
-    }
-
-    fun clonePerson(
-        person: PersonAPI,
-        settings: PersonSettings
+        settings: PersonSettings = PersonSettings()
     ): PersonAPI {
         val data = getPersonDataFromPerson(person, settings)
         return buildPerson(data)
@@ -144,7 +136,7 @@ object DataPerson {
                 when {
                     key in excludeKeys -> return@filterKeys false
                     settings.excludePeopleMemoryKeys && key in peopleKeys -> return@filterKeys false
-                    else -> isPrefixable(value)
+                    else -> PrefixedCodec.isPrefixable(value)
                 }
             }
 

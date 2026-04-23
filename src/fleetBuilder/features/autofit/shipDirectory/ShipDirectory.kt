@@ -118,6 +118,8 @@ class ShipDirectory(
         tagAsImport: Boolean = false,
         setVariantID: String? = null
     ): String {
+        val settings = settings.copy(includeVariantID = true)
+
         val currentTime = Date()
 
         val variantToSave = inputVariant.clone().apply {
@@ -135,10 +137,10 @@ class ShipDirectory(
         // DEBUG!
         if (FBSettings.enableDebug) {
             val comparisonSettings = VariantSettings().apply {
-
+                includeVariantID = true
             }
             val variantJSON = JSONVariant.saveVariantToJson(
-                inputVariant,
+                variantToSave,
                 comparisonSettings
             )
             val variantUnJSON = JSONVariant.extractVariantDataFromJson(variantJSON).copy(variantId = parsedVariant.variantId)
@@ -154,7 +156,7 @@ class ShipDirectory(
             }
         }
 
-        val savedVariant = buildVariantFull(parsedVariant)
+        val savedVariant = buildVariantFull(parsedVariant, VariantSettings(includeVariantID = true))
 
 
         val shipPath = "${savedVariant.hullSpec.getEffectiveHullId()}/${savedVariant.hullVariantId}"

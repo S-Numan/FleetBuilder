@@ -13,12 +13,12 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.core.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.createHullVariant
 import org.lwjgl.input.Keyboard
@@ -75,7 +75,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
             val pad = 18f
 
             var exists = false
-            val children = codex.getChildrenCopy() as List<UIComponentAPI>
+            val children = (codex as? UIPanelAPI)?.getChildrenCopy() as List<UIComponentAPI>
             children.forEach { child ->
                 if (child === addToFleetButton) {
                     exists = true

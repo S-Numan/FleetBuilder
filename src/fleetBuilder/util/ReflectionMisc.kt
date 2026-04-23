@@ -69,6 +69,10 @@ object ReflectionMisc {
         return getRefitTab()?.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
     }
 
+    fun getRefitPanelShipDisplay(refitPanel: UIPanelAPI): UIPanelAPI? {
+        return refitPanel.safeInvoke("getShipDisplay") as? UIPanelAPI
+    }
+
     fun getRefitPanelModWidget(refitPanel: UIPanelAPI): ModWidget? {
         val children = refitPanel.getChildrenCopy()
         var desiredChild: UIPanelAPI? = null

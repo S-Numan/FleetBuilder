@@ -23,10 +23,11 @@ object SerializationUtils {
     const val metaSep = "$"//Only two ascii characters that cannot be in a variant display name
     const val joinSep = ">"
     const val memberSep = "$$><$$"
+    const val personSep = "$$<>$$"
     const val fleetSep1 = "$$>>$$"
     const val fleetSep2 = "$$<<$$"
-    const val memKeySep = "$$sep$"
-    const val memKeyJoinSep = "$$joinSep$"
+    const val memKeySep = "$,$"
+    const val memKeyJoinSep = "$>$"
 
     fun cleanJsonStringInput(raw: String): String {
         return raw.lines()

@@ -262,9 +262,9 @@ object DataVariant {
         val validHull = validHullId?.let { LookupUtils.getHullSpec(it) }
 
         // --- Variant ID ---
-        val fixedVariantId = data.variantId.ifBlank {
-            "BlankID_" + Misc.genUID()
-        }
+        /*val fixedVariantId = data.variantId.ifBlank {
+            Misc.genUID()
+        }*/
 
         // --- Display Name ---
         val fixedDisplayName = data.displayName.ifBlank {
@@ -318,11 +318,12 @@ object DataVariant {
                 var valid = weaponId in allWeapons
                 if (!valid) missing.weaponIds.add(weaponId)
                 if (validHull != null) {
+                    val validWeaponSlot = validHull.allWeaponSlotsCopy.find { it.id == slotId }
                     // Does slot exist?
-                    if (validHull.allWeaponSlotsCopy.none { it.id == slotId }) {
+                    if (validWeaponSlot == null) {
                         missing.weaponSlotIds.add(slotId)
                         valid = false
-                    } else {
+                    } else if (!validWeaponSlot.isBuiltIn) {
                         // Can weapon fit in slot?
                         val weapon = LookupUtils.getWeaponSpec(weaponId)
                         val slot = validHull.getWeaponSlot(slotId)
@@ -347,7 +348,7 @@ object DataVariant {
 
         val cleanedData = data.copy(
             hullId = validHullId ?: LookupUtils.getErrorVariantHullID(),
-            variantId = fixedVariantId,
+            //variantId = fixedVariantId,
             displayName = fixedDisplayName,
             hullMods = cleanHullMods.toSet(),
             permaMods = cleanPermaMods.toSet(),
@@ -356,7 +357,7 @@ object DataVariant {
             wings = cleanWings,
             weaponGroups = cleanWeaponGroups,
             moduleVariants = cleanedModuleVariants,
-            tags = if (validHullId == null) (data.tags + FBConst.FB_ERROR_TAG) else data.tags
+            tags = if (validHullId == null) (data.tags + FBConst.VARIANT_MADE_IN_ERROR) else data.tags
         )
 
         return cleanedData
@@ -368,11 +369,19 @@ object DataVariant {
         val settings = Global.getSettings()
 
         val hullSpec = settings.getHullSpec(data.hullId)
-        val loadout = settings.createHullVariant(hullSpec)
+        val loadout = if (!data.tags.contains(FBConst.VARIANT_MADE_IN_ERROR))
+            settings.createHullVariant(hullSpec)
+        else
+            VariantUtils.createErrorVariant()
+
         loadout.weaponGroups.clear()
 
         loadout.source = VariantSource.REFIT
-        loadout.hullVariantId = data.variantId
+        if (data.variantId.isNotEmpty())
+            loadout.hullVariantId = data.variantId
+        else
+            loadout.hullVariantId = Misc.genUID()
+
         loadout.setVariantDisplayName(data.displayName)
         loadout.isGoalVariant = data.isGoalVariant
         if (data.fluxCapacitors > -1)
@@ -382,7 +391,7 @@ object DataVariant {
 
         data.tags.forEach { loadout.addTag(it) }
 
-        if (loadout.hasTag(FBConst.FB_ERROR_TAG))
+        if (loadout.hasTag(FBConst.VARIANT_MADE_IN_ERROR))
             return loadout
 
         //Remove default DMods

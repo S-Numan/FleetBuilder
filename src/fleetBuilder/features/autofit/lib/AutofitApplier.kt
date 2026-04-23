@@ -227,7 +227,8 @@ internal object AutofitApplier {
 
         try {
             if (appliedSMods) {
-                refitPanel.safeInvoke("saveCurrentVariant") // Prevent undo. Refunding SMods is difficult.
+                // Prevent undo. Refunding SMods is difficult.
+                refitPanel.safeInvoke("saveCurrentVariant")
                 refitPanel.safeInvoke("setEditedSinceSave", false)
             }
             if (baseVariantContainsModules && baseVariant.safeInvoke("getModuleVariants") == null) {
@@ -244,8 +245,8 @@ internal object AutofitApplier {
             }
 
             refitPanel.safeInvoke("syncWithCurrentVariant")
-
             try {
+                //shipDisplay.safeInvoke("updateFromCurrentVariant") // Updates FleetMemberAPI stuff. Shouldn't be needed as this theoretically happens on leaving the refit screen
                 shipDisplay.safeInvoke("updateModules")
             } catch (e: Exception) {
                 DisplayMessage.showError(

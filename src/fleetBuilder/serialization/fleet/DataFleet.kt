@@ -8,7 +8,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBMisc.isPrefixable
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.DataMember
@@ -25,6 +24,7 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getErrorVariantHullID
 import fleetBuilder.util.api.PersonUtils
+import fleetBuilder.util.lib.PrefixedCodec
 import java.util.*
 
 object DataFleet {
@@ -42,20 +42,10 @@ object DataFleet {
     @JvmOverloads
     fun cloneFleet(
         fleet: CampaignFleetAPI,
-        aiMode: Boolean,
-        filterParsed: Boolean = false
-    ): CampaignFleetAPI {
-        val data = getFleetDataFromFleet(fleet, filterParsed = filterParsed)
-        return createCampaignFleetFromData(data, aiMode)
-    }
-
-    fun cloneFleet(
-        fleet: CampaignFleetAPI,
-        aiMode: Boolean,
-        settings: FleetSettings,
+        settings: FleetSettings = FleetSettings(),
     ): CampaignFleetAPI {
         val data = getFleetDataFromFleet(fleet, settings)
-        return createCampaignFleetFromData(data, aiMode, settings)
+        return createCampaignFleetFromData(data, fleet.isAIMode, settings)
     }
 
     @JvmOverloads
@@ -117,7 +107,7 @@ object DataFleet {
 
                 val value = data.memKeys[key]
 
-                return@filterKeys isPrefixable(value)
+                return@filterKeys PrefixedCodec.isPrefixable(value)
             }
 
         var filteredCommander: DataPerson.ParsedPersonData? = null
@@ -224,7 +214,7 @@ object DataFleet {
             }
 
             // Error-tagged variant
-            if (FBConst.FB_ERROR_TAG in variantData.tags) {
+            if (FBConst.VARIANT_MADE_IN_ERROR in variantData.tags) {
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
             }
 

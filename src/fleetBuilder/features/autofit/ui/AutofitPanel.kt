@@ -53,10 +53,9 @@ import java.awt.Color
 
 
 /**
- * Original author
- * @author Starficz
- * Heavily modified otherwise
- * A grand pile of jank
+ * Original author 'Starficz'
+ *
+ * Heavily modified otherwise. A grand pile of jank
  */
 internal object AutofitPanel {
     private const val BACKGROUND_ALPHA = 0.7f
@@ -719,6 +718,7 @@ internal object AutofitPanel {
                 } else {
                     settings = VariantSettings().apply {
                         excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
+                        includeVariantID = true
                     }
 
                     shipDirectory = autofitPlugin.draggedAutofitSpec!!.source
@@ -741,7 +741,7 @@ internal object AutofitPanel {
                     }
                 }
 
-                val equalVariant = ShipDirectoryService.getLoadoutVariantsForHullspec(currentPrefix, draggedVariant.hullSpec).firstOrNull { compareVariantContents(it, draggedVariant) }
+                val equalVariant = ShipDirectoryService.getLoadoutVariantsForHullspec(currentPrefix, draggedVariant.hullSpec).firstOrNull { variant -> compareVariantContents(variant, draggedVariant) }
 
                 val shipVariantID: String
                 if (equalVariant != null) { // Variant already exists?

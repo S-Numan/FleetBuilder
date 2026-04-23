@@ -8,6 +8,8 @@ import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.joinSep
+import fleetBuilder.serialization.SerializationUtils.memKeyJoinSep
+import fleetBuilder.serialization.SerializationUtils.memKeySep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
@@ -52,26 +54,24 @@ object CompressedVariant {
             return null
         }
 
-        val metaVersion = comp.substring(metaIndexStart + 1, metaIndexEnd)
-        if (metaVersion.isEmpty())
+        val metaVersionFull = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        if (!metaVersionFull.lowercase().startsWith('v'))
             return null
+        val metaVersionNumber = metaVersionFull.substring(1).toInt()
+        val metaVersionCompressed = metaVersionFull.startsWith('v')
 
-        var fullData: String? = null
-
-        if (metaVersion == "v0") { // Compressed
-
-            // Extract the compressed portion after the second metaSep
+        val fullData = if (metaVersionCompressed) {
             val compressedData = comp.substring(metaIndexEnd + 1)
-
-            fullData = CompressionUtil.base64Inflate(compressedData)
-            if (fullData.isNullOrBlank()) {
-                showError("Error decompressing variant data", "Error decompressing variant data\n$compressedData")
-                return null
-            }
-        } else if (metaVersion == "V0") { // Non compressed
-            fullData = comp.substring(metaIndexEnd + 1)
+            CompressionUtil.base64Inflate(compressedData)
         } else {
-            showError("Invalid meta version: $metaVersion")
+            comp.substring(metaIndexEnd + 1)
+        } ?: run {
+            showError("Invalid meta version: $metaVersionFull")
+            return null
+        }
+
+        if (fullData.isBlank()) {
+            showError("Error decompressing variant data", "Error decompressing variant data\n$comp")
             return null
         }
 
@@ -104,12 +104,16 @@ object CompressedVariant {
 
         val allData = fullData.substring(firstFieldSep + 1)
 
-        val segments = allData.split(metaSep)
+        val segments = if (metaVersionNumber == 0)
+            allData.split(metaSep)
+        else
+            allData.split(memKeyJoinSep)
+
         val rootSegment = segments[0]
         val moduleSegments = segments.drop(1)
 
         try {
-            return extractModuleFromCompString(rootSegment, moduleSegments)
+            return extractModuleFromCompString(rootSegment, moduleSegments, metaVersionNumber)
         } catch (e: Exception) {
             showError("Error parsing variant data", e)
             return null
@@ -119,7 +123,8 @@ object CompressedVariant {
 
     private fun extractModuleFromCompString(
         data: String,
-        moduleSegments: List<String>
+        moduleSegments: List<String>,
+        metaVersionNumber: Int
     ): DataVariant.ParsedVariantData {
         val fields = data.split(fieldSep)
 
@@ -141,7 +146,10 @@ object CompressedVariant {
         val permaMods = fields[10].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
         DataVariant.normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns)
 
-        val tags = fields.getOrNull(11)?.takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
+        val tags = if (metaVersionNumber == 0)
+            fields.getOrNull(11)?.takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
+        else
+            fields.getOrNull(11)?.takeIf { it.isNotBlank() }?.split(memKeySep) ?: emptyList()
 
         val weaponGroups = if (weaponGroupString.isNotBlank()) {
             weaponGroupString.split(joinSep).map { group ->
@@ -161,10 +169,10 @@ object CompressedVariant {
 
         val modules = moduleSegments
             .mapNotNull { segment ->
-                val parts = segment.split('%', limit = 2)
+                val parts = segment.split(fieldSep, limit = 2)
                 if (parts.size == 2) {
                     val (slot, moduleData) = parts
-                    slot to extractModuleFromCompString(moduleData, emptyList())
+                    slot to extractModuleFromCompString(moduleData, emptyList(), metaVersionNumber)
                 } else null
             }
             .toMap()
@@ -207,8 +215,8 @@ object CompressedVariant {
         compress: Boolean = true,
     ): String {
         val structureVersion =
-            if (compress) "v0" // Variant compressed 0
-            else "V0" // Variant uncompressed 0
+            if (compress) "v1" // Variant compressed 0
+            else "V1" // Variant uncompressed 0
 
 
         val ver = "$metaSep$structureVersion$metaSep"//v for variant. To identify the type of compressed string without having to decompress it first. member would be m, fleet would be f, person would be p, etc.
@@ -220,7 +228,7 @@ object CompressedVariant {
         data.moduleVariants.forEach { (moduleSlot, module) ->
             val compressedModuleVariant = saveModuleVariantToCompString(module)
 
-            compressedVariant += "$metaSep$moduleSlot$fieldSep$compressedModuleVariant"
+            compressedVariant += "$memKeyJoinSep$moduleSlot$fieldSep$compressedModuleVariant"
         }
 
         var requiredMods = ""//For the user to see
@@ -283,7 +291,7 @@ object CompressedVariant {
         parts += data.sMods.joinToString(sep)
         parts += data.sModdedBuiltIns.joinToString(sep)
         parts += data.permaMods.joinToString(sep)
-        parts += data.tags.joinToString(sep)
+        parts += data.tags.joinToString(memKeySep)
 
         return parts.joinToString(fieldSep)
     }

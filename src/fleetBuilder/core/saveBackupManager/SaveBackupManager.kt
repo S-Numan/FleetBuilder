@@ -11,7 +11,7 @@ object SaveBackupManager {
 
     fun createBackup() {
         try {
-            val compSave = PlayerSaveUtils.createSaveJson(superCompressSave = true)
+            val compSave = PlayerSaveUtils.createSaveJson(superCompressSave = true, showErrorMessages = false)
 
             if (compSave.length >= 1000000) {
                 Global.getLogger(this::class.java)

@@ -43,6 +43,7 @@ import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
+import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
@@ -223,7 +224,7 @@ internal object ClipboardHotkeyHandlerUtils {
     //
 
     fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.isCodexOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
 
         if (ui.getActualCurrentTab() == null &&
             ui.currentInteractionDialog == null
@@ -234,7 +235,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.getCodexDialog() != null) return
+        if (ReflectionMisc.getCodexDialog() != null || DialogUtils.isPopUpPanelOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET ||
             (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)
@@ -246,7 +247,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleDevModeHotkey(event: InputEventAPI) {
-        if (ReflectionMisc.isCodexOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
 
         event.consume()
         createDevModeDialog()

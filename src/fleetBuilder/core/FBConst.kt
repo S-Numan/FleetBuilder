@@ -12,7 +12,7 @@ object FBConst {
     const val STORED_OFFICER_TAG = "\$FB_stored_officer"
     const val NO_COPY_TAG = "FB_no_copy"
 
-    const val FB_ERROR_TAG = "FB_ERR"
+    const val VARIANT_MADE_IN_ERROR = "VARIANT_MADE_IN_ERROR"
 
     /**
      * Only applicable when copying a variant alone. Does not apply when copying a member or entire fleet.

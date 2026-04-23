@@ -42,7 +42,8 @@ object PlayerSaveUtils {
         handleKnownHullmods: Boolean = true,
         handleOfficers: Boolean = true,
         handleAbilityBar: Boolean = true,
-        superCompressSave: Boolean = false
+        superCompressSave: Boolean = false,
+        showErrorMessages: Boolean = true,
     ): String {
         val json = JSONObject()
         val sector = Global.getSector()
@@ -51,7 +52,7 @@ object PlayerSaveUtils {
         if (handleCargo) {
             //val cargoJson = CargoSerialization.saveCargoToJson(playerFleet.cargo.stacksCopy)
             //json.put("cargo", cargoJson)
-            val cargoComp = CompressedCargo.saveCargoToCompString(playerFleet.cargo.stacksCopy, compress = !superCompressSave)
+            val cargoComp = CompressedCargo.saveCargoToCompString(playerFleet.cargo.stacksCopy, compress = !superCompressSave, showErrorMessages = showErrorMessages)
             json.put("cargo", cargoComp)
         }
 
