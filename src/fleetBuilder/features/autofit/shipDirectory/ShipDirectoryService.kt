@@ -246,12 +246,12 @@ object ShipDirectoryService {
 
             if (linksMissing.isNotEmpty()) {
                 DisplayMessage.dialogMessage(
-                    "Autofit links missing",
-                    "Some autofit loadouts were linked to but missing!\n" +
-                            "Links missing in dir /saves/common/$dirPath$prefix\n\n" +
+                    "Missing Autofit Loadout Links",
+                    "Some saved autofit loadouts could not be found.\n" +
+                            "The following linked variant files are missing the dir /saves/common/$dirPath$prefix:\n\n" +
                             linksMissing.joinToString("\n") +
                             "\n\n" +
-                            "All missing links have been removed due to their linked variants no longer being accessable"
+                            "These links have been removed because their associated variant files are no longer available."
                 )
             }
 
