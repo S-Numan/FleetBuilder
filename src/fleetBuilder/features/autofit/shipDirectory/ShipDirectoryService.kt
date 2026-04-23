@@ -152,6 +152,8 @@ object ShipDirectoryService {
 
             val shipDirectory = ShipDirectory("$dirPath$prefix/", configFilePath, prefix, name = name, description = description)
 
+            val linksMissing: MutableList<String> = mutableListOf()
+
             directory.optJSONArray("shipPaths")?.let { shipJsonPaths ->
                 val seenPaths = mutableSetOf<String>()
 
@@ -164,6 +166,8 @@ object ShipDirectoryService {
                     if (!Global.getSettings().fileExistsInCommon("$dirPath$prefix/$shipPath")) {
                         Global.getLogger(this.javaClass)
                             .warn("shipPath in path directory /saves/common/$dirPath$prefix\nlinked to ship variant at /saves/common/$dirPath$prefix/$shipPath\nHowever, no file was found at that location. Removing entry from directory.")
+
+                        linksMissing += shipPath
 
                         shipJsonPaths.remove(i)
 
@@ -214,7 +218,6 @@ object ShipDirectoryService {
                         continue
                     }
 
-
                     if (shipDirectory.containsShip(data.variantId)) {
                         throw Error(
                             "Duplicate variant ID in ships directory $prefix\n" +
@@ -222,6 +225,7 @@ object ShipDirectoryService {
                                     "Ship path 2: $dirPath$prefix/${shipDirectory.getShipEntry(data.variantId)?.path}\n" +
                                     "The variantID must be changed on one or the other, or one must be removed."
                         )
+                        // TODO, make dialog option that opens on game start and asks which one to remove (or ignore and exclude both), and thus shouldn't dumbly crash the game
                     }
 
                     if (data.hullId !in LookupUtils.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
@@ -238,6 +242,17 @@ object ShipDirectoryService {
 
                     i++
                 }
+            }
+
+            if (linksMissing.isNotEmpty()) {
+                DisplayMessage.dialogMessage(
+                    "Autofit links missing",
+                    "Some autofit loadouts were linked to but missing!\n" +
+                            "Links missing in dir /saves/common/$dirPath$prefix\n\n" +
+                            linksMissing.joinToString("\n") +
+                            "\n\n" +
+                            "All missing links have been removed due to their linked variants no longer being accessable"
+                )
             }
 
             shipDirectories.add(shipDirectory)

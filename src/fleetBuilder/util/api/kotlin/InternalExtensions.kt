@@ -10,12 +10,14 @@ import fleetBuilder.otherMods.starficz.addButton
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.width
+import org.magiclib.kotlin.setAlpha
 import java.awt.Color
 
 
-internal fun UIPanelAPI.whiteBoxForTesting(width: Float? = null, height: Float? = null): ButtonAPI {
+internal fun UIPanelAPI.whiteBoxForTesting(width: Float? = null, height: Float? = null, alpha: Int = 255): ButtonAPI {
     val whiteBox = this.addButton(
-        "", null, Color.BLACK, Color.WHITE, Alignment.MID, CutStyle.NONE, width ?: this.width, height ?: this.height
+        "", null, Color.BLACK, Color.WHITE.setAlpha(alpha), Alignment.MID, CutStyle.NONE, width ?: this.width, height
+            ?: this.height
     )
     return whiteBox
 }

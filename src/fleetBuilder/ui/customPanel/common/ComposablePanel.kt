@@ -3,9 +3,11 @@ package fleetBuilder.ui.customPanel.common
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.otherMods.starficz.height
+import fleetBuilder.otherMods.starficz.lastComponent
 import fleetBuilder.otherMods.starficz.setSize
 import fleetBuilder.otherMods.starficz.width
 import fleetBuilder.ui.customPanel.DialogUtils
+import fleetBuilder.util.api.kotlin.safeInvoke
 
 open class ComposablePanel : BasePanel() {
 
@@ -37,9 +39,11 @@ open class ComposablePanel : BasePanel() {
             // create the tooltip
             val tooltipWidth = panel.width - (tooltipPadFromSide * 2)
             val tooltipHeight = panel.height - tooltipPadFromBottom - tooltipPadFromTop
-            tooltip = panel.createUIElement(tooltipWidth, tooltipHeight, withScroller)
-            tooltip!!.setSize(tooltipWidth, tooltipHeight)
 
+            // create tooltip
+            tooltip = panel.createUIElement(tooltipWidth, tooltipHeight, withScroller)
+            // set size again
+            tooltip!!.setSize(tooltipWidth, tooltipHeight)
             // Align new tooltip components to the top left to rid of the mysterious 5f x pad in some components, such as buttons.
             // This will cause mis-positioning for components that rely on it, such as headers. I advise using .position.setXAlignOffset(0f) to re-align them.
             tooltip!!.addSpacer(0f).position?.inTL(0f, 0f)
@@ -48,7 +52,12 @@ open class ComposablePanel : BasePanel() {
             callback(tooltip!!)
             // add UI automatically afterward
             panel.addUIElement(tooltip)
-            tooltip!!.position.inTL(tooltipPadFromSide, tooltipPadFromTop)
+
+            // apply TL. This is done on lastComponent added instead of the tooltip to account for positioning the scroller which may contain the tooltip. In short, avoid positioning the wrong thing.
+            panel.lastComponent?.position?.inTL(tooltipPadFromSide, tooltipPadFromTop)
+
+            if (withScroller)
+                tooltip!!.externalScroller?.safeInvoke("setDoNotRenderShadows", true)
         }
     }
 
