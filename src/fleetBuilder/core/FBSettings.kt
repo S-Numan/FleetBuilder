@@ -67,6 +67,7 @@ object FBSettings {
             includeDMods = autofitSaveDMods
             includeHiddenMods = autofitSaveHiddenMods
             excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
+            includeVariantID = true
         }
     }
 

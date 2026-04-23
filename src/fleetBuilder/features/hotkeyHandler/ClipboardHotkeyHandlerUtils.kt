@@ -247,7 +247,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleDevModeHotkey(event: InputEventAPI) {
-        if (ReflectionMisc.isCodexOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
 
         event.consume()
         createDevModeDialog()

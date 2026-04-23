@@ -21,7 +21,6 @@ import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import fleetBuilder.util.api.kotlin.getActualHullId
-import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -230,7 +229,9 @@ object ShipDirectoryService {
                     ) {
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     } else {
-                        val variant = DataVariant.buildVariantFull(data, missing = missing)
+                        val variant = DataVariant.buildVariantFull(data, missing = missing, settings = VariantSettings().apply {
+                            includeVariantID = true
+                        })
                         variant.addTag("#PREFIX_$prefix")
                         shipDirectory.setRawShipEntry(data.variantId, ShipEntry(variant, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
                     }
