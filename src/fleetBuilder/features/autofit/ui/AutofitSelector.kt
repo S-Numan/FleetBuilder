@@ -11,8 +11,8 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.FaderUtil
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.otherMods.MagicLib.ReflectionUtilsExtra
 import fleetBuilder.otherMods.starficz.*
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getConstructorsMatching
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.api.kotlin.createFleetMember
 import fleetBuilder.util.api.kotlin.safeInvoke
@@ -359,7 +359,7 @@ internal object AutofitSelector {
     }
 
     private fun getExactBounds(variant: ShipVariantAPI): List<BoundsAPI.SegmentAPI>? {
-        val tempShipPreview = ReflectionUtilsExtra.instantiate(BoxedUIShipPreview.SHIP_PREVIEW_CLASS!!) as UIPanelAPI
+        val tempShipPreview = BoxedUIShipPreview.SHIP_PREVIEW_CLASS!!.getConstructorsMatching().getOrNull(0)?.newInstance() as UIPanelAPI
         tempShipPreview.safeInvoke("setVariant", variant)
         tempShipPreview.safeInvoke("overrideVariant", variant)
         tempShipPreview.safeInvoke("prepareShip")

@@ -100,7 +100,9 @@ object HotkeyHandlerDialogs {
             )
             testMessageTrigger.position.inTR(0f, ui.height - testMessageTrigger.height)
             testMessageTrigger.onClick {
-                DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
+                //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
+                DisplayMessage.showError("Test Message: " + Random().nextInt())
+
                 val sector = Global.getSector()
                 val memory = sector.memoryWithoutUpdate
 

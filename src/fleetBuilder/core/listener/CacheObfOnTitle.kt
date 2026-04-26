@@ -7,13 +7,13 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.combat.entities.Ship
-import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.otherMods.starficz.BoxedUIShipPreview
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getConstructorsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
+import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.api.kotlin.safeInvoke
 
 internal class CacheObfOnTitle : BaseEveryFrameCombatPlugin() {
     companion object {
