@@ -9,7 +9,7 @@ import lunalib.lunaSettings.LunaSettings.getString
 import lunalib.lunaSettings.LunaSettingsListener
 import org.apache.log4j.Level
 
-internal class ModSettingsListener : LunaSettingsListener {
+internal class LunaSettingsListener : LunaSettingsListener {
     init {
         settingsChanged(FBSettings.getModID())
 

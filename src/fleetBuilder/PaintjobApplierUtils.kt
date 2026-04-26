@@ -34,11 +34,14 @@ internal object PaintjobApplierUtils {
 
             if (side != 0 && MagicPaintjobManager.getCurrentShipPaintjob(member)?.isShiny == true) {
                 val memberButton = shipList.safeInvoke("getButtonForMember", member) as? ButtonAPI ?: return
-                val background = memberButton.parent?.addImage(shinyIconSprite, memberButton.width, memberButton.height)
-                background?.position?.rightOfMid(memberButton, -memberButton.width)
-                background?.uiImage?.opacity = shinyIconOpacity
-                background?.sprite?.color = shinyIconColor
-                memberButton.parent?.bringComponentToTop(memberButton)
+                if (memberButton.customData == null) { // Prevent multiple shiny icons from being applied to the same ship.
+                    val background = memberButton.parent?.addImage(shinyIconSprite, memberButton.width, memberButton.height)
+                    background?.position?.rightOfMid(memberButton, -memberButton.width)
+                    background?.uiImage?.opacity = shinyIconOpacity
+                    background?.sprite?.color = shinyIconColor
+                    memberButton.parent?.bringComponentToTop(memberButton)
+                    memberButton.customData = "SIP" // Shiny Icon Applied
+                }
             }
 
             changeIconSprite(member, memberIcon)
@@ -49,12 +52,12 @@ internal object PaintjobApplierUtils {
         val variantPaintJobSpec = MagicPaintjobManager.getCurrentShipPaintjob(member.variant)
 
         if (variantPaintJobSpec != null) {
-            val spriteFields = memberIcon.getFieldsMatching(fieldAccepts = Sprite::class.java)
+            val spriteFields = memberIcon.getFieldsMatching(type = Sprite::class.java)
             val variantSpriteField = spriteFields.firstOrNull { field ->
                 val sprite = field.get(memberIcon) as? Sprite ?: return@firstOrNull false
-                sprite.getFieldsMatching(name = "textureId")
-                    .getOrNull(0)?.get(sprite) == member.hullSpec.spriteName
+                sprite.getFieldsMatching(name = "textureId").getOrNull(0)?.get(sprite) == member.hullSpec.spriteName
             }
+            //val spriteDirect = memberIcon.getMethodsMatching(returnType = Sprite::class.java).firstOrNull()?.invoke(memberIcon) as? Sprite
 
             if (variantSpriteField != null)
                 makeNewSpriteToReplace(variantPaintJobSpec.spriteId, variantSpriteField, memberIcon)
@@ -66,15 +69,15 @@ internal object PaintjobApplierUtils {
         if (modulePaintJobSpecs.isNotEmpty()) {
 
             // Array should be a list of elements which each contain a Sprite, HullVariantSpec, and something obfuscated which seems to contain details on where the module is on its host variant.
-            fun isModuleList(list: ArrayList<*>): Boolean {
+            fun isModuleList(list: List<*>): Boolean {
                 val first = list.firstOrNull() ?: return false
                 return first.getFieldsMatching(type = HullVariantSpec::class.java).isNotEmpty()
             }
 
             val moduleList = memberIcon
-                .getFieldsMatching(fieldAccepts = ArrayList::class.java)
+                .getFieldsMatching(type = List::class.java)
                 .asSequence()
-                .mapNotNull { field -> field.get(memberIcon) as? ArrayList<*> }
+                .mapNotNull { field -> field.get(memberIcon) as? List<*> }
                 .firstOrNull(::isModuleList)
 
             moduleList?.forEach {

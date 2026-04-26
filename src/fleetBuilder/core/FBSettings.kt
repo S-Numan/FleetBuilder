@@ -4,11 +4,10 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import fleetBuilder.core.FBConst.PRIMARY_DIR
 import fleetBuilder.core.FBSettings.cheatsEnabled
-import fleetBuilder.core.listener.ModSettingsListener
+import fleetBuilder.core.listener.LunaSettingsListener
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.api.kotlin.containsString
 import lunalib.lunaSettings.LunaSettings
-import org.apache.log4j.Level
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
@@ -17,8 +16,8 @@ object FBSettings {
     fun onApplicationLoad() {
         modSpec = Global.getSettings().modManager.enabledModsCopy.find { it.modPluginClassName == FleetBuilderPlugin::class.java.name }!!
 
-        if (Global.getSettings().modManager.isModEnabled("lunalib") && !LunaSettings.hasSettingsListenerOfClass(ModSettingsListener::class.java))
-            LunaSettings.addSettingsListener(ModSettingsListener())
+        if (Global.getSettings().modManager.isModEnabled("lunalib") && !LunaSettings.hasSettingsListenerOfClass(LunaSettingsListener::class.java))
+            LunaSettings.addSettingsListener(LunaSettingsListener())
 
         isConsoleModEnabled = Global.getSettings().modManager.isModEnabled("lw_console")
     }
@@ -75,10 +74,6 @@ object FBSettings {
     fun getModSpec(): ModSpecAPI = modSpec
     fun getModName(): String = modSpec.name.trim()
     fun getModID(): String = modSpec.id
-
-    var addLogsToConsoleModConsoleLevel = Level.OFF
-    var addLogsToDisplayMessageLevel = Level.OFF
-
 
     var selectorsPerRow = 4
 

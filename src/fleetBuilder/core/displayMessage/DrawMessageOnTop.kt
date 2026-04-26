@@ -197,7 +197,9 @@ private class CampaignMessageRenderer : BaseCustomUIPanelPlugin() {
     }
 
     override fun advance(amount: Float) {
-        if (screenPanel?.lastComponent !== panel)
-            screenPanel?.bringComponentToTop(panel)
+        if (screenPanel == null) return
+
+        if (screenPanel.lastComponent !== panel)
+            screenPanel.bringComponentToTop(panel)
     }
 }

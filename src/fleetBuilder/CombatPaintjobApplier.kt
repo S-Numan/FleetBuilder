@@ -68,20 +68,25 @@ internal class CombatPaintjobApplier : BaseEveryFrameCombatPlugin() {
         }
     }
 
-    private var centerTooltipHash: Int = 0
+    //private var centerTooltipHash: Int = 0
     private fun applyPaintJobsOnTooltip(state: CombatState, engine: CombatEngine) {
-        if (!state.isShowingDeploymentDialog) return // No need to run this code if the tooltip is not open
+        if (!state.isShowingDeploymentDialog // No need to run this code if the tooltip is not open
+            && engine.isPaused // Just to be sure
+        ) return
+        // When a dialog is open in combat, combat is probably paused so performance isn't as needed. Members in dialog pickers can move around, especially in the fancy simulator dialog which may reset sprites. So run this function every frame if the dialog is open.
 
         val centerTooltip = ReflectionMisc.getScreenPanel()?.getChildrenCopy()?.findChildWithMethod("fleetMemberClicked") ?: return
 
+        /*
         val newHash = centerTooltip.hashCode()
         // Only try to replace sprites once every time the shown tooltip changes
-        if (this.centerTooltipHash == newHash
+        if (centerTooltipHash == newHash
             && !engine.isSimulation // The simulator has a special tooltip which allows the user to switch tabs. To avoid having to check for if the currently open tab has changed, just skip this if statement. The Simulator doesn't need the performance anyway.
         )
             return
 
-        this.centerTooltipHash = newHash
+        centerTooltipHash = newHash
+        */
 
         val innerPanel = centerTooltip.safeInvoke("getInnerPanel") as? UIPanelAPI ?: return
         val fleetList1 = innerPanel.getChildrenCopy().find { it.getMethodsMatching("turnOffCRandHullBars").isNotEmpty() } ?: return

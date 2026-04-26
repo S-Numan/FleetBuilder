@@ -141,7 +141,7 @@ internal class CampaignPaintjobApplier : EveryFrameScript {
             return
         val engine = CampaignEngine.getInstance()
         val tooltip = engine.tooltipManager
-        val hoveredFleet = tooltip?.getFieldsMatching(fieldAccepts = CampaignEntity::class.java)?.getOrNull(0)?.get(tooltip) as? CampaignFleetAPI
+        val hoveredFleet = tooltip?.getFieldsMatching(type = CampaignEntity::class.java)?.getOrNull(0)?.get(tooltip) as? CampaignFleetAPI
         if (hoveredFleet == null) {
             currentHoveredFleetID = null
             return
@@ -157,7 +157,7 @@ internal class CampaignPaintjobApplier : EveryFrameScript {
         if (paintJobMembers.isEmpty())
             return
 
-        val tooltipPanel = tooltip.getFieldsMatching(fieldAccepts = StandardTooltipV2::class.java).getOrNull(0)?.get(tooltip) as? UIPanelAPI
+        val tooltipPanel = tooltip.getFieldsMatching(type = StandardTooltipV2::class.java).getOrNull(0)?.get(tooltip) as? UIPanelAPI
             ?: return
         val tooltipPanelChildChildren = (tooltipPanel.getChildrenCopy().getOrNull(0) as? UIPanelAPI)?.getChildrenCopy()
             ?: return

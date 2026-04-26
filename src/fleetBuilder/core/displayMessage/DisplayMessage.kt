@@ -7,7 +7,6 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBMisc.getCallerClass
 import fleetBuilder.core.FBMisc.isConsoleOpen
 import fleetBuilder.core.FBSettings
-import fleetBuilder.features.logMessageAppender.NoDisplayThrowable
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
@@ -155,7 +154,7 @@ object DisplayMessage {
     /**
      * Logs a message with the specified level.
      *
-     * If [displayMessage] is false, do not show on screen even if the FleetBuilder setting to display logged messages would be true.
+     * If [displayMessage] is false, do not show on screen even if the In-Game Log Viewer setting to display logged messages would be true.
      */
     @JvmOverloads
     fun logMessage(javaClass: Class<*>, message: String, level: Level, displayMessage: Boolean = true) {
@@ -176,5 +175,10 @@ object DisplayMessage {
                 Level.DEBUG -> Global.getLogger(javaClass).debug(message, NoDisplayThrowable())
             }
         }
+    }
+
+    internal class NoDisplayThrowable : Throwable(null, null, false, false) {
+        override fun fillInStackTrace(): Throwable = this
+        override fun toString(): String = ""
     }
 }
