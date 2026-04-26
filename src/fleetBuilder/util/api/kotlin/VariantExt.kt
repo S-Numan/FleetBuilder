@@ -1,6 +1,7 @@
 package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -23,8 +24,8 @@ fun ShipVariantAPI.clone(settings: VariantSettings): ShipVariantAPI {
  *
  * Any slots with null variants are filtered out. Use [getModulesAllowNull] if you want to include null variants.
  *
- * The map key is the module slot ID, and the value is the corresponding
- * [ShipVariantAPI] for that module.
+ * The map key is the module slot ID, and the value is the corresponding [ShipVariantAPI] for that module.
+ * @param onlyThoseInHullSpec If true, only returns modules which a slot to attach to are present in the [ShipHullSpecAPI]
  */
 fun ShipVariantAPI.getModules(onlyThoseInHullSpec: Boolean = false): Map<String, ShipVariantAPI> {
     return getModulesAllowNull(onlyThoseInHullSpec)
@@ -32,6 +33,12 @@ fun ShipVariantAPI.getModules(onlyThoseInHullSpec: Boolean = false): Map<String,
         .toMap()
 }
 
+/**
+ * Returns a map of all modules attached to this variant.
+ *
+ * The map key is the module slot ID, and the value is the corresponding [ShipVariantAPI] for that module.
+ * @param onlyThoseInHullSpec If true, only returns modules which a slot to attach to are present in the [ShipHullSpecAPI]
+ */
 fun ShipVariantAPI.getModulesAllowNull(onlyThoseInHullSpec: Boolean = false): Map<String, ShipVariantAPI?> {
     val modules = stationModules
         ?.map { (slot, _) ->

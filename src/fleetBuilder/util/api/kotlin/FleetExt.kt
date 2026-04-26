@@ -32,16 +32,16 @@ fun CampaignFleetAPI.clone(aiMode: Boolean = true, settings: FleetSettings): Cam
  *
  * This function is a delegate to [FleetUtils.getUnassignedOfficers].
  */
-fun FleetDataAPI.getUnassignedOfficers(): List<PersonAPI> =
-    FleetUtils.getUnassignedOfficers(this)
+fun FleetDataAPI.getUnassignedOfficers(includeMercenaries: Boolean = true): List<PersonAPI> =
+    FleetUtils.getUnassignedOfficers(this, includeMercenaries = includeMercenaries)
 
 /**
  * Returns a list of all officers in the fleet that are assigned to a ship.
  *
  * This function is a delegate to [FleetUtils.getAssignedOfficers].
  */
-fun FleetDataAPI.getAssignedOfficers(): List<PersonAPI> =
-    FleetUtils.getAssignedOfficers(this)
+fun FleetDataAPI.getAssignedOfficers(includeMercenaries: Boolean = true): List<PersonAPI> =
+    FleetUtils.getAssignedOfficers(this, includeMercenaries = includeMercenaries)
 
 /**
  * Repairs all ships in the fleet and restores their CR to maximum
