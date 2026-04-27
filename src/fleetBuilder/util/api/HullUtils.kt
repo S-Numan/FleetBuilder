@@ -98,9 +98,10 @@ object HullUtils {
      * Returns the "effective" hull for a hull spec.
      *
      * In Starsector, hull specs may represent:
-     * - A base hull
-     * - A D-modded hull (d-hull)
-     * - A skin/variant derived from another hull
+     * - A base hull (Normal ship hull made straight from the .ship file)
+     * - A skin/variant derived from another hull (Normal ship skin made straight from the .skin file)
+     * - A D-Modded hull skin (Ship skin made straight from the .skin file. Notably has DMods as built in mods, sometimes missing mounts and a restoreToBaseHull)
+     * - A default D-Hull (Ship Hull/Skin with _D placed at the end to be annoying. Has no seemingly other meaningful changes aside from ruining hullID comparisons)
      *
      * This function resolves the hull to the most appropriate "base-like" hull
      * when the hull is compatible with its base.
@@ -129,11 +130,6 @@ object HullUtils {
      * This attempts to resolve a D-hull to its non-D equivalent while respecting
      * Starsector's special cases.
      *
-     * Important Starsector quirks (0.98a):
-     * - Some ships (e.g. Dominator D) have custom D-mod skins and variants.
-     *   These may have `isCompatibleWithBase == true` but `dParentHull == null`.
-     * - Some fake D-hulls have no custom assets and simply reference a parent hull.
-     *
      * @param hull The hull spec to resolve.
      * @return A compatible non-D hull when possible.
      */
@@ -158,7 +154,7 @@ object HullUtils {
     ): ShipHullSpecAPI {
         if (!hull.isCompatibleWithBase) return hull
         if (isSkin(hull)) return hull
-        return getDLessHull(hull)
+        return hull.dParentHull ?: hull
     }
 
     /**
@@ -173,9 +169,14 @@ object HullUtils {
     fun getDLessHull(hull: ShipHullSpecAPI): ShipHullSpecAPI {
         if (!isDHullFix(hull)) return hull
 
-        if (hull.dParentHull != null) return hull.dParentHull
-
-        return hull.baseHull ?: hull
+        return if (hull.dParentHull != null) {
+            val dParent = hull.dParentHull
+            if (isDHullFix(dParent) && dParent.isCompatibleWithBase)
+                dParent.baseHull ?: dParent
+            else
+                dParent
+        } else
+            hull
     }
 
     /**
