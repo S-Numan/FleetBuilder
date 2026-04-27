@@ -57,6 +57,7 @@ import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
+import org.magiclib.util.memberMemory.MemberMemoryExt.getMemberMemory
 import java.awt.Color
 import java.util.*
 
@@ -102,6 +103,18 @@ object HotkeyHandlerDialogs {
             testMessageTrigger.onClick {
                 //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
                 DisplayMessage.showError("Test Message: " + Random().nextInt())
+
+                val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
+                val memberMemory = memberInRefit.getMemberMemory()
+                val variant = memberInRefit.variant ?: return@onClick
+                val modules = variant.stationModules
+                val modules2 = variant.moduleSlots
+                val modules3 = variant.getModules()
+                DisplayMessage.showError(
+                    "Member memory = " + memberMemory.toString()
+                            + "\nModules = " + variant.hullSpec.getSlotsForModules().toString()
+                )
+
 
                 val sector = Global.getSector()
                 val memory = sector.memoryWithoutUpdate
@@ -171,7 +184,7 @@ object HotkeyHandlerDialogs {
                                 )
                                 DisplayMessage.showMessageCustom("Removed mod: ${it.name}")
                             }.onFailure { e ->
-                                DisplayMessage.showError("Failed to remove mod", "Failed to remove mod:\n${e.message}")
+                                DisplayMessage.showError("Failed to remove mod", e)
                             }
                         }
                     }

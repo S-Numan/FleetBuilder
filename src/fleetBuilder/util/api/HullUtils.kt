@@ -3,6 +3,7 @@ package fleetBuilder.util.api
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.VariantSource
@@ -15,6 +16,24 @@ import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
 import fleetBuilder.util.api.kotlin.getEffectiveHullId
 
 object HullUtils {
+
+    /**
+     * Returns a list of weapon slot IDs which are [WeaponAPI.WeaponType.STATION_MODULE].
+     *
+     * These are the points on the hull which modules are intended to attach too.
+     *
+     * @param hull The hull spec to query.
+     * @return A list of weapon slot IDs that are station modules.
+     */
+    @JvmStatic
+    fun getSlotsForModules(hull: ShipHullSpecAPI): List<String> {
+        return hull.allWeaponSlotsCopy.mapNotNull {
+            if (it.weaponType == WeaponAPI.WeaponType.STATION_MODULE)
+                it.id
+            else
+                null
+        }
+    }
 
     /**
      * Checks if a hull is known to the player.
@@ -128,7 +147,7 @@ object HullUtils {
     }
 
     /**
-     *  Returns the HullSpec from its source file (.ship or .skin), without any extra modifications such as default D-Hull variations.
+     * Returns the HullSpec from its source file (.ship or .skin), without any extra modifications such as default D-Hull variations.
      *
      * @param hull The hull spec to resolve.
      * @return The actual hull spec.

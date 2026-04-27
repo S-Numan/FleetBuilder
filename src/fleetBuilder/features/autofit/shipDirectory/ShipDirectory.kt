@@ -145,13 +145,12 @@ class ShipDirectory(
             )
             val variantUnJSON = JSONVariant.extractVariantDataFromJson(variantJSON).copy(variantId = parsedVariant.variantId)
             if (variantUnJSON != filterParsedVariantData(parsedVariant, comparisonSettings)) { // If not equal, this means the logic somewhere when saving and getting the variant to/from JSON or COMP is not correct
-                DisplayMessage.showError("DEBUG: Variant data mismatch", "DEBUG: Variant data mismatch\n\nvariantUnJSON:\n${variantUnJSON}\n\nparsedVariant:\n${parsedVariant}")
+                DisplayMessage.showError("DEBUG: Variant data mismatch", "\nvariantUnJSON:\n${variantUnJSON}\n\nparsedVariant:\n${parsedVariant}")
 
                 val diffs = deepDiff(parsedVariant, variantUnJSON)
 
                 DisplayMessage.showError(
-                    "DEBUG: Variant data mismatch. DEEP DIFF", "DEBUG: Variant data mismatch. DEEP DIFF\n" +
-                            diffs.joinToString("\n")
+                    "DEBUG: Variant data mismatch. DEEP DIFF", diffs.joinToString("\n")
                 )
             }
         }
@@ -207,7 +206,7 @@ class ShipDirectory(
         val shipDirJson = try {
             Global.getSettings().readJSONFromCommon(configPath, false)
         } catch (e: Exception) {
-            DisplayMessage.showError("Failed to update ship directory. File was likely changed during runtime!", "Failed to update ship directory. File was likely changed during runtime!\nFailed to read ship directory at /saves/common/$configPath\n", e)
+            DisplayMessage.showError("Failed to update ship directory. File was likely changed during runtime!", "Failed to read ship directory at /saves/common/$configPath\n", e)
             return
         }
 
