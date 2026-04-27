@@ -39,26 +39,6 @@ internal fun SettingsAPI.loadTextureCached(filename: String) {
 }
 
 
-internal fun List<UIComponentAPI>.findChildWithField(
-    name: String? = null,
-    type: Class<*>? = null,
-    fieldAssignableTo: Class<*>? = null,
-    fieldAccepts: Class<*>? = null,
-    searchSuperclass: Boolean = false
-): UIComponentAPI? {
-    return find { it.getFieldsMatching(name = name, type = type, fieldAssignableTo = fieldAssignableTo, fieldAccepts = fieldAccepts, searchSuperclass = searchSuperclass).isNotEmpty() }
-}
-
-internal fun List<UIComponentAPI>.findChildWithMethod(
-    name: String? = null,
-    returnType: Class<*>? = null,
-    numOfParams: Int? = null,
-    parameterTypes: Array<Class<*>?>? = null
-): UIComponentAPI? {
-    return find { it.getMethodsMatching(name = name, returnType = returnType, numOfParams = numOfParams, parameterTypes = parameterTypes).isNotEmpty() }
-}
-
-
 internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
     val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
     val reflectedMethods = this.getMethodsMatching(name, parameterTypes = paramTypes)

@@ -6,8 +6,7 @@
     "CampaignCodexAutofitButton": "fleetBuilder.features.autofit.listener.CodexAutofitButton",
     "DrawMessageOnTop": "fleetBuilder.core.displayMessage.DrawMessageOnTop",
     "DialogUtil": "fleetBuilder.ui.customPanel.DialogUtils",
-    "CombatClipboardHotkeyHandler": "fleetBuilder.features.hotkeyHandler.CombatClipboardHotkeyHandler",
-    "CombatPaintjobApplier": "fleetBuilder.CombatPaintjobApplier"
+    "CombatClipboardHotkeyHandler": "fleetBuilder.features.hotkeyHandler.CombatClipboardHotkeyHandler"
   },
   "graphics": {
     "FleetBuilder": {
@@ -16,8 +15,7 @@
       "different_weapon_groups": "graphics/icons/NO-WG-white.png",
       "different_flux_stats": "graphics/icons/NO-FLUX-white.png",
       "entity": "graphics/icons/entity.png",
-      "more_info_buttonless": "graphics/icons/more_info_buttonless.png",
-      "32x_star_circle": "graphics/ui/icons/32x_star_circle.png"
+      "more_info_buttonless": "graphics/icons/more_info_buttonless.png"
     }
   }
 }

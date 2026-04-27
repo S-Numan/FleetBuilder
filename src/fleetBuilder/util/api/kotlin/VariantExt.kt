@@ -28,9 +28,18 @@ fun ShipVariantAPI.clone(settings: VariantSettings): ShipVariantAPI {
  * @param onlyThoseInHullSpec If true, only returns modules which a slot to attach to are present in the [ShipHullSpecAPI]
  */
 fun ShipVariantAPI.getModules(onlyThoseInHullSpec: Boolean = false): Map<String, ShipVariantAPI> {
-    return getModulesAllowNull(onlyThoseInHullSpec)
-        .mapNotNull { (k, v) -> v?.let { k to it } }
-        .toMap()
+    val modules = stationModules
+        ?.mapNotNull { (slot, _) ->
+            val variant: ShipVariantAPI? = getModuleVariant(slot)
+            variant?.let { slot to it }
+        }
+        ?.toMap() // converts the list of pairs back into a Map
+        ?: emptyMap()
+
+    return if (onlyThoseInHullSpec)
+        modules.filter { hullSpec.getWeaponSlot(it.key)?.weaponType == WeaponAPI.WeaponType.STATION_MODULE }
+    else
+        modules
 }
 
 /**

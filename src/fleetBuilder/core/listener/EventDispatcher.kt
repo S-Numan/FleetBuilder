@@ -4,7 +4,6 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
-import fleetBuilder.CampaignPaintjobApplier
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBSettings.fixShipSkinSourceMod
 import fleetBuilder.core.FBTxt
@@ -114,8 +113,6 @@ internal class EventDispatcher : EveryFrameScript {
             manageTransientListener(TransponderOff::class.java, FBSettings.transponderOffInHyperspace) { TransponderOff() }
 
             manageTransientCampaignListener(RecentBattleTracker::class.java, FBSettings.recentBattleTracker) { RecentBattleTracker() }
-
-            manageTransientScript(CampaignPaintjobApplier::class.java, true) { CampaignPaintjobApplier() }
         }
 
         fun onDevModeF8Reload() {
