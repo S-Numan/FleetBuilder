@@ -16,11 +16,13 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.LookupUtils.getHullSpec
 import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
+import fleetBuilder.util.api.HullUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import fleetBuilder.util.api.kotlin.getActualHullId
+import fleetBuilder.util.api.kotlin.getEffectiveHullId
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -226,15 +228,10 @@ object ShipDirectoryService {
                         )
                     }
 
-                    if (data.hullId !in LookupUtils.getHullIDSet() // Could not find hullId. Most likely it is a hullspec from a mod which was disabled.
-                        || data.moduleVariants.any { it.value.hullId !in LookupUtils.getHullIDSet() } // Also check hullIds from modules
-                    ) {
-                        shipDirectory.setRawShipEntry(data.variantId, ShipEntry(null, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
-                    } else {
-                        val variant = DataVariant.buildVariantFull(data, missing = missing, settings = VariantSettings(includeVariantID = true))
-                        variant.addTag("#PREFIX_$prefix")
-                        shipDirectory.setRawShipEntry(data.variantId, ShipEntry(variant, data, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
-                    }
+                    DataVariant.validateAndCleanVariantData(data, missing = missing) // Purely for the purpose of checking for what is missing.
+                    val effectiveHullID = getHullSpec(HullUtils.getActualHullID(data.hullId))?.getEffectiveHullId()
+
+                    shipDirectory.setRawShipEntry(data.variantId, ShipEntry(null, data, effectiveHullID, shipPath, missing, parsedDate, parsedEffectiveIndex, parsedIsImport, shipDirectory))
 
                     i++
                 }
@@ -254,22 +251,23 @@ object ShipDirectoryService {
             shipDirectories.add(shipDirectory)
 
             // Assure indexes aren't missing
-            shipDirectory.getRawShipEntries().map { it.value.variant }.forEach { variant ->
-                if (variant == null) return@forEach
+            shipDirectory.getRawShipEntries().map { it.value }.forEach { entry ->
+                if (entry.missingContent.hullIds.isNotEmpty()) return@forEach
 
                 fun remakeShip() {
-                    val missing = shipDirectory.getShipEntry(variant.hullVariantId)?.missingContent ?: return
-                    val isImport = shipDirectory.isShipImported(variant.hullVariantId)
-                    shipDirectory.removeShip(variant.hullVariantId, editVariantFile = false)
+                    val missing = shipDirectory.getShipEntry(entry.variantData.variantId)?.missingContent ?: return
+                    val variant = entry.getVariant() ?: return
+                    val isImport = shipDirectory.isShipImported(entry.variantData.variantId)
+                    shipDirectory.removeShip(entry.variantData.variantId, editVariantFile = false)
                     shipDirectory.addShip(
                         variant,
-                        setVariantID = variant.hullVariantId,
+                        setVariantID = entry.variantData.variantId,
                         missingFromVariant = missing, editVariantFile = false, tagAsImport = isImport
                     )
-                    Global.getLogger(this.javaClass).warn("Rebuilding variant ${variant.hullVariantId} to add new index, as index was missing")
+                    Global.getLogger(this.javaClass).warn("Rebuilding variant ${entry.variantData.variantId} to add new index, as index was missing")
                 }
 
-                val thisIndex = shipDirectory.getShipIndexInMenu(variant.hullVariantId)
+                val thisIndex = shipDirectory.getShipIndexInMenu(entry.variantData.variantId)
                 if (thisIndex < 0) { // Missing?
                     remakeShip()
                 } //else if (shipDirectory.getHullSpecIndexes(variant, thisIndex) != thisIndex) {
@@ -401,9 +399,9 @@ object ShipDirectoryService {
         var maxIndex = -1
         val dir = getShipDirectoryWithPrefix(prefix) ?: return maxIndex
 
-        val ships = dir.getShips(hullSpec)
-        for (ship in ships) {
-            val index = dir.getShipIndexInMenu(ship.hullVariantId)
+        val entries = dir.getShipEntries(hullSpec)
+        for (entry in entries) {
+            val index = dir.getShipIndexInMenu(entry.variantData.variantId)
             maxIndex = max(maxIndex, index)
         }
 
