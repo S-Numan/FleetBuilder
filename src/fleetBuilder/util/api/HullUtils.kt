@@ -7,9 +7,10 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.VariantSource
+import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.api.HullUtils.getCompatibleDLessHull
+import fleetBuilder.util.api.HullUtils.getActualHull
 import fleetBuilder.util.api.HullUtils.isDHullFix
 import fleetBuilder.util.api.kotlin.getActualHullId
 import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
@@ -111,6 +112,7 @@ object HullUtils {
      */
     @JvmStatic
     fun getEffectiveHull(hull: ShipHullSpecAPI): ShipHullSpecAPI {
+        val hull = getActualHull(hull)
         return if (hull.isCompatibleWithBase) {
             if (hull.dParentHull != null) {
                 val dParent = hull.dParentHull
@@ -137,9 +139,10 @@ object HullUtils {
     fun getCompatibleDLessHull(
         hull: ShipHullSpecAPI,
     ): ShipHullSpecAPI {
+        val hull = getActualHull(hull)
         if (!hull.isCompatibleWithBase) return hull
         if (!hull.isDefaultDHull && !isDSkin(hull)) return hull
-        return getDLessHull(hull)
+        return hull.dParentHull?.let { getCompatibleDLessHull(hull) } ?: hull.baseHull ?: hull
     }
 
     /**
@@ -152,11 +155,24 @@ object HullUtils {
     fun getActualHull(
         hull: ShipHullSpecAPI
     ): ShipHullSpecAPI {
-        if (!hull.isCompatibleWithBase) return hull
-        if (isSkin(hull)) return hull
-        return hull.dParentHull ?: hull
+        return when {
+            !hull.isDefaultDHull -> hull
+            else -> hull.dParentHull
+        } ?: hull
     }
 
+    /**
+     * For use with hullID strings only. If you have the [ShipHullSpecAPI], use [getActualHull] instead.
+     *
+     * @return removes the _default_D hull suffix
+     */
+    fun getActualHullID(
+        hullID: String
+    ): String {
+        return hullID.removeSuffix(Misc.D_HULL_SUFFIX)
+    }
+
+    /*
     /**
      * Returns the base hull if the hull is a D-Hull.
      *
@@ -178,7 +194,7 @@ object HullUtils {
         } else
             hull
     }
-
+    */
     /**
      * Vanilla isDHull considers any hull with built-in D-Mods to be a D-Hull. This makes lion guard ships D-Hulls.
      *
@@ -200,6 +216,7 @@ object HullUtils {
      */
     // Marked as private to avoid confusion
     private fun isDSkin(hull: ShipHullSpecAPI): Boolean {
+        val hull = getActualHull(hull)
         return isSkin(hull) && hull.builtInMods.any { LookupUtils.getHullModSpec(it)?.hasTag(Tags.HULLMOD_DMOD) == true } // Has DMod as built in mod
                 && hull.isRestoreToBase // And is restorable
     }
@@ -212,7 +229,7 @@ object HullUtils {
      */
     @JvmStatic
     fun isSkin(hull: ShipHullSpecAPI): Boolean {
-        val hull = hull.dParentHull ?: hull
+        val hull = getActualHull(hull)
         return hull.baseHullId != hull.hullId
     }
 }

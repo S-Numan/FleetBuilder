@@ -66,8 +66,8 @@ fun ShipHullSpecAPI.isSkin(): Boolean =
  *
  * Delegates to [HullUtils.getDLessHull].
  */
-fun ShipHullSpecAPI.getDLessHull(): ShipHullSpecAPI =
-    HullUtils.getDLessHull(this)
+//fun ShipHullSpecAPI.getDLessHull(): ShipHullSpecAPI =
+//    HullUtils.getDLessHull(this)
 
 /**
  * Delegates to [HullUtils.createHullVariant].
