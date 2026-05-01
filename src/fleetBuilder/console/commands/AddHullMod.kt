@@ -51,7 +51,10 @@ class AddHullMod : BaseCommandWithSuggestion {
             variant.completelyRemoveMod(modId)
 
             val addType: String = when {
-                isOf == null -> ""
+                isOf == null -> {
+                    variant.addMod(modId)
+                    ""
+                }
                 "smod".startsWith(isOf) -> {
                     variant.addPermaMod(modId, true)
                     "S-Mod "

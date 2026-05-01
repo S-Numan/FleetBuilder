@@ -114,13 +114,14 @@ object HullUtils {
     fun getEffectiveHull(hull: ShipHullSpecAPI): ShipHullSpecAPI {
         val hull = getActualHull(hull)
         return if (hull.isCompatibleWithBase) {
-            if (hull.dParentHull != null) {
+            /*if (hull.dParentHull != null) {
                 val dParent = hull.dParentHull
                 if (dParent.isCompatibleWithBase)
                     dParent.baseHull ?: dParent
                 else
                     dParent
-            } else hull.baseHull ?: hull
+            } else */
+            hull.baseHull ?: hull
         } else {
             hull
         }
@@ -141,7 +142,7 @@ object HullUtils {
     ): ShipHullSpecAPI {
         val hull = getActualHull(hull)
         if (!hull.isCompatibleWithBase) return hull
-        if (!hull.isDefaultDHull && !isDSkin(hull)) return hull
+        if (!isDSkin(hull)) return hull
         return hull.dParentHull?.let { getCompatibleDLessHull(hull) } ?: hull.baseHull ?: hull
     }
 

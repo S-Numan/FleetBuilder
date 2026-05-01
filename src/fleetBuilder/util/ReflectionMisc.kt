@@ -2,6 +2,7 @@ package fleetBuilder.util
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.FleetDataAPI
@@ -10,7 +11,6 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.LabelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import com.fs.starfarer.campaign.CampaignState
 import com.fs.starfarer.campaign.econ.Submarket
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.campaign.ui.UITable
@@ -25,7 +25,6 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.util.api.kotlin.getActualCurrentTab
-import fleetBuilder.util.api.kotlin.safeGet
 import fleetBuilder.util.api.kotlin.safeInvoke
 
 object ReflectionMisc {
@@ -38,11 +37,10 @@ object ReflectionMisc {
     // Tip: Core UI is a child of the screen panel
     fun getCoreUI(): CoreUIAPI? {
         val state = AppDriver.getInstance().currentState
-        if (state is CampaignState) {
-            return (state.safeInvoke("getEncounterDialog")?.let { dialog ->
+        if (state is CampaignUIAPI) {
+            return (state.currentInteractionDialog?.let { dialog ->
                 dialog.safeInvoke("getCoreUI") as? CoreUIAPI
-            } ?: Global.getSector().campaignUI?.safeGet("core") as? CoreUIAPI
-            ?: state.safeInvoke("getCore") as? CoreUIAPI)
+            } ?: state.safeInvoke("getCore") as? CoreUIAPI)
         }// else if (state is TitleScreenState || state is CombatState) {
         //  return null
         //  }
@@ -55,7 +53,11 @@ object ReflectionMisc {
 
     fun getRefitTab(): UIPanelAPI? {
         if (Global.getCurrentState() == GameState.CAMPAIGN) {
-            return getBorderContainer()?.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
+            return if (Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.REFIT)
+                getCurrentTab()
+            else
+                null
+            //return getBorderContainer()?.findChildWithMethod("goBackToParentIfNeeded") as? UIPanelAPI
         } else {
             val delegateChild = getScreenPanel()?.findChildWithMethod("dismiss") as? UIPanelAPI ?: return null
             val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return null
@@ -66,7 +68,7 @@ object ReflectionMisc {
     }
 
     fun getRefitPanel(): UIPanelAPI? {
-        return getRefitTab()?.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI
+        return getRefitTab()?.safeInvoke("getRefitPanel") as? UIPanelAPI
     }
 
     fun getRefitPanelShipDisplay(refitPanel: UIPanelAPI): UIPanelAPI? {
@@ -113,16 +115,14 @@ object ReflectionMisc {
     }
 
     fun getFleetTab(): UIPanelAPI? {
-        val campaignState = Global.getSector().campaignUI
-        return if (campaignState?.getActualCurrentTab() != CoreUITabId.FLEET)
+        return if (Global.getSector().campaignUI?.getActualCurrentTab() != CoreUITabId.FLEET)
             null
         else
             getCurrentTab()
     }
 
     fun getCargoTab(): UIPanelAPI? {
-        val campaignState = Global.getSector().campaignUI
-        return if (campaignState?.getActualCurrentTab() != CoreUITabId.CARGO)
+        return if (Global.getSector().campaignUI?.getActualCurrentTab() != CoreUITabId.CARGO)
             null
         else
             getCurrentTab()
