@@ -102,6 +102,7 @@ object HotkeyHandlerDialogs {
             testMessageTrigger.onClick {
                 //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
                 DisplayMessage.showError("Test Message: " + Random().nextInt())
+                Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
 
                 val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
                 val variant = memberInRefit.variant ?: return@onClick
