@@ -24,7 +24,6 @@ import fleetBuilder.features.filters.injection.CampaignCargoScreenFilter
 import fleetBuilder.features.filters.injection.CampaignFleetScreenFilter
 import fleetBuilder.features.filters.injection.CampaignModPickerFilter
 import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
-import fleetBuilder.features.logMessageAppender.LogMessageAppender
 import fleetBuilder.features.officerStorage.CatchStoreMemberButton
 import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
 import fleetBuilder.features.recentBattles.RecentBattleTracker
@@ -37,9 +36,6 @@ import fleetBuilder.util.listeners.MemberChangeEvents
 import fleetBuilder.util.listeners.MemberChangeTracker
 import fleetBuilder.util.listeners.OfficerChangeEvents
 import fleetBuilder.util.listeners.OfficerChangeTracker
-import org.apache.log4j.Level
-import org.apache.log4j.Logger
-import org.lazywizard.console.Console
 
 internal class EventDispatcher : EveryFrameScript {
     companion object {
@@ -147,26 +143,6 @@ internal class EventDispatcher : EveryFrameScript {
         fun updateApplicationState() {
 
             FBSettings.setNeverSaveHullmods()
-
-            if (FBSettings.addLogsToConsoleModConsoleLevel != Level.OFF || FBSettings.addLogsToDisplayMessageLevel != Level.OFF) {
-                // Cause the lazy class loader to load these classes preemptively to prevent issues.
-                try {
-                    Class.forName("org.apache.log4j.Layout")
-                    Class.forName("org.apache.log4j.spi.LoggingEvent")
-                    Class.forName("org.apache.log4j.Priority")
-                    if (FBSettings.isConsoleModEnabled)
-                        Class.forName(Console::class.java.name)
-                } catch (e: ClassNotFoundException) {
-                    e.printStackTrace()
-                }
-
-                val rootLogger = Logger.getRootLogger()
-
-                if (rootLogger.getAppender("FB_LogMessageAppender") == null) {
-                    val appender = LogMessageAppender().apply { name = "FB_LogMessageAppender" }
-                    rootLogger.addAppender(appender)
-                }
-            }
 
             if (FBSettings.autofitMenuEnabled)
                 ShipDirectoryService.loadAllDirectories()

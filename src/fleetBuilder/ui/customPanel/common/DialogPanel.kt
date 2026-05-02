@@ -3,9 +3,9 @@ package fleetBuilder.ui.customPanel.common
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
+import fleetBuilder.core.FBTxt
 import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.UIUtils.drawRectangleFilledForTooltip
-import fleetBuilder.core.FBTxt
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
@@ -95,24 +95,24 @@ open class DialogPanel(
             button.position.inTL(xPos, 0f)
             xPos += confirmCancelButtonWidth + spacing
 
-            confirmButton = button
-            confirmButton!!.onClick {
+            button.onClick {
                 applyConfirmScript()
                 if (doesConfirmDismiss)
                     dismiss()
             }
+            confirmButton = button
         }
         if (addCancelButton) {
             val button = tooltip.addButton(cancelText, "cancel", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, confirmCancelButtonWidth, 25f, 0f)
             button.setShortcut(cancelButtonShortcut, true)
             button.position.inTL(xPos, 0f)
 
-            cancelButton = button
-            cancelButton!!.onClick {
+            button.onClick {
                 applyCancelScript()
                 if (doesCancelDismiss)
                     dismiss()
             }
+            cancelButton = button
         }
 
         val bottom = goalHeight
@@ -130,7 +130,7 @@ open class DialogPanel(
         val ui = panel.createUIElement(buttonSize, buttonSize, false)
 
         ui.setButtonFontOrbitron20Bold()
-        closeButton = ui.addButton(
+        val closeButton = ui.addButton(
             "X",
             "close_button",
             Color.WHITE,
@@ -147,19 +147,22 @@ open class DialogPanel(
         panel.bringComponentToTop(ui)
 
         closeButton!!.onClick { dismiss() }
+
+        this.closeButton = closeButton
     }
 
     var headerTooltip: TooltipMakerAPI? = null
     protected fun createHeader() {
         if (headerTitle != null && headerTooltip == null) {
             val headerPad = 4f
-            headerTooltip = panel.createUIElement(panel.position.width - (tooltipPadFromSide * 2f) + headerPad, 20f, false)
-            headerTooltip!!.setParaFont(Fonts.ORBITRON_20AABOLD)
-            val label = headerTooltip!!.addPara(headerTitle, Misc.getTooltipTitleAndLightHighlightColor(), 5f)
+            val headerTooltip = panel.createUIElement(panel.position.width - (tooltipPadFromSide * 2f) + headerPad, 20f, false)
+            headerTooltip.setParaFont(Fonts.ORBITRON_20AABOLD)
+            val label = headerTooltip.addPara(headerTitle, Misc.getTooltipTitleAndLightHighlightColor(), 5f)
             panel.addUIElement(headerTooltip).inTL(tooltipPadFromSide - headerPad / 2, tooltipPadFromTop)
             val textWidth = label.computeTextWidth(label.text)
             label.position.setLocation(0f, 0f).inTL(((panel.position.width - (tooltipPadFromSide * 2) - headerPad) - textWidth) / 2f, 3f)
             tooltipPadFromTop += 30f
+            this.headerTooltip = headerTooltip
         }
     }
 }

@@ -23,15 +23,29 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 data class ShipEntry(
-    val variant: ShipVariantAPI?,
+    private var variant: ShipVariantAPI?, // ShipVariantAPI is not generated until getVariant() is called, if it isn't going to be used, no need to keep it in memory.
     val variantData: DataVariant.ParsedVariantData,
+    val effectiveHullID: String?,
     val path: String,
     val missingContent: MissingContent,
     val timeSaved: Date,
     val indexInMenu: Int,
     val isImport: Boolean,
     val dir: ShipDirectory,
-)
+) {
+    fun getVariant(): ShipVariantAPI? {
+        if (missingContent.hullIds.isNotEmpty())
+            return null
+
+        if (variant == null) {
+            variant = DataVariant.buildVariantFull(variantData, settings = VariantSettings(includeVariantID = true)).apply {
+                addTag("#PREFIX_${dir.prefix}")
+            }
+        }
+
+        return variant?.clone()
+    }
+}
 
 class ShipDirectory(
     val dir: String,
@@ -61,21 +75,33 @@ class ShipDirectory(
         val entry = shipEntries[variantId] ?: return null
 
         return entry.copy(
-            variant = entry.variant?.clone(),
+            variant = null,
             variantData = entry.variantData
         )
     }
 
+    fun getShipEntries(hullSpec: ShipHullSpecAPI): List<ShipEntry> {
+        val hullId = hullSpec.getEffectiveHullId()
+
+        return shipEntries.values
+            .filter {
+                it.effectiveHullID == hullId
+            }
+            .map { it.copy(variant = null) }
+    }
+
     fun getShip(variantId: String): ShipVariantAPI? {
-        return shipEntries[variantId]?.variant?.clone()
+        return shipEntries[variantId]?.getVariant()
     }
 
     fun getShips(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         val hullId = hullSpec.getEffectiveHullId()
 
         return shipEntries.values
-            .filter { it.variant != null && it.variant.hullSpec.getEffectiveHullId() == hullId }
-            .map { it.variant!!.clone() }
+            .filter {
+                it.effectiveHullID == hullId
+            }
+            .mapNotNull { it.getVariant() }
     }
 
     fun getShipIndexInMenu(variantId: String): Int {
@@ -145,13 +171,12 @@ class ShipDirectory(
             )
             val variantUnJSON = JSONVariant.extractVariantDataFromJson(variantJSON).copy(variantId = parsedVariant.variantId)
             if (variantUnJSON != filterParsedVariantData(parsedVariant, comparisonSettings)) { // If not equal, this means the logic somewhere when saving and getting the variant to/from JSON or COMP is not correct
-                DisplayMessage.showError("DEBUG: Variant data mismatch", "DEBUG: Variant data mismatch\n\nvariantUnJSON:\n${variantUnJSON}\n\nparsedVariant:\n${parsedVariant}")
+                DisplayMessage.showError("DEBUG: Variant data mismatch", "\nvariantUnJSON:\n${variantUnJSON}\n\nparsedVariant:\n${parsedVariant}")
 
                 val diffs = deepDiff(parsedVariant, variantUnJSON)
 
                 DisplayMessage.showError(
-                    "DEBUG: Variant data mismatch. DEEP DIFF", "DEBUG: Variant data mismatch. DEEP DIFF\n" +
-                            diffs.joinToString("\n")
+                    "DEBUG: Variant data mismatch. DEEP DIFF", diffs.joinToString("\n")
                 )
             }
         }
@@ -177,7 +202,7 @@ class ShipDirectory(
             Global.getSettings().writeTextFileToCommon("$dir$shipPath", comp)
 
         savedVariant.addTag("#PREFIX_$prefix")
-        val shipEntry = ShipEntry(savedVariant, parsedVariant, shipPath, missingFromVariant, currentTime, newIndex, tagAsImport, this)
+        val shipEntry = ShipEntry(savedVariant, parsedVariant, savedVariant.hullSpec.getEffectiveHullId(), shipPath, missingFromVariant, currentTime, newIndex, tagAsImport, this)
 
         // Add the variant to this class
         shipEntries[savedVariant.hullVariantId] = shipEntry
@@ -189,7 +214,7 @@ class ShipDirectory(
         val variantID = makeVariantID(shipEntry.variantData.hullId, shipEntry.variantData.displayName)
 
         val data = shipEntry.variantData.copy(variantId = variantID)
-        val variant = shipEntry.variant?.clone()?.apply { hullVariantId = variantID }
+        val variant = shipEntry.getVariant()?.apply { hullVariantId = variantID }
 
         val comp = CompressedVariant.saveVariantToCompString(data, includePrepend = false)
 
@@ -200,14 +225,14 @@ class ShipDirectory(
 
         variant?.tags?.toList()?.forEach { if (it.startsWith("#PREFIX_")) variant.removeTag(it) }
         variant?.addTag("#PREFIX_$prefix")
-        shipEntries[data.variantId] = ShipEntry(variant, data, shipPath, shipEntry.missingContent, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport, this)
+        shipEntries[data.variantId] = ShipEntry(variant, data, variant?.hullSpec?.getEffectiveHullId(), shipPath, shipEntry.missingContent, shipEntry.timeSaved, shipEntry.indexInMenu, shipEntry.isImport, this)
     }
 
     private fun updateShipDirectoryJson(modify: (JSONArray) -> Unit) {
         val shipDirJson = try {
             Global.getSettings().readJSONFromCommon(configPath, false)
         } catch (e: Exception) {
-            DisplayMessage.showError("Failed to update ship directory. File was likely changed during runtime!", "Failed to update ship directory. File was likely changed during runtime!\nFailed to read ship directory at /saves/common/$configPath\n", e)
+            DisplayMessage.showError("Failed to update ship directory. File was likely changed during runtime!", "Failed to read ship directory at /saves/common/$configPath\n", e)
             return
         }
 

@@ -7,6 +7,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.core.FBConst
+import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.serialization.fleet.CompressedFleet
@@ -21,8 +22,12 @@ import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.createHullVariant
+import fleetBuilder.util.api.kotlin.getActualHull
+import fleetBuilder.util.api.kotlin.getCompatibleDLessHull
+import fleetBuilder.util.api.kotlin.getEffectiveHull
 import fleetBuilder.util.lib.ClipboardUtil
 import org.json.JSONObject
+import org.lazywizard.console.Console
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
@@ -33,6 +38,20 @@ object ClipboardMisc {
         if (variant.hasTag(FBConst.NO_COPY_TAG) || variant.hullSpec.hasTag(FBConst.NO_COPY_TAG)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_no_copy_tag"), Color.YELLOW)
             return false
+        }
+
+        if (FBSettings.showDebug) {
+            val hull = variant.hullSpec
+            val hullID = hull.hullId
+            val actual = hull.getActualHull().hullId
+            val dlesscompatible = hull.getCompatibleDLessHull().hullId
+            val effective = hull.getEffectiveHull().hullId
+
+            if (FBSettings.isConsoleModEnabled) {
+                Console.showMessage(
+                    "Hull: $hullID\nActual: $actual\nDless compatible: $dlesscompatible\nEffective: $effective"
+                )
+            }
         }
 
         val variantToSave = variant.clone()

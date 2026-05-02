@@ -172,7 +172,7 @@ internal object FBMisc {
 
             return diffs
         } catch (e: Exception) {
-            DisplayMessage.showError("DeepDiff failed: ${e.message}")
+            DisplayMessage.showError("DeepDiff failed", e.message)
         }
         return emptyList()
     }

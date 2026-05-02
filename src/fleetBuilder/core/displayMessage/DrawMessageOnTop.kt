@@ -4,12 +4,12 @@ import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
+import com.fs.starfarer.api.campaign.MessageDisplayAPI
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.otherMods.starficz.lastComponent
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.TimeKeeper
 import org.lazywizard.lazylib.ui.FontException
@@ -197,7 +197,23 @@ private class CampaignMessageRenderer : BaseCustomUIPanelPlugin() {
     }
 
     override fun advance(amount: Float) {
-        if (screenPanel?.lastComponent !== panel)
-            screenPanel?.bringComponentToTop(panel)
+        if (screenPanel == null) return
+
+        // Move above other components if not top, but try to avoid fighting for control by excluding CustomPanelAPIs and MessageDisplayAPIs
+
+        @Suppress("UNCHECKED_CAST")
+        val children = screenPanel.getChildrenCopy()
+
+        val lastValid = children.lastOrNull() { component ->
+            when (component) {
+                is CustomPanelAPI -> false
+                is MessageDisplayAPI -> false
+                else -> true
+            }
+        }
+
+        if (lastValid !== panel) {
+            screenPanel.bringComponentToTop(panel)
+        }
     }
 }

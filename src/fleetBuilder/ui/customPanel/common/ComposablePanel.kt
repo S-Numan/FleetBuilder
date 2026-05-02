@@ -41,15 +41,16 @@ open class ComposablePanel : BasePanel() {
             val tooltipHeight = panel.height - tooltipPadFromBottom - tooltipPadFromTop
 
             // create tooltip
-            tooltip = panel.createUIElement(tooltipWidth, tooltipHeight, withScroller)
+            val tooltip = panel.createUIElement(tooltipWidth, tooltipHeight, withScroller)
+
             // set size again
-            tooltip!!.setSize(tooltipWidth, tooltipHeight)
+            tooltip.setSize(tooltipWidth, tooltipHeight)
             // Align new tooltip components to the top left to rid of the mysterious 5f x pad in some components, such as buttons.
             // This will cause mis-positioning for components that rely on it, such as headers. I advise using .position.setXAlignOffset(0f) to re-align them.
-            tooltip!!.addSpacer(0f).position?.inTL(0f, 0f)
+            tooltip.addSpacer(0f).position?.inTL(0f, 0f)
 
             // run the user code
-            callback(tooltip!!)
+            callback(tooltip)
             // add UI automatically afterward
             panel.addUIElement(tooltip)
 
@@ -57,7 +58,9 @@ open class ComposablePanel : BasePanel() {
             panel.lastComponent?.position?.inTL(tooltipPadFromSide, tooltipPadFromTop)
 
             if (withScroller)
-                tooltip!!.externalScroller?.safeInvoke("setDoNotRenderShadows", true)
+                tooltip.externalScroller?.safeInvoke("setDoNotRenderShadows", true)
+
+            this.tooltip = tooltip
         }
     }
 

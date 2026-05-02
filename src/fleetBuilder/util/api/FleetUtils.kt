@@ -18,6 +18,9 @@ import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.CargoUtils.getFractionHoldableSupplies
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.api.PersonUtils.copyOfficerDataTo
+import fleetBuilder.util.api.kotlin.getAssignedOfficers
+import org.magiclib.kotlin.getMaxOfficers
+import org.magiclib.kotlin.isMercenary
 import second_in_command.specs.SCSpecStore
 import kotlin.math.max
 
@@ -55,13 +58,19 @@ object FleetUtils {
     }
 
     @JvmStatic
-    fun getUnassignedOfficers(fleet: FleetDataAPI): List<PersonAPI> {
-        return fleet.officersCopy.map { it.person }.filter { fleet.getMemberWithCaptain(it) == null }
+    @JvmOverloads
+    fun getUnassignedOfficers(fleet: FleetDataAPI, includeMercenaries: Boolean = true): List<PersonAPI> {
+        return fleet.officersCopy.map { it.person }.filter {
+            fleet.getMemberWithCaptain(it) == null && (includeMercenaries || !it.isMercenary())
+        }
     }
 
     @JvmStatic
-    fun getAssignedOfficers(fleet: FleetDataAPI): List<PersonAPI> {
-        return fleet.officersCopy.map { it.person }.filter { fleet.getMemberWithCaptain(it) != null }
+    @JvmOverloads
+    fun getAssignedOfficers(fleet: FleetDataAPI, includeMercenaries: Boolean = true): List<PersonAPI> {
+        return fleet.officersCopy.map { it.person }.filter {
+            fleet.getMemberWithCaptain(it) != null && (includeMercenaries || !it.isMercenary())
+        }
     }
 
     /**
@@ -140,7 +149,10 @@ object FleetUtils {
             }
         }
 
-        Global.getSector().playerPerson?.memoryWithoutUpdate?.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
+        if (playerFleet.fleetData.getAssignedOfficers(includeMercenaries = false).size > playerFleet.getMaxOfficers())
+            Global.getSector().memoryWithoutUpdate?.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
+        else
+            Global.getSector().memoryWithoutUpdate?.unset("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL")
 
         if (playerShuttleExists()) {
             //Need to move the shuttle to the last member in the fleet, but I don't care enough to do this properly.

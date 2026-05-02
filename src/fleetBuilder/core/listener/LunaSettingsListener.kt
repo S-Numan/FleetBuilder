@@ -7,9 +7,8 @@ import lunalib.lunaSettings.LunaSettings.getBoolean
 import lunalib.lunaSettings.LunaSettings.getInt
 import lunalib.lunaSettings.LunaSettings.getString
 import lunalib.lunaSettings.LunaSettingsListener
-import org.apache.log4j.Level
 
-internal class ModSettingsListener : LunaSettingsListener {
+internal class LunaSettingsListener : LunaSettingsListener {
     init {
         settingsChanged(FBSettings.getModID())
 
@@ -30,22 +29,6 @@ internal class ModSettingsListener : LunaSettingsListener {
         val featuresDisabled = getBoolean(modID, "featuresDisabled")!!
 
         if (!featuresDisabled) {
-            val messageLevel = getString(modID, "addLogsToDisplayMessageLevel")!!
-            val consoleLevel = getString(modID, "addLogsToConsoleModConsoleLevel")!!
-
-            fun getLevel(level: String): Level? = when (level) {
-                "FATAL" -> Level.FATAL
-                "ERROR" -> Level.ERROR
-                "WARN" -> Level.WARN
-                "INFO" -> Level.INFO
-                "DEBUG" -> Level.DEBUG
-                "ALL" -> Level.ALL
-                else -> Level.OFF
-            }
-
-            FBSettings.addLogsToDisplayMessageLevel = getLevel(messageLevel)
-            FBSettings.addLogsToConsoleModConsoleLevel = getLevel(consoleLevel)
-
             FBSettings.selectorsPerRow = getInt(modID, "selectorsPerRow")!!
             FBSettings.showCoreGoalVariants = getBoolean(modID, "showCoreGoalVariants")!!
             FBSettings.showCoreNonGoalVariants = getBoolean(modID, "showCoreNonGoalVariants")!!
@@ -105,8 +88,6 @@ internal class ModSettingsListener : LunaSettingsListener {
             FBSettings.autoMothballRecoveredShips = false
             FBSettings.transponderOffInHyperspace = false
             FBSettings.displayDerelictRecoveryEarly = false
-            FBSettings.addLogsToConsoleModConsoleLevel = Level.OFF
-            FBSettings.addLogsToDisplayMessageLevel = Level.OFF
             FBSettings.recentBattleTracker = false
             FBSettings.fixShipSkinSourceMod = false
             FBSettings.cleanGameVariantsForRemovedElements = false

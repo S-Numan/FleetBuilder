@@ -7,7 +7,6 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBMisc.getCallerClass
 import fleetBuilder.core.FBMisc.isConsoleOpen
 import fleetBuilder.core.FBSettings
-import fleetBuilder.features.logMessageAppender.NoDisplayThrowable
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
@@ -19,12 +18,44 @@ object DisplayMessage {
     private val recentErrors = mutableMapOf<String, Long>()
     private const val ERROR_SPAM_INTERVAL_MS = 4000 // 4 seconds
 
+    /**
+     * Shows an error message to the player and logs it to the console.
+     *
+     * @param short A short description of the error. The short message is displayed at the top of the screen and put in the console/logger.
+     * @param e The exception associated with the error.
+     */
+    fun showError(short: String, e: Throwable) {
+        showError(short, null, e)
+    }
+
+    /**
+     * Shows an error message to the player and logs it to the console.
+     *
+     * @param short A short description of the error. The short message is displayed at the top of the screen and put in the console/logger.
+     * @param extra An extra description of the error. The extra message is put inside the console/logger a line after the short message is, provided it isn't null.
+     * @param e The exception associated with the error. If null, no exception will be logged.
+     */
     @JvmOverloads
-    fun showError(short: String, full: String, e: Exception? = null) {
+    fun showError(short: String, extra: String? = null, e: Throwable? = null) {
+        val full = if (extra == null) short
+        else {
+            short + "\n" + extra
+        }
+        showErrorFull(short, full, e)
+    }
+
+    /**
+     * Shows an error message to the player and logs it to the console.
+     *
+     * @param displayed A short description of the error. The displayed message is displayed at the top of the screen in red text.
+     * @param logged A full description of the error. The full message is put inside the console/logger.
+     * @param e The exception associated with the error. If null, no exception will be logged.
+     */
+    fun showErrorFull(displayed: String, logged: String, e: Throwable? = null) {
         val now = System.currentTimeMillis()
 
         // Combine both short + full messages to uniquely identify the error
-        val key = "$short::$full"
+        val key = "$displayed::$logged"
         val lastTime = recentErrors[key] ?: 0L
 
         // Skip if the same error occurred recently
@@ -45,23 +76,18 @@ object DisplayMessage {
         // Console or logger output
         if (FBSettings.isConsoleModEnabled) {
             if (e != null) {
-                Console.showException(full, e)
+                Console.showException(logged, e)
             } else {
-                Console.showMessage(callerClass.name + " - " + full, Level.ERROR)
+                Console.showMessage(callerClass.name + " - " + logged, Level.ERROR)
             }
         } else {
-            logMessage(callerClass, full, Level.ERROR, displayMessage = false)
+            logMessage(callerClass, logged, Level.ERROR, displayMessage = false)
         }
 
         // Show short message to player
         if (!FBSettings.hideErrorMessages) {
-            showMessageCustom(short, Color.RED)
+            showMessageCustom(displayed, Color.RED)
         }
-    }
-
-    @JvmOverloads
-    fun showError(short: String, e: Exception? = null) {
-        showError(short, short, e)
     }
 
     @JvmOverloads
@@ -155,7 +181,7 @@ object DisplayMessage {
     /**
      * Logs a message with the specified level.
      *
-     * If [displayMessage] is false, do not show on screen even if the FleetBuilder setting to display logged messages would be true.
+     * If [displayMessage] is false, do not show on screen even if the In-Game Log Viewer setting to display logged messages would be true.
      */
     @JvmOverloads
     fun logMessage(javaClass: Class<*>, message: String, level: Level, displayMessage: Boolean = true) {
@@ -176,5 +202,10 @@ object DisplayMessage {
                 Level.DEBUG -> Global.getLogger(javaClass).debug(message, NoDisplayThrowable())
             }
         }
+    }
+
+    internal class NoDisplayThrowable : Throwable(null, null, false, false) {
+        override fun fillInStackTrace(): Throwable = this
+        override fun toString(): String = ""
     }
 }

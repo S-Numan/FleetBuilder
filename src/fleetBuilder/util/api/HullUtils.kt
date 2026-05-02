@@ -3,18 +3,38 @@ package fleetBuilder.util.api
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.VariantSource
+import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.api.HullUtils.getCompatibleDLessHull
+import fleetBuilder.util.api.HullUtils.getActualHull
 import fleetBuilder.util.api.HullUtils.isDHullFix
 import fleetBuilder.util.api.kotlin.getActualHullId
 import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
 import fleetBuilder.util.api.kotlin.getEffectiveHullId
 
 object HullUtils {
+
+    /**
+     * Returns a list of weapon slot IDs which are [WeaponAPI.WeaponType.STATION_MODULE].
+     *
+     * These are the points on the hull which modules are intended to attach too.
+     *
+     * @param hull The hull spec to query.
+     * @return A list of weapon slot IDs that are station modules.
+     */
+    @JvmStatic
+    fun getSlotsForModules(hull: ShipHullSpecAPI): List<String> {
+        return hull.allWeaponSlotsCopy.mapNotNull {
+            if (it.weaponType == WeaponAPI.WeaponType.STATION_MODULE)
+                it.id
+            else
+                null
+        }
+    }
 
     /**
      * Checks if a hull is known to the player.
@@ -79,9 +99,10 @@ object HullUtils {
      * Returns the "effective" hull for a hull spec.
      *
      * In Starsector, hull specs may represent:
-     * - A base hull
-     * - A D-modded hull (d-hull)
-     * - A skin/variant derived from another hull
+     * - A base hull (Normal ship hull made straight from the .ship file)
+     * - A skin/variant derived from another hull (Normal ship skin made straight from the .skin file)
+     * - A D-Modded hull skin (Ship skin made straight from the .skin file. Notably has DMods as built in mods, sometimes missing mounts and a restoreToBaseHull)
+     * - A default D-Hull (Ship Hull/Skin with _D placed at the end to be annoying. Has no seemingly other meaningful changes aside from ruining hullID comparisons)
      *
      * This function resolves the hull to the most appropriate "base-like" hull
      * when the hull is compatible with its base.
@@ -91,14 +112,16 @@ object HullUtils {
      */
     @JvmStatic
     fun getEffectiveHull(hull: ShipHullSpecAPI): ShipHullSpecAPI {
+        val hull = getActualHull(hull)
         return if (hull.isCompatibleWithBase) {
-            if (hull.dParentHull != null) {
+            /*if (hull.dParentHull != null) {
                 val dParent = hull.dParentHull
                 if (dParent.isCompatibleWithBase)
                     dParent.baseHull ?: dParent
                 else
                     dParent
-            } else hull.baseHull ?: hull
+            } else */
+            hull.baseHull ?: hull
         } else {
             hull
         }
@@ -110,11 +133,6 @@ object HullUtils {
      * This attempts to resolve a D-hull to its non-D equivalent while respecting
      * Starsector's special cases.
      *
-     * Important Starsector quirks (0.98a):
-     * - Some ships (e.g. Dominator D) have custom D-mod skins and variants.
-     *   These may have `isCompatibleWithBase == true` but `dParentHull == null`.
-     * - Some fake D-hulls have no custom assets and simply reference a parent hull.
-     *
      * @param hull The hull spec to resolve.
      * @return A compatible non-D hull when possible.
      */
@@ -122,13 +140,14 @@ object HullUtils {
     fun getCompatibleDLessHull(
         hull: ShipHullSpecAPI,
     ): ShipHullSpecAPI {
+        val hull = getActualHull(hull)
         if (!hull.isCompatibleWithBase) return hull
-        if (!hull.isDefaultDHull && !isDSkin(hull)) return hull
-        return getDLessHull(hull)
+        if (!isDSkin(hull)) return hull
+        return hull.dParentHull?.let { getCompatibleDLessHull(hull) } ?: hull.baseHull ?: hull
     }
 
     /**
-     *  Returns the HullSpec from its source file (.ship or .skin), without any extra modifications such as default D-Hull variations.
+     * Returns the HullSpec from its source file (.ship or .skin), without any extra modifications such as default D-Hull variations.
      *
      * @param hull The hull spec to resolve.
      * @return The actual hull spec.
@@ -137,11 +156,24 @@ object HullUtils {
     fun getActualHull(
         hull: ShipHullSpecAPI
     ): ShipHullSpecAPI {
-        if (!hull.isCompatibleWithBase) return hull
-        if (isSkin(hull)) return hull
-        return getDLessHull(hull)
+        return when {
+            !hull.isDefaultDHull -> hull
+            else -> hull.dParentHull
+        } ?: hull
     }
 
+    /**
+     * For use with hullID strings only. If you have the [ShipHullSpecAPI], use [getActualHull] instead.
+     *
+     * @return removes the _default_D hull suffix
+     */
+    fun getActualHullID(
+        hullID: String
+    ): String {
+        return hullID.removeSuffix(Misc.D_HULL_SUFFIX)
+    }
+
+    /*
     /**
      * Returns the base hull if the hull is a D-Hull.
      *
@@ -154,11 +186,16 @@ object HullUtils {
     fun getDLessHull(hull: ShipHullSpecAPI): ShipHullSpecAPI {
         if (!isDHullFix(hull)) return hull
 
-        if (hull.dParentHull != null) return hull.dParentHull
-
-        return hull.baseHull ?: hull
+        return if (hull.dParentHull != null) {
+            val dParent = hull.dParentHull
+            if (isDHullFix(dParent) && dParent.isCompatibleWithBase)
+                dParent.baseHull ?: dParent
+            else
+                dParent
+        } else
+            hull
     }
-
+    */
     /**
      * Vanilla isDHull considers any hull with built-in D-Mods to be a D-Hull. This makes lion guard ships D-Hulls.
      *
@@ -180,6 +217,7 @@ object HullUtils {
      */
     // Marked as private to avoid confusion
     private fun isDSkin(hull: ShipHullSpecAPI): Boolean {
+        val hull = getActualHull(hull)
         return isSkin(hull) && hull.builtInMods.any { LookupUtils.getHullModSpec(it)?.hasTag(Tags.HULLMOD_DMOD) == true } // Has DMod as built in mod
                 && hull.isRestoreToBase // And is restorable
     }
@@ -192,7 +230,7 @@ object HullUtils {
      */
     @JvmStatic
     fun isSkin(hull: ShipHullSpecAPI): Boolean {
-        val hull = hull.dParentHull ?: hull
+        val hull = getActualHull(hull)
         return hull.baseHullId != hull.hullId
     }
 }

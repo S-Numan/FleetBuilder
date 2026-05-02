@@ -5,6 +5,13 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.util.api.HullUtils
 
 /**
+ * Delegate to [HullUtils.getSlotsForModules]
+ */
+fun ShipHullSpecAPI.getSlotsForModules(): List<String> {
+    return HullUtils.getSlotsForModules(this)
+}
+
+/**
  * Delegates to [HullUtils.getEffectiveHull].
  */
 fun ShipHullSpecAPI.getEffectiveHull(): ShipHullSpecAPI =
@@ -59,8 +66,8 @@ fun ShipHullSpecAPI.isSkin(): Boolean =
  *
  * Delegates to [HullUtils.getDLessHull].
  */
-fun ShipHullSpecAPI.getDLessHull(): ShipHullSpecAPI =
-    HullUtils.getDLessHull(this)
+//fun ShipHullSpecAPI.getDLessHull(): ShipHullSpecAPI =
+//    HullUtils.getDLessHull(this)
 
 /**
  * Delegates to [HullUtils.createHullVariant].

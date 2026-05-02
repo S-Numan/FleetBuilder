@@ -157,10 +157,8 @@ They do not apply when saving/copying anything else that may contain a variant, 
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
-addLogsToConsoleModConsoleLevel,Add logs to Console,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL","Add logs in ./starsector.log of input level and above to the ConsoleCommands Console, provided that mod is enabled.
-Does not show logs from before onApplicationLoad of this mod is called.",,,Developer Options
-addLogsToDisplayMessageLevel,Add logs to Display Message,Radio,OFF,"OFF, ALL, DEBUG, INFO, WARN, ERROR, FATAL","Show logs in ./starsector.log of input level and above as a message on the top of the screen.
-Does not show logs from before onApplicationLoad of this mod is called.",,,Developer Options
+,,,,,,,,
+,,,,,,,,
 recentBattleTracker,Recent Battle Tracker,Boolean,false,,"If true, enables saving and viewing recent battles. ‘CTRL + R’ to open the recent battle viewer.
 Unfinished feature, here for testing purposes.",,,Developer Options
 cargoScreenFilter,Cargo Screen Filter,Boolean,false,,"DOES NOT WORK CORRECTLY.

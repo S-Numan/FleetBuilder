@@ -233,13 +233,13 @@ internal object AutofitApplier {
             }
             if (baseVariantContainsModules && baseVariant.safeInvoke("getModuleVariants") == null) {
                 DisplayMessage.showError(
-                    "Modules were null. Remaking modules to avoid game crash.", "Modules were null. Remaking modules to avoid game crash." +
-                            "\nHULLID: ${baseVariant.hullSpec.hullId}\nSourceMod: ${baseVariant.hullSpec.sourceMod.name}"
+                    "Modules were null. Remaking modules to avoid game crash.",
+                    "\nHULLID: ${baseVariant.hullSpec.hullId}\nSourceMod: ${baseVariant.hullSpec.sourceMod.name}"
                 )
                 baseVariant.safeInvoke("setModuleVariants", mutableMapOf<String, HullVariantSpec>())
 
                 val templateVariant = baseVariant.hullSpec.createHullVariant()
-                baseVariant.getSlotsForModules().forEach { slot ->
+                baseVariant.hullSpec.getSlotsForModules().forEach { slot ->
                     baseVariant.setModuleVariant(slot, templateVariant.getModuleVariant(slot).clone().apply { source = VariantSource.REFIT }) // Need to apply refit or game will remove it.
                 }
             }

@@ -255,8 +255,8 @@ internal object ClipboardHotkeyHandlerUtils {
 
     fun handleInteractionCopy(ui: CampaignUIAPI, isAltDown: Boolean = false, isShiftDown: Boolean = false): Boolean {
         val interaction = ui.currentInteractionDialog
-        val plugin = interaction?.plugin
-        val battle = (plugin?.context as? FleetEncounterContext)?.battle
+
+        val battle = (interaction?.plugin?.context as? FleetEncounterContext)?.battle
 
         val fleet = if (battle != null && !isAltDown) {
             battle.nonPlayerCombined
