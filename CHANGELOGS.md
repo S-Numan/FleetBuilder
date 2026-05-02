@@ -1,3 +1,8 @@
+# 1.38.0
+### Changes
+- Removed the Log Viewer from the mod, and made it into a separate mod.
+- Minor background changes
+
 # 1.37.0
 ### Changes
 - Update both the variant and person serialization to be more robust.

@@ -80,7 +80,7 @@ abstract class BaseFilterPanel(
     }
 
     override fun processInput(events: List<InputEventAPI>) {
-        if (Mouse.isButtonDown(2)) {
+        if (Mouse.isButtonDown(2) && textField.text != defaultText) {
             onMiddleMouseReset()
         }
         events.forEach { event ->

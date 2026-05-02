@@ -18,7 +18,13 @@ object DisplayMessage {
     private val recentErrors = mutableMapOf<String, Long>()
     private const val ERROR_SPAM_INTERVAL_MS = 4000 // 4 seconds
 
-    fun showError(short: String, e: Throwable?) {
+    /**
+     * Shows an error message to the player and logs it to the console.
+     *
+     * @param short A short description of the error. The short message is displayed at the top of the screen and put in the console/logger.
+     * @param e The exception associated with the error.
+     */
+    fun showError(short: String, e: Throwable) {
         showError(short, null, e)
     }
 
