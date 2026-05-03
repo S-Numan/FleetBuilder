@@ -1,9 +1,24 @@
 package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.MemberSettings
+
+/**
+ * Delegate to [ShipHullSpecAPI.getActualHull]
+ */
+fun FleetMemberAPI.getActualHull(): ShipHullSpecAPI {
+    return hullSpec.getActualHull()
+}
+
+/**
+ * Delegate to [ShipHullSpecAPI.getActualHullId]
+ */
+fun FleetMemberAPI.getActualHullId(): String {
+    return hullSpec.getActualHullId()
+}
 
 /**
  * Creates an exact copy of this member.

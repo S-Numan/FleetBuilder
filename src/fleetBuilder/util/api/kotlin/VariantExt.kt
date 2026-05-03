@@ -12,6 +12,13 @@ import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.api.VariantUtils
 
 /**
+ * Delegate to [ShipHullSpecAPI.getActualHull]
+ */
+fun ShipVariantAPI.getActualHull(): ShipHullSpecAPI {
+    return hullSpec.getActualHull()
+}
+
+/**
  * Creates a copy of this variant with the specified settings.
  */
 fun ShipVariantAPI.clone(settings: VariantSettings): ShipVariantAPI {
