@@ -32,20 +32,13 @@ object DataMember {
     @JvmOverloads
     fun cloneMember(
         member: FleetMemberAPI,
-        filterParsed: Boolean = false
-    ): FleetMemberAPI {
-        val data = getMemberDataFromMember(member, filterParsed = filterParsed)
-        return buildMember(data)
-    }
-
-    fun cloneMember(
-        member: FleetMemberAPI,
-        settings: MemberSettings
+        settings: MemberSettings = MemberSettings()
     ): FleetMemberAPI {
         val data = getMemberDataFromMember(member, settings)
         return buildMember(data)
     }
 
+    @JvmOverloads
     fun getMemberDataFromMember(
         member: FleetMemberAPI,
         settings: MemberSettings = MemberSettings(),
