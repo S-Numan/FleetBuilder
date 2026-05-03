@@ -748,7 +748,7 @@ internal object AutofitPanel {
 
                     Global.getSoundPlayer().playUISound("ui_button_pressed", 0.94f, 1f)
 
-                    val missing = shipDirectory.getShipEntry(equalVariant.hullVariantId)?.missingContent
+                    val missing = shipDirectory.getRawShipEntry(equalVariant.hullVariantId)?.missingContent
                     if (missing == null) {
                         val newShipDirectory = ShipDirectoryService.getVariantSourceShipDirectory(equalVariant)
                         if (newShipDirectory != null) {//equalVariant exists, but not from this shipDirectory

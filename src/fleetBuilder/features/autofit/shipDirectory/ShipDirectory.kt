@@ -59,6 +59,20 @@ class ShipDirectory(
         return shipEntries
     }
 
+    fun getRawShipEntries(hullSpec: ShipHullSpecAPI): List<ShipEntry> {
+        val hullId = hullSpec.getEffectiveHullId()
+
+        return shipEntries.values
+            .filter {
+                it.effectiveHullID == hullId
+            }
+            .map { it }
+    }
+
+    fun getRawShipEntry(variantId: String): ShipEntry? {
+        return shipEntries[variantId]
+    }
+
     fun setRawShipEntry(variantId: String, entry: ShipEntry) {
         shipEntries[variantId] = entry
     }
@@ -76,7 +90,6 @@ class ShipDirectory(
 
         return entry.copy(
             variant = null,
-            variantData = entry.variantData
         )
     }
 
