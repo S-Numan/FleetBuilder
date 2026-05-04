@@ -9,20 +9,21 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.FBTxt
 import fleetBuilder.core.FBSettings
+import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitPanel
-import fleetBuilder.util.*
-import org.lwjgl.util.vector.Vector2f
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.width
+import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.completelyRemoveMod
 import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.api.kotlin.safeInvoke
+import org.lwjgl.util.vector.Vector2f
 
 internal class RemoveRefitHullmod : CampaignInputListener {
 
@@ -83,7 +84,7 @@ internal class RemoveRefitHullmod : CampaignInputListener {
 
                                 DisplayMessage.showMessage(FBTxt.txt("removed_smoddedbuiltin", hullModID.displayName))
                             } else if (LookupUtils.getAllDMods().contains(hullModID.id)) {//Built in DMod?
-                                variant.completelyRemoveMod(hullModID.id)
+                                variant.completelyRemoveMod(hullModID.id, true)
                                 refitPanel.safeInvoke("syncWithCurrentVariant")
 
                                 DisplayMessage.showMessage(FBTxt.txt("removed_built_in_dmod", hullModID.displayName))

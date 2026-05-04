@@ -248,7 +248,6 @@
   "tooltip_version_diff_mod": "%s (VERSION DIFFERENCE)\n        %s %s",
   "tooltip_exact_mod": "%s (EXACT)\n     %s %s",
   "tooltip_failed_to_load": "Failed to load:\nWeapons: %s\nWeapon Slots: %s\nWings: %s\nHullMods: %s",
-  "tag_suppressed": "(Suppressed)",
   "tag_hidden": "(Hidden)",
 
 

@@ -204,6 +204,9 @@ object LookupUtils {
     fun getAllDMods(): Set<String> = allDMods
 
     @JvmStatic
+    fun isDMod(modID: String): Boolean = allDMods.contains(modID)
+
+    @JvmStatic
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods
 
     //@JvmStatic

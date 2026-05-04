@@ -204,9 +204,11 @@ internal object FBMisc {
             to.completelyRemoveMod(mod)
         }
 
+        val builtInDMods = to.hullSpec.getBuiltInDMods()
+
         if (FBSettings.removeDefaultDMods) {
-            to.allDMods().forEach {
-                to.hullMods.remove(it)
+            builtInDMods.forEach {
+                to.addSuppressedMod(it)
             }
         }
 
@@ -227,25 +229,37 @@ internal object FBMisc {
 
         // Copy hullmod data
         for (mod in from.getRegularHullMods()) {
+            if (mod in builtInDMods)
+                to.suppressedMods.remove(mod)
+
             to.addMod(mod)
         }
 
         // Copy perma-mods
         for (mod in from.permaMods) {
+            if (mod in builtInDMods)
+                to.suppressedMods.remove(mod)
+
             to.addPermaMod(mod, false)
         }
 
         // Copy S-mods
         for (mod in from.sMods) {
+            if (mod in builtInDMods)
+                to.suppressedMods.remove(mod)
+
             to.addPermaMod(mod, true)
         }
 
         // Copy S-modded built-ins
         for (mod in from.sModdedBuiltIns) {
+            if (mod in builtInDMods)
+                to.suppressedMods.remove(mod)
+
             to.sModdedBuiltIns.add(mod)
         }
 
-        // Copy Built-in DMods
+        // Copy Built-in DMods, if present
         for (mod in from.allDMods()) {
             if (mod !in from.hullSpec.builtInMods) continue
             to.hullMods.add(mod)

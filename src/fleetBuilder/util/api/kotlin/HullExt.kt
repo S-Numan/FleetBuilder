@@ -2,14 +2,19 @@ package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.HullUtils
+
+fun ShipHullSpecAPI.getBuiltInDMods(): Set<String> =
+    builtInMods.filter { LookupUtils.isDMod(it) }.toSet()
+
 
 /**
  * Delegate to [HullUtils.getSlotsForModules]
  */
-fun ShipHullSpecAPI.getSlotsForModules(): List<String> {
-    return HullUtils.getSlotsForModules(this)
-}
+fun ShipHullSpecAPI.getSlotsForModules(): List<String> =
+    HullUtils.getSlotsForModules(this)
+
 
 /**
  * Delegates to [HullUtils.getEffectiveHull].

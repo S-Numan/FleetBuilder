@@ -12,10 +12,7 @@ import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.allDMods
-import fleetBuilder.util.api.kotlin.createHullVariant
-import fleetBuilder.util.api.kotlin.getActualHullId
-import fleetBuilder.util.api.kotlin.getModules
+import fleetBuilder.util.api.kotlin.*
 
 object DataVariant {
 
@@ -395,22 +392,33 @@ object DataVariant {
         if (data.fluxVents > -1)
             loadout.numFluxVents = data.fluxVents
 
+        val builtInDMods = loadout.hullSpec.getBuiltInDMods()
+
         //Remove default DMods
         if (FBSettings.removeDefaultDMods) {
-            loadout.allDMods().forEach {
-                loadout.hullMods.remove(it)
+            builtInDMods.forEach {
+                loadout.addSuppressedMod(it)
             }
         }
 
         data.hullMods.forEach { modId ->
+            if (modId in builtInDMods)
+                loadout.suppressedMods.remove(modId)
+
             loadout.addMod(modId)
         }
 
         data.permaMods.forEach { modId ->
+            if (modId in builtInDMods)
+                loadout.suppressedMods.remove(modId)
+
             loadout.addPermaMod(modId, false)
         }
 
         data.sMods.forEach { modId ->
+            if (modId in builtInDMods)
+                loadout.suppressedMods.remove(modId)
+
             if (hullSpec.builtInMods.contains(modId))
                 loadout.sModdedBuiltIns.add(modId)
             else
@@ -418,6 +426,9 @@ object DataVariant {
         }
 
         data.sModdedBuiltIns.forEach { modId ->
+            if (modId in builtInDMods)
+                loadout.suppressedMods.remove(modId)
+
             loadout.sModdedBuiltIns.add(modId)
 
             if (!hullSpec.builtInMods.contains(modId)) // If SModded built in, but hullspec doesn't have this mod to build in?
