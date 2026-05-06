@@ -192,7 +192,6 @@ object CompressedVariant {
             wings = fittedWings,
             weaponGroups = weaponGroups,
             moduleVariants = modules,
-            isGoalVariant = false
         )
     }
 

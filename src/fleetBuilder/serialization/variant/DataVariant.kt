@@ -31,7 +31,6 @@ object DataVariant {
         val wings: List<String> = emptyList(),
         val weaponGroups: List<ParsedWeaponGroup> = emptyList(),
         val moduleVariants: Map<String, ParsedVariantData> = emptyMap(),
-        val isGoalVariant: Boolean = false,
     ) {
         fun allHullMods() = (hullMods + sMods + sModdedBuiltIns + permaMods).toSet()
     }
@@ -145,8 +144,7 @@ object DataVariant {
             },
             moduleVariants = variant.getModules().map { (slot, module) ->
                 slot to getVariantDataFromVariant(module, settings)
-            }.toMap(),
-            isGoalVariant = variant.isGoalVariant,
+            }.toMap()
         )
 
         return if (filterParsed)
@@ -380,7 +378,6 @@ object DataVariant {
             loadout.hullVariantId = Misc.genUID()
 
         loadout.setVariantDisplayName(data.displayName)
-        loadout.isGoalVariant = data.isGoalVariant
 
         data.tags.forEach { loadout.addTag(it) }
 

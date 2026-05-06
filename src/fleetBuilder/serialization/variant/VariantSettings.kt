@@ -10,6 +10,7 @@ package fleetBuilder.serialization.variant
  * @param includeVariantID If false, the variant's ID will not be included. Disabled by default due to typically not being needed. If enabled, try to keep the variant id unique for modified variants on building a variant.
  * Complete uniqueness is not so important here, but for example; if you have a variant id the same as the default _Hull variant in the game files, it will be overwritten to that variant on game save thus roughly .clear()'ing the variant.
  * Sort of like if you left a variant source as "STOCK" instead of "REFIT" on game save.
+ * @param includeDefaultJSON If true, some default fields will be added in the JSON file when saving even if not needed. Typically for saving files for vanilla starsector to read.
  * @param excludeWeaponsWithID A set of weapon IDs to exclude from the variant's weapons.
  * @param excludeWingsWithID A set of wing IDs to exclude from the variant's wings.
  * @param excludeHullModsWithID A set of hullmod IDs to exclude from the variant's hullmods.
@@ -25,6 +26,7 @@ data class VariantSettings(
     var includeTags: Boolean = true,
     var includeFlux: Boolean = true,
     var includeVariantID: Boolean = false,
+    var includeDefaultJSON: Boolean = false,
     var excludeWeaponsWithID: MutableSet<String> = mutableSetOf(),
     var excludeWingsWithID: MutableSet<String> = mutableSetOf(),
     var excludeHullModsWithID: MutableSet<String> = mutableSetOf(),

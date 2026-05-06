@@ -52,6 +52,7 @@ object ClipboardMisc {
                 variantToSave,
                 VariantSettings().apply {
                     excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
+                    includeDefaultJSON = true
                 }
             )
             ClipboardUtil.setClipboardText(json.toString(4))

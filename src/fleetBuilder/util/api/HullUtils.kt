@@ -136,8 +136,8 @@ object HullUtils {
      * @param hull The hull spec to resolve.
      * @return A compatible non-D hull when possible.
      */
-    @JvmStatic
-    fun getCompatibleDLessHull(
+    // Marked internal to avoid needless functions and possible confusion from such
+    internal fun getCompatibleDLessHull(
         hull: ShipHullSpecAPI,
     ): ShipHullSpecAPI {
         val hull = getActualHull(hull)
@@ -145,6 +145,7 @@ object HullUtils {
         if (!isDSkin(hull)) return hull
         return hull.dParentHull?.let { getCompatibleDLessHull(hull) } ?: hull.baseHull ?: hull
     }
+
 
     /**
      * Returns the HullSpec from its source file (.ship or .skin), without any extra modifications such as default D-Hull variations.

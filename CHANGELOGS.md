@@ -1,4 +1,7 @@
 # 1.38.0
+- Add functionality for JSON variant saving to more easily work with vanilla game variants.
+
+# 1.38.0
 ### Changes
 - Removed the Log Viewer from the mod, and made it into a separate mod.
 - Minor background changes
