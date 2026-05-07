@@ -22,20 +22,26 @@ object RecentBattleDialog {
         if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen())
             return
         val fleetDirectory = FleetDirectoryService.getDirectory() ?: return
-        showDialog(fleetDirectory, null, sortNewestFirst = true, onlyPersonBounty = false)
+        showDialog(fleetDirectory, null, sortNewestFirst = true, fleetType = FleetType.ALL)
 
         event.consume()
+    }
+
+    enum class FleetType {
+        ALL,
+        PERSON_BOUNTY,
+        BOUNTY_BOARD,
     }
 
     private fun showDialog(
         directory: FleetDirectory,
         selectedFaction: String?,
         sortNewestFirst: Boolean,
-        onlyPersonBounty: Boolean
+        fleetType: FleetType
     ) {
         var selectedFaction: String? = selectedFaction
         var sortNewestFirst = sortNewestFirst
-        var onlyPersonBounty = onlyPersonBounty
+        var fleetType = fleetType
 
         val dialog = DialogPanel()
 
@@ -49,12 +55,22 @@ object RecentBattleDialog {
                 .sorted()
 
             val filtered = allEntries
-                .filter {
-                    (selectedFaction == null || it.fleetData.factionID == selectedFaction) &&
-                            (!onlyPersonBounty || it.fleetData.memKeys["\$fleetType"] == "personBounty")
+                .asSequence()
+                .filter { entry ->
+                    val factionMatches = selectedFaction == null || entry.fleetData.factionID == selectedFaction
+
+                    val typeMatches = when (fleetType) {
+                        FleetType.PERSON_BOUNTY ->
+                            entry.fleetData.memKeys["\$fleetType"] == "personBounty" && entry.fleetData.memKeys["\$MagicLib_Bounty_target_fleet"] != true
+                        FleetType.BOUNTY_BOARD ->
+                            entry.fleetData.memKeys["\$MagicLib_Bounty_target_fleet"] == true
+                        else -> true
+                    }
+
+                    factionMatches && typeMatches
                 }
                 .sortedBy { it.timeSaved }
-                .let { if (sortNewestFirst) it.reversed() else it }
+                .let { if (sortNewestFirst) it.toList().asReversed() else it.toList() }
 
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
 
@@ -116,13 +132,13 @@ object RecentBattleDialog {
             }
 
             ui.addButton(
-                if (onlyPersonBounty) "Fleet Type: Bounty" else "Fleet Type: All",
+                if (fleetType == FleetType.PERSON_BOUNTY) "Fleet Type: Personal Bounty" else if (fleetType == FleetType.BOUNTY_BOARD) "Fleet Type: Bounty Board" else "Fleet Type: All",
                 null,
                 250f,
                 30f,
                 5f
             ).onClick {
-                onlyPersonBounty = !onlyPersonBounty
+                fleetType = FleetType.entries[(fleetType.ordinal + 1) % FleetType.entries.size]
                 dialog.recreateUI()
             }
 
