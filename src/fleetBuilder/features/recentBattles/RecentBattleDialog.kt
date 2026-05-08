@@ -6,8 +6,8 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.Alignment
 import fleetBuilder.core.FBSettings
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.pasteFleetDialog
-import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectory
-import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
+import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectory
+import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectoryService
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
@@ -17,11 +17,16 @@ import fleetBuilder.util.api.kotlin.isIdle
 import java.text.SimpleDateFormat
 import java.util.*
 
+// TODO
+//  A toggle to show/hide fleets with missing elements.
+//  A visual indicator that fleets have missing elements. Maybe a strike through?
+//  A DP indicator.
+
 object RecentBattleDialog {
     fun recentBattleDialog(event: InputEventAPI, ui: CampaignUIAPI) {
         if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen())
             return
-        val fleetDirectory = FleetDirectoryService.getDirectory() ?: return
+        val fleetDirectory = RBFleetDirectoryService.getDirectory() ?: return
         showDialog(fleetDirectory, null, sortNewestFirst = true, fleetType = FleetType.ALL)
 
         event.consume()
@@ -34,7 +39,7 @@ object RecentBattleDialog {
     }
 
     private fun showDialog(
-        directory: FleetDirectory,
+        directory: RBFleetDirectory,
         selectedFaction: String?,
         sortNewestFirst: Boolean,
         fleetType: FleetType

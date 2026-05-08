@@ -17,25 +17,25 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class FleetEntry(
+data class RBFleetEntry(
     val fleetData: DataFleet.ParsedFleetData,
     val path: String,
     val missingContent: MissingContent,
     val timeSaved: Date,
-    val dir: FleetDirectory,
+    val dir: RBFleetDirectory,
     val id: String,
 )
 
-class FleetDirectory(
+class RBFleetDirectory(
     val directory: String,
 ) {
-    private var fleetEntries: MutableMap<String, FleetEntry> = mutableMapOf()
+    private var fleetEntries: MutableMap<String, RBFleetEntry> = mutableMapOf()
 
-    fun getRawFleetEntries(): Map<String, FleetEntry> {
+    fun getRawFleetEntries(): Map<String, RBFleetEntry> {
         return fleetEntries
     }
 
-    fun setRawFleetEntry(fleetId: String, entry: FleetEntry) {
+    fun setRawFleetEntry(fleetId: String, entry: RBFleetEntry) {
         fleetEntries[fleetId] = entry
     }
 
@@ -43,7 +43,7 @@ class FleetDirectory(
         return fleetEntries.containsKey(fleetId)
     }
 
-    fun getFleetEntry(fleetId: String): FleetEntry? {
+    fun getFleetEntry(fleetId: String): RBFleetEntry? {
         return fleetEntries[fleetId]
     }
 
@@ -169,7 +169,7 @@ class FleetDirectory(
         if (editFleetFile)
             Global.getSettings().writeTextFileToCommon("$directory$fleetPath", comp)
 
-        val entry = FleetEntry(
+        val entry = RBFleetEntry(
             parsedFleet,
             fleetPath,
             missingFromFleet,
@@ -183,7 +183,7 @@ class FleetDirectory(
         return fleetID
     }
 
-    fun addFleet(fleetEntry: FleetEntry) {
+    fun addFleet(fleetEntry: RBFleetEntry) {
         val fleetId = fleetEntry.id
         val data = fleetEntry.fleetData.copy()
 
@@ -195,7 +195,7 @@ class FleetDirectory(
 
         Global.getSettings().writeTextFileToCommon("$directory$fleetPath", comp)
 
-        fleetEntries[fleetId] = FleetEntry(
+        fleetEntries[fleetId] = RBFleetEntry(
             data,
             fleetPath,
             fleetEntry.missingContent,
