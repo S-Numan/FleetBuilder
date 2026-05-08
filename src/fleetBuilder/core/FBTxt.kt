@@ -3,7 +3,6 @@ package fleetBuilder.core
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.TextPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
-import fleetBuilder.core.FBMisc
 import org.json.JSONObject
 import org.magiclib.util.StringCreator
 import java.awt.Color
@@ -18,7 +17,7 @@ object FBTxt {
         private set
 
     internal fun setup() {
-        FBStrings = Global.getSettings().getMergedJSONForMod("data/strings/strings.json", FBSettings.getModID()).getJSONObject(FBSettings.getModID())
+        FBStrings = Global.getSettings().loadJSON("data/strings/strings.json", FBSettings.getModID()).getJSONObject(FBSettings.getModID())
         if (FBStrings.has("missing_string"))
             missingString = FBStrings.getString("missing_string")
         else
