@@ -231,6 +231,7 @@
   "toggle_strip_before_autofit_tooltip": "Remove everything possible prior to autofitting: generally results in a better fit.\n\nHowever, refitting outside of port reduces a ship's combat readiness, and this option tends to lead to more changes and more readiness loss.",
   "toggle_apply_smods_label": "Apply SMods",
   "toggle_apply_smods_tooltip": "Spend story points to apply SMods to your ship.\n\nIf S-mods are installed, the autofit cannot be undone.",
+  "toggle_apply_smods_tooltip_shipmasteryconflict": "Disabled to avoid conflicting functionality with the Ship Mastery System mod",
   "dialog_apply_smods_title": "Use Story Points to Apply SMods",
   "dialog_apply_smods_desc_one": "This will consume %d Story point and give %d bonus xp",
   "dialog_apply_smods_desc_many": "This will consume %d Story points and give %d bonus xp",

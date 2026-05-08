@@ -559,14 +559,18 @@ internal object AutofitPanel {
                     default = true
                 )
 
-                if (!Global.getSettings().modManager.isModEnabled("shipmasterysystem")) { // No apply s-mods if conflicting functionality
-                    applySModsButton = addToggleButton(
-                        label = txt("toggle_apply_smods_label"),
-                        memoryKey = "\$FBA_applySMods",
-                        tooltipText = txt("toggle_apply_smods_tooltip"),
-                        default = false
-                    )
+                val shipMasteryModEnabled = Global.getSettings().modManager.isModEnabled("shipmasterysystem")
+                applySModsButton = addToggleButton(
+                    label = txt("toggle_apply_smods_label"),
+                    memoryKey = "\$FBA_applySMods",
+                    tooltipText = if (!shipMasteryModEnabled) txt("toggle_apply_smods_tooltip") else txt("toggle_apply_smods_tooltip_shipmasteryconflict"),
+                    default = false
+                )
+                if (shipMasteryModEnabled) { // No apply s-mods if conflicting functionality
+                    applySModsButton.enabled = false
+                    applySModsButton.isEnabled = false
                 }
+                
             }
 
             // Add the buttons element to the panel
