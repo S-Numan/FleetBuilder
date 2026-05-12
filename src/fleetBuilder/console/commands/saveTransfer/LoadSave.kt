@@ -1,8 +1,6 @@
 package fleetBuilder.console.commands.saveTransfer
 
-import com.fs.starfarer.api.Global
 import fleetBuilder.core.FBTxt
-import fleetBuilder.core.saveBackupManager.SaveBackupManager
 import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.PlayerSaveUtils.compileSaveAny
 import fleetBuilder.serialization.PlayerSaveUtils.loadCompiledSave
@@ -35,7 +33,7 @@ class LoadSave : BaseCommand {
 
         val argList = args.lowercase().split(" ")
 
-        if (argList.contains("-backup")) {
+        /* if (argList.contains("-backup")) {
             val configPath = SaveBackupManager.getNewestBackupPath()
 
             if (!Global.getSettings().fileExistsInCommon(configPath)) {
@@ -48,9 +46,9 @@ class LoadSave : BaseCommand {
                 Console.showMessage("${FBTxt.txt("backup_save_read_error")}\n$e")
                 return BaseCommand.CommandResult.ERROR
             }
-        } else {
-            saveTransfer = getClipboardContentsAutoJSON()
-        }
+        } else { */
+        saveTransfer = getClipboardContentsAutoJSON()
+        //}
 
         val missing = MissingContentExtended()
         val compiled = compileSaveAny(saveTransfer, missing)
