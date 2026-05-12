@@ -5,9 +5,9 @@ import fleetBuilder.core.FBConst
 import fleetBuilder.serialization.PlayerSaveUtils
 
 object SaveBackupManager {
-    private const val MAX_SLOT = 6
+    private const val MAX_SLOT = 8
     private const val MIN_SLOT = 1
-    private const val MAX_BACKUPS = 3
+    private const val MAX_BACKUPS = 4
 
     fun createBackup() {
         try {
