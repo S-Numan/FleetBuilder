@@ -9,11 +9,13 @@ import kotlin.math.round
 import kotlin.math.roundToInt
 
 fun Float.roundToDecimals(decimals: Int): Float {
+    if (this.isNaN()) return 0f
     val factor = 10.0.pow(decimals).toFloat()
     return (this * factor).roundToInt() / factor
 }
 
 fun Double.roundToDecimals(decimals: Int): Double {
+    if (this.isNaN()) return 0.0
     val factor = 10.0.pow(decimals)
     return round(this * factor) / factor
 }
