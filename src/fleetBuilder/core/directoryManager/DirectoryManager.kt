@@ -3,14 +3,16 @@ package fleetBuilder.core.directoryManager
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
 import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.ref.WeakReference
+import java.util.concurrent.ConcurrentHashMap
 
 const val CONFIG_FILE_NAME = "directory"
 
-class DirectoryManager(
+internal class DirectoryManager private constructor(
     inputPath: String,
-    override val manager: DirectoryManager? = resolveManager(normalizeConfigPath(inputPath).removeSuffix(CONFIG_FILE_NAME))
+    override val manager: DirectoryManager?
 ) : DirPath(
-    path = normalizeConfigPath(inputPath),
+    path = inputPath,
     manager = manager
 ) {
     companion object {
@@ -25,6 +27,46 @@ class DirectoryManager(
                 base + CONFIG_FILE_NAME
             else
                 "$base/$CONFIG_FILE_NAME"
+        }
+
+        private val instances =
+            ConcurrentHashMap<String, WeakReference<DirectoryManager>>()
+
+        private fun removeInstance(path: String) {
+            instances.remove(path)
+        }
+
+        fun get(inputPath: String): DirectoryManager {
+            cleanup()
+
+            val normalized = normalizeConfigPath(inputPath)
+
+            // Try existing
+            val existing = instances[normalized]?.get()
+            if (existing != null) return existing
+
+            // Create new
+            val created = DirectoryManager(
+                normalized,
+                createManager(normalized)
+            )
+
+            instances[normalized] = WeakReference(created)
+            return created
+        }
+
+        private fun cleanup() {
+            instances.entries.removeIf { it.value.get() == null }
+        }
+
+        private fun createManager(path: String): DirectoryManager? {
+            val parentPath = path
+                .removeSuffix(CONFIG_FILE_NAME)
+                .substringBeforeLast('/', "")
+                .takeIf { it.isNotEmpty() }
+                ?.let { "$it/" }
+
+            return parentPath?.let { get(it) }
         }
     }
 
@@ -67,7 +109,7 @@ class DirectoryManager(
             val fullPath = folderPath + entry
 
             if (entry.endsWith("/"))
-                DirectoryManager(fullPath, this)
+                DirectoryManager.get(fullPath)
             else
                 DirFile(fullPath, this)
         }
@@ -108,7 +150,7 @@ class DirectoryManager(
                 .filterIsInstance<DirectoryManager>()
                 .find { it.folderPath == newPath }
 
-            current = existing ?: DirectoryManager(newPath, current).also {
+            current = existing ?: DirectoryManager.get(newPath).also {
                 current._containingPaths.add(it)
                 current.saveConfigToFile()
             }
@@ -146,7 +188,10 @@ class DirectoryManager(
     override fun delete() {
         _containingPaths.toList().forEach { it.delete() }
         settings.deleteTextFileFromCommon(path)
+
         // TODO: remove now empty folder once starsector 0.98.5 comes out with the remove folder API
+
+        removeInstance(path)
         manager?.remove(this)
     }
 }
