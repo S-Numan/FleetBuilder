@@ -1,55 +1,62 @@
 package fleetBuilder.core.directoryManager
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.SettingsAPI
 
 open class DirPath(
     open val path: String,
-    open val manager: DirectoryManager?
+    open var manager: DirectoryManager?
 ) {
+    protected val settings: SettingsAPI get() = Global.getSettings()
+
     open fun delete() {
 
     }
 
-    private fun findManager(): DirectoryManager? {
-        if (manager != null)
-            return manager
+    protected fun resolveManager(): DirectoryManager? {
+        manager?.let { return it }
 
-        val prevPath = path.substringBeforeLast("/", "") + "/"
-        if (prevPath == "/")
-            return null
+        val parent = path.substringBeforeLast('/', "")
+            .takeIf { it.isNotEmpty() }
+            ?.let { "$it/" }
 
-        return DirectoryManager(prevPath)
+        return parent?.let { DirectoryManager(it) }
     }
 }
 
 class DirFile(
     override val path: String,
-    override val manager: DirectoryManager
+    override var manager: DirectoryManager?
 ) : DirPath(path = path, manager = manager) {
     init {
-        if (path.endsWith("/"))
-            throw IllegalArgumentException("Path must not end with a slash.")
+        require(!path.endsWith("/")) {
+            "File path must not end with '/': $path"
+        }
+    }
+
+    fun exists(): Boolean {
+        return settings.fileExistsInCommon(path)
     }
 
     fun read(): String? {
+        if (!exists()) return null
+
         return try {
-            if (Global.getSettings().fileExistsInCommon(path))
-                Global.getSettings().readTextFileFromCommon(path)
-            else
-                null
-        } catch (_: Exception) {
+            settings.readTextFileFromCommon(path)
+        } catch (ex: Exception) {
+            Global.getLogger(this.javaClass).error("Failed to read file: $path (${ex.message})")
             null
         }
     }
 
     fun write(contents: String) {
-        Global.getSettings().writeTextFileToCommon(path, contents)
+        settings.writeTextFileToCommon(path, contents)
     }
 
     override fun delete() {
-        Global.getSettings().deleteTextFileFromCommon(path)
-        manager.containingPaths.remove(this)
-
-        manager.saveConfigToFile()
+        if (exists()) {
+            settings.deleteTextFileFromCommon(path)
+        }
+        manager?.remove(this)
     }
 }

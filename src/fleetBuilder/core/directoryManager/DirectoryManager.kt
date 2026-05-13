@@ -1,41 +1,66 @@
 package fleetBuilder.core.directoryManager
 
-import com.fs.starfarer.api.Global
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
 import org.json.JSONArray
 import org.json.JSONObject
 
 const val CONFIG_FILE_NAME = "directory"
 
-data class DirectoryManager(
-    private val inputPath: String,
-    override val manager: DirectoryManager? = null,
-    val folderPath: String = inputPath.removeSuffix(".data").removeSuffix(CONFIG_FILE_NAME).replace("\\", "/"),
-    val configFilePath: String = folderPath + CONFIG_FILE_NAME,
-) : DirPath(path = configFilePath, manager = manager) {
+class DirectoryManager(
+    inputPath: String,
+    override var manager: DirectoryManager? = null
+) : DirPath(
+    path = normalizeConfigPath(inputPath),
+    manager = manager
+) {
+    companion object {
+        private fun normalizeConfigPath(path: String): String {
+            val normalized = path.replace("\\", "/")
 
-    init {
-        if (!folderPath.endsWith("/"))
-            throw IllegalArgumentException("Folder path must end with a slash.")
+            val base = normalized
+                .removeSuffix(".data")
+                .removeSuffix(CONFIG_FILE_NAME)
+
+            return if (base.endsWith("/"))
+                base + CONFIG_FILE_NAME
+            else
+                "$base/$CONFIG_FILE_NAME"
+        }
+
+        private fun normalizeName(name: String): String {
+            return name
+                .replace("\\", "/")
+                .trim('/')
+        }
     }
 
-    val containingPaths: MutableList<DirPath> by lazy {
+    init {
+        require(path.endsWith("/")) {
+            "Folder path must end with '/': $path"
+        }
+
+        manager = resolveManager()
+    }
+
+    val folderPath: String = path.removeSuffix(CONFIG_FILE_NAME)
+
+    private val containingPaths: MutableList<DirPath> by lazy {
         val list = mutableListOf<DirPath>()
         generatePathsInto(list)
         list
     }
 
     private fun generatePathsInto(list: MutableList<DirPath>) {
-        if (Global.getSettings().fileExistsInCommon(configFilePath))
+        if (settings.fileExistsInCommon(path))
             readConfigFromFile(list)
         else
             saveConfigToFile()
     }
 
     internal fun readConfigFromFile(list: MutableList<DirPath>) {
-        val json = Global.getSettings().readJSONFromCommon(configFilePath, false)
+        val json = settings.readJSONFromCommon(path, false)
         if (!json.has("paths"))
-            throw IllegalArgumentException("Invalid directory config file at '$configFilePath'")
+            throw IllegalArgumentException("Invalid directory config file at '$path'")
 
         val paths = json.optJSONArrayToStringList("paths")
 
@@ -47,7 +72,7 @@ data class DirectoryManager(
             else
                 DirFile(folderPath + it, this)
 
-            containingPaths.add(dirPath)
+            list.add(dirPath)
         }
     }
 
@@ -55,15 +80,16 @@ data class DirectoryManager(
         val json = JSONObject()
         val pathsArray = JSONArray()
         containingPaths.forEach {
-            pathsArray.put(it.path)
+            pathsArray.put(it.path.substringAfterLast("/"))
         }
         json.put("paths", pathsArray)
 
-        Global.getSettings().writeJSONToCommon(folderPath + CONFIG_FILE_NAME, json, false)
+        settings.writeJSONToCommon(folderPath + CONFIG_FILE_NAME, json, false)
     }
 
+    // Recursively create DirectoryManager if needed
     fun createFolder(folderName: String): DirectoryManager {
-        val cleaned = folderName.replace("\\", "/").trim('/')
+        val cleaned = normalizeName(folderName)
 
         // Split into parts: "a/b/c" -> ["a", "b", "c"]
         val parts = cleaned.split("/").filter { it.isNotEmpty() }
@@ -86,10 +112,12 @@ data class DirectoryManager(
     }
 
     fun createFile(fileName: String, fileContents: String): DirFile {
-        if (fileName == CONFIG_FILE_NAME)
-            throw IllegalArgumentException("Cannot create file with name '$CONFIG_FILE_NAME'")
-        if (fileName.contains("/") || fileName.contains("\\"))
-            throw IllegalArgumentException("File name cannot contain slashes '$fileName'")
+        require(fileName != CONFIG_FILE_NAME) {
+            "Cannot use reserved name '$CONFIG_FILE_NAME'"
+        }
+        require(!fileName.contains("/") && !fileName.contains("\\")) {
+            "File name must not contain slashes: $fileName"
+        }
 
         val existing = containingPaths.find { it.path.endsWith(fileName) }
         if (existing != null) {
@@ -106,12 +134,17 @@ data class DirectoryManager(
         return dirPath
     }
 
+    internal fun remove(entry: DirPath) {
+        containingPaths.remove(entry)
+        saveConfigToFile()
+    }
+
     override fun delete() {
-        containingPaths.forEach {
+        containingPaths.toList().forEach {
             it.delete()
         }
-        Global.getSettings().deleteTextFileFromCommon(configFilePath)
-        // TODO: Remove now now empty folder when this is added to starsector in 0.98.5
-        manager?.containingPaths?.remove(this)
+        settings.deleteTextFileFromCommon(path)
+
+        manager?.remove(this)
     }
 }
