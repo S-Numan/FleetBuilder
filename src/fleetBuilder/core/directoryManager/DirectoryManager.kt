@@ -8,7 +8,7 @@ const val CONFIG_FILE_NAME = "directory"
 
 class DirectoryManager(
     inputPath: String,
-    override var manager: DirectoryManager? = null
+    override val manager: DirectoryManager? = resolveManager(normalizeConfigPath(inputPath).removeSuffix(CONFIG_FILE_NAME))
 ) : DirPath(
     path = normalizeConfigPath(inputPath),
     manager = manager
@@ -26,88 +26,94 @@ class DirectoryManager(
             else
                 "$base/$CONFIG_FILE_NAME"
         }
-
-        private fun normalizeName(name: String): String {
-            return name
-                .replace("\\", "/")
-                .trim('/')
-        }
     }
 
     init {
-        require(path.endsWith("/")) {
-            "Folder path must end with '/': $path"
+        require(path.endsWith(CONFIG_FILE_NAME)) {
+            "Directory config must end with '$CONFIG_FILE_NAME': $path"
         }
-
-        manager = resolveManager()
     }
 
     val folderPath: String = path.removeSuffix(CONFIG_FILE_NAME)
 
-    private val containingPaths: MutableList<DirPath> by lazy {
-        val list = mutableListOf<DirPath>()
-        generatePathsInto(list)
-        list
+    private val _containingPaths: MutableList<DirPath> by lazy {
+        loadPaths().toMutableList()
     }
 
-    private fun generatePathsInto(list: MutableList<DirPath>) {
-        if (settings.fileExistsInCommon(path))
-            readConfigFromFile(list)
-        else
-            saveConfigToFile()
-    }
+    val containingPaths: List<DirPath>
+        get() = _containingPaths
 
-    internal fun readConfigFromFile(list: MutableList<DirPath>) {
-        val json = settings.readJSONFromCommon(path, false)
-        if (!json.has("paths"))
-            throw IllegalArgumentException("Invalid directory config file at '$path'")
+    // -------------------------
+    // Loading
+    // -------------------------
 
-        val paths = json.optJSONArrayToStringList("paths")
-
-        list.clear()
-
-        paths.forEach {
-            val dirPath = if (it.endsWith('/'))
-                DirectoryManager(folderPath + it, this)
-            else
-                DirFile(folderPath + it, this)
-
-            list.add(dirPath)
+    private fun loadPaths(): List<DirPath> {
+        return if (settings.fileExistsInCommon(path)) {
+            readConfigFromFile()
+        } else {
+            saveEmptyConfig()
+            emptyList()
         }
+    }
+
+    internal fun readConfigFromFile(): List<DirPath> {
+        val json = settings.readJSONFromCommon(path, false)
+
+        require(json.has("paths")) {
+            "Invalid directory config file at '$path'"
+        }
+
+        return json.optJSONArrayToStringList("paths").map { entry ->
+            val fullPath = folderPath + entry
+
+            if (entry.endsWith("/"))
+                DirectoryManager(fullPath, this)
+            else
+                DirFile(fullPath, this)
+        }
+    }
+
+    private fun saveEmptyConfig() {
+        val json = JSONObject().put("paths", JSONArray())
+        settings.writeJSONToCommon(path, json, false)
     }
 
     internal fun saveConfigToFile() {
         val json = JSONObject()
         val pathsArray = JSONArray()
-        containingPaths.forEach {
+
+        _containingPaths.forEach {
             pathsArray.put(it.path.substringAfterLast("/"))
         }
-        json.put("paths", pathsArray)
 
-        settings.writeJSONToCommon(folderPath + CONFIG_FILE_NAME, json, false)
+        json.put("paths", pathsArray)
+        settings.writeJSONToCommon(path, json, false)
     }
 
-    // Recursively create DirectoryManager if needed
-    fun createFolder(folderName: String): DirectoryManager {
-        val cleaned = normalizeName(folderName)
+    // -------------------------
+    // Mutations
+    // -------------------------
 
-        // Split into parts: "a/b/c" -> ["a", "b", "c"]
-        val parts = cleaned.split("/").filter { it.isNotEmpty() }
+    fun createFolder(folderName: String): DirectoryManager {
+        val parts = normalizeName(folderName)
+            .split("/")
+            .filter { it.isNotEmpty() }
 
         var current = this
 
         for (part in parts) {
             val newPath = current.folderPath + part + "/"
 
-            // Check if already exists in containingPaths
-            val existing = current.containingPaths
+            val existing = current._containingPaths
                 .filterIsInstance<DirectoryManager>()
                 .find { it.folderPath == newPath }
 
-            current = existing ?: DirectoryManager(newPath, current)
+            current = existing ?: DirectoryManager(newPath, current).also {
+                current._containingPaths.add(it)
+                current.saveConfigToFile()
+            }
         }
 
-        current.containingPaths.getOrNull(0) // To call the lazy variable, creating the folder.
         return current
     }
 
@@ -115,36 +121,32 @@ class DirectoryManager(
         require(fileName != CONFIG_FILE_NAME) {
             "Cannot use reserved name '$CONFIG_FILE_NAME'"
         }
-        require(!fileName.contains("/") && !fileName.contains("\\")) {
+        require('/' !in fileName && '\\' !in fileName) {
             "File name must not contain slashes: $fileName"
         }
 
-        val existing = containingPaths.find { it.path.endsWith(fileName) }
-        if (existing != null) {
-            (existing as DirFile).write(fileContents)
+        val existing = _containingPaths.find { it.path.endsWith(fileName) }
+        if (existing is DirFile) {
+            existing.write(fileContents)
             return existing
         }
 
-        val dirPath = DirFile(folderPath + fileName, this)
-        dirPath.write(fileContents)
-
-        containingPaths.add(dirPath)
-        saveConfigToFile()
-
-        return dirPath
+        return DirFile(folderPath + fileName, this).also {
+            it.write(fileContents)
+            _containingPaths.add(it)
+            saveConfigToFile()
+        }
     }
 
     internal fun remove(entry: DirPath) {
-        containingPaths.remove(entry)
+        _containingPaths.remove(entry)
         saveConfigToFile()
     }
 
     override fun delete() {
-        containingPaths.toList().forEach {
-            it.delete()
-        }
+        _containingPaths.toList().forEach { it.delete() }
         settings.deleteTextFileFromCommon(path)
-
+        // TODO: remove now empty folder once starsector 0.98.5 comes out with the remove folder API
         manager?.remove(this)
     }
 }
