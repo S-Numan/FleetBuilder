@@ -48,7 +48,7 @@ internal class DirectoryManager private constructor(
             // Create new
             val created = DirectoryManager(
                 normalized,
-                createManager(normalized)
+                getParentManager(normalized)
             )
 
             instances[normalized] = WeakReference(created)
@@ -59,8 +59,9 @@ internal class DirectoryManager private constructor(
             instances.entries.removeIf { it.value.get() == null }
         }
 
-        private fun createManager(path: String): DirectoryManager? {
+        private fun getParentManager(path: String): DirectoryManager? {
             val parentPath = path
+                .removeSuffix(".data")
                 .removeSuffix(CONFIG_FILE_NAME)
                 .substringBeforeLast('/', "")
                 .takeIf { it.isNotEmpty() }

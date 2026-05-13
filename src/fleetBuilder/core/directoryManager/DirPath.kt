@@ -3,7 +3,7 @@ package fleetBuilder.core.directoryManager
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.SettingsAPI
 
-internal open class DirPath(
+internal open class DirPath protected constructor(
     open val path: String,
     open val manager: DirectoryManager?
 ) {

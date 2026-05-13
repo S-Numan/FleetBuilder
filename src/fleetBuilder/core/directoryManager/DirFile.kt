@@ -2,7 +2,7 @@ package fleetBuilder.core.directoryManager
 
 import com.fs.starfarer.api.Global
 
-internal class DirFile(
+internal class DirFile internal constructor(
     inputPath: String,
     override val manager: DirectoryManager? = resolveManager(normalizeName(inputPath))
 ) : DirPath(path = normalizeName(inputPath), manager = manager) {
