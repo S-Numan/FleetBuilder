@@ -164,7 +164,7 @@ object CompressedPerson {
             val points = fields[cur].toInt()
             cur++
 
-            val metaMemKeys = if (metaVersionNumber == 2) {
+            val metaMemKeys = if (metaVersionNumber >= 2) {
                 val tagsAndMemKeys = fields.getOrNull(cur)?.split(personSep + fieldSep)
                 tags = tagsAndMemKeys?.getOrNull(0).takeIf { it?.isNotBlank() == true }
                     ?.split(memKeyJoinSep)
