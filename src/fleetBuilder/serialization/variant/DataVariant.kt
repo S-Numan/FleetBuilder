@@ -424,7 +424,7 @@ object DataVariant {
         }
 
         data.suppressedMods.forEach { modId ->
-            loadout.completelyRemoveMod(modId)
+            loadout.completelyRemoveMod(modId, true)
         }
 
         val wingOffset = hullSpec.builtInWings.size
