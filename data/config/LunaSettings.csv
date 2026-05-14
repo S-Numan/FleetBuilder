@@ -167,13 +167,7 @@ A filter box to the right of the Other (4) tab when viewing cargo. Input values 
 I couldn’t get this one to work properly, but I left it in case anyone would like to try it out anyway. It technically works somewhat.",,,Developer Options
 ,,,,,,,,
 ,,,,,,,,
-removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?
-
-When an autofit variant is being created from file after being saved, it creates a new “HULL” variant with nothing on it to place the contents of the variant on it.
-The “HULL” variant of certain ships, such as Lion Guard ships, by default come with a DMod.
-This causes newly loaded autofit variants to come with DMods despite the data for what the autofit variant should have on it not having it.
-
-This being true simply makes the behavior expected, only have a DMod if the saved variant has one.",,,Developer Options
+,,,,,,,,
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
 This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as that hullmod is an sModdedBuiltIn without the ship having the MIDAS hullmod in the hullspec of the ship",,,Developer Options

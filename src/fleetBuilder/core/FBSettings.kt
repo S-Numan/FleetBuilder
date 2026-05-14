@@ -123,8 +123,6 @@ object FBSettings {
 
     var storeOfficersInCargo = false
 
-    var removeDefaultDMods = true
-
     var cargoAutoManager = true
 
     var modPickerFilter = false

@@ -48,7 +48,6 @@ internal class LunaSettingsListener : LunaSettingsListener {
             FBSettings.devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
             FBSettings.fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
             FBSettings.storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
-            FBSettings.removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
             FBSettings.cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
             FBSettings.modPickerFilter = getBoolean(modID, "modPickerFilter")!!
             FBSettings.cargoScreenFilter = getBoolean(modID, "cargoScreenFilter")!!

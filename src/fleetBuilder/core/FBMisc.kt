@@ -17,7 +17,10 @@ import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.MemberUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.*
+import fleetBuilder.util.api.kotlin.completelyRemoveMod
+import fleetBuilder.util.api.kotlin.getEffectiveHullId
+import fleetBuilder.util.api.kotlin.getModules
+import fleetBuilder.util.api.kotlin.getRegularHullMods
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
@@ -204,14 +207,6 @@ internal object FBMisc {
             to.completelyRemoveMod(mod)
         }
 
-        val builtInDMods = to.hullSpec.getBuiltInDMods()
-
-        if (FBSettings.removeDefaultDMods) {
-            builtInDMods.forEach {
-                to.addSuppressedMod(it)
-            }
-        }
-
         if (!dontForceClearSMods) {
             to.sModdedBuiltIns.clear()
         }
@@ -229,40 +224,22 @@ internal object FBMisc {
 
         // Copy hullmod data
         for (mod in from.getRegularHullMods()) {
-            if (mod in builtInDMods)
-                to.suppressedMods.remove(mod)
-
             to.addMod(mod)
         }
 
         // Copy perma-mods
         for (mod in from.permaMods) {
-            if (mod in builtInDMods)
-                to.suppressedMods.remove(mod)
-
             to.addPermaMod(mod, false)
         }
 
         // Copy S-mods
         for (mod in from.sMods) {
-            if (mod in builtInDMods)
-                to.suppressedMods.remove(mod)
-
             to.addPermaMod(mod, true)
         }
 
         // Copy S-modded built-ins
         for (mod in from.sModdedBuiltIns) {
-            if (mod in builtInDMods)
-                to.suppressedMods.remove(mod)
-
             to.sModdedBuiltIns.add(mod)
-        }
-
-        // Copy Built-in DMods, if present
-        for (mod in from.allDMods()) {
-            if (mod !in from.hullSpec.builtInMods) continue
-            to.hullMods.add(mod)
         }
 
         for (mod in from.suppressedMods) {

@@ -15,7 +15,9 @@ import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.LookupUtils
+import fleetBuilder.util.api.HullUtils
 import fleetBuilder.util.api.VariantUtils
+import fleetBuilder.util.api.kotlin.getBuiltInDMods
 import fleetBuilder.util.api.kotlin.toBinary
 import fleetBuilder.util.lib.CompressionUtil
 
@@ -146,10 +148,27 @@ object CompressedVariant {
         val permaMods = fields[10].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
         DataVariant.normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns)
 
+        var fieldNum = 11
+        val suppressedMods: MutableSet<String>
+        if (metaVersionNumber >= 2) {
+            suppressedMods = fields[fieldNum].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+            fieldNum++
+        } else { // Legacy behavior hack
+            val hull = LookupUtils.getHullSpec(HullUtils.getActualHullID(hullId))
+            suppressedMods = mutableSetOf()
+            if (hull != null) {
+                val allMods = hullMods + sMods + sModdedBuiltIns + permaMods
+                hull.getBuiltInDMods().forEach {
+                    if (it !in allMods)
+                        suppressedMods.add(it)
+                }
+            }
+        }
+
         val tags = if (metaVersionNumber == 0)
-            fields.getOrNull(11)?.takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
+            fields.getOrNull(fieldNum)?.takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
         else
-            fields.getOrNull(11)?.takeIf { it.isNotBlank() }?.split(memKeySep) ?: emptyList()
+            fields.getOrNull(fieldNum)?.takeIf { it.isNotBlank() }?.split(memKeySep) ?: emptyList()
 
         val weaponGroups = if (weaponGroupString.isNotBlank()) {
             weaponGroupString.split(joinSep).map { group ->
@@ -189,6 +208,7 @@ object CompressedVariant {
             permaMods = permaMods,
             sMods = sMods,
             sModdedBuiltIns = sModdedBuiltIns,
+            suppressedMods = suppressedMods,
             wings = fittedWings,
             weaponGroups = weaponGroups,
             moduleVariants = modules,
@@ -214,8 +234,8 @@ object CompressedVariant {
         compress: Boolean = true,
     ): String {
         val structureVersion =
-            if (compress) "v1" // Variant compressed 0
-            else "V1" // Variant uncompressed 0
+            if (compress) "v2"
+            else "V2"
 
 
         val ver = "$metaSep$structureVersion$metaSep"//v for variant. To identify the type of compressed string without having to decompress it first. member would be m, fleet would be f, person would be p, etc.
@@ -290,6 +310,7 @@ object CompressedVariant {
         parts += data.sMods.joinToString(sep)
         parts += data.sModdedBuiltIns.joinToString(sep)
         parts += data.permaMods.joinToString(sep)
+        parts += data.suppressedMods.joinToString(sep)
         parts += data.tags.joinToString(memKeySep)
 
         return parts.joinToString(fieldSep)

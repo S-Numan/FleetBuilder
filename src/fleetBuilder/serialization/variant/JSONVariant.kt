@@ -8,7 +8,6 @@ import fleetBuilder.core.FBMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.makeVariantID
@@ -64,6 +63,8 @@ object JSONVariant {
             sModdedBuiltIns = json.optJSONArrayToStringList("sModdedbuiltins").toMutableSet() // Legacy code due to unfortunate typo
 
         DataVariant.normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns)
+
+        val suppressedMods = json.optJSONArrayToStringList("suppressedMods").toMutableSet()
 
         val wings = json.optJSONArrayToStringList("wings")
 
@@ -155,8 +156,8 @@ object JSONVariant {
 
         return DataVariant.ParsedVariantData(
             variantId = variantId, hullId = hullId, displayName = displayName, fluxCapacitors = fluxCapacitors, fluxVents = fluxVents,
-            tags = tags, hullMods = hullMods, permaMods = permaMods, sMods = sMods, sModdedBuiltIns = sModdedBuiltIns, wings = wings,
-            weaponGroups = weaponGroups, moduleVariants = moduleVariants
+            tags = tags, hullMods = hullMods, permaMods = permaMods, sMods = sMods, sModdedBuiltIns = sModdedBuiltIns, suppressedMods = suppressedMods,
+            wings = wings, weaponGroups = weaponGroups, moduleVariants = moduleVariants
         )
     }
 
@@ -209,13 +210,9 @@ object JSONVariant {
         if (data.sModdedBuiltIns.isNotEmpty() || settings.includeDefaultJSON)
             jsonVariant.put("sModdedBuiltIns", JSONArray(data.sModdedBuiltIns))
 
-        if (settings.includeDefaultJSON) {
-            val hull = LookupUtils.getHullSpec(data.hullId)
-            if (hull != null) {
-                val suppressedMods = hull.builtInMods.filterNot { it in data.hullMods }
-                jsonVariant.put("suppressedMods", JSONArray(suppressedMods))
-            }
-        }
+        if (data.suppressedMods.isNotEmpty() || settings.includeDefaultJSON)
+            jsonVariant.put("suppressedMods", JSONArray(data.suppressedMods))
+
 
         if (data.tags.isNotEmpty() || settings.includeDefaultJSON)
             jsonVariant.put("tags", JSONArray(data.tags))
