@@ -20,14 +20,16 @@ import java.util.*
 // TODO
 //  A toggle to show/hide fleets with missing elements.
 //  A visual indicator that fleets have missing elements. Maybe a strike through?
-//  A DP indicator.
+//  A DP indicator. This does require building every fleet to see this, so make sure to cache every fleet somewhere while the dialog remains open to avoid having to constantly re-build fleets while navigating the menu.
+//      Upon the dialog closing, remove all the cached fleets. (If it's not done already)
+//      CTRL Click to copy fleet
 
 object RecentBattleDialog {
     fun recentBattleDialog(event: InputEventAPI, ui: CampaignUIAPI) {
         if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen())
             return
         val fleetDirectory = RBFleetDirectoryService.getDirectory() ?: return
-        showDialog(fleetDirectory, null, sortNewestFirst = true, fleetType = FleetType.ALL)
+        showDialog(fleetDirectory)
 
         event.consume()
     }
@@ -40,13 +42,10 @@ object RecentBattleDialog {
 
     private fun showDialog(
         directory: RBFleetDirectory,
-        selectedFaction: String?,
-        sortNewestFirst: Boolean,
-        fleetType: FleetType
     ) {
-        var selectedFaction: String? = selectedFaction
-        var sortNewestFirst = sortNewestFirst
-        var fleetType = fleetType
+        var selectedFaction: String? = null
+        var sortNewestFirst = true
+        var fleetType = FleetType.ALL
 
         val dialog = DialogPanel()
 
@@ -166,7 +165,6 @@ object RecentBattleDialog {
 
             val scrollPanel = Global.getSettings().createCustom(ui.width, panelHeight, null)
 
-            // TRUE = scrollable
             val listUI = scrollPanel.createUIElement(ui.width, panelHeight, true)
             listUI.addSpacer(0f).position.inTL(0f, 0f)
 

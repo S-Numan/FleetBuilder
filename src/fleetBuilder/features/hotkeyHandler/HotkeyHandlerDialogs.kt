@@ -1051,8 +1051,13 @@ object HotkeyHandlerDialogs {
             dialog.onKeyDown { event ->
                 if (event.isCtrlDown) {
                     if (event.eventValue == Keyboard.KEY_C) {
-                        excludeMissingShips(fleet)
-                        ClipboardMisc.saveFleetToClipboard(fleet.fleetData, event.isShiftDown)
+                        //excludeMissingShips(fleet)
+                        ClipboardMisc.saveFleetToClipboard(
+                            inputData, event.isShiftDown,
+                            settings.apply {
+                                memberSettings.includeID = false
+                            })
+
                     } else if (event.eventValue == Keyboard.KEY_V) {
                         dialog.forceDismiss()
                         val missing = MissingContent()
