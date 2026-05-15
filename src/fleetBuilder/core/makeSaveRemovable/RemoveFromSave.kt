@@ -176,6 +176,7 @@ internal object RemoveFromSave {
                 }
         }
 
+        // Remove empty fleets
         var fleets = locations.flatMap { it.fleets }
         fleets.forEach { fleet ->
             if (fleet.membersWithFightersCopy.isEmpty()) {
@@ -267,7 +268,7 @@ internal object RemoveFromSave {
 
     private fun getEntitiesWithThings(): List<HasThing> {
         val locations = Global.getSector().allLocations
-        
+
         val markets = CampaignUtils.getSectorMarkets()
         val submarkets = CampaignUtils.getSubmarkets(markets)
         val cargos = CampaignUtils.getCargoFromSubmarkets(submarkets)
