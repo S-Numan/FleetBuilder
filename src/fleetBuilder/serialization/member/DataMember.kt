@@ -48,9 +48,9 @@ object DataMember {
             variantData = getVariantDataFromVariant(member.variant, filterParsed = false),
             personData = if (member.captain != null && !member.captain.isDefault && settings.includeOfficer) getPersonDataFromPerson(member.captain, filterParsed = false) else null,
             shipName = member.shipName ?: "",
-            cr = member.repairTracker.baseCR, // Use .baseCR over .cr, as .cr takes into account crewFraction. Copying a member stored in a submarket would result in a CR of 0 always, which is not desired.
-            hullFraction = member.status.hullFraction,
-            isMothballed = member.repairTracker.isMothballed,
+            cr = member.repairTracker?.baseCR ?: 0f, // Use .baseCR over .cr, as .cr takes into account crewFraction. Copying a member stored in a submarket would result in a CR of 0 always, which is not desired.
+            hullFraction = member.status?.hullFraction ?: 0f,
+            isMothballed = member.repairTracker?.isMothballed ?: false,
             isFlagship = member.isFlagship,
             id = if (settings.includeID) member.id else null
         )

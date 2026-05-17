@@ -119,7 +119,7 @@ class RBFleetDirectory(
                 if (filterParsedFleetData(newParsedFleet, comparisonSettings) != filterParsedFleetData(parsedFleet, comparisonSettings)) {
                     val diffs = deepDiff(parsedFleet, newParsedFleet)
                     DisplayMessage.showError(
-                        "DEBUG: Fleet data mismatch. DEEP DIFF", diffs.joinToString("\n")
+                        "DEBUG: Fleet data mismatch when adding memKeys. DEEP DIFF", diffs.joinToString("\n")
                     )
                 }
             }
@@ -131,11 +131,12 @@ class RBFleetDirectory(
         // DEBUG!
         if (FBSettings.enableDebug) {
             val fleetJSON = JSONFleet.saveFleetToJson(inputFleet)
-            val fleetUnJSON = JSONFleet.extractFleetDataFromJson(fleetJSON)
-            if (filterParsedFleetData(fleetUnJSON, comparisonSettings) != filterParsedFleetData(parsedFleet, comparisonSettings)) { // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
-                DisplayMessage.showError("DEBUG: Fleet data mismatch", "\nfleetUnJSON:\n${fleetUnJSON}\n\nparsedFleet:\n${parsedFleet}\n")
+            val fleetUnJSON = filterParsedFleetData(JSONFleet.extractFleetDataFromJson(fleetJSON), comparisonSettings)
+            val parsedFleetFiltered = filterParsedFleetData(parsedFleet, comparisonSettings)
+            if (fleetUnJSON != parsedFleetFiltered) { // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
+                DisplayMessage.showError("DEBUG: Fleet data mismatch", "\nfleetUnJSON:\n${fleetUnJSON}\n\nparsedFleetFiltered:\n${parsedFleet}\n")
 
-                val diffs = deepDiff(parsedFleet, fleetUnJSON)
+                val diffs = deepDiff(parsedFleetFiltered, fleetUnJSON)
 
                 DisplayMessage.showError(
                     "DEBUG: Fleet data mismatch. DEEP DIFF", diffs.joinToString("\n")

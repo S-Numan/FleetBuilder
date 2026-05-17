@@ -3,11 +3,12 @@ package fleetBuilder.serialization.fleet.mods.secondInCommand
 import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
+import fleetBuilder.serialization.SerializationUtils.fleetSep1
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.person.CompressedPerson
-import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.api.kotlin.roundToDecimals
+import fleetBuilder.util.lib.CompressionUtil
 
 object CompressedSecondInCommand {
 
@@ -24,27 +25,35 @@ object CompressedSecondInCommand {
         comp: String,
         missing: MissingContent = MissingContent()
     ): DataSecondInCommand.SecondInCommandData? {
+        val metaIndexStart = comp.indexOf(metaSep)
+        val metaIndexEnd = comp.indexOf(metaSep, metaIndexStart + 1)
 
-        val metaStart = comp.indexOf(metaSep)
-        val metaEnd = comp.indexOf(metaSep, metaStart + 1)
-
-        if (metaStart == -1 || metaEnd == -1)
+        if (metaIndexStart == -1 || metaIndexEnd == -1)
             return null
 
-        val version = comp.substring(metaStart + 1, metaEnd)
+        val metaVersionFull = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        if (!metaVersionFull.lowercase().startsWith('s'))
+            return null
+        val metaVersionNumber = metaVersionFull.substring(1).toInt()
+        val metaVersionCompressed = metaVersionFull.startsWith('s')
 
-        val fullData = when (version) {
-            "s0" -> CompressionUtil.base64Inflate(comp.substring(metaEnd + 1))
-            "S0" -> comp.substring(metaEnd + 1)
-            else -> return null
+        val fullData = if (metaVersionCompressed) {
+            val compressedData = comp.substring(metaIndexEnd + 1)
+            CompressionUtil.base64Inflate(compressedData)
+        } else {
+            comp.substring(metaIndexEnd + 1)
         } ?: return null
+
 
         if (fullData.isBlank())
             return DataSecondInCommand.SecondInCommandData(mutableListOf())
 
-        val officers = mutableListOf<DataSecondInCommand.SecondInCommandOfficerData>()
+        val officerStrings = if (metaVersionNumber == 0)
+            fullData.split("$$").filter { it.isNotBlank() }
+        else
+            fullData.split(fleetSep1).filter { it.isNotBlank() }
 
-        val officerStrings = fullData.split("$$").filter { it.isNotBlank() }
+        val officers = mutableListOf<DataSecondInCommand.SecondInCommandOfficerData>()
 
         for (officerStr in officerStrings) {
             try {
@@ -103,8 +112,8 @@ object CompressedSecondInCommand {
     ): String {
 
         val structureVersion =
-            if (compress) "s0"
-            else "S0"
+            if (compress) "s1"
+            else "S1"
 
         val ver = "$metaSep$structureVersion$metaSep"
 
@@ -129,7 +138,7 @@ object CompressedSecondInCommand {
                 parts += (officer.assignedSlot?.toString() ?: "")
 
                 append(parts.joinToString(fieldSep))
-                append("$$")
+                append(fleetSep1)
             }
         }
 
