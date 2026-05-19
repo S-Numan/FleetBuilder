@@ -1,6 +1,7 @@
 # 1.39.0
 ### Additions
 - A cheats console command to enable this mod's cheats without LunaLib or enabling devMode
+- Remove Intel Update After X Days. LunaLib setting to remove codex unlocks and simulator unlocks after a specified amount of days has passed.
 ### Changes
 - Add functionality for JSON variant saving to more easily work with vanilla game variants.
 - Add suppressed mod support for saved variants to match with the base game.

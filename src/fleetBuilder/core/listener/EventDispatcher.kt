@@ -28,6 +28,7 @@ import fleetBuilder.features.officerStorage.CatchStoreMemberButton
 import fleetBuilder.features.officerStorage.UnstoreOfficersInCargo
 import fleetBuilder.features.recentBattles.RecentBattleTracker
 import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectoryService
+import fleetBuilder.features.removeOldIntelUpdates.RemoveOldIntelUpdates
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.util.LookupUtils
@@ -106,6 +107,7 @@ internal class EventDispatcher : EveryFrameScript {
             manageTransientListener(CampaignCargoScreenFilter::class.java, FBSettings.cargoScreenFilter) { cargoScreenFilter }
 
             manageTransientScript(AutoMothballRecoveredShips::class.java, FBSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
+            manageTransientScript(RemoveOldIntelUpdates::class.java, FBSettings.removeOldIntelUpdates) { RemoveOldIntelUpdates() }
             manageTransientScript(DisplayDerelictRecoveryEarly::class.java, FBSettings.displayDerelictRecoveryEarly) { DisplayDerelictRecoveryEarly() }
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
 

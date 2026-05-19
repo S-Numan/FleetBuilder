@@ -97,6 +97,12 @@ transponderOffInHyperspace,Transponder Off,Boolean,false,,Turn the transponder o
 displayDerelictRecoveryEarly,Display Derelict Recovery Early,Boolean,false,,"Shows the ship preview earlier during derelict salvage.
 
 Instead of requiring “Consider Special Measures” to view the ship, the preview is available a step earlier when you get the option to salvage it.",,,Misc
+removeOldIntelUpdates,Remove Old Intel Updates,Boolean,false,,Removes codex unlocks and simulator unlocks after a specified number of days has passed since they have appeared.,,,Misc
+removeIntelUpdatesAfterXDays,After X Days,Int,120,,"Number of days after an intel unlock has appeared before it will be removed.
+Set this to 0 to remove every intel unlock immediately.",0,1000,Misc
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
 cargoAutoManager,Enable Cargo Auto Manager,Boolean,true,,"Right click a storage submarket to pull up the Cargo Auto Manager.
 
 This menu allows you to configure automatically taking and/or depositing cargo items on entering or leaving a market.

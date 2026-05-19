@@ -135,6 +135,9 @@ object FBSettings {
 
     var autoMothballRecoveredShips = false
 
+    var removeOldIntelUpdates = false
+    var removeIntelUpdatesAfterXDays = 120
+
     var transponderOffInHyperspace = false
 
     var displayDerelictRecoveryEarly = false

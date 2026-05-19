@@ -4,6 +4,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin
 import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.BattleCreationContext
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -13,6 +14,8 @@ import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.impl.campaign.ids.Skills
 import com.fs.starfarer.api.impl.campaign.ids.Tags
+import com.fs.starfarer.api.impl.campaign.intel.misc.SimUpdateIntel
+import com.fs.starfarer.api.impl.codex.CodexUpdateIntel
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.FaderUtil
@@ -125,6 +128,7 @@ object HotkeyHandlerDialogs {
                     val sector = Global.getSector()
                     val memory = sector.memoryWithoutUpdate
 
+                    sector
 
                     /*
                 val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
