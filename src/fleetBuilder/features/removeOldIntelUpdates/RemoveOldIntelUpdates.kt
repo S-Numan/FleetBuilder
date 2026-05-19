@@ -34,13 +34,19 @@ class RemoveOldIntelUpdates : EveryFrameScript {
         val clock = sector.clock
 
         fun process(list: List<IntelInfoPlugin>) {
-            for (intel in list.toList()) {
+            val toRemove = mutableListOf<IntelInfoPlugin>()
+
+            for (intel in list) {
                 if (intel.isHidden || intel.isImportant) continue
 
                 val days = clock.getElapsedDaysSince(intel.playerVisibleTimestamp)
                 if (days > maxDays) {
-                    intelManager.removeIntel(intel)
+                    toRemove.add(intel)
                 }
+            }
+
+            for (intel in toRemove) {
+                intelManager.removeIntel(intel)
             }
         }
 
