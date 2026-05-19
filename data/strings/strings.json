@@ -263,6 +263,9 @@
   "cannot_apply_smod_lack_op":"Cannot apply some SMods. Hull does not have enough Ordnance Points",
 
   "failed_to_import_loadout":"Failed to import loadout. Could not find hullId '%s'",
+  "cannot_import_loadout_unknown_hull":"Cannot import loadout. You are not aware of this hull",
+  "cannot_import_loadout_unknown_elements": "Cannot import loadout. You are not aware of some ordnance this hull uses.",
+  "cannot_import_loadout_hull_restricted": "Cannot import loadout. This hull is restricted.",
   "data_valid_but_no_variant":"Data in clipboard was valid, but not a variant",
   "loadout_already_exists":"Loadout already exists, cannot import loadout with hull '%s'",
 

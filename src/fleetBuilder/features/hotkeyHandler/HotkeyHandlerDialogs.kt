@@ -109,22 +109,24 @@ object HotkeyHandlerDialogs {
             )
             testMessageTrigger.position.inTR(0f, ui.height - testMessageTrigger.height)
             testMessageTrigger.onClick {
-                //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
-                DisplayMessage.showError("Test Message: " + Random().nextInt())
-                Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
+                try {
+                    //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
+                    //DisplayMessage.showError("Test Message: " + Random().nextInt())
+                    //Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
 
-                val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
-                val variant = memberInRefit.variant ?: return@onClick
-                val modules = variant.stationModules
-                val modules2 = variant.moduleSlots
-                val modules3 = variant.getModules()
-                //DisplayMessage.showError("Member memory = " + memberMemory.toString() + "\nModules = " + variant.hullSpec.getSlotsForModules().toString())
+                    //val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
+                    //val variant = memberInRefit.variant ?: return@onClick
+                    //val modules = variant.stationModules
+                    //val modules2 = variant.moduleSlots
+                    //val modules3 = variant.getModules()
+                    //DisplayMessage.showError("Member memory = " + memberMemory.toString() + "\nModules = " + variant.hullSpec.getSlotsForModules().toString())
 
 
-                val sector = Global.getSector()
-                val memory = sector.memoryWithoutUpdate
+                    val sector = Global.getSector()
+                    val memory = sector.memoryWithoutUpdate
 
-                /*
+
+                    /*
                 val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
                 val memberMemory = member.getMemberMemory()
 
@@ -132,15 +134,17 @@ object HotkeyHandlerDialogs {
                     memberMemory["test"] = "test"*/
 
 
-                //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
-                /*val state = AppDriver.getInstance().currentState
+                    //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
+                    /*val state = AppDriver.getInstance().currentState
                 if (state is CampaignState) {
                     state.cmdCodex()
                     state.isHideUI
                     //CampaignGameManager().
                     CampaignEngine.getInstance().saveDirName
                 }*/
-
+                } catch (e: Exception) {
+                    DisplayMessage.showError("Error", e)
+                }
             }
 
             if (Global.getCurrentState() == GameState.CAMPAIGN) {

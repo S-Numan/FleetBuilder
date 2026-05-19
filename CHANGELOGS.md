@@ -1,10 +1,13 @@
 # 1.39.0
+### Additions
+- A cheats console command to enable this mod's cheats without LunaLib or enabling devMode
 ### Changes
 - Add functionality for JSON variant saving to more easily work with vanilla game variants.
 - Add suppressed mod support for saved variants to match with the base game.
     * This may in some cases cause DMods to re-appear in older saved variants whose hulls have built in DMods (Such as Lion Guard Ships). To fix this, delete and re-save the variant in question to remove the DMod.
 ### Bugfixes
 - Copying members stored in a market now properly gets their CR.
+- Fix Second in Command not being saved in some cases AGAIN.
     
 # 1.38.0
 ### Changes

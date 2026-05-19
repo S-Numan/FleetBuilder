@@ -4,7 +4,8 @@ fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValu
 featuresDisabled,Disable All Features,Boolean,false,,"Set this to true to disable all features this mod provides, effectively turning this into a library mod.",,,General
 ,,,,,,,,
 enableCheats,Enable Cheats,Boolean,false,,"This must be enabled to use the more cheat like commands this mod provides.
-If Dev mode is on, this will be treated as enabled, even if it isn’t.",,,General
+If Dev mode is on, this will be treated as enabled, even if it isn’t.
+Typing ‘cheats’ into the console will also cause this to be treated as enabled, even if it isn’t.",,,General
 ,,,,,,,,
 ,,,,,,,,
 fleetClipboardHotkeyHandler,Enable Hotkey Handler,Boolean,true,,"Adds a bunch of useful hotkeys in many places.

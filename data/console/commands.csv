@@ -27,7 +27,7 @@ Removes all ships and officers.
 Unlocks all hullmods.
 Puts all weapons and wings in the Abandoned Terraforming Platform in the Corvus system.
 Teleports player fleet to the Abandoned Terraforming Platform in the Corvus system."
-CopyFleet,fleetBuilder.console.commands.CopyFleet,"cheat,fleetbuilder",copyfleet <”player” or ”enemy”>,Arg ‘player’ or ‘enemy’ In combat or when looking at a mission to choose what side you want to copy
+CopyFleet,fleetBuilder.console.commands.CopyFleet,fleetbuilder,copyfleet <”player” or ”enemy”>,Arg ‘player’ or ‘enemy’ In combat or when looking at a mission to choose what side you want to copy
 ,,,,
 RemoveIdleOfficers,fleetBuilder.console.commands.RemoveIdleOfficers,"cheat,campaign,fleetbuilder",removeidleofficers,Removes all officers in your fleet which are not currently captaining any ship.
 ,,,,
@@ -42,3 +42,5 @@ Set isPerma and isSMod to true or false to add the hullmod as described.
 If not in the refit screen, adds the specified modspec to your fleet's cargo."
 SetPersonality,fleetBuilder.console.commands.SetOfficerPersonality,"cheat,campaign,fleetbuilder",setpersonality <personality>,Changes the personality of the officer captaining the ship viewed in the refit screen.
 Paste,fleetBuilder.console.commands.ForcePaste,"cheat,campaign,fleetbuilder",paste,"Functions the same as using CTRL + V, but assumes cheats are enabled."
+,,,,
+Cheats,fleetBuilder.console.commands.Cheats,"cheat,fleetbuilder",cheats,Toggles cheats in this mod. Can also be achieved via LunaLib settings or by enabling devMode.

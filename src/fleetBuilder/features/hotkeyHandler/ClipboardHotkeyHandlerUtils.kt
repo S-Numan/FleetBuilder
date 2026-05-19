@@ -12,6 +12,7 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
+import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
@@ -51,6 +52,7 @@ import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.MemberUtils.randomizeMemberCosmetics
 import fleetBuilder.util.api.PersonUtils
+import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
@@ -319,6 +321,31 @@ internal object ClipboardHotkeyHandlerUtils {
         if (missing.hullIds.isNotEmpty()) {
             DisplayMessage.showMessage(
                 FBTxt.txt("failed_to_import_loadout", missing.hullIds.first()),
+                Color.YELLOW
+            )
+            return true
+        }
+
+        if (variant.hullSpec.hasTag(Tags.RESTRICTED) || variant.hullSpec.hasTag(Tags.DWELLER) || variant.hullSpec.hasTag(Tags.THREAT)) {
+            DisplayMessage.showMessage(
+                FBTxt.txt("cannot_import_loadout_hull_restricted"),
+                Color.YELLOW
+            )
+            return true
+        }
+
+        val unknownContents = MissingContent()
+        VariantUtils.whatVariantContentsAreNotKnownToPlayer(variant, unknownContents)
+        if (unknownContents.hullIds.isNotEmpty()) {
+            DisplayMessage.showMessage(
+                FBTxt.txt("cannot_import_loadout_unknown_hull"),
+                Color.YELLOW
+            )
+            return true
+        }
+        if (unknownContents.hasMissingVariantElements()) {
+            DisplayMessage.showMessage(
+                FBTxt.txt("cannot_import_loadout_unknown_elements"),
                 Color.YELLOW
             )
             return true

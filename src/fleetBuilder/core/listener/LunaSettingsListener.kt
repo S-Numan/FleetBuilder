@@ -69,11 +69,11 @@ internal class LunaSettingsListener : LunaSettingsListener {
 
             FBSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
 
-            FBSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
+            FBSettings.setCheatsEnabledInSettings(getBoolean(modID, "enableCheats")!!)
 
         } else {
             FBSettings.setUnassignPlayer(false)
-            FBSettings.setCheatsEnabled(false)
+            FBSettings.setCheatsEnabledInSettings(false)
             FBSettings.backupSave = false
             FBSettings.fleetClipboardHotkeyHandler = false
             FBSettings.devModeCodexButtonEnabled = false

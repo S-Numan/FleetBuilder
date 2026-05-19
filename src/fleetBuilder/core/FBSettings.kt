@@ -157,16 +157,24 @@ object FBSettings {
         unassignPlayer = value
     }
 
-    private var cheatsEnabled = false
+    private var cheatsEnabledInConsole = false
+    private var cheatsEnabledInSettings = false
 
     /**
      * Use [cheatsEnabled] instead if you don't know what you're doing.
      */
-    fun cheatsEnabledRaw(): Boolean = cheatsEnabled
-
-    fun cheatsEnabled(): Boolean = cheatsEnabled || Global.getSettings().isDevMode
-    fun setCheatsEnabled(value: Boolean) {
-        cheatsEnabled = value
+    fun cheatsEnabledInSettings(): Boolean = cheatsEnabledInSettings
+    internal fun setCheatsEnabledInSettings(value: Boolean) {
+        cheatsEnabledInSettings = value
     }
 
+    /**
+     * Use [cheatsEnabled] instead if you don't know what you're doing.
+     */
+    fun cheatsEnabledInConsole(): Boolean = cheatsEnabledInConsole
+    internal fun setCheatsEnabledInConsole(value: Boolean) {
+        cheatsEnabledInSettings = value
+    }
+
+    fun cheatsEnabled(): Boolean = cheatsEnabledInSettings || cheatsEnabledInConsole || Global.getSettings().isDevMode
 }
