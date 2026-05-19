@@ -169,6 +169,8 @@ object FBSettings {
     fun cheatsEnabledInSettings(): Boolean = cheatsEnabledInSettings
     internal fun setCheatsEnabledInSettings(value: Boolean) {
         cheatsEnabledInSettings = value
+        if (cheatsEnabledInSettings)
+            cheatsEnabledInConsole = false
     }
 
     /**
@@ -176,7 +178,7 @@ object FBSettings {
      */
     fun cheatsEnabledInConsole(): Boolean = cheatsEnabledInConsole
     internal fun setCheatsEnabledInConsole(value: Boolean) {
-        cheatsEnabledInSettings = value
+        cheatsEnabledInConsole = value
     }
 
     fun cheatsEnabled(): Boolean = cheatsEnabledInSettings || cheatsEnabledInConsole || Global.getSettings().isDevMode

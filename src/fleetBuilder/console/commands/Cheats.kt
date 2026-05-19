@@ -13,7 +13,7 @@ class Cheats : BaseCommand {
             else
                 Console.showMessage("Cheats disabled")
         } else {
-            FBSettings.setCheatsEnabledInConsole(false)
+            FBSettings.setCheatsEnabledInConsole(true)
             if (FBSettings.cheatsEnabledInSettings())
                 Console.showMessage("Cheats enabled in console, however, cheats are already enabled in the LunaLib settings.")
             else

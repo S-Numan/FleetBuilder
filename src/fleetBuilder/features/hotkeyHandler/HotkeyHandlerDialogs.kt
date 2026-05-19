@@ -4,7 +4,6 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
-import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin
 import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.BattleCreationContext
 import com.fs.starfarer.api.combat.ShipVariantAPI
@@ -14,8 +13,6 @@ import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
 import com.fs.starfarer.api.impl.campaign.ids.Skills
 import com.fs.starfarer.api.impl.campaign.ids.Tags
-import com.fs.starfarer.api.impl.campaign.intel.misc.SimUpdateIntel
-import com.fs.starfarer.api.impl.codex.CodexUpdateIntel
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.FaderUtil
@@ -95,6 +92,25 @@ object HotkeyHandlerDialogs {
                 tooltip.addPara("Press D to toggle", 0f)
             }
 
+
+            val toggleCheats = ui.addCheckboxD(FBTxt.txt("toggle_cheats"), FBSettings.cheatsEnabledInConsole())
+            toggleCheats.onClick {
+                FBSettings.setCheatsEnabledInConsole(toggleCheats.isChecked)
+            }
+            if (FBSettings.cheatsEnabledInSettings()) {
+                toggleCheats.enabled = false
+                toggleCheats.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 350f) { tooltip ->
+                    tooltip.addPara("Cheats are already enabled in the LunaLib settings.", 0f)
+                }
+
+            } else {
+                toggleCheats.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 350f) { tooltip ->
+                    tooltip.addPara("Equivalent of the console 'cheats' command.", 0f)
+                }
+
+            }
+
+
             ui.addButton(
                 FBTxt.txt("trigger_f8_reload"),
                 null,
@@ -106,7 +122,7 @@ object HotkeyHandlerDialogs {
             }
 
             val testMessageTrigger = ui.addButton(
-                "Trigger Test Message",
+                "Test Button",
                 null,
                 160f, 24f, 0f
             )
