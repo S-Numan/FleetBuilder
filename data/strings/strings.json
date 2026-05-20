@@ -12,7 +12,7 @@
 
 
   # Hotkey Handler
-  "enable_cheats_to_use_paste": "Enable cheats in %s settings to unlock paste functionality",
+  "enable_cheats_to_use_paste": "You must enable cheats for %s to use paste functionality",
   "no_valid_data_in_clipboard": "No valid data in clipboard",
   "no_copy_no_copy_tag": "Cannot copy this entity",
 

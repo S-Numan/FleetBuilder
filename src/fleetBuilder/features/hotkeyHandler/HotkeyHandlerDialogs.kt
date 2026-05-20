@@ -1150,7 +1150,7 @@ object HotkeyHandlerDialogs {
     }
 
     // Torn straight from SCAddOfficersToFleetInteraction and hacked into function. Bad implementation, I know.
-    fun pasteFleetDialogSICSkills(tooltip: TooltipMakerAPI, officer: SCOfficer, data: SCData) {
+    private fun pasteFleetDialogSICSkills(tooltip: TooltipMakerAPI, officer: SCOfficer, data: SCData) {
         tooltip.addSpacer(10f)
 
         var width = 500f
