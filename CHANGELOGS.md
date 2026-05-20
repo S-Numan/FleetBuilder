@@ -10,6 +10,7 @@
 ### Bugfixes
 - Copying members stored in a market now properly gets their CR.
 - Fix Second in Command not being saved in some cases AGAIN.
+- Fix commander shuttle being removed on using 'Transfer command for this engagement'.
     
 # 1.38.0
 ### Changes
