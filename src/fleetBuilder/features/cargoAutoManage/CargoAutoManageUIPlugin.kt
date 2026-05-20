@@ -21,11 +21,11 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.unsetCargoAutoManage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
+import fleetBuilder.ui.addCheckboxD
 import fleetBuilder.ui.customPanel.common.BasePanel
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.ui.addCheckboxD
 import fleetBuilder.util.api.kotlin.loadTextureCached
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.json.JSONArray
@@ -236,6 +236,8 @@ internal class CargoAutoManageUIPlugin(
 
         //dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
         dialog = DialogPanel(selectedSubmarket.name.replace("\n", " "))
+        dialog.animation = ModalPanel.PanelAnimation.RESIZE_FADE
+        dialog.openDuration = 0.2f
 
         val headerHeight = 24f
         val rowHeight = 48f
