@@ -47,7 +47,7 @@ class AddSkill : BaseCommandWithSuggestion {
 
         member.captain.stats.setSkillLevel(skillId, if (!isElite) 1f else 2f)
 
-        Console.showMessage("Added ${if (isElite) "elite " else " "}skill of ID '$skillId' to officer '${member.captain.name.fullName}'")
+        Console.showMessage("Added${if (isElite) "elite " else " "}skill of ID '$skillId' to officer '${member.captain.name.fullName}'")
 
         return BaseCommand.CommandResult.SUCCESS
     }

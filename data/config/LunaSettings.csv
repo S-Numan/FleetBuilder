@@ -4,7 +4,8 @@ fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValu
 featuresDisabled,Disable All Features,Boolean,false,,"Set this to true to disable all features this mod provides, effectively turning this into a library mod.",,,General
 ,,,,,,,,
 enableCheats,Enable Cheats,Boolean,false,,"This must be enabled to use the more cheat like commands this mod provides.
-If Dev mode is on, this will be treated as enabled, even if it isn’t.",,,General
+If Dev mode is on, this will be treated as enabled, even if it isn’t.
+Typing ‘cheats’ into the console will also cause this to be treated as enabled, even if it isn’t.",,,General
 ,,,,,,,,
 ,,,,,,,,
 fleetClipboardHotkeyHandler,Enable Hotkey Handler,Boolean,true,,"Adds a bunch of useful hotkeys in many places.
@@ -96,6 +97,12 @@ transponderOffInHyperspace,Transponder Off,Boolean,false,,Turn the transponder o
 displayDerelictRecoveryEarly,Display Derelict Recovery Early,Boolean,false,,"Shows the ship preview earlier during derelict salvage.
 
 Instead of requiring “Consider Special Measures” to view the ship, the preview is available a step earlier when you get the option to salvage it.",,,Misc
+removeOldIntelUpdates,Remove Old Intel Updates,Boolean,false,,Removes codex unlocks and simulator unlocks after a specified number of days has passed since they have appeared.,,,Misc
+removeIntelUpdatesAfterXDays,After X Days,Int,120,,"Number of days after an intel unlock has appeared before it will be removed.
+Set this to 0 to remove every intel unlock immediately.",0,1000,Misc
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
 cargoAutoManager,Enable Cargo Auto Manager,Boolean,true,,"Right click a storage submarket to pull up the Cargo Auto Manager.
 
 This menu allows you to configure automatically taking and/or depositing cargo items on entering or leaving a market.
@@ -127,7 +134,7 @@ removeRefitHullmod,Force Remove Refit Hullmod,Boolean,true,,"If true, right clic
 Cheats must be enabled.",,,Misc
 backupSave,Backup Save,Boolean,true,,"After every save, a save transfer copy of the save is made.
 This might be useful if your save game gets bricked and you can’t load it.
-Put “loadsave -backup” in the console to load it.",,,Misc
+The backup saves are stored in ‘/saves/common/FleetBuilder/SaveTransfer/’",,,Misc
 hideErrorMessages,Hide Error Messages,Boolean,false,,"If true, prevents error messages from appearing at the top of the screen.
 Error messages will still appear in the console and logs.",,,Misc
 ,,,,,,,,
@@ -167,13 +174,7 @@ A filter box to the right of the Other (4) tab when viewing cargo. Input values 
 I couldn’t get this one to work properly, but I left it in case anyone would like to try it out anyway. It technically works somewhat.",,,Developer Options
 ,,,,,,,,
 ,,,,,,,,
-removeDefaultDMods,Remove HullSpec DMods,Boolean,true,,"When this mod creates a variant, such as a Lion’s Guard variant with a default DMod, should it be removed by default?
-
-When an autofit variant is being created from file after being saved, it creates a new “HULL” variant with nothing on it to place the contents of the variant on it.
-The “HULL” variant of certain ships, such as Lion Guard ships, by default come with a DMod.
-This causes newly loaded autofit variants to come with DMods despite the data for what the autofit variant should have on it not having it.
-
-This being true simply makes the behavior expected, only have a DMod if the saved variant has one.",,,Developer Options
+,,,,,,,,
 autofitNoSModdedBuiltInWhenNotBuiltInMod,Don’t save improper SModdedBuiltIns,Boolean,true,,"Relates to autofit.
 Only save SModdedBuiltIns if the variant has the corresponding built-in hullmod.
 This prevents hullmods such as the Mad Rockerpiper MIDAS from Roider Union from being saved, as that hullmod is an sModdedBuiltIn without the ship having the MIDAS hullmod in the hullspec of the ship",,,Developer Options

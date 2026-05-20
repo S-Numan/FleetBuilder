@@ -123,8 +123,6 @@ object FBSettings {
 
     var storeOfficersInCargo = false
 
-    var removeDefaultDMods = true
-
     var cargoAutoManager = true
 
     var modPickerFilter = false
@@ -136,6 +134,9 @@ object FBSettings {
     var removeRefitHullmod = true
 
     var autoMothballRecoveredShips = false
+
+    var removeOldIntelUpdates = false
+    var removeIntelUpdatesAfterXDays = 120
 
     var transponderOffInHyperspace = false
 
@@ -159,16 +160,26 @@ object FBSettings {
         unassignPlayer = value
     }
 
-    private var cheatsEnabled = false
+    private var cheatsEnabledInConsole = false
+    private var cheatsEnabledInSettings = false
 
     /**
      * Use [cheatsEnabled] instead if you don't know what you're doing.
      */
-    fun cheatsEnabledRaw(): Boolean = cheatsEnabled
-
-    fun cheatsEnabled(): Boolean = cheatsEnabled || Global.getSettings().isDevMode
-    fun setCheatsEnabled(value: Boolean) {
-        cheatsEnabled = value
+    fun cheatsEnabledInSettings(): Boolean = cheatsEnabledInSettings
+    internal fun setCheatsEnabledInSettings(value: Boolean) {
+        cheatsEnabledInSettings = value
+        if (cheatsEnabledInSettings)
+            cheatsEnabledInConsole = false
     }
 
+    /**
+     * Use [cheatsEnabled] instead if you don't know what you're doing.
+     */
+    fun cheatsEnabledInConsole(): Boolean = cheatsEnabledInConsole
+    internal fun setCheatsEnabledInConsole(value: Boolean) {
+        cheatsEnabledInConsole = value
+    }
+
+    fun cheatsEnabled(): Boolean = cheatsEnabledInSettings || cheatsEnabledInConsole || Global.getSettings().isDevMode
 }

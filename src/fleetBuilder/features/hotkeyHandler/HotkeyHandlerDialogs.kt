@@ -53,10 +53,19 @@ import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.*
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.lib.ClipboardUtil
+import lunalib.lunaExtensions.addLunaElement
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
+import second_in_command.SCData
+import second_in_command.SCUtils
+import second_in_command.specs.SCOfficer
+import second_in_command.specs.SCSpecStore
+import second_in_command.ui.elements.DialogAptitudeBackgroundElement
+import second_in_command.ui.elements.SkillSeperatorElement
+import second_in_command.ui.elements.SkillWidgetElement
+import second_in_command.ui.tooltips.SCSkillTooltipCreator
 import java.awt.Color
 import java.util.*
 
@@ -83,6 +92,25 @@ object HotkeyHandlerDialogs {
                 tooltip.addPara("Press D to toggle", 0f)
             }
 
+
+            val toggleCheats = ui.addCheckboxD(FBTxt.txt("toggle_cheats"), FBSettings.cheatsEnabledInConsole())
+            toggleCheats.onClick {
+                FBSettings.setCheatsEnabledInConsole(toggleCheats.isChecked)
+            }
+            if (FBSettings.cheatsEnabledInSettings()) {
+                toggleCheats.enabled = false
+                toggleCheats.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 350f) { tooltip ->
+                    tooltip.addPara("Cheats are already enabled in the LunaLib settings.", 0f)
+                }
+
+            } else {
+                toggleCheats.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 350f) { tooltip ->
+                    tooltip.addPara("Equivalent of the console 'cheats' command.", 0f)
+                }
+
+            }
+
+
             ui.addButton(
                 FBTxt.txt("trigger_f8_reload"),
                 null,
@@ -94,28 +122,31 @@ object HotkeyHandlerDialogs {
             }
 
             val testMessageTrigger = ui.addButton(
-                "Trigger Test Message",
+                "Test Button",
                 null,
                 160f, 24f, 0f
             )
             testMessageTrigger.position.inTR(0f, ui.height - testMessageTrigger.height)
             testMessageTrigger.onClick {
-                //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
-                DisplayMessage.showError("Test Message: " + Random().nextInt())
-                Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
+                try {
+                    //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
+                    //DisplayMessage.showError("Test Message: " + Random().nextInt())
+                    //Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
 
-                val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
-                val variant = memberInRefit.variant ?: return@onClick
-                val modules = variant.stationModules
-                val modules2 = variant.moduleSlots
-                val modules3 = variant.getModules()
-                //DisplayMessage.showError("Member memory = " + memberMemory.toString() + "\nModules = " + variant.hullSpec.getSlotsForModules().toString())
+                    //val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
+                    //val variant = memberInRefit.variant ?: return@onClick
+                    //val modules = variant.stationModules
+                    //val modules2 = variant.moduleSlots
+                    //val modules3 = variant.getModules()
+                    //DisplayMessage.showError("Member memory = " + memberMemory.toString() + "\nModules = " + variant.hullSpec.getSlotsForModules().toString())
 
 
-                val sector = Global.getSector()
-                val memory = sector.memoryWithoutUpdate
+                    val sector = Global.getSector()
+                    val memory = sector.memoryWithoutUpdate
 
-                /*
+                    sector
+
+                    /*
                 val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
                 val memberMemory = member.getMemberMemory()
 
@@ -123,15 +154,17 @@ object HotkeyHandlerDialogs {
                     memberMemory["test"] = "test"*/
 
 
-                //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
-                /*val state = AppDriver.getInstance().currentState
+                    //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
+                    /*val state = AppDriver.getInstance().currentState
                 if (state is CampaignState) {
                     state.cmdCodex()
                     state.isHideUI
                     //CampaignGameManager().
                     CampaignEngine.getInstance().saveDirName
                 }*/
-
+                } catch (e: Exception) {
+                    DisplayMessage.showError("Error", e)
+                }
             }
 
             if (Global.getCurrentState() == GameState.CAMPAIGN) {
@@ -276,6 +309,8 @@ object HotkeyHandlerDialogs {
             }
         }
 
+        val secondInCommandModEnabled = Global.getSettings().modManager.isModEnabled("second_in_command")
+
         val sector = Global.getSector()
         val data = inputData.copy(
             members = inputData.members.map { member ->
@@ -351,6 +386,9 @@ object HotkeyHandlerDialogs {
                 data,
                 true, settings = settings, missing = missingEx, random = deterministicRandom
             )
+            if (secondInCommandModEnabled)
+                fleet.addTag("sc_do_not_generate_skills")
+
             val fleetData = fleet.fleetData
 
             if (fleet.commander.isDefault && fleet.commander.stats.skillsCopy.count { it.level > 0f } > 0) { // Default commander but has skills?
@@ -591,6 +629,7 @@ object HotkeyHandlerDialogs {
 
                 val tooltipClass = StandardTooltipV2Expandable::class.java
                 val memberTooltip = StandardTooltipV2.createFleetMemberTooltipPreDeploy(member as FleetMember, member.captain.stats as CharacterStats)
+
                 tooltipClass.safeInvoke("addTooltipBelow", preview.panel, memberTooltip)
 
                 val shipX = 10f
@@ -655,7 +694,7 @@ object HotkeyHandlerDialogs {
                 // =========================
                 // ADMIRAL SKILLS (if flagship)
                 // =========================
-                if (member.isFlagship) {
+                if (member.isFlagship && member.captain.getAdmiralSkills().isNotEmpty() && !secondInCommandModEnabled) {
                     skillsUI.addSectionHeading(
                         FBTxt.txt("admiral_skills"),
                         factionColor,
@@ -752,18 +791,37 @@ object HotkeyHandlerDialogs {
             val rightUIAdmiralHeight = 370f
             val rightUIAdmiral = rightPanel.createUIElement(rightWidth - 20f, rightUIAdmiralHeight, true)
             if (fleet.commander != null) {
-                rightUIAdmiral.addSectionHeading(
-                    FBTxt.txt("admiral_skills"),
-                    factionColor,
-                    darkColor,
-                    Alignment.MID,
-                    10f
-                ).apply {
-                    position.setSize(position.width - 5f, position.height)
+                if (secondInCommandModEnabled) {
+                    try {
+                        val data = SCUtils.getFleetData(fleet)
+                        val scOfficers = data.getActiveOfficers()
+                        scOfficers.forEach { officer ->
+                            val scOfficerPanel = Global.getSettings().createCustom(500f, 96f, null)
+                            rightUIAdmiral.addCustom(scOfficerPanel, 0f)
+                            val element = scOfficerPanel.createUIElement(500f, 96f, false)
+                            scOfficerPanel.addUIElement(element)
+                            pasteFleetDialogSICSkills(element, officer, data)
+                            element.position.inTL(-20f, 40f)
+                        }
+                    } catch (e: Exception) {
+                        rightUIAdmiral.addPara("Failed to read Second In Command data", 0f)
+                        Global.getLogger(this.javaClass).error("Failed to read Second In Command data", e)
+                    }
+                } else {
+                    rightUIAdmiral.addSectionHeading(
+                        FBTxt.txt("admiral_skills"),
+                        factionColor,
+                        darkColor,
+                        Alignment.MID,
+                        10f
+                    ).apply {
+                        position.setSize(position.width - 5f, position.height)
+                    }
+                    val admiralSkillPanelUI = rightUIAdmiral.addSkillPanel(fleet.commander, 0f)
+
+                    admiralSkillPanelUI.position.inTL(-5f, 15f)
+                    rightUIAdmiral.heightSoFar -= 15f
                 }
-                val admiralSkillPanelUI = rightUIAdmiral.addSkillPanel(fleet.commander, 0f)
-                admiralSkillPanelUI.position.inTL(-5f, 15f)
-                rightUIAdmiral.heightSoFar -= 15f
             }
             // revert changes
             for (spec in tempModified) {
@@ -1051,8 +1109,13 @@ object HotkeyHandlerDialogs {
             dialog.onKeyDown { event ->
                 if (event.isCtrlDown) {
                     if (event.eventValue == Keyboard.KEY_C) {
-                        excludeMissingShips(fleet)
-                        ClipboardMisc.saveFleetToClipboard(fleet.fleetData, event.isShiftDown)
+                        //excludeMissingShips(fleet)
+                        ClipboardMisc.saveFleetToClipboard(
+                            inputData, event.isShiftDown,
+                            settings.apply {
+                                memberSettings.includeID = false
+                            })
+
                     } else if (event.eventValue == Keyboard.KEY_V) {
                         dialog.forceDismiss()
                         val missing = MissingContent()
@@ -1084,6 +1147,115 @@ object HotkeyHandlerDialogs {
         dialog.addActionButtons(addConfirmButton = false, alignment = Alignment.RMID)
 
         return dialog
+    }
+
+    // Torn straight from SCAddOfficersToFleetInteraction and hacked into function. Bad implementation, I know.
+    fun pasteFleetDialogSICSkills(tooltip: TooltipMakerAPI, officer: SCOfficer, data: SCData) {
+        tooltip.addSpacer(10f)
+
+        var width = 500f
+        var height = 96f
+        var panel = Global.getSettings().createCustom(width, height, null)
+        tooltip.addCustom(panel, 0f)
+        var element = panel.createUIElement(width, height, false)
+        panel.addUIElement(element)
+
+        var aptitudePlugin = officer.getAptitudePlugin()
+        var activeWithoutOrigin = officer.getActiveSkillPlugins().filter { it.getId() != aptitudePlugin.getOriginSkillId() }
+
+        element.addSpacer(10f)
+
+        /*var officerPickerElement = SCOfficerPickerElement(officer?.person, aptitudePlugin.getColor(), element, 80f, 80f)
+        //officerPickerElement.position.inTL(10f, 10f)
+
+        officerPickerElement.onHoverEnter {
+            officerPickerElement.playScrollSound()
+        }
+
+        officerPickerElement.onClick {
+            officerPickerElement.playClickSound()
+        }
+
+        var paraElement = element.addLunaElement(100f, 20f).apply {
+            renderBorder = false
+            renderBackground = false
+        }
+        paraElement.elementPanel.position.aboveMid(officerPickerElement.elementPanel, 0f)
+
+        paraElement.innerElement.setParaFont("graphics/fonts/victor14.fnt")
+        var aptitudePara = paraElement.innerElement.addPara(aptitudePlugin.getName(), 0f, aptitudePlugin.getColor(), aptitudePlugin.getColor())
+        aptitudePara.position.inTL(paraElement.width / 2 - aptitudePara.computeTextWidth(aptitudePara.text) / 2 - 1, paraElement.height - aptitudePara.computeTextHeight(aptitudePara.text) - 5)
+
+        /* var officerUnderline = SkillUnderlineElement(aptitudePlugin.getColor(), 2f, element, 72f)
+         officerUnderline.position.belowLeft(officerPickerElement.elementPanel, 2f)*/
+
+         */
+
+        var paraElement = element.addLunaElement(100f, 20f).apply {
+            renderBorder = false
+            renderBackground = false
+            position.inTL(20f, -34f)
+        }
+
+        paraElement.innerElement.setParaFont("graphics/fonts/victor14.fnt")
+        var aptitudePara = paraElement.innerElement.addPara(aptitudePlugin.getName(), 0f, aptitudePlugin.getColor(), aptitudePlugin.getColor())
+        aptitudePara.position.inTL(12f, paraElement.height - aptitudePara.computeTextHeight(aptitudePara.text) - 5)
+
+
+        var offset = 6f
+        var offsetElement = element.addLunaElement(0f, 0f)
+        offsetElement.elementPanel.position.inTL(10f, 10f)
+
+
+        var background = DialogAptitudeBackgroundElement(aptitudePlugin.getColor(), element, 7f)
+        background.elementPanel.position.belowLeft(offsetElement.elementPanel, offset)
+
+        var originSkill = SCSpecStore.getSkillSpec(aptitudePlugin.getOriginSkillId())
+        var originSkillElement = SkillWidgetElement(originSkill!!.id, aptitudePlugin.id, true, false, true, originSkill!!.iconPath, "leadership1", aptitudePlugin.getColor(), element, 58f, 58f)
+        element.addTooltipTo(SCSkillTooltipCreator(data, originSkill.getPlugin(), aptitudePlugin, 0, false), originSkillElement.elementPanel, TooltipMakerAPI.TooltipLocation.BELOW)
+        //originSkillElement.elementPanel.position.rightOfMid(officerPickerElement.elementPanel, 20f)
+        originSkillElement.elementPanel.position.rightOfMid(background.elementPanel, 20f)
+
+
+        originSkillElement.onClick {
+            originSkillElement.playClickSound()
+        }
+
+        /*var originGap = SkillGapElement(aptitudePlugin.getColor(), element, 64f)
+        originGap.elementPanel.position.rightOfTop(originSkillElement.elementPanel, 0f)
+        originGap.renderArrow = true*/
+
+
+        var previous: CustomPanelAPI = originSkillElement.elementPanel
+
+        if (activeWithoutOrigin.isNotEmpty()) {
+            var seperator = SkillSeperatorElement(aptitudePlugin.getColor(), element, 58f)
+            seperator.elementPanel.position.rightOfTop(originSkillElement.elementPanel, 3f)
+            previous = seperator.elementPanel
+        }
+
+        for (skill in activeWithoutOrigin) {
+            var isFirst = activeWithoutOrigin.first() == skill
+            var isLast = activeWithoutOrigin.last() == skill
+
+            var skillElement = SkillWidgetElement(skill.getId(), aptitudePlugin.id, true, false, true, skill.getIconPath(), "", aptitudePlugin.getColor(), element, 58f, 58f)
+
+            skillElement.onClick {
+                skillElement.playClickSound()
+            }
+
+            var tooltip = SCSkillTooltipCreator(data, skill, aptitudePlugin, 0, false)
+            element.addTooltipTo(tooltip, skillElement.elementPanel, TooltipMakerAPI.TooltipLocation.BELOW)
+
+
+            skillElement.elementPanel.position.rightOfTop(previous, 3f)
+
+            if (!isLast) {
+                var seperator = SkillSeperatorElement(aptitudePlugin.getColor(), element, 58f)
+                seperator.elementPanel.position.rightOfTop(skillElement.elementPanel, 3f)
+                previous = seperator.elementPanel
+            }
+        }
     }
 
     /*private fun pasteFleetDialogLeftPanel(leftPanel: CustomPanelAPI, fleetData: FleetDataAPI, isPressedMemberID: String?): UIPanelAPI {

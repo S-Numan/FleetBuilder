@@ -21,7 +21,6 @@ object LookupUtils {
     private lateinit var effectiveHullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var baseHullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var compatibleDLessHullIDToVariant: Map<String, List<ShipVariantAPI>>
-    private lateinit var actualHullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var hullIDSet: Set<String>
     private lateinit var errorVariantHullID: String
     private lateinit var IDToHullSpec: Map<String, ShipHullSpecAPI>
@@ -98,7 +97,6 @@ object LookupUtils {
         effectiveHullIDToVariant = allVariants.groupBy { it.hullSpec.getEffectiveHullId() }
         baseHullIDToVariant = allVariants.groupBy { it.hullSpec.baseHullId }
         compatibleDLessHullIDToVariant = allVariants.groupBy { it.hullSpec.getCompatibleDLessHullId() }
-        actualHullIDToVariant = allVariants.groupBy { it.hullSpec.getActualHullId() }
 
         init = true
     }
@@ -145,29 +143,24 @@ object LookupUtils {
         return effectiveHullIDToVariant[hullSpec.getEffectiveHullId()].orEmpty().map { it.clone() }
     }
 
-    //fun getVariantsForHullSpec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
-    //     return hullIDToVariant[hullSpec.hullId].orEmpty().map { it.clone() }
-    //}
-
     @JvmStatic
     fun getVariantsForBaseHullSpec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         return hullIDToVariant[hullSpec.baseHullId].orEmpty().map { it.clone() }
     }
 
     @JvmStatic
-    fun getVariantsForCompatibleDLessHullSpec(
+    fun getVariantsForActualHullSpec(
         hullSpec: ShipHullSpecAPI
     ): List<ShipVariantAPI> {
-        return compatibleDLessHullIDToVariant[hullSpec.getCompatibleDLessHullId()].orEmpty().map {
+        return hullIDToVariant[hullSpec.getActualHullId()].orEmpty().map {
             it.clone()
         }
     }
 
-    @JvmStatic
-    fun getVariantsForActualHullSpec(
+    internal fun getVariantsForCompatibleDLessHullSpec(
         hullSpec: ShipHullSpecAPI
     ): List<ShipVariantAPI> {
-        return actualHullIDToVariant[hullSpec.getActualHullId()].orEmpty().map {
+        return compatibleDLessHullIDToVariant[hullSpec.getCompatibleDLessHullId()].orEmpty().map {
             it.clone()
         }
     }
@@ -202,6 +195,9 @@ object LookupUtils {
 
     @JvmStatic
     fun getAllDMods(): Set<String> = allDMods
+
+    @JvmStatic
+    fun isDMod(modID: String): Boolean = allDMods.contains(modID)
 
     @JvmStatic
     fun getAllHiddenEverywhereMods(): Set<String> = allHiddenEverywhereMods

@@ -223,7 +223,7 @@ object ShipDirectoryService {
                         throw Error(
                             "Duplicate variant ID in ships directory $prefix\n" +
                                     "Ship path 1: $dirPath$prefix/$shipPath\n" +
-                                    "Ship path 2: $dirPath$prefix/${shipDirectory.getShipEntry(data.variantId)?.path}\n" +
+                                    "Ship path 2: $dirPath$prefix/${shipDirectory.getRawShipEntry(data.variantId)?.path}\n" +
                                     "The variantID must be changed on one or the other, or one must be removed."
                         )
                     }
@@ -255,7 +255,7 @@ object ShipDirectoryService {
                 if (entry.missingContent.hullIds.isNotEmpty()) return@forEach
 
                 fun remakeShip() {
-                    val missing = shipDirectory.getShipEntry(entry.variantData.variantId)?.missingContent ?: return
+                    val missing = shipDirectory.getRawShipEntry(entry.variantData.variantId)?.missingContent ?: return
                     val variant = entry.getVariant() ?: return
                     val isImport = shipDirectory.isShipImported(entry.variantData.variantId)
                     shipDirectory.removeShip(entry.variantData.variantId, editVariantFile = false)
@@ -364,7 +364,7 @@ object ShipDirectoryService {
 
         val ships = dir.getShips(hullSpec)
         ships.forEach { variant ->
-            val missing = dir.getShipEntry(variant.hullVariantId)?.missingContent ?: return@forEach
+            val missing = dir.getRawShipEntry(variant.hullVariantId)?.missingContent ?: return@forEach
             val index = dir.getShipIndexInMenu(variant.hullVariantId)
 
             autofitSpecs.add(
@@ -399,7 +399,7 @@ object ShipDirectoryService {
         var maxIndex = -1
         val dir = getShipDirectoryWithPrefix(prefix) ?: return maxIndex
 
-        val entries = dir.getShipEntries(hullSpec)
+        val entries = dir.getRawShipEntries(hullSpec)
         for (entry in entries) {
             val index = dir.getShipIndexInMenu(entry.variantData.variantId)
             maxIndex = max(maxIndex, index)

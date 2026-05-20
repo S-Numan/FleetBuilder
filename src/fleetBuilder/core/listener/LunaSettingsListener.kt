@@ -48,7 +48,6 @@ internal class LunaSettingsListener : LunaSettingsListener {
             FBSettings.devModeCodexButtonEnabled = getBoolean(modID, "devModeCodexButtonEnabled")!!
             FBSettings.fleetScreenFilter = getBoolean(modID, "fleetScreenFilter")!!
             FBSettings.storeOfficersInCargo = getBoolean(modID, "storeOfficersInCargo")!!
-            FBSettings.removeDefaultDMods = getBoolean(modID, "removeDefaultDMods")!!
             FBSettings.cargoAutoManager = getBoolean(modID, "cargoAutoManager")!!
             FBSettings.modPickerFilter = getBoolean(modID, "modPickerFilter")!!
             FBSettings.cargoScreenFilter = getBoolean(modID, "cargoScreenFilter")!!
@@ -61,6 +60,8 @@ internal class LunaSettingsListener : LunaSettingsListener {
             FBSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod = getBoolean(modID, "autofitNoSModdedBuiltInWhenNotBuiltInMod")!!
             FBSettings.reserveFirstFourAutofitSlots = getBoolean(modID, "reserveFirstFourAutofitSlots")!!
             FBSettings.autoMothballRecoveredShips = getBoolean(modID, "autoMothballRecoveredShips")!!
+            FBSettings.removeOldIntelUpdates = getBoolean(modID, "removeOldIntelUpdates")!!
+            FBSettings.removeIntelUpdatesAfterXDays = getInt(modID, "removeIntelUpdatesAfterXDays")!!
             FBSettings.transponderOffInHyperspace = getBoolean(modID, "transponderOffInHyperspace")!!
             FBSettings.displayDerelictRecoveryEarly = getBoolean(modID, "displayDerelictRecoveryEarly")!!
             FBSettings.recentBattleTracker = getBoolean(modID, "recentBattleTracker")!!
@@ -70,11 +71,11 @@ internal class LunaSettingsListener : LunaSettingsListener {
 
             FBSettings.setUnassignPlayer(getBoolean(modID, "unassignPlayer")!!)
 
-            FBSettings.setCheatsEnabled(getBoolean(modID, "enableCheats")!!)
+            FBSettings.setCheatsEnabledInSettings(getBoolean(modID, "enableCheats")!!)
 
         } else {
             FBSettings.setUnassignPlayer(false)
-            FBSettings.setCheatsEnabled(false)
+            FBSettings.setCheatsEnabledInSettings(false)
             FBSettings.backupSave = false
             FBSettings.fleetClipboardHotkeyHandler = false
             FBSettings.devModeCodexButtonEnabled = false
@@ -86,6 +87,7 @@ internal class LunaSettingsListener : LunaSettingsListener {
             FBSettings.autofitMenuEnabled = false
             FBSettings.removeRefitHullmod = false
             FBSettings.autoMothballRecoveredShips = false
+            FBSettings.removeOldIntelUpdates = false
             FBSettings.transponderOffInHyperspace = false
             FBSettings.displayDerelictRecoveryEarly = false
             FBSettings.recentBattleTracker = false

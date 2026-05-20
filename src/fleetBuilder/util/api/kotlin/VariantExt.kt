@@ -8,8 +8,15 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.LookupUtils.getAllDMods
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
+
+/**
+ * Delegate to [ShipHullSpecAPI.getActualHull]
+ */
+fun ShipVariantAPI.getActualHull(): ShipHullSpecAPI {
+    return hullSpec.getActualHull()
+}
 
 /**
  * Creates a copy of this variant with the specified settings.
@@ -85,16 +92,20 @@ fun ShipVariantAPI.getNonBuiltInWeapons(): Map<String, WeaponSpecAPI> {
 
 
 /**
- * Completely removes a mod from the variant. This includes removing it from sMods, sModdedBuiltIns, suppressedMods, and hullMods.
+ * Completely removes a mod from the variant. This includes removing it from sMods, sModdedBuiltIns, permaMods, and hullMods.
  *
  * @param modId The ID of the mod to be removed.
  */
 fun ShipVariantAPI.completelyRemoveMod(modId: String, removeBuiltIns: Boolean = false) {
     sModdedBuiltIns.remove(modId)
-    suppressedMods.remove(modId)
-    if (!hullSpec.builtInMods.contains(modId) || removeBuiltIns)
-        hullMods.remove(modId)
     removePermaMod(modId)
+
+    if (!hullSpec.builtInMods.contains(modId)) {
+        suppressedMods.remove(modId)
+        removeMod(modId)
+    } else if (removeBuiltIns) {
+        addSuppressedMod(modId)
+    }
 }
 
 fun ShipVariantAPI.isEquivalentTo(
@@ -112,15 +123,8 @@ fun ShipVariantAPI.isEquivalentTo(
 /**
  * Returns a set of all DMods in the variant.
  */
-fun ShipVariantAPI.allDMods(): Set<String> {
-    val allDMods = getAllDMods()
-    val dMods = mutableSetOf<String>()
-    for (mod in hullMods) {
-        if (mod in allDMods)
-            dMods.add(mod)
-    }
-    return dMods
-}
+fun ShipVariantAPI.allDMods(): Set<String> =
+    hullMods.filter { LookupUtils.isDMod(it) }.toSet()
 
 /**
  * Returns a set of all SMods in the variant. This includes both SMods and SModdedBuiltIns.

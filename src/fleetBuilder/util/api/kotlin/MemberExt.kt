@@ -1,17 +1,23 @@
 package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.MemberSettings
 
 /**
- * Creates an exact copy of this member.
- *
- * Note that memKey reference types will copy the reference, not the object itself.
+ * Delegate to [ShipHullSpecAPI.getActualHull]
  */
-fun FleetMemberAPI.clone(filterParsed: Boolean = false): FleetMemberAPI {
-    return DataMember.cloneMember(this, filterParsed = filterParsed)
+fun FleetMemberAPI.getActualHull(): ShipHullSpecAPI {
+    return hullSpec.getActualHull()
+}
+
+/**
+ * Delegate to [ShipHullSpecAPI.getActualHullId]
+ */
+fun FleetMemberAPI.getActualHullId(): String {
+    return hullSpec.getActualHullId()
 }
 
 /**
@@ -19,7 +25,7 @@ fun FleetMemberAPI.clone(filterParsed: Boolean = false): FleetMemberAPI {
  *
  * Will apply a filter pass based on the settings, enabling this to be serializable. This will remove non value types memKeys if present.
  */
-fun FleetMemberAPI.clone(settings: MemberSettings): FleetMemberAPI {
+fun FleetMemberAPI.clone(settings: MemberSettings = MemberSettings()): FleetMemberAPI {
     return DataMember.cloneMember(this, settings = settings)
 }
 

@@ -180,6 +180,7 @@
   # Developer options dialog
   "dev_options_title": "Developer Options",
   "toggle_dev_mode": "Toggle Dev Mode",
+  "toggle_cheats": "Toggle Cheats",
   "trigger_f8_reload": "Trigger F8 Reload",
 
 
@@ -231,6 +232,7 @@
   "toggle_strip_before_autofit_tooltip": "Remove everything possible prior to autofitting: generally results in a better fit.\n\nHowever, refitting outside of port reduces a ship's combat readiness, and this option tends to lead to more changes and more readiness loss.",
   "toggle_apply_smods_label": "Apply SMods",
   "toggle_apply_smods_tooltip": "Spend story points to apply SMods to your ship.\n\nIf S-mods are installed, the autofit cannot be undone.",
+  "toggle_apply_smods_tooltip_shipmasteryconflict": "Disabled to avoid conflicting functionality with the Ship Mastery System mod",
   "dialog_apply_smods_title": "Use Story Points to Apply SMods",
   "dialog_apply_smods_desc_one": "This will consume %d Story point and give %d bonus xp",
   "dialog_apply_smods_desc_many": "This will consume %d Story points and give %d bonus xp",
@@ -248,7 +250,6 @@
   "tooltip_version_diff_mod": "%s (VERSION DIFFERENCE)\n        %s %s",
   "tooltip_exact_mod": "%s (EXACT)\n     %s %s",
   "tooltip_failed_to_load": "Failed to load:\nWeapons: %s\nWeapon Slots: %s\nWings: %s\nHullMods: %s",
-  "tag_suppressed": "(Suppressed)",
   "tag_hidden": "(Hidden)",
 
 
@@ -263,6 +264,9 @@
   "cannot_apply_smod_lack_op":"Cannot apply some SMods. Hull does not have enough Ordnance Points",
 
   "failed_to_import_loadout":"Failed to import loadout. Could not find hullId '%s'",
+  "cannot_import_loadout_unknown_hull":"Cannot import loadout. You are not aware of this hull",
+  "cannot_import_loadout_unknown_elements": "Cannot import loadout. You are not aware of some ordnance this hull uses.",
+  "cannot_import_loadout_hull_restricted": "Cannot import loadout. This hull is restricted.",
   "data_valid_but_no_variant":"Data in clipboard was valid, but not a variant",
   "loadout_already_exists":"Loadout already exists, cannot import loadout with hull '%s'",
 

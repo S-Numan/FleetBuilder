@@ -3,7 +3,6 @@ package fleetBuilder.util.api
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import fleetBuilder.core.FBMisc
-import fleetBuilder.core.FBSettings
 
 object FactionUtils {
 
@@ -28,7 +27,7 @@ object FactionUtils {
         val modManager = settings.modManager
 
         val path = "data/world/factions/factions.csv"
-        val csv = settings.getMergedSpreadsheetDataForMod("faction", path, FBSettings.getModID())
+        val csv = settings.getMergedSpreadsheetData("faction", path)
         val csvList = FBMisc.jsonArrayToList(csv)
 
         val factions = Global.getSector().allFactions

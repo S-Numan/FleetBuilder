@@ -17,25 +17,25 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class FleetEntry(
+data class RBFleetEntry(
     val fleetData: DataFleet.ParsedFleetData,
     val path: String,
     val missingContent: MissingContent,
     val timeSaved: Date,
-    val dir: FleetDirectory,
+    val dir: RBFleetDirectory,
     val id: String,
 )
 
-class FleetDirectory(
+class RBFleetDirectory(
     val directory: String,
 ) {
-    private var fleetEntries: MutableMap<String, FleetEntry> = mutableMapOf()
+    private var fleetEntries: MutableMap<String, RBFleetEntry> = mutableMapOf()
 
-    fun getRawFleetEntries(): Map<String, FleetEntry> {
+    fun getRawFleetEntries(): Map<String, RBFleetEntry> {
         return fleetEntries
     }
 
-    fun setRawFleetEntry(fleetId: String, entry: FleetEntry) {
+    fun setRawFleetEntry(fleetId: String, entry: RBFleetEntry) {
         fleetEntries[fleetId] = entry
     }
 
@@ -43,7 +43,7 @@ class FleetDirectory(
         return fleetEntries.containsKey(fleetId)
     }
 
-    fun getFleetEntry(fleetId: String): FleetEntry? {
+    fun getFleetEntry(fleetId: String): RBFleetEntry? {
         return fleetEntries[fleetId]
     }
 
@@ -119,7 +119,7 @@ class FleetDirectory(
                 if (filterParsedFleetData(newParsedFleet, comparisonSettings) != filterParsedFleetData(parsedFleet, comparisonSettings)) {
                     val diffs = deepDiff(parsedFleet, newParsedFleet)
                     DisplayMessage.showError(
-                        "DEBUG: Fleet data mismatch. DEEP DIFF", diffs.joinToString("\n")
+                        "DEBUG: Fleet data mismatch when adding memKeys. DEEP DIFF", diffs.joinToString("\n")
                     )
                 }
             }
@@ -131,11 +131,12 @@ class FleetDirectory(
         // DEBUG!
         if (FBSettings.enableDebug) {
             val fleetJSON = JSONFleet.saveFleetToJson(inputFleet)
-            val fleetUnJSON = JSONFleet.extractFleetDataFromJson(fleetJSON)
-            if (filterParsedFleetData(fleetUnJSON, comparisonSettings) != filterParsedFleetData(parsedFleet, comparisonSettings)) { // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
-                DisplayMessage.showError("DEBUG: Fleet data mismatch", "\nfleetUnJSON:\n${fleetUnJSON}\n\nparsedFleet:\n${parsedFleet}\n")
+            val fleetUnJSON = filterParsedFleetData(JSONFleet.extractFleetDataFromJson(fleetJSON), comparisonSettings)
+            val parsedFleetFiltered = filterParsedFleetData(parsedFleet, comparisonSettings)
+            if (fleetUnJSON != parsedFleetFiltered) { // If not equal, this means the logic somewhere when saving and getting the fleet to/from JSON or COMP is not correct
+                DisplayMessage.showError("DEBUG: Fleet data mismatch", "\nfleetUnJSON:\n${fleetUnJSON}\n\nparsedFleetFiltered:\n${parsedFleet}\n")
 
-                val diffs = deepDiff(parsedFleet, fleetUnJSON)
+                val diffs = deepDiff(parsedFleetFiltered, fleetUnJSON)
 
                 DisplayMessage.showError(
                     "DEBUG: Fleet data mismatch. DEEP DIFF", diffs.joinToString("\n")
@@ -169,7 +170,7 @@ class FleetDirectory(
         if (editFleetFile)
             Global.getSettings().writeTextFileToCommon("$directory$fleetPath", comp)
 
-        val entry = FleetEntry(
+        val entry = RBFleetEntry(
             parsedFleet,
             fleetPath,
             missingFromFleet,
@@ -183,7 +184,7 @@ class FleetDirectory(
         return fleetID
     }
 
-    fun addFleet(fleetEntry: FleetEntry) {
+    fun addFleet(fleetEntry: RBFleetEntry) {
         val fleetId = fleetEntry.id
         val data = fleetEntry.fleetData.copy()
 
@@ -195,7 +196,7 @@ class FleetDirectory(
 
         Global.getSettings().writeTextFileToCommon("$directory$fleetPath", comp)
 
-        fleetEntries[fleetId] = FleetEntry(
+        fleetEntries[fleetId] = RBFleetEntry(
             data,
             fleetPath,
             fleetEntry.missingContent,

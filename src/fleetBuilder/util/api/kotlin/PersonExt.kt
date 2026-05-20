@@ -1,5 +1,6 @@
 package fleetBuilder.util.api.kotlin
 
+import com.fs.starfarer.api.characters.MutableCharacterStatsAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.PersonSettings
@@ -34,4 +35,48 @@ fun PersonAPI.hasAnySkill(): Boolean {
         }
     }
     return false
+}
+
+fun PersonAPI.getCombatOfficerSkills(): List<MutableCharacterStatsAPI.SkillLevelAPI> {
+    return stats.skillsCopy.mapNotNull { skill ->
+        if (skill.level <= 0f)
+            null
+        else if (skill.skill.isCombatOfficerSkill)
+            skill
+        else
+            null
+    }
+}
+
+fun PersonAPI.getAdmiralSkills(): List<MutableCharacterStatsAPI.SkillLevelAPI> {
+    return stats.skillsCopy.mapNotNull { skill ->
+        if (skill.level <= 0f)
+            null
+        else if (skill.skill.isAdmiralSkill)
+            skill
+        else
+            null
+    }
+}
+
+fun PersonAPI.getAdminSkills(): List<MutableCharacterStatsAPI.SkillLevelAPI> {
+    return stats.skillsCopy.mapNotNull { skill ->
+        if (skill.level <= 0f)
+            null
+        else if (skill.skill.isAdminSkill)
+            skill
+        else
+            null
+    }
+}
+
+fun PersonAPI.getEliteSkills(): List<MutableCharacterStatsAPI.SkillLevelAPI> {
+    return stats.skillsCopy.mapNotNull { skill ->
+        if (skill.level <= 0f)
+            null
+        else if (skill.skill.isElite)
+            skill
+        else
+            null
+    }
 }

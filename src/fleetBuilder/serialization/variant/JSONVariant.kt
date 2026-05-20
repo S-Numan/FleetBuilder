@@ -10,6 +10,7 @@ import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils
+import fleetBuilder.util.api.VariantUtils.makeVariantID
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
 import org.json.JSONArray
 import org.json.JSONObject
@@ -52,7 +53,6 @@ object JSONVariant {
 
         val fluxCapacitors = json.optInt("fluxCapacitors", 0)
         val fluxVents = json.optInt("fluxVents", 0)
-        val isGoalVariant = json.optBoolean("goalVariant", false)
 
         val hullMods = json.optJSONArrayToStringList("hullMods").toMutableSet()
         val permaMods = json.optJSONArrayToStringList("permaMods").toMutableSet()
@@ -63,6 +63,8 @@ object JSONVariant {
             sModdedBuiltIns = json.optJSONArrayToStringList("sModdedbuiltins").toMutableSet() // Legacy code due to unfortunate typo
 
         DataVariant.normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns)
+
+        val suppressedMods = json.optJSONArrayToStringList("suppressedMods").toMutableSet()
 
         val wings = json.optJSONArrayToStringList("wings")
 
@@ -119,12 +121,12 @@ object JSONVariant {
         json.optJSONArray("modules")?.let { arr ->
             repeat(arr.length()) { i ->
                 arr.optJSONObject(i)?.names()?.optString(0)?.let { key ->
-                    arr.optJSONObject(i)?.optString(key)?.let { value ->
+                    arr.optJSONObject(i)?.optString(key)?.let { moduleVariantID ->
                         val module: ShipVariantAPI
                         try {
-                            module = Global.getSettings().getVariant(variantId)
+                            module = Global.getSettings().getVariant(moduleVariantID)
                         } catch (e: Exception) {
-                            Global.getLogger(this::class.java).error("Failed to get variant '$variantId' for slot '$key'", e)
+                            Global.getLogger(this::class.java).error("Failed to get variant '$moduleVariantID' for slot '$key'", e)
                             return@let
                         }
 
@@ -154,8 +156,8 @@ object JSONVariant {
 
         return DataVariant.ParsedVariantData(
             variantId = variantId, hullId = hullId, displayName = displayName, fluxCapacitors = fluxCapacitors, fluxVents = fluxVents,
-            tags = tags, hullMods = hullMods, permaMods = permaMods, sMods = sMods, sModdedBuiltIns = sModdedBuiltIns, wings = wings,
-            weaponGroups = weaponGroups, moduleVariants = moduleVariants, isGoalVariant = isGoalVariant
+            tags = tags, hullMods = hullMods, permaMods = permaMods, sMods = sMods, sModdedBuiltIns = sModdedBuiltIns, suppressedMods = suppressedMods,
+            wings = wings, weaponGroups = weaponGroups, moduleVariants = moduleVariants
         )
     }
 
@@ -190,21 +192,29 @@ object JSONVariant {
 
         if (data.variantId.isNotEmpty())
             jsonVariant.put("variantId", data.variantId)
+        else if (settings.includeDefaultJSON)
+            jsonVariant.put("variantId", makeVariantID(data.hullId, data.displayName))
 
         jsonVariant.put("displayName", data.displayName)
         jsonVariant.put("hullId", data.hullId)
         jsonVariant.put("fluxCapacitors", data.fluxCapacitors)
         jsonVariant.put("fluxVents", data.fluxVents)
         jsonVariant.put("hullMods", JSONArray(data.hullMods))
+        if (settings.includeDefaultJSON)
+            jsonVariant.put("goalVariant", false)
 
-        if (data.permaMods.isNotEmpty())
+        if (data.permaMods.isNotEmpty() || settings.includeDefaultJSON)
             jsonVariant.put("permaMods", JSONArray(data.permaMods))
-        if (data.sMods.isNotEmpty())
+        if (data.sMods.isNotEmpty() || settings.includeDefaultJSON)
             jsonVariant.put("sMods", JSONArray(data.sMods))
-        if (data.sModdedBuiltIns.isNotEmpty())
+        if (data.sModdedBuiltIns.isNotEmpty() || settings.includeDefaultJSON)
             jsonVariant.put("sModdedBuiltIns", JSONArray(data.sModdedBuiltIns))
 
-        if (data.tags.isNotEmpty())
+        if (data.suppressedMods.isNotEmpty() || settings.includeDefaultJSON)
+            jsonVariant.put("suppressedMods", JSONArray(data.suppressedMods))
+
+
+        if (data.tags.isNotEmpty() || settings.includeDefaultJSON)
             jsonVariant.put("tags", JSONArray(data.tags))
 
 

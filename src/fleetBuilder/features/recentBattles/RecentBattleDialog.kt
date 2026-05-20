@@ -6,8 +6,8 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.Alignment
 import fleetBuilder.core.FBSettings
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.pasteFleetDialog
-import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectory
-import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
+import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectory
+import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectoryService
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
@@ -17,25 +17,35 @@ import fleetBuilder.util.api.kotlin.isIdle
 import java.text.SimpleDateFormat
 import java.util.*
 
+// TODO
+//  A toggle to show/hide fleets with missing elements.
+//  A visual indicator that fleets have missing elements. Maybe a strike through?
+//  A DP indicator. This does require building every fleet to see this, so make sure to cache every fleet somewhere while the dialog remains open to avoid having to constantly re-build fleets while navigating the menu.
+//      Upon the dialog closing, remove all the cached fleets. (If it's not done already)
+//      CTRL Click to copy fleet
+
 object RecentBattleDialog {
     fun recentBattleDialog(event: InputEventAPI, ui: CampaignUIAPI) {
         if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen())
             return
-        val fleetDirectory = FleetDirectoryService.getDirectory() ?: return
-        showDialog(fleetDirectory, null, sortNewestFirst = true, onlyPersonBounty = false)
+        val fleetDirectory = RBFleetDirectoryService.getDirectory() ?: return
+        showDialog(fleetDirectory)
 
         event.consume()
     }
 
+    enum class FleetType {
+        ALL,
+        PERSON_BOUNTY,
+        BOUNTY_BOARD,
+    }
+
     private fun showDialog(
-        directory: FleetDirectory,
-        selectedFaction: String?,
-        sortNewestFirst: Boolean,
-        onlyPersonBounty: Boolean
+        directory: RBFleetDirectory,
     ) {
-        var selectedFaction: String? = selectedFaction
-        var sortNewestFirst = sortNewestFirst
-        var onlyPersonBounty = onlyPersonBounty
+        var selectedFaction: String? = null
+        var sortNewestFirst = true
+        var fleetType = FleetType.ALL
 
         val dialog = DialogPanel()
 
@@ -49,12 +59,22 @@ object RecentBattleDialog {
                 .sorted()
 
             val filtered = allEntries
-                .filter {
-                    (selectedFaction == null || it.fleetData.factionID == selectedFaction) &&
-                            (!onlyPersonBounty || it.fleetData.memKeys["\$fleetType"] == "personBounty")
+                .asSequence()
+                .filter { entry ->
+                    val factionMatches = selectedFaction == null || entry.fleetData.factionID == selectedFaction
+
+                    val typeMatches = when (fleetType) {
+                        FleetType.PERSON_BOUNTY ->
+                            entry.fleetData.memKeys["\$fleetType"] == "personBounty" && entry.fleetData.memKeys["\$MagicLib_Bounty_target_fleet"] != true
+                        FleetType.BOUNTY_BOARD ->
+                            entry.fleetData.memKeys["\$MagicLib_Bounty_target_fleet"] == true
+                        else -> true
+                    }
+
+                    factionMatches && typeMatches
                 }
                 .sortedBy { it.timeSaved }
-                .let { if (sortNewestFirst) it.reversed() else it }
+                .let { if (sortNewestFirst) it.toList().asReversed() else it.toList() }
 
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
 
@@ -116,13 +136,13 @@ object RecentBattleDialog {
             }
 
             ui.addButton(
-                if (onlyPersonBounty) "Fleet Type: Bounty" else "Fleet Type: All",
+                if (fleetType == FleetType.PERSON_BOUNTY) "Fleet Type: Personal Bounty" else if (fleetType == FleetType.BOUNTY_BOARD) "Fleet Type: Bounty Board" else "Fleet Type: All",
                 null,
                 250f,
                 30f,
                 5f
             ).onClick {
-                onlyPersonBounty = !onlyPersonBounty
+                fleetType = FleetType.entries[(fleetType.ordinal + 1) % FleetType.entries.size]
                 dialog.recreateUI()
             }
 
@@ -145,7 +165,6 @@ object RecentBattleDialog {
 
             val scrollPanel = Global.getSettings().createCustom(ui.width, panelHeight, null)
 
-            // TRUE = scrollable
             val listUI = scrollPanel.createUIElement(ui.width, panelHeight, true)
             listUI.addSpacer(0f).position.inTL(0f, 0f)
 

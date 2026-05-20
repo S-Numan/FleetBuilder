@@ -12,7 +12,7 @@ import fleetBuilder.core.displayMessage.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.allDMods
+import fleetBuilder.util.api.kotlin.completelyRemoveMod
 import fleetBuilder.util.api.kotlin.createHullVariant
 import fleetBuilder.util.api.kotlin.getActualHullId
 import fleetBuilder.util.api.kotlin.getModules
@@ -31,10 +31,10 @@ object DataVariant {
         val permaMods: Set<String> = emptySet(),
         val sMods: Set<String> = emptySet(),
         val sModdedBuiltIns: Set<String> = emptySet(),
+        val suppressedMods: Set<String> = emptySet(),
         val wings: List<String> = emptyList(),
         val weaponGroups: List<ParsedWeaponGroup> = emptyList(),
         val moduleVariants: Map<String, ParsedVariantData> = emptyMap(),
-        val isGoalVariant: Boolean = false,
     ) {
         fun allHullMods() = (hullMods + sMods + sModdedBuiltIns + permaMods).toSet()
     }
@@ -111,13 +111,9 @@ object DataVariant {
         val permaMods = variant.permaMods.toMutableSet()
         val sMods = variant.sMods.toMutableSet()
         val sModdedBuiltIns = variant.sModdedBuiltIns.toMutableSet()
+        val suppressedMods = variant.suppressedMods.filter { it in variant.hullSpec.builtInMods }.toMutableSet() // Do not save suppressed mods which are not suppressing anything
 
         normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns, variant.hullSpec.builtInMods.toSet())
-
-        // Add built-in DMods as default behavior is to exclude these.
-        variant.allDMods()
-            .filter { it in variant.hullSpec.builtInMods && it !in hullMods } //&& it !in excludedMods }
-            .forEach { hullMods += it }
 
         val data = ParsedVariantData(
             hullId = variant.hullSpec.getActualHullId(), //DMods are already included, get the D less ID for simplicity.
@@ -130,6 +126,7 @@ object DataVariant {
             permaMods = permaMods,
             sMods = sMods,
             sModdedBuiltIns = sModdedBuiltIns,
+            suppressedMods = suppressedMods,
             wings = variant.nonBuiltInWings,
             weaponGroups = variant.weaponGroups.map { group ->
                 ParsedWeaponGroup(
@@ -148,8 +145,7 @@ object DataVariant {
             },
             moduleVariants = variant.getModules().map { (slot, module) ->
                 slot to getVariantDataFromVariant(module, settings)
-            }.toMap(),
-            isGoalVariant = variant.isGoalVariant,
+            }.toMap()
         )
 
         return if (filterParsed)
@@ -302,6 +298,16 @@ object DataVariant {
             } else true
         }
 
+        val cleanSuppressedMods = data.suppressedMods.filter { modId ->
+            if (modId !in allHullMods) {
+                //missing.hullModIds.add(modId) // suppressedMods are to EXCLUDE a built-in hull-mod, so this isn't necessary.
+                false
+            } else if (validHull != null && modId !in validHull.builtInMods)
+                false
+            else
+                true
+        }
+
         // --- Wings ---
         val allWingIds = LookupUtils.getFighterWingIDSet()
         val cleanWings = data.wings.mapIndexed { _, wingId ->
@@ -354,6 +360,7 @@ object DataVariant {
             permaMods = cleanPermaMods.toSet(),
             sMods = cleanSMods.toSet(),
             sModdedBuiltIns = cleanSModdedBuiltIns.toSet(),
+            suppressedMods = cleanSuppressedMods.toSet(),
             wings = cleanWings,
             weaponGroups = cleanWeaponGroups,
             moduleVariants = cleanedModuleVariants,
@@ -383,7 +390,6 @@ object DataVariant {
             loadout.hullVariantId = Misc.genUID()
 
         loadout.setVariantDisplayName(data.displayName)
-        loadout.isGoalVariant = data.isGoalVariant
 
         data.tags.forEach { loadout.addTag(it) }
 
@@ -394,13 +400,6 @@ object DataVariant {
             loadout.numFluxCapacitors = data.fluxCapacitors
         if (data.fluxVents > -1)
             loadout.numFluxVents = data.fluxVents
-
-        //Remove default DMods
-        if (FBSettings.removeDefaultDMods) {
-            loadout.allDMods().forEach {
-                loadout.hullMods.remove(it)
-            }
-        }
 
         data.hullMods.forEach { modId ->
             loadout.addMod(modId)
@@ -421,7 +420,11 @@ object DataVariant {
             loadout.sModdedBuiltIns.add(modId)
 
             if (!hullSpec.builtInMods.contains(modId)) // If SModded built in, but hullspec doesn't have this mod to build in?
-                loadout.addPermaMod(modId, false) // Assume it's a built in perma mod instead. (See Roider Union MIDAS)
+                loadout.addPermaMod(modId, false) // Assume it's a built-in perma mod instead. (See Roider Union MIDAS)
+        }
+
+        data.suppressedMods.forEach { modId ->
+            loadout.completelyRemoveMod(modId, true)
         }
 
         val wingOffset = hullSpec.builtInWings.size

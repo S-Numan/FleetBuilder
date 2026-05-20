@@ -17,7 +17,10 @@ import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.MemberUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.*
+import fleetBuilder.util.api.kotlin.completelyRemoveMod
+import fleetBuilder.util.api.kotlin.getEffectiveHullId
+import fleetBuilder.util.api.kotlin.getModules
+import fleetBuilder.util.api.kotlin.getRegularHullMods
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
@@ -204,12 +207,6 @@ internal object FBMisc {
             to.completelyRemoveMod(mod)
         }
 
-        if (FBSettings.removeDefaultDMods) {
-            to.allDMods().forEach {
-                to.hullMods.remove(it)
-            }
-        }
-
         if (!dontForceClearSMods) {
             to.sModdedBuiltIns.clear()
         }
@@ -243,12 +240,6 @@ internal object FBMisc {
         // Copy S-modded built-ins
         for (mod in from.sModdedBuiltIns) {
             to.sModdedBuiltIns.add(mod)
-        }
-
-        // Copy Built-in DMods
-        for (mod in from.allDMods()) {
-            if (mod !in from.hullSpec.builtInMods) continue
-            to.hullMods.add(mod)
         }
 
         for (mod in from.suppressedMods) {

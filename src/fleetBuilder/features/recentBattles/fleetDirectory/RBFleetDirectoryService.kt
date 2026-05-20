@@ -10,14 +10,14 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-object FleetDirectoryService {
+object RBFleetDirectoryService {
 
-    private var fleetDirectory: FleetDirectory? = null
+    private var fleetDirectory: RBFleetDirectory? = null
 
-    fun getDirectory(): FleetDirectory? = fleetDirectory
+    fun getDirectory(): RBFleetDirectory? = fleetDirectory
 
     private const val directory: String = "$FLEET_DIR/BattleTracker/"
-    fun loadDirectory(): FleetDirectory? {
+    fun loadDirectory(): RBFleetDirectory? {
         // Ensure config exists
         if (!Global.getSettings().fileExistsInCommon("$directory$DIRECTORY_CONFIG_FILE_NAME")) {
             val json = JSONObject()
@@ -36,7 +36,7 @@ object FleetDirectoryService {
             return null
         }
 
-        val fleetDir = FleetDirectory(directory)
+        val fleetDir = RBFleetDirectory(directory)
 
         val fleetsJson = directoryJson.optJSONObject("fleets") ?: JSONObject()
 
@@ -93,7 +93,7 @@ object FleetDirectoryService {
 
             fleetDir.setRawFleetEntry(
                 fleetId,
-                FleetEntry(parsed, fleetPath, missing, parsedDate, fleetDir, fleetId)
+                RBFleetEntry(parsed, fleetPath, missing, parsedDate, fleetDir, fleetId)
             )
         }
 

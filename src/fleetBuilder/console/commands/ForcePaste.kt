@@ -29,9 +29,9 @@ class ForcePaste : BaseCommand {
         // Retry until the console dialog goes away
         CampaignDeferredActionPlugin.performLater(0f) {
 
-            val cheatsEnabled = FBSettings.cheatsEnabledRaw()
+            val cheatsEnabled = FBSettings.cheatsEnabled()
             if (!cheatsEnabled)
-                FBSettings.setCheatsEnabled(true)
+                FBSettings.setCheatsEnabledInSettings(true)
 
             try { // Just in case it somehow fails
                 CampaignClipboardHotkeyHandler.handlePasteHotkey(Global.getSector().campaignUI, null)
@@ -39,7 +39,7 @@ class ForcePaste : BaseCommand {
                 Console.showException("Failed to paste", e)
             }
             if (!cheatsEnabled)
-                FBSettings.setCheatsEnabled(false)
+                FBSettings.setCheatsEnabledInSettings(false)
 
         }
 

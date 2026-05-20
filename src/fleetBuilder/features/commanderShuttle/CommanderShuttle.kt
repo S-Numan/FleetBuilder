@@ -2,10 +2,12 @@ package fleetBuilder.features.commanderShuttle
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberType
+import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.listener.EventDispatcher
+import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.listeners.OfficerChangeEvents
 
@@ -26,9 +28,20 @@ internal object CommanderShuttle {
             if (change.previous != null && change.previous.isPlayer &&
                 change.member.variant?.hasHullMod(FBConst.COMMAND_SHUTTLE_ID) == true
             ) {
-                val playerFleet = Global.getSector().playerFleet.fleetData
-                playerFleet?.removeFleetMember(change.member)
-                ReflectionMisc.updateFleetPanelContents()
+                val optionList = Global.getSector()?.campaignUI?.currentInteractionDialog?.optionPanel?.savedOptionList
+                var containsTransferCommand = false
+                optionList?.forEach { option ->
+                    val methods = option?.getMethodsMatching(returnType = Any::class.java, numOfParams = 0) ?: return@forEach
+                    for (method in methods) {
+                        val value = method.invoke(option)
+                        if (value is FleetInteractionDialogPluginImpl.OptionId && value == FleetInteractionDialogPluginImpl.OptionId.SELECT_FLAGSHIP) {
+                            containsTransferCommand = true
+                            return@forEach
+                        }
+                    }
+                }
+                if (!containsTransferCommand) // Do not continue if the switch occurred due to a transfer command
+                    removePlayerShuttle()
             }
         }
 

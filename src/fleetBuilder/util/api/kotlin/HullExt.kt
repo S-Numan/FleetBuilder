@@ -2,14 +2,19 @@ package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.HullUtils
+
+fun ShipHullSpecAPI.getBuiltInDMods(): Set<String> =
+    builtInMods.filter { LookupUtils.isDMod(it) }.toSet()
+
 
 /**
  * Delegate to [HullUtils.getSlotsForModules]
  */
-fun ShipHullSpecAPI.getSlotsForModules(): List<String> {
-    return HullUtils.getSlotsForModules(this)
-}
+fun ShipHullSpecAPI.getSlotsForModules(): List<String> =
+    HullUtils.getSlotsForModules(this)
+
 
 /**
  * Delegates to [HullUtils.getEffectiveHull].
@@ -26,13 +31,13 @@ fun ShipHullSpecAPI.getEffectiveHullId(): String =
 /**
  * Delegates to [HullUtils.getCompatibleDLessHull].
  */
-fun ShipHullSpecAPI.getCompatibleDLessHull(): ShipHullSpecAPI =
+internal fun ShipHullSpecAPI.getCompatibleDLessHull(): ShipHullSpecAPI =
     HullUtils.getCompatibleDLessHull(this)
 
 /**
  * Returns the compatible D less hull ID of this [ShipHullSpecAPI]. See [HullUtils.getCompatibleDLessHull].
  */
-fun ShipHullSpecAPI.getCompatibleDLessHullId(): String =
+internal fun ShipHullSpecAPI.getCompatibleDLessHullId(): String =
     HullUtils.getCompatibleDLessHull(this).hullId
 
 /**
@@ -59,6 +64,7 @@ fun ShipHullSpecAPI.isDHullFix(): Boolean =
 fun ShipHullSpecAPI.isSkin(): Boolean =
     HullUtils.isSkin(this)
 
+/*
 /**
  * Returns the base hull if the hull is a D-Hull.
  *
@@ -66,8 +72,9 @@ fun ShipHullSpecAPI.isSkin(): Boolean =
  *
  * Delegates to [HullUtils.getDLessHull].
  */
-//fun ShipHullSpecAPI.getDLessHull(): ShipHullSpecAPI =
-//    HullUtils.getDLessHull(this)
+fun ShipHullSpecAPI.getDLessHull(): ShipHullSpecAPI =
+    HullUtils.getDLessHull(this)
+*/
 
 /**
  * Delegates to [HullUtils.createHullVariant].

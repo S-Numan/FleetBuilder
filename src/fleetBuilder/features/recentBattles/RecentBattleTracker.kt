@@ -7,7 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.campaign.fleet.FleetMemberStatus
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.features.recentBattles.fleetDirectory.FleetDirectoryService
+import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectoryService
 import fleetBuilder.serialization.fleet.FleetSettings
 
 
@@ -43,7 +43,7 @@ class RecentBattleTracker : BaseCampaignEventListener(false) {
             additionalMemKeys["\$MagicLib_Bounty_target_fleet"] = true
 
         try {
-            FleetDirectoryService.getDirectory()?.addFleet(
+            RBFleetDirectoryService.getDirectory()?.addFleet(
                 battledFleet, setFleetID = id, settings = FleetSettings().apply {
                     memberSettings.includeCR = false
                     memberSettings.includeHullFraction = false

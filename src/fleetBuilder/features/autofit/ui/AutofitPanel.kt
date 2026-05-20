@@ -8,7 +8,6 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.ui.UITable
@@ -33,16 +32,14 @@ import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
 import fleetBuilder.util.api.VariantUtils.processSModsForComparison
-import fleetBuilder.util.api.kotlin.allDMods
-import fleetBuilder.util.api.kotlin.completelyRemoveMod
-import fleetBuilder.util.api.kotlin.createFleetMember
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.util.api.kotlin.*
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
@@ -562,14 +559,18 @@ internal object AutofitPanel {
                     default = true
                 )
 
-                if (!Global.getSettings().modManager.isModEnabled("shipmasterysystem")) { // No apply s-mods if conflicting functionality
-                    applySModsButton = addToggleButton(
-                        label = txt("toggle_apply_smods_label"),
-                        memoryKey = "\$FBA_applySMods",
-                        tooltipText = txt("toggle_apply_smods_tooltip"),
-                        default = false
-                    )
+                val shipMasteryModEnabled = Global.getSettings().modManager.isModEnabled("shipmasterysystem")
+                applySModsButton = addToggleButton(
+                    label = txt("toggle_apply_smods_label"),
+                    memoryKey = "\$FBA_applySMods",
+                    tooltipText = if (!shipMasteryModEnabled) txt("toggle_apply_smods_tooltip") else txt("toggle_apply_smods_tooltip_shipmasteryconflict"),
+                    default = false
+                )
+                if (shipMasteryModEnabled) { // No apply s-mods if conflicting functionality
+                    applySModsButton.enabled = false
+                    applySModsButton.isEnabled = false
                 }
+                
             }
 
             // Add the buttons element to the panel
@@ -748,7 +749,7 @@ internal object AutofitPanel {
 
                     Global.getSoundPlayer().playUISound("ui_button_pressed", 0.94f, 1f)
 
-                    val missing = shipDirectory.getShipEntry(equalVariant.hullVariantId)?.missingContent
+                    val missing = shipDirectory.getRawShipEntry(equalVariant.hullVariantId)?.missingContent
                     if (missing == null) {
                         val newShipDirectory = ShipDirectoryService.getVariantSourceShipDirectory(equalVariant)
                         if (newShipDirectory != null) {//equalVariant exists, but not from this shipDirectory
@@ -1115,7 +1116,7 @@ internal object AutofitPanel {
             }
 
 
-            val allMods = (variant as HullVariantSpec).allMods as List<HullModSpecAPI>
+            val allMods = variant.hullMods.mapNotNull { LookupUtils.getHullModSpec(it) }
 
             val smoddedBuiltIns = mutableListOf<String>()
             val builtIns = mutableListOf<String>()
@@ -1152,10 +1153,10 @@ internal object AutofitPanel {
                     hiddenMods += "$name " + txt("tag_hidden")
                     continue
                 }
-                if (variant.suppressedMods.contains(mod.id)) {
+                /*if (variant.suppressedMods.contains(mod.id)) {
                     hiddenMods += "$name " + txt("tag_suppressed")
                     continue
-                }
+                }*/
 
                 if (allDMods.contains(mod.id)) {
                     dMods += "$name (D)"
@@ -1322,13 +1323,24 @@ internal object AutofitPanel {
 
 
             if (FBSettings.showDebug) {
+                val hull = variant.hullSpec
+                val hullID = hull.hullId
+                val actual = hull.getActualHull().hullId
+                val dlesscompatible = hull.getCompatibleDLessHull().hullId
+                val effective = hull.getEffectiveHull().hullId
+
                 tooltip.addPara("\n\nDEBUG: VariantID = ${variant.hullVariantId}", 2f)
-                tooltip.addPara("DEBUG: HullID = ${variant.hullSpec.hullId}", 2f)
+                tooltip.addPara("\nDEBUG: HullID = $hullID", 2f)
+                tooltip.addPara("DEBUG: ActualHullID = $actual", 2f)
+                tooltip.addPara("DEBUG: DLessCompatibleHullID = $dlesscompatible", 2f)
+                tooltip.addPara("DEBUG: EffectiveHullID = $effective", 2f)
                 tooltip.addPara("DEBUG: Compatible with base = ${variant.hullSpec.isCompatibleWithBase}", 2f)
                 tooltip.addPara("DEBUG: BaseHullID = ${variant.hullSpec.baseHullId}", 2f)
                 tooltip.addPara("DEBUG: DParentHullID = ${variant.hullSpec.dParentHullId}", 2f)
-                tooltip.addPara("\nDEBUG: Tags = ${variant.tags}", 2f)
+                //tooltip.addPara("\nDEBUG: Tags = ${variant.tags}", 2f)
                 tooltip.addPara("\nDEBUG: SModdedBuiltIns = ${variant.sModdedBuiltIns}", 2f)
+                tooltip.addPara("DEBUG: SuppressedMods = ${variant.suppressedMods}", 2f)
+
                 /*tooltip.addPara("\n\nDEBUG: WeaponGroups: ", 2f)
                 for (weaponGroup in variant.weaponGroups.withIndex()) {
                     tooltip.addPara(
