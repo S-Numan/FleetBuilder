@@ -74,7 +74,7 @@ internal object ClipboardHotkeyHandlerUtils {
     fun requireCheatsOrWarn(): Boolean {
         if (!FBSettings.cheatsEnabled()) {
             DisplayMessage.showMessage(
-                FBTxt.txt("enable_cheats_to_use_paste", FBSettings.getModName()),
+                FBTxt.txt("enable_cheats_to_use", FBSettings.getModName()),
                 Color.YELLOW
             )
             return false

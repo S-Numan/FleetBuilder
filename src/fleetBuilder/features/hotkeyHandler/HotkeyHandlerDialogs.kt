@@ -183,6 +183,8 @@ object HotkeyHandlerDialogs {
         removeModButton.position.inTL(0f, ui.height - removeModButton.height)
         removeModButton.onClick {
             val dialog = DialogPanel("Remove Mod")
+            dialog.uiBorderColor = Color(255, 70, 70)
+
             dialog.show(width = 800f, height = 800f) { ui ->
                 ui.addPara("HERE BE DRAGONS!\nPlease note that these are very unsafe options and are very likely to cause issues.", Color.RED, 0f)
                 ui.addSpacer(8f)
@@ -199,6 +201,7 @@ object HotkeyHandlerDialogs {
                 Global.getSettings().modManager.enabledModsCopy.forEach {
                     tempTMAPI.addButton(it.name + " - " + it.id, null, ui.width - 8f, 32f, 4f).onClick {
                         val dialog = DialogPanel("Are you sure?")
+                        dialog.uiBorderColor = Color(255, 70, 70)
                         dialog.show(500f, 200f) { ui ->
                             val removeModLabel = ui.addPara("Remove mod: ${it.name} - ${it.id}", 0f).autoSizeToText()
                             removeModLabel.position.inTMid(0f)
