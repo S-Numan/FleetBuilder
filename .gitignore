@@ -194,3 +194,15 @@ nbdist/
 .idea/vcs.xml
 
 .idea/csv-editor.xml
+
+
+
+
+
+
+
+
+# Custom
+/.kotlin/
+/.idea/
+/jars/
