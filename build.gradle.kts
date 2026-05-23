@@ -583,4 +583,34 @@ tasks.register<Zip>("packageMod") {
     }
 }
 
+runCatching {
+    val (layout, parsed) = launcherInfo
 
+    val outputFile = File(layout.gameWorkingDir, "devvmparams.txt")
+
+    // 1. Remove the unwanted JVM arg
+    val filteredJvmArgs = parsed.jvmArgs
+        .filterNot { it == "-XX:+PrintCodeCache" }
+
+    // 2. Platform-specific classpath tail
+    val tail = when (currentPlatform()) {
+        StarsectorPlatform.WINDOWS ->
+            """-classpath janino.jar;commons-compiler.jar;commons-compiler-jdk.jar;starfarer.api.jar;starfarer_obf.jar;jogg-0.0.7.jar;jorbis-0.0.15.jar;json.jar;lwjgl.jar;jinput.jar;log4j-1.2.9.jar;lwjgl_util.jar;fs.sound_obf.jar;fs.common_obf.jar;xstream-1.4.10.jar;txw2-3.0.2.jar;jaxb-api-2.4.0-b180830.0359.jar;webp-imageio-0.1.6.jar com.fs.starfarer.StarfarerLauncher"""
+
+        StarsectorPlatform.LINUX, StarsectorPlatform.MAC ->
+            """-classpath janino.jar:commons-compiler.jar:commons-compiler-jdk.jar:starfarer.api.jar:starfarer_obf.jar:jogg-0.0.7.jar:jorbis-0.0.15.jar:json.jar:lwjgl.jar:jinput.jar:log4j-1.2.9.jar:lwjgl_util.jar:fs.sound_obf.jar:fs.common_obf.jar:xstream-1.4.10.jar:txw2-3.0.2.jar:jaxb-api-2.4.0-b180830.0359.jar:webp-imageio-0.1.6.jar com.fs.starfarer.StarfarerLauncher "$@""""
+    }
+
+    // 3. Combine everything
+    val content = (filteredJvmArgs + tail)
+        .joinToString(System.lineSeparator())
+
+    // 4. Only write if changed (prevents spam)
+    if (!outputFile.exists() || outputFile.readText() != content) {
+        outputFile.writeText(content)
+        logger.lifecycle("Updated devvmparams.txt")
+    }
+
+}.onFailure { e ->
+    logger.warn("Failed to write devvmparams.txt (non-fatal): ${e.message}")
+}
