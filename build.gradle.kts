@@ -3,15 +3,6 @@
 //If you do not place the project in to your mods folder, replace this with the path to Starsectors root folder.
 val starsectorPath= "../../";
 
-//The name of the file that the code is compiled to. This will automatically place in to the /jars folder.
-//Make sure that the "jars" entry in your mod_info.json matches this.
-val jarName = "FleetBuilder.jar"
-
-//Name for the Zip that is created when you run package_mod.bat.
-//This zip includes the data, graphics, jars, sounds and src folder.
-//It also includes the mod_info.json and .version files at the root folder.
-val zipName = "FleetBuilder.zip"
-
 //Other mods to load as compile-time dependencies. Adding them will provide auto-complete for their functions.
 //Each entry is the jar name. The build searches every mod /jars/ folder for a matching file ("LazyLib.jar" -> "Starsector/mods/LazyLib/jars/LazyLib.jar")
 //Mods added this way still need to be added to mod_info.json if they are always required (hard-dependency).
@@ -82,35 +73,6 @@ val javaVersion = 17
 
 /// BUILD PIPELINE
 /// In Most cases, you should not need to change anything below here.
-
-runCatching {
-    val gradleXml = file(".idea/gradle.xml")
-    if (gradleXml.exists()) {
-        val text = gradleXml.readText()
-        val canonical = """<option name="delegatedBuild" value="false" />"""
-        val existingLine = Regex("""<option name="delegatedBuild" value="(?:true|false)"\s*/>""")
-        val updated = if (existingLine.containsMatchIn(text)) {
-            text.replace(existingLine, canonical)
-        } else {
-            //Insert as first child of the GradleProjectSettings block if present.
-            Regex("""<GradleProjectSettings[^>]*>""").find(text)?.let { match ->
-                text.replaceRange(match.range.last + 1, match.range.last + 1, "\n        $canonical")
-            } ?: text
-        }
-        if (updated != text) gradleXml.writeText(updated)
-    }
-}.onFailure { e ->
-    logger.warn("Could not enforce delegatedBuild=false in .idea/gradle.xml (non-fatal): ${e.message}")
-}
-
-tasks.matching {
-    it.name in setOf("build", "assemble", "jar", "test", "check", "compileJava", "compileKotlin")
-}.configureEach {
-    doFirst {
-        throw GradleException("Configuration updated. Run build again.")
-    }
-}
-
 
 dependencies {
     addModJars(modDependencies)
@@ -192,11 +154,6 @@ sourceSets {
 
 tasks.test {
     enabled = false
-}
-
-tasks.jar {
-    destinationDirectory.set(file("$rootDir/jars"))
-    archiveFileName.set(jarName)
 }
 
 fun DependencyHandler.addModJars(jarNames: List<String>) {
@@ -504,85 +461,6 @@ val jbrLauncher = javaToolchains.launcherFor {
 //untouched, so normal runs still use Shenandoah.
 fun List<String>.forJbr(): List<String> = filterNot { it.contains("Shenandoah") }
 
-//Builds the mod jar, then runs Starsector using the same classpath/jvmArgs the launcher would use.
-tasks.register<JavaExec>("runStarsector") {
-    group = "starsector"
-    description = "Build the mod and launch Starsector (with launcher)."
-    dependsOn(tasks.jar)
-
-    val (layout, parsed) = launcherInfo
-    javaLauncher.set(jbrLauncher)
-    workingDir = layout.gameWorkingDir
-    mainClass.set(parsed.mainClass)
-    classpath = files(parsed.classpath)
-    //Stops treating game-crashes as build errors
-    isIgnoreExitValue = true
-    jvmArgs = listOf(
-        "-XX:+AllowEnhancedClassRedefinition",
-        //Provides better hotswap error/notifactions in the console output
-        "-Xlog:redefine+class+load=info:stderr:tags",
-    ) + parsed.jvmArgs.forJbr()
-}
-
-//Same as above, but skips the launcher window and jumps straight in to the game.
-//The extra -D flags are the same ones the launcher passes when you hit play, so the game gets the settings it expects.
-tasks.register<JavaExec>("runStarsectorNoLauncher") {
-    group = "starsector"
-    description = "Build the mod and launch Starsector, skipping the launcher."
-    dependsOn(tasks.jar)
-
-    val (layout, parsed) = launcherInfo
-    javaLauncher.set(jbrLauncher)
-    workingDir = layout.gameWorkingDir
-    mainClass.set(parsed.mainClass)
-    classpath = files(parsed.classpath)
-    isIgnoreExitValue = true
-    jvmArgs = listOf(
-        "-XX:+AllowEnhancedClassRedefinition",
-        "-Xlog:redefine+class+load=info:stderr:tags",
-        "-DstartRes=1920x1080",
-        "-DlaunchDirect=true",
-        "-DstartFS=false",
-        "-DstartSound=true",
-    ) + parsed.jvmArgs.forJbr()
-}
-
-tasks.register<Zip>("packageMod") {
-    group = "distribution"
-    description = "Packages the mod into a ZIP file for release."
-
-    // The name of the resulting zip file
-    archiveFileName.set(zipName)
-    // Where to put the zip
-    destinationDirectory.set(layout.projectDirectory)
-
-    // Wrap everything inside a top-level folder named after this project's root directory,
-    // so the zip extracts to a single "<ProjectName>/" folder ready to drop into /mods/.
-    // Every from() below inherits this prefix.
-    into(projectDir.name)
-
-    // 1. Include the compiled jar from the build task
-    from(tasks.jar) {
-        into("jars") // Optional: place inside a jar folder in the zip
-    }
-
-    // 2. Include the files and folders listed in packageIncludes.
-    // Directories are placed into a same-named folder; files go at the folder root.
-    packageIncludes.forEach { name ->
-        val source = file(name)
-        if (source.isDirectory) {
-            from(source) { into(name) }
-        } else {
-            from(source)
-        }
-    }
-
-    // 3. Include any project-root files matching packageIncludeExtensions.
-    from(projectDir) {
-        packageIncludeExtensions.forEach { ext -> include("*.$ext") }
-    }
-}
-
 runCatching {
     val (layout, parsed) = launcherInfo
 
@@ -613,4 +491,32 @@ runCatching {
 
 }.onFailure { e ->
     logger.warn("Failed to write devvmparams.txt (non-fatal): ${e.message}")
+}
+
+runCatching {
+    val gradleXml = file(".idea/gradle.xml")
+    if (gradleXml.exists()) {
+        val text = gradleXml.readText()
+        val canonical = """<option name="delegatedBuild" value="false" />"""
+        val existingLine = Regex("""<option name="delegatedBuild" value="(?:true|false)"\s*/>""")
+        val updated = if (existingLine.containsMatchIn(text)) {
+            text.replace(existingLine, canonical)
+        } else {
+            //Insert as first child of the GradleProjectSettings block if present.
+            Regex("""<GradleProjectSettings[^>]*>""").find(text)?.let { match ->
+                text.replaceRange(match.range.last + 1, match.range.last + 1, "\n        $canonical")
+            } ?: text
+        }
+        if (updated != text) gradleXml.writeText(updated)
+    }
+}.onFailure { e ->
+    logger.warn("Could not enforce delegatedBuild=false in .idea/gradle.xml (non-fatal): ${e.message}")
+}
+
+tasks.matching {
+    it.name in setOf("build", "assemble", "jar", "test", "check", "compileJava", "compileKotlin")
+}.configureEach {
+    doFirst {
+        throw GradleException("Configuration updated. Run build again.")
+    }
 }
