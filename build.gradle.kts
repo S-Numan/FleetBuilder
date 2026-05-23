@@ -15,20 +15,9 @@ val isUtilityMod = true
 
 val modAuthor = "S-Numan"
 val modDescription = "Help with easily managing fleets by providing tools to copy, add, and save; fleets, officers, ships, variants, and more.\n\nThis mod can be safely added and removed at any time."
-val displayName = " " + modName // For the user to see.
+val displayName = " $modName" // For the user to see.
 
-# Version checker
-val directDownloadURL = "https://github.com/S-Numan/FleetBuilder/releases/latest/download/FleetBuilder.zip",
-val changelogURL = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/CHANGELOGS.md",
-val masterVersionFile = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/fleetbuilder.version"
-val modThreadId = "33414"
-
-
-val modFolderName = modName.replace(" ", "-") // Defaults to the name of your mod, with spaces replaced by hyphens.
-val jarFileName = "${modName}.jar"
-val jars = arrayOf("jars/$jarFileName")
-
-
+val shouldAutomaticallyCreateMetadataFiles = true
 
 //Other mods to load as compile-time dependencies. Adding them will provide auto-complete for their functions.
 //Each entry is the jar name. The build searches every mod /jars/ folder for a matching file ("LazyLib.jar" -> "Starsector/mods/LazyLib/jars/LazyLib.jar")
@@ -61,6 +50,11 @@ val modDependenciesData = listOf(
 )
 
 
+// Version checker. OPTIONAL
+val directDownloadURL = "https://github.com/S-Numan/FleetBuilder/releases/latest/download/FleetBuilder.zip"
+val changelogURL = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/CHANGELOGS.md"
+val masterVersionFile = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/fleetbuilder.version"
+val modThreadId = "33414"
 
 
 
@@ -100,8 +94,10 @@ val libsFolder = "libs"
 val javaVersion = 17
 
 
-
-
+val modFolderName = modName.replace(" ", "-") // Defaults to the name of your mod, with spaces replaced by hyphens.
+val modVersionName = "fleetbuilder"//modId // Defaults to the mod id.
+val jarFileName = "${modName}.jar"
+val jars = arrayOf("jars/$jarFileName")
 
 
 
@@ -112,6 +108,18 @@ val javaVersion = 17
 
 /// BUILD PIPELINE
 /// In Most cases, you should not need to change anything below here.
+
+fun File.writeIfChanged(content: String) {
+    if (!exists() || readText() != content) {
+        writeText(content)
+    }
+}
+
+fun String.jsonEscape(): String =
+    this
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .replace("\n", "\\n")
 
 data class ModDependency(
     val id: String,
@@ -377,7 +385,7 @@ fun stageStarsectorApi(): File {
 
     //Minimal POM. Gradle's maven resolver needs one to recognise the artifact and to look up the -sources classifier.
     if (!pomFile.exists()) {
-        pomFile.writeText(
+        pomFile.writeIfChanged(
             """
             <?xml version="1.0" encoding="UTF-8"?>
             <project xmlns="http://maven.apache.org/POM/4.0.0">
@@ -673,34 +681,34 @@ runCatching {
     if (shouldAutomaticallyCreateMetadataFiles) {
         // Generates a mod_info.json from the variables defined at the top of this script.
         File(projectDir, "mod_info.json")
-        .writeText(
-            """
-            {
-            "id": "$modId",
-            "name": "$displayName",
-            "author": "$modAuthor",
-            "utility": "$isUtilityMod",
-            "version": { "major":"${version.first}", "minor": "${version.second}", "patch": "${version.third}" },
-            "description": "$modDescription",
-            "gameVersion": "$gameVersion",
-            "jars": [
-            ${jars.joinToString { "\"$it\"" }}
-            ],
-            "modPlugin":"$modPlugin",
-            "dependencies": [
-            ${modDependenciesData.joinToString(",\n") { "    " + it.toJson() }}
-            ],
-            }
-            """.trimIndent()
+        .writeIfChanged(
+"""
+{
+    "id": "$modId",
+    "name": "$displayName",
+    "author": "$modAuthor",
+    "utility": "$isUtilityMod",
+    "version": { "major":"${version.first}", "minor": "${version.second}", "patch": "${version.third}" },
+    "description": "${modDescription.jsonEscape()}",
+    "jars": [
+        ${jars.joinToString { "\"$it\"" }}
+    ],
+    "modPlugin":"$modPlugin",
+    "gameVersion": "$gameVersion",
+    "dependencies": [
+${modDependenciesData.joinToString(",\n") { "       " + it.toJson() }}
+    ],
+}
+""".trimIndent()
         )
 
         // Generates a Version Checker csv file from the variables defined at the top of this script.
         with(File(projectDir, "data/config/version/version_files.csv")) {
             this.parentFile.mkdirs()
-            this.writeText(
+            this.writeIfChanged(
                 """
                 version file
-                ${modId}.version
+                ${modVersionName}.version
 
                 """.trimIndent()
             )
@@ -708,52 +716,53 @@ runCatching {
 
 
         // Generates a Version Checker .version file from the variables defined at the top of this script.
-        val fields = mutableListOf<String>()
+        if(directDownloadURL.isNotBlank() || changelogURL.isNotBlank() || masterVersionFile.isNotBlank() || modThreadId.isNotBlank()) {
+            val fields = mutableListOf<String>()
 
-        if (directDownloadURL.isNotBlank()) {
-            fields += """"directDownloadURL":"$directDownloadURL""""
-        }
+            if (directDownloadURL.isNotBlank()) {
+                fields += """"directDownloadURL":"$directDownloadURL""""
+            }
 
-        if (changelogURL.isNotBlank()) {
-            fields += """"changelogURL":"$changelogURL""""
-        }
+            if (changelogURL.isNotBlank()) {
+                fields += """"changelogURL":"$changelogURL""""
+            }
 
-        if (masterVersionFile.isNotBlank()) {
-            fields += """"masterVersionFile":"$masterVersionFile""""
-        }
+            if (masterVersionFile.isNotBlank()) {
+                fields += """"masterVersionFile":"$masterVersionFile""""
+            }
 
-        fields += """"modName":"$displayName""""
+            fields += """"modName":"$displayName""""
 
-        if (modThreadId.isNotBlank()) {
-            fields += """"modThreadId":$modThreadId"""
-        }
+            if (modThreadId.isNotBlank()) {
+                fields += """"modThreadId":$modThreadId"""
+            }
 
-        fields += """
-        "modVersion":
-        {
+            fields += """
+"modVersion":
+    {
         "major":${version.first},
         "minor":${version.second},
         "patch":${version.third}
-            }
-            """.trimIndent()
+    }
+        """.trimIndent()
 
-
-        File(projectDir, "${modId}.version").writeText(
+        File(projectDir, "${modVersionName}.version").writeIfChanged(
             """
-            {
-            ${fields.joinToString(",\n    ")}
-        }
+{
+    ${fields.joinToString(",\n    ")}
+}
         """.trimIndent()
         )
-
-            }
-
-            // Creates a file with the mod name to tell the Github Actions script the name of the mod.
-            // Not needed if not using Github Actions (but doesn't hurt to keep).
-            with(File(projectDir, ".github/workflows/mod-folder-name.txt")) {
-                this.parentFile.mkdirs()
-                this.writeText(modFolderName)
-            }
         }
+
+        // Creates a file with the mod name to tell the Github Actions script the name of the mod.
+        // Not needed if not using Github Actions (but doesn't hurt to keep).
+        with(File(projectDir, ".github/workflows/mod-folder-name.txt")) {
+            this.parentFile.mkdirs()
+            this.writeIfChanged(modFolderName)
+        }
+
     }
 }
+
+

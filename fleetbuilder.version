@@ -1,17 +1,13 @@
 {
-  "masterVersionFile": "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/fleetbuilder.version",
-
-  "modName": "FleetBuilder",
-  "modVersion":
+    "directDownloadURL":"https://github.com/S-Numan/FleetBuilder/releases/latest/download/FleetBuilder.zip",
+    "changelogURL":"https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/CHANGELOGS.md",
+    "masterVersionFile":"https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/fleetbuilder.version",
+    "modName":" FleetBuilder",
+    "modThreadId":33414,
+    "modVersion":
     {
-      "major": 1,
-      "minor": 39,
-      "patch": "0" # Can be a number, character or string (1, 2, a, b, "-RC2", etc)
-    },
-
-  "modThreadId": 33414,
-
-  "directDownloadURL": "https://github.com/S-Numan/FleetBuilder/releases/latest/download/FleetBuilder.zip",
-
-  "changelogURL": "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/CHANGELOGS.md",
+        "major":1,
+        "minor":39,
+        "patch":0
+    }
 }
