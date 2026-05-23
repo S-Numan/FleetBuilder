@@ -1,6 +1,3 @@
-
-layout.buildDirectory.set(file(".build"))
-
 //Automatically points to the starsector folder if the mod is placed in to the "mods" folder.
 //If you do not place the project in to your mods folder, replace this with the path to Starsectors root folder.
 val starsectorPath= "../../";
@@ -86,6 +83,8 @@ val javaVersion = 17
 
 /// BUILD PIPELINE
 /// In Most cases, you should not need to change anything below here.
+
+layout.buildDirectory.set(file(".build"))
 
 dependencies {
     addModJars(modDependencies)
@@ -494,6 +493,9 @@ tasks.register<JavaExec>("runStarsector") {
     workingDir = layout.gameWorkingDir
     mainClass.set(parsed.mainClass)
     classpath = files(parsed.classpath)
+
+    isIgnoreExitValue = true
+
     jvmArgs = listOf(
         "-XX:+AllowEnhancedClassRedefinition",
         //IntelliJ's HotSwap UI silently no-ops some reloads under Gradle build delegation
@@ -516,6 +518,9 @@ tasks.register<JavaExec>("runStarsectorNoLauncher") {
     workingDir = layout.gameWorkingDir
     mainClass.set(parsed.mainClass)
     classpath = files(parsed.classpath)
+
+    isIgnoreExitValue = true
+
     jvmArgs = listOf(
         "-XX:+AllowEnhancedClassRedefinition",
         "-Xlog:redefine+class+load=info:stderr:tags",
