@@ -1,7 +1,34 @@
+// Thanks to Lukas04 and atlanticaccent
+
 
 //Automatically points to the starsector folder if the mod is placed in to the "mods" folder.
 //If you do not place the project in to your mods folder, replace this with the path to Starsectors root folder.
-val starsectorPath= "../../";
+val starsectorPath= "../../"
+
+
+val modId = "SN_FleetBuilder"
+val modName = "FleetBuilder" // For the developer to see. Don't use spaces here
+val modPlugin = "fleetBuilder.core.FleetBuilderPlugin"
+val modVersion = "1.39.0"
+val gameVersion = "0.98a-RC8"
+val isUtilityMod = true
+
+val modAuthor = "S-Numan"
+val modDescription = "Help with easily managing fleets by providing tools to copy, add, and save; fleets, officers, ships, variants, and more.\n\nThis mod can be safely added and removed at any time."
+val displayName = " " + modName // For the user to see.
+
+# Version checker
+val directDownloadURL = "https://github.com/S-Numan/FleetBuilder/releases/latest/download/FleetBuilder.zip",
+val changelogURL = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/CHANGELOGS.md",
+val masterVersionFile = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/fleetbuilder.version"
+val modThreadId = "33414"
+
+
+val modFolderName = modName.replace(" ", "-") // Defaults to the name of your mod, with spaces replaced by hyphens.
+val jarFileName = "${modName}.jar"
+val jars = arrayOf("jars/$jarFileName")
+
+
 
 //Other mods to load as compile-time dependencies. Adding them will provide auto-complete for their functions.
 //Each entry is the jar name. The build searches every mod /jars/ folder for a matching file ("LazyLib.jar" -> "Starsector/mods/LazyLib/jars/LazyLib.jar")
@@ -20,6 +47,18 @@ val modDependencies = listOf(
     "SecondInCommand.jar",
 )
 
+val modDependenciesData = listOf(
+    ModDependency(
+        id = "lw_lazylib",
+        name = "LazyLib"
+        //version = "2.7b"
+    ),
+    ModDependency(
+        id = "MagicLib",
+        name = "MagicLib"
+
+    )
+)
 
 
 
@@ -73,6 +112,29 @@ val javaVersion = 17
 
 /// BUILD PIPELINE
 /// In Most cases, you should not need to change anything below here.
+
+data class ModDependency(
+    val id: String,
+    val name: String,
+    val version: String? = null
+)
+
+fun ModDependency.toJson(): String {
+    val versionPart = version?.let { """"version": "$it"""" }
+
+    return buildString {
+        append("{")
+        append(""""id": "$id", """)
+        append(""""name": "$name"""")
+
+        if (versionPart != null) {
+            append(", ")
+            append(versionPart)
+        }
+
+        append("}")
+    }
+}
 
 dependencies {
     addModJars(modDependencies)
@@ -523,7 +585,7 @@ tasks.matching {
 }
 
 
-// Change WORKING_DIRECTORY's in .run files
+// Change WORKING_DIRECTORY's in .run files, and the modName.
 runCatching {
     val runDir = file(".run")
     if (!runDir.exists()) return@runCatching
@@ -538,27 +600,160 @@ runCatching {
         runDir.listFiles { f -> f.extension == "xml" }?.forEach { file ->
             val original = file.readText()
 
-            val replacement = """<option name="WORKING_DIRECTORY" value="$desiredWorkingDir" />"""
-            val safeReplacement = Regex.escapeReplacement(replacement)
+            val workingDirReplacement =
+            """<option name="WORKING_DIRECTORY" value="$desiredWorkingDir" />"""
+            val safeWorkingDirReplacement = Regex.escapeReplacement(workingDirReplacement)
 
-            val updated = if (regex.containsMatchIn(original)) {
-                original.replace(regex, safeReplacement)
+            val moduleRegex = Regex("""<module name="[^"]*\.main"\s*/>""")
+            val moduleReplacement = """<module name="$modName.main" />"""
+            val safeModuleReplacement = Regex.escapeReplacement(moduleReplacement)
+
+            var updated = original
+
+            // Replace WORKING_DIRECTORY
+            updated = if (regex.containsMatchIn(updated)) {
+                updated.replace(regex, safeWorkingDirReplacement)
             } else {
-                Regex("""<configuration[^>]*>""").find(original)?.let { match ->
-                    original.replaceRange(
+                Regex("""<configuration[^>]*>""").find(updated)?.let { match ->
+                    updated.replaceRange(
                         match.range.last + 1,
                         match.range.last + 1,
-                        "\n    $replacement"
+                        "\n    $workingDirReplacement"
                     )
-                } ?: original
+                } ?: updated
+            }
+
+            // Replace module name
+            if (moduleRegex.containsMatchIn(updated)) {
+                updated = updated.replace(moduleRegex, safeModuleReplacement)
             }
 
             if (updated != original) {
                 file.writeText(updated)
-                logger.lifecycle("Updated WORKING_DIRECTORY in ${file.name}")
+                logger.lifecycle("Updated ${file.name}")
             }
         }
 
 }.onFailure { e ->
     logger.warn("Failed to patch .run configs (non-fatal): ${e.message}")
+}
+
+// Change artifact names
+runCatching {
+    val artifactFile = file(".idea/artifacts/Create_jar.xml")
+    if (!artifactFile.exists()) return@runCatching
+
+        val original = artifactFile.readText()
+
+        var updated = original
+
+        // Replace module-output name="X.main"
+        val moduleRegex = Regex("""name="[^"]+\.main"""")
+        updated = updated.replace(moduleRegex, """name="$modName.main"""")
+
+        // Replace jar output name="Something.jar"
+        val jarRegex = Regex("""name="[^"]+\.jar"""")
+        updated = updated.replace(jarRegex, """name="$jarFileName"""")
+
+        if (updated != original) {
+            artifactFile.writeText(updated)
+            logger.lifecycle("Updated artifact Create_jar.xml to $jarFileName")
+        }
+
+}.onFailure { e ->
+    logger.warn("Failed to patch artifact XML (non-fatal): ${e.message}")
+}
+
+
+runCatching {
+
+    val version = modVersion.split(".").let { Triple(it[0], it[1], it[2]) }
+    System.setProperty("line.separator", "\n") // Use LF instead of CRLF like a normal person
+
+    if (shouldAutomaticallyCreateMetadataFiles) {
+        // Generates a mod_info.json from the variables defined at the top of this script.
+        File(projectDir, "mod_info.json")
+        .writeText(
+            """
+            {
+            "id": "$modId",
+            "name": "$displayName",
+            "author": "$modAuthor",
+            "utility": "$isUtilityMod",
+            "version": { "major":"${version.first}", "minor": "${version.second}", "patch": "${version.third}" },
+            "description": "$modDescription",
+            "gameVersion": "$gameVersion",
+            "jars": [
+            ${jars.joinToString { "\"$it\"" }}
+            ],
+            "modPlugin":"$modPlugin",
+            "dependencies": [
+            ${modDependenciesData.joinToString(",\n") { "    " + it.toJson() }}
+            ],
+            }
+            """.trimIndent()
+        )
+
+        // Generates a Version Checker csv file from the variables defined at the top of this script.
+        with(File(projectDir, "data/config/version/version_files.csv")) {
+            this.parentFile.mkdirs()
+            this.writeText(
+                """
+                version file
+                ${modId}.version
+
+                """.trimIndent()
+            )
+        }
+
+
+        // Generates a Version Checker .version file from the variables defined at the top of this script.
+        val fields = mutableListOf<String>()
+
+        if (directDownloadURL.isNotBlank()) {
+            fields += """"directDownloadURL":"$directDownloadURL""""
+        }
+
+        if (changelogURL.isNotBlank()) {
+            fields += """"changelogURL":"$changelogURL""""
+        }
+
+        if (masterVersionFile.isNotBlank()) {
+            fields += """"masterVersionFile":"$masterVersionFile""""
+        }
+
+        fields += """"modName":"$displayName""""
+
+        if (modThreadId.isNotBlank()) {
+            fields += """"modThreadId":$modThreadId"""
+        }
+
+        fields += """
+        "modVersion":
+        {
+        "major":${version.first},
+        "minor":${version.second},
+        "patch":${version.third}
+            }
+            """.trimIndent()
+
+
+        File(projectDir, "${modId}.version").writeText(
+            """
+            {
+            ${fields.joinToString(",\n    ")}
+        }
+        """.trimIndent()
+        )
+
+            }
+
+            // Creates a file with the mod name to tell the Github Actions script the name of the mod.
+            // Not needed if not using Github Actions (but doesn't hurt to keep).
+            with(File(projectDir, ".github/workflows/mod-folder-name.txt")) {
+                this.parentFile.mkdirs()
+                this.writeText(modFolderName)
+            }
+        }
+    }
 }
