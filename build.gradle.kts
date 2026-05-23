@@ -1,4 +1,6 @@
 
+//layout.buildDirectory.set(file("out/build"))
+
 //Automatically points to the starsector folder if the mod is placed in to the "mods" folder.
 //If you do not place the project in to your mods folder, replace this with the path to Starsectors root folder.
 val starsectorPath= "../../";
@@ -52,6 +54,8 @@ val packageIncludes = listOf(
 //Each entry is matched as "*.<ext>" against files directly in the project root.
 val packageIncludeExtensions = listOf(
     "version",
+    "txt",
+    "md",
 )
 
 //Additional jars to include, like libraries you ship with your mod.
