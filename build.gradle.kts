@@ -84,8 +84,6 @@ val javaVersion = 17
 /// BUILD PIPELINE
 /// In Most cases, you should not need to change anything below here.
 
-layout.buildDirectory.set(file(".build"))
-
 dependencies {
     addModJars(modDependencies)
     otherDependencies.forEach { addCompileOnlyJar(it) }
