@@ -1,3 +1,4 @@
+
 //Automatically points to the starsector folder if the mod is placed in to the "mods" folder.
 //If you do not place the project in to your mods folder, replace this with the path to Starsectors root folder.
 val starsectorPath= "../../";
@@ -21,14 +22,11 @@ val modDependencies = listOf(
     "MagicLib.jar", //MagicLib
     "MagicLib-Kotlin.jar",
 
-    //"Graphics.jar", //GraphicsLib
     "LunaLib.jar", //LunaLib
 
     "lw_Console.jar",
     "CombatChatter.jar",
     "SecondInCommand.jar",
-
-    //"ExerelinCore.jar", //Nexerelin
 )
 
 
@@ -45,14 +43,15 @@ val packageIncludes = listOf(
     "graphics",
     "sounds",
     "src",
+    "LICENSE"
 )
 
 //File extensions to include from the project root in the packaged zip.
 //Each entry is matched as "*.<ext>" against files directly in the project root.
 val packageIncludeExtensions = listOf(
     "version",
-    "txt",
     "md",
+    "txt"
 )
 
 //Additional jars to include, like libraries you ship with your mod.
@@ -83,6 +82,35 @@ val javaVersion = 17
 
 /// BUILD PIPELINE
 /// In Most cases, you should not need to change anything below here.
+
+runCatching {
+    val gradleXml = file(".idea/gradle.xml")
+    if (gradleXml.exists()) {
+        val text = gradleXml.readText()
+        val canonical = """<option name="delegatedBuild" value="false" />"""
+        val existingLine = Regex("""<option name="delegatedBuild" value="(?:true|false)"\s*/>""")
+        val updated = if (existingLine.containsMatchIn(text)) {
+            text.replace(existingLine, canonical)
+        } else {
+            //Insert as first child of the GradleProjectSettings block if present.
+            Regex("""<GradleProjectSettings[^>]*>""").find(text)?.let { match ->
+                text.replaceRange(match.range.last + 1, match.range.last + 1, "\n        $canonical")
+            } ?: text
+        }
+        if (updated != text) gradleXml.writeText(updated)
+    }
+}.onFailure { e ->
+    logger.warn("Could not enforce delegatedBuild=false in .idea/gradle.xml (non-fatal): ${e.message}")
+}
+
+tasks.matching {
+    it.name in setOf("build", "assemble", "jar", "test", "check", "compileJava", "compileKotlin")
+}.configureEach {
+    doFirst {
+        throw GradleException("Configuration updated. Run build again.")
+    }
+}
+
 
 dependencies {
     addModJars(modDependencies)
@@ -491,15 +519,11 @@ tasks.register<JavaExec>("runStarsector") {
     workingDir = layout.gameWorkingDir
     mainClass.set(parsed.mainClass)
     classpath = files(parsed.classpath)
-
+    //Stops treating game-crashes as build errors
     isIgnoreExitValue = true
-
     jvmArgs = listOf(
         "-XX:+AllowEnhancedClassRedefinition",
-        //IntelliJ's HotSwap UI silently no-ops some reloads under Gradle build delegation
-        //(YouTrack IDEA-286486). This routes every JVMTI redefineClasses attempt to stderr,
-        //so the game's console shows what was reloaded and why a reload was rejected when
-        //the IDE balloon doesn't appear.
+        //Provides better hotswap error/notifactions in the console output
         "-Xlog:redefine+class+load=info:stderr:tags",
     ) + parsed.jvmArgs.forJbr()
 }
@@ -516,9 +540,7 @@ tasks.register<JavaExec>("runStarsectorNoLauncher") {
     workingDir = layout.gameWorkingDir
     mainClass.set(parsed.mainClass)
     classpath = files(parsed.classpath)
-
     isIgnoreExitValue = true
-
     jvmArgs = listOf(
         "-XX:+AllowEnhancedClassRedefinition",
         "-Xlog:redefine+class+load=info:stderr:tags",
