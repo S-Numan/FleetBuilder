@@ -513,10 +513,52 @@ runCatching {
     logger.warn("Could not enforce delegatedBuild=false in .idea/gradle.xml (non-fatal): ${e.message}")
 }
 
+// Prevent gradle from compiling
 tasks.matching {
     it.name in setOf("build", "assemble", "jar", "test", "check", "compileJava", "compileKotlin")
 }.configureEach {
     doFirst {
         throw GradleException("Configuration updated. Run build again.")
     }
+}
+
+
+// Change WORKING_DIRECTORY's in .run files
+runCatching {
+    val runDir = file(".run")
+    if (!runDir.exists()) return@runCatching
+
+        val desiredWorkingDir = when (currentPlatform()) {
+            StarsectorPlatform.WINDOWS -> "\$ProjectFileDir\$/../../starsector-core"
+            StarsectorPlatform.LINUX, StarsectorPlatform.MAC -> "\$ProjectFileDir\$/../../"
+        }
+
+        val regex = Regex("""<option name="WORKING_DIRECTORY" value="[^"]*" />""")
+
+        runDir.listFiles { f -> f.extension == "xml" }?.forEach { file ->
+            val original = file.readText()
+
+            val replacement = """<option name="WORKING_DIRECTORY" value="$desiredWorkingDir" />"""
+            val safeReplacement = Regex.escapeReplacement(replacement)
+
+            val updated = if (regex.containsMatchIn(original)) {
+                original.replace(regex, safeReplacement)
+            } else {
+                Regex("""<configuration[^>]*>""").find(original)?.let { match ->
+                    original.replaceRange(
+                        match.range.last + 1,
+                        match.range.last + 1,
+                        "\n    $replacement"
+                    )
+                } ?: original
+            }
+
+            if (updated != original) {
+                file.writeText(updated)
+                logger.lifecycle("Updated WORKING_DIRECTORY in ${file.name}")
+            }
+        }
+
+}.onFailure { e ->
+    logger.warn("Failed to patch .run configs (non-fatal): ${e.message}")
 }
