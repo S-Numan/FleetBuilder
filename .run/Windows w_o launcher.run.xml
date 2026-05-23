@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Windows w/o launcher" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.fs.starfarer.StarfarerLauncher" />
-    <module name="TemplateMod.main" />
+    <module name="FleetBuilder.main" />
     <option name="VM_PARAMETERS" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 @nolaunchervmoptions.txt @windowsvmoptions.txt" />
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/../../starsector-core" />
     <method v="2">
