@@ -68,7 +68,6 @@ import second_in_command.ui.elements.SkillWidgetElement
 import second_in_command.ui.tooltips.SCSkillTooltipCreator
 import java.awt.Color
 import java.util.*
-import kotlin.math.pow
 
 
 object HotkeyHandlerDialogs {
@@ -128,6 +127,7 @@ object HotkeyHandlerDialogs {
                 160f, 24f, 0f
             )
             testMessageTrigger.position.inTR(0f, ui.height - testMessageTrigger.height)
+
             testMessageTrigger.onClick {
                 try {
                     //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
@@ -142,7 +142,7 @@ object HotkeyHandlerDialogs {
                     //DisplayMessage.showError("Member memory = " + memberMemory.toString() + "\nModules = " + variant.hullSpec.getSlotsForModules().toString())
 
 
-                    val sector = Global.getSector() 
+                    val sector = Global.getSector()
                     val memory = sector.memoryWithoutUpdate
 
 
@@ -186,14 +186,15 @@ object HotkeyHandlerDialogs {
             dialog.darkenBackgroundAlphaMult = 1.0f
 
             // Rainbow!
-            var time = 0f
+            /*var time = 0f
             dialog.advance { amount ->
                 time += amount
                 val speed = 0.4f
                 var hue = (time * speed) % 1f  // stays between 0 and 1
                 hue = hue.toDouble().pow(1.3).toFloat()
                 dialog.uiBorderColor = Color.getHSBColor(hue, 0.6f, 1f)
-            }
+            }*/ // Let's not
+            dialog.uiBorderColor = Color(255, 50, 50)
 
             dialog.show(width = 800f, height = 800f) { ui ->
                 ui.addPara("HERE BE DRAGONS!\nPlease note that these are very unsafe options and are very likely to cause issues.", Color.RED, 0f)
@@ -211,6 +212,7 @@ object HotkeyHandlerDialogs {
                 Global.getSettings().modManager.enabledModsCopy.forEach {
                     tempTMAPI.addButton(it.name + " - " + it.id, null, ui.width - 8f, 32f, 4f).onClick {
                         val youSureDialog = DialogPanel("Are you sure?")
+                        youSureDialog.uiBorderColor = Color(255, 20, 20)
                         youSureDialog.show(500f, 200f) { ui ->
                             val removeModLabel = ui.addPara("Remove mod: ${it.name} - ${it.id}", 0f).autoSizeToText()
                             removeModLabel.position.inTMid(0f)

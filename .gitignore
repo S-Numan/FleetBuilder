@@ -205,5 +205,5 @@ nbdist/
 
 # Custom
 /.kotlin/
-/.idea/
+#/.idea/
 #/jars/
