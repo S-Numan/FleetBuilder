@@ -702,21 +702,20 @@ ${modDependenciesData.joinToString(",\n") { "       " + it.toJson() }}
 """.trimIndent()
         )
 
-        // Generates a Version Checker csv file from the variables defined at the top of this script.
-        with(File(projectDir, "data/config/version/version_files.csv")) {
-            this.parentFile.mkdirs()
-            this.writeIfChanged(
-                """
-                version file
-                ${modVersionName}.version
-
-                """.trimIndent()
-            )
-        }
-
-
-        // Generates a Version Checker .version file from the variables defined at the top of this script.
         if(directDownloadURL.isNotBlank() || changelogURL.isNotBlank() || masterVersionFile.isNotBlank() || modThreadId.isNotBlank()) {
+            // Generates a Version Checker csv file from the variables defined at the top of this script.
+            with(File(projectDir, "data/config/version/version_files.csv")) {
+                this.parentFile.mkdirs()
+                this.writeIfChanged(
+                    """
+                    version file
+                    ${modVersionName}.version
+
+                    """.trimIndent()
+                )
+            }
+
+            // Generates a Version Checker .version file from the variables defined at the top of this script.
             val fields = mutableListOf<String>()
 
             if (directDownloadURL.isNotBlank()) {
