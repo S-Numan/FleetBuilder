@@ -8,7 +8,7 @@ import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBSettings.fixShipSkinSourceMod
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.displayMessage.DrawMessageOnTop
-import fleetBuilder.core.makeSaveRemovable.MakeSaveRemovable
+import fleetBuilder.core.removeFromSave.MakeSaveRemovable
 import fleetBuilder.core.saveBackupManager.SaveBackupManager
 import fleetBuilder.core.shipSkinSourceMod.ShipSkinSourceMod
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips

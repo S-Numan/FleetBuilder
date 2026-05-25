@@ -5,31 +5,21 @@ import com.fs.starfarer.api.Global
 internal class DirFile internal constructor(
     inputPath: String,
     override val manager: DirectoryManager? = resolveManager(normalizeName(inputPath))
-) : DirPath(path = normalizeName(inputPath), manager = manager) {
-
-    fun exists(): Boolean {
-        return settings.fileExistsInCommon(path)
-    }
+) : DirPath(filePath = normalizeName(inputPath), manager = manager) {
+    val fileName = filePath.substringAfterLast('/')
 
     fun read(): String? {
         if (!exists()) return null
 
         return try {
-            settings.readTextFileFromCommon(path)
+            settings.readTextFileFromCommon(filePath)
         } catch (ex: Exception) {
-            Global.getLogger(this.javaClass).error("Failed to read file: $path (${ex.message})")
+            Global.getLogger(this.javaClass).error("Failed to read file: $filePath (${ex.message})")
             null
         }
     }
 
     fun write(contents: String) {
-        settings.writeTextFileToCommon(path, contents)
-    }
-
-    override fun delete() {
-        if (exists()) {
-            settings.deleteTextFileFromCommon(path)
-        }
-        manager?.remove(this)
+        settings.writeTextFileToCommon(filePath, contents)
     }
 }

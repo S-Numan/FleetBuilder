@@ -1,4 +1,4 @@
-package fleetBuilder.core.makeSaveRemovable
+package fleetBuilder.core.removeFromSave
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI

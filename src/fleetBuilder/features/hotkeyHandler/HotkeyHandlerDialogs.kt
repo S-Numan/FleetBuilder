@@ -26,7 +26,7 @@ import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.FBTxt.txtPlural
 import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
+import fleetBuilder.core.removeFromSave.RemoveFromSave.removeModThings
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
@@ -68,7 +68,6 @@ import second_in_command.ui.elements.SkillWidgetElement
 import second_in_command.ui.tooltips.SCSkillTooltipCreator
 import java.awt.Color
 import java.util.*
-import kotlin.math.pow
 
 
 object HotkeyHandlerDialogs {
@@ -146,7 +145,7 @@ object HotkeyHandlerDialogs {
                     val sector = Global.getSector() 
                     val memory = sector.memoryWithoutUpdate
 
-
+                    
                     /*
                 val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
                 val memberMemory = member.getMemberMemory()

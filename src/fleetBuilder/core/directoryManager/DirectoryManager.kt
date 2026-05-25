@@ -6,16 +6,16 @@ import org.json.JSONObject
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 
-const val CONFIG_FILE_NAME = "directory"
-
 internal class DirectoryManager private constructor(
     inputPath: String,
     override val manager: DirectoryManager?
 ) : DirPath(
-    path = inputPath,
+    filePath = inputPath,
     manager = manager
 ) {
     companion object {
+        const val CONFIG_FILE_NAME = ".directory" // TODO, confirm if creating a file with a dot at the start actually works.
+
         private fun normalizeConfigPath(path: String): String {
             val normalized = path.replace("\\", "/")
 
@@ -72,12 +72,13 @@ internal class DirectoryManager private constructor(
     }
 
     init {
-        require(path.endsWith(CONFIG_FILE_NAME)) {
-            "Directory config must end with '$CONFIG_FILE_NAME': $path"
+        require(filePath.endsWith(CONFIG_FILE_NAME)) {
+            "Directory config must end with '$CONFIG_FILE_NAME': $filePath"
         }
     }
 
-    val folderPath: String = path.removeSuffix(CONFIG_FILE_NAME)
+    val folderPath: String = filePath.removeSuffix(CONFIG_FILE_NAME)
+    val folderName = folderPath.substringAfterLast('/')
 
     private val _containingPaths: MutableList<DirPath> by lazy {
         loadPaths().toMutableList()
@@ -91,7 +92,7 @@ internal class DirectoryManager private constructor(
     // -------------------------
 
     private fun loadPaths(): List<DirPath> {
-        return if (settings.fileExistsInCommon(path)) {
+        return if (settings.fileExistsInCommon(filePath)) {
             readConfigFromFile()
         } else {
             saveEmptyConfig()
@@ -100,10 +101,10 @@ internal class DirectoryManager private constructor(
     }
 
     internal fun readConfigFromFile(): List<DirPath> {
-        val json = settings.readJSONFromCommon(path, false)
+        val json = settings.readJSONFromCommon(filePath, false)
 
         require(json.has("paths")) {
-            "Invalid directory config file at '$path'"
+            "Invalid directory config file at '$filePath'"
         }
 
         return json.optJSONArrayToStringList("paths").map { entry ->
@@ -118,7 +119,7 @@ internal class DirectoryManager private constructor(
 
     private fun saveEmptyConfig() {
         val json = JSONObject().put("paths", JSONArray())
-        settings.writeJSONToCommon(path, json, false)
+        settings.writeJSONToCommon(filePath, json, false)
     }
 
     internal fun saveConfigToFile() {
@@ -126,11 +127,11 @@ internal class DirectoryManager private constructor(
         val pathsArray = JSONArray()
 
         _containingPaths.forEach {
-            pathsArray.put(it.path.substringAfterLast("/"))
+            pathsArray.put(it.filePath.substringAfterLast("/"))
         }
 
         json.put("paths", pathsArray)
-        settings.writeJSONToCommon(path, json, false)
+        settings.writeJSONToCommon(filePath, json, false)
     }
 
     // -------------------------
@@ -168,7 +169,7 @@ internal class DirectoryManager private constructor(
             "File name must not contain slashes: $fileName"
         }
 
-        val existing = _containingPaths.find { it.path.endsWith(fileName) }
+        val existing = _containingPaths.find { it.filePath.endsWith(fileName) }
         if (existing is DirFile) {
             existing.write(fileContents)
             return existing
@@ -181,18 +182,22 @@ internal class DirectoryManager private constructor(
         }
     }
 
-    internal fun remove(entry: DirPath) {
-        _containingPaths.remove(entry)
-        saveConfigToFile()
+    internal fun removeContainingPath(entry: DirPath) {
+        if(_containingPaths.remove(entry))
+            saveConfigToFile()
     }
 
-    override fun delete() {
-        _containingPaths.toList().forEach { it.delete() }
-        settings.deleteTextFileFromCommon(path)
+    override fun delete(): Boolean {
+        val exists = exists()
 
+        if(exists) {
+            _containingPaths.toList().forEach { it.delete() }
+        }
         // TODO: remove now empty folder once starsector 0.98.5 comes out with the remove folder API
 
-        removeInstance(path)
-        manager?.remove(this)
+        val deleted = super.delete()
+        removeInstance(filePath)
+
+        return deleted
     }
 }
