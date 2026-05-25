@@ -24,7 +24,7 @@ internal class DirectoryManager private constructor(
                 .removeSuffix(CONFIG_FILE_NAME)
 
             return if (base.endsWith("/"))
-                base + CONFIG_FILE_NAME
+                "$base$CONFIG_FILE_NAME"
             else
                 "$base/$CONFIG_FILE_NAME"
         }
@@ -62,10 +62,9 @@ internal class DirectoryManager private constructor(
         private fun getParentManager(path: String): DirectoryManager? {
             val parentPath = path
                 .removeSuffix(".data")
-                .removeSuffix(CONFIG_FILE_NAME)
+                .removeSuffix("/$CONFIG_FILE_NAME")
                 .substringBeforeLast('/', "")
                 .takeIf { it.isNotEmpty() }
-                ?.let { "$it/" }
 
             return parentPath?.let { get(it) }
         }
@@ -161,7 +160,8 @@ internal class DirectoryManager private constructor(
         return current
     }
 
-    fun createFile(fileName: String, fileContents: String): DirFile {
+    @JvmOverloads
+    fun writeFile(fileName: String, fileContents: String = ""): DirFile {
         require(fileName != CONFIG_FILE_NAME) {
             "Cannot use reserved name '$CONFIG_FILE_NAME'"
         }

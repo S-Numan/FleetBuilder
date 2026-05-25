@@ -25,6 +25,8 @@ import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBTxt
 import fleetBuilder.core.FBTxt.txtPlural
+import fleetBuilder.core.directoryManager.DirFile
+import fleetBuilder.core.directoryManager.DirectoryManager
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.core.removeFromSave.RemoveFromSave.removeModThings
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
@@ -145,7 +147,8 @@ object HotkeyHandlerDialogs {
                     val sector = Global.getSector() 
                     val memory = sector.memoryWithoutUpdate
 
-                    
+                    devTestPanel()
+
                     /*
                 val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
                 val memberMemory = member.getMemberMemory()
@@ -163,7 +166,8 @@ object HotkeyHandlerDialogs {
                     CampaignEngine.getInstance().saveDirName
                 }*/
                 } catch (e: Exception) {
-                    DisplayMessage.showError("Error", e)
+                    Global.getLogger(this.javaClass).error("ERROR", e)
+                    //DisplayMessage.showError("Error", e)
                 }
             }
 
@@ -173,6 +177,39 @@ object HotkeyHandlerDialogs {
 
             dialog.addCloseButton()
         }
+    }
+
+    fun devTestPanel(inputDir: String = "TestFolderOuter/TestFolderInner") {
+        if( true)
+            return
+
+        val modalPanel = ModalPanel()
+        var manager = DirectoryManager.get(inputDir)
+        modalPanel.show(width = 1280f, height = 800f) { ui ->
+            ui.setParaFont(getFontPath(Font.INSIGNIA_15))
+            val currentDirLabel = ui.addPara(manager.filePath, 0f)
+
+            ui.addPara("Folders", 0f)
+            manager.containingPaths.forEach { path ->
+                if(path is DirFile)
+        ui.addPara(path.filePath, 0f)
+            }
+
+            ui.addPara("Files", 0f)
+            manager.containingPaths.forEach { path ->
+                ui.addPara(path.filePath, 0f)
+            }
+
+            ui.addCheckboxD("createFile").onClick {
+                val file = manager.writeFile("Blah", "test content")
+                file
+            }
+            ui.addCheckboxD("createFolder").onClick {
+                val folder = manager.createFolder("Blah")
+                folder
+            }
+        }
+
     }
 
     private fun removeModButton(
