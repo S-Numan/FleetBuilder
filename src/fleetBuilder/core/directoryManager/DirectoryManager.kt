@@ -76,15 +76,16 @@ internal class DirectoryManager private constructor(
         }
     }
 
-    val folderPath: String = filePath.removeSuffix(CONFIG_FILE_NAME)
+    val folderPath: String = filePath.removeSuffix(CONFIG_FILE_NAME).removeSuffix("/")
     val folderName = folderPath.substringAfterLast('/')
 
-    private val _containingPaths: MutableList<DirPath> by lazy {
+    private val _containingPaths: MutableList<DirPath> by lazy { // TODO, change to a MutableSet
         loadPaths().toMutableList()
     }
 
-    val containingPaths: List<DirPath>
-        get() = _containingPaths
+    fun getContainingPaths(): List<DirPath> {
+        return _containingPaths
+    }
 
     // -------------------------
     // Loading
@@ -107,7 +108,7 @@ internal class DirectoryManager private constructor(
         }
 
         return json.optJSONArrayToStringList("paths").map { entry ->
-            val fullPath = folderPath + entry
+            val fullPath = "$folderPath/$entry"
 
             if (entry.endsWith("/"))
                 DirectoryManager.get(fullPath)
@@ -125,8 +126,11 @@ internal class DirectoryManager private constructor(
         val json = JSONObject()
         val pathsArray = JSONArray()
 
-        _containingPaths.forEach {
-            pathsArray.put(it.filePath.substringAfterLast("/"))
+        _containingPaths.filterIsInstance<DirectoryManager>().forEach {
+            pathsArray.put(it.folderName + "/")
+        }
+        _containingPaths.filterIsInstance<DirFile>().forEach {
+            pathsArray.put(it.fileName)
         }
 
         json.put("paths", pathsArray)
@@ -145,13 +149,14 @@ internal class DirectoryManager private constructor(
         var current = this
 
         for (part in parts) {
-            val newPath = current.folderPath + part + "/"
+            val newPath = current.folderPath + "/" + part
 
             val existing = current._containingPaths
                 .filterIsInstance<DirectoryManager>()
                 .find { it.folderPath == newPath }
 
             current = existing ?: DirectoryManager.get(newPath).also {
+                it.saveEmptyConfig()
                 current._containingPaths.add(it)
                 current.saveConfigToFile()
             }
@@ -175,7 +180,7 @@ internal class DirectoryManager private constructor(
             return existing
         }
 
-        return DirFile(folderPath + fileName, this).also {
+        return DirFile("$folderPath/$fileName", this).also {
             it.write(fileContents)
             _containingPaths.add(it)
             saveConfigToFile()
@@ -183,14 +188,14 @@ internal class DirectoryManager private constructor(
     }
 
     internal fun removeContainingPath(entry: DirPath) {
-        if(_containingPaths.remove(entry))
+        if (_containingPaths.remove(entry))
             saveConfigToFile()
     }
 
     override fun delete(): Boolean {
         val exists = exists()
 
-        if(exists) {
+        if (exists) {
             _containingPaths.toList().forEach { it.delete() }
         }
         // TODO: remove now empty folder once starsector 0.98.5 comes out with the remove folder API

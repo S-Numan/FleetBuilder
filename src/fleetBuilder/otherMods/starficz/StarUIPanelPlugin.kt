@@ -45,7 +45,6 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     var customData: Any? = null
 
     var inputCapturePad = 0f
-        private set
 
     protected var isHovering = false
         private set

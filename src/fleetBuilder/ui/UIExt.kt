@@ -104,6 +104,42 @@ fun TooltipMakerAPI.addNumericTextField(
     return observedText
 }
 
+fun TooltipMakerAPI.addExcludeTextField(
+    width: Float,
+    height: Float,
+    excludedCharacters: String = "\\/:*?\"<>|",
+    font: String = Fonts.DEFAULT_SMALL,
+    initialText: String = "",
+    pad: Float = 0f,
+    onValueChanged: (String) -> Unit = {}
+): ObservedTextField {
+
+    val observedText = ObservedTextField(
+        width = width,
+        height = height,
+        font = font,
+        pad = pad,
+        initialText = initialText,
+    )
+
+    observedText.onTextChanged { rawValue ->
+        val sanitizedText = rawValue
+            .filter { char ->
+                char !in excludedCharacters
+            }
+
+        if (sanitizedText != rawValue) {
+            observedText.textField.text = sanitizedText
+            observedText.lastText = sanitizedText
+        }
+
+        onValueChanged(sanitizedText)
+    }
+
+    addCustom(observedText.component, 0f)
+    return observedText
+}
+
 /**
  * Sets the color properties of a Color object. Any unset/null parameters will be unchanged
  *

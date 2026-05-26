@@ -56,11 +56,11 @@ open class DialogPanel(
         cancelCallback = callback
     }
 
-    protected open fun applyConfirmScript() {
+    open fun applyConfirmScript() {
         confirmCallback?.invoke()
     }
 
-    protected open fun applyCancelScript() {
+    open fun applyCancelScript() {
         cancelCallback?.invoke()
     }
 

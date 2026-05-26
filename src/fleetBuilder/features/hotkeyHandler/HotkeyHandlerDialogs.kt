@@ -44,6 +44,7 @@ import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.addCheckboxD
+import fleetBuilder.ui.addExcludeTextField
 import fleetBuilder.ui.addNumericTextField
 import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
@@ -144,7 +145,7 @@ object HotkeyHandlerDialogs {
                     //DisplayMessage.showError("Member memory = " + memberMemory.toString() + "\nModules = " + variant.hullSpec.getSlotsForModules().toString())
 
 
-                    val sector = Global.getSector() 
+                    val sector = Global.getSector()
                     val memory = sector.memoryWithoutUpdate
 
                     devTestPanel()
@@ -180,33 +181,156 @@ object HotkeyHandlerDialogs {
     }
 
     fun devTestPanel(inputDir: String = "TestFolderOuter/TestFolderInner") {
-        if( true)
-            return
+        var currentManager = DirectoryManager.get(inputDir)
 
-        val modalPanel = ModalPanel()
-        var manager = DirectoryManager.get(inputDir)
-        modalPanel.show(width = 1280f, height = 800f) { ui ->
-            ui.setParaFont(getFontPath(Font.INSIGNIA_15))
-            val currentDirLabel = ui.addPara(manager.filePath, 0f)
+        val dialog = DialogPanel()
+        dialog.dialogStyle = false
+        dialog.darkenBackground = false
+        dialog.background.alphaMult = 1f
+        dialog.tooltipPadFromSide = 4f
+        dialog.tooltipPadFromTop = 2f
 
-            ui.addPara("Folders", 0f)
-            manager.containingPaths.forEach { path ->
-                if(path is DirFile)
-        ui.addPara(path.filePath, 0f)
+        fun switchToManager(manager: DirectoryManager) {
+            if (manager === currentManager)
+                return
+            currentManager = manager
+            dialog.recreateUI()
+        }
+
+        dialog.show(width = 1280f, height = 800f) { ui ->
+            ui.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
+            //ui.setButtonFontDefault()
+
+            val currentDirLabel = ui.addPara("/" + currentManager.folderPath, 0f)
+
+            val managerTree: MutableList<DirectoryManager> = mutableListOf()
+            fun addToManagerTree(manager: DirectoryManager?, parent: DirectoryManager? = null) {
+                if (manager == null) return
+                managerTree.add(manager)
+                addToManagerTree(manager.manager, parent)
+            }
+            addToManagerTree(currentManager)
+
+            var prevButton: ButtonAPI? = null
+            managerTree.asReversed().forEach { thisManager ->
+                val width = ui.computeStringWidth(thisManager.folderName)
+                val button = ui.addButton(thisManager.folderName, null, width, 24f, 0f)
+                if (prevButton != null) {
+                    val label = ui.addPara(">", 0f)
+                    label.position.rightOfMid(prevButton, 5f)
+
+                    button.position.rightOfMid(prevButton, 20f)
+                } else {
+                    button.position.inTL(0f, 50f)
+                }
+                button.isEnabled = thisManager.exists()
+                button.onClick {
+                    switchToManager(thisManager)
+                }
+
+                prevButton = button
             }
 
-            ui.addPara("Files", 0f)
-            manager.containingPaths.forEach { path ->
-                ui.addPara(path.filePath, 0f)
+            ui.addSpacer(0f).position.inTL(0f, 100f)
+            val containingPaths = currentManager.getContainingPaths()
+            ui.addPara("\n\nFolders:\n", 0f)
+            containingPaths.filterIsInstance<DirectoryManager>().forEach { path ->
+                val width = ui.computeStringWidth(path.folderName)
+                val button = ui.addButton(path.folderName, null, width, 24f, 0f)
+                button.onClick {
+                    switchToManager(path)
+                }
             }
 
-            ui.addCheckboxD("createFile").onClick {
-                val file = manager.writeFile("Blah", "test content")
-                file
+            ui.addPara("\n\nFiles:\n", 0f)
+            containingPaths.filterIsInstance<DirFile>().forEach { path ->
+                val width = ui.computeStringWidth(path.fileName)
+                val button = ui.addButton(path.fileName, null, width, 24f, 0f)
             }
-            ui.addCheckboxD("createFolder").onClick {
-                val folder = manager.createFolder("Blah")
-                folder
+        }
+
+        var rightClickPanel: ModalPanel? = null
+        dialog.onClick { event ->
+            if (!event.isRMBDownEvent) return@onClick
+            if (rightClickPanel != null)
+                return@onClick
+
+            rightClickPanel = ModalPanel()
+
+            rightClickPanel!!.inputCapturePad = -4f
+            rightClickPanel!!.background.alphaMult = 1f
+            rightClickPanel!!.consumeAllEvents = false
+            rightClickPanel!!.anyOuterMouseClickQuits = true
+            rightClickPanel!!.hotkeyQuitConsumesInput = false
+
+            rightClickPanel!!.show(360f, 512f, xOffset = Global.getSettings().mouseX.toFloat(), yOffset = Global.getSettings().mouseY.toFloat()) { ui ->
+                fun showCreateDialog(
+                    title: String,
+                    prompt: String,
+                    onConfirmAction: (String) -> Unit
+                ) {
+                    rightClickPanel!!.dismiss()
+
+                    val createDialog = DialogPanel(title)
+                    createDialog.confirmButtonShortcut = Keyboard.KEY_NONE
+                    createDialog.cancelButtonShortcut = Keyboard.KEY_NONE
+                    createDialog.doesConfirmDismiss = false
+
+                    var textField: TextFieldAPI? = null
+
+                    createDialog.show(500f, 155f) { ui ->
+                        ui.addPara(prompt, 4f)
+                        textField = ui.addExcludeTextField(ui.width, 30f, pad = 10f).textField
+                        textField.grabFocus()
+
+                        createDialog.addActionButtons(confirmText = "OK")
+                    }
+
+                    createDialog.advance {
+                        if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                            createDialog.applyConfirmScript()
+                            createDialog.dismiss()
+                        }
+                    }
+
+                    createDialog.onConfirm {
+                        textField?.text?.let {
+                            val name = it.trim(' ', '.').take(255)
+                            if (name.isBlank()) return@let
+                            onConfirmAction(name)
+                            dialog.recreateUI()
+                            createDialog.dismiss()
+                        }
+                    }
+                }
+
+                val createFileCheckbox = ui.addCheckboxD("createFile")
+                createFileCheckbox.onClick {
+                    showCreateDialog(
+                        title = "Create File",
+                        prompt = "Enter name for file:"
+                    ) { name ->
+                        currentManager.writeFile(name, "test content")
+                    }
+                }
+                createFileCheckbox.position.inTL(25f, 10f)
+
+                ui.addCheckboxD("createFolder", pad = 5f).onClick {
+                    showCreateDialog(
+                        title = "Create Folder",
+                        prompt = "Enter name for folder:"
+                    ) { name ->
+                        currentManager.createFolder(name)
+                    }
+                }
+            }
+
+            // Hack to get it to get closing to take a moment to not open another right click panel If it is already open.
+            rightClickPanel!!.animation = ModalPanel.PanelAnimation.FADE_ONLY
+            rightClickPanel!!.openDuration = 0.0f
+            rightClickPanel!!.closeDuration = 0.00001f
+            rightClickPanel!!.onExit {
+                rightClickPanel = null
             }
         }
 

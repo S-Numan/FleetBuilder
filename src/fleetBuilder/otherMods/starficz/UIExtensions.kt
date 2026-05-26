@@ -194,6 +194,9 @@ fun UIComponentAPI.applyAnchor(anchor: AnchorData) {
 val UIPanelAPI.lastComponent
     get() = children.lastOrNull()
 
+val UIPanelAPI.beforeLastComponent
+    get() = children.dropLast(1).lastOrNull()
+
 
 fun UIComponentAPI.addTooltip(
     location: TooltipLocation,

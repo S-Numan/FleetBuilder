@@ -42,6 +42,10 @@ open class ModalPanel : ComposablePanel() {
     protected open var goalHeight: Float = 0f
 
     open var allowHotkeyQuit: Boolean = true
+
+    /**
+     * Whether the hotkey to quit (Keyboard or Mouse) should consume input.
+     */
     open var hotkeyQuitConsumesInput: Boolean = true
     open var anyOuterMouseClickQuits: Boolean = false
     open var quitHotkeyClosesOnRelease: Boolean = false
