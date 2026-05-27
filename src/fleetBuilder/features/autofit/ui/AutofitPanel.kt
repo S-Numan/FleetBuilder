@@ -31,7 +31,7 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.ui.customPanel.presets.DialogPanel
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.ReflectionMisc
@@ -570,7 +570,7 @@ internal object AutofitPanel {
                     applySModsButton.enabled = false
                     applySModsButton.isEnabled = false
                 }
-                
+
             }
 
             // Add the buttons element to the panel

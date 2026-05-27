@@ -10,7 +10,7 @@ import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectory
 import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectoryService
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.ui.customPanel.presets.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.isIdle

@@ -23,7 +23,7 @@ import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
 import fleetBuilder.ui.addCheckboxD
 import fleetBuilder.ui.customPanel.common.BasePanel
-import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.ui.customPanel.presets.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.loadTextureCached

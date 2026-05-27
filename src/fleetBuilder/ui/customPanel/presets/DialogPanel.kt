@@ -1,11 +1,12 @@
-package fleetBuilder.ui.customPanel.common
+package fleetBuilder.ui.customPanel.presets
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBTxt
 import fleetBuilder.otherMods.starficz.onClick
-import fleetBuilder.ui.UIUtils.drawRectangleFilledForTooltip
+import fleetBuilder.ui.UIUtils
+import fleetBuilder.ui.customPanel.common.ModalPanel
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
@@ -42,7 +43,13 @@ open class DialogPanel(
         super.renderBelow(alphaMult)
 
         if (!closing)
-            headerTooltip?.let { drawRectangleFilledForTooltip(it, 1f, Global.getSector().playerFaction.darkUIColor.darker()) }
+            headerTooltip?.let {
+                UIUtils.drawRectangleFilledForTooltip(
+                    it,
+                    1f,
+                    Global.getSector().playerFaction.darkUIColor.darker()
+                )
+            }
     }
 
     private var confirmCallback: (() -> Unit)? = null

@@ -46,8 +46,8 @@ import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.addCheckboxD
 import fleetBuilder.ui.addExcludeTextField
 import fleetBuilder.ui.addNumericTextField
-import fleetBuilder.ui.customPanel.common.DialogPanel
 import fleetBuilder.ui.customPanel.common.ModalPanel
+import fleetBuilder.ui.customPanel.presets.DialogPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
