@@ -561,6 +561,9 @@ object HotkeyHandlerDialogs {
                 data,
                 true, settings = settings, missing = missingEx, random = deterministicRandom
             )
+
+            fleet.memoryWithoutUpdate["\$#FB_customBattleCreationPlugin"] = true
+
             if (secondInCommandModEnabled)
                 fleet.addTag("sc_do_not_generate_skills")
 

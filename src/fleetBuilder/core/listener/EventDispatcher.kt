@@ -186,6 +186,8 @@ internal class EventDispatcher : EveryFrameScript {
             memberTracker.reset()
 
             CommanderShuttle.onGameLoad(newGame)
+
+            sector.registerPlugin(FBCampaignPlugin())
         }
 
         fun beforeGameSave() {
