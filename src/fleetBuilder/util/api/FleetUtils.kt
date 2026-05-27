@@ -94,7 +94,8 @@ object FleetUtils {
         replacePlayer: Boolean = false,
         settings: FleetSettings = FleetSettings()
     ) {
-        val playerFleet = Global.getSector()?.playerFleet ?: return
+        val sector = Global.getSector() ?: return
+        val playerFleet = sector.playerFleet ?: return
 
         // Clear current fleet members and officers
         for (member in playerFleet.fleetData.membersListCopy)
@@ -107,7 +108,7 @@ object FleetUtils {
         //Copy the fleet over
         val dataFleet = getFleetDataFromFleet(fleet, settings)
 
-        val playerPerson = Global.getSector().playerPerson
+        val playerPerson = sector.playerPerson
         var newCommander: PersonAPI? = null
 
         if (replacePlayer) {
@@ -120,7 +121,7 @@ object FleetUtils {
                     )
                 )
                 copyOfficerDataTo(newCommander, playerPerson)
-                Global.getSector().characterData.setName(newCommander.name.fullName, newCommander.gender)
+                sector.characterData.setName(newCommander.name.fullName, newCommander.gender)
             }
         }
 
@@ -150,9 +151,9 @@ object FleetUtils {
         }
 
         if (playerFleet.fleetData.getAssignedOfficers(includeMercenaries = false).size > playerFleet.getMaxOfficers())
-            Global.getSector().memoryWithoutUpdate?.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
+            sector.memoryWithoutUpdate?.set("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL", true)
         else
-            Global.getSector().memoryWithoutUpdate?.unset("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL")
+            sector.memoryWithoutUpdate?.unset("\$FB_NO-OVER-OFFICER-LIMIT-MOTHBALL")
 
         if (playerShuttleExists()) {
             //Need to move the shuttle to the last member in the fleet, but I don't care enough to do this properly.
@@ -161,7 +162,7 @@ object FleetUtils {
         }
 
         if (aggression != -1) {
-            Global.getSector().playerFaction.doctrine.aggression = aggression
+            sector.playerFaction.doctrine.aggression = aggression
         }
     }
 

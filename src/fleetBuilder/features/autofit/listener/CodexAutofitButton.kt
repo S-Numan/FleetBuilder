@@ -13,8 +13,8 @@ import fleetBuilder.core.FBSettings
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.otherMods.starficz.*
-import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.ui.addShortcutNoShow
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.createHullVariant
 
 internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin() {
@@ -30,7 +30,7 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
     override fun runWhilePaused(): Boolean = true
 
     override fun advance(amount: Float) {
-        if (Global.getSector().isPaused)
+        if (Global.getSector()!!.isPaused)
             onAdvance()
     }
 

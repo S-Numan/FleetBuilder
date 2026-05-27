@@ -30,7 +30,7 @@ object CampaignUtils {
      */
     fun getPlayerSupplyDays(): Float {
         // Calculate days of supply remaining
-        val playerFleet = Global.getSector().playerFleet
+        val playerFleet = Global.getSector()?.playerFleet ?: return 0f
         val supplies = playerFleet.cargo.supplies
         val logistics = playerFleet.logistics
         val recoveryCost = logistics.totalRepairAndRecoverySupplyCost
@@ -65,7 +65,7 @@ object CampaignUtils {
      */
     fun getPlayerFuelLY(): Float {
         // Calculate lightyears of fuel remaining
-        val playerFleet = Global.getSector().playerFleet
+        val playerFleet = Global.getSector()?.playerFleet ?: return 0f
         val fuel = playerFleet.cargo.fuel
         val fuelPerDay = playerFleet.logistics.baseFuelCostPerLightYear
         var ly: Float
@@ -83,7 +83,9 @@ object CampaignUtils {
      */
     @JvmStatic
     fun getSectorEntities(): List<SectorEntityToken> {
-        return Global.getSector().allLocations
+        val sector = Global.getSector() ?: return emptyList()
+
+        return sector.allLocations
             .flatMap { it.allEntities }
     }
 
@@ -167,7 +169,8 @@ object CampaignUtils {
         isInteractionDialog: Boolean = false,
         onBackFromEngagement: () -> Unit = {}
     ): Boolean {
-        val ui = Global.getSector().campaignUI ?: return false
+        val sector = Global.getSector() ?: return false
+        val ui = sector.campaignUI ?: return false
 
         if (!ui.isShowingDialog && placeholderDialog != null)
             closeCampaignDummyDialog()
@@ -186,7 +189,7 @@ object CampaignUtils {
                     override fun getContext(): Any? = null
                     override fun getMemoryMap(): MutableMap<String, MemoryAPI> = hashMapOf()
                 }
-                ui.showInteractionDialog(PlaceholderDialog(), Global.getSector().playerFleet) // While this also works, it hides the campaign UI.
+                ui.showInteractionDialog(PlaceholderDialog(), sector.playerFleet) // While this also works, it hides the campaign UI.
                 placeholderDialog = ui.currentInteractionDialog as? UIPanelAPI
             } else {
                 ui.showMessageDialog(" ")
@@ -229,15 +232,17 @@ object CampaignUtils {
      */
     @JvmStatic
     fun spendStoryPoint(points: Int, experiencePointsGained: Float) {
+        val sector = Global.getSector() ?: return
+
         if (points <= 0)
             return
 
-        Global.getSector().playerStats.spendStoryPoints(
+        sector.playerStats.spendStoryPoints(
             points,
             true,
             null,
             true,
-            (experiencePointsGained / Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()) / points,
+            (experiencePointsGained / sector.playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()) / points,
             FBTxt.txtPlural("used_story_points", points)
         )
         Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1f, 1f);

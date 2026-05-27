@@ -104,7 +104,7 @@ object DisplayMessage {
             if (defaultColor == null)
                 defaultColor = Misc.getTooltipTitleAndLightHighlightColor()
 
-            val ui = Global.getSector().campaignUI
+            val ui = Global.getSector()!!.campaignUI
             ui.messageDisplay.addMessage(short, defaultColor, highlight, highlightColor)
         } else if (gameState == GameState.COMBAT) {
             if (defaultColor == null)

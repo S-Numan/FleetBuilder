@@ -122,37 +122,21 @@ object UIUtils {
     }
 
     fun darkenBackground(
-        alphaMult: Float,
-        bgColor: Color = Color.BLACK.withAlphaMult(0.6f)
+        alphaMult: Float = 0.6f,
+        aroundPanel: UIPanelAPI,
+        pad: Float = 0f,
+        bgColor: Color = Color.BLACK
     ) {
-        GL11.glPushMatrix()
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-
-        val bgAlpha = bgColor.alphaf * alphaMult
-        GL11.glColor4f(bgColor.redf, bgColor.greenf, bgColor.bluef, bgAlpha)
-
-        val screenW = Global.getSettings().screenWidth
-        val screenH = Global.getSettings().screenHeight
-
-        GL11.glRectf(0f, 0f, screenW, screenH)
-
-        GL11.glDisable(GL11.GL_BLEND)
-        GL11.glPopMatrix()
+        darkenBackground(alphaMult, aroundPanel.x - pad, aroundPanel.y - pad, aroundPanel.width + pad * 2, aroundPanel.height + pad * 2, bgColor)
     }
 
-    fun darkenBackgroundAround(alphaMult: Float, panel: UIPanelAPI, bgColor: Color = Color.BLACK.withAlphaMult(0.6f)) {
-        darkenBackgroundAround(alphaMult, panel.x, panel.y, panel.width, panel.height, bgColor)
-    }
-
-    fun darkenBackgroundAround(
-        alphaMult: Float,
-        x: Float,
-        y: Float,
-        width: Float,
-        height: Float,
-        bgColor: Color = Color.BLACK.withAlphaMult(0.6f)
+    fun darkenBackground(
+        alphaMult: Float = 0.6f,
+        x: Float = 0f,
+        y: Float = 0f,
+        width: Float = 0f,
+        height: Float = 0f,
+        bgColor: Color = Color.BLACK
     ) {
         GL11.glPushMatrix()
         GL11.glDisable(GL11.GL_TEXTURE_2D)
@@ -163,19 +147,26 @@ object UIUtils {
         GL11.glColor4f(bgColor.redf, bgColor.greenf, bgColor.bluef, bgAlpha)
         val screenW = Global.getSettings().screenWidth
         val screenH = Global.getSettings().screenHeight
-        val buffer = -5f
-        val tx = x - buffer
-        val ty = y - buffer
-        val tw = width + buffer * 2
-        val th = height + buffer * 2
-        // Left
-        GL11.glRectf(0f, 0f, tx, screenH)
-        // Right
-        GL11.glRectf(tx + tw, 0f, screenW, screenH)
-        // Top
-        GL11.glRectf(tx, ty + th, tx + tw, screenH)
-        // Bottom
-        GL11.glRectf(tx, 0f, tx + tw, ty)
+
+        // Full screen darken
+        if (width <= 0f || height <= 0f) {
+            GL11.glRectf(0f, 0f, screenW, screenH)
+        } else {
+            val buffer = -5f
+            val tx = x - buffer
+            val ty = y - buffer
+            val tw = width + buffer * 2
+            val th = height + buffer * 2
+
+            // Left
+            GL11.glRectf(0f, 0f, tx, screenH)
+            // Right
+            GL11.glRectf(tx + tw, 0f, screenW, screenH)
+            // Top
+            GL11.glRectf(tx, ty + th, tx + tw, screenH)
+            // Bottom
+            GL11.glRectf(tx, 0f, tx + tw, ty)
+        }
 
         GL11.glDisable(GL11.GL_BLEND)
         GL11.glPopMatrix()

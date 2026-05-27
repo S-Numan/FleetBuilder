@@ -18,11 +18,12 @@ internal class DisplayDerelictRecoveryEarly : EveryFrameScript {
 
     var added = false
     override fun advance(amount: Float) {
-        if (!Global.getSector().isPaused || Global.getSector().campaignUI.currentInteractionDialog == null) {
+        val sector = Global.getSector()!!
+        if (!sector.isPaused || sector.campaignUI.currentInteractionDialog == null) {
             added = false
             return
         }
-        val interaction = Global.getSector().campaignUI.currentInteractionDialog
+        val interaction = sector.campaignUI.currentInteractionDialog
         if (interaction?.interactionTarget !is CustomCampaignEntity || interaction.interactionTarget.customEntityType != "wreck") {
             added = false
             return

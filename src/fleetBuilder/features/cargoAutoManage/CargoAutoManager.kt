@@ -26,7 +26,7 @@ internal class CargoAutoManager : EveryFrameScript {
 
     var interactionMarket: MarketAPI? = null
     override fun advance(amount: Float) {
-        val interaction = Global.getSector().campaignUI.currentInteractionDialog
+        val interaction = Global.getSector()!!.campaignUI.currentInteractionDialog
         val interactionTarget = interaction?.interactionTarget
         val market = interactionTarget?.market
 
@@ -76,7 +76,7 @@ internal class CargoAutoManager : EveryFrameScript {
         item: CargoAutoManage.ItemAutoManage,
         submarket: SubmarketAPI
     ): Boolean {
-        val playerCargo = Global.getSector().playerFleet.cargo
+        val playerCargo = Global.getSector()!!.playerFleet.cargo
 
         var playerItemQuantity = getItemQuantity(item, playerCargo)
 

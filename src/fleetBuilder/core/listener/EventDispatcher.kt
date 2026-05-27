@@ -219,7 +219,7 @@ internal class EventDispatcher : EveryFrameScript {
     private var lastDevMode: Boolean = false
 
     override fun advance(amount: Float) {
-        if (Global.getSector().isPaused) {
+        if (Global.getSector()!!.isPaused) {
             val officerChanges = officerTracker.getChangedAssignments()
             OfficerChangeEvents.notify(officerChanges)
 

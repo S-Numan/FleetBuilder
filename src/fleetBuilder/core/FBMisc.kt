@@ -412,18 +412,20 @@ internal object FBMisc {
 
     // Untested
     fun getIntelOfClass(c: Class<*>): IntelInfoPlugin? {
+        val sector = Global.getSector() ?: return null
         try {
-            if (!Global.getSector().intelManager.hasIntelOfClass(c)) {
-                Global.getSector().intelManager.addIntel(c.getDeclaredConstructor().newInstance() as IntelInfoPlugin) // Global.getSector().intelManager.addIntel(c.newInstance() as IntelInfoPlugin)
+            if (!sector.intelManager.hasIntelOfClass(c)) {
+                sector.intelManager.addIntel(c.getDeclaredConstructor().newInstance() as IntelInfoPlugin) // sector.intelManager.addIntel(c.newInstance() as IntelInfoPlugin)
             }
         } catch (ex: Exception) {
         }
-        return Global.getSector().intelManager.getFirstIntel(c)
+        return sector.intelManager.getFirstIntel(c)
     }
 
     // Untested
     fun getIntelByName(name: String?): IntelInfoPlugin? {
-        for (i1 in Global.getSector().intelManager.intel) {
+        val sector = Global.getSector() ?: return null
+        for (i1 in sector.intelManager.intel) {
             val n1 = i1.javaClass.getSimpleName()
             if (n1 == name) {
                 return i1
@@ -594,9 +596,11 @@ internal object FBMisc {
         baseVariant: ShipVariantAPI,
         loadout: ShipVariantAPI
     ): Pair<List<String>, Float> {
+        val sector = Global.getSector() ?: return emptyList<String>() to 0f
+
         val coreUI = ReflectionMisc.getCoreUI() as? CoreUIAPI ?: return emptyList<String>() to 0f
 
-        val playerSPLeft = Global.getSector().playerStats.storyPoints
+        val playerSPLeft = sector.playerStats.storyPoints
 
         var maxSMods = MemberUtils.getMaxSMods(ship.mutableStats)
         val currentSMods = (baseVariant.sMods + baseVariant.sModdedBuiltIns).toSet()
@@ -616,7 +620,7 @@ internal object FBMisc {
             return emptyList<String>() to 0f
         }
 
-        var canApplySMods: List<String> = sModsToApply.filter { Global.getSector().playerFaction.knowsHullMod(it) }
+        var canApplySMods: List<String> = sModsToApply.filter { sector.playerFaction.knowsHullMod(it) }
 
         if (sModsToApply.size != canApplySMods.size) {
             DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_knowledge"), Color.YELLOW)
@@ -624,7 +628,7 @@ internal object FBMisc {
         }
 
         /*val requiredItems = sModsToApply.mapNotNull { Global.getSettings().getHullModSpec(it).effect.requiredItem }
-        val numAvailable = requiredItems.sumOf { HullModItemManager.getInstance().getNumAvailableMinusUnconfirmed(it, ship.fleetMember, baseVariant, Global.getSector().currentlyOpenMarket) }
+        val numAvailable = requiredItems.sumOf { HullModItemManager.getInstance().getNumAvailableMinusUnconfirmed(it, ship.fleetMember, baseVariant, sector.currentlyOpenMarket) }
         if (numAvailable < sModsToApply.size) {
             DisplayMessage.showMessage("Cannot apply some SMods. Lacking required items ...", Color.YELLOW)
             return emptyList<String>() to 0f
@@ -634,16 +638,16 @@ internal object FBMisc {
             val modSpec = Global.getSettings().getHullModSpec(modID)
             if (modSpec.effect.requiredItem == null) return@forEach
             modSpec.effect.requiredItem
-            val numAvailable = HullModItemManager.getInstance().getNumAvailableMinusUnconfirmed(modSpec.effect.requiredItem, ship.fleetMember, baseVariant, Global.getSector().currentlyOpenMarket)
+            val numAvailable = HullModItemManager.getInstance().getNumAvailableMinusUnconfirmed(modSpec.effect.requiredItem, ship.fleetMember, baseVariant, sector.currentlyOpenMarket)
         }*/
 
-        canApplySMods = sModsToApply.filter { HullModItemManager.getInstance().isRequiredItemAvailable(it, ship.fleetMember, baseVariant, Global.getSector().currentlyOpenMarket) }
+        canApplySMods = sModsToApply.filter { HullModItemManager.getInstance().isRequiredItemAvailable(it, ship.fleetMember, baseVariant, sector.currentlyOpenMarket) }
         if (sModsToApply.size != canApplySMods.size) {
             DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_item"), Color.YELLOW)
             return emptyList<String>() to 0f
         }
 
-        canApplySMods = sModsToApply.filter { Global.getSettings().getHullModSpec(it).effect.canBeAddedOrRemovedNow(ship, Global.getSector().currentlyOpenMarket, coreUI.tradeMode) }
+        canApplySMods = sModsToApply.filter { Global.getSettings().getHullModSpec(it).effect.canBeAddedOrRemovedNow(ship, sector.currentlyOpenMarket, coreUI.tradeMode) }
 
         if (sModsToApply.size != canApplySMods.size) {
             DisplayMessage.showMessage(FBTxt.txt("cannot_apply_smod_lack_dock"), Color.YELLOW)

@@ -43,22 +43,21 @@ class ShipPreviewOverlayPlugin(
         panel.setPlugin(this)
         //if (!isShipMissing) {
         val shipPreview = BoxedUIShipPreview.FLEETMEMBER_CONSTRUCTOR!!.newInstance(member) as UIPanelAPI
-        boxedUIShipPreview = BoxedUIShipPreview(shipPreview)
-        boxedUIShipPreview!!.uiShipPreview.setSize(width, height)
-        boxedUIShipPreview!!.setBorderNewStyle(true)
-        boxedUIShipPreview!!.setShowBorder(false)
-        boxedUIShipPreview!!.adjustOverlay(0f, 0f)
+        boxedUIShipPreview = BoxedUIShipPreview(shipPreview).apply {
+            uiShipPreview.setSize(width, height)
+            setBorderNewStyle(true)
+            setShowBorder(false)
+            adjustOverlay(0f, 0f)
 
-        if (showFighters)
-            boxedUIShipPreview!!.showFighters = true
+            if (showFighters)
+                this.showFighters = true
 
-        if (setSchematicMode)
-            boxedUIShipPreview!!.setSchematicMode(true)
+            if (setSchematicMode)
+                setSchematicMode(true)
 
+            setScaleDownSmallerShipsMagnitude(1f)
+        }
         var scaleDownFactor = 1f
-
-
-        boxedUIShipPreview!!.setScaleDownSmallerShipsMagnitude(1f)
         if (scaleDownSmallerShips) {
             val hullSize = member.hullSpec.hullSize
             if (hullSize == ShipAPI.HullSize.FRIGATE) {

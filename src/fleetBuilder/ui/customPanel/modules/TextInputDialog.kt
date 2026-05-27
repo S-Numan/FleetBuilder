@@ -13,6 +13,7 @@ class TextInputDialog(
 ) :
     DialogPanel(title) {
     init {
+        confirmCancelButtonWidth = 120f
         confirmButtonShortcut = Keyboard.KEY_NONE
         cancelButtonShortcut = Keyboard.KEY_NONE
         //doesConfirmDismiss = false

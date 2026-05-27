@@ -42,10 +42,7 @@ import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.ui.UIUtils
-import fleetBuilder.ui.addButtonD
-import fleetBuilder.ui.addCheckboxD
-import fleetBuilder.ui.addNumericTextField
+import fleetBuilder.ui.*
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.modules.TextInputDialog
 import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
@@ -148,7 +145,7 @@ object HotkeyHandlerDialogs {
 
 
                     val sector = Global.getSector()
-                    val memory = sector.memoryWithoutUpdate
+                    val memory = sector?.memoryWithoutUpdate
 
                     devTestPanel()
 
@@ -216,7 +213,7 @@ object HotkeyHandlerDialogs {
             var prevButton: ButtonAPI? = null
             managerTree.asReversed().forEach { thisManager ->
                 val width = ui.computeStringWidth(thisManager.folderName)
-                ui.addButtonD(thisManager.folderName, width).apply {
+                ui.addAreaCheckboxD(thisManager.folderName, width).apply {
                     if (prevButton != null) {
                         val label = ui.addPara(">", 0f)
                         label.position.rightOfMid(prevButton, 5f)
@@ -227,7 +224,9 @@ object HotkeyHandlerDialogs {
                     isEnabled = thisManager.exists()
                     onClick {
                         switchToManager(thisManager)
+                        isChecked = thisManager === currentManager
                     }
+                    isChecked = thisManager === currentManager
 
                     prevButton = this
                 }
@@ -449,7 +448,7 @@ object HotkeyHandlerDialogs {
 
         val secondInCommandModEnabled = Global.getSettings().modManager.isModEnabled("second_in_command")
 
-        val sector = Global.getSector()
+        val sector = Global.getSector()!!
         val data = inputData.copy(
             members = inputData.members.map { member ->
                 member.copy(id = sector.genUID())
@@ -458,6 +457,7 @@ object HotkeyHandlerDialogs {
         val cheatsEnabled = FBSettings.cheatsEnabled() || forceCheatsEnabled // Store this value for if some other logic temporarily enables it to mimic cheats being on without them actually being on.
 
         val dialog = DialogPanel()
+        dialog.background.alphaMult = 1f
 
         val brightColor = Global.getSettings().brightPlayerColor
         val factionColor = Global.getSettings().basePlayerColor//faction.baseUIColor
@@ -1028,7 +1028,7 @@ object HotkeyHandlerDialogs {
                     // Fleet is not alive (location is null), so battle will see it as empty
                     //battle.genCombinedDoNotRemoveEmpty()
 
-                    val battleContext = BattleCreationContext(Global.getSector().playerFleet, FleetGoal.ATTACK, fleet, FleetGoal.ATTACK)
+                    val battleContext = BattleCreationContext(sector.playerFleet, FleetGoal.ATTACK, fleet, FleetGoal.ATTACK)
                     battleContext.fightToTheLast = fightToTheLast
                     battleContext.aiRetreatAllowed = !fightToTheLast
                     battleContext.enemyDeployAll = true
@@ -1036,7 +1036,7 @@ object HotkeyHandlerDialogs {
                     battleContext.forceObjectivesOnMap = forceObjectives
                     battleContext.playerCommandPoints = 5
 
-                    val campUI = Global.getSector().campaignUI
+                    val campUI = sector.campaignUI
                     if (campUI.currentInteractionDialog == null) { // not at interaction?
                         //Campaign Dialog Shenanigans
                         val coreUITadId: CoreUITabId? = campUI.getActualCurrentTab()
@@ -1055,7 +1055,7 @@ object HotkeyHandlerDialogs {
                         RecentBattleReplay.simulateBattle(battleContext) {
                             //battle.finish(null, false)
                             CampaignUtils.closeCampaignDummyDialog()
-                            Global.getSector().isPaused = true
+                            sector.isPaused = true
                             if (coreUITadId == CoreUITabId.FLEET) {
                                 campUI.safeInvoke("setNextTransitionFast", true)
                                 campUI.showCoreUITab(coreUITadId)
@@ -1219,10 +1219,10 @@ object HotkeyHandlerDialogs {
 
                     reportMissingContentIfAny(missingEx)
 
-                    val playerFleet = Global.getSector().playerFleet.fleetData
+                    val playerFleet = sector.playerFleet.fleetData
 
                     fleet.fleetData.membersListCopy.forEach { member ->
-                        member.id = Global.getSector().genUID()
+                        member.id = sector.genUID()
                         playerFleet.addFleetMember(member)
 
                         val captain = member.captain
@@ -1415,7 +1415,8 @@ object HotkeyHandlerDialogs {
         val width = 500f
         val height = 348f
 
-        val playerFleet = Global.getSector()?.playerFleet?.fleetData ?: return
+        val sector = Global.getSector()!!
+        val playerFleet = sector.playerFleet?.fleetData ?: return
 
         var officerSkillCount = 0
 
@@ -1471,7 +1472,7 @@ object HotkeyHandlerDialogs {
                 val maxEliteSkillsValue = maxEliteSkills.getText().toIntOrNull()
 
                 val person = OfficerManagerEvent.createOfficer(
-                    Global.getSector().playerFaction, 1, OfficerManagerEvent.SkillPickPreference.ANY,
+                    sector.playerFaction, 1, OfficerManagerEvent.SkillPickPreference.ANY,
                     false, null, false, false, -1, MathUtils.getRandom()
                 )
                 person.stats.skillsCopy.forEach { person.stats.setSkillLevel(it.skill.id, 0f) }

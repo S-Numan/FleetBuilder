@@ -10,8 +10,8 @@ import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectory
 import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectoryService
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
+import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.isIdle
 import java.text.SimpleDateFormat
@@ -113,7 +113,7 @@ object RecentBattleDialog {
 
                     // ===== Faction options =====
                     for (factionId in factions) {
-                        val faction = Global.getSector().getFaction(factionId)
+                        val faction = Global.getSector()!!.getFaction(factionId)
                         val displayName = faction?.displayName ?: factionId
                         val baseColor = faction?.baseUIColor ?: Global.getSettings().basePlayerColor
                         val darkColor = faction?.darkUIColor ?: Global.getSettings().darkPlayerColor

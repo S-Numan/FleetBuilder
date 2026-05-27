@@ -45,12 +45,15 @@ object HullUtils {
      * @param hull The hull to check.
      * @return True if the hull is known to the player, false otherwise.
      */
+    @JvmOverloads
     @JvmStatic
-    fun isHullKnownToPlayer(hull: ShipHullSpecAPI): Boolean {
+    fun isHullKnownToPlayer(hull: ShipHullSpecAPI, checkHideInCodex: Boolean = false): Boolean {
+
         if (hull.hasTag(Tags.CODEX_UNLOCKABLE)) {
             if (!SharedUnlockData.get().isPlayerAwareOfShip(hull.hullId))
                 return false
-        }
+        } else if (checkHideInCodex && (hull.hasTag(Tags.HIDE_IN_CODEX) || hull.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX)))
+            return false
 
         return true
     }

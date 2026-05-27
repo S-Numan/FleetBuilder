@@ -34,7 +34,7 @@ class ForcePaste : BaseCommand {
                 FBSettings.setCheatsEnabledInSettings(true)
 
             try { // Just in case it somehow fails
-                CampaignClipboardHotkeyHandler.handlePasteHotkey(Global.getSector().campaignUI, null)
+                CampaignClipboardHotkeyHandler.handlePasteHotkey(Global.getSector()!!.campaignUI, null)
             } catch (e: Exception) {
                 Console.showException("Failed to paste", e)
             }

@@ -68,9 +68,9 @@ open class BasePanel : StarUIPanelPlugin() {
     open fun forceDismiss(runExitScript: Boolean = true) {
         if (!hasInitOccurred) return
 
-        panel.parent?.removeComponent(panel)
         if (runExitScript)
             applyExitScript()
+        panel.parent?.removeComponent(panel)
 
         hasInitOccurred = false
     }
@@ -122,7 +122,7 @@ open class BasePanel : StarUIPanelPlugin() {
 
         if (dialogStyle) {
             if (renderUIBorders)
-                renderDialogBorders()
+                renderDialogBorders(alphaMult)
         } else {
             if (renderUIBorders) {
                 uiBorderColor?.let { UIUtils.renderUILines(panel, alphaMult, boxColor = it) }
@@ -133,7 +133,7 @@ open class BasePanel : StarUIPanelPlugin() {
         super.renderBelow(alphaMult)
     }
 
-    protected open fun renderDialogBorders() {
+    protected open fun renderDialogBorders(alphaMult: Float) {
         val leftX = panel.position.x + 16
 
         listOf(top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight)

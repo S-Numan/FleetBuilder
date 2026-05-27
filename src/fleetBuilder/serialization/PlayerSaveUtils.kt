@@ -46,7 +46,7 @@ object PlayerSaveUtils {
         showErrorMessages: Boolean = true,
     ): String {
         val json = JSONObject()
-        val sector = Global.getSector()
+        val sector = Global.getSector() ?: return ""
         val playerFleet = sector.playerFleet ?: return ""
 
         if (handleCargo) {
@@ -101,7 +101,7 @@ object PlayerSaveUtils {
         }
 
         if (handleKnownHullmods) {
-            val hullMods = sector?.characterData?.hullMods
+            val hullMods = sector.characterData?.hullMods
             json.put("knownHullMods", JSONArray(hullMods))
         }
 
@@ -504,7 +504,6 @@ object PlayerSaveUtils {
                 }
             }
 
-            val sector = Global.getSector()
             for (modId in compiled.hullMods!!) {
                 //sector.playerFaction.addKnownHullMod(modId)
                 sector.characterData.addHullMod(modId)

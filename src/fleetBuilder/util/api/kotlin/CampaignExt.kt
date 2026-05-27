@@ -14,7 +14,8 @@ import com.fs.starfarer.api.campaign.CoreUITabId
  * This function checks if the player is in a ghost interaction dialog and if so, returns null, indicating that the player is not in a UI screen.
  */
 fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
-    if (!Global.getSector().isPaused) return null
+    val sector = Global.getSector() ?: return null
+    if (!sector.isPaused) return null
     if (currentInteractionDialog != null && currentInteractionDialog.interactionTarget != null) {
         // Validate that we're not stuck in a ghost interaction dialog. (Happens when you escape out of a UI screen while in an interaction dialog. It reports that the player is still in that ui screen, which is false)
         if (currentInteractionDialog.optionPanel != null && currentInteractionDialog.optionPanel.savedOptionList.isNotEmpty()) return null

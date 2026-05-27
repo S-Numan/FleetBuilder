@@ -12,13 +12,8 @@ import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.UIUtils.easeCubic
 import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
-import java.awt.Color
 
 open class ModalPanel : ComposablePanel() {
-
-    init {
-        background.alphaMult = 0.9f
-    }
 
     enum class PanelAnimation {
         RESIZE_FADE,
@@ -62,7 +57,7 @@ open class ModalPanel : ComposablePanel() {
 
     override fun renderBelow(alphaMult: Float) {
         if (darkenBackground)
-            UIUtils.darkenBackground(alphaMult * (alpha * darkenBackgroundAlphaMult), Color.BLACK)
+            UIUtils.darkenBackground(alphaMult * (alpha * darkenBackgroundAlphaMult), panel, pad = 0f)
 
         super.renderBelow(alphaMult)
     }

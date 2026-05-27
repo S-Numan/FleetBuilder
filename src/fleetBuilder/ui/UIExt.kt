@@ -2,6 +2,7 @@ package fleetBuilder.ui
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
+import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.starficz.Font
 import fleetBuilder.otherMods.starficz.getFontPath
 import fleetBuilder.ui.common.ObservedTextField
@@ -28,7 +29,6 @@ fun TooltipMakerAPI.addCheckboxD(
     pad: Float = 0f,
     font: Font = Font.INSIGNIA_15,
     textColor: Color = Global.getSettings().brightPlayerColor,
-    //onClick: (Boolean) -> Unit = {}
 ): ButtonAPI {
     val fontPath = getFontPath(font)
     val checkbox = this.addCheckbox(
@@ -42,8 +42,6 @@ fun TooltipMakerAPI.addCheckboxD(
         pad
     )
     checkbox.isChecked = isChecked
-
-    //checkbox.onClick { onClick(checkbox.isChecked) }
 
     return checkbox
 }
@@ -61,6 +59,21 @@ fun TooltipMakerAPI.addButtonD(
 ): ButtonAPI {
     val button = this.addButton(text, data, base, bg, align, style, width, height, pad)
     return button
+}
+
+fun TooltipMakerAPI.addAreaCheckboxD(
+    text: String,
+    width: Float,
+    height: Float = 24f,
+    data: Any? = null,
+    pad: Float = 0f,
+    base: Color = Misc.getBasePlayerColor(),
+    bg: Color = Misc.getDarkPlayerColor(),
+    bright: Color = Misc.getButtonTextColor(),
+    leftAlign: Boolean = false
+): ButtonAPI {
+    val areaCheckbox = this.addAreaCheckbox(text, data, base, bg, bright, width, height, pad, leftAlign)
+    return areaCheckbox
 }
 
 fun TooltipMakerAPI.addNumericTextField(
@@ -82,16 +95,6 @@ fun TooltipMakerAPI.addNumericTextField(
         initialText = initialValue.toString(),
     )
     observedText.onTextChanged { rawValue ->
-
-        /*val cleanedValue = rawValue.replace("\\D+".toRegex(), "")
-        if(cleanedValue.isEmpty()) {
-            observedText.textField.text = ""
-            observedText.lastText = ""
-            return@onTextChanged
-        }
-        val numericValue = cleanedValue.toIntOrNull() ?: return@onTextChanged
-        val sanitizedValue = numericValue.coerceAtMost(maxValue)*/
-
         val sanitizedValue = rawValue
             .filter { it.isDigit() }
             .toIntOrNull()

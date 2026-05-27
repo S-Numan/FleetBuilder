@@ -210,13 +210,15 @@ java {
     }
 }
 
+val docsRepoDir = layout.buildDirectory.dir("communityApiDocs")
+
 sourceSets {
     main {
         java {
-            setSrcDirs(listOf("src"))
+            setSrcDirs(listOf("src", "${docsRepoDir.get().asFile}/src"))
         }
         kotlin {
-            setSrcDirs(listOf("src"))
+            setSrcDirs(listOf("src", "${docsRepoDir.get().asFile}/src"))
         }
     }
 }
@@ -765,3 +767,103 @@ ${modDependenciesData.joinToString(",\n") { "       " + it.toJson() }}
 }
 
 
+
+
+
+
+
+
+
+val cloneCommunityApiDocs = tasks.register<Exec>("cloneCommunityApiDocs") {
+    isIgnoreExitValue = true
+
+    val targetDir = docsRepoDir.map { it.asFile }
+
+    onlyIf {
+        !targetDir.get().resolve(".git").exists()
+    }
+
+    doFirst {
+        val dir = targetDir.get()
+        dir.mkdirs()
+    }
+
+    commandLine(
+        "git", "clone",
+        "--no-checkout",
+        "--filter=blob:none",
+        "https://github.com/StarsectorCommunityApiDocs/CommunityApiDocs.git",
+        targetDir.get().absolutePath
+    )
+}
+val sparseCheckoutCommunityApiDocs = tasks.register<Exec>("sparseCheckoutCommunityApiDocs") {
+    isIgnoreExitValue = true
+
+    val repoDir = docsRepoDir.get().asFile
+
+    onlyIf {
+        repoDir.resolve(".git").exists()
+    }
+
+    workingDir(repoDir)
+
+    commandLine(
+        "git", "sparse-checkout",
+        "set", "src"
+    )
+}
+val checkoutCommunityApiDocs = tasks.register<Exec>("checkoutCommunityApiDocs") {
+    isIgnoreExitValue = true
+
+    val repoDir = docsRepoDir.get().asFile
+
+    onlyIf {
+        repoDir.resolve(".git").exists()
+    }
+
+    workingDir(repoDir)
+
+    commandLine("git", "checkout")
+}
+val updateCommunityApiDocs = tasks.register<Exec>("updateCommunityApiDocs") {
+    isIgnoreExitValue = true
+
+    val repoDir = docsRepoDir.get().asFile
+
+    onlyIf {
+        repoDir.resolve(".git").exists()
+    }
+
+    // Much cheaper than scanning entire repo
+    inputs.file(repoDir.resolve(".git/HEAD"))
+    outputs.file(repoDir.resolve(".git/FETCH_HEAD"))
+
+
+    workingDir(repoDir)
+
+    commandLine("git", "fetch", "--quiet")
+}
+val createCommunityDocs = tasks.register<Jar>("createCommunityDocs") {
+    dependsOn(
+        cloneCommunityApiDocs,
+        sparseCheckoutCommunityApiDocs,
+        checkoutCommunityApiDocs,
+        updateCommunityApiDocs
+    )
+}
+
+tasks.named("prepareKotlinBuildScriptModel") { // Force run createCommunityDocs every gradle sync
+    dependsOn("createCommunityDocs")
+}
+
+updateCommunityApiDocs.configure {
+    mustRunAfter(checkoutCommunityApiDocs)
+}
+
+checkoutCommunityApiDocs.configure {
+    mustRunAfter(sparseCheckoutCommunityApiDocs)
+}
+
+sparseCheckoutCommunityApiDocs.configure {
+    mustRunAfter(cloneCommunityApiDocs)
+}

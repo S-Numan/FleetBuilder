@@ -36,7 +36,8 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
     var param: Any? = null
 
     override fun advance(amount: Float) {
-        if (!Global.getSector().isPaused) return
+        val sector = Global.getSector()!!
+        if (!sector.isPaused) return
         if (!FBSettings.cheatsEnabled()) return
         if (!ReflectionMisc.isCodexOpen()) {
             addToFleetButton = null
@@ -123,7 +124,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
             if (ctrl && param !is CommoditySpecAPI && param !is SpecialItemSpecAPI)
                 entry = FBTxt.txt("add_blueprint")
             else if (param is HullModSpecAPI) {
-                if (Global.getSector().playerFaction.knowsHullMod((param as HullModSpecAPI).id))
+                if (sector.playerFaction.knowsHullMod((param as HullModSpecAPI).id))
                     entry = FBTxt.txt("already_known")
                 else
                     entry = FBTxt.txt("add_to_faction")
@@ -144,6 +145,8 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
     }
 
     fun addCodexParamEntryToFleet(param: Any, ctrlCreatesBlueprints: Boolean = true) {
+        val sector = Global.getSector()!!
+
         val shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)
         val alt = Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)
         val ctrl = ctrlCreatesBlueprints && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)
@@ -154,7 +157,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
             else -> 1
         }
 
-        val cargo = Global.getSector()?.playerFleet?.cargo ?: return
+        val cargo = sector.playerFleet?.cargo ?: return
 
         var message: String? = null
 
@@ -196,7 +199,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
                     cargo.addSpecial(SpecialItemData("modspec", param.id), count.toFloat())
                     message = FBTxt.txt("added_blueprint_to_cargo", count, param.displayName)
                 } else {
-                    Global.getSector().playerFaction.addKnownHullMod(param.id)
+                    sector.playerFaction.addKnownHullMod(param.id)
                     message = FBTxt.txt("added_to_player_faction_known_hullmods", param.displayName)
                 }
             }

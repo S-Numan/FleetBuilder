@@ -13,6 +13,11 @@ import java.awt.Color
 open class DialogPanel(
     open var headerTitle: String? = null
 ) : ModalPanel() {
+
+    init {
+        background.alphaMult = 0.95f
+    }
+
     var confirmButton: ButtonAPI? = null
     var cancelButton: ButtonAPI? = null
     var closeButton: ButtonAPI? = null
@@ -47,7 +52,8 @@ open class DialogPanel(
                 UIUtils.drawRectangleFilledForTooltip(
                     it,
                     1f,
-                    Global.getSector().playerFaction.darkUIColor.darker()
+                    Global.getSettings().getColor("buttonBgDark") // TODO, check
+                    //Global.getSector().playerFaction.darkUIColor.darker()
                 )
             }
     }
@@ -97,7 +103,7 @@ open class DialogPanel(
 
         var xPos = startX
         if (addConfirmButton) {
-            val button = tooltip.addButton(confirmText, "confirm", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, 160f, 25f, 0f)
+            val button = tooltip.addButton(confirmText, "confirm", Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.MID, CutStyle.TL_BR, confirmCancelButtonWidth, 25f, 0f)
             button.setShortcut(confirmButtonShortcut, true)
             button.position.inTL(xPos, 0f)
             xPos += confirmCancelButtonWidth + spacing

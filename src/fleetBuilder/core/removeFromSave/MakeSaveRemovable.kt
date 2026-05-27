@@ -43,7 +43,7 @@ internal object MakeSaveRemovable {
     }
 
     private fun processBeforeSave(entity: HasThing) {
-        val memory = Global.getSector().memoryWithoutUpdate
+        val memory = Global.getSector()!!.memoryWithoutUpdate
         hullmods.forEach { hullmod ->
             if (entity.hullMods().contains(hullmod.name)) {
                 entity.hullMods().remove(hullmod.name)
@@ -55,7 +55,7 @@ internal object MakeSaveRemovable {
     }
 
     private fun processAfterSave(entity: HasThing) {
-        val memory = Global.getSector().memoryWithoutUpdate
+        val memory = Global.getSector()!!.memoryWithoutUpdate
         hullmods.forEach { hullmod ->
             val key = makeMemoryKey(hullmod.key, entity.key())
             if (memory.contains(key)) {
@@ -65,14 +65,14 @@ internal object MakeSaveRemovable {
     }
 
     private fun clearMemoryKeys() {
-        val memory = Global.getSector().memoryWithoutUpdate
+        val memory = Global.getSector()!!.memoryWithoutUpdate
         memory.keys.filter { hullmods.any { hullmod -> it.startsWith(hullmod.key) } }.forEach {
             memory.unset(it)
         }
     }
 
     private fun getEntitiesWithThings(): List<HasThing> {
-        val locations = Global.getSector().allLocations
+        val locations = Global.getSector()!!.allLocations
 
         val submarkets = CampaignUtils.getSectorSubmarkets()
         val cargos = CampaignUtils.getCargoFromSubmarkets(submarkets)
@@ -83,7 +83,7 @@ internal object MakeSaveRemovable {
         ).flatten().flatMap { it.membersListCopy }
 
         return listOf(
-            Global.getSector().allFactions.map { Faction(it) }, // Factions.
+            Global.getSector()!!.allFactions.map { Faction(it) }, // Factions.
             submarkets.map { Submarket(it) }, // Submarkets.
             fleetMembers.map { Ship(it) }, // Ships.
             CampaignEngine.getInstance().savedVariantData.variantMap.map { Variant(it.key, it.value) }, // Global variants.

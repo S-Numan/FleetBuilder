@@ -20,7 +20,9 @@ object FactionUtils {
     }
 
     private var factionToModMap: Map<String, ModSpecAPI?>? = null
-    private fun buildFactionToModMap(): Map<String, ModSpecAPI?> {
+    private fun buildFactionToModMap(): Map<String, ModSpecAPI?>? {
+        val sector = Global.getSector() ?: return null
+
         val result = mutableMapOf<String, ModSpecAPI?>()
 
         val settings = Global.getSettings()
@@ -30,7 +32,7 @@ object FactionUtils {
         val csv = settings.getMergedSpreadsheetData("faction", path)
         val csvList = FBMisc.jsonArrayToList(csv)
 
-        val factions = Global.getSector().allFactions
+        val factions = sector.allFactions
 
         for (row in csvList) {
             val map = row as? Map<*, *> ?: continue

@@ -384,7 +384,7 @@ internal object ClipboardHotkeyHandlerUtils {
         }
         if (event.isRMBDownEvent) {
             if (person.isPlayer) {
-                val isShuttle = Global.getSector().playerFleet.fleetData.membersListCopy.find { it.captain === person }?.variant?.hasHullMod(FBConst.COMMAND_SHUTTLE_ID) == true
+                val isShuttle = Global.getSector()!!.playerFleet.fleetData.membersListCopy.find { it.captain === person }?.variant?.hasHullMod(FBConst.COMMAND_SHUTTLE_ID) == true
 
                 /*if (event.isLMBDownEvent && isShuttle) { // Eat attempt to open captain picker dialog for shuttle. The shuttle is player only
                     event.consume()
@@ -463,7 +463,7 @@ internal object ClipboardHotkeyHandlerUtils {
         data: Any,
         missing: MissingContent = MissingContent()
     ) {
-        val playerFleet = Global.getSector().playerFleet.fleetData
+        val playerFleet = Global.getSector()!!.playerFleet.fleetData
 
         var uiShowsSubmarketFleet = false
 

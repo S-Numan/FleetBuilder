@@ -43,7 +43,7 @@ internal object RemoveFromSave {
         removeFleets: Boolean = true,
     ) {
         val modsToRemoveStuffFrom = modsToRemove.filter { it.modPluginClassName != null }
-        val sector = Global.getSector()
+        val sector = Global.getSector() ?: return
         val settings = Global.getSettings()
 
         val modIds = modsToRemove.map { it.id }.toSet()
@@ -125,7 +125,7 @@ internal object RemoveFromSave {
                 }
             }
 
-            val locations = Global.getSector().allLocations
+            val locations = sector.allLocations
             val fleets = locations.flatMap { it.fleets }
             fleets.forEach { fleet ->
                 fleet.eventListeners.toList().forEach { listenerClass ->
@@ -143,7 +143,7 @@ internal object RemoveFromSave {
 
         val targetModIds = modsToRemoveStuffFrom.map { it.id }.toSet()
         val removedTargets = mutableSetOf<SectorEntityToken>()
-        val locations = Global.getSector().allLocations
+        val locations = sector.allLocations
 
         getEntitiesWithThings().forEach { entity ->
             if (removeHullmods)
@@ -206,7 +206,7 @@ internal object RemoveFromSave {
                     market.removeSubmarket(sub.specId)
                 }
 
-                Global.getSector().economy.removeMarket(market)
+                sector.economy.removeMarket(market)
 
                 if (entity != null) {
                     entity.market = null
@@ -257,17 +257,18 @@ internal object RemoveFromSave {
 
         //if (removeFactions) {
         /*
-        Global.getSector().allFactions.toList().forEach { faction ->
+        sector.allFactions.toList().forEach { faction ->
             val sourceMod = FactionUtils.getSourceModFromFaction(faction.id) ?: return@forEach
             if (sourceMod.id !in targetModIds) return@forEach
-            Global.getSector().allFactions.remove(faction)
+            sector.allFactions.remove(faction)
         }*/
         // Does not appear to do anything
         //}
     }
 
     private fun getEntitiesWithThings(): List<HasThing> {
-        val locations = Global.getSector().allLocations
+        val sector = Global.getSector()!!
+        val locations = sector.allLocations
 
         val markets = CampaignUtils.getSectorMarkets()
         val submarkets = CampaignUtils.getSubmarkets(markets)
@@ -281,12 +282,12 @@ internal object RemoveFromSave {
         val derelicts = locations.flatMap { it.allEntities }.mapNotNull { if (it.customPlugin is DerelictShipEntityPlugin) it.customPlugin as DerelictShipEntityPlugin else null }
 
         return listOf(
-            Global.getSector().allFactions.map { Faction(it) }, // Factions.
+            sector.allFactions.map { Faction(it) }, // Factions.
             submarkets.map { Submarket(it) }, // Submarkets.
             markets.map { Market(it) }, // Markets.
             fleetMembers.map { Ship(it) }, // Ships.
             CampaignEngine.getInstance().savedVariantData.variantMap.map { Variant(it.value) }, // Global variants.
-            listOf(Cargo(Global.getSector().playerFleet.cargo)),
+            listOf(Cargo(sector.playerFleet.cargo)),
             derelicts.map { Variant(it.data.ship.variant, it.data.ship) },
         ).flatten()
     }

@@ -95,7 +95,7 @@ class OfficerChangeTracker {
         lastAssignments.keys.retainAll(currentIds)
 
         // Picking up and putting down a member in the fleet screen would be considered an officer change by default, this prevents that
-        if (Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET)
+        if (Global.getSector()?.campaignUI?.getActualCurrentTab() == CoreUITabId.FLEET)
             justPickedUpMember = ReflectionMisc.getFleetScreenPickedUpMember() != null
 
         return changed
