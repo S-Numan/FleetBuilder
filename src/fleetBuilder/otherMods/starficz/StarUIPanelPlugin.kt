@@ -19,6 +19,7 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     private var onMouseButtonHeldFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onKeyDownFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onKeyUpFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
+    private var onProcessInputFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
 
     private var renderBelowFunctions: MutableList<(Float) -> Unit> = mutableListOf()
     private var renderFunctions: MutableList<(Float) -> Unit> = mutableListOf()
@@ -35,6 +36,7 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
         onMouseButtonHeldFunctions.clear()
         onKeyDownFunctions.clear()
         onKeyUpFunctions.clear()
+        onProcessInputFunctions.clear()
 
         renderBelowFunctions.clear()
         renderFunctions.clear()
@@ -44,7 +46,8 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
 
     var customData: Any? = null
 
-    var inputCapturePad = 0f
+    var mouseCapturePad = 0f
+        private set
 
     protected var isHovering = false
         private set
@@ -58,7 +61,7 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     open fun setMouseCapturePad(pad: Float) {
         if (!::panel.isInitialized) return
 
-        inputCapturePad = pad
+        mouseCapturePad = pad
         panel.setMouseOverPad(pad, pad, pad, pad)
     }
 
@@ -105,9 +108,16 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     override fun processInput(events: MutableList<InputEventAPI>) {
         if (!::panel.isInitialized) return
 
+        if (onProcessInputFunctions.isNotEmpty()) {
+            for (event in events) {
+                if (ignoreConsumedEvents && event.isConsumed) continue
+                onProcessInputFunctions.forEach { it(event) }
+            }
+        }
+
         events.filter { it.isMouseEvent }.forEach { event ->
             if (ignoreConsumedEvents && event.isConsumed) return@forEach
-            val inElement = UIUtils.isMouseHoveringOverComponent(panel, event.x, event.y, inputCapturePad)
+            val inElement = UIUtils.isMouseHoveringOverComponent(panel, event.x, event.y, mouseCapturePad)
             if (inElement) {
                 onHoverFunctions.forEach { it(event) }
                 if (!isHovering) onHoverEnterFunctions.forEach { it(event) }
@@ -140,6 +150,10 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
             if (event.isKeyUpEvent) onKeyUpFunctions.forEach { it(event) }
             if (consumeKeyboardEvents) event.consume()
         }
+    }
+
+    fun onProcessInput(function: (InputEventAPI) -> Unit) {
+        onProcessInputFunctions.add(function)
     }
 
     fun onClick(function: (InputEventAPI) -> Unit) {

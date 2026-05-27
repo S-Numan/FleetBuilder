@@ -1,5 +1,6 @@
 package fleetBuilder.ui.customPanel
 
+import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.input.InputEventAPI
@@ -7,11 +8,12 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.displayMessage.DisplayMessage
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.ui.customPanel.common.BasePanel
-import fleetBuilder.ui.customPanel.common.ModalPanel
+import fleetBuilder.ui.customPanel.core.BasePanel
+import fleetBuilder.ui.customPanel.core.ModalPanel
+import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
 import fleetBuilder.util.ReflectionMisc
 
-class DialogUtils : BaseEveryFrameCombatPlugin() {
+class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
     companion object {
         fun initDialogToShow(
             dialog: BasePanel,
@@ -78,6 +80,19 @@ class DialogUtils : BaseEveryFrameCombatPlugin() {
         amount: Float,
         events: List<InputEventAPI?>?
     ) {
+        advance()
+    }
+
+    override fun isDone(): Boolean = false
+    override fun runWhilePaused(): Boolean = true
+    override fun advance(amount: Float) {
+        advance()
+    }
+
+    fun advance() {
+        if (ContextMenuPanel.contextMenuJustClosed > 0)
+            ContextMenuPanel.contextMenuJustClosed--
+
         if (dialogsToShow.isNotEmpty()) {
             val screenPanel = ReflectionMisc.getScreenPanel() ?: return
 

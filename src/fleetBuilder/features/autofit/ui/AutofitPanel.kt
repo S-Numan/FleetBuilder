@@ -31,7 +31,7 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.ui.customPanel.presets.DialogPanel
+import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.ReflectionMisc

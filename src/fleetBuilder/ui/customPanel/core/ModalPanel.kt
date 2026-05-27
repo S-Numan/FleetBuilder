@@ -1,4 +1,4 @@
-package fleetBuilder.ui.customPanel.common
+package fleetBuilder.ui.customPanel.core
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
@@ -7,6 +7,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.height
+import fleetBuilder.otherMods.starficz.parent
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.UIUtils.easeCubic
 import fleetBuilder.util.api.CampaignUtils
@@ -21,7 +22,7 @@ open class ModalPanel : ComposablePanel() {
 
     enum class PanelAnimation {
         RESIZE_FADE,
-        FADE_ONLY,
+        FADE_ONLY, // TODO: if fade in animation; Make all tooltip elements appear right away instead of when fade in is finished, and just eat all input until the panel if fully open.
         NONE
     }
 
@@ -135,7 +136,7 @@ open class ModalPanel : ComposablePanel() {
                 if (quitHotkeyClosesOnRelease && escapeRequested) {
                     if (
                         (event.isKeyUpEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                        (mouseUp && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
+                        (mouseUp && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = mouseCapturePad))
                     ) {
                         dismiss()
                         if (hotkeyQuitConsumesInput)
@@ -148,7 +149,7 @@ open class ModalPanel : ComposablePanel() {
                         escapeRequested = true
                 } else if (
                     (event.isKeyDownEvent && event.eventValue == Keyboard.KEY_ESCAPE) ||
-                    (mouseDown && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = inputCapturePad))
+                    (mouseDown && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = mouseCapturePad))
                 ) {
                     if (quitHotkeyClosesOnRelease)
                         escapeRequested = true
@@ -185,17 +186,20 @@ open class ModalPanel : ComposablePanel() {
     }
 
     protected fun updatePanelVisuals(progress: Float) {
+        if (panel.parent == null)
+            return
+
         alpha = progress
 
         if (animation == PanelAnimation.FADE_ONLY) {
             panel.position?.setSize(goalWidth, goalHeight)
-            panel.position?.inTL(goalXOffset, parent.height - goalYOffset)
+            panel.position?.inTL(goalXOffset, panel.parent!!.height - goalYOffset)
             return
         }
 
         val currentHeight = goalHeight * progress
 
-        val centerY = parent.height - goalYOffset
+        val centerY = panel.parent!!.height - goalYOffset
         val topLeftY = centerY + (goalHeight / 2f) - (currentHeight / 2f)
 
         panel.position?.setSize(goalWidth, currentHeight)

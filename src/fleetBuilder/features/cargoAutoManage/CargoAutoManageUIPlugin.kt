@@ -22,9 +22,9 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManage.unsetCargoAutoManag
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
 import fleetBuilder.ui.addCheckboxD
-import fleetBuilder.ui.customPanel.common.BasePanel
-import fleetBuilder.ui.customPanel.presets.DialogPanel
-import fleetBuilder.ui.customPanel.common.ModalPanel
+import fleetBuilder.ui.customPanel.core.BasePanel
+import fleetBuilder.ui.customPanel.core.ModalPanel
+import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.loadTextureCached
 import fleetBuilder.util.api.kotlin.safeInvoke
@@ -703,7 +703,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
         this.panel.position.setXAlignOffset(Global.getSettings().mouseX.toFloat() - panelWidth / 2f)
         this.panel.position.setYAlignOffset(Global.getSettings().mouseY.toFloat() + panelHeight + 20f - Global.getSettings().screenHeight)
 
-        parent.bringComponentToTop(panel)
+        this.panel.parent?.bringComponentToTop(panel)
 
         super.advance(amount)
     }

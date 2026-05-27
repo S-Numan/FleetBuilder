@@ -43,11 +43,13 @@ import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.UIUtils
+import fleetBuilder.ui.addButtonD
 import fleetBuilder.ui.addCheckboxD
-import fleetBuilder.ui.addExcludeTextField
 import fleetBuilder.ui.addNumericTextField
-import fleetBuilder.ui.customPanel.common.ModalPanel
-import fleetBuilder.ui.customPanel.presets.DialogPanel
+import fleetBuilder.ui.customPanel.core.ModalPanel
+import fleetBuilder.ui.customPanel.modules.TextInputDialog
+import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
+import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
@@ -214,123 +216,84 @@ object HotkeyHandlerDialogs {
             var prevButton: ButtonAPI? = null
             managerTree.asReversed().forEach { thisManager ->
                 val width = ui.computeStringWidth(thisManager.folderName)
-                val button = ui.addButton(thisManager.folderName, null, width, 24f, 0f)
-                if (prevButton != null) {
-                    val label = ui.addPara(">", 0f)
-                    label.position.rightOfMid(prevButton, 5f)
+                ui.addButtonD(thisManager.folderName, width).apply {
+                    if (prevButton != null) {
+                        val label = ui.addPara(">", 0f)
+                        label.position.rightOfMid(prevButton, 5f)
+                        position.rightOfMid(prevButton, 20f)
+                    } else {
+                        position.inTL(0f, 50f)
+                    }
+                    isEnabled = thisManager.exists()
+                    onClick {
+                        switchToManager(thisManager)
+                    }
 
-                    button.position.rightOfMid(prevButton, 20f)
-                } else {
-                    button.position.inTL(0f, 50f)
+                    prevButton = this
                 }
-                button.isEnabled = thisManager.exists()
-                button.onClick {
-                    switchToManager(thisManager)
-                }
-
-                prevButton = button
             }
 
-            ui.addSpacer(0f).position.inTL(0f, 100f)
             val containingPaths = currentManager.getContainingPaths()
-            ui.addPara("\n\nFolders:\n", 0f)
+            ui.addPara("\n\nFolders:\n", 0f).position.inTL(0f, 100f)
             containingPaths.filterIsInstance<DirectoryManager>().forEach { path ->
                 val width = ui.computeStringWidth(path.folderName)
-                val button = ui.addButton(path.folderName, null, width, 24f, 0f)
+                val button = ui.addButtonD(path.folderName, width)
                 button.onClick {
                     switchToManager(path)
                 }
             }
 
-            ui.addPara("\n\nFiles:\n", 0f)
+            ui.addPara("\n\nFiles:\n", 0f).position.inTL(400f, 100f)
             containingPaths.filterIsInstance<DirFile>().forEach { path ->
                 val width = ui.computeStringWidth(path.fileName)
-                val button = ui.addButton(path.fileName, null, width, 24f, 0f)
+                val button = ui.addButtonD(path.fileName, width)
             }
         }
 
-        var rightClickPanel: ModalPanel? = null
         dialog.onClick { event ->
             if (!event.isRMBDownEvent) return@onClick
-            if (rightClickPanel != null)
-                return@onClick
+            if (ContextMenuPanel.isContextMenuOpen()) return@onClick
 
-            rightClickPanel = ModalPanel()
+            val rightClickPanel = ContextMenuPanel()
 
-            rightClickPanel!!.inputCapturePad = -4f
-            rightClickPanel!!.background.alphaMult = 1f
-            rightClickPanel!!.consumeAllEvents = false
-            rightClickPanel!!.anyOuterMouseClickQuits = true
-            rightClickPanel!!.hotkeyQuitConsumesInput = false
-
-            rightClickPanel!!.show(360f, 512f, xOffset = Global.getSettings().mouseX.toFloat(), yOffset = Global.getSettings().mouseY.toFloat()) { ui ->
-                fun showCreateDialog(
-                    title: String,
-                    prompt: String,
-                    onConfirmAction: (String) -> Unit
-                ) {
-                    rightClickPanel!!.dismiss()
-
-                    val createDialog = DialogPanel(title)
-                    createDialog.confirmButtonShortcut = Keyboard.KEY_NONE
-                    createDialog.cancelButtonShortcut = Keyboard.KEY_NONE
-                    createDialog.doesConfirmDismiss = false
-
-                    var textField: TextFieldAPI? = null
-
-                    createDialog.show(500f, 155f) { ui ->
-                        ui.addPara(prompt, 4f)
-                        textField = ui.addExcludeTextField(ui.width, 30f, pad = 10f).textField
-                        textField.grabFocus()
-
-                        createDialog.addActionButtons(confirmText = "OK")
-                    }
-
-                    createDialog.advance {
-                        if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-                            createDialog.applyConfirmScript()
-                            createDialog.dismiss()
+            rightClickPanel.show(360f, 512f) { ui ->
+                ui.addCheckboxD("createFile").apply {
+                    onClick {
+                        rightClickPanel.dismiss()
+                        TextInputDialog(title = "Create File", prompt = "Enter name for file:") { name ->
+                            if (name.trim(' ', '.').take(255).isNotBlank()) {
+                                currentManager.writeFile(name, "test content")
+                                dialog.recreateUI()
+                            }
                         }
                     }
+                    position.inTL(25f, 10f)
+                }
 
-                    createDialog.onConfirm {
-                        textField?.text?.let {
-                            val name = it.trim(' ', '.').take(255)
-                            if (name.isBlank()) return@let
-                            onConfirmAction(name)
-                            dialog.recreateUI()
-                            createDialog.dismiss()
+                ui.addCheckboxD("createFolder", pad = 5f).apply {
+                    onClick {
+                        rightClickPanel.dismiss()
+                        TextInputDialog(title = "Create Folder", prompt = "Enter name for folder:") { name ->
+                            if (name.trim(' ', '.').take(255).isNotBlank()) {
+                                currentManager.createFolder(name)
+                                dialog.recreateUI()
+                            }
                         }
-                    }
-                }
-
-                val createFileCheckbox = ui.addCheckboxD("createFile")
-                createFileCheckbox.onClick {
-                    showCreateDialog(
-                        title = "Create File",
-                        prompt = "Enter name for file:"
-                    ) { name ->
-                        currentManager.writeFile(name, "test content")
-                    }
-                }
-                createFileCheckbox.position.inTL(25f, 10f)
-
-                ui.addCheckboxD("createFolder", pad = 5f).onClick {
-                    showCreateDialog(
-                        title = "Create Folder",
-                        prompt = "Enter name for folder:"
-                    ) { name ->
-                        currentManager.createFolder(name)
                     }
                 }
             }
+        }
 
-            // Hack to get it to get closing to take a moment to not open another right click panel If it is already open.
-            rightClickPanel!!.animation = ModalPanel.PanelAnimation.FADE_ONLY
-            rightClickPanel!!.openDuration = 0.0f
-            rightClickPanel!!.closeDuration = 0.00001f
-            rightClickPanel!!.onExit {
-                rightClickPanel = null
+        dialog.onClick { event ->
+            if (event.isMouseDownEvent) {
+                if (event.eventValue == 3) {
+                    currentManager.manager?.let {
+                        if (it.exists())
+                            switchToManager(it)
+                    }
+                } else if (event.eventValue == 4) {
+
+                }
             }
         }
 
@@ -339,7 +302,7 @@ object HotkeyHandlerDialogs {
     private fun removeModButton(
         ui: TooltipMakerAPI
     ) {
-        val removeModButton = ui.addButton("Remove Mod", null, 160f, 24f, 0f)
+        val removeModButton = ui.addButtonD("Remove Mod", 160f)
 
         removeModButton.position.inTL(0f, ui.height - removeModButton.height)
         removeModButton.onClick {
@@ -1096,7 +1059,7 @@ object HotkeyHandlerDialogs {
                             if (coreUITadId == CoreUITabId.FLEET) {
                                 campUI.safeInvoke("setNextTransitionFast", true)
                                 campUI.showCoreUITab(coreUITadId)
-                                dialog?.parent?.bringComponentToTop(dialog.panel)
+                                dialog?.panel?.parent?.bringComponentToTop(dialog.panel)
                             }
                             CampaignUtils.openCampaignDummyDialog()
                         }
@@ -1104,7 +1067,7 @@ object HotkeyHandlerDialogs {
                     } else {
                         RecentBattleReplay.simulateBattle(battleContext) {
                             //battle.finish(null, false)
-                            dialog.parent.bringComponentToTop(dialog.panel)
+                            dialog.panel.parent?.bringComponentToTop(dialog.panel)
                         }
                     }
                 }

@@ -3,15 +3,16 @@ package fleetBuilder.ui.common
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
+import com.fs.starfarer.api.ui.Fonts
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.TextFieldAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 
-class ObservedTextField(
+open class ObservedTextField(
     width: Float,
-    height: Float,
-    font: String,
-    pad: Float,
+    height: Float = 24f,
+    font: String = Fonts.DEFAULT_SMALL,
+    pad: Float = 0f,
     initialText: String = ""
 ) : CustomUIPanelPlugin {
 

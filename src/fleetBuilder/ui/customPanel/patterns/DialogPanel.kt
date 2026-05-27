@@ -1,4 +1,4 @@
-package fleetBuilder.ui.customPanel.presets
+package fleetBuilder.ui.customPanel.patterns
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
@@ -6,7 +6,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.FBTxt
 import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.ui.customPanel.common.ModalPanel
+import fleetBuilder.ui.customPanel.core.ModalPanel
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 

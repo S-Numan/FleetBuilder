@@ -1,4 +1,4 @@
-package fleetBuilder.ui.customPanel.common
+package fleetBuilder.ui.customPanel.core
 
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
@@ -74,7 +74,7 @@ open class ComposablePanel : BasePanel() {
      * @param yOffset The y offset of the panel. Defaults to null. If null, automatically positions this panel to the center of its parent.
      */
     @JvmOverloads
-    fun show(
+    open fun present(
         width: Float = 800f,
         height: Float = 800f,
         parent: UIPanelAPI? = null,
@@ -106,7 +106,7 @@ open class ComposablePanel : BasePanel() {
      * @param callback Lambda used to build the panel UI.
      */
     @JvmOverloads
-    fun show(
+    open fun show(
         width: Float = 800f,
         height: Float = 800f,
         parent: UIPanelAPI? = null,
@@ -117,6 +117,6 @@ open class ComposablePanel : BasePanel() {
         //ui: TooltipMakerAPI.() -> Unit
     ) {
         buildUI(withScroller, callback)
-        show(width = width, height = height, parent = parent, xOffset = xOffset, yOffset = yOffset)
+        present(width = width, height = height, parent = parent, xOffset = xOffset, yOffset = yOffset)
     }
 }

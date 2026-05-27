@@ -31,6 +31,7 @@ import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectoryServic
 import fleetBuilder.features.removeOldIntelUpdates.RemoveOldIntelUpdates
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
+import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.listeners.MemberChangeEvents
@@ -109,12 +110,13 @@ internal class EventDispatcher : EveryFrameScript {
             manageTransientScript(AutoMothballRecoveredShips::class.java, FBSettings.autoMothballRecoveredShips) { AutoMothballRecoveredShips() }
             manageTransientScript(RemoveOldIntelUpdates::class.java, FBSettings.removeOldIntelUpdates) { RemoveOldIntelUpdates() }
             manageTransientScript(DisplayDerelictRecoveryEarly::class.java, FBSettings.displayDerelictRecoveryEarly) { DisplayDerelictRecoveryEarly() }
-            manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
-
-            manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
             manageTransientListener(TransponderOff::class.java, FBSettings.transponderOffInHyperspace) { TransponderOff() }
 
             manageTransientCampaignListener(RecentBattleTracker::class.java, FBSettings.recentBattleTracker) { RecentBattleTracker() }
+
+            manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
+            manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
+            manageTransientScript(DialogUtils::class.java, true) { DialogUtils() } // Should always be enabled
         }
 
         fun onDevModeF8Reload() {

@@ -1,4 +1,4 @@
-package fleetBuilder.ui.customPanel.common
+package fleetBuilder.ui.customPanel.core
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.SettingsAPI
@@ -6,21 +6,19 @@ import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.otherMods.starficz.*
-import fleetBuilder.ui.UIUtils
 import fleetBuilder.core.FBMisc.endStencil
 import fleetBuilder.core.FBMisc.renderTiledTexture
 import fleetBuilder.core.FBMisc.startStencilWithXPad
 import fleetBuilder.core.FBMisc.startStencilWithYPad
+import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.otherMods.starficz.*
+import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.ReflectionMisc
 import java.awt.Color
 
 //Copied and heavily modified from AshLib
 
 open class BasePanel : StarUIPanelPlugin() {
-    lateinit var parent: UIPanelAPI
-        protected set
     var tooltip: TooltipMakerAPI? = null
         protected set
 
@@ -52,8 +50,6 @@ open class BasePanel : StarUIPanelPlugin() {
 
         panel = inputPanel
 
-        this.parent = parent
-
         parent.addComponent(panel).inTL(xOffset, parent.height - yOffset)
         parent.bringComponentToTop(panel)
 
@@ -72,7 +68,7 @@ open class BasePanel : StarUIPanelPlugin() {
     open fun forceDismiss(runExitScript: Boolean = true) {
         if (!hasInitOccurred) return
 
-        parent.removeComponent(panel)
+        panel.parent?.removeComponent(panel)
         if (runExitScript)
             applyExitScript()
 

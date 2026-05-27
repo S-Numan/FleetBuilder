@@ -1,9 +1,7 @@
 package fleetBuilder.ui
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.ui.*
 import fleetBuilder.otherMods.starficz.Font
 import fleetBuilder.otherMods.starficz.getFontPath
 import fleetBuilder.ui.common.ObservedTextField
@@ -50,9 +48,24 @@ fun TooltipMakerAPI.addCheckboxD(
     return checkbox
 }
 
+fun TooltipMakerAPI.addButtonD(
+    text: String,
+    width: Float,
+    height: Float = 24f,
+    data: Any? = null,
+    pad: Float = 0f,
+    base: Color = Global.getSettings().getColor("buttonText"),
+    bg: Color = Global.getSettings().getColor("buttonBgDark"),
+    align: Alignment = Alignment.MID,
+    style: CutStyle = CutStyle.ALL,
+): ButtonAPI {
+    val button = this.addButton(text, data, base, bg, align, style, width, height, pad)
+    return button
+}
+
 fun TooltipMakerAPI.addNumericTextField(
     width: Float,
-    height: Float,
+    height: Float = 24f,
     font: String = Fonts.DEFAULT_SMALL,
     initialValue: Int? = null,
     maxValue: Int = Int.MAX_VALUE,
@@ -106,7 +119,7 @@ fun TooltipMakerAPI.addNumericTextField(
 
 fun TooltipMakerAPI.addExcludeTextField(
     width: Float,
-    height: Float,
+    height: Float = 24f,
     excludedCharacters: String = "\\/:*?\"<>|",
     font: String = Fonts.DEFAULT_SMALL,
     initialText: String = "",

@@ -45,7 +45,7 @@ import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.ui.customPanel.presets.DialogPanel
+import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
