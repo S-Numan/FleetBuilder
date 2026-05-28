@@ -7,6 +7,7 @@ import fleetBuilder.util.api.kotlin.isSkin
 
 internal object ShipSkinSourceMod {
     fun setShipSkinSourceMods() {
+        Global.getLogger(this.javaClass).info("Setting modded ship skin source mods (if present)...")
         val allHullSpecs = Global.getSettings().allShipHullSpecs
         allHullSpecs.forEach { hull ->
             if (hull.sourceMod == null && hull.isSkin()) {
