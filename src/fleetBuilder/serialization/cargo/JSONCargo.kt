@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.MissingContentExtended
 import org.json.JSONArray
 import org.json.JSONObject

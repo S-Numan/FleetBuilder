@@ -2,8 +2,8 @@ package fleetBuilder.serialization.variant
 
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep

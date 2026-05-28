@@ -9,9 +9,9 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod

@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.Alignment
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.config.FBSettings
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.pasteFleetDialog
 import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectory
 import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectoryService

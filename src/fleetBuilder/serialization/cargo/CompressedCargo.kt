@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.metaSep

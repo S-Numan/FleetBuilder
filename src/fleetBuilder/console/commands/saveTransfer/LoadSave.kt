@@ -1,6 +1,6 @@
 package fleetBuilder.console.commands.saveTransfer
 
-import fleetBuilder.core.FBTxt
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.PlayerSaveUtils.compileSaveAny
 import fleetBuilder.serialization.PlayerSaveUtils.loadCompiledSave

@@ -1,4 +1,4 @@
-package fleetBuilder.core.removeFromSave
+package fleetBuilder.core.util.save.removable
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
@@ -15,7 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Items
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial
 import com.fs.starfarer.campaign.CampaignEngine
 import com.fs.util.container.repo.ObjectRepository
-import fleetBuilder.core.FBMisc.replaceVariantWithVariant
+import fleetBuilder.core.util.FBMisc.replaceVariantWithVariant
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FactionUtils

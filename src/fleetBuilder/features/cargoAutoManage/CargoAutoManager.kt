@@ -8,9 +8,9 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.impl.items.BlueprintProviderItem
 import com.fs.starfarer.api.campaign.impl.items.ModSpecItemPlugin
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
 import fleetBuilder.util.api.kotlin.moveItem
 import fleetBuilder.util.api.kotlin.moveStack

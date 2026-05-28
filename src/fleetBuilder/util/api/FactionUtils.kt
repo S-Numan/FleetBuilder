@@ -2,7 +2,7 @@ package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
-import fleetBuilder.core.FBMisc
+import fleetBuilder.core.util.FBMisc
 
 object FactionUtils {
 

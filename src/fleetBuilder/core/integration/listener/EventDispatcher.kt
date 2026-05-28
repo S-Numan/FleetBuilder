@@ -1,16 +1,16 @@
-package fleetBuilder.core.listener
+package fleetBuilder.core.integration.listener
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBSettings.fixShipSkinSourceMod
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DrawMessageOnTop
-import fleetBuilder.core.removeFromSave.MakeSaveRemovable
-import fleetBuilder.core.saveBackupManager.SaveBackupManager
-import fleetBuilder.core.shipSkinSourceMod.ShipSkinSourceMod
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.config.FBSettings.fixShipSkinSourceMod
+import fleetBuilder.core.integration.feature.ShipSkinSourceMod
+import fleetBuilder.core.integration.plugin.FBCampaignPlugin
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.save.backup.SaveBackupManager
+import fleetBuilder.core.util.save.removable.MakeSaveRemovable
 import fleetBuilder.features.autoMothball.AutoMothballRecoveredShips
 import fleetBuilder.features.autofit.listener.CampaignAutofitAdder
 import fleetBuilder.features.autofit.listener.CodexAutofitButton

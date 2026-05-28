@@ -7,8 +7,8 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc

@@ -10,10 +10,10 @@ import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy

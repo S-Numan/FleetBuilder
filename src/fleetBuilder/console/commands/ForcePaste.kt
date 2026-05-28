@@ -1,8 +1,8 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.FBMisc.isConsoleOpen
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.util.FBMisc.isConsoleOpen
+import fleetBuilder.core.config.FBSettings
 import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin

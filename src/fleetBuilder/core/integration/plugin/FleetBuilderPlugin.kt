@@ -1,7 +1,7 @@
-package fleetBuilder.core
+package fleetBuilder.core.integration.plugin
 
 import com.fs.starfarer.api.BaseModPlugin
-import fleetBuilder.core.listener.EventDispatcher
+import fleetBuilder.core.integration.listener.EventDispatcher
 
 class FleetBuilderPlugin : BaseModPlugin() {
     override fun onApplicationLoad() {

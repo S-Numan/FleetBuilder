@@ -4,9 +4,9 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.ids.Tags
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.listener.EventDispatcher
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.integration.listener.EventDispatcher
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.listeners.OfficerChangeEvents

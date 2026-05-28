@@ -8,7 +8,7 @@ import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.HullUtils.getActualHull
 import fleetBuilder.util.api.HullUtils.isDHullFix

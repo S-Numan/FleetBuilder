@@ -1,10 +1,9 @@
-package fleetBuilder.core
+package fleetBuilder.core.config
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
-import fleetBuilder.core.FBConst.PRIMARY_DIR
-import fleetBuilder.core.FBSettings.cheatsEnabled
-import fleetBuilder.core.listener.LunaSettingsListener
+import fleetBuilder.core.integration.plugin.FleetBuilderPlugin
+import fleetBuilder.core.config.FBSettings.cheatsEnabled
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.api.kotlin.containsString
 import lunalib.lunaSettings.LunaSettings
@@ -23,7 +22,7 @@ object FBSettings {
     }
 
     fun setNeverSaveHullmods() {
-        val neverHullModsPath = "${PRIMARY_DIR}HullModsToNeverSave"
+        val neverHullModsPath = "${FBConst.PRIMARY_DIR}HullModsToNeverSave"
         val neverHullModsJson = try {
             if (Global.getSettings().fileExistsInCommon(neverHullModsPath)) {
                 Global.getSettings().readJSONFromCommon(neverHullModsPath, false)

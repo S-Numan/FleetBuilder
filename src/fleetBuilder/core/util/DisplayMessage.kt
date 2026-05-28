@@ -1,12 +1,11 @@
-package fleetBuilder.core.displayMessage
+package fleetBuilder.core.util
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBMisc.getCallerClass
-import fleetBuilder.core.FBMisc.isConsoleOpen
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.integration.listener.DrawMessageOnTop
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import org.apache.log4j.Level
 import org.lazywizard.console.Console
@@ -72,7 +71,7 @@ object DisplayMessage {
             recentErrors.entries.removeIf { it.value < cutoff }
         }
 
-        val callerClass: Class<*> = getCallerClass() ?: javaClass
+        val callerClass: Class<*> = FBMisc.getCallerClass() ?: javaClass
         // Console or logger output
         if (FBSettings.isConsoleModEnabled) {
             if (e != null) {
@@ -132,7 +131,7 @@ object DisplayMessage {
         }
 
         // Show messages in console if console is open
-        if (isConsoleOpen())
+        if (FBMisc.isConsoleOpen())
             Console.showMessage(short)
 
         //Global.getSoundPlayer().playUISound("ui_noise_static_message_quiet", 1f, 1f)

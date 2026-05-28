@@ -1,7 +1,7 @@
 package fleetBuilder.serialization
 
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.CompressedFleet.isCompressedFleet
 import fleetBuilder.serialization.fleet.JSONFleet.extractFleetDataFromJson

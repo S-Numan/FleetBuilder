@@ -6,11 +6,11 @@ import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.FBMisc.endStencil
-import fleetBuilder.core.FBMisc.renderTiledTexture
-import fleetBuilder.core.FBMisc.startStencilWithXPad
-import fleetBuilder.core.FBMisc.startStencilWithYPad
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.FBMisc.endStencil
+import fleetBuilder.core.util.FBMisc.renderTiledTexture
+import fleetBuilder.core.util.FBMisc.startStencilWithXPad
+import fleetBuilder.core.util.FBMisc.startStencilWithYPad
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.ReflectionMisc

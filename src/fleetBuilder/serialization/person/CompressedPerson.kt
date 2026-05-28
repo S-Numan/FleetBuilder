@@ -3,8 +3,8 @@ package fleetBuilder.serialization.person
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep

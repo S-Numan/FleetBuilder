@@ -6,9 +6,9 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.loading.WeaponGroupType
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils

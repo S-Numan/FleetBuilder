@@ -9,7 +9,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.campaign.fleet.FleetMemberStatus
 import com.fs.starfarer.combat.CombatEngine
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.lastPlayerBattleTimestamp
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.lastPlayerBattleWon
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.origCaptains

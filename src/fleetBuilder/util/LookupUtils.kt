@@ -8,7 +8,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.config.FBSettings
 import fleetBuilder.util.api.VariantUtils.createErrorVariant
 import fleetBuilder.util.api.kotlin.*
 

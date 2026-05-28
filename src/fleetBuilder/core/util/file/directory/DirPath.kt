@@ -1,4 +1,4 @@
-package fleetBuilder.core.directoryManager
+package fleetBuilder.core.util.file.directory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.SettingsAPI

@@ -5,7 +5,7 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBMisc
+import fleetBuilder.core.util.FBMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson.buildPersonFull
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
@@ -184,7 +184,7 @@ object JSONPerson {
             val value = entry.value
 
             val formattedValue = PrefixedCodec.encode(value) ?: return@forEach
-            
+
             memKeysJSON.put(key.removePrefix("$"), formattedValue)
 
         }

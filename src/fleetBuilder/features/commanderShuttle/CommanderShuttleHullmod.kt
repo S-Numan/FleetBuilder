@@ -1,4 +1,4 @@
-package fleetBuilder.hullMods
+package fleetBuilder.features.commanderShuttle
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
@@ -8,7 +8,6 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.loading.HullModSpecAPI
-
 
 class CommanderShuttleHullmod : BaseHullMod() {
     override fun init(spec: HullModSpecAPI?) {

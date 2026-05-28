@@ -7,7 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import fleetBuilder.core.FBConst
+import fleetBuilder.core.config.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.mods.secondInCommand.DataSecondInCommand
 import fleetBuilder.serialization.member.DataMember

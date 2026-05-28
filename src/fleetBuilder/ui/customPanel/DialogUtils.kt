@@ -6,7 +6,7 @@ import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.customPanel.core.BasePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel

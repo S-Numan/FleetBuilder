@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBMisc
+import fleetBuilder.core.util.FBMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.createCampaignFleetFromData

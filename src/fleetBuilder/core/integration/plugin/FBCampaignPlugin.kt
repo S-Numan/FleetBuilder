@@ -1,4 +1,4 @@
-package fleetBuilder.core.listener
+package fleetBuilder.core.integration.plugin
 
 import com.fs.starfarer.api.PluginPick
 import com.fs.starfarer.api.campaign.BaseCampaignPlugin

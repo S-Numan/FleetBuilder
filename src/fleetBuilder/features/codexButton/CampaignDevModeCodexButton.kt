@@ -12,9 +12,9 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.member.DataMember

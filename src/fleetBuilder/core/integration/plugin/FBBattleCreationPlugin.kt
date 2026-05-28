@@ -1,4 +1,4 @@
-package fleetBuilder.core.listener
+package fleetBuilder.core.integration.plugin
 
 import com.fs.starfarer.api.combat.BattleCreationContext
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags

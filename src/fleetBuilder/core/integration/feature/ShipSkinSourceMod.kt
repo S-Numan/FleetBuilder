@@ -1,4 +1,4 @@
-package fleetBuilder.core.shipSkinSourceMod
+package fleetBuilder.core.integration.feature
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI

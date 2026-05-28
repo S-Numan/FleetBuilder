@@ -7,7 +7,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
-import fleetBuilder.core.FBConst
+import fleetBuilder.core.config.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings

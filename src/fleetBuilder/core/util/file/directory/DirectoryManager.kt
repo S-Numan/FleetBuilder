@@ -1,4 +1,4 @@
-package fleetBuilder.core.directoryManager
+package fleetBuilder.core.util.file.directory
 
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
 import org.json.JSONArray
@@ -111,7 +111,7 @@ internal class DirectoryManager private constructor(
             val fullPath = "$folderPath/$entry"
 
             if (entry.endsWith("/"))
-                DirectoryManager.get(fullPath)
+                get(fullPath)
             else
                 DirFile(fullPath, this)
         }
@@ -155,7 +155,7 @@ internal class DirectoryManager private constructor(
                 .filterIsInstance<DirectoryManager>()
                 .find { it.folderPath == newPath }
 
-            current = existing ?: DirectoryManager.get(newPath).also {
+            current = existing ?: get(newPath).also {
                 it.saveEmptyConfig()
                 current._containingPaths.add(it)
                 current.saveConfigToFile()

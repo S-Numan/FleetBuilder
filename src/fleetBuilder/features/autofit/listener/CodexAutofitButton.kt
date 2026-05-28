@@ -9,8 +9,8 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.addShortcutNoShow

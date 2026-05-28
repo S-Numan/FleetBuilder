@@ -1,4 +1,4 @@
-package fleetBuilder.core
+package fleetBuilder.core.util
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUIAPI
@@ -10,7 +10,7 @@ import com.fs.starfarer.api.impl.campaign.HullModItemManager
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.ui.CustomPanelAPI
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBSettings
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.util.LookupUtils
@@ -27,6 +27,8 @@ import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
 import java.awt.Color
+import kotlin.collections.get
+import kotlin.collections.iterator
 import kotlin.math.min
 
 internal object FBMisc {

@@ -3,9 +3,9 @@ package fleetBuilder.features.autofit.shipDirectory
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.core.FBMisc.deepDiff
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.FBMisc.deepDiff
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString

@@ -1,4 +1,4 @@
-package fleetBuilder.core
+package fleetBuilder.core.config
 
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 

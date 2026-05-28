@@ -6,9 +6,9 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet

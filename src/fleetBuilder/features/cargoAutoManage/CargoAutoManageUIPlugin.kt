@@ -10,10 +10,10 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBConst.PRIMARY_DIR
-import fleetBuilder.core.FBMisc.jsonArrayToList
-import fleetBuilder.core.FBMisc.listToJsonArray
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBConst.PRIMARY_DIR
+import fleetBuilder.core.util.FBMisc.jsonArrayToList
+import fleetBuilder.core.util.FBMisc.listToJsonArray
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromMap
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManageToMap

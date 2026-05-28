@@ -1,8 +1,9 @@
-package fleetBuilder.core
+package fleetBuilder.core.util
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.TextPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
+import fleetBuilder.core.config.FBSettings
 import org.json.JSONObject
 import org.magiclib.util.StringCreator
 import java.awt.Color
@@ -17,7 +18,9 @@ object FBTxt {
         private set
 
     internal fun setup() {
-        FBStrings = Global.getSettings().loadJSON("data/strings/strings.json", FBSettings.getModID()).getJSONObject(FBSettings.getModID())
+        FBStrings = Global.getSettings().loadJSON("data/strings/strings.json", FBSettings.getModID()).getJSONObject(
+            FBSettings.getModID()
+        )
         if (FBStrings.has("missing_string"))
             missingString = FBStrings.getString("missing_string")
         else
@@ -136,7 +139,7 @@ object FBTxt {
     }
 
     /**
-     * Uses [MagicDisplayableText] to add a paragraph to the given [com.fs.starfarer.api.campaign.TextPanelAPI].
+     * Uses [MagicDisplayableText] to add a paragraph to the given [TextPanelAPI].
      * \n may be used to add multiple paragraphs.
      * You can use Misc.getTextColor() and Misc.getHighlightColor() to get default colors.
      */
@@ -168,7 +171,7 @@ object FBTxt {
     }
 
     /**
-     * Uses [MagicDisplayableText] to add a paragraph to the given [com.fs.starfarer.api.ui.TooltipMakerAPI].
+     * Uses [MagicDisplayableText] to add a paragraph to the given [TooltipMakerAPI].
      * \n may be used to add multiple paragraphs.
      * You can use Misc.getTextColor() and Misc.getHighlightColor() to get default colors.
      */

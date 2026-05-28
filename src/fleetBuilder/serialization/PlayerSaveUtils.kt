@@ -6,8 +6,8 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Abilities
 import com.fs.starfarer.campaign.CampaignUIPersistentData
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.SerializationUtils.getJSONFromStringSafe
 import fleetBuilder.serialization.cargo.CompressedCargo
 import fleetBuilder.serialization.cargo.JSONCargo

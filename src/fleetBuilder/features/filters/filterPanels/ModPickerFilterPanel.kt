@@ -3,7 +3,7 @@ package fleetBuilder.features.filters.filterPanels
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.ui.UITable
-import fleetBuilder.core.FBTxt
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.util.api.kotlin.safeInvoke

@@ -7,7 +7,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBConst
+import fleetBuilder.core.config.FBConst
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.ui.UIUtils

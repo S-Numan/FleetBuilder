@@ -1,4 +1,4 @@
-package fleetBuilder.core.listener
+package fleetBuilder.core.integration.listener
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global

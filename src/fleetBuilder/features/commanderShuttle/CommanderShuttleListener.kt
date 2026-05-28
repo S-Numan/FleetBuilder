@@ -8,9 +8,9 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import java.awt.Color
 
 internal class CommanderShuttleListener :

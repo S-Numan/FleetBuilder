@@ -1,8 +1,8 @@
 package fleetBuilder.serialization
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import org.apache.log4j.Level
 import java.awt.Color
 

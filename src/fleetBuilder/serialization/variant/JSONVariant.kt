@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupType
-import fleetBuilder.core.FBMisc
+import fleetBuilder.core.util.FBMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant

@@ -1,4 +1,4 @@
-package fleetBuilder.core.removeFromSave
+package fleetBuilder.core.util.save.removable
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.FactionAPI
@@ -6,7 +6,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.CampaignEngine
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.config.FBSettings
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.kotlin.getModules
 

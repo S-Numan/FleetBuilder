@@ -18,12 +18,12 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.coreui.CaptainPickerDialog
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBSettings.randomPastedCosmetics
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.core.displayMessage.DisplayMessage.showMessage
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.config.FBSettings.randomPastedCosmetics
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage.showMessage
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.doesLoadoutExist
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog
@@ -73,7 +73,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
     fun requireCheatsOrWarn(): Boolean {
         if (!FBSettings.cheatsEnabled()) {
-            DisplayMessage.showMessage(
+            showMessage(
                 FBTxt.txt("enable_cheats_to_use", FBSettings.getModName()),
                 Color.YELLOW
             )
@@ -216,7 +216,7 @@ internal object ClipboardHotkeyHandlerUtils {
             }
         }
 
-        DisplayMessage.showMessage(FBTxt.txt(key))
+        showMessage(FBTxt.txt(key))
 
         return true
     }
@@ -296,7 +296,7 @@ internal object ClipboardHotkeyHandlerUtils {
                     FBTxt.txt("copied_interaction_fleet_to_clipboard_compressed")
             }
 
-            DisplayMessage.showMessage(txt)
+            showMessage(txt)
 
             return true
         }
@@ -312,14 +312,14 @@ internal object ClipboardHotkeyHandlerUtils {
             data = data.variantData
         }
         if (data !is DataVariant.ParsedVariantData) {
-            DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_variant"), Color.YELLOW)
+            showMessage(FBTxt.txt("data_valid_but_no_variant"), Color.YELLOW)
             return true
         }
 
         val variant = buildVariantFull(data, missing = missing)
 
         if (missing.hullIds.isNotEmpty()) {
-            DisplayMessage.showMessage(
+            showMessage(
                 FBTxt.txt("failed_to_import_loadout", missing.hullIds.first()),
                 Color.YELLOW
             )
@@ -327,7 +327,7 @@ internal object ClipboardHotkeyHandlerUtils {
         }
 
         if (variant.hullSpec.hasTag(Tags.RESTRICTED) || variant.hullSpec.hasTag(Tags.DWELLER) || variant.hullSpec.hasTag(Tags.THREAT)) {
-            DisplayMessage.showMessage(
+            showMessage(
                 FBTxt.txt("cannot_import_loadout_hull_restricted"),
                 Color.YELLOW
             )
@@ -337,14 +337,14 @@ internal object ClipboardHotkeyHandlerUtils {
         val unknownContents = MissingContent()
         VariantUtils.whatVariantContentsAreNotKnownToPlayer(variant, unknownContents)
         if (unknownContents.hullIds.isNotEmpty()) {
-            DisplayMessage.showMessage(
+            showMessage(
                 FBTxt.txt("cannot_import_loadout_unknown_hull"),
                 Color.YELLOW
             )
             return true
         }
         if (unknownContents.hasMissingVariantElements()) {
-            DisplayMessage.showMessage(
+            showMessage(
                 FBTxt.txt("cannot_import_loadout_unknown_elements"),
                 Color.YELLOW
             )
@@ -357,7 +357,7 @@ internal object ClipboardHotkeyHandlerUtils {
         if (!loadoutExists) {
             HotkeyHandlerDialogs.createImportLoadoutDialog(variant, missing)
         } else {
-            DisplayMessage.showMessage(
+            showMessage(
                 FBTxt.txt("loadout_already_exists", variant.hullSpec.hullName),
                 variant.hullSpec.hullName,
                 Misc.getHighlightColor()
@@ -394,7 +394,7 @@ internal object ClipboardHotkeyHandlerUtils {
                 when {
                     isShuttle -> {
                         if (Global.getSector()?.playerFleet?.fleetSizeCount == 1)
-                            DisplayMessage.showMessage(FBTxt.txt("cannot_remove_last_ship_in_fleet"), Color.YELLOW)
+                            showMessage(FBTxt.txt("cannot_remove_last_ship_in_fleet"), Color.YELLOW)
                         else
                             CommanderShuttle.removePlayerShuttle()
                     }
@@ -404,7 +404,7 @@ internal object ClipboardHotkeyHandlerUtils {
                     }
 
                     else -> {
-                        DisplayMessage.showMessage(
+                        showMessage(
                             FBTxt.txt("enable_unassign_player", FBSettings.getModName()),
                             Color.YELLOW
                         )
@@ -448,10 +448,10 @@ internal object ClipboardHotkeyHandlerUtils {
                 val member = Global.getSettings().createFleetMember(FleetMemberType.SHIP, buildVariantFull(newData as DataVariant.ParsedVariantData))
                 hackTogetherFleet(member)
             } else if (newData is DataPerson.ParsedPersonData) {
-                DisplayMessage.showMessage(FBTxt.txt("campaign_officer_spawn"), Color.YELLOW)
+                showMessage(FBTxt.txt("campaign_officer_spawn"), Color.YELLOW)
                 return null
             } else {
-                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_no_campaign_paste"), Color.YELLOW)
+                showMessage(FBTxt.txt("data_valid_but_no_campaign_paste"), Color.YELLOW)
                 return null
             }
         }
@@ -556,7 +556,7 @@ internal object ClipboardHotkeyHandlerUtils {
             }
 
             else -> {
-                DisplayMessage.showMessage(FBTxt.txt("data_valid_but_not_fleet_member_variant_person"), Color.YELLOW)
+                showMessage(FBTxt.txt("data_valid_but_not_fleet_member_variant_person"), Color.YELLOW)
             }
         }
 

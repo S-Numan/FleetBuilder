@@ -1,10 +1,10 @@
-package fleetBuilder.core.saveBackupManager
+package fleetBuilder.core.util.save.backup
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.FBConst
+import fleetBuilder.core.config.FBConst
 import fleetBuilder.serialization.PlayerSaveUtils
 
-object SaveBackupManager {
+internal object SaveBackupManager {
     private const val MAX_SLOT = 8
     private const val MIN_SLOT = 1
     private const val MAX_BACKUPS = 4

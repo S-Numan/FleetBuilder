@@ -12,7 +12,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
