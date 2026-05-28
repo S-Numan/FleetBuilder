@@ -33,6 +33,10 @@ object UIUtils {
         return t * t * t
     }
 
+    fun lerp(start: Float, stop: Float, fraction: Float): Float {
+        return start + fraction * (stop - start)
+    }
+
     fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color) {
         drawRectangleFilledForPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width, tooltipMakerAPI.height, alphaMult, uiColor)
     }
@@ -44,7 +48,7 @@ object UIUtils {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
         GL11.glColor4f(
             uiColor.red / 255f, uiColor.green / 255f, uiColor.blue / 255f,
-            uiColor.alpha / 255f * alphaMult * 23f
+            uiColor.alpha / 255f * alphaMult
         )
         GL11.glRectf(x, y, x + w, y + h)
         GL11.glColor4f(1f, 1f, 1f, 1f)

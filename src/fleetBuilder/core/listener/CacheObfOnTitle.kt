@@ -53,6 +53,10 @@ internal class CacheObfOnTitle : BaseEveryFrameCombatPlugin() {
 
             val shipFields = shipPreview.getFieldsMatching(type = Array<Ship>::class.java)
             BoxedUIShipPreview.SHIPS_FIELD = shipFields[0].name // only one field should be Array<Ship>
+
+            //val noise = holographicBG.getFieldsWithMethodsMatching(
+            //    numOfMethodParams = 8,
+            //).getOrNull(0)?.get(holographicBG)
         }
     }
 

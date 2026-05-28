@@ -86,8 +86,6 @@ open class BasePanel : StarUIPanelPlugin() {
         exitCallback = callback
     }
 
-    protected open var alpha: Float = 1f
-
     protected val settings: SettingsAPI = Global.getSettings()
     protected fun sprite(cat: String, id: String): SpriteAPI =
         settings.getSprite(cat, id)
@@ -116,7 +114,7 @@ open class BasePanel : StarUIPanelPlugin() {
             renderTiledTexture(
                 background.textureId, panel.x, panel.y, panel.width, panel.height,
                 background.textureWidth, background.textureHeight,
-                alpha * background.alphaMult, background.color
+                alphaMult * background.alphaMult, background.color
             )
         }
 
@@ -138,7 +136,7 @@ open class BasePanel : StarUIPanelPlugin() {
 
         listOf(top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight)
             .forEach {
-                it.alphaMult = alpha
+                it.alphaMult = alphaMult
                 if (uiBorderColor != null)
                     it.color = uiBorderColor
             }

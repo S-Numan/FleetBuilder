@@ -21,6 +21,7 @@ import com.fs.starfarer.campaign.CharacterStats
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.ui.impl.StandardTooltipV2
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
+import com.fs.state.AppDriver
 import fleetBuilder.core.FBConst
 import fleetBuilder.core.FBSettings
 import fleetBuilder.core.FBTxt
@@ -47,6 +48,7 @@ import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.modules.TextInputDialog
 import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
+import fleetBuilder.ui.noise.UINoiseRenderer
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
@@ -79,7 +81,17 @@ object HotkeyHandlerDialogs {
         dialog.animation = ModalPanel.PanelAnimation.NONE
         dialog.uiBorderColor = Color(255, 70, 70)
 
+        val test = UINoiseRenderer()
+
+        dialog.advance { amount ->
+            test.advance(amount)
+        }
+        dialog.render { alphaMult ->
+            test.render(dialog.x, dialog.y, 500f, 200f, alphaMult)
+        }
         dialog.show(width = 500f, height = 200f) { ui ->
+            test.fadeInOut(0.05F, 1.0F)
+
             val toggleDev = ui.addCheckboxD(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
             toggleDev.setButtonPressedSound("FB_NONE")
             toggleDev.onClick {
@@ -145,6 +157,10 @@ object HotkeyHandlerDialogs {
 
 
                     val sector = Global.getSector()
+                    val state = AppDriver.getInstance().currentState
+                    //if (state is CampaignState)
+                    //state.showNoise(0.5f, 0.25f, 1.5f)
+
                     val memory = sector?.memoryWithoutUpdate
 
                     devTestPanel()

@@ -10,7 +10,7 @@ class FBCampaignPlugin : BaseCampaignPlugin() {
     override fun getId(): String = "FBCampaignPlugin"
     override fun isTransient(): Boolean = true
 
-    override fun pickBattleCreationPlugin(opponent: SectorEntityToken): PluginPick<BattleCreationPlugin> {
+    override fun pickBattleCreationPlugin(opponent: SectorEntityToken): PluginPick<BattleCreationPlugin>? {
         return if (opponent.memoryWithoutUpdate.getBoolean("\$#FB_customBattleCreationPlugin")) {
             PluginPick<BattleCreationPlugin>(FBBattleCreationPlugin(), PickPriority.MOD_SET)
         } else {

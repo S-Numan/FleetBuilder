@@ -15,7 +15,7 @@ open class DialogPanel(
 ) : ModalPanel() {
 
     init {
-        background.alphaMult = 0.95f
+        //background.alphaMult = 0.95f
     }
 
     var confirmButton: ButtonAPI? = null
@@ -51,7 +51,7 @@ open class DialogPanel(
             headerTooltip?.let {
                 UIUtils.drawRectangleFilledForTooltip(
                     it,
-                    1f,
+                    alphaMult,
                     Global.getSettings().getColor("buttonBgDark") // TODO, check
                     //Global.getSector().playerFaction.darkUIColor.darker()
                 )

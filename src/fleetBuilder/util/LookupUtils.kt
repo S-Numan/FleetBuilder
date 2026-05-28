@@ -138,6 +138,11 @@ object LookupUtils {
         }
     }
 
+    /**Does not clone the variant, use with caution.*/
+    internal fun getVariantsForEffectiveHullSpecRaw(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
+        return effectiveHullIDToVariant[hullSpec.getEffectiveHullId()].orEmpty()
+    }
+
     @JvmStatic
     fun getVariantsForEffectiveHullSpec(hullSpec: ShipHullSpecAPI): List<ShipVariantAPI> {
         return effectiveHullIDToVariant[hullSpec.getEffectiveHullId()].orEmpty().map { it.clone() }

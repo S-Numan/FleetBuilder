@@ -48,7 +48,6 @@ object HullUtils {
     @JvmOverloads
     @JvmStatic
     fun isHullKnownToPlayer(hull: ShipHullSpecAPI, checkHideInCodex: Boolean = false): Boolean {
-
         if (hull.hasTag(Tags.CODEX_UNLOCKABLE)) {
             if (!SharedUnlockData.get().isPlayerAwareOfShip(hull.hullId))
                 return false
@@ -70,8 +69,11 @@ object HullUtils {
      */
     @JvmStatic
     fun createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
+        // This function is likely overbuilt.
+        // Simply getting the variant with the actual hull_id with _Hull appended to the end should work in most cases, but I really want to avoid having any issues here.
+        // Or even filtering for the VariantSource.HULL from the hullIdToVariantListMap, the hullId being the variant's actual hull_id
         return run {
-            val variants = LookupUtils.getVariantsForEffectiveHullSpec(hull)
+            val variants = LookupUtils.getVariantsForEffectiveHullSpecRaw(hull)
 
             variants.filter { it.source == VariantSource.HULL } // Filter out non hull variants
                 .takeIf { it.isNotEmpty() }
@@ -84,7 +86,7 @@ object HullUtils {
                             Global.getLogger(javaClass).warn("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'")
                             hullVariants.firstOrNull() // Cannot find a good enough match, just go for whatever
                         }
-                }
+                }?.clone()
         } ?: runCatching {
             val emptyVariant = Global.getSettings().createEmptyVariant(hull.hullId, hull)
             Global.getLogger(javaClass).warn(

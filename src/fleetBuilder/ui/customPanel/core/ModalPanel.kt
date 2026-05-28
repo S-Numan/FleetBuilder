@@ -10,6 +10,7 @@ import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.parent
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.UIUtils.easeCubic
+import fleetBuilder.ui.UIUtils.lerp
 import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
 
@@ -49,6 +50,7 @@ open class ModalPanel : ComposablePanel() {
     override var createUIOnInit: Boolean = false
     open var darkenBackground: Boolean = false
     open var darkenBackgroundAlphaMult: Float = 0.6f
+    protected open var currentDarkenBackgroundAlphaMult = darkenBackgroundAlphaMult
     open var useCampaignDummyDialogAndPauseCombat: Boolean = false
     open var makeCampaignDummyDialogHideUI: Boolean = false
     protected open var successfullyOpenedCampaignDummyDialog: Boolean = false
@@ -57,7 +59,7 @@ open class ModalPanel : ComposablePanel() {
 
     override fun renderBelow(alphaMult: Float) {
         if (darkenBackground)
-            UIUtils.darkenBackground(alphaMult * (alpha * darkenBackgroundAlphaMult), panel, pad = 0f)
+            UIUtils.darkenBackground(currentDarkenBackgroundAlphaMult)
 
         super.renderBelow(alphaMult)
     }
@@ -184,7 +186,8 @@ open class ModalPanel : ComposablePanel() {
         if (panel.parent == null)
             return
 
-        alpha = progress
+        panel.opacity = progress
+        currentDarkenBackgroundAlphaMult = lerp(0f, darkenBackgroundAlphaMult, progress)
 
         if (animation == PanelAnimation.FADE_ONLY) {
             panel.position?.setSize(goalWidth, goalHeight)
