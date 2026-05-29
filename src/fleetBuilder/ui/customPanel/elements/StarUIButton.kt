@@ -9,8 +9,6 @@ import fleetBuilder.ui.UIUtils
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
-// TODO, fader for press in and out
-
 internal class StarUIButton(
     var width: Float,
     var height: Float
@@ -23,35 +21,62 @@ internal class StarUIButton(
     // === Visuals ===
     var backgroundColor: Color = Color(40, 40, 40, 150)
     var hoverColor: Color = Color(255, 255, 255, 80)
+    var pressedColor: Color = Color(100, 255, 100, 120)
 
-    var pressedColor: Color = Color(100, 255, 100, 120) // shown when pressed/toggled
-
-    var sprite: SpriteAPI? = null
-        private set
+    // === Sprites ===
+    private var defaultSprite: SpriteAPI? = null
+    private var hoverSprite: SpriteAPI? = null
+    private var pressedSprite: SpriteAPI? = null
+    private var toggledSprite: SpriteAPI? = null
 
     // === Behavior Config ===
     var isToggle = false
     var toggled = false
         private set
 
-    var triggerOnPress = true // true = mouse down, false = release
+    var triggerOnPress = true
+
+    var isDisabled = false
 
     // === Sound ===
     var soundId: String? = null
     var soundVolume = 1f
     var soundPitch = 1f
 
+    // === Faders ===
     private val hoverFader = Fader(0f, 0.1f, 0.1f, false, false)
+    private val pressFader = Fader(0f, 0.08f, 0.08f, false, false)
 
-    // === Public Callback ===
+    // === Internal ===
+    private var isPressed = false
+
+    // === Callback ===
     private var onTriggerFunction: (() -> Unit)? = null
     fun onTrigger(callback: () -> Unit) {
         onTriggerFunction = callback
     }
 
-    // === Setup ===
-    fun setSprite(newSprite: SpriteAPI?) {
-        sprite = newSprite
+    // === Sprite Setup ===
+    fun setSprite(
+        default: SpriteAPI?,
+        hover: SpriteAPI? = null,
+        pressed: SpriteAPI? = null,
+        toggled: SpriteAPI? = null
+    ) {
+        defaultSprite = default
+        hoverSprite = hover
+        pressedSprite = pressed
+        toggledSprite = toggled
+    }
+
+    private fun getCurrentSprite(): SpriteAPI? {
+        return when {
+            isDisabled -> defaultSprite
+            (isPressed) && pressedSprite != null -> pressedSprite
+            (isToggle && toggled) && toggledSprite != null -> toggledSprite
+            isHovering && hoverSprite != null -> hoverSprite
+            else -> defaultSprite
+        }
     }
 
     fun setBackground(enabled: Boolean) {
@@ -62,21 +87,42 @@ internal class StarUIButton(
         renderSprite = enabled
     }
 
-    // === Init Hook ===
+    // === Init ===
     fun init(panel: CustomPanelAPI) {
         this.panel = panel
 
+        allowedMouseButtons.add(0)
+
         hoverFader.fadeOut()
+        pressFader.fadeOut()
 
         onClick {
+            if (isDisabled) return@onClick
+
+            isPressed = true
+            pressFader.fadeIn()
+
             if (triggerOnPress) trigger()
         }
 
         onClickRelease {
-            if (!triggerOnPress) trigger()
+            if (isDisabled) return@onClickRelease
+
+            if (!triggerOnPress && isPressed) trigger()
+
+            isPressed = false
+            pressFader.fadeOut()
+        }
+
+        onClickReleaseOutside {
+            if (isDisabled) return@onClickReleaseOutside
+
+            isPressed = false
+            pressFader.fadeOut()
         }
 
         onHoverEnter {
+            if (isDisabled) return@onHoverEnter
             hoverFader.fadeIn()
         }
 
@@ -86,6 +132,7 @@ internal class StarUIButton(
 
         advance { amount ->
             hoverFader.advance(amount)
+            pressFader.advance(amount)
         }
     }
 
@@ -94,9 +141,8 @@ internal class StarUIButton(
             toggled = !toggled
         }
 
-        // play sound
         soundId?.let {
-            Global.getSoundPlayer().playUISound(it, soundPitch, soundVolume)
+            UIUtils.playSound(it, soundVolume, soundPitch)
         }
 
         onTriggerFunction?.invoke()
@@ -112,26 +158,20 @@ internal class StarUIButton(
             val y = panel.position.y
 
             val hoverAlpha = hoverFader.brightness
+            val pressAlpha = pressFader.brightness
 
             // === Background ===
             if (renderBackground) {
-                val base = backgroundColor
-
                 GL11.glColor4f(
-                    base.red / 255f,
-                    base.green / 255f,
-                    base.blue / 255f,
-                    (base.alpha / 255f) * alpha
+                    backgroundColor.red / 255f,
+                    backgroundColor.green / 255f,
+                    backgroundColor.blue / 255f,
+                    (backgroundColor.alpha / 255f) * alpha
                 )
 
-                GL11.glBegin(GL11.GL_QUADS)
-                GL11.glVertex2f(x, y)
-                GL11.glVertex2f(x + width, y)
-                GL11.glVertex2f(x + width, y + height)
-                GL11.glVertex2f(x, y + height)
-                GL11.glEnd()
+                UIUtils.drawRectGL(x, y, width, height)
 
-                // Hover overlay (faded)
+                // Hover overlay
                 if (hoverAlpha > 0f) {
                     GL11.glColor4f(
                         hoverColor.red / 255f,
@@ -144,15 +184,24 @@ internal class StarUIButton(
                 }
             }
 
-            // === Press / Toggle Overlay ===
-            if (hasClicked || (isToggle && toggled)) {
+            // === Press / Toggle Overlay (with fade) ===
+            val showPress = pressAlpha > 0f || (isToggle && toggled)
+            if (false) {//showPress) {
+                val effectiveAlpha = if (isToggle && toggled) 1f else pressAlpha
+
                 GL11.glColor4f(
                     pressedColor.red / 255f,
                     pressedColor.green / 255f,
                     pressedColor.blue / 255f,
-                    (pressedColor.alpha / 255f) * alpha
+                    (pressedColor.alpha / 255f) * effectiveAlpha * alpha
                 )
 
+                UIUtils.drawRectGL(x, y, width, height)
+            }
+
+            // === Disabled Overlay ===
+            if (isDisabled) {
+                GL11.glColor4f(0f, 0f, 0f, 0.5f * alpha)
                 UIUtils.drawRectGL(x, y, width, height)
             }
         }
@@ -161,14 +210,15 @@ internal class StarUIButton(
             val x = panel.position.x
             val y = panel.position.y
 
-            // === Sprite ===
-            if (renderSprite) {
-                sprite?.let {
-                    it.setAlphaMult(alpha)
-                    it.setSize(width, height)
-                    it.renderAtCenter(x + width / 2f, y + height / 2f)
-                }
-            }
+            if (!renderSprite) return@render
+
+            val sprite = getCurrentSprite() ?: return@render
+
+            val finalAlpha = if (isDisabled) alpha * 0.4f else alpha
+
+            sprite.setAlphaMult(finalAlpha)
+            sprite.setSize(width, height)
+            sprite.renderAtCenter(x + width / 2f, y + height / 2f)
         }
     }
 }

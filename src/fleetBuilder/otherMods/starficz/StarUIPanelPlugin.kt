@@ -4,7 +4,6 @@ import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.ui.UIUtils
-import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 
 open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
@@ -60,6 +59,8 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     open var consumeKeyboardEvents = false
     protected open var ignoreConsumedEvents = true
 
+    val allowedMouseButtons = mutableListOf<Int>()
+
     open fun setMouseCapturePad(pad: Float) {
         if (!::panel.isInitialized) return
 
@@ -73,13 +74,13 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
 
     override fun renderBelow(alphaMult: Float) {
         renderBelowFunctions.forEach {
-            //GL11.glPushMatrix()
-            //GL11.glDisable(GL11.GL_TEXTURE_2D)
-            //GL11.glDisable(GL11.GL_CULL_FACE)
-            //GL11.glEnable(GL11.GL_BLEND)
-            //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+            GL11.glPushMatrix()
+            GL11.glDisable(GL11.GL_TEXTURE_2D)
+            GL11.glDisable(GL11.GL_CULL_FACE)
+            GL11.glEnable(GL11.GL_BLEND)
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
             it(alphaMult)
-            //GL11.glPopMatrix()
+            GL11.glPopMatrix()
         }
     }
 
@@ -124,26 +125,33 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
                 onHoverFunctions.forEach { it(event) }
                 if (!isHovering) onHoverEnterFunctions.forEach { it(event) }
                 isHovering = true
-                if (event.isMouseDownEvent) {
-                    hasClicked = true
-                    onClickFunctions.forEach { it(event) }
+
+                if (allowedMouseButtons.isEmpty() || event.eventValue in allowedMouseButtons) {
+                    if (event.isMouseDownEvent) {
+                        hasClicked = true
+                        onClickFunctions.forEach { it(event) }
+                    }
+                    if (event.isMouseUpEvent && hasClicked) {
+                        hasClicked = false
+                        onClickReleaseFunctions.forEach { it(event) }
+                    }
+                    if (event.eventValue >= 0)
+                        onMouseButtonHeldFunctions.forEach { it(event) }
+                    //if (Mouse.isButtonDown(0)) onMouseButtonHeldFunctions.forEach { it(event) }
                 }
-                if (event.isMouseUpEvent && hasClicked) {
-                    hasClicked = false
-                    onClickReleaseFunctions.forEach { it(event) }
-                }
-                if (Mouse.isButtonDown(0)) onMouseButtonHeldFunctions.forEach { it(event) }
                 if (consumeInnerMouseEvents) event.consume()
             } else {
                 if (isHovering) onHoverExitFunctions.forEach { it(event) }
                 isHovering = false
 
-                if (event.isMouseDownEvent) {
-                    onClickOutsideFunctions.forEach { it(event) }
-                }
-                if (event.isMouseUpEvent && hasClicked) {
-                    hasClicked = false
-                    onClickReleaseOutsideFunctions.forEach { it(event) }
+                if (allowedMouseButtons.isEmpty() || event.eventValue in allowedMouseButtons) {
+                    if (event.isMouseDownEvent) {
+                        onClickOutsideFunctions.forEach { it(event) }
+                    }
+                    if (event.isMouseUpEvent && hasClicked) {
+                        hasClicked = false
+                        onClickReleaseOutsideFunctions.forEach { it(event) }
+                    }
                 }
             }
         }

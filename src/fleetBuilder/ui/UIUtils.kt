@@ -39,11 +39,18 @@ object UIUtils {
         return start + fraction * (stop - start)
     }
 
-    fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color) {
+    internal fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color) {
         drawRectangleFilledForTooltipPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width, tooltipMakerAPI.height, alphaMult, uiColor)
     }
 
-    fun drawRectangleFilledForTooltipPos(x: Float, y: Float, w: Float, h: Float, alphaMult: Float, uiColor: Color) {
+    internal fun drawRectangleFilledForTooltipPos(
+        x: Float,
+        y: Float,
+        w: Float,
+        h: Float,
+        alphaMult: Float,
+        uiColor: Color
+    ) {
         GL11.glPushMatrix()
         GL11.glDisable(GL11.GL_TEXTURE_2D)
         GL11.glEnable(GL11.GL_BLEND)

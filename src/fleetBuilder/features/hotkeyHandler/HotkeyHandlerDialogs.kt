@@ -97,10 +97,16 @@ object HotkeyHandlerDialogs {
         }
         dialog.show(width = 500f, height = 200f) { ui ->
             val but = StarUIButton(dialog.headerHeight, dialog.headerHeight)
-            val check = Global.getSettings().getSprite("ui", "checkmark_x")
-            check.color = Color.RED
-            but.setSprite(check)
-            but.isToggle = false
+            val defaultCheck = Global.getSettings().getSprite("ui", "checkmark_x")
+            defaultCheck.color = Color.RED
+            val hoverCheck = Global.getSettings().getSprite("ui", "checkmark_x")
+            hoverCheck.color = Color.WHITE
+            val pressedCheck = Global.getSettings().getSprite("ui", "checkmark_x")
+            pressedCheck.color = Color.BLUE
+            val toggledCheck = Global.getSettings().getSprite("ui", "checkmark_x")
+            toggledCheck.color = Color.ORANGE
+            but.setSprite(defaultCheck, hoverCheck, pressedCheck, toggledCheck)
+            but.isToggle = true
             but.triggerOnPress = false
             but.onTrigger {
                 DisplayMessage.showMessage("la")
