@@ -47,6 +47,7 @@ import fleetBuilder.ui.*
 import fleetBuilder.ui.UIUtils.SCROLLER_WIDTH
 import fleetBuilder.ui.customPanel.core.ComposablePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
+import fleetBuilder.ui.customPanel.elements.StarUIButton
 import fleetBuilder.ui.customPanel.modules.TextInputDialog
 import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
@@ -95,6 +96,17 @@ object HotkeyHandlerDialogs {
             test.render(dialog.x, dialog.y, 500f, 200f, alphaMult)
         }
         dialog.show(width = 500f, height = 200f) { ui ->
+            val but = StarUIButton(dialog.headerHeight, dialog.headerHeight)
+            val check = Global.getSettings().getSprite("ui", "checkmark_x")
+            check.color = Color.RED
+            but.setSprite(check)
+            but.isToggle = false
+            but.triggerOnPress = false
+            but.onTrigger {
+                DisplayMessage.showMessage("la")
+            }
+            ui.addCustom(but.panel, 0f)
+
             test.fadeInOut(0.05F, 1.0F)
 
             val toggleDev = ui.addCheckboxD(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)

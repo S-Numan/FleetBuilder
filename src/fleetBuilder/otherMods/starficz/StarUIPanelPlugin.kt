@@ -13,6 +13,7 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     private var onClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
     private var onClickOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
     private var onClickReleaseFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
+    private var onClickReleaseOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
     private var onHoverFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onHoverEnterFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onHoverExitFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
@@ -30,6 +31,7 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
         onClickFunctions.clear()
         onClickOutsideFunctions.clear()
         onClickReleaseFunctions.clear()
+        onClickReleaseOutsideFunctions.clear()
         onHoverFunctions.clear()
         onHoverEnterFunctions.clear()
         onHoverExitFunctions.clear()
@@ -71,13 +73,13 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
 
     override fun renderBelow(alphaMult: Float) {
         renderBelowFunctions.forEach {
-            GL11.glPushMatrix()
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
-            GL11.glDisable(GL11.GL_CULL_FACE)
-            GL11.glEnable(GL11.GL_BLEND)
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+            //GL11.glPushMatrix()
+            //GL11.glDisable(GL11.GL_TEXTURE_2D)
+            //GL11.glDisable(GL11.GL_CULL_FACE)
+            //GL11.glEnable(GL11.GL_BLEND)
+            //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
             it(alphaMult)
-            GL11.glPopMatrix()
+            //GL11.glPopMatrix()
         }
     }
 
@@ -135,11 +137,13 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
             } else {
                 if (isHovering) onHoverExitFunctions.forEach { it(event) }
                 isHovering = false
+
                 if (event.isMouseDownEvent) {
                     onClickOutsideFunctions.forEach { it(event) }
                 }
-                if (event.isMouseUpEvent) {
+                if (event.isMouseUpEvent && hasClicked) {
                     hasClicked = false
+                    onClickReleaseOutsideFunctions.forEach { it(event) }
                 }
             }
         }
@@ -162,6 +166,10 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
 
     fun onClickRelease(function: (InputEventAPI) -> Unit) {
         onClickReleaseFunctions.add(function)
+    }
+
+    fun onClickReleaseOutside(function: (InputEventAPI) -> Unit) {
+        onClickReleaseOutsideFunctions.add(function)
     }
 
     fun onClickOutside(function: (InputEventAPI) -> Unit) {

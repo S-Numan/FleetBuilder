@@ -28,8 +28,8 @@ class UINoiseRenderer() {
 
     fun getFader(): Fader = fader
 
-    val constantIntensity = 0.25f
-    val variableIntensity = 0.4f
+    val constantIntensity = 0.35f
+    val variableIntensity = 0.3f
 
     fun getIntensity(): Float {
         val base = constantIntensity + variableIntensity * noise.getValue()

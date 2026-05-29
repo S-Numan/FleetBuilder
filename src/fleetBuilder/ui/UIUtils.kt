@@ -40,10 +40,10 @@ object UIUtils {
     }
 
     fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color) {
-        drawRectangleFilledForPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width, tooltipMakerAPI.height, alphaMult, uiColor)
+        drawRectangleFilledForTooltipPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width, tooltipMakerAPI.height, alphaMult, uiColor)
     }
 
-    fun drawRectangleFilledForPos(x: Float, y: Float, w: Float, h: Float, alphaMult: Float, uiColor: Color) {
+    fun drawRectangleFilledForTooltipPos(x: Float, y: Float, w: Float, h: Float, alphaMult: Float, uiColor: Color) {
         GL11.glPushMatrix()
         GL11.glDisable(GL11.GL_TEXTURE_2D)
         GL11.glEnable(GL11.GL_BLEND)
@@ -120,7 +120,7 @@ object UIUtils {
         GL11.glPopMatrix()
     }
 
-    private fun drawRectGL(x: Float, y: Float, w: Float, h: Float) {
+    fun drawRectGL(x: Float, y: Float, w: Float, h: Float) {
         GL11.glBegin(GL11.GL_QUADS)
         GL11.glVertex2f(x, y)
         GL11.glVertex2f(x + w, y)
