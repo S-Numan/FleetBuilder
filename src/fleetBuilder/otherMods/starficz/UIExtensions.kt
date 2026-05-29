@@ -145,6 +145,30 @@ fun UIComponentAPI.setAbsoluteLocation(x: Float, y: Float) {
     yAlignOffset += (y - position.y)
 }
 
+fun UIComponentAPI.setAbsoluteX(x: Float) {
+    xAlignOffset += (x - position.x)
+}
+
+fun UIComponentAPI.setAbsoluteY(y: Float) {
+    yAlignOffset += (y - position.y)
+}
+
+// .position already is this?
+/*
+fun UIComponentAPI.getAbsolutePosition(): Vector2f {
+    var x = this.position.x
+    var y = this.position.y
+
+    var current: UIComponentAPI? = this
+    while (current?.parent != null) {
+        current = current.parent
+        x += current!!.position.x
+        y += current.position.y
+    }
+
+    return Vector2f(x, y)
+}*/
+
 val UIComponentAPI.centerX
     get() = position.centerX
 

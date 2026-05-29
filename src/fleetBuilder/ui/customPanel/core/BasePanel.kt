@@ -6,11 +6,11 @@ import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBMisc.endStencil
 import fleetBuilder.core.util.FBMisc.renderTiledTexture
 import fleetBuilder.core.util.FBMisc.startStencilWithXPad
 import fleetBuilder.core.util.FBMisc.startStencilWithYPad
-import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.ReflectionMisc
@@ -50,7 +50,7 @@ open class BasePanel : StarUIPanelPlugin() {
 
         panel = inputPanel
 
-        parent.addComponent(panel).inTL(xOffset, parent.height - yOffset)
+        parent.addComponent(panel).inTL(xOffset, yOffset)
         parent.bringComponentToTop(panel)
 
         if (createUIOnInit)
@@ -92,22 +92,36 @@ open class BasePanel : StarUIPanelPlugin() {
 
     open val background: SpriteAPI = sprite("ui", "panel00_center").apply { color = Color.BLACK }
     open var renderUIBorders = true
+    protected open var renderInnerUIBorders = true
     open var uiBorderColor: Color? = null
 
     open var renderBackground: Boolean = true
     open var dialogStyle: Boolean = false
 
-    protected fun borderSprite(id: String) =
+    protected open fun borderSprite(id: String) =
         sprite("ui", id).apply { setSize(16f, 16f) }
 
-    open val bot = borderSprite("panel00_bot")
-    open val top = borderSprite("panel00_top")
-    open val left = borderSprite("panel00_left")
-    open val right = borderSprite("panel00_right")
-    open val topLeft = borderSprite("panel00_top_left")
-    open val topRight = borderSprite("panel00_top_right")
-    open val bottomLeft = borderSprite("panel00_bot_left")
-    open val bottomRight = borderSprite("panel00_bot_right")
+    protected open fun borderSpriteFB(id: String) =
+        sprite("FleetBuilder", id).apply { setSize(16f, 16f) }
+
+    open val bot = borderSpriteFB("panel00_bot_cut")
+    open val top = borderSpriteFB("panel00_top_cut")
+    open val left = borderSpriteFB("panel00_left_cut")
+    open val right = borderSpriteFB("panel00_right_cut")
+    open val topLeft = borderSpriteFB("panel00_top_left_cut")
+    open val topRight = borderSpriteFB("panel00_top_right_cut")
+    open val bottomLeft = borderSpriteFB("panel00_bot_left_cut")
+    open val bottomRight = borderSpriteFB("panel00_bot_right_cut")
+
+    open val bot_inner = borderSpriteFB("panel00_bot_inner")
+    open val top_inner = borderSpriteFB("panel00_top_inner")
+    open val left_inner = borderSpriteFB("panel00_left_inner")
+    open val right_inner = borderSpriteFB("panel00_right_inner")
+    open val topLeft_inner = borderSpriteFB("panel00_top_left_inner")
+    open val topRight_inner = borderSpriteFB("panel00_top_right_inner")
+    open val bottomLeft_inner = borderSpriteFB("panel00_bot_left_inner")
+    open val bottomRight_inner = borderSpriteFB("panel00_bot_right_inner")
+
 
     override fun renderBelow(alphaMult: Float) {
         if (renderBackground) {
@@ -118,29 +132,49 @@ open class BasePanel : StarUIPanelPlugin() {
             )
         }
 
-        if (dialogStyle) {
-            if (renderUIBorders)
-                renderDialogBorders(alphaMult)
-        } else {
-            if (renderUIBorders) {
-                uiBorderColor?.let { UIUtils.renderUILines(panel, alphaMult, boxColor = it) }
-                    ?: UIUtils.renderUILines(panel, alphaMult)
-            }
-        }
+        renderBorders(alphaMult)
 
         super.renderBelow(alphaMult)
     }
 
-    protected open fun renderDialogBorders(alphaMult: Float) {
-        val leftX = panel.position.x + 16
+    protected open fun renderBorders(alphaMult: Float) {
+        if (!renderUIBorders)
+            return
 
-        listOf(top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight)
+        if (!dialogStyle) {
+            uiBorderColor?.let { UIUtils.renderUILines(panel, alphaMult, boxColor = it) }
+                ?: UIUtils.renderUILines(panel, alphaMult)
+            return
+        }
+
+        renderBorderSprite(alphaMult, top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight)
+
+        if (renderInnerUIBorders)
+            renderBorderSprite(alphaMult, top_inner, bot_inner, left_inner, right_inner, topLeft_inner, topRight_inner, bottomLeft_inner, bottomRight_inner)
+    }
+
+    protected fun renderBorderSprite(
+        alphaMult: Float,
+        top: SpriteAPI,
+        bot: SpriteAPI,
+        left: SpriteAPI,
+        right: SpriteAPI,
+        topLeft: SpriteAPI,
+        topRight: SpriteAPI,
+        bottomLeft: SpriteAPI,
+        bottomRight: SpriteAPI
+    ) {
+        listOf(
+            top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight,
+        )
             .forEach {
                 it.alphaMult = alphaMult
                 if (uiBorderColor != null)
                     it.color = uiBorderColor
             }
 
+
+        val leftX = panel.position.x + 16
         //val rightX = panel.getPosition().getX() + panel.getPosition().getWidth() - 16
         val botX = panel.y + 16
         startStencilWithXPad(panel, 8f)

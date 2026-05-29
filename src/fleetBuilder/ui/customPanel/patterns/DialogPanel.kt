@@ -8,6 +8,7 @@ import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import org.lwjgl.input.Keyboard
+import org.lwjgl.input.Mouse
 import java.awt.Color
 
 open class DialogPanel(
@@ -45,17 +46,37 @@ open class DialogPanel(
     }
 
     override fun renderBelow(alphaMult: Float) {
+        val previousRenderUIBorders = renderUIBorders
+        renderUIBorders = false
+
         super.renderBelow(alphaMult)
 
-        if (!closing)
-            headerTooltip?.let {
+        var innerBorderRendered = false
+        if (previousRenderUIBorders && renderInnerUIBorders && dialogStyle) {
+            renderBorderSprite(alphaMult, top_inner, bot_inner, left_inner, right_inner, topLeft_inner, topRight_inner, bottomLeft_inner, bottomRight_inner)
+            innerBorderRendered = true
+        }
+
+        if (!closing) {
+            headerTooltip?.let { tooltip ->
                 UIUtils.drawRectangleFilledForTooltip(
-                    it,
+                    tooltip,
                     alphaMult,
-                    Global.getSettings().getColor("buttonBgDark") // TODO, check
-                    //Global.getSector().playerFaction.darkUIColor.darker()
+                    headerColor
                 )
             }
+        }
+
+        if (previousRenderUIBorders) {
+            renderUIBorders = true
+
+            if (innerBorderRendered)
+                renderInnerUIBorders = false
+
+            renderBorders(alphaMult)
+            if (innerBorderRendered)
+                renderInnerUIBorders = true
+        }
     }
 
     private var confirmCallback: (() -> Unit)? = null
@@ -138,25 +159,25 @@ open class DialogPanel(
         panel.addUIElement(tooltip).inTL(alignX, bottom - 40)
     }
 
-    fun addCloseButton() {
-        val buttonSize = 33f
-        val ui = panel.createUIElement(buttonSize, buttonSize, false)
+    fun addCloseButton(closeButtonSize: Float = 28f) {
+        val ui = panel.createUIElement(closeButtonSize, closeButtonSize, false)
 
         ui.setButtonFontOrbitron20Bold()
+        // TODO, custom button functionality to avoid button background. Only the red X is needed here. (maybe a red outline on hover, but that's it)
         val closeButton = ui.addButton(
             "X",
             "close_button",
-            Color.WHITE,
-            Color.RED.darker().darker(),
+            Color.RED.darker(),
+            headerColor,
             Alignment.MID,
-            CutStyle.TL_BR,
-            buttonSize,
-            buttonSize,
+            CutStyle.NONE,
+            closeButtonSize,
+            closeButtonSize,
             0f
         )
 
         // Position in top-right
-        panel.addUIElement(ui).inTR(7f, 2f)
+        panel.addUIElement(ui).inTR(5f, 0f)
         panel.bringComponentToTop(ui)
 
         closeButton!!.onClick { dismiss() }
@@ -165,16 +186,29 @@ open class DialogPanel(
     }
 
     var headerTooltip: TooltipMakerAPI? = null
+    var headerHeight = 28f
+    var headerPadFromTop = 0f
+    var headerPadFromSide = 0f
+    var headerColor: Color = Global.getSettings().getColor("buttonBgDark").darker() //Global.getSector().playerFaction.darkUIColor.darker()
     protected fun createHeader() {
         if (headerTitle != null && headerTooltip == null) {
-            val headerPad = 4f
-            val headerTooltip = panel.createUIElement(panel.position.width - (tooltipPadFromSide * 2f) + headerPad, 20f, false)
+            val headerSidePad =
+                if (dialogStyle) 0f
+                else 0f
+            val headerExtraTopPad =
+                if (dialogStyle) 0f
+                else 0f
+
+            val headerTooltip = panel.createUIElement(panel.position.width - (headerPadFromSide * 2f) + headerSidePad, headerHeight, false)
+            panel.addUIElement(headerTooltip).inTL(headerPadFromSide - headerSidePad / 2, headerPadFromTop)
+
             headerTooltip.setParaFont(Fonts.ORBITRON_20AABOLD)
-            val label = headerTooltip.addPara(headerTitle, Misc.getTooltipTitleAndLightHighlightColor(), 5f)
-            panel.addUIElement(headerTooltip).inTL(tooltipPadFromSide - headerPad / 2, tooltipPadFromTop)
+            val label = headerTooltip.addPara(headerTitle, Misc.getTooltipTitleAndLightHighlightColor(), 0f)
             val textWidth = label.computeTextWidth(label.text)
-            label.position.setLocation(0f, 0f).inTL(((panel.position.width - (tooltipPadFromSide * 2) - headerPad) - textWidth) / 2f, 3f)
-            tooltipPadFromTop += 30f
+            val textHeight = label.computeTextHeight(label.text)
+            label.position.inTL(((panel.position.width - (headerPadFromSide * 2) - headerSidePad) - textWidth) / 2f, (headerHeight - textHeight) / 2f)
+
+            tooltipPadFromTop += headerHeight + headerExtraTopPad
             this.headerTooltip = headerTooltip
         }
     }

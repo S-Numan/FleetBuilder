@@ -24,11 +24,11 @@ import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
 import com.fs.state.AppDriver
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.FBTxt.txtPlural
 import fleetBuilder.core.util.file.directory.DirFile
 import fleetBuilder.core.util.file.directory.DirectoryManager
-import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.save.removable.RemoveFromSave.removeModThings
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autofit.ui.AutofitPanel
@@ -44,6 +44,8 @@ import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.*
+import fleetBuilder.ui.UIUtils.SCROLLER_WIDTH
+import fleetBuilder.ui.customPanel.core.ComposablePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.modules.TextInputDialog
 import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
@@ -59,7 +61,10 @@ import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.lib.ClipboardUtil
 import lunalib.lunaExtensions.addLunaElement
 import org.lazywizard.lazylib.MathUtils
+import org.lwjgl.BufferUtils
+import org.lwjgl.input.Cursor
 import org.lwjgl.input.Keyboard
+import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import second_in_command.SCData
@@ -198,12 +203,14 @@ object HotkeyHandlerDialogs {
     fun devTestPanel(inputDir: String = "TestFolderOuter/TestFolderInner") {
         var currentManager = DirectoryManager.get(inputDir)
 
-        val dialog = DialogPanel()
+        val dialog = DialogPanel("Top Text")
         dialog.dialogStyle = false
         dialog.darkenBackground = false
         dialog.background.alphaMult = 1f
-        dialog.tooltipPadFromSide = 4f
-        dialog.tooltipPadFromTop = 2f
+        dialog.tooltipPadFromSide = 0f
+        dialog.tooltipPadFromTop = 0f
+        dialog.tooltipPadFromBottom = 0f
+        dialog.headerHeight = 30f
 
         fun switchToManager(manager: DirectoryManager) {
             if (manager === currentManager)
@@ -249,19 +256,76 @@ object HotkeyHandlerDialogs {
             }
 
             val containingPaths = currentManager.getContainingPaths()
-            ui.addPara("\n\nFolders:\n", 0f).position.inTL(0f, 100f)
-            containingPaths.filterIsInstance<DirectoryManager>().forEach { path ->
-                val width = ui.computeStringWidth(path.folderName)
-                val button = ui.addButtonD(path.folderName, width)
-                button.onClick {
-                    switchToManager(path)
+
+            val leftPanel = ComposablePanel().apply {
+                tooltipPadFromSide = 4f
+            }
+            leftPanel.show(width = ui.width / 2f, height = ui.height, xOffset = 0f, yOffset = 0f, parent = ui, withScroller = true) { leftUI ->
+                leftUI.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
+                leftUI.addPara("Folders:\n", 0f).position.inTL(0f, 10f)
+                containingPaths.filterIsInstance<DirectoryManager>().forEach { path ->
+                    val width = leftUI.computeStringWidth(path.folderName)
+                    val button = leftUI.addButtonD(path.folderName, width, style = CutStyle.NONE, pad = 4f)
+                    button.onClick {
+                        switchToManager(path)
+                    }
+                }
+            }
+            val rightPanel = ComposablePanel()
+            rightPanel.tooltipPadFromSide = 4f
+            val rightPanelMult = 5f
+            rightPanel.show(width = ui.width - (ui.width / rightPanelMult), height = ui.height, xOffset = ui.width / rightPanelMult, yOffset = 0f, parent = ui, withScroller = true) { rightUI ->
+                rightUI.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
+                rightUI.addPara("Files:\n", 0f).position.inTL(0f, 10f)
+                containingPaths.filterIsInstance<DirFile>().forEach { path ->
+                    val width = rightUI.computeStringWidth(path.fileName)
+                    val button = rightUI.addButtonD(path.fileName, width, style = CutStyle.NONE, pad = 4f)
                 }
             }
 
-            ui.addPara("\n\nFiles:\n", 0f).position.inTL(400f, 100f)
-            containingPaths.filterIsInstance<DirFile>().forEach { path ->
-                val width = ui.computeStringWidth(path.fileName)
-                val button = ui.addButtonD(path.fileName, width)
+            val oldCursor = Mouse.getNativeCursor()
+            rightPanel.onExit {
+                Mouse.setNativeCursor(oldCursor)
+            }
+
+            var dragging = false
+            rightPanel.onProcessInput { event ->
+                val mouseX = event.x.toFloat()
+                val leftEdge = rightPanel.panel.position.x
+
+                if (event.isLMBUpEvent) {
+                    dragging = false
+                    Mouse.setNativeCursor(oldCursor)
+                }
+                if (dragging || (UIUtils.isMouseHoveringOverComponent(ui, event.x, event.y, 2f) && kotlin.math.abs(mouseX - leftEdge) <= 9f)) {
+                    if (dragging || event.isLMBDownEvent) {
+                        Mouse.setNativeCursor(Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null))
+
+                        val uiLeft = ui.x
+                        val uiRight = ui.x + ui.width // Absolute right edge of the parent UI
+                        // Minimum sizes (tweak to taste)
+                        val minRightPanelWidth = ui.width / 2f
+                        val minLeftPanelWidth = ui.width / rightPanelMult
+                        // Compute bounds for the draggable divider
+                        var minX = uiLeft + minLeftPanelWidth
+                        var maxX = uiRight - minRightPanelWidth
+                        // If constraints overlap, collapse to a safe midpoint
+                        if (minX > maxX) {
+                            val mid = (uiLeft + uiRight) / 2f
+                            minX = mid
+                            maxX = mid
+                        }
+                        val clampedX = mouseX.coerceIn(minX, maxX)
+
+                        rightPanel.panel.setAbsoluteX(clampedX)
+                        val newWidth = uiRight - clampedX // Width needed to extend to the end of the tooltip
+                        rightPanel.panel.setSize(newWidth, rightPanel.panel.height)
+                        rightPanel.tooltip!!.setSize(newWidth - rightPanel.tooltipPadFromSide * 2 - SCROLLER_WIDTH, rightPanel.tooltip!!.height)
+
+                        dragging = true
+                        event.consume()
+                    }
+                }
             }
         }
 

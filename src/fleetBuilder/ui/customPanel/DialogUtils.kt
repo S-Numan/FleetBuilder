@@ -60,8 +60,8 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
 
         fun forceCloseAllDialogs(): Boolean {
             var closedOne = false
-            val screenPanel = ReflectionMisc.getScreenPanel()
-            screenPanel?.getChildrenCopy()?.toList()?.forEach { child ->
+            val screenPanel = ReflectionMisc.getScreenPanel() ?: return false
+            screenPanel.getChildrenCopy().toList().forEach { child ->
                 if (child is CustomPanelAPI && (child.plugin is BasePanel)) {
                     try {
                         (child.plugin as BasePanel).forceDismiss()

@@ -17,6 +17,8 @@ import java.awt.Color
 
 object UIUtils {
 
+    const val SCROLLER_WIDTH = 5f
+
     @JvmOverloads
     fun playSound(id: String, volume: Float = 1f, pitch: Float = 1f) {
         Global.getSoundPlayer().playUISound(id, pitch, volume)
@@ -50,7 +52,9 @@ object UIUtils {
             uiColor.red / 255f, uiColor.green / 255f, uiColor.blue / 255f,
             uiColor.alpha / 255f * alphaMult
         )
-        GL11.glRectf(x, y, x + w, y + h)
+
+        GL11.glRectf(x, y, x + w + 1f, y + h + 1f)
+
         GL11.glColor4f(1f, 1f, 1f, 1f)
         GL11.glPopMatrix()
     }

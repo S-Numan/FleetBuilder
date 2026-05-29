@@ -10,12 +10,33 @@
   },
   "graphics": {
     "FleetBuilder": {
+      "arrow_down":"graphics/ui/arrow_down.png",
+      "arrow_right":"graphics/ui/arrow_right.png",
+
       "mission_indicator": "graphics/icons/mission_marker.png",
       "white_square": "graphics/fx/white_square.png",
       "different_weapon_groups": "graphics/icons/NO-WG-white.png",
       "different_flux_stats": "graphics/icons/NO-FLUX-white.png",
       "entity": "graphics/icons/entity.png",
-      "more_info_buttonless": "graphics/icons/more_info_buttonless.png"
+      "more_info_buttonless": "graphics/icons/more_info_buttonless.png",
+
+      "panel00_bot_left_cut":"graphics/ui/bgs/panel00_bot_left_cut.png",
+      "panel00_bot_right_cut":"graphics/ui/bgs/panel00_bot_right_cut.png",
+      "panel00_bot_cut":"graphics/ui/bgs/panel00_bot_cut.png",
+      "panel00_left_cut":"graphics/ui/bgs/panel00_left_cut.png",
+      "panel00_right_cut":"graphics/ui/bgs/panel00_right_cut.png",
+      "panel00_top_left_cut":"graphics/ui/bgs/panel00_top_left_cut.png",
+      "panel00_top_right_cut":"graphics/ui/bgs/panel00_top_right_cut.png",
+      "panel00_top_cut":"graphics/ui/bgs/panel00_top_cut.png",
+
+      "panel00_bot_left_inner":"graphics/ui/bgs/panel00_bot_left_inner.png",
+      "panel00_bot_right_inner":"graphics/ui/bgs/panel00_bot_right_inner.png",
+      "panel00_bot_inner":"graphics/ui/bgs/panel00_bot_inner.png",
+      "panel00_left_inner":"graphics/ui/bgs/panel00_left_inner.png",
+      "panel00_right_inner":"graphics/ui/bgs/panel00_right_inner.png",
+      "panel00_top_left_inner":"graphics/ui/bgs/panel00_top_left_inner.png",
+      "panel00_top_right_inner":"graphics/ui/bgs/panel00_top_right_inner.png",
+      "panel00_top_inner":"graphics/ui/bgs/panel00_top_inner.png",
     }
   }
 }
