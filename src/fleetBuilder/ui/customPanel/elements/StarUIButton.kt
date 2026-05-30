@@ -44,8 +44,8 @@ internal class StarUIButton(
     var soundPitch = 1f
 
     // === Faders ===
-    private val hoverFader = Fader(0f, 0.1f, 0.1f, false, false)
-    private val pressFader = Fader(0f, 0.08f, 0.08f, false, false)
+    val hoverFader = Fader(0f, 0.1f, 0.1f, false, false)
+    val pressFader = Fader(0f, 0.08f, 0.08f, false, false)
 
     // === Internal ===
     private var isPressed = false
@@ -186,7 +186,7 @@ internal class StarUIButton(
 
             // === Press / Toggle Overlay (with fade) ===
             val showPress = pressAlpha > 0f || (isToggle && toggled)
-            if (false) {//showPress) {
+            if (showPress) {
                 val effectiveAlpha = if (isToggle && toggled) 1f else pressAlpha
 
                 GL11.glColor4f(

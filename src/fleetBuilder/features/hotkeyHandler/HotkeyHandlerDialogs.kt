@@ -108,6 +108,7 @@ object HotkeyHandlerDialogs {
             but.setSprite(defaultCheck, hoverCheck, pressedCheck, toggledCheck)
             but.isToggle = true
             but.triggerOnPress = false
+            but.pressFader.setDuration(0f, 0f)
             but.onTrigger {
                 DisplayMessage.showMessage("la")
             }
