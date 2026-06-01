@@ -5,7 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.config.FBSettings
-import fleetBuilder.core.integration.listener.DrawMessageOnTop
+import fleetBuilder.core.util.misc.DrawMessageOnTop
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import org.apache.log4j.Level
 import org.lazywizard.console.Console

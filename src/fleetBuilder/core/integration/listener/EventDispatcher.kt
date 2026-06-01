@@ -115,7 +115,7 @@ internal class EventDispatcher : EveryFrameScript {
             manageTransientCampaignListener(RecentBattleTracker::class.java, FBSettings.recentBattleTracker) { RecentBattleTracker() }
 
             manageTransientScript(UnstoreOfficersInCargo::class.java, true) { UnstoreOfficersInCargo() } // Should always be enabled
-            manageTransientScript(DrawMessageOnTop::class.java, true) { DrawMessageOnTop() } // Should always be enabled
+            manageTransientScript(DrawOnTop::class.java, true) { DrawOnTop() } // Should always be enabled
             manageTransientScript(DialogUtils::class.java, true) { DialogUtils() } // Should always be enabled
         }
 
@@ -176,7 +176,7 @@ internal class EventDispatcher : EveryFrameScript {
 
             sector.addTransientScript(eventDispatcher)
 
-            DrawMessageOnTop.onGameLoad()
+            DrawOnTop.onGameLoad()
 
             setSectorListeners()
 

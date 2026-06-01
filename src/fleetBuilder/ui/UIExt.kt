@@ -5,7 +5,7 @@ import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.starficz.Font
 import fleetBuilder.otherMods.starficz.getFontPath
-import fleetBuilder.ui.common.ObservedTextField
+import fleetBuilder.ui.customPanel.elements.ObservedTextField
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.magiclib.kotlin.setAlpha
 import java.awt.Color
@@ -46,6 +46,9 @@ fun TooltipMakerAPI.addCheckboxD(
     return checkbox
 }
 
+/**
+ * Default parameters for addButton
+ */
 fun TooltipMakerAPI.addButtonD(
     text: String,
     width: Float,
@@ -61,6 +64,9 @@ fun TooltipMakerAPI.addButtonD(
     return button
 }
 
+/**
+ * Default parameters for addAreaCheckbox
+ */
 fun TooltipMakerAPI.addAreaCheckboxD(
     text: String,
     width: Float,
@@ -76,7 +82,10 @@ fun TooltipMakerAPI.addAreaCheckboxD(
     return areaCheckbox
 }
 
-fun TooltipMakerAPI.addNumericTextField(
+/**
+ * Add a text field that only accepts numeric input
+ */
+fun UIPanelAPI.addNumericTextField(
     width: Float,
     height: Float = 24f,
     font: String = Fonts.DEFAULT_SMALL,
@@ -86,7 +95,6 @@ fun TooltipMakerAPI.addNumericTextField(
     pad: Float = 0f,
     onValueChanged: (String) -> Unit = {}
 ): ObservedTextField {
-
     val observedText = ObservedTextField(
         width = width,
         height = height,
@@ -116,11 +124,18 @@ fun TooltipMakerAPI.addNumericTextField(
         onValueChanged(sanitizedText)
     }
 
-    addCustom(observedText.component, 0f)
+    if (this is TooltipMakerAPI)
+        this.addCustom(observedText.component, 0f)
+    else
+        this.addComponent(observedText.component)
+
     return observedText
 }
 
-fun TooltipMakerAPI.addExcludeTextField(
+/**
+ * Add a text field that prevents characters from being typed that are present in the excluded String
+ */
+fun UIPanelAPI.addExcludeTextField(
     width: Float,
     height: Float = 24f,
     excludedCharacters: String = "\\/:*?\"<>|",
@@ -152,7 +167,10 @@ fun TooltipMakerAPI.addExcludeTextField(
         onValueChanged(sanitizedText)
     }
 
-    addCustom(observedText.component, 0f)
+    if (this is TooltipMakerAPI)
+        addCustom(observedText.component, 0f)
+    else
+        this.addComponent(observedText.component)
     return observedText
 }
 

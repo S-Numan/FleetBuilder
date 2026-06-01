@@ -71,7 +71,6 @@ object HullUtils {
     fun createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
         // This function is likely overbuilt.
         // Simply getting the variant with the actual hull_id with _Hull appended to the end should work in most cases, but I really want to avoid having any issues here.
-        // Or even filtering for the VariantSource.HULL from the hullIdToVariantListMap, the hullId being the variant's actual hull_id
         return run {
             val variants = LookupUtils.getVariantsForEffectiveHullSpecRaw(hull)
 
@@ -164,8 +163,8 @@ object HullUtils {
     ): ShipHullSpecAPI {
         return when {
             !hull.isDefaultDHull -> hull
-            else -> hull.dParentHull
-        } ?: hull
+            else -> hull.dParentHull ?: hull
+        }
     }
 
     /**

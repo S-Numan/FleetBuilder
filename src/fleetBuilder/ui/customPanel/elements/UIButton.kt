@@ -9,7 +9,7 @@ import fleetBuilder.ui.UIUtils
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
-internal class StarUIButton(
+internal class UIButton(
     var width: Float,
     var height: Float
 ) : StarUIPanelPlugin() {
@@ -22,6 +22,11 @@ internal class StarUIButton(
     var backgroundColor: Color = Color(40, 40, 40, 150)
     var hoverColor: Color = Color(255, 255, 255, 80)
     var pressedColor: Color = Color(100, 255, 100, 120)
+
+    // === Glow (whitening) ===
+    var glowColor: Color = Color(255, 255, 255, 255)
+    var hoverGlowStrength = 0.4f
+    var pressGlowStrength = 0.15f
 
     // === Sprites ===
     private var defaultSprite: SpriteAPI? = null
@@ -44,7 +49,7 @@ internal class StarUIButton(
     var soundPitch = 1f
 
     // === Faders ===
-    val hoverFader = Fader(0f, 0.1f, 0.1f, false, false)
+    val hoverFader = Fader(0f, 0.15f, 0.15f, false, false)
     val pressFader = Fader(0f, 0.08f, 0.08f, false, false)
 
     // === Internal ===
@@ -186,7 +191,7 @@ internal class StarUIButton(
 
             // === Press / Toggle Overlay (with fade) ===
             val showPress = pressAlpha > 0f || (isToggle && toggled)
-            if (showPress) {
+            if (false) {//(showPress) {
                 val effectiveAlpha = if (isToggle && toggled) 1f else pressAlpha
 
                 GL11.glColor4f(
@@ -214,11 +219,28 @@ internal class StarUIButton(
 
             val sprite = getCurrentSprite() ?: return@render
 
-            val finalAlpha = if (isDisabled) alpha * 0.4f else alpha
+            val baseAlpha = if (isDisabled) alpha * 0.4f else alpha
 
-            sprite.setAlphaMult(finalAlpha)
+            val hoverAlpha = hoverFader.brightness
+            val pressAlpha = pressFader.brightness
+            //val toggleAlpha = if (isToggle && toggled) 0.4f else 0f
+
+            // Combine glow strength
+            val glowStrength =
+                (pressAlpha * pressGlowStrength) +
+                        (hoverAlpha * hoverGlowStrength)
+
+            // === COLOR TINT (toward white) ===
+            val baseColor = sprite.color
+            val innerGlowColor = UIUtils.lerpColor(baseColor, glowColor, glowStrength)
+
+            sprite.setColor(innerGlowColor)
+            sprite.setAlphaMult(baseAlpha)
             sprite.setSize(width, height)
             sprite.renderAtCenter(x + width / 2f, y + height / 2f)
+
+            // IMPORTANT: reset color so it doesn't leak to other renders
+            sprite.setColor(baseColor)
         }
     }
 }

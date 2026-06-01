@@ -39,6 +39,17 @@ object UIUtils {
         return start + fraction * (stop - start)
     }
 
+    fun lerpColor(from: Color, to: Color, t: Float): Color {
+        val clamped = t.coerceIn(0f, 1f)
+
+        val r = (from.red + (to.red - from.red) * clamped).toInt()
+        val g = (from.green + (to.green - from.green) * clamped).toInt()
+        val b = (from.blue + (to.blue - from.blue) * clamped).toInt()
+        val a = (from.alpha + (to.alpha - from.alpha) * clamped).toInt()
+
+        return Color(r, g, b, a)
+    }
+
     internal fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color) {
         drawRectangleFilledForTooltipPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width, tooltipMakerAPI.height, alphaMult, uiColor)
     }

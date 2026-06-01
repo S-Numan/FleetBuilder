@@ -8,7 +8,6 @@ import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import org.lwjgl.input.Keyboard
-import org.lwjgl.input.Mouse
 import java.awt.Color
 
 open class DialogPanel(
@@ -16,7 +15,7 @@ open class DialogPanel(
 ) : ModalPanel() {
 
     init {
-        //background.alphaMult = 0.95f
+        background.alphaMult = 0.95f
     }
 
     var confirmButton: ButtonAPI? = null

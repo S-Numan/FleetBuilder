@@ -30,18 +30,17 @@ object VariantUtils {
     @JvmOverloads
     @JvmStatic
     fun getModules(variant: ShipVariantAPI, onlyThoseInHullSpec: Boolean = false): Map<String, ShipVariantAPI> {
+        // stationModules: weapon slot id -> original variant id
         val modules = variant.stationModules
             ?.mapNotNull { (slot, _) ->
+                if (onlyThoseInHullSpec && variant.hullSpec.getWeaponSlot(slot)?.weaponType != WeaponAPI.WeaponType.STATION_MODULE) return@mapNotNull null
                 val variant: ShipVariantAPI? = variant.getModuleVariant(slot)
                 variant?.let { slot to it }
             }
             ?.toMap() // converts the list of pairs back into a Map
             ?: emptyMap()
 
-        return if (onlyThoseInHullSpec)
-            modules.filter { variant.hullSpec.getWeaponSlot(it.key)?.weaponType == WeaponAPI.WeaponType.STATION_MODULE }
-        else
-            modules
+        return modules
     }
 
     /**
@@ -57,17 +56,15 @@ object VariantUtils {
         onlyThoseInHullSpec: Boolean = false
     ): Map<String, ShipVariantAPI?> {
         val modules = variant.stationModules
-            ?.map { (slot, _) ->
+            ?.mapNotNull { (slot, _) ->
+                if (onlyThoseInHullSpec && variant.hullSpec.getWeaponSlot(slot)?.weaponType != WeaponAPI.WeaponType.STATION_MODULE) return@mapNotNull null
                 val variant: ShipVariantAPI? = variant.getModuleVariant(slot)
                 slot to variant
             }
             ?.toMap() // converts the list of pairs back into a Map
             ?: emptyMap()
 
-        return if (onlyThoseInHullSpec)
-            modules.filter { variant.hullSpec.getWeaponSlot(it.key)?.weaponType == WeaponAPI.WeaponType.STATION_MODULE }
-        else
-            modules
+        return modules
     }
 
 

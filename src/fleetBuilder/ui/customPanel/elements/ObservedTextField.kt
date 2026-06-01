@@ -1,12 +1,10 @@
-package fleetBuilder.ui.common
+package fleetBuilder.ui.customPanel.elements
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
-import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.TextFieldAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
+import fleetBuilder.otherMods.starficz.StarUIPanelPlugin
 
 open class ObservedTextField(
     width: Float,
@@ -14,7 +12,7 @@ open class ObservedTextField(
     font: String = Fonts.DEFAULT_SMALL,
     pad: Float = 0f,
     initialText: String = ""
-) : CustomUIPanelPlugin {
+) : StarUIPanelPlugin() {
 
     fun getText(): String {
         return textField.text ?: ""
@@ -26,7 +24,7 @@ open class ObservedTextField(
     var lastText: String = initialText
 
     // Lambda that can be set later
-    private var onTextChangedLambda: ((String) -> Unit)? = null
+    private var onTextChanged: ((String) -> Unit)? = null
 
     init {
         val panel = Global.getSettings().createCustom(width, height, this)
@@ -49,7 +47,7 @@ open class ObservedTextField(
     }
 
     fun onTextChanged(callback: (String) -> Unit) {
-        onTextChangedLambda = callback
+        onTextChanged = callback
         // optionally call immediately with current text
         callback(lastText)
     }
@@ -59,12 +57,8 @@ open class ObservedTextField(
         if (currentText == lastText) return
 
         lastText = currentText
-        onTextChangedLambda?.invoke(currentText)
-    }
+        onTextChanged?.invoke(currentText)
 
-    override fun processInput(events: List<InputEventAPI?>?) {}
-    override fun buttonPressed(buttonId: Any?) {}
-    override fun positionChanged(position: PositionAPI) {}
-    override fun renderBelow(alphaMult: Float) {}
-    override fun render(alphaMult: Float) {}
+        super.advance(amount)
+    }
 }

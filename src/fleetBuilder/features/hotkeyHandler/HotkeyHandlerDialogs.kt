@@ -47,11 +47,10 @@ import fleetBuilder.ui.*
 import fleetBuilder.ui.UIUtils.SCROLLER_WIDTH
 import fleetBuilder.ui.customPanel.core.ComposablePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
-import fleetBuilder.ui.customPanel.elements.StarUIButton
+import fleetBuilder.ui.customPanel.elements.UIButton
 import fleetBuilder.ui.customPanel.modules.TextInputDialog
 import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.ui.noise.UINoiseRenderer
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
@@ -86,35 +85,21 @@ object HotkeyHandlerDialogs {
         val dialog = DialogPanel(FBTxt.txt("dev_options_title"))
         dialog.animation = ModalPanel.PanelAnimation.NONE
         dialog.uiBorderColor = Color(255, 70, 70)
+        dialog.createUINoise = true
 
-        val test = UINoiseRenderer()
-
-        dialog.advance { amount ->
-            test.advance(amount)
-        }
-        dialog.render { alphaMult ->
-            test.render(dialog.x, dialog.y, 500f, 200f, alphaMult)
-        }
         dialog.show(width = 500f, height = 200f) { ui ->
-            val but = StarUIButton(dialog.headerHeight, dialog.headerHeight)
+            val but = UIButton(dialog.headerHeight, dialog.headerHeight)
             val defaultCheck = Global.getSettings().getSprite("ui", "checkmark_x")
-            defaultCheck.color = Color.RED
-            val hoverCheck = Global.getSettings().getSprite("ui", "checkmark_x")
-            hoverCheck.color = Color.WHITE
-            val pressedCheck = Global.getSettings().getSprite("ui", "checkmark_x")
-            pressedCheck.color = Color.BLUE
-            val toggledCheck = Global.getSettings().getSprite("ui", "checkmark_x")
-            toggledCheck.color = Color.ORANGE
-            but.setSprite(defaultCheck, hoverCheck, pressedCheck, toggledCheck)
+            defaultCheck.color = Color.RED.darker()
+            but.setSprite(defaultCheck)
             but.isToggle = true
             but.triggerOnPress = false
-            but.pressFader.setDuration(0f, 0f)
+
+            but.renderBackground = false
             but.onTrigger {
                 DisplayMessage.showMessage("la")
             }
             ui.addCustom(but.panel, 0f)
-
-            test.fadeInOut(0.05F, 1.0F)
 
             val toggleDev = ui.addCheckboxD(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
             toggleDev.setButtonPressedSound("FB_NONE")

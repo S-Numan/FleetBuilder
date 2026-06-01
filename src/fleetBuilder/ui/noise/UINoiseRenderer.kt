@@ -16,6 +16,7 @@ class UINoiseRenderer() {
     private val fader = Fader(0f, 1f, 1f)
     private var seed: Long = 0L
 
+
     init {
         val noiseSpriteAPI = Global.getSettings().getSprite("ui", "noise")
         sprite = noiseSpriteAPI.getFieldsMatching(type = Sprite::class.java).getOrNull(0)?.get(noiseSpriteAPI) as Sprite
@@ -31,6 +32,9 @@ class UINoiseRenderer() {
     val constantIntensity = 0.35f
     val variableIntensity = 0.3f
 
+    val defaultInDuration = 0.05f
+    val defaultOutDuration = 0.8f
+
     fun getIntensity(): Float {
         val base = constantIntensity + variableIntensity * noise.getValue()
         return base * fader.brightness
@@ -38,17 +42,17 @@ class UINoiseRenderer() {
 
     fun getBrightness(): Float = fader.brightness
 
-    fun fadeIn(duration: Float) {
+    fun fadeIn(duration: Float = defaultInDuration) {
         fader.durationIn = duration
         fader.fadeIn()
     }
 
-    fun fadeOut(duration: Float) {
+    fun fadeOut(duration: Float = defaultOutDuration) {
         fader.durationOut = duration
         fader.fadeOut()
     }
 
-    fun fadeInOut(inDuration: Float, outDuration: Float) {
+    fun fadeInOut(inDuration: Float = defaultInDuration, outDuration: Float = defaultOutDuration) {
         fader.setDuration(inDuration, outDuration)
         fader.fadeIn()
     }

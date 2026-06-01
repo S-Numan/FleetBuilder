@@ -5,12 +5,11 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.otherMods.starficz.height
-import fleetBuilder.otherMods.starficz.parent
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.UIUtils.easeCubic
 import fleetBuilder.ui.UIUtils.lerp
+import fleetBuilder.ui.noise.UINoiseRenderer
 import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
 
@@ -18,9 +17,14 @@ open class ModalPanel : ComposablePanel() {
 
     enum class PanelAnimation {
         RESIZE_FADE,
-        FADE_ONLY, // TODO: if fade in animation; Make all tooltip elements appear right away instead of when fade in is finished, and just eat all input until the panel if fully open.
+        FADE_ONLY, // TODO: if fade in animation without resizing; Make all tooltip elements appear right away instead of when fade in is finished, and just eat all input if it's in the panel until the panel if fully open.
         NONE
     }
+    // TODO: make a 'tooltip_fade_in_duration' whereas upon creating the tooltip, the tooltip opacity starts at 0 but slowly rises over the course of the 'tooltip_fade_in_duration'. This only takes effect for the RESIZE_FADE animation.
+    //  Also add a 'tooltip_fade_out_duration', which prevents the closing animation from happening until the fade-out for the tooltip has occurred.
+    //  These should both be extremely short. Like 0.07f and 0.02f respectively.
+    //  If animation is equal to NONE, skip it.
+    //  ^ This is roughly what vanilla does.
 
     open var animation = PanelAnimation.NONE
 
@@ -31,6 +35,11 @@ open class ModalPanel : ComposablePanel() {
     protected var animDirection = 1f
     protected var closing = false
     protected var openAnimationFinished = false
+
+    open var createUINoise: Boolean = false
+    private var _noise: UINoiseRenderer? = null
+    open val noise: UINoiseRenderer
+        get() = _noise ?: UINoiseRenderer().also { _noise = it }
 
     // Unset before init
     protected open var goalXOffset: Float = 0f
@@ -88,6 +97,9 @@ open class ModalPanel : ComposablePanel() {
         if (openDuration == 0f || animation == PanelAnimation.NONE)
             setMaxSize()
 
+        if (createUINoise)
+            noise.fadeInOut()
+
         return panel
     }
 
@@ -99,6 +111,9 @@ open class ModalPanel : ComposablePanel() {
     }
 
     override fun advance(amount: Float) {
+        if (createUINoise)
+            noise.advance(amount)
+
         if (closing || !openAnimationFinished) {
             val duration = if (closing) closeDuration else openDuration
             val rate = amount / duration
@@ -118,6 +133,12 @@ open class ModalPanel : ComposablePanel() {
         }
 
         super.advance(amount)
+    }
+
+    override fun render(alphaMult: Float) {
+        super.render(alphaMult)
+        if (createUINoise)
+            noise.render(panel.x, panel.y, panel.width, panel.height, alphaMult)
     }
 
     protected open var escapeRequested: Boolean = false
@@ -180,6 +201,10 @@ open class ModalPanel : ComposablePanel() {
 
         if (closeDuration == 0f || animation == PanelAnimation.NONE)
             forceDismiss()
+        else {
+            if (createUINoise)
+                noise.fadeInOut(0f, outDuration = closeDuration * 4f)
+        }
     }
 
     protected fun updatePanelVisuals(progress: Float) {
