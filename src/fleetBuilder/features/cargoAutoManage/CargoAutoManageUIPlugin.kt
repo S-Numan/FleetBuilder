@@ -11,9 +11,9 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.config.FBConst.PRIMARY_DIR
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBMisc.jsonArrayToList
 import fleetBuilder.core.util.FBMisc.listToJsonArray
-import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromMap
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManageToMap
@@ -236,7 +236,7 @@ internal class CargoAutoManageUIPlugin(
 
         //dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
         dialog = DialogPanel(selectedSubmarket.name.replace("\n", " "))
-        dialog.animation = ModalPanel.PanelAnimation.RESIZE_FADE
+        dialog.animation = ModalPanel.PanelAnimation.FADE_ONLY
         dialog.openDuration = 0.2f
 
         val headerHeight = 24f

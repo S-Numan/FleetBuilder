@@ -98,7 +98,7 @@ open class ComposablePanel : BasePanel() {
         yOffset: Float? = null
     ) {
         // Calls init, but in a fancy manner to allow caching the tooltip and making it later in case it's too early for the game to show a panel.
-        DialogUtils.initDialogToShow(
+        DialogUtils.initPanelToShow(
             this,
             width = width,
             height = height,

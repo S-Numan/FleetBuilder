@@ -140,6 +140,8 @@
   "include_fleet":"Include Fleet",
   "include_officers":"Include Officers",
   "include_cargo":"Include Cargo",
+  "include_submarket_cargo":"Include Submarket Cargo",
+  "include_submarket_cargo_tooltip": "Includes the stored cargo and stored fleets of every free player accessible submarket.",
   "include_credits":"Include Credits",
   "include_abilitybar":"Include Ability Bar",
   "include_abilitybar_tooltip":"This will also save and add abilities that aren't in your ability bar.\n\nDepending on the implementation of a modded ability, this can in rare cases cause a crash.\nIf that happens, untoggle this option.",
@@ -151,6 +153,7 @@
   "failed_to_find_save_in_clipboard":"Could not find contents of save in clipboard. Are you sure you copied a valid save?",
   #
   "failed_to_load_cargo":"Failed to load cargo",
+  "failed_to_load_submarket_cargo":"Failed to load submarket cargo",
   "failed_to_load_credits":"Failed to load credits",
   "failed_to_load_relations":"Failed to load relations",
   "failed_to_load_player":"Failed to load player",

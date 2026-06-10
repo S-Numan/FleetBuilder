@@ -16,6 +16,7 @@ class LoadSave : BaseCommand {
     private val NO_REP = "-no-rep"
     private val NO_FLEET = "-no-fleet"
     private val NO_CARGO = "-no-cargo"
+    private val NO_SUBMARKET_CARGO = "-no-submarket-cargo"
     private val NO_HULLMODS = "-no-hullmods"
     private val NO_BLUEPRINTS = "-no-blueprints"
     private val NO_OFFICERS = "-no-officers"
@@ -61,6 +62,7 @@ class LoadSave : BaseCommand {
         loadCompiledSave(
             compiled,
             handleCargo = !argList.contains(NO_CARGO),
+            handleSubmarketCargo = !argList.contains(NO_SUBMARKET_CARGO),
             handleRelations = !argList.contains(NO_REP),
             handleKnownBlueprints = !argList.contains(NO_BLUEPRINTS),
             handlePlayer = !argList.contains(NO_PLAYER),

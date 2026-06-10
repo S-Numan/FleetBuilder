@@ -15,7 +15,7 @@ import fleetBuilder.util.ReflectionMisc
 
 class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
     companion object {
-        fun initDialogToShow(
+        fun initPanelToShow(
             dialog: BasePanel,
             width: Float = 800f,
             height: Float = 800f,
@@ -25,7 +25,7 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
         ) {
             val gameState = Global.getCurrentState()
             if (gameState == null) {
-                prependDialogToShow(dialog, width, height) // To create a dialog before the game has fully booted up, so it is shown on start
+                prependPanelToShow(dialog, width, height) // To create a dialog before the game has fully booted up, so it is shown on start
             } else {
                 val parent = parent ?: ReflectionMisc.getScreenPanel() ?: run {
                     DisplayMessage.showError("Failed to get Screen Panel")
@@ -42,7 +42,7 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
             }
         }
 
-        fun isPopUpPanelOpen(): Boolean {
+        fun isModalPanelOpen(): Boolean {
             ReflectionMisc.getScreenPanel()?.getChildrenCopy()?.forEach { child ->
                 if (child is CustomPanelAPI && (child.plugin is ModalPanel)
                 ) {
@@ -52,13 +52,13 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
             return false
         }
 
-        fun prependDialogToShow(dialog: BasePanel, width: Float, height: Float) {
-            dialogsToShow.add(0, Triple(dialog, width, height))
+        fun prependPanelToShow(dialog: BasePanel, width: Float, height: Float) {
+            panelsToShow.add(0, Triple(dialog, width, height))
         }
 
-        private val dialogsToShow: MutableList<Triple<BasePanel, Float, Float>> = mutableListOf()
+        private val panelsToShow: MutableList<Triple<BasePanel, Float, Float>> = mutableListOf()
 
-        fun forceCloseAllDialogs(): Boolean {
+        fun forceCloseAllCustomPanels(): Boolean {
             var closedOne = false
             val screenPanel = ReflectionMisc.getScreenPanel() ?: return false
             screenPanel.getChildrenCopy().toList().forEach { child ->
@@ -66,7 +66,7 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
                     try {
                         (child.plugin as BasePanel).forceDismiss()
                     } catch (e: Exception) {
-                        DisplayMessage.showError("Error when force dismissing dialog\n$e")
+                        DisplayMessage.showError("Error when force dismissing panel\n$e")
                     }
                     screenPanel.removeComponent(child)
                     closedOne = true
@@ -93,12 +93,12 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
         if (ContextMenuPanel.contextMenuJustClosed > 0)
             ContextMenuPanel.contextMenuJustClosed--
 
-        if (dialogsToShow.isNotEmpty()) {
+        if (panelsToShow.isNotEmpty()) {
             val screenPanel = ReflectionMisc.getScreenPanel() ?: return
 
-            val (dialog, width, height) = dialogsToShow.removeAt(dialogsToShow.size - 1)
+            val (dialog, width, height) = panelsToShow.removeAt(panelsToShow.size - 1)
 
-            initDialogToShow(dialog, width, height, screenPanel)
+            initPanelToShow(dialog, width, height, screenPanel)
         }
     }
 }

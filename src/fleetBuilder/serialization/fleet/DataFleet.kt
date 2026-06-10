@@ -23,7 +23,6 @@ import fleetBuilder.serialization.person.DataPerson.validateAndCleanPersonData
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getErrorVariantHullID
-import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.lib.PrefixedCodec
 import java.util.*
 
@@ -286,8 +285,8 @@ object DataFleet {
             addedMembers[parsed] = member
 
             if (parsed.isFlagship) {
-                if (member.captain.isDefault)
-                    member.captain.portraitSprite = PersonUtils.getRandomPortrait(factionID = data.factionID, random = random) // The commander of the fleet mustn't be default. May cause issues otherwise.
+                //if (member.captain.isDefault)
+                //    member.captain.portraitSprite = PersonUtils.getRandomPortrait(factionID = data.factionID, random = random) // The commander of the fleet mustn't be default. May cause issues otherwise.
 
                 campFleet?.commander = member.captain
                 member.isFlagship = true

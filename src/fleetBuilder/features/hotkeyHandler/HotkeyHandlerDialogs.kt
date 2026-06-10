@@ -1745,6 +1745,7 @@ object HotkeyHandlerDialogs {
         FLEET(FBTxt.txt("include_fleet"), true),
         OFFICERS(FBTxt.txt("include_officers"), true),
         CARGO(FBTxt.txt("include_cargo"), true),
+        SUBMARKETCARGO(FBTxt.txt("include_submarket_cargo"), true, FBTxt.txt("include_submarket_cargo_tooltip")),
         CREDITS(FBTxt.txt("include_credits"), true),
         ABILITYBAR(FBTxt.txt("include_abilitybar"), true, FBTxt.txt("include_abilitybar_tooltip"));
     }
@@ -1753,7 +1754,7 @@ object HotkeyHandlerDialogs {
     fun createSaveTransferDialog() {
         val dialog = DialogPanel(headerTitle = FBTxt.txt("save_transfer"))
 
-        dialog.show(300f, 384f) { ui ->
+        dialog.show(300f, 400f) { ui ->
 
             val buttonHeight = 24f
 
@@ -1801,6 +1802,7 @@ object HotkeyHandlerDialogs {
             ui.addButton(FBTxt.txt("copy_save_to_clipboard"), null, ui.width, buttonHeight, 3f).onClick {
                 val json = PlayerSaveUtils.createSaveJson(
                     handleCargo = isEnabled(SaveOption.CARGO),
+                    handleSubmarketCargo = isEnabled(SaveOption.SUBMARKETCARGO),
                     handleRelations = isEnabled(SaveOption.REPUTATION),
                     handleKnownBlueprints = isEnabled(SaveOption.BLUEPRINTS),
                     handlePlayer = isEnabled(SaveOption.PLAYER),
@@ -1836,6 +1838,7 @@ object HotkeyHandlerDialogs {
                 PlayerSaveUtils.loadCompiledSave(
                     compiled,
                     handleCargo = isEnabled(SaveOption.CARGO),
+                    handleSubmarketCargo = isEnabled(SaveOption.SUBMARKETCARGO),
                     handleRelations = isEnabled(SaveOption.REPUTATION),
                     handleKnownBlueprints = isEnabled(SaveOption.BLUEPRINTS),
                     handlePlayer = isEnabled(SaveOption.PLAYER),

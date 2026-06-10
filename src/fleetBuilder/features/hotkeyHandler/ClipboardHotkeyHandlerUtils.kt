@@ -226,7 +226,7 @@ internal object ClipboardHotkeyHandlerUtils {
     //
 
     fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
         if (ui.getActualCurrentTab() == null &&
             ui.currentInteractionDialog == null
@@ -237,7 +237,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.getCodexDialog() != null || DialogUtils.isPopUpPanelOpen()) return
+        if (ReflectionMisc.getCodexDialog() != null || DialogUtils.isModalPanelOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET ||
             (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)
@@ -249,7 +249,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleDevModeHotkey(event: InputEventAPI) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
         event.consume()
         createDevModeDialog()

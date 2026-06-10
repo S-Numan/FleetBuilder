@@ -26,7 +26,7 @@ import java.util.*
 
 object RecentBattleDialog {
     fun recentBattleDialog(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen())
+        if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen())
             return
         val fleetDirectory = RBFleetDirectoryService.getDirectory() ?: return
         showDialog(fleetDirectory)
