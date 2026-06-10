@@ -43,11 +43,16 @@ import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.ui.*
-import fleetBuilder.ui.UIUtils.SCROLLER_WIDTH
+import fleetBuilder.ui.UIUtils
+import fleetBuilder.ui.addButtonD
+import fleetBuilder.ui.addCheckboxD
+import fleetBuilder.ui.addNumericTextField
 import fleetBuilder.ui.customPanel.core.ComposablePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
+import fleetBuilder.ui.customPanel.elements.AccordionMenu
+import fleetBuilder.ui.customPanel.elements.AccordionNode
 import fleetBuilder.ui.customPanel.elements.UIButton
+import fleetBuilder.ui.customPanel.modules.AreYouSureDialog
 import fleetBuilder.ui.customPanel.modules.TextInputDialog
 import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
@@ -61,10 +66,7 @@ import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.lib.ClipboardUtil
 import lunalib.lunaExtensions.addLunaElement
 import org.lazywizard.lazylib.MathUtils
-import org.lwjgl.BufferUtils
-import org.lwjgl.input.Cursor
 import org.lwjgl.input.Keyboard
-import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import second_in_command.SCData
@@ -84,8 +86,9 @@ object HotkeyHandlerDialogs {
     fun createDevModeDialog() {
         val dialog = DialogPanel(FBTxt.txt("dev_options_title"))
         dialog.animation = ModalPanel.PanelAnimation.NONE
+        dialog.createUINoise = false
+
         dialog.uiBorderColor = Color(255, 70, 70)
-        dialog.createUINoise = true
 
         dialog.show(width = 500f, height = 200f) { ui ->
             val but = UIButton(dialog.headerHeight, dialog.headerHeight)
@@ -172,7 +175,7 @@ object HotkeyHandlerDialogs {
 
                     val memory = sector?.memoryWithoutUpdate
 
-                    devTestPanel()
+                    openFileViewPanel()
 
                     /*
                 val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
@@ -204,10 +207,85 @@ object HotkeyHandlerDialogs {
         }
     }
 
-    fun devTestPanel(inputDir: String = "TestFolderOuter/TestFolderInner") {
-        var currentManager = DirectoryManager.get(inputDir)
+    private val rightPanelSizeMult = 5f
 
-        val dialog = DialogPanel("Top Text")
+    fun openFileViewPanel() {
+        val rightPanel = ComposablePanel().apply {
+            renderUIBorders = false
+        }
+        rightPanel.tooltipPadFromSide = 4f
+
+        rightPanel.buildUI(withScroller = true) { rightUI ->
+            rightUI.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
+            rightUI.addPara("Files:\n", 0f).position.inTL(0f, 10f)
+            (rightPanel.customData as? DirectoryManager)?.getContainingPaths()?.filterIsInstance<DirFile>()?.forEach { path ->
+                val width = rightUI.computeStringWidth(path.fileName)
+                val button = rightUI.addButtonD(path.fileName, width, style = CutStyle.NONE, pad = 4f)
+            }
+        }
+
+        openDirectoryManagerPanel("TestFolderOuter/TestFolderInner", rightPanel = rightPanel)
+        /*
+        val oldCursor = Mouse.getNativeCursor()
+        rightPanel.onExit {
+            Mouse.setNativeCursor(oldCursor)
+        }
+
+        var dragging = false
+        rightPanel.onProcessInput { event ->
+            val mouseX = event.x.toFloat()
+            val leftEdge = rightPanel.panel.position.x
+
+            if (event.isLMBUpEvent) {
+                dragging = false
+                Mouse.setNativeCursor(oldCursor)
+            }
+            if (dragging || (UIUtils.isMouseHoveringOverComponent(ui, event.x, event.y, 2f) && kotlin.math.abs(mouseX - leftEdge) <= 9f)) {
+                if (dragging || event.isLMBDownEvent) {
+                    Mouse.setNativeCursor(Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null))
+
+                    val uiLeft = ui.x
+                    val uiRight = ui.x + ui.width // Absolute right edge of the parent UI
+                    // Minimum sizes (tweak to taste)
+                    val minRightPanelWidth = ui.width / 2f
+                    val minLeftPanelWidth = ui.width / rightPanelSizeMult
+                    // Compute bounds for the draggable divider
+                    var minX = uiLeft + minLeftPanelWidth
+                    var maxX = uiRight - minRightPanelWidth
+                    // If constraints overlap, collapse to a safe midpoint
+                    if (minX > maxX) {
+                        val mid = (uiLeft + uiRight) / 2f
+                        minX = mid
+                        maxX = mid
+                    }
+                    val clampedX = mouseX.coerceIn(minX, maxX)
+
+                    rightPanel.panel.setAbsoluteX(clampedX)
+                    val newWidth = uiRight - clampedX // Width needed to extend to the end of the tooltip
+                    rightPanel.panel.setSize(newWidth, rightPanel.panel.height)
+                    rightPanel.tooltip!!.setSize(newWidth - rightPanel.tooltipPadFromSide * 2 - SCROLLER_WIDTH, rightPanel.tooltip!!.height)
+
+                    dragging = true
+                    event.consume()
+                }
+            }
+        }
+        */
+    }
+
+    fun fleetViewPanel() {
+
+    }
+
+    fun memberViewPanel() {
+
+    }
+
+    fun openDirectoryManagerPanel(inputDir: String, rightPanel: ComposablePanel) {
+        val rootManager = DirectoryManager.get(inputDir)
+        var currentManager = rootManager
+
+        val dialog = DialogPanel("WIP")
         dialog.dialogStyle = false
         dialog.darkenBackground = false
         dialog.background.alphaMult = 1f
@@ -220,16 +298,73 @@ object HotkeyHandlerDialogs {
             if (manager === currentManager)
                 return
             currentManager = manager
-            dialog.recreateUI()
+            rightPanel.customData = currentManager
+            rightPanel.recreateUI()
+        }
+
+        var currentTree: AccordionMenu? = null
+        fun openRightClickPanel(manager: DirectoryManager) {
+            if (ContextMenuPanel.isContextMenuOpen()) return
+
+            val rightClickPanel = ContextMenuPanel()
+
+            rightClickPanel.show(360f, 512f) { ui ->
+                ui.addCheckboxD("createFile").apply {
+                    onClick {
+                        rightClickPanel.dismiss()
+                        TextInputDialog(title = "Create File", prompt = "Enter name for file:") { name ->
+                            if (name.trim(' ', '.').take(255).isNotBlank()) {
+                                manager.writeFile(name, "test content")
+                                if (manager === currentManager)
+                                    rightPanel.recreateUI()
+                            }
+                        }
+                    }
+                    position.inTL(25f, 10f)
+                }
+
+                ui.addCheckboxD("createFolder", pad = 5f).apply {
+                    onClick {
+                        rightClickPanel.dismiss()
+                        TextInputDialog(title = "Create Folder", prompt = "Enter name for folder:") { name ->
+                            if (name.trim(' ', '.').take(255).isNotBlank()) {
+                                val newFolder = manager.createFolder(name)
+                                currentTree?.addNode(AccordionNode(name, id = newFolder), parentId = manager)
+                            }
+                        }
+                    }
+                }
+
+                ui.addCheckboxD("removeFolder", pad = 5f).apply {
+                    onClick {
+                        rightClickPanel.dismiss()
+                        AreYouSureDialog(
+                            title = "Remove Folder", prompt = "Remove folder with the name '${manager.folderName}'?\nThis process cannot be undone." +
+                                    if (manager.getContainingPaths().isNotEmpty()) "\nThis will delete all containing files and folders as well." else ""
+                        ).onConfirm {
+                            currentTree?.removeNode(manager)
+                            manager.delete()
+                            if (currentManager === manager)
+                                manager.manager?.let { currentTree?.selectById(it) }
+                        }
+                    }
+                }
+
+                ui.addCheckboxD("renameFolder", pad = 5f).apply {
+                    onClick {
+
+                    }
+                }
+            }
         }
 
         dialog.show(width = 1280f, height = 800f) { ui ->
             ui.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
             //ui.setButtonFontDefault()
 
-            val currentDirLabel = ui.addPara("/" + currentManager.folderPath, 0f)
+            //val currentDirLabel = ui.addPara("/" + currentManager.folderPath, 0f)
 
-            val managerTree: MutableList<DirectoryManager> = mutableListOf()
+            /*val managerTree: MutableList<DirectoryManager> = mutableListOf()
             fun addToManagerTree(manager: DirectoryManager?, parent: DirectoryManager? = null) {
                 if (manager == null) return
                 managerTree.add(manager)
@@ -257,15 +392,49 @@ object HotkeyHandlerDialogs {
 
                     prevButton = this
                 }
-            }
-
-            val containingPaths = currentManager.getContainingPaths()
+            }*/
 
             val leftPanel = ComposablePanel().apply {
-                tooltipPadFromSide = 4f
+                renderUIBorders = false
             }
-            leftPanel.show(width = ui.width / 2f, height = ui.height, xOffset = 0f, yOffset = 0f, parent = ui, withScroller = true) { leftUI ->
-                leftUI.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
+            leftPanel.show(width = ui.width / 2f, height = ui.height, xOffset = 0f, yOffset = 0f, parent = ui, withScroller = false) { leftUI ->
+                fun DirectoryManager.toAccordionNode(): AccordionNode {
+                    val childNodes = getContainingPaths()
+                        .filterIsInstance<DirectoryManager>()
+                        .map { it.toAccordionNode() }
+
+                    return AccordionNode(
+                        label = folderName,
+                        id = this,
+                        children = childNodes
+                    )
+                }
+
+                val nodes = rootManager.getContainingPaths()
+                    .filterIsInstance<DirectoryManager>()
+                    .map { it.toAccordionNode() }
+
+                currentTree = AccordionMenu(
+                    parentPanel = leftUI,
+                    x = 0f,
+                    y = 0f,
+                    width = leftUI.width,
+                    visibleHeight = leftUI.height,
+                    nodes = nodes
+                )
+
+                currentTree.onSelect { node ->
+                    //DisplayMessage.showMessage("Selected: ${node.label} (id=${node.id})")
+                    switchToManager(node.id as DirectoryManager)
+                }
+
+                currentTree.onRightClickSelect { node ->
+                    //DisplayMessage.showMessage("Right-clicked: ${node.label} (id=${node.id})")
+                    openRightClickPanel(node.id as DirectoryManager)
+                }
+
+
+                /*leftUI.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
                 leftUI.addPara("Folders:\n", 0f).position.inTL(0f, 10f)
                 containingPaths.filterIsInstance<DirectoryManager>().forEach { path ->
                     val width = leftUI.computeStringWidth(path.folderName)
@@ -273,111 +442,27 @@ object HotkeyHandlerDialogs {
                     button.onClick {
                         switchToManager(path)
                     }
-                }
+                }*/
             }
-            val rightPanel = ComposablePanel()
-            rightPanel.tooltipPadFromSide = 4f
-            val rightPanelMult = 5f
-            rightPanel.show(width = ui.width - (ui.width / rightPanelMult), height = ui.height, xOffset = ui.width / rightPanelMult, yOffset = 0f, parent = ui, withScroller = true) { rightUI ->
-                rightUI.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
-                rightUI.addPara("Files:\n", 0f).position.inTL(0f, 10f)
-                containingPaths.filterIsInstance<DirFile>().forEach { path ->
-                    val width = rightUI.computeStringWidth(path.fileName)
-                    val button = rightUI.addButtonD(path.fileName, width, style = CutStyle.NONE, pad = 4f)
-                }
-            }
-
-            val oldCursor = Mouse.getNativeCursor()
-            rightPanel.onExit {
-                Mouse.setNativeCursor(oldCursor)
-            }
-
-            var dragging = false
-            rightPanel.onProcessInput { event ->
-                val mouseX = event.x.toFloat()
-                val leftEdge = rightPanel.panel.position.x
-
-                if (event.isLMBUpEvent) {
-                    dragging = false
-                    Mouse.setNativeCursor(oldCursor)
-                }
-                if (dragging || (UIUtils.isMouseHoveringOverComponent(ui, event.x, event.y, 2f) && kotlin.math.abs(mouseX - leftEdge) <= 9f)) {
-                    if (dragging || event.isLMBDownEvent) {
-                        Mouse.setNativeCursor(Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null))
-
-                        val uiLeft = ui.x
-                        val uiRight = ui.x + ui.width // Absolute right edge of the parent UI
-                        // Minimum sizes (tweak to taste)
-                        val minRightPanelWidth = ui.width / 2f
-                        val minLeftPanelWidth = ui.width / rightPanelMult
-                        // Compute bounds for the draggable divider
-                        var minX = uiLeft + minLeftPanelWidth
-                        var maxX = uiRight - minRightPanelWidth
-                        // If constraints overlap, collapse to a safe midpoint
-                        if (minX > maxX) {
-                            val mid = (uiLeft + uiRight) / 2f
-                            minX = mid
-                            maxX = mid
-                        }
-                        val clampedX = mouseX.coerceIn(minX, maxX)
-
-                        rightPanel.panel.setAbsoluteX(clampedX)
-                        val newWidth = uiRight - clampedX // Width needed to extend to the end of the tooltip
-                        rightPanel.panel.setSize(newWidth, rightPanel.panel.height)
-                        rightPanel.tooltip!!.setSize(newWidth - rightPanel.tooltipPadFromSide * 2 - SCROLLER_WIDTH, rightPanel.tooltip!!.height)
-
-                        dragging = true
-                        event.consume()
-                    }
-                }
-            }
+            rightPanel.customData = currentManager
+            rightPanel.present(width = ui.width - (ui.width / rightPanelSizeMult), height = ui.height, xOffset = ui.width / rightPanelSizeMult, yOffset = 0f, parent = ui)
         }
 
         dialog.onClick { event ->
-            if (!event.isRMBDownEvent) return@onClick
-            if (ContextMenuPanel.isContextMenuOpen()) return@onClick
-
-            val rightClickPanel = ContextMenuPanel()
-
-            rightClickPanel.show(360f, 512f) { ui ->
-                ui.addCheckboxD("createFile").apply {
-                    onClick {
-                        rightClickPanel.dismiss()
-                        TextInputDialog(title = "Create File", prompt = "Enter name for file:") { name ->
-                            if (name.trim(' ', '.').take(255).isNotBlank()) {
-                                currentManager.writeFile(name, "test content")
-                                dialog.recreateUI()
-                            }
-                        }
-                    }
-                    position.inTL(25f, 10f)
-                }
-
-                ui.addCheckboxD("createFolder", pad = 5f).apply {
-                    onClick {
-                        rightClickPanel.dismiss()
-                        TextInputDialog(title = "Create Folder", prompt = "Enter name for folder:") { name ->
-                            if (name.trim(' ', '.').take(255).isNotBlank()) {
-                                currentManager.createFolder(name)
-                                dialog.recreateUI()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        dialog.onClick { event ->
-            if (event.isMouseDownEvent) {
-                if (event.eventValue == 3) {
+            /*if (event.isMouseDownEvent) {
+                if (event.eventValue == 3) { // Page back button
                     currentManager.manager?.let {
                         if (it.exists())
                             switchToManager(it)
                     }
-                } else if (event.eventValue == 4) {
+                } else if (event.eventValue == 4) { // Page forward button
 
                 }
-            }
+            }*/
+
+            if (!event.isRMBDownEvent) return@onClick
+
+            openRightClickPanel(currentManager)
         }
 
     }
@@ -1330,7 +1415,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            dialog.clearStarUIFunctions()
+            dialog.clearStarUICallbacks()
             dialog.onKeyDown { event ->
                 if (event.isCtrlDown) {
                     if (event.eventValue == Keyboard.KEY_C) {

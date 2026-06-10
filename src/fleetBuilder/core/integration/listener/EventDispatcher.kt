@@ -163,6 +163,8 @@ internal class EventDispatcher : EveryFrameScript {
         val eventDispatcher = EventDispatcher()
 
         fun onGameLoad(newGame: Boolean) {
+            Global.getLogger(this.javaClass).info("onGameLoad")
+
             val sector = Global.getSector() ?: run {
                 throw Error("How was sector null here?")
             }
@@ -193,9 +195,14 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun beforeGameSave() {
-            CommanderShuttle.beforeGameSave()
+            // This would be a very bad place for the game to crash, so try to catch the crash even if it isn't needed.
+            try {
+                CommanderShuttle.beforeGameSave()
 
-            MakeSaveRemovable.beforeGameSave()
+                MakeSaveRemovable.beforeGameSave()
+            } catch (e: Exception) {
+                Global.getLogger(this.javaClass).error("Error in beforeGameSave", e)
+            }
         }
 
         fun onGameSaveFailed() {

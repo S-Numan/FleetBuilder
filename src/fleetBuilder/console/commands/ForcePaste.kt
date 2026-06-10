@@ -1,8 +1,8 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.util.FBMisc.isConsoleOpen
 import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.FBMisc.isConsoleOpen
 import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
@@ -26,15 +26,13 @@ class ForcePaste : BaseCommand {
         instance?.placeHolderDialog?.safeInvoke("makeOptionInstant", 0)
         instance?.close() // Close the console
 
-        // Retry until the console dialog goes away
         CampaignDeferredActionPlugin.performLater(0f) {
-
             val cheatsEnabled = FBSettings.cheatsEnabled()
             if (!cheatsEnabled)
                 FBSettings.setCheatsEnabledInSettings(true)
 
             try { // Just in case it somehow fails
-                CampaignClipboardHotkeyHandler.handlePasteHotkey(Global.getSector()!!.campaignUI, null)
+                CampaignClipboardHotkeyHandler.handlePasteHotkey(Global.getSector().campaignUI, null)
             } catch (e: Exception) {
                 Console.showException("Failed to paste", e)
             }

@@ -12,23 +12,39 @@ import fleetBuilder.util.api.kotlin.safeInvoke
 open class ComposablePanel : BasePanel() {
 
     // Distance the tooltip holds from every side of it's home panel.
+    /** The distance the tooltip is created from the left and right side of its parent panel. This modifies the tooltip's size and position */
     open var tooltipPadFromSide = 0f
+
+    /** The distance the tooltip is created from the bottom of the parent panel. This modifies the tooltip's size and position */
     open var tooltipPadFromBottom = 0f
+
+    /** The distance the tooltip is created from the top of the parent panel. This modifies the tooltip's size and position */
     open var tooltipPadFromTop: Float = 0f
 
     override fun createUI() {
         createUICallback?.invoke()
     }
 
+    /** Removes the tooltip from this panel, then calls createUI again re-creating it. */
     open fun recreateUI() {
-        panel.removeComponent(tooltip)
+        //TODO: Add a boolean set to false by default that automatically saves and re-applies the scroller position.
+        val scrollPanel = tooltip?.externalScroller
+        if (scrollPanel != null)
+            panel.removeComponent(scrollPanel)
+        else
+            panel.removeComponent(tooltip)
+
+        tooltip = null
+
         createUI()
     }
 
     private var createUICallback: (() -> Unit)? = null
 
     /**
-     * Builds the UI for this panel. Occurs after open animation finish, if animation is present.
+     * Builds the tooltip for this panel. The result of this function is called when the panel is ready to display its tooltip, typically after any animation if present.
+     *
+     * [present] should be called after this function to start displaying this panel to the user.
      */
     open fun buildUI(
         withScroller: Boolean = false,
@@ -56,8 +72,8 @@ open class ComposablePanel : BasePanel() {
 
             // apply TL. This is done on lastComponent added instead of the tooltip to account for positioning the scroller which may contain the tooltip. In short, avoid positioning the wrong thing.
             panel.lastComponent?.position?.inTL(tooltipPadFromSide, tooltipPadFromTop)
-
             if (withScroller)
+
                 tooltip.externalScroller?.safeInvoke("setDoNotRenderShadows", true)
 
             this.tooltip = tooltip
@@ -65,7 +81,7 @@ open class ComposablePanel : BasePanel() {
     }
 
     /**
-     * Shows this panel. Must be called after [buildUI] to do anything, as that is what this function shows.
+     * Displays the contents of the panel to the user. Must be called after [buildUI] to do anything, as that is what this function displays.
      *
      * @param width The width of the panel. Defaults to 800.
      * @param height The height of the panel. Defaults to 800.
@@ -93,7 +109,7 @@ open class ComposablePanel : BasePanel() {
     }
 
     /**
-     * Builds the panel UI and shows it as a panel.
+     * Builds the contents of the panel and displays it to the user.
      *
      * The [callback] is invoked when the panel is ready to create its UI,
      * with a [TooltipMakerAPI] for adding elements. If this panel has an opening animation, this will call when the animation is over rather than right away.

@@ -12,31 +12,45 @@ import fleetBuilder.ui.UIUtils.lerp
 import fleetBuilder.ui.noise.UINoiseRenderer
 import fleetBuilder.util.api.CampaignUtils
 import org.lwjgl.input.Keyboard
+import kotlin.math.max
 
 open class ModalPanel : ComposablePanel() {
 
     enum class PanelAnimation {
         RESIZE_FADE,
-        FADE_ONLY, // TODO: if fade in animation without resizing; Make all tooltip elements appear right away instead of when fade in is finished, and just eat all input if it's in the panel until the panel if fully open.
+        FADE_ONLY,
         NONE
     }
-    // TODO: make a 'tooltip_fade_in_duration' whereas upon creating the tooltip, the tooltip opacity starts at 0 but slowly rises over the course of the 'tooltip_fade_in_duration'. This only takes effect for the RESIZE_FADE animation.
-    //  Also add a 'tooltip_fade_out_duration', which prevents the closing animation from happening until the fade-out for the tooltip has occurred.
-    //  These should both be extremely short. Like 0.07f and 0.02f respectively.
-    //  If animation is equal to NONE, skip it.
-    //  ^ This is roughly what vanilla does.
 
+    /** The type of animation to use when opening and closing the panel */
     open var animation = PanelAnimation.NONE
 
-    open var openDuration = 0.15f
-    open var closeDuration = 0.05f
+    /** The duration the open animation lasts */
+    open var openDuration = 0.25f
 
+    /** The duration the close animation lasts */
+    open var closeDuration = 0.10f
+
+    /** The point at which the resize animation is finished and only fade in is left for the animation. Only applies to [PanelAnimation.RESIZE_FADE] on panel opening */
+    open var resizeFinishPoint = 0.4f
+
+    /** Whether to ease the open animation speed instead of a more linear opening speed */
+    var easeOpenAnimation = false
+
+    /** The current animation progress*/
     protected var anim = 0f
-    protected var animDirection = 1f
+
+    /** Whether the panel is currently closing */
     protected var closing = false
+
+    /** Whether the open animation has finished */
     protected var openAnimationFinished = false
 
+    /** Whether to create a UI noise effect on dialog open and close as often seen in the base-game */
     open var createUINoise: Boolean = false
+
+    /** Whether to create a UI noise effect when clicking outside the panel. Only applies if [createUINoise] is also true. */
+    open var createUINoiseOnClickOutside: Boolean = true
     private var _noise: UINoiseRenderer? = null
     open val noise: UINoiseRenderer
         get() = _noise ?: UINoiseRenderer().also { _noise = it }
@@ -47,23 +61,29 @@ open class ModalPanel : ComposablePanel() {
     protected open var goalWidth: Float = 0f
     protected open var goalHeight: Float = 0f
 
+    /** Whether the quit hotkey (escape key or right click outside the panel) is enabled. */
     open var allowHotkeyQuit: Boolean = true
 
-    /**
-     * Whether the hotkey to quit (Keyboard or Mouse) should consume input.
-     */
+    /** Whether the quit hotkey (escape key or right click outside the panel) should consume input. Only applies if [allowHotkeyQuit] is also true. */
     open var hotkeyQuitConsumesInput: Boolean = true
+
+    /** Whether any mouse click outside the panel should quit the panel, as opposed to only the right mouse button. Only applies if [allowHotkeyQuit] is also true. */
     open var anyOuterMouseClickQuits: Boolean = false
     open var quitHotkeyClosesOnRelease: Boolean = false
 
     override var createUIOnInit: Boolean = false
+
+    /** Whether to darken the background while the panel is open. */
     open var darkenBackground: Boolean = false
     open var darkenBackgroundAlphaMult: Float = 0.6f
     protected open var currentDarkenBackgroundAlphaMult = darkenBackgroundAlphaMult
+
+    /** Whether to create a campaign dummy dialog (which pauses the campaign) or pause combat while the panel is open. */
     open var useCampaignDummyDialogAndPauseCombat: Boolean = false
     open var makeCampaignDummyDialogHideUI: Boolean = false
     protected open var successfullyOpenedCampaignDummyDialog: Boolean = false
 
+    /** Whether to consume all input events while the panel is open. */
     open var consumeAllEvents: Boolean = true
 
     override fun renderBelow(alphaMult: Float) {
@@ -95,7 +115,7 @@ open class ModalPanel : ComposablePanel() {
         }
 
         if (openDuration == 0f || animation == PanelAnimation.NONE)
-            setMaxSize()
+            finishAnimation()
 
         if (createUINoise)
             noise.fadeInOut()
@@ -118,15 +138,17 @@ open class ModalPanel : ComposablePanel() {
             val duration = if (closing) closeDuration else openDuration
             val rate = amount / duration
 
-            anim += rate * animDirection
+            anim += rate * if (closing) -1f else 1f
             anim = anim.coerceIn(0f, 1f)
 
-            val eased = easeCubic(anim)
+            if (easeOpenAnimation)
+                updatePanelVisuals(easeCubic(anim))
+            else
+                updatePanelVisuals(anim)
 
-            updatePanelVisuals(eased)
 
             if (!closing && anim >= 1f)
-                setMaxSize()
+                finishAnimation()
 
             if (closing && anim <= 0f)
                 forceDismiss()
@@ -138,7 +160,7 @@ open class ModalPanel : ComposablePanel() {
     override fun render(alphaMult: Float) {
         super.render(alphaMult)
         if (createUINoise)
-            noise.render(panel.x, panel.y, panel.width, panel.height, alphaMult)
+            noise.render(panel.x, panel.y, panel.width, panel.height, max(alphaMult, 0.5f))
     }
 
     protected open var escapeRequested: Boolean = false
@@ -178,6 +200,11 @@ open class ModalPanel : ComposablePanel() {
                     }
                 }
             }
+
+            if (!event.isConsumed && !closing && createUINoise && createUINoiseOnClickOutside) {
+                if (event.isMouseDownEvent && !UIUtils.isMouseHoveringOverComponent(panel, mouseX = event.x, mouseY = event.y, pad = mouseCapturePad))
+                    noise.fadeInOut(noise.defaultInDuration / 2f, noise.defaultOutDuration / 2f)
+            }
         }
 
         super.processInput(events)
@@ -187,52 +214,65 @@ open class ModalPanel : ComposablePanel() {
         }
     }
 
+    /** Dismisses the panel with the preset animation, if present
+     *
+     * Also creates UI noise if enabled.
+     */
     @JvmOverloads
     open fun dismiss(animation: PanelAnimation = this.animation) {
         if (closing) return
 
         this.animation = animation
         closing = true
-        animDirection = -1f
 
         panel.getChildrenCopy().forEach {
             panel.removeComponent(it)
         }
 
-        if (closeDuration == 0f || animation == PanelAnimation.NONE)
+        if (closeDuration == 0f || animation == PanelAnimation.NONE) {
             forceDismiss()
-        else {
+        } else {
             if (createUINoise)
                 noise.fadeInOut(0f, outDuration = closeDuration * 4f)
         }
     }
 
     protected fun updatePanelVisuals(progress: Float) {
-        if (panel.parent == null)
-            return
+        val parent = panel.parent ?: return
 
         panel.opacity = progress
         currentDarkenBackgroundAlphaMult = lerp(0f, darkenBackgroundAlphaMult, progress)
 
         if (animation == PanelAnimation.FADE_ONLY) {
             panel.position?.setSize(goalWidth, goalHeight)
-            panel.position?.inTL(goalXOffset, panel.parent!!.height - goalYOffset)
+            panel.position?.inTL(goalXOffset, parent.height - goalYOffset)
+
+            if (tooltip == null)
+                createUI()
             return
         }
 
-        val currentHeight = goalHeight * progress
+        val resizeProgress =
+            if (!closing) (progress / resizeFinishPoint).coerceIn(0f, 1f)
+            else progress
 
-        val centerY = panel.parent!!.height - goalYOffset
+        val currentHeight = goalHeight * resizeProgress
+
+        val centerY = parent.height - goalYOffset
         val topLeftY = centerY + (goalHeight / 2f) - (currentHeight / 2f)
 
         panel.position?.setSize(goalWidth, currentHeight)
         panel.position?.inTL(goalXOffset, topLeftY)
+
+        if (currentHeight == goalHeight && tooltip == null)
+            createUI()
     }
 
-    fun setMaxSize() {
+    fun finishAnimation() {
         openAnimationFinished = true
         anim = 1f
         updatePanelVisuals(1f)
-        createUI()
+        if (tooltip == null)
+            createUI()
     }
 }

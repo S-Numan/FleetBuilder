@@ -10,8 +10,7 @@ class TextInputDialog(
     prompt: String? = null,
     excludedCharacters: String = "\\/:*?\"<>|",
     onConfirmAction: (String) -> Unit
-) :
-    DialogPanel(title) {
+) : DialogPanel(title) {
     init {
         confirmCancelButtonWidth = 120f
         confirmButtonShortcut = Keyboard.KEY_NONE

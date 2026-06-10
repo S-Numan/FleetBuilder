@@ -24,13 +24,13 @@ class UINoiseRenderer() {
         fader.isBounceDown = true;
         fader.forceOut();
         color = Global.getSettings().getColor("noiseColor")
-        //noise.setIntensity(0.5f)
+        //noise.setBaseDuration()
     }
 
     fun getFader(): Fader = fader
 
     val constantIntensity = 0.35f
-    val variableIntensity = 0.3f
+    val variableIntensity = 0.4f
 
     val defaultInDuration = 0.05f
     val defaultOutDuration = 0.8f
@@ -42,7 +42,7 @@ class UINoiseRenderer() {
 
     fun getBrightness(): Float = fader.brightness
 
-    fun fadeIn(duration: Float = defaultInDuration) {
+    /*fun fadeIn(duration: Float = defaultInDuration) {
         fader.durationIn = duration
         fader.fadeIn()
     }
@@ -50,12 +50,19 @@ class UINoiseRenderer() {
     fun fadeOut(duration: Float = defaultOutDuration) {
         fader.durationOut = duration
         fader.fadeOut()
-    }
+    }*/
 
-    fun fadeInOut(inDuration: Float = defaultInDuration, outDuration: Float = defaultOutDuration) {
+    fun fadeInOut(
+        inDuration: Float = defaultInDuration,
+        outDuration: Float = defaultOutDuration,
+        burst: Boolean = false
+    ) {
         fader.setDuration(inDuration, outDuration)
         fader.fadeIn()
+        if (burst)
+            noise.trigger(false)
     }
+
 
     fun isFullyVisible(): Boolean {
         return fader.brightness == 1f

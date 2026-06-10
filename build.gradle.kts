@@ -3,7 +3,7 @@
 
 //Automatically points to the starsector folder if the mod is placed in to the "mods" folder.
 //If you do not place the project in to your mods folder, replace this with the path to Starsectors root folder.
-val starsectorPath= "../../"
+val starsectorPath = "../../"
 
 
 val modId = "SN_FleetBuilder"
@@ -57,7 +57,6 @@ val masterVersionFile = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/
 val modThreadId = "33414"
 
 
-
 //Files and folders (relative to the project root) included in the packaged zip.
 //Directories keep their structure in the zip; files are placed at the zip root.
 //Missing entries are silently skipped by Gradle.
@@ -100,12 +99,6 @@ val jarFileName = "${modName}.jar"
 val jars = arrayOf("jars/$jarFileName")
 
 
-
-
-
-
-
-
 /// BUILD PIPELINE
 /// In Most cases, you should not need to change anything below here.
 
@@ -144,6 +137,8 @@ fun ModDependency.toJson(): String {
     }
 }
 
+val docsRepoDir = layout.buildDirectory.dir("communityApiDocs")
+
 dependencies {
     addModJars(modDependencies)
     otherDependencies.forEach { addCompileOnlyJar(it) }
@@ -162,26 +157,28 @@ fun DependencyHandler.addStarsectorCoreDependencies() {
     compileOnly("com.fs.starfarer:starfarer-api:local")
 
     //All other core jars in one files(...) call.
-    compileOnly(files(
-        File(coreDir, "starfarer_obf.jar"),
-        File(coreDir, "commons-compiler.jar"),
-        File(coreDir, "commons-compiler-jdk.jar"),
-        File(coreDir, "fs.common_obf.jar"),
-        File(coreDir, "fs.sound_obf.jar"),
-        File(coreDir, "janino.jar"),
-        File(coreDir, "jaxb-api-2.4.0-b180830.0359.jar"),
-        File(coreDir, "jaxb-api-2.4.0-b180830.0359-sources.jar"),
-        File(coreDir, "jinput.jar"),
-        File(coreDir, "jogg-0.0.7.jar"),
-        File(coreDir, "jorbis-0.0.15.jar"),
-        File(coreDir, "json.jar"),
-        File(coreDir, "log4j-1.2.9.jar"),
-        File(coreDir, "lwjgl.jar"),
-        File(coreDir, "lwjgl_util.jar"),
-        File(coreDir, "txw2-3.0.2.jar"),
-        File(coreDir, "webp-imageio-0.1.6.jar"),
-        File(coreDir, "xstream-1.4.10.jar"),
-    ))
+    compileOnly(
+        files(
+            File(coreDir, "starfarer_obf.jar"),
+            File(coreDir, "commons-compiler.jar"),
+            File(coreDir, "commons-compiler-jdk.jar"),
+            File(coreDir, "fs.common_obf.jar"),
+            File(coreDir, "fs.sound_obf.jar"),
+            File(coreDir, "janino.jar"),
+            File(coreDir, "jaxb-api-2.4.0-b180830.0359.jar"),
+            File(coreDir, "jaxb-api-2.4.0-b180830.0359-sources.jar"),
+            File(coreDir, "jinput.jar"),
+            File(coreDir, "jogg-0.0.7.jar"),
+            File(coreDir, "jorbis-0.0.15.jar"),
+            File(coreDir, "json.jar"),
+            File(coreDir, "log4j-1.2.9.jar"),
+            File(coreDir, "lwjgl.jar"),
+            File(coreDir, "lwjgl_util.jar"),
+            File(coreDir, "txw2-3.0.2.jar"),
+            File(coreDir, "webp-imageio-0.1.6.jar"),
+            File(coreDir, "xstream-1.4.10.jar"),
+        )
+    )
 }
 
 
@@ -210,15 +207,13 @@ java {
     }
 }
 
-val docsRepoDir = layout.buildDirectory.dir("communityApiDocs")
-
 sourceSets {
     main {
         java {
-            setSrcDirs(listOf("src", "${docsRepoDir.get().asFile}/src"))
+            setSrcDirs(listOf("src"))
         }
         kotlin {
-            setSrcDirs(listOf("src", "${docsRepoDir.get().asFile}/src"))
+            setSrcDirs(listOf("src"))
         }
     }
 }
@@ -334,6 +329,7 @@ abstract class FileMtimeSource : ValueSource<Long, FileMtimeSource.Parameters> {
     interface Parameters : ValueSourceParameters {
         val path: Property<String>
     }
+
     override fun obtain(): Long = File(parameters.path.get()).let {
         if (it.exists()) it.lastModified() else -1L
     }
@@ -365,6 +361,22 @@ fun stageStarsectorApi(): File {
     require(srcJar.exists()) {
         "Starsector API jar not found at ${srcJar.absolutePath}. " +
                 "Check starsectorPath at the top of this build script."
+    }
+
+    val docsSrcDir = docsRepoDir.get().asFile.resolve("src")
+
+    if (docsSrcDir.exists()) {
+        project.copy {
+            from(docsSrcDir)
+            into(layout.buildDirectory.dir("tmp/communitySources").get().asFile)
+        }
+
+        ant.withGroovyBuilder {
+            "zip"(
+                "destfile" to dstSources.absolutePath,
+                "basedir" to docsSrcDir.absolutePath
+            )
+        }
     }
 
     //Fast path: staged files match (or post-date) their sources, so we can return without doing anything.
@@ -426,7 +438,9 @@ fun shellTokenize(s: String): List<String> {
     for (c in s) when {
         quote != null -> if (c == quote) quote = null else cur.append(c)
         c == '"' || c == '\'' -> quote = c
-        c.isWhitespace() -> if (cur.isNotEmpty()) { out += cur.toString(); cur.clear() }
+        c.isWhitespace() -> if (cur.isNotEmpty()) {
+            out += cur.toString(); cur.clear()
+        }
         else -> cur.append(c)
     }
     if (cur.isNotEmpty()) out += cur.toString()
@@ -600,49 +614,49 @@ runCatching {
     val runDir = file(".run")
     if (!runDir.exists()) return@runCatching
 
-        val desiredWorkingDir = when (currentPlatform()) {
-            StarsectorPlatform.WINDOWS -> "\$ProjectFileDir\$/../../starsector-core"
-            StarsectorPlatform.LINUX, StarsectorPlatform.MAC -> "\$ProjectFileDir\$/../../"
-        }
+    val desiredWorkingDir = when (currentPlatform()) {
+        StarsectorPlatform.WINDOWS -> "\$ProjectFileDir\$/../../starsector-core"
+        StarsectorPlatform.LINUX, StarsectorPlatform.MAC -> "\$ProjectFileDir\$/../../"
+    }
 
-        val regex = Regex("""<option name="WORKING_DIRECTORY" value="[^"]*" />""")
+    val regex = Regex("""<option name="WORKING_DIRECTORY" value="[^"]*" />""")
 
-        runDir.listFiles { f -> f.extension == "xml" }?.forEach { file ->
-            val original = file.readText()
+    runDir.listFiles { f -> f.extension == "xml" }?.forEach { file ->
+        val original = file.readText()
 
-            val workingDirReplacement =
+        val workingDirReplacement =
             """<option name="WORKING_DIRECTORY" value="$desiredWorkingDir" />"""
-            val safeWorkingDirReplacement = Regex.escapeReplacement(workingDirReplacement)
+        val safeWorkingDirReplacement = Regex.escapeReplacement(workingDirReplacement)
 
-            val moduleRegex = Regex("""<module name="[^"]*\.main"\s*/>""")
-            val moduleReplacement = """<module name="$modName.main" />"""
-            val safeModuleReplacement = Regex.escapeReplacement(moduleReplacement)
+        val moduleRegex = Regex("""<module name="[^"]*\.main"\s*/>""")
+        val moduleReplacement = """<module name="$modName.main" />"""
+        val safeModuleReplacement = Regex.escapeReplacement(moduleReplacement)
 
-            var updated = original
+        var updated = original
 
-            // Replace WORKING_DIRECTORY
-            updated = if (regex.containsMatchIn(updated)) {
-                updated.replace(regex, safeWorkingDirReplacement)
-            } else {
-                Regex("""<configuration[^>]*>""").find(updated)?.let { match ->
-                    updated.replaceRange(
-                        match.range.last + 1,
-                        match.range.last + 1,
-                        "\n    $workingDirReplacement"
-                    )
-                } ?: updated
-            }
-
-            // Replace module name
-            if (moduleRegex.containsMatchIn(updated)) {
-                updated = updated.replace(moduleRegex, safeModuleReplacement)
-            }
-
-            if (updated != original) {
-                file.writeText(updated)
-                logger.lifecycle("Updated ${file.name}")
-            }
+        // Replace WORKING_DIRECTORY
+        updated = if (regex.containsMatchIn(updated)) {
+            updated.replace(regex, safeWorkingDirReplacement)
+        } else {
+            Regex("""<configuration[^>]*>""").find(updated)?.let { match ->
+                updated.replaceRange(
+                    match.range.last + 1,
+                    match.range.last + 1,
+                    "\n    $workingDirReplacement"
+                )
+            } ?: updated
         }
+
+        // Replace module name
+        if (moduleRegex.containsMatchIn(updated)) {
+            updated = updated.replace(moduleRegex, safeModuleReplacement)
+        }
+
+        if (updated != original) {
+            file.writeText(updated)
+            logger.lifecycle("Updated ${file.name}")
+        }
+    }
 
 }.onFailure { e ->
     logger.warn("Failed to patch .run configs (non-fatal): ${e.message}")
@@ -653,22 +667,22 @@ runCatching {
     val artifactFile = file(".idea/artifacts/Create_jar.xml")
     if (!artifactFile.exists()) return@runCatching
 
-        val original = artifactFile.readText()
+    val original = artifactFile.readText()
 
-        var updated = original
+    var updated = original
 
-        // Replace module-output name="X.main"
-        val moduleRegex = Regex("""name="[^"]+\.main"""")
-        updated = updated.replace(moduleRegex, """name="$modName.main"""")
+    // Replace module-output name="X.main"
+    val moduleRegex = Regex("""name="[^"]+\.main"""")
+    updated = updated.replace(moduleRegex, """name="$modName.main"""")
 
-        // Replace jar output name="Something.jar"
-        val jarRegex = Regex("""name="[^"]+\.jar"""")
-        updated = updated.replace(jarRegex, """name="$jarFileName"""")
+    // Replace jar output name="Something.jar"
+    val jarRegex = Regex("""name="[^"]+\.jar"""")
+    updated = updated.replace(jarRegex, """name="$jarFileName"""")
 
-        if (updated != original) {
-            artifactFile.writeText(updated)
-            logger.lifecycle("Updated artifact Create_jar.xml to $jarFileName")
-        }
+    if (updated != original) {
+        artifactFile.writeText(updated)
+        logger.lifecycle("Updated artifact Create_jar.xml to $jarFileName")
+    }
 
 }.onFailure { e ->
     logger.warn("Failed to patch artifact XML (non-fatal): ${e.message}")
@@ -683,8 +697,8 @@ runCatching {
     if (shouldAutomaticallyCreateMetadataFiles) {
         // Generates a mod_info.json from the variables defined at the top of this script.
         File(projectDir, "mod_info.json")
-        .writeIfChanged(
-"""
+            .writeIfChanged(
+                """
 {
     "id": "$modId",
     "name": "$displayName",
@@ -702,9 +716,9 @@ ${modDependenciesData.joinToString(",\n") { "       " + it.toJson() }}
     ],
 }
 """.trimIndent()
-        )
+            )
 
-        if(directDownloadURL.isNotBlank() || changelogURL.isNotBlank() || masterVersionFile.isNotBlank() || modThreadId.isNotBlank()) {
+        if (directDownloadURL.isNotBlank() || changelogURL.isNotBlank() || masterVersionFile.isNotBlank() || modThreadId.isNotBlank()) {
             // Generates a Version Checker csv file from the variables defined at the top of this script.
             with(File(projectDir, "data/config/version/version_files.csv")) {
                 this.parentFile.mkdirs()
@@ -747,13 +761,13 @@ ${modDependenciesData.joinToString(",\n") { "       " + it.toJson() }}
     }
         """.trimIndent()
 
-        File(projectDir, "${modVersionName}.version").writeIfChanged(
-            """
+            File(projectDir, "${modVersionName}.version").writeIfChanged(
+                """
 {
     ${fields.joinToString(",\n    ")}
 }
         """.trimIndent()
-        )
+            )
         }
 
         // Creates a file with the mod name to tell the Github Actions script the name of the mod.
@@ -765,13 +779,6 @@ ${modDependenciesData.joinToString(",\n") { "       " + it.toJson() }}
 
     }
 }
-
-
-
-
-
-
-
 
 
 val cloneCommunityApiDocs = tasks.register<Exec>("cloneCommunityApiDocs") {
@@ -852,8 +859,9 @@ val createCommunityDocs = tasks.register<Jar>("createCommunityDocs") {
     )
 }
 
-tasks.named("prepareKotlinBuildScriptModel") { // Force run createCommunityDocs every gradle sync
-    dependsOn("createCommunityDocs")
+// Force run createCommunityDocs every gradle sync
+tasks.named("prepareKotlinBuildScriptModel") {
+    dependsOn(createCommunityDocs)
 }
 
 updateCommunityApiDocs.configure {

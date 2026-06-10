@@ -288,6 +288,11 @@ internal fun UIPanelAPI.isClipping(): Boolean {
     return invoke("isClipping") as Boolean
 }
 
+// What does this do?
+internal fun TooltipMakerAPI.getParentWidget(): UIComponentAPI? {
+    return ReflectionUtils.invoke("getParentWidget", this) as? UIPanelAPI
+}
+
 val UIPanelAPI.children get() = this.getChildrenCopy()
 
 fun UIPanelAPI.findChildWithMethod(
@@ -750,6 +755,7 @@ fun UIPanelAPI.addButton(
     val tempPanel = Global.getSettings().createCustom(width, height, null)
     val tempTMAPI = tempPanel.createUIElement(width, height, false)
     when (font) {
+        Font.ORBITRON_12_CONDENSED -> tempTMAPI.setButtonFontDefault()
         Font.VICTOR_10 -> tempTMAPI.setButtonFontVictor10()
         Font.VICTOR_14 -> tempTMAPI.setButtonFontVictor14()
         Font.ORBITRON_20 -> tempTMAPI.setButtonFontOrbitron20()

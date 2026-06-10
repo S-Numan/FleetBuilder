@@ -26,7 +26,8 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
 
     private var advanceFunctions: MutableList<(Float) -> Unit> = mutableListOf()
 
-    open fun clearStarUIFunctions() {
+    /** Clears all StarUI callbacks */
+    open fun clearStarUICallbacks() {
         onClickFunctions.clear()
         onClickOutsideFunctions.clear()
         onClickReleaseFunctions.clear()

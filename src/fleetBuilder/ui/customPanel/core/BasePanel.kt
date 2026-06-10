@@ -16,8 +16,6 @@ import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.ReflectionMisc
 import java.awt.Color
 
-//Copied and heavily modified from AshLib
-
 open class BasePanel : StarUIPanelPlugin() {
     var tooltip: TooltipMakerAPI? = null
         protected set
@@ -61,9 +59,11 @@ open class BasePanel : StarUIPanelPlugin() {
         return panel
     }
 
-    open fun createUI() {
+    /** Typically the place to add ui elements to the panel */
+    protected open fun createUI() {
     }
 
+    /** Dismiss the panel immediately, skipping any animations */
     @JvmOverloads
     open fun forceDismiss(runExitScript: Boolean = true) {
         if (!hasInitOccurred) return
@@ -82,6 +82,7 @@ open class BasePanel : StarUIPanelPlugin() {
         exitCallback = null
     }
 
+    /** Set a callback to be run when the panel is dismissed */
     fun onExit(callback: () -> Unit) {
         exitCallback = callback
     }

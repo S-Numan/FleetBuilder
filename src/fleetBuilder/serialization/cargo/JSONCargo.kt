@@ -112,6 +112,7 @@ object JSONCargo {
     }
 
     // Save cargo grouped by type into a single object
+    @Deprecated("Outdated behavior. Use CompressedCargo instead")
     fun saveCargoToJson(stacks: List<CargoStackAPI>): JSONObject {
         val grouped = mutableMapOf<String, JSONArray>()
 

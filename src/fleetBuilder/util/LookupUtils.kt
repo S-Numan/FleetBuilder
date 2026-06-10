@@ -10,7 +10,10 @@ import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.util.api.VariantUtils.createErrorVariant
-import fleetBuilder.util.api.kotlin.*
+import fleetBuilder.util.api.kotlin.completelyRemoveMod
+import fleetBuilder.util.api.kotlin.getActualHullId
+import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
+import fleetBuilder.util.api.kotlin.getEffectiveHullId
 
 object LookupUtils {
 
@@ -129,11 +132,12 @@ object LookupUtils {
                     }
                 }
                 cleanVariant(varianty)
-                varianty.getModules().forEach { (_, moduleVariant) ->
-                    cleanVariant(moduleVariant)
-                }
             } catch (e: Exception) {
-                Global.getLogger(this.javaClass).error("Error while cleaning variant-id '${varianty.hullVariantId}' of hull-id '${varianty.hullSpec.hullId}'", e)
+                Global.getLogger(this.javaClass).error(
+                    "Error while cleaning variant-id '${varianty.hullVariantId}'" +
+                            " of hull-id '${varianty.hullSpec.hullId}'"
+                            + if (varianty.source != null) ", from the mod ${varianty.source.name}" else "", e
+                )
             }
         }
     }

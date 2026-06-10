@@ -165,7 +165,7 @@ object DisplayMessage {
     }*/
 
     @JvmOverloads
-    fun dialogMessage(title: String, message: String, messageColor: Color = Misc.getTextColor()) {
+    fun dialogMessage(title: String, message: String, messageColor: Color = Misc.getTextColor()): DialogPanel {
         val dialog = DialogPanel(title)
         dialog.allowHotkeyQuit = false
 
@@ -174,6 +174,7 @@ object DisplayMessage {
 
             dialog.addActionButtons(alignment = Alignment.MID, addCancelButton = false)
         }
+        return dialog
     }
 
 

@@ -346,15 +346,7 @@ object ReflectionMisc {
     fun updateFleetPanelContents() {
         if (Global.getSector()?.campaignUI?.getActualCurrentTab() != CoreUITabId.FLEET) return
 
-        var fleetPanel: UIPanelAPI? = null
-        try {
-            val fleetTab = getFleetTab()
-            if (fleetTab != null) {
-                fleetPanel = fleetTab.safeInvoke(name = "getFleetPanel") as? UIPanelAPI // This is more safe
-            }
-        } catch (_: Exception) {
-        }
-        fleetPanel?.safeInvoke("updateListContents")
+        getFleetPanel()?.safeInvoke("updateListContents")
 
         postUpdateFleetPanelCallbacks.forEach { it.invoke() }
     }

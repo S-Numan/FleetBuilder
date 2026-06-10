@@ -86,7 +86,7 @@ object UIUtils {
         renderProgress: Boolean = false,
         progress: Float = 0f
     ) {
-        renderUILines(panel.x, panel.y, panel.width, panel.height, alphaMult, boxColor, progression, widthPadding, renderProgress, progress)
+        renderUILines(panel.x - 1f, panel.y - 1f, panel.width + 1f, panel.height + 1f, alphaMult, boxColor, progression, widthPadding, renderProgress, progress)
     }
 
     fun renderUILines(

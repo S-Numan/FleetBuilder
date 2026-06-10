@@ -535,7 +535,7 @@ internal class CargoAutoManageUIPlugin(
         }
 
         if (instantUp)
-            dialog.setMaxSize()
+            dialog.finishAnimation()
     }
 
     private fun addStack(

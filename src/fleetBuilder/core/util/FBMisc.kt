@@ -27,8 +27,6 @@ import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
 import java.awt.Color
-import kotlin.collections.get
-import kotlin.collections.iterator
 import kotlin.math.min
 
 internal object FBMisc {
@@ -288,7 +286,7 @@ internal object FBMisc {
         to.setVariantDisplayName(from.displayName)
         to.source = from.source
 
-        from.getModules(true).forEach { (slot, fromVariant) ->
+        from.getModules().forEach { (slot, fromVariant) ->
             val toVariant = runCatching { to.getModuleVariant(slot) }.getOrNull()?.clone()
             if (toVariant == null) return@forEach
 

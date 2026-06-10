@@ -38,6 +38,9 @@ open class DialogPanel(
     override var darkenBackground: Boolean = true
     override var useCampaignDummyDialogAndPauseCombat = true
 
+    //override var animation = PanelAnimation.RESIZE_FADE
+    //override var createUINoise = true
+
     override fun createUI() {
         createHeader()
 

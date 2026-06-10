@@ -33,10 +33,9 @@ fun ShipVariantAPI.clone(settings: VariantSettings): ShipVariantAPI {
  * The map key is the module slot ID, and the value is the corresponding [ShipVariantAPI] for that module.
  *
  * This delegates to [VariantUtils.getModules]
- * @param onlyThoseInHullSpec If true, only returns modules which a slot to attach to are present in the [ShipHullSpecAPI]
  */
-fun ShipVariantAPI.getModules(onlyThoseInHullSpec: Boolean = false): Map<String, ShipVariantAPI> {
-    return VariantUtils.getModules(this, onlyThoseInHullSpec)
+fun ShipVariantAPI.getModules(): Map<String, ShipVariantAPI> {
+    return VariantUtils.getModules(this)
 }
 
 /**
@@ -45,10 +44,9 @@ fun ShipVariantAPI.getModules(onlyThoseInHullSpec: Boolean = false): Map<String,
  * The map key is the module slot ID, and the value is the corresponding [ShipVariantAPI] for that module.
  *
  * This delegates to [VariantUtils.getModulesAllowNull]
- * @param onlyThoseInHullSpec If true, only returns modules which a slot to attach to are present in the [ShipHullSpecAPI]
  */
-fun ShipVariantAPI.getModulesAllowNull(onlyThoseInHullSpec: Boolean = false): Map<String, ShipVariantAPI?> {
-    return VariantUtils.getModulesAllowNull(this, onlyThoseInHullSpec)
+fun ShipVariantAPI.getModulesAllowNull(): Map<String, ShipVariantAPI?> {
+    return VariantUtils.getModulesAllowNull(this)
 }
 // Avoid using ShipVariantAPI.getModuleSlots(). It uses ShipVariantAPI.getStationModules() internally anyway.
 // Only thing getModuleSlots checks differently is checking if the hullspec has the slot for the module
