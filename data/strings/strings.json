@@ -140,7 +140,7 @@
   "include_fleet":"Include Fleet",
   "include_officers":"Include Officers",
   "include_cargo":"Include Cargo",
-  "include_submarket_cargo":"Include Submarket Cargo",
+  "include_submarket_cargo":"Include Submarket Storage",
   "include_submarket_cargo_tooltip": "Includes the stored cargo and stored fleets of every free player accessible submarket.",
   "include_credits":"Include Credits",
   "include_abilitybar":"Include Ability Bar",

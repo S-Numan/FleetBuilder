@@ -69,6 +69,7 @@ import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
+import org.magiclib.util.membermemory.MemberMemoryExt.getMemberMemory
 import second_in_command.SCData
 import second_in_command.SCUtils
 import second_in_command.specs.SCOfficer
@@ -160,13 +161,13 @@ object HotkeyHandlerDialogs {
                     //DisplayMessage.showError("Test Message: " + Random().nextInt())
                     //Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
 
-                    //val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
-                    //val variant = memberInRefit.variant ?: return@onClick
+                    val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
+                    val variant = memberInRefit.variant ?: return@onClick
                     //val modules = variant.stationModules
                     //val modules2 = variant.moduleSlots
                     //val modules3 = variant.getModules()
+                    //val memberMemory = memberInRefit.getMemberMemory()
                     //DisplayMessage.showError("Member memory = " + memberMemory.toString() + "\nModules = " + variant.hullSpec.getSlotsForModules().toString())
-
 
                     val sector = Global.getSector()
                     val state = AppDriver.getInstance().currentState
@@ -177,12 +178,12 @@ object HotkeyHandlerDialogs {
 
                     openFileViewPanel()
 
-                    /*
-                val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
-                val memberMemory = member.getMemberMemory()
 
-                if (!memberMemory.containsKey("test"))
-                    memberMemory["test"] = "test"*/
+                    val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
+                    val memberMemory = member.getMemberMemory()
+
+                    if (!memberMemory.contains("\$test"))
+                        memberMemory.set("\$test", true)
 
 
                     //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)

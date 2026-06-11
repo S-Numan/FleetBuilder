@@ -2,11 +2,13 @@ package fleetBuilder.core.util.save.removable
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.FactionAPI
+import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.CampaignEngine
 import fleetBuilder.core.config.FBSettings
+import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.kotlin.getModules
 
@@ -18,14 +20,39 @@ internal object MakeSaveRemovable {
 
     private lateinit var hullmods: List<Thing>
 
+    var entitiesWithThing: List<MakeSaveRemovable.HasThing>? = null
+    var sectorMarkets: List<MarketAPI>? = null
+
     fun beforeGameSave() {
+        sectorMarkets = CampaignUtils.getSectorMarkets()
+        if (sectorMarkets != null) {
+            for (market in sectorMarkets) {
+                if (market.primaryEntity.hasScriptOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java)) {
+                    market.primaryEntity.removeScriptsOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java)
+                }
+            }
+        }
+
         clearMemoryKeys()
-        getEntitiesWithThings().forEach { processBeforeSave(it) }
+        entitiesWithThing = getEntitiesWithThings()
+        entitiesWithThing?.forEach { processBeforeSave(it) }
     }
 
     fun afterGameSave() {
-        getEntitiesWithThings().forEach { processAfterSave(it) }
+        if (sectorMarkets != null) {
+            for (market in sectorMarkets) {
+                if (market.memoryWithoutUpdate.contains("\$FB_SaveTransferStation")) {
+                    market.primaryEntity.addScript(PlayerSaveUtils.RemoveEmptyStation(market.primaryEntity))
+                }
+            }
+        }
+
+
+        entitiesWithThing?.forEach { processAfterSave(it) }
         clearMemoryKeys()
+
+        entitiesWithThing = null
+        sectorMarkets = null
     }
 
     fun onGameLoad() {
@@ -74,7 +101,7 @@ internal object MakeSaveRemovable {
     private fun getEntitiesWithThings(): List<HasThing> {
         val locations = Global.getSector()!!.allLocations
 
-        val submarkets = CampaignUtils.getSectorSubmarkets()
+        val submarkets = CampaignUtils.getSubmarkets(sectorMarkets!!)
         val cargos = CampaignUtils.getCargoFromSubmarkets(submarkets)
 
         val fleetMembers = listOf(
@@ -97,7 +124,7 @@ internal object MakeSaveRemovable {
         return "$hullmodKey $entityKey".replace(Regex("\\s+"), "_")
     }
 
-    private interface HasThing {
+    internal interface HasThing {
         fun key(): String
         fun hullMods(): MutableCollection<String>
     }

@@ -1,10 +1,7 @@
 package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CargoAPI
-import com.fs.starfarer.api.campaign.InteractionDialogAPI
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin
-import com.fs.starfarer.api.campaign.SectorEntityToken
+import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
@@ -23,6 +20,25 @@ import fleetBuilder.util.api.kotlin.safeInvoke
 
 object CampaignUtils {
 
+    /**
+     * Returns the actual CoreUITabId of the campaign UI.
+     *
+     * This function is necessary because the campaign UI can report that the player is still in a CoreUITab even if they are not.
+     * This can happen when the player enters an interaction dialog, opens any CoreUITab such as the crew/cargo tab, then escapes that CoreUITab back to the interaction dialog. It will still report that they are in the crew/cargo tab when they are not.
+     *
+     * This function checks if the player is in a ghost interaction dialog and if so, returns null, indicating that the player is not in a CoreUITab]
+     */
+    fun getActualCurrentTab(ui: CampaignUIAPI): CoreUITabId? {
+        val sector = Global.getSector() ?: return null
+        if (!sector.isPaused) return null
+        if (ui.currentInteractionDialog != null && ui.currentInteractionDialog.interactionTarget != null) {
+            // Validate that we're not stuck in a ghost interaction dialog. (Happens when you escape out of a CoreUITab while in an interaction dialog. It reports that the player is still in that CoreUITab, which is false)
+            if (ui.currentInteractionDialog.optionPanel != null && ui.currentInteractionDialog.optionPanel.savedOptionList.isNotEmpty()) return null
+        }
+
+        return ui.currentCoreTab
+    }
+
     // Taken from Logistics Notifications by SafariJohn
     /**
      * Calculates how many days of supply the player has left, accounting for repairs and recovery.
@@ -31,8 +47,8 @@ object CampaignUtils {
     fun getPlayerSupplyDays(): Float {
         // Calculate days of supply remaining
         val playerFleet = Global.getSector()?.playerFleet ?: return 0f
-        val supplies = playerFleet.cargo.supplies
-        val logistics = playerFleet.logistics
+        val supplies = playerFleet.cargo?.supplies ?: return 0f
+        val logistics = playerFleet.logistics ?: return 0f
         val recoveryCost = logistics.totalRepairAndRecoverySupplyCost
         val totalPerDay = logistics.totalSuppliesPerDay
         val suDays: Float
@@ -43,8 +59,8 @@ object CampaignUtils {
 
             // Total up maintenance costs per day for fleet
             var maintPerDay = 0f
-            for (mem: FleetMemberAPI in playerFleet.membersWithFightersCopy) {
-                val maint = mem.stats.suppliesPerMonth.modifiedValue / 30
+            for (mem: FleetMemberAPI in playerFleet.membersWithFightersCopy ?: emptyList()) {
+                val maint = (mem.stats?.suppliesPerMonth?.modifiedValue ?: 0f) / 30
                 maintPerDay += maint
             }
             // Account for extra cost from over-capacity
@@ -66,16 +82,13 @@ object CampaignUtils {
     fun getPlayerFuelLY(): Float {
         // Calculate lightyears of fuel remaining
         val playerFleet = Global.getSector()?.playerFleet ?: return 0f
-        val fuel = playerFleet.cargo.fuel
         val fuelPerDay = playerFleet.logistics.baseFuelCostPerLightYear
-        var ly: Float
-        if (playerFleet.isInHyperspace) {
-            ly = fuel / fuelPerDay
-        } else {
-            ly = (fuel - fuelPerDay) / fuelPerDay
-        }
-        if (ly < 0) ly = 0f
-        return ly
+        val ly = if (playerFleet.isInHyperspace)
+            playerFleet.cargo.fuel / fuelPerDay
+        else
+            (playerFleet.cargo.fuel - fuelPerDay) / fuelPerDay
+        // TODO multiple by overburn? Actual speed is a setting!
+        return ly.coerceAtLeast(0f)
     }
 
     /**

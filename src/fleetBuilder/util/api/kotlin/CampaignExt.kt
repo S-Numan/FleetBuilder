@@ -1,27 +1,22 @@
 package fleetBuilder.util.api.kotlin
 
-import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
+import fleetBuilder.util.api.CampaignUtils
 
 
 /**
- * Returns the actual current tab of the campaign UI.
+ * Returns the actual CoreUITabId of the campaign UI.
  *
- * This function is necessary because the campaign UI sometimes reports that the player is still in a UI screen even if they are not.
- * This can happen when the player escapes out of a UI screen while in an interaction dialog.
+ * This extension is necessary because the campaign UI can report that the player is still in a CoreUITab even if they are not.
+ * This can happen when the player enters an interaction dialog, opens any CoreUITab such as the crew/cargo tab, then escapes that CoreUITab back to the interaction dialog. It will still report that they are in the crew/cargo tab when they are not.
  *
- * This function checks if the player is in a ghost interaction dialog and if so, returns null, indicating that the player is not in a UI screen.
+ * This extension checks if the player is in a ghost interaction dialog and if so, returns null, indicating that the player is not in a CoreUITab.
+ *
+ * This delegates to [CampaignUtils.getActualCurrentTab]
  */
 fun CampaignUIAPI.getActualCurrentTab(): CoreUITabId? {
-    val sector = Global.getSector() ?: return null
-    if (!sector.isPaused) return null
-    if (currentInteractionDialog != null && currentInteractionDialog.interactionTarget != null) {
-        // Validate that we're not stuck in a ghost interaction dialog. (Happens when you escape out of a UI screen while in an interaction dialog. It reports that the player is still in that ui screen, which is false)
-        if (currentInteractionDialog.optionPanel != null && currentInteractionDialog.optionPanel.savedOptionList.isNotEmpty()) return null
-    }
-
-    return currentCoreTab
+    return CampaignUtils.getActualCurrentTab(this)
 }
 
 

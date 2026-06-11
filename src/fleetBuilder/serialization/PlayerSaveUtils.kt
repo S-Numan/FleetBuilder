@@ -23,7 +23,6 @@ import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
 import fleetBuilder.serialization.person.JSONPerson
 import fleetBuilder.serialization.person.PersonSettings
-import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
@@ -41,6 +40,24 @@ import kotlin.math.sin
 
 
 object PlayerSaveUtils {
+
+    class RemoveEmptyStation(private val station: SectorEntityToken) : EveryFrameScript {
+        var isEmpty = false
+        override fun isDone() = isEmpty
+        override fun runWhilePaused() = false
+        private val interval = IntervalUtil(0.1f, 0.1f)
+        override fun advance(amount: Float) {
+            val days = Global.getSector().clock.convertToDays(amount)
+            interval.advance(days)
+            if (!interval.intervalElapsed()) return
+
+            val storage = station.market?.getStorageCargo() ?: return
+            if (storage.isEmpty && (storage.mothballedShips == null || storage.mothballedShips.numMembers == 0)) {
+                isEmpty = true
+                station.containingLocation.removeEntity(station)
+            }
+        }
+    }
 
     data class AbilityPair(
         var abilityId: String? = null,
@@ -74,16 +91,8 @@ object PlayerSaveUtils {
 
         if (handleSubmarketCargo) {
             try {
-                val coreUI = ReflectionMisc.getCoreUI()
-                if (coreUI == null) {
-                    DisplayMessage.showError("Failed to get Core UI")
-                    return ""
-                }
-
                 val markets = CampaignUtils.getSectorMarkets()
-
-                //val memory = Global.getFactory().createMemory() // TODO, consider adding this to magiclib in place of the existing functionality.
-
+                
                 val marketsArray = JSONArray()
                 for (market in markets) {
                     //if (market.isHidden)
@@ -685,24 +694,7 @@ object PlayerSaveUtils {
                             cargo.mothballedShips.addFleetMember(it)
                         }
 
-                        class RemoveItemless(private val station: SectorEntityToken) : EveryFrameScript {
-                            var isEmpty = false
-                            override fun isDone() = isEmpty
-                            override fun runWhilePaused() = false
-                            private val interval = IntervalUtil(0.1f, 0.1f)
-                            override fun advance(amount: Float) {
-                                val days = Global.getSector().clock.convertToDays(amount)
-                                interval.advance(days)
-                                if (!interval.intervalElapsed()) return
-
-                                val storage = station.market?.getStorageCargo() ?: return
-                                if (storage.isEmpty && (storage.mothballedShips == null || storage.mothballedShips.numMembers == 0)) {
-                                    isEmpty = true
-                                    station.containingLocation.removeEntity(station)
-                                }
-                            }
-                        }
-                        entity.addScript(RemoveItemless(entity))
+                        entity.addScript(RemoveEmptyStation(entity))
                     }
                 }
             }
