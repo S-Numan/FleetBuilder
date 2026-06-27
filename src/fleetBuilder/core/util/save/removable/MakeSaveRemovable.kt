@@ -24,35 +24,42 @@ internal object MakeSaveRemovable {
     var sectorMarkets: List<MarketAPI>? = null
 
     fun beforeGameSave() {
-        sectorMarkets = CampaignUtils.getSectorMarkets()
-        if (sectorMarkets != null) {
-            for (market in sectorMarkets) {
-                if (market.primaryEntity.hasScriptOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java)) {
-                    market.primaryEntity.removeScriptsOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java)
+        try {
+            sectorMarkets = CampaignUtils.getSectorMarkets()
+            if (sectorMarkets != null) {
+                for (market in sectorMarkets) {
+                    if (market.primaryEntity.hasScriptOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java)) {
+                        market.primaryEntity.removeScriptsOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java)
+                    }
                 }
             }
-        }
 
-        clearMemoryKeys()
-        entitiesWithThing = getEntitiesWithThings()
-        entitiesWithThing?.forEach { processBeforeSave(it) }
+            clearMemoryKeys()
+            entitiesWithThing = getEntitiesWithThings()
+            entitiesWithThing?.forEach { processBeforeSave(it) }
+        } catch (e: Exception) {
+            Global.getLogger(this.javaClass).error("Failed to process before game save", e)
+        }
     }
 
     fun afterGameSave() {
-        if (sectorMarkets != null) {
-            for (market in sectorMarkets) {
-                if (market.memoryWithoutUpdate.contains("\$FB_SaveTransferStation")) {
-                    market.primaryEntity.addScript(PlayerSaveUtils.RemoveEmptyStation(market.primaryEntity))
+        try {
+            if (sectorMarkets != null) {
+                for (market in sectorMarkets) {
+                    if (market.memoryWithoutUpdate.contains("\$FTK_SaveTransferStation")) {
+                        market.primaryEntity.addScript(PlayerSaveUtils.RemoveEmptyStation(market.primaryEntity))
+                    }
                 }
             }
+
+            entitiesWithThing?.forEach { processAfterSave(it) }
+            clearMemoryKeys()
+
+            entitiesWithThing = null
+            sectorMarkets = null
+        } catch (e: Exception) {
+            Global.getLogger(this.javaClass).error("Failed to process after game save", e)
         }
-
-
-        entitiesWithThing?.forEach { processAfterSave(it) }
-        clearMemoryKeys()
-
-        entitiesWithThing = null
-        sectorMarkets = null
     }
 
     fun onGameLoad() {

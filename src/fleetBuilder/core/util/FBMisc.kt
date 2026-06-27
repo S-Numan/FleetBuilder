@@ -31,6 +31,14 @@ import kotlin.math.min
 
 internal object FBMisc {
 
+    internal inline fun runSafe(block: () -> Unit) {
+        try {
+            block()
+        } catch (e: Exception) {
+            Global.getLogger(this.javaClass).error(e)
+        }
+    }
+
     fun isConsoleOpen(): Boolean {
         if (!FBSettings.isConsoleModEnabled)
             return false

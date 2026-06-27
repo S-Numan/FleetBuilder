@@ -4,6 +4,8 @@ import com.fs.starfarer.api.SettingsAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.util.api.HullUtils
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
 import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
@@ -55,3 +57,47 @@ fun String.isJSON(): Boolean {
  */
 fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI =
     HullUtils.createHullVariant(hull)
+
+internal inline fun <T> withoutLogging(block: () -> T): T {
+    val rootLogger = Logger.getRootLogger()
+    val previousLevel = rootLogger.level
+    return try {
+        rootLogger.level = Level.OFF
+        block()
+    } finally {
+        rootLogger.level = previousLevel
+    }
+}
+
+/**
+ * Checks if a JSON file exists in `/data`.
+ *
+ * Optionally suppresses the usual "Loading JSON from ..." log output when attempting to load the file.
+ *
+ * Note: When [withoutLogging] is `true`, this temporarily modifies the global logger level and is therefore
+ * not thread-safe. In rare cases, log messages from unrelated code running on separate threads may be suppressed during execution.
+ * Avoid using [withoutLogging] on threads other than the main thread to minimize this issue.
+ *
+ * @param filename The filename of the JSON file.
+ * @param modID The mod ID of the mod to check. If null, checks all available sources.
+ * @param withoutLogging If `true`, suppresses logging while attempting to load the JSON.
+ * @return `true` if the JSON file exists and can be loaded, `false` otherwise.
+ */
+fun SettingsAPI.doesJSONExist(
+    filename: String,
+    modID: String? = null,
+    withoutLogging: Boolean = false
+): Boolean {
+    return try {
+        if (withoutLogging) {
+            withoutLogging {
+                modID?.let { loadJSON(filename, it) } ?: loadJSON(filename)
+            }
+        } else {
+            modID?.let { loadJSON(filename, it) } ?: loadJSON(filename)
+        }
+        true
+    } catch (_: Exception) {
+        false
+    }
+}

@@ -163,6 +163,7 @@ object HotkeyHandlerDialogs {
 
                     val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
                     val variant = memberInRefit.variant ?: return@onClick
+                    
                     //val modules = variant.stationModules
                     //val modules2 = variant.moduleSlots
                     //val modules3 = variant.getModules()

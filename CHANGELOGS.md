@@ -1,3 +1,7 @@
+# 1.40.0
+### Bugfixes
+- Stop 'Loading JSON from ...' log spam
+
 # 1.39.0
 ### Additions
 - A cheats console command to enable this mod's cheats without LunaLib or enabling devMode

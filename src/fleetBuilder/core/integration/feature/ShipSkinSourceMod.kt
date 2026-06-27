@@ -3,19 +3,27 @@ package fleetBuilder.core.integration.feature
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.util.api.kotlin.doesJSONExist
 import fleetBuilder.util.api.kotlin.isSkin
 
 internal object ShipSkinSourceMod {
     fun setShipSkinSourceMods() {
         Global.getLogger(this.javaClass).info("Setting modded ship skin source mods (if present)...")
+        var count = 0
         val allHullSpecs = Global.getSettings().allShipHullSpecs
         allHullSpecs.forEach { hull ->
             if (hull.sourceMod == null && hull.isSkin()) {
                 val sourceMod = getSourceModFromSkin(hull.hullId)
-                if (sourceMod != null)
+                if (sourceMod != null) {
                     hull.getFieldsMatching(type = ModSpecAPI::class.java).getOrNull(0)?.set(hull, sourceMod)
+                    Global.getLogger(this.javaClass).info("Set modded ship skin source mod for ${hull.hullId} to modID ${sourceMod.id}.")
+                    count++
+                }
             }
         }
+
+        if (count > 0)
+            Global.getLogger(this.javaClass).info("Set modded ship skins source mods for $count hulls.")
     }
 
     fun getSourceModFromSkin(hullId: String?): ModSpecAPI? {
@@ -23,11 +31,7 @@ internal object ShipSkinSourceMod {
 
         val filename = "data/hulls/skins/$hullId.skin"
         settings.modManager.enabledModsCopy.forEach { mod ->
-            try {
-                settings.loadJSON(filename, mod.id) // If this does not throw an exception, the file exists in this mod.
-                return mod
-            } catch (_: Exception) {
-            } // File doesn't exist in this mod -> ignore
+            settings.doesJSONExist(filename, mod.id, true)
         }
 
         return null

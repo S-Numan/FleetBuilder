@@ -21,9 +21,9 @@ import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.config.FBSettings.randomPastedCosmetics
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.DisplayMessage.showMessage
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.doesLoadoutExist
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog

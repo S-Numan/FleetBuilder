@@ -92,14 +92,15 @@ object PlayerSaveUtils {
         if (handleSubmarketCargo) {
             try {
                 val markets = CampaignUtils.getSectorMarkets()
-                
+                val checkedStorages = mutableSetOf<CargoAPI>()
+
                 val marketsArray = JSONArray()
                 for (market in markets) {
                     //if (market.isHidden)
                     //    continue
                     //if (market.surveyLevel != MarketAPI.SurveyLevel.SEEN && market.surveyLevel != MarketAPI.SurveyLevel.FULL)
                     //    continue
-                    if (market.memoryWithoutUpdate.getBoolean("\$FB_SaveTransferStation"))
+                    if (market.memoryWithoutUpdate.getBoolean("\$FTK_SaveTransferStation"))
                         continue
                     if (market.memoryWithoutUpdate.isEmpty)
                         continue
@@ -118,6 +119,11 @@ object PlayerSaveUtils {
                         val cargo = plugin.cargoNullOk ?: continue
                         if (cargo.isEmpty && (cargo.mothballedShips == null || cargo.mothballedShips.numMembers == 0))
                             continue
+
+                        if (cargo in checkedStorages)
+                            continue
+
+                        checkedStorages.add(cargo)
 
                         val submarketContentsObject = JSONObject()
                         if (!cargo.isEmpty)
@@ -664,7 +670,7 @@ object PlayerSaveUtils {
         try {
             val markets = CampaignUtils.getSectorMarkets()
             markets.toList().forEach {
-                if (it.memoryWithoutUpdate.contains("\$FB_SaveTransferStation"))
+                if (it.memoryWithoutUpdate.contains("\$FTK_SaveTransferStation"))
                     it.primaryEntity.containingLocation.removeEntity(it.primaryEntity)
             }
             if (handleSubmarketCargo && compiled.marketCargos != null) {
@@ -682,7 +688,7 @@ object PlayerSaveUtils {
                         entity.name = name
                         MagicCampaign.placeOnStableOrbit(entity, true)
 
-                        market.memoryWithoutUpdate.set("\$FB_SaveTransferStation", true)
+                        market.memoryWithoutUpdate.set("\$FTK_SaveTransferStation", true)
 
                         val cargo = market.getSubmarket(Submarkets.SUBMARKET_STORAGE).cargo
                         submarketCargo.cargo?.let { cargo.addAll(it) }
