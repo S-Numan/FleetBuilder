@@ -2,8 +2,8 @@ package fleetBuilder.serialization.fleet
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.DisplayMessage.showError
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
@@ -251,7 +251,7 @@ object CompressedFleet {
         includeModInfo: Boolean = true,
         compress: Boolean = true
     ): String {
-        return saveFleetToCompString(getFleetDataFromFleet(fleet, settings), fleet.fleet, includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
+        return saveFleetToCompString(getFleetDataFromFleet(fleet, settings), fleet, includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
     }
 
     fun saveFleetToCompString(
@@ -265,7 +265,7 @@ object CompressedFleet {
 
     private fun saveFleetToCompString(
         data: DataFleet.ParsedFleetData,
-        campFleet: CampaignFleetAPI?,
+        fleetData: FleetDataAPI?,
         includePrepend: Boolean = true,
         includeModInfo: Boolean = true,
         compress: Boolean = true
@@ -289,7 +289,6 @@ object CompressedFleet {
 
         val membersBlock =
             data.members.joinToString(fleetSep1) { member ->
-
                 CompressedMember.saveMemberToCompString(
                     member,
                     includePrepend = false,
@@ -314,7 +313,6 @@ object CompressedFleet {
 
         val officersBlock =
             data.idleOfficers.joinToString(fleetSep1) {
-
                 CompressedPerson.savePersonToCompString(
                     it,
                     includePrepend = false,
@@ -327,7 +325,6 @@ object CompressedFleet {
 
         val sicString =
             data.secondInCommandData?.let {
-
                 CompressedSecondInCommand.saveSecondInCommandToCompString(
                     it,
                     includePrepend = false,
@@ -335,33 +332,25 @@ object CompressedFleet {
                 )
             } ?: ""
 
-        /* -------- BUILD BLOCKS -------- */
+        /* -------- MEMORY KEYS -------- */
 
-        val blocks = mutableListOf<String>()
-
-        // placeholder for mod info (added later)
-        //blocks += ""
-
-        blocks += fleetMeta
-        blocks += membersBlock
-        blocks += commanderString
-        blocks += officersBlock
-
-        // Memory keys
         val memKeyString = data.memKeys.entries.mapNotNull { entry ->
             val key = entry.key
             val value = entry.value
-
             val formattedValue = PrefixedCodec.encode(value) ?: return@mapNotNull null
-
             "${key.removePrefix("$")}$memKeyJoinSep$formattedValue"
         }.joinToString(memKeySep)
 
-        blocks += memKeyString
+        /* -------- BUILD BLOCKS -------- */
 
-        blocks += sicString
-
-        var fleetString = blocks.joinToString(fleetSep2)
+        var fleetString = listOf(
+            fleetMeta,
+            membersBlock,
+            commanderString,
+            officersBlock,
+            memKeyString,
+            sicString
+        ).joinToString(fleetSep2)
 
         /* -------- MOD INFO -------- */
 
@@ -369,28 +358,27 @@ object CompressedFleet {
         var addedModDetails = ""
 
         if (includeModInfo) {
-
             val mods = getAllSourceModsFromFleet(data)
 
             if (mods.isNotEmpty()) {
-
-                requiredMods = FBTxt.txt("mods_used_prefix")
+                val addedModDetailsBuilder = StringBuilder()
+                val requiredModsBuilder = StringBuilder(FBTxt.txt("mods_used_prefix"))
 
                 for (mod in mods) {
+                    addedModDetailsBuilder
+                        .append(mod.id).append(sep)
+                        .append(mod.name).append(sep)
+                        .append(mod.version).append(sep)
 
-                    addedModDetails +=
-                        "${mod.id}$sep${mod.name}$sep${mod.version}$sep"
-
-                    requiredMods += "(${mod.name}) $sep "
+                    requiredModsBuilder.append("(").append(mod.name).append(") ").append(sep).append(" ")
                 }
 
-                requiredMods = requiredMods.dropLast(3)
-                addedModDetails = addedModDetails.dropLast(1)
+                requiredMods = requiredModsBuilder.dropLast(3).toString()
+                addedModDetails = addedModDetailsBuilder.dropLast(1).toString()
             }
         }
 
-        fleetString =
-            "$addedModDetails$fleetSep2$fleetString"
+        fleetString = "$addedModDetails$fleetSep2$fleetString"
 
         /* -------- COMPRESSION -------- */
 
@@ -402,17 +390,14 @@ object CompressedFleet {
         /* -------- READABLE PREFIX -------- */
 
         if (includePrepend) {
-            var dp = 0f
-            val campFleet = campFleet ?: DataFleet.createCampaignFleetFromData(data, false)
+            val resolvedFleetData = fleetData ?: DataFleet.createCampaignFleetFromData(data, false).fleetData
 
-            campFleet.fleetData.membersListCopy.forEach {
-                dp += it.deploymentPointsCost
-            }
+            val dp = resolvedFleetData.membersListCopy.sumOf { it.deploymentPointsCost.toDouble() }
 
             val fleetName = data.fleetName ?: "Fleet"
             val readable = FBTxt.txt("fleet_summary", fleetName, dp.toInt(), data.members.size, requiredMods)
 
-            fleetString = readable + "\n" + fleetString
+            fleetString = "$readable\n$fleetString"
         }
 
         return fleetString

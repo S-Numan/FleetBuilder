@@ -73,21 +73,25 @@ object DataVariant {
             hullMods.removeAll(builtInMods)
             permaMods.removeAll(builtInMods)
             sMods.removeAll(builtInMods)
-            sModdedBuiltIns.toList().forEach {
+
+            val iter = sModdedBuiltIns.iterator()
+            while (iter.hasNext()) {
+                val mod = iter.next()
                 // If not a permaMod or hullspec built-in-mod, it isn't a proper sModdedBuiltIn
-                if (it !in permaMods && it !in builtInMods) {
-                    sModdedBuiltIns.remove(it)
-                    sMods.add(it) // Turn it back into a regular S-Mod
+                if (mod !in permaMods && mod !in builtInMods) {
+                    iter.remove()
+                    sMods.add(mod) // Turn it back into a regular S-Mod
                 }
             }
         }
 
-        hullMods.removeAll(permaMods)
-        hullMods.removeAll(sMods)
-        hullMods.removeAll(sModdedBuiltIns)
+        if (permaMods.isNotEmpty() || sMods.isNotEmpty() || sModdedBuiltIns.isNotEmpty()) {
+            hullMods.removeAll { it in permaMods || it in sMods || it in sModdedBuiltIns }
+        }
 
-        permaMods.removeAll(sMods)
-        permaMods.removeAll(sModdedBuiltIns)
+        if (sMods.isNotEmpty() || sModdedBuiltIns.isNotEmpty()) {
+            permaMods.removeAll { it in sMods || it in sModdedBuiltIns }
+        }
 
         sMods.removeAll(sModdedBuiltIns)
     }
@@ -100,23 +104,29 @@ object DataVariant {
     ): ParsedVariantData {
         val variant =
             if (inputVariant.weaponGroups.isEmpty()) { // Sometimes weapon groups on other fleets are empty. Weapons are stored by weapon groups, so make sure to generate some weapon groups before proceeding
-                val variant = inputVariant.clone()
-                variant.autoGenerateWeaponGroups()
-                variant
+                val v = inputVariant.clone()
+                v.autoGenerateWeaponGroups()
+                v
             } else {
                 inputVariant
             }
+
+        val hullSpec = variant.hullSpec
+        val builtInMods: Set<String> = HashSet(hullSpec.builtInMods) // HashSet instead of toSet to skip the order-tracking overhead.
 
         val hullMods = variant.hullMods.toMutableSet()
         val permaMods = variant.permaMods.toMutableSet()
         val sMods = variant.sMods.toMutableSet()
         val sModdedBuiltIns = variant.sModdedBuiltIns.toMutableSet()
-        val suppressedMods = variant.suppressedMods.filter { it in variant.hullSpec.builtInMods }.toMutableSet() // Do not save suppressed mods which are not suppressing anything
 
-        normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns, variant.hullSpec.builtInMods.toSet())
+        // Do not save suppressed mods which are not suppressing anything
+        val suppressedMods = variant.suppressedMods
+            .filterTo(HashSet()) { it in builtInMods }
+
+        normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns, builtInMods)
 
         val data = ParsedVariantData(
-            hullId = variant.hullSpec.getActualHullId(), //DMods are already included, get the D less ID for simplicity.
+            hullId = hullSpec.getActualHullId(), //DMods are already included, get the D less ID for simplicity.
             variantId = variant.hullVariantId,
             displayName = variant.displayName,
             fluxCapacitors = variant.numFluxCapacitors,
@@ -132,20 +142,17 @@ object DataVariant {
                 ParsedWeaponGroup(
                     autofire = group.isAutofireOnByDefault,
                     mode = group.type,
-                    weapons = group.slots
-                        .mapNotNull { slotId ->
+                    weapons = buildMap(group.slots.size) {
+                        for (slotId in group.slots) {
                             val weaponId = variant.getWeaponId(slotId)
-                            if (weaponId != null) {
-                                slotId to weaponId
-                            } else {
-                                null
-                            }
-                        }.toMap()
+                            if (weaponId != null) put(slotId, weaponId)
+                        }
+                    }
                 )
             },
-            moduleVariants = variant.getModules().map { (slot, module) ->
-                slot to getVariantDataFromVariant(module, settings)
-            }.toMap()
+            moduleVariants = variant.getModules().mapValues { (_, module) ->
+                getVariantDataFromVariant(module, settings)
+            }
         )
 
         return if (filterParsed)
@@ -160,12 +167,15 @@ object DataVariant {
         settings: VariantSettings = VariantSettings(),
         missing: MissingContent = MissingContent()
     ): ParsedVariantData {
+        val neverSaveMods = FBSettings.getHullModsToNeverSave()
+        val allDMods = LookupUtils.getAllDMods()
+        val allHiddenMods = LookupUtils.getAllHiddenEverywhereMods()
 
         fun shouldKeepMod(modId: String): Boolean {
-            if (FBSettings.getHullModsToNeverSave().contains(modId)) return false
+            if (modId in neverSaveMods) return false
             if (modId in settings.excludeHullModsWithID) return false
-            if (!settings.includeDMods && LookupUtils.getAllDMods().contains(modId)) return false
-            if (!settings.includeHiddenMods && LookupUtils.getAllHiddenEverywhereMods().contains(modId)) return false
+            if (!settings.includeDMods && modId in allDMods) return false
+            if (!settings.includeHiddenMods && modId in allHiddenMods) return false
             if (LookupUtils.getHullModSpec(modId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
             return true
         }
@@ -188,58 +198,53 @@ object DataVariant {
 
         // Remove entries from missing that were filtered out, as they aren't missing if they weren't supposed to be included in the first place.
         if (!settings.includeHullMods) missing.hullModIds.clear() else
-            missing.hullModIds.retainAll { shouldKeepMod(it) }
-
+            missing.hullModIds.retainAll(::shouldKeepMod)
         if (!settings.includeWeapons) missing.weaponIds.clear() else
-            missing.weaponIds.retainAll { shouldKeepWeapon(it) }
-
+            missing.weaponIds.retainAll(::shouldKeepWeapon)
         if (!settings.includeWings) missing.wingIds.clear() else
-            missing.wingIds.retainAll { shouldKeepWing(it) }
+            missing.wingIds.retainAll(::shouldKeepWing)
 
-        // Filter hull mods
-        val filteredHullMods = if (!settings.includeHullMods) mutableListOf() else
-            data.hullMods.filter(::shouldKeepMod).toMutableList()
-        val filteredPermaMods = if (!settings.includeHullMods) emptyList() else
-            data.permaMods.filter(::shouldKeepMod)
-        val filteredSMods = if (!settings.includeHullMods) emptyList() else
+        val filteredHullMods: MutableSet<String> = if (!settings.includeHullMods) LinkedHashSet() else
+            data.hullMods.filterTo(LinkedHashSet(), ::shouldKeepMod)
+
+        val filteredPermaMods = if (!settings.includeHullMods) emptySet() else
+            data.permaMods.filterTo(LinkedHashSet(), ::shouldKeepMod)
+
+        val filteredSMods: Set<String> = if (!settings.includeHullMods) emptySet() else
             if (settings.applySMods) {
-                data.sMods.filter(::shouldKeepMod)
+                data.sMods.filterTo(LinkedHashSet(), ::shouldKeepMod)
             } else {
-                filteredHullMods.addAll(data.sMods.filter { it !in filteredHullMods })
-                emptyList()
+                data.sMods.filterTo(filteredHullMods) { shouldKeepMod(it) && it !in filteredHullMods }
+                emptySet()
             }
 
-        val filteredSModdedBuiltIns = if (!settings.includeHullMods) emptyList() else
+        val filteredSModdedBuiltIns = if (!settings.includeHullMods) emptySet() else
             if (settings.applySMods) {
-                data.sModdedBuiltIns.filter(::shouldKeepMod)
-            } else emptyList()
+                data.sModdedBuiltIns.filterTo(LinkedHashSet(), ::shouldKeepMod)
+            } else emptySet()
 
         val filteredWings = if (!settings.includeWings) emptyList() else
             data.wings.filter(::shouldKeepWing)
 
         val filteredWeaponGroups = if (!settings.includeWeapons) emptyList() else
             data.weaponGroups.map { group ->
-                val filteredSlots = group.weapons.filterValues(::shouldKeepWeapon)
-                group.copy(weapons = filteredSlots)
+                group.copy(weapons = group.weapons.filterValues(::shouldKeepWeapon))
             }
 
-        val filteredTags = if (!settings.includeTags) emptySet() else
+        val filteredTags: List<String> = if (!settings.includeTags) emptyList() else
             data.tags.filter(::shouldKeepTag)
 
         return data.copy(
-            hullMods = filteredHullMods.toSet(),
-            permaMods = filteredPermaMods.toSet(),
-            sMods = filteredSMods.toSet(),
-            sModdedBuiltIns = filteredSModdedBuiltIns.toSet(),
+            hullMods = filteredHullMods,
+            permaMods = filteredPermaMods,
+            sMods = filteredSMods,
+            sModdedBuiltIns = filteredSModdedBuiltIns,
             wings = filteredWings,
             weaponGroups = filteredWeaponGroups,
-            tags = filteredTags.toList(),
-            fluxCapacitors = if (!settings.includeFlux) -1 else
-                data.fluxCapacitors,
-            fluxVents = if (!settings.includeFlux) -1 else
-                data.fluxVents,
-            variantId = if (!settings.includeVariantID) "" else
-                data.variantId
+            tags = filteredTags,
+            fluxCapacitors = if (!settings.includeFlux) -1 else data.fluxCapacitors,
+            fluxVents = if (!settings.includeFlux) -1 else data.fluxVents,
+            variantId = if (!settings.includeVariantID) "" else data.variantId
         )
     }
 

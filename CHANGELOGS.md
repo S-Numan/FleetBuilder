@@ -1,3 +1,7 @@
+# 1.40.1
+### Changes
+- Improved performance of Save Transfers to run roughly 4 times faster.
+
 # 1.40.0
 ### Additions
 - Save Transfers now save and load all cargo from every player owned storage.

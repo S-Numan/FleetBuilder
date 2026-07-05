@@ -9,7 +9,7 @@ val starsectorPath = "../../"
 val modId = "SN_FleetBuilder"
 val modName = "FleetBuilder" // For the developer to see. Don't use spaces here
 val modPlugin = "fleetBuilder.core.integration.plugin.FleetBuilderPlugin"
-val modVersion = "1.40.0"
+val modVersion = "1.40.1"
 val gameVersion = "0.98a-RC8"
 val isUtilityMod = true
 
