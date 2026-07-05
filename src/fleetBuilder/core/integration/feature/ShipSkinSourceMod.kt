@@ -3,7 +3,7 @@ package fleetBuilder.core.integration.feature
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
-import fleetBuilder.util.api.kotlin.doesJSONExist
+import fleetBuilder.util.api.kotlin.doesFileExist
 import fleetBuilder.util.api.kotlin.isSkin
 
 internal object ShipSkinSourceMod {
@@ -31,7 +31,8 @@ internal object ShipSkinSourceMod {
 
         val filename = "data/hulls/skins/$hullId.skin"
         settings.modManager.enabledModsCopy.forEach { mod ->
-            settings.doesJSONExist(filename, mod.id, true)
+            if (settings.doesFileExist(filename, mod.id))
+                return mod
         }
 
         return null

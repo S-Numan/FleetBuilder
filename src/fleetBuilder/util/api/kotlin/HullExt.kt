@@ -1,20 +1,34 @@
 package fleetBuilder.util.api.kotlin
 
+import com.fs.starfarer.api.combat.ShipAPI.HullSize
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.HullUtils
 
+/**
+ * Returns true if this hull is a module.
+ */
+fun ShipHullSpecAPI.isModule(): Boolean =
+    hints.contains(ShipHullSpecAPI.ShipTypeHints.MODULE)
+
+/**
+ * Returns true if this hull is a fighter wing.
+ */
+fun ShipHullSpecAPI.isFighterWing(): Boolean =
+    hullSize == HullSize.FIGHTER
+
+/**
+ * Returns a set of all the built-in D-Mods for this hull.
+ */
 fun ShipHullSpecAPI.getBuiltInDMods(): Set<String> =
     builtInMods.filter { LookupUtils.isDMod(it) }.toSet()
-
 
 /**
  * Delegate to [HullUtils.getSlotsForModules]
  */
 fun ShipHullSpecAPI.getSlotsForModules(): List<String> =
     HullUtils.getSlotsForModules(this)
-
 
 /**
  * Delegates to [HullUtils.getEffectiveHull].

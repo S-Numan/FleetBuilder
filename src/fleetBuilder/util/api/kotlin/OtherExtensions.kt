@@ -69,6 +69,7 @@ internal inline fun <T> withoutLogging(block: () -> T): T {
     }
 }
 
+/*
 /**
  * Checks if a JSON file exists in `/data`.
  *
@@ -96,6 +97,25 @@ fun SettingsAPI.doesJSONExist(
         } else {
             modID?.let { loadJSON(filename, it) } ?: loadJSON(filename)
         }
+        true
+    } catch (_: Exception) {
+        false
+    }
+}*/
+
+/**
+ * Checks if a file exists in `/data`.
+ *
+ * @param filename The path to the file.
+ * @param modID The mod ID of the mod to check. If null, checks all available sources.
+ * @return `true` if the file exists and can be loaded, `false` otherwise.
+ */
+fun SettingsAPI.doesFileExist(
+    filename: String,
+    modID: String? = null,
+): Boolean {
+    return try {
+        modID?.let { loadText(filename, it) } ?: loadText(filename)
         true
     } catch (_: Exception) {
         false

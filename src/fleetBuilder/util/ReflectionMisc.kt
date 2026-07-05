@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.ui.IntelUIAPI
 import com.fs.starfarer.api.ui.LabelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.econ.Submarket
@@ -112,6 +113,17 @@ object ReflectionMisc {
 
     fun getCurrentTab(): UIPanelAPI? {
         return getCoreUI()?.safeInvoke("getCurrentTab") as? UIPanelAPI
+    }
+
+    fun getIntelTab(): UIPanelAPI? {
+        return if (Global.getSector()?.campaignUI?.getActualCurrentTab() != CoreUITabId.INTEL)
+            null
+        else
+            getCurrentTab()
+    }
+
+    fun getIntelUI(): IntelUIAPI? {
+        return getIntelTab()?.safeInvoke("getEventsPanel") as? IntelUIAPI
     }
 
     fun getFleetTab(): UIPanelAPI? {

@@ -38,7 +38,6 @@ import fleetBuilder.util.listeners.MemberChangeEvents
 import fleetBuilder.util.listeners.MemberChangeTracker
 import fleetBuilder.util.listeners.OfficerChangeEvents
 import fleetBuilder.util.listeners.OfficerChangeTracker
-import java.util.*
 
 internal class EventDispatcher : EveryFrameScript {
     companion object {
@@ -169,9 +168,6 @@ internal class EventDispatcher : EveryFrameScript {
             val sector = Global.getSector() ?: run {
                 throw Error("How was sector null here?")
             }
-
-            if (!sector.persistentData.contains("\$FB_UNIQUESAVEID"))
-                sector.persistentData["\$FB_UNIQUESAVEID"] = sector.seedString + "_" + UUID.randomUUID().toString()
 
             val deferredActionPlugin = CampaignDeferredActionPlugin()
             manageTransientScript(CampaignDeferredActionPlugin::class.java) { deferredActionPlugin }
