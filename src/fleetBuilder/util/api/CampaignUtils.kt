@@ -109,6 +109,8 @@ object CampaignUtils {
      * Returns all unique markets in the sector.
      *
      * Markets are collected from all [getSectorEntities] and deduplicated by market ID.
+     *
+     * This function is expensive. Avoid calling it frequently.
      */
     @JvmStatic
     fun getSectorMarkets(): List<MarketAPI> {
@@ -129,6 +131,8 @@ object CampaignUtils {
      * Returns all unique submarkets in the sector.
      *
      * Submarkets are collected from all [getMarkets] and deduplicated by reference.
+     *
+     * This function is expensive. Avoid calling it frequently.
      */
     @JvmStatic
     fun getSectorSubmarkets(): List<SubmarketAPI> {
