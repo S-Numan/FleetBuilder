@@ -1,6 +1,6 @@
 package fleetBuilder.serialization.fleet.mods.secondInCommand
 
-import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.core.util.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.fleetSep1

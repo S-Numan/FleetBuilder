@@ -4,9 +4,9 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.ids.Tags
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.listener.EventDispatcher
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.integration.listener.EventDispatcher
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.listeners.OfficerChangeEvents
@@ -15,7 +15,7 @@ internal object CommanderShuttle {
     var commanderShuttleListener = CommanderShuttleListener()//Should not be present as a script if the shuttle is not in the player's fleet
 
     fun onGameLoad(newGame: Boolean) {
-        if (Global.getSector().memoryWithoutUpdate.getBoolean("\$FB_hadCommandShuttle")) {
+        if (Global.getSector()!!.memoryWithoutUpdate.getBoolean("\$FB_hadCommandShuttle")) {
             addPlayerShuttle()
 
             EventDispatcher.manageTransientScript(CommanderShuttleListener::class.java) { commanderShuttleListener }
@@ -54,24 +54,25 @@ internal object CommanderShuttle {
     fun beforeGameSave() {
         if (playerShuttleExists()) {
             removePlayerShuttle()
-            Global.getSector().memoryWithoutUpdate["\$FB_hadCommandShuttle"] = true
+            Global.getSector()!!.memoryWithoutUpdate["\$FB_hadCommandShuttle"] = true
         } else {
-            Global.getSector().memoryWithoutUpdate["\$FB_hadCommandShuttle"] = false
+            Global.getSector()!!.memoryWithoutUpdate["\$FB_hadCommandShuttle"] = false
         }
     }
 
     fun afterGameSave() {
-        if (Global.getSector().memoryWithoutUpdate.getBoolean("\$FB_hadCommandShuttle")) {
+        if (Global.getSector()!!.memoryWithoutUpdate.getBoolean("\$FB_hadCommandShuttle")) {
             addPlayerShuttle()
         }
     }
 
     fun removePlayerShuttle() {
         var hadShuttle = false
-        for (member in Global.getSector().playerFleet.fleetData.membersListCopy) {
+        val sector = Global.getSector() ?: return
+        for (member in sector.playerFleet.fleetData.membersListCopy) {
             if (member.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
                 member.variant.removeMod(FBConst.COMMAND_SHUTTLE_ID)
-                Global.getSector().playerFleet.fleetData.removeFleetMember(member)
+                sector.playerFleet.fleetData.removeFleetMember(member)
                 hadShuttle = true
             }
         }
@@ -87,7 +88,7 @@ internal object CommanderShuttle {
     fun addPlayerShuttle() {
         if (playerShuttleExists()) return
 
-        val sector = Global.getSector()
+        val sector = Global.getSector() ?: return
 
         EventDispatcher.manageTransientScript(CommanderShuttleListener::class.java) { commanderShuttleListener }
         EventDispatcher.manageTransientListener(CommanderShuttleListener::class.java) { commanderShuttleListener }
@@ -123,7 +124,8 @@ internal object CommanderShuttle {
     }
 
     fun playerShuttleExists(): Boolean {
-        for (member in Global.getSector().playerFleet.fleetData.membersListCopy) {
+        val sector = Global.getSector() ?: return false
+        for (member in sector.playerFleet.fleetData.membersListCopy) {
             if (member.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
                 return true
             }

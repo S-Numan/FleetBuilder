@@ -8,7 +8,7 @@ import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.HullUtils.getActualHull
 import fleetBuilder.util.api.HullUtils.isDHullFix
@@ -45,20 +45,20 @@ object HullUtils {
      * @param hull The hull to check.
      * @return True if the hull is known to the player, false otherwise.
      */
+    @JvmOverloads
     @JvmStatic
-    fun isHullKnownToPlayer(hull: ShipHullSpecAPI): Boolean {
+    fun isHullKnownToPlayer(hull: ShipHullSpecAPI, checkHideInCodex: Boolean = false): Boolean {
         if (hull.hasTag(Tags.CODEX_UNLOCKABLE)) {
             if (!SharedUnlockData.get().isPlayerAwareOfShip(hull.hullId))
                 return false
-        }
+        } else if (checkHideInCodex && (hull.hasTag(Tags.HIDE_IN_CODEX) || hull.hints.contains(ShipHullSpecAPI.ShipTypeHints.HIDE_IN_CODEX)))
+            return false
 
         return true
     }
 
     /**
      * Creates a ShipVariantAPI for a given ShipHullSpecAPI.
-     *
-     * Remember to change the source of the variant to VariantSource.REFIT if you don't want the variant to be forgotten between save games.
      *
      * This function exists because createEmptyVariant does not create modules.
      *
@@ -67,8 +67,10 @@ object HullUtils {
      */
     @JvmStatic
     fun createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI {
+        // This function is likely overbuilt.
+        // Simply getting the variant with the actual hull_id with _Hull appended to the end should work in most cases, but I really want to avoid having any issues here.
         return run {
-            val variants = LookupUtils.getVariantsForEffectiveHullSpec(hull)
+            val variants = LookupUtils.getVariantsForEffectiveHullSpecRaw(hull)
 
             variants.filter { it.source == VariantSource.HULL } // Filter out non hull variants
                 .takeIf { it.isNotEmpty() }
@@ -81,7 +83,7 @@ object HullUtils {
                             Global.getLogger(javaClass).warn("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'")
                             hullVariants.firstOrNull() // Cannot find a good enough match, just go for whatever
                         }
-                }
+                }?.clone()?.apply { source = null }
         } ?: runCatching {
             val emptyVariant = Global.getSettings().createEmptyVariant(hull.hullId, hull)
             Global.getLogger(javaClass).warn(
@@ -159,8 +161,8 @@ object HullUtils {
     ): ShipHullSpecAPI {
         return when {
             !hull.isDefaultDHull -> hull
-            else -> hull.dParentHull
-        } ?: hull
+            else -> hull.dParentHull ?: hull
+        }
     }
 
     /**

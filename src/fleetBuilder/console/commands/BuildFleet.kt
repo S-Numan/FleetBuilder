@@ -5,8 +5,8 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.impl.campaign.ids.Industries
 import com.fs.starfarer.api.impl.campaign.ids.Items
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.addPlayerShuttle
-import fleetBuilder.core.FBTxt
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
@@ -21,7 +21,7 @@ class BuildFleet : BaseCommand {
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
 
-        val abandonedStation = Global.getSector().getStarSystem("corvus").getEntityById("corvus_abandoned_station")
+        val abandonedStation = Global.getSector()!!.getStarSystem("corvus").getEntityById("corvus_abandoned_station")
             ?: run {
                 Console.showMessage("Couldn't get the corvus abandoned station")
                 return BaseCommand.CommandResult.ERROR
@@ -33,7 +33,7 @@ class BuildFleet : BaseCommand {
             }
 
 
-        val playerFleet = Global.getSector().playerFleet.fleetData
+        val playerFleet = Global.getSector()!!.playerFleet.fleetData
 
         Console.showMessage("Removing officers")
         for (officer in playerFleet.officersCopy) playerFleet.removeOfficer(officer.person)

@@ -11,15 +11,15 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.mission.FleetSide
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.core.FBTxt
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
@@ -55,7 +55,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", FBSettings.getModName()), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
-                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isPopUpPanelOpen() && !ReflectionMisc.isCodexOpen()) {
+                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isModalPanelOpen() && !ReflectionMisc.isCodexOpen()) {
                             HotkeyHandlerDialogs.createDevModeDialog()
                             event.consume(); continue
                         }
@@ -64,7 +64,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                             pasteShipIntoCombat(engine, event)
                             event.consume(); continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
-                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtils.isPopUpPanelOpen()) {
+                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtils.isModalPanelOpen()) {
                                 if (ClipboardHotkeyHandlerUtils.handleRefitPaste()) {
                                     event.consume(); continue
                                 }

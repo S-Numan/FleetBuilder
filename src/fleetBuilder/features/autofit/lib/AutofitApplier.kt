@@ -11,11 +11,11 @@ import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.core.FBMisc.replaceVariantWithVariant
-import fleetBuilder.core.FBMisc.sModHandlerTemp
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.FBMisc.replaceVariantWithVariant
+import fleetBuilder.core.util.FBMisc.sModHandlerTemp
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
@@ -58,17 +58,19 @@ internal object AutofitApplier {
             if (Global.getCurrentState() != GameState.CAMPAIGN) {
                 replaceVariantWithVariant(baseVariant, loadout, false, FBSettings.dontForceClearDMods, FBSettings.dontForceClearSMods)
             } else {
+                val sector = Global.getSector()!!
+
                 val coreUI = ReflectionMisc.getCoreUI() ?: return
 
                 val delegate = FBPlayerAutofitDelegate(
                     fleetMember,
-                    Global.getSector().playerFaction,
+                    sector.playerFaction,
                     ship,
                     coreUI,
                     shipDisplay
                 )
 
-                val interaction = Global.getSector()?.campaignUI?.currentInteractionDialog
+                val interaction = sector.campaignUI?.currentInteractionDialog
                 //Add market to delegate if present
                 if (interaction != null && interaction.interactionTarget != null && interaction.interactionTarget.market != null) {
                     delegate.setMarket(interaction.interactionTarget.market)
@@ -154,19 +156,19 @@ internal object AutofitApplier {
 
                     if (allowCargo) {
                         //Add player cargo weapons/fighters to delegate for AutofitPlugin to use.
-                        for (weapon in Global.getSector().playerFleet.cargo.weapons) {
+                        for (weapon in sector.playerFleet.cargo.weapons) {
                             delegate.addAvailableWeapon(
                                 Global.getSettings().getWeaponSpec(weapon.item),
                                 weapon.count,
-                                Global.getSector().playerFleet.cargo,
+                                sector.playerFleet.cargo,
                                 null
                             )
                         }
-                        for (fighter in Global.getSector().playerFleet.cargo.fighters) {
+                        for (fighter in sector.playerFleet.cargo.fighters) {
                             delegate.addAvailableFighter(
                                 Global.getSettings().getFighterWingSpec(fighter.item),
                                 fighter.count,
-                                Global.getSector().playerFleet.cargo,
+                                sector.playerFleet.cargo,
                                 null
                             )
                         }

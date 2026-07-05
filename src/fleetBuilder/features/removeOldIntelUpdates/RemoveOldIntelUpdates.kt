@@ -6,7 +6,7 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin
 import com.fs.starfarer.api.impl.campaign.intel.misc.SimUpdateIntel
 import com.fs.starfarer.api.impl.codex.CodexUpdateIntel
 import com.fs.starfarer.api.util.IntervalUtil
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.config.FBSettings
 
 class RemoveOldIntelUpdates : EveryFrameScript {
     companion object {
@@ -19,7 +19,7 @@ class RemoveOldIntelUpdates : EveryFrameScript {
 
     override fun runWhilePaused(): Boolean = true
     override fun advance(amount: Float) {
-        val sector = Global.getSector()
+        val sector = Global.getSector() ?: return
 
         val maxDays = FBSettings.removeIntelUpdatesAfterXDays
 

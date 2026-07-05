@@ -3,7 +3,7 @@ package fleetBuilder.util.api.kotlin
 import com.fs.starfarer.api.SettingsAPI
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.ui.*
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.otherMods.starficz.addButton

@@ -2,12 +2,11 @@ package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
-import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
-import fleetBuilder.core.FBConst
+import fleetBuilder.core.config.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
@@ -25,49 +24,47 @@ object VariantUtils {
      * Any slots with null variants are filtered out. Use [getModulesAllowNull] if you want to include null variants.
      *
      * The map key is the module slot ID, and the value is the corresponding [ShipVariantAPI] for that module.
-     * @param onlyThoseInHullSpec If true, only returns modules which a slot to attach to are present in the [ShipHullSpecAPI]
      */
-    @JvmOverloads
     @JvmStatic
-    fun getModules(variant: ShipVariantAPI, onlyThoseInHullSpec: Boolean = false): Map<String, ShipVariantAPI> {
+    fun getModules(variant: ShipVariantAPI): Map<String, ShipVariantAPI> {
+        // stationModules: weapon slot id -> original variant id
         val modules = variant.stationModules
             ?.mapNotNull { (slot, _) ->
+                if (variant.hullSpec.getWeaponSlot(slot)?.weaponType != WeaponAPI.WeaponType.STATION_MODULE) {
+                    Global.getLogger(this.javaClass).warn("Slot '$slot' of variantID '${variant.hullVariantId}' of hullID '${variant.hullSpec.hullId}' is not a station module despite a module being assigned to that slot?")
+                    return@mapNotNull null
+                }
                 val variant: ShipVariantAPI? = variant.getModuleVariant(slot)
                 variant?.let { slot to it }
             }
             ?.toMap() // converts the list of pairs back into a Map
             ?: emptyMap()
 
-        return if (onlyThoseInHullSpec)
-            modules.filter { variant.hullSpec.getWeaponSlot(it.key)?.weaponType == WeaponAPI.WeaponType.STATION_MODULE }
-        else
-            modules
+        return modules
     }
 
     /**
      * Returns a map of all modules attached to this variant.
      *
      * The map key is the module slot ID, and the value is the corresponding [ShipVariantAPI] for that module.
-     * @param onlyThoseInHullSpec If true, only returns modules which a slot to attach to are present in the [ShipHullSpecAPI]
      */
-    @JvmOverloads
     @JvmStatic
     fun getModulesAllowNull(
-        variant: ShipVariantAPI,
-        onlyThoseInHullSpec: Boolean = false
+        variant: ShipVariantAPI
     ): Map<String, ShipVariantAPI?> {
         val modules = variant.stationModules
-            ?.map { (slot, _) ->
+            ?.mapNotNull { (slot, _) ->
+                if (variant.hullSpec.getWeaponSlot(slot)?.weaponType != WeaponAPI.WeaponType.STATION_MODULE) {
+                    Global.getLogger(this.javaClass).warn("Slot '$slot' of variantID '${variant.hullVariantId}' of hullID '${variant.hullSpec.hullId}' is not a station module despite a module being assigned to that slot?")
+                    return@mapNotNull null
+                }
                 val variant: ShipVariantAPI? = variant.getModuleVariant(slot)
                 slot to variant
             }
             ?.toMap() // converts the list of pairs back into a Map
             ?: emptyMap()
 
-        return if (onlyThoseInHullSpec)
-            modules.filter { variant.hullSpec.getWeaponSlot(it.key)?.weaponType == WeaponAPI.WeaponType.STATION_MODULE }
-        else
-            modules
+        return modules
     }
 
 
@@ -155,7 +152,9 @@ object VariantUtils {
         variant: ShipVariantAPI,
         modID: String,
     ): Float {
-        val defaultBonusXP = Global.getSector().playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()
+        val sector = Global.getSector() ?: return 0f
+
+        val defaultBonusXP = sector.playerStats.bonusXPForSpendingStoryPointBeforeSpendingIt.toFloat()
         if (variant.hullSpec.builtInMods.contains(modID)) {
             return defaultBonusXP
         } else {
@@ -175,13 +174,14 @@ object VariantUtils {
      * @param variant The variant to check.
      * @return True if all components of the variant are known to the player, false otherwise.
      */
+    @JvmOverloads
     @JvmStatic
-    fun isVariantKnownToPlayer(variant: ShipVariantAPI): Boolean {
+    fun isVariantKnownToPlayer(variant: ShipVariantAPI, checkHideInCodex: Boolean = false): Boolean {
         //  If module, replace variant with parent variant. Modules are considered known if their parent is known.
         //  This would need a function to get the parent variant of a module variant ... That isn't easily possible.
 
         val missing = MissingContent()
-        whatVariantContentsAreNotKnownToPlayer(variant, missing)
+        whatVariantContentsAreNotKnownToPlayer(variant, missing, checkHideInCodex)
         if (missing.hasMissing())
             return false
         else
@@ -193,26 +193,46 @@ object VariantUtils {
      *
      * See [isVariantKnownToPlayer] for more details. That function calls this one.
      */
+    @JvmOverloads
     @JvmStatic
-    fun whatVariantContentsAreNotKnownToPlayer(variant: ShipVariantAPI, missing: MissingContent) {
-        if (!HullUtils.isHullKnownToPlayer(variant.hullSpec))
+    fun whatVariantContentsAreNotKnownToPlayer(
+        variant: ShipVariantAPI,
+        missing: MissingContent,
+        checkHideInCodex: Boolean = false
+    ) {
+        if (!HullUtils.isHullKnownToPlayer(variant.hullSpec, checkHideInCodex))
             missing.hullIds.add(variant.hullSpec.hullId)
 
         fun addMissingContents(va: ShipVariantAPI) {
             va.getNonBuiltInWeapons().forEach { (_, weapon) ->
-                if (weapon.hasTag(Tags.CODEX_UNLOCKABLE) && !SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.weaponId))
+                if (weapon.hasTag(Tags.CODEX_UNLOCKABLE)) {
+                    if (!SharedUnlockData.get().isPlayerAwareOfWeapon(weapon.weaponId))
+                        missing.weaponIds.add(weapon.weaponId)
+                } else if (checkHideInCodex && weapon.hasTag(Tags.HIDE_IN_CODEX)) {
                     missing.weaponIds.add(weapon.weaponId)
+                }
             }
             va.nonBuiltInWings.forEach { wing ->
-                if (LookupUtils.getFighterWingSpec(wing)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfFighter(wing))
+                val wingSpec = LookupUtils.getFighterWingSpec(wing) ?: return@forEach
+
+                if (wingSpec.hasTag(Tags.CODEX_UNLOCKABLE)) {
+                    if (!SharedUnlockData.get().isPlayerAwareOfFighter(wing))
+                        missing.wingIds.add(wing)
+                } else if (checkHideInCodex && wingSpec.hasTag(Tags.HIDE_IN_CODEX)) {
                     missing.wingIds.add(wing)
+                }
             }
             va.nonBuiltInHullmods.forEach { mod ->
-                if (va.hullSpec.isBuiltInMod(mod))
+                if (va.hullSpec.isBuiltInMod(mod)) // Don't check built in mods
                     return@forEach
+                val hullModSpec = LookupUtils.getHullModSpec(mod) ?: return@forEach
 
-                if (LookupUtils.getHullModSpec(mod)?.hasTag(Tags.CODEX_UNLOCKABLE) == true && !SharedUnlockData.get().isPlayerAwareOfHullmod(mod))
+                if (hullModSpec.hasTag(Tags.CODEX_UNLOCKABLE)) {
+                    if (!SharedUnlockData.get().isPlayerAwareOfHullmod(mod))
+                        missing.hullModIds.add(mod)
+                } else if (checkHideInCodex && hullModSpec.hasTag(Tags.HIDE_IN_CODEX)) {
                     missing.hullModIds.add(mod)
+                }
             }
         }
 
@@ -281,6 +301,8 @@ object VariantUtils {
 
         if (!tempVariant.hasTag(FBConst.VARIANT_MADE_IN_ERROR))
             tempVariant.addTag(FBConst.VARIANT_MADE_IN_ERROR)
+        
+        tempVariant.source = null
 
         return tempVariant
     }

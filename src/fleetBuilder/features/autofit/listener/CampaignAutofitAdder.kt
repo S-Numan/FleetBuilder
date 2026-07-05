@@ -5,7 +5,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.config.FBSettings
 import fleetBuilder.features.autofit.ui.AutofitPanelCreator
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.onClick

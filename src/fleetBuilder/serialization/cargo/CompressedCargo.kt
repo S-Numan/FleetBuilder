@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
@@ -127,15 +127,17 @@ object CompressedCargo {
         if (metaIndexStart == -1 || metaIndexEnd == -1)
             return missing
 
-        val metaVersion = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        val metaVersionFull = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        if (!metaVersionFull.lowercase().startsWith('c'))
+            return missing
+        val metaVersionNumber = metaVersionFull.substring(1).toInt()
+        val metaVersionCompressed = metaVersionFull.startsWith('c')
 
-        val fullData = when (metaVersion) {
-            "c0" -> {
-                val compressedData = comp.substring(metaIndexEnd + 1)
-                CompressionUtil.base64Inflate(compressedData)
-            }
-            "C0" -> comp.substring(metaIndexEnd + 1)
-            else -> return missing
+        val fullData = if (metaVersionCompressed) {
+            val compressedData = comp.substring(metaIndexEnd + 1)
+            CompressionUtil.base64Inflate(compressedData)
+        } else {
+            comp.substring(metaIndexEnd + 1)
         } ?: return missing
 
         if (fullData.isBlank())

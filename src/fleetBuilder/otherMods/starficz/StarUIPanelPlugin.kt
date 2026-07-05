@@ -4,7 +4,6 @@ import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.ui.UIUtils
-import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 
 open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
@@ -13,28 +12,33 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     private var onClickFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
     private var onClickOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
     private var onClickReleaseFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
+    private var onClickReleaseOutsideFunctions: MutableList<(InputEventAPI) -> Unit> = ArrayList()
     private var onHoverFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onHoverEnterFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onHoverExitFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onMouseButtonHeldFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onKeyDownFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
     private var onKeyUpFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
+    private var onProcessInputFunctions: MutableList<(InputEventAPI) -> Unit> = mutableListOf()
 
     private var renderBelowFunctions: MutableList<(Float) -> Unit> = mutableListOf()
     private var renderFunctions: MutableList<(Float) -> Unit> = mutableListOf()
 
     private var advanceFunctions: MutableList<(Float) -> Unit> = mutableListOf()
 
-    open fun clearStarUIFunctions() {
+    /** Clears all StarUI callbacks */
+    open fun clearStarUICallbacks() {
         onClickFunctions.clear()
         onClickOutsideFunctions.clear()
         onClickReleaseFunctions.clear()
+        onClickReleaseOutsideFunctions.clear()
         onHoverFunctions.clear()
         onHoverEnterFunctions.clear()
         onHoverExitFunctions.clear()
         onMouseButtonHeldFunctions.clear()
         onKeyDownFunctions.clear()
         onKeyUpFunctions.clear()
+        onProcessInputFunctions.clear()
 
         renderBelowFunctions.clear()
         renderFunctions.clear()
@@ -44,7 +48,7 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
 
     var customData: Any? = null
 
-    var inputCapturePad = 0f
+    var mouseCapturePad = 0f
         private set
 
     protected var isHovering = false
@@ -56,10 +60,12 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     open var consumeKeyboardEvents = false
     protected open var ignoreConsumedEvents = true
 
+    val allowedMouseButtons = mutableListOf<Int>()
+
     open fun setMouseCapturePad(pad: Float) {
         if (!::panel.isInitialized) return
 
-        inputCapturePad = pad
+        mouseCapturePad = pad
         panel.setMouseOverPad(pad, pad, pad, pad)
     }
 
@@ -106,31 +112,47 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
     override fun processInput(events: MutableList<InputEventAPI>) {
         if (!::panel.isInitialized) return
 
+        if (onProcessInputFunctions.isNotEmpty()) {
+            for (event in events) {
+                if (ignoreConsumedEvents && event.isConsumed) continue
+                onProcessInputFunctions.forEach { it(event) }
+            }
+        }
+
         events.filter { it.isMouseEvent }.forEach { event ->
             if (ignoreConsumedEvents && event.isConsumed) return@forEach
-            val inElement = UIUtils.isMouseHoveringOverComponent(panel, event.x, event.y, inputCapturePad)
+            val inElement = UIUtils.isMouseHoveringOverComponent(panel, event.x, event.y, mouseCapturePad)
             if (inElement) {
                 onHoverFunctions.forEach { it(event) }
                 if (!isHovering) onHoverEnterFunctions.forEach { it(event) }
                 isHovering = true
-                if (event.isMouseDownEvent) {
-                    hasClicked = true
-                    onClickFunctions.forEach { it(event) }
+
+                if (allowedMouseButtons.isEmpty() || event.eventValue in allowedMouseButtons) {
+                    if (event.isMouseDownEvent) {
+                        hasClicked = true
+                        onClickFunctions.forEach { it(event) }
+                    }
+                    if (event.isMouseUpEvent && hasClicked) {
+                        hasClicked = false
+                        onClickReleaseFunctions.forEach { it(event) }
+                    }
+                    if (event.eventValue >= 0)
+                        onMouseButtonHeldFunctions.forEach { it(event) }
+                    //if (Mouse.isButtonDown(0)) onMouseButtonHeldFunctions.forEach { it(event) }
                 }
-                if (event.isMouseUpEvent && hasClicked) {
-                    hasClicked = false
-                    onClickReleaseFunctions.forEach { it(event) }
-                }
-                if (Mouse.isButtonDown(0)) onMouseButtonHeldFunctions.forEach { it(event) }
                 if (consumeInnerMouseEvents) event.consume()
             } else {
                 if (isHovering) onHoverExitFunctions.forEach { it(event) }
                 isHovering = false
-                if (event.isMouseDownEvent) {
-                    onClickOutsideFunctions.forEach { it(event) }
-                }
-                if (event.isMouseUpEvent) {
-                    hasClicked = false
+
+                if (allowedMouseButtons.isEmpty() || event.eventValue in allowedMouseButtons) {
+                    if (event.isMouseDownEvent) {
+                        onClickOutsideFunctions.forEach { it(event) }
+                    }
+                    if (event.isMouseUpEvent && hasClicked) {
+                        hasClicked = false
+                        onClickReleaseOutsideFunctions.forEach { it(event) }
+                    }
                 }
             }
         }
@@ -143,12 +165,20 @@ open class StarUIPanelPlugin : BaseCustomUIPanelPlugin() {
         }
     }
 
+    fun onProcessInput(function: (InputEventAPI) -> Unit) {
+        onProcessInputFunctions.add(function)
+    }
+
     fun onClick(function: (InputEventAPI) -> Unit) {
         onClickFunctions.add(function)
     }
 
     fun onClickRelease(function: (InputEventAPI) -> Unit) {
         onClickReleaseFunctions.add(function)
+    }
+
+    fun onClickReleaseOutside(function: (InputEventAPI) -> Unit) {
+        onClickReleaseOutsideFunctions.add(function)
     }
 
     fun onClickOutside(function: (InputEventAPI) -> Unit) {

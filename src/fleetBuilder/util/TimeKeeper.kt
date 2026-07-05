@@ -12,7 +12,7 @@ object TimeKeeper {
      * Warning, not completely accurate. Do not rely on this for anything which requires precision.
      */
     fun campaignDelta(amount: Float): Float {
-        val ui = Global.getSector().campaignUI
+        val ui = Global.getSector()?.campaignUI
 
         return if (ui != null && ui.isFastForward) {
             val speedMult = Global.getSettings().getFloat("campaignSpeedupMult")

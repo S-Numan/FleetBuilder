@@ -19,7 +19,7 @@ class AddXP : BaseCommand {
         val refitPanel = ReflectionMisc.getRefitPanel()
         if (refitPanel == null) {
             if (context.isInCampaign)
-                officer = Global.getSector().playerPerson
+                officer = Global.getSector()!!.playerPerson
             else {
                 Console.showMessage("Error: This command can only be used in the campaign or refit tab.")
             }
@@ -81,7 +81,7 @@ class AddXP : BaseCommand {
             if (playerPlugin != null)
                 officer.stats.addXP(added)
             else
-                Global.getSector().playerFleet.fleetData.getOfficerData(officer).addXP(added)
+                Global.getSector()!!.playerFleet.fleetData.getOfficerData(officer).addXP(added)
         } else {
             val removed = min(-amount, officer.stats.getXP())
             if (playerPlugin != null)

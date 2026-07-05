@@ -2,10 +2,10 @@ package fleetBuilder.features.recentBattles.fleetDirectory
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
-import fleetBuilder.core.FBConst.DIRECTORY_CONFIG_FILE_NAME
-import fleetBuilder.core.FBMisc.deepDiff
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBConst.DIRECTORY_CONFIG_FILE_NAME
+import fleetBuilder.core.util.FBMisc.deepDiff
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.CompressedFleet.extractFleetDataFromCompString

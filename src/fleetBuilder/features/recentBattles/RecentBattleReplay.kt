@@ -9,7 +9,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.campaign.fleet.FleetMemberStatus
 import com.fs.starfarer.combat.CombatEngine
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.lastPlayerBattleTimestamp
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.lastPlayerBattleWon
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.origCaptains
@@ -32,11 +32,13 @@ object RecentBattleReplay {
         onBackFromEngagement: () -> Unit = {}
     ) {
         try {
+            val sector = Global.getSector() ?: return
+
             var previousEncounterDialog: InteractionDialogAPI? = null
             //val musicID = Global.getSoundPlayer().currentMusicId
 
             fun onBackFromEngagement(fromDummyDialog: Boolean) {
-                val campUI = Global.getSector().campaignUI
+                val campUI = sector.campaignUI
                 //val dialog = campUI.currentInteractionDialog
                 //dialog.safeInvoke("makeOptionInstant", 0)
                 //dialog.safeInvoke("dismiss", 0)
@@ -57,7 +59,7 @@ object RecentBattleReplay {
                 if (!fromDummyDialog) {
                     previousEncounterDialog?.safeInvoke("makeOptionInstant", 0)
                     previousEncounterDialog?.safeInvoke("dismiss", 0)
-                    Global.getSector().isPaused = true
+                    sector.isPaused = true
 
                     /*campUI.safeInvoke("setNextTransitionFast", true)
                     val target = previousEncounterDialog?.interactionTarget
@@ -67,7 +69,7 @@ object RecentBattleReplay {
                     campUI.showCoreUITab(CoreUITabId.FLEET)*/
                 }
 
-                for (fm in Global.getSector().playerFleet.fleetData.membersListCopy) {
+                for (fm in sector.playerFleet.fleetData.membersListCopy) {
                     val member = fm as FleetMember
                     fm.set("status", savedStatuses[member]!!)
                     member.repairTracker.cr = savedCR[member] ?: member.repairTracker.maxCR
@@ -75,8 +77,8 @@ object RecentBattleReplay {
                 }
 
                 CampaignDeferredActionPlugin.performLater {
-                    Global.getSector().lastPlayerBattleTimestamp = lastPlayerBattleTimestamp!!
-                    Global.getSector().isLastPlayerBattleWon = lastPlayerBattleWon!!
+                    sector.lastPlayerBattleTimestamp = lastPlayerBattleTimestamp!!
+                    sector.isLastPlayerBattleWon = lastPlayerBattleWon!!
 
                     onBackFromEngagement.invoke()
                 }
@@ -92,7 +94,7 @@ object RecentBattleReplay {
                 }
             }
 
-            val campUI = Global.getSector().campaignUI
+            val campUI = sector.campaignUI
 
             if (campUI.currentInteractionDialog == null) {
                 DisplayMessage.showError("Cannot simulate battle, no interaction dialog found.")
@@ -102,10 +104,10 @@ object RecentBattleReplay {
 
             previousEncounterDialog = campUI.currentInteractionDialog;
 
-            RecentBattleTracker.lastPlayerBattleTimestamp = Global.getSector().lastPlayerBattleTimestamp
-            RecentBattleTracker.lastPlayerBattleWon = Global.getSector().isLastPlayerBattleWon
+            RecentBattleTracker.lastPlayerBattleTimestamp = sector.lastPlayerBattleTimestamp
+            RecentBattleTracker.lastPlayerBattleWon = sector.isLastPlayerBattleWon
 
-            for (fm in Global.getSector().playerFleet.fleetData.membersListCopy) {
+            for (fm in sector.playerFleet.fleetData.membersListCopy) {
                 val member = fm as FleetMember
                 RecentBattleTracker.savedStatuses[member] = FleetMemberStatus(member)
                 RecentBattleTracker.savedCR[member] = member.repairTracker.cr

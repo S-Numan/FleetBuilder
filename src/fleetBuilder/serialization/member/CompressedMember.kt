@@ -1,7 +1,7 @@
 package fleetBuilder.serialization.member
 
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.core.util.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
@@ -12,7 +12,7 @@ import fleetBuilder.serialization.member.DataMember.buildMemberFull
 import fleetBuilder.serialization.member.DataMember.getMemberDataFromMember
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.variant.CompressedVariant
-import fleetBuilder.core.FBTxt
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.lib.CompressionUtil

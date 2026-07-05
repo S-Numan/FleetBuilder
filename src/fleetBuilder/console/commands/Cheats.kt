@@ -1,6 +1,6 @@
 package fleetBuilder.console.commands
 
-import fleetBuilder.core.FBSettings
+import fleetBuilder.core.config.FBSettings
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.Console
 

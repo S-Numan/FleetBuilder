@@ -1,12 +1,11 @@
 package fleetBuilder.ui
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.ui.ButtonAPI
-import com.fs.starfarer.api.ui.Fonts
-import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.ui.*
+import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.starficz.Font
 import fleetBuilder.otherMods.starficz.getFontPath
-import fleetBuilder.ui.common.ObservedTextField
+import fleetBuilder.ui.customPanel.elements.ObservedTextField
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.magiclib.kotlin.setAlpha
 import java.awt.Color
@@ -30,7 +29,6 @@ fun TooltipMakerAPI.addCheckboxD(
     pad: Float = 0f,
     font: Font = Font.INSIGNIA_15,
     textColor: Color = Global.getSettings().brightPlayerColor,
-    //onClick: (Boolean) -> Unit = {}
 ): ButtonAPI {
     val fontPath = getFontPath(font)
     val checkbox = this.addCheckbox(
@@ -45,14 +43,51 @@ fun TooltipMakerAPI.addCheckboxD(
     )
     checkbox.isChecked = isChecked
 
-    //checkbox.onClick { onClick(checkbox.isChecked) }
-
     return checkbox
 }
 
-fun TooltipMakerAPI.addNumericTextField(
+/**
+ * Default parameters for addButton
+ */
+fun TooltipMakerAPI.addButtonD(
+    text: String,
     width: Float,
-    height: Float,
+    height: Float = 24f,
+    data: Any? = null,
+    pad: Float = 0f,
+    base: Color = Global.getSettings().getColor("buttonText"),
+    bg: Color = Global.getSettings().getColor("buttonBgDark"),
+    align: Alignment = Alignment.MID,
+    style: CutStyle = CutStyle.ALL,
+): ButtonAPI {
+    val button = this.addButton(text, data, base, bg, align, style, width, height, pad)
+    return button
+}
+
+/**
+ * Default parameters for addAreaCheckbox
+ */
+fun TooltipMakerAPI.addAreaCheckboxD(
+    text: String,
+    width: Float,
+    height: Float = 24f,
+    data: Any? = null,
+    pad: Float = 0f,
+    base: Color = Misc.getBasePlayerColor(),
+    bg: Color = Misc.getDarkPlayerColor(),
+    bright: Color = Misc.getButtonTextColor(),
+    leftAlign: Boolean = false
+): ButtonAPI {
+    val areaCheckbox = this.addAreaCheckbox(text, data, base, bg, bright, width, height, pad, leftAlign)
+    return areaCheckbox
+}
+
+/**
+ * Add a text field that only accepts numeric input
+ */
+fun UIPanelAPI.addNumericTextField(
+    width: Float,
+    height: Float = 24f,
     font: String = Fonts.DEFAULT_SMALL,
     initialValue: Int? = null,
     maxValue: Int = Int.MAX_VALUE,
@@ -60,7 +95,6 @@ fun TooltipMakerAPI.addNumericTextField(
     pad: Float = 0f,
     onValueChanged: (String) -> Unit = {}
 ): ObservedTextField {
-
     val observedText = ObservedTextField(
         width = width,
         height = height,
@@ -69,16 +103,6 @@ fun TooltipMakerAPI.addNumericTextField(
         initialText = initialValue.toString(),
     )
     observedText.onTextChanged { rawValue ->
-
-        /*val cleanedValue = rawValue.replace("\\D+".toRegex(), "")
-        if(cleanedValue.isEmpty()) {
-            observedText.textField.text = ""
-            observedText.lastText = ""
-            return@onTextChanged
-        }
-        val numericValue = cleanedValue.toIntOrNull() ?: return@onTextChanged
-        val sanitizedValue = numericValue.coerceAtMost(maxValue)*/
-
         val sanitizedValue = rawValue
             .filter { it.isDigit() }
             .toIntOrNull()
@@ -100,7 +124,53 @@ fun TooltipMakerAPI.addNumericTextField(
         onValueChanged(sanitizedText)
     }
 
-    addCustom(observedText.component, 0f)
+    if (this is TooltipMakerAPI)
+        this.addCustom(observedText.component, 0f)
+    else
+        this.addComponent(observedText.component)
+
+    return observedText
+}
+
+/**
+ * Add a text field that prevents characters from being typed that are present in the excluded String
+ */
+fun UIPanelAPI.addExcludeTextField(
+    width: Float,
+    height: Float = 24f,
+    excludedCharacters: String = "\\/:*?\"<>|",
+    font: String = Fonts.DEFAULT_SMALL,
+    initialText: String = "",
+    pad: Float = 0f,
+    onValueChanged: (String) -> Unit = {}
+): ObservedTextField {
+
+    val observedText = ObservedTextField(
+        width = width,
+        height = height,
+        font = font,
+        pad = pad,
+        initialText = initialText,
+    )
+
+    observedText.onTextChanged { rawValue ->
+        val sanitizedText = rawValue
+            .filter { char ->
+                char !in excludedCharacters
+            }
+
+        if (sanitizedText != rawValue) {
+            observedText.textField.text = sanitizedText
+            observedText.lastText = sanitizedText
+        }
+
+        onValueChanged(sanitizedText)
+    }
+
+    if (this is TooltipMakerAPI)
+        addCustom(observedText.component, 0f)
+    else
+        this.addComponent(observedText.component)
     return observedText
 }
 

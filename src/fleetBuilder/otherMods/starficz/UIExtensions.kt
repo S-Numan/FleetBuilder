@@ -20,6 +20,7 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import java.awt.Color
 
+
 // UIComponentAPI extensions that expose UIComponent fields/methods
 var UIComponentAPI.fader: Fader?
     get() = invoke("getFader") as Fader?
@@ -145,6 +146,30 @@ fun UIComponentAPI.setAbsoluteLocation(x: Float, y: Float) {
     yAlignOffset += (y - position.y)
 }
 
+fun UIComponentAPI.setAbsoluteX(x: Float) {
+    xAlignOffset += (x - position.x)
+}
+
+fun UIComponentAPI.setAbsoluteY(y: Float) {
+    yAlignOffset += (y - position.y)
+}
+
+// .position already is this?
+/*
+fun UIComponentAPI.getAbsolutePosition(): Vector2f {
+    var x = this.position.x
+    var y = this.position.y
+
+    var current: UIComponentAPI? = this
+    while (current?.parent != null) {
+        current = current.parent
+        x += current!!.position.x
+        y += current.position.y
+    }
+
+    return Vector2f(x, y)
+}*/
+
 val UIComponentAPI.centerX
     get() = position.centerX
 
@@ -194,6 +219,9 @@ fun UIComponentAPI.applyAnchor(anchor: AnchorData) {
 val UIPanelAPI.lastComponent
     get() = children.lastOrNull()
 
+val UIPanelAPI.beforeLastComponent
+    get() = children.dropLast(1).lastOrNull()
+
 
 fun UIComponentAPI.addTooltip(
     location: TooltipLocation,
@@ -240,6 +268,29 @@ fun UIPanelAPI.getChildrenCopy(): List<UIComponentAPI> {
 @Suppress("UNCHECKED_CAST")
 fun UIPanelAPI.getChildrenNonCopy(): List<UIComponentAPI> {
     return invoke("getChildrenNonCopy") as List<UIComponentAPI>
+}
+
+// Not yet tested, unmark internal when tested.
+internal fun UIPanelAPI.bringToTopWithinItself(component: UIComponentAPI) {
+    invoke("bringToTopWithinItself", component)
+}
+
+internal fun UIPanelAPI.sendToBottomWithinItself(component: UIComponentAPI) {
+    invoke("sendToBottomWithinItself", component)
+}
+
+// What does clipping change?
+internal fun UIPanelAPI.setClipping(value: Boolean) {
+    invoke("setClipping", value)
+}
+
+internal fun UIPanelAPI.isClipping(): Boolean {
+    return invoke("isClipping") as Boolean
+}
+
+// What does this do?
+internal fun TooltipMakerAPI.getParentWidget(): UIComponentAPI? {
+    return ReflectionUtils.invoke("getParentWidget", this) as? UIPanelAPI
 }
 
 val UIPanelAPI.children get() = this.getChildrenCopy()
@@ -596,7 +647,11 @@ fun UIPanelAPI.addShipPreview(
     boxedUIShipPreview.setBorderNewStyle(true)
     boxedUIShipPreview.setShowBorder(false)
     boxedUIShipPreview.adjustOverlay(0f, 0f)
-    this.addComponent(shipPreview)
+
+    if (this is TooltipMakerAPI)
+        this.addCustom(shipPreview, 0f)
+    else
+        this.addComponent(shipPreview)
 
     return boxedUIShipPreview
 }
@@ -619,7 +674,11 @@ fun UIPanelAPI.addPara(
         tempTMAPI.addPara(text, 0f)
     }
 
-    this.addComponent(para as UIComponentAPI)
+    if (this is TooltipMakerAPI)
+        this.addCustom(para as UIComponentAPI, 0f)
+    else
+        this.addComponent(para as UIComponentAPI)
+
     para.setAlignment(Alignment.MID)
     para.invoke("autoSize")
     widthOverride?.let { para.autoSizeToWidth(it) }
@@ -628,6 +687,19 @@ fun UIPanelAPI.addPara(
     return BoxedUILabel(para)
 }
 
+/*
+fun UIPanelAPI.addCustom(component: UIComponentAPI, pad: Float = 0f): PositionAPI {
+    if (this.prev != null) {
+        this.panel.add(var1 as OO0o?).belowLeft(this.prev, var2)
+    } else {
+        this.panel.add(var1 as OO0o?).inTL(0.0f, var2).setXAlignOffset(5.0f)
+    }
+
+    this.prev = var1 as OO0o?
+    this.height = this.height + ((var1 as OO0o).getHeight() + var2)
+    return var1
+}*/
+
 fun UIPanelAPI.addImage(imageSpritePath: String, width: Float, height: Float): BoxedUIImage {
     val tempPanel = Global.getSettings().createCustom(width, height, null)
     val tempTMAPI = tempPanel.createUIElement(width, height, false)
@@ -635,7 +707,11 @@ fun UIPanelAPI.addImage(imageSpritePath: String, width: Float, height: Float): B
     val tempTMAPIsUIPanel = tempTMAPI.children[0] as UIPanelAPI
     val image = tempTMAPIsUIPanel.children[0]
 
-    this.addComponent(image)
+    if (this is TooltipMakerAPI)
+        this.addCustom(image, 0f)
+    else
+        this.addComponent(image)
+
     return BoxedUIImage(image)
 }
 
@@ -649,7 +725,12 @@ fun UIPanelAPI.addLabelledValue(
     val tempPanel = Global.getSettings().createCustom(width, height, null)
     val tempTMAPI = tempPanel.createUIElement(width, height, false)
     val labelledValue = tempTMAPI.addLabelledValue(label, value, labelColor, valueColor, width, 0f)
-    this.addComponent(labelledValue)
+
+    if (this is TooltipMakerAPI)
+        this.addCustom(labelledValue, 0f)
+    else
+        this.addComponent(labelledValue)
+
     return BoxedUIImage(labelledValue)
 }
 
@@ -657,7 +738,12 @@ fun UIPanelAPI.addTextField(width: Float, height: Float, font: Font): TextFieldA
     val tempPanel = Global.getSettings().createCustom(width, height, null)
     val tempTMAPI = tempPanel.createUIElement(width, height, false)
     val textField = tempTMAPI.addTextField(width, height, getFontPath(font), 0f)
-    this.addComponent(textField)
+
+    if (this is TooltipMakerAPI)
+        this.addCustom(textField, 0f)
+    else
+        this.addComponent(textField)
+
     return textField
 }
 
@@ -669,6 +755,7 @@ fun UIPanelAPI.addButton(
     val tempPanel = Global.getSettings().createCustom(width, height, null)
     val tempTMAPI = tempPanel.createUIElement(width, height, false)
     when (font) {
+        Font.ORBITRON_12_CONDENSED -> tempTMAPI.setButtonFontDefault()
         Font.VICTOR_10 -> tempTMAPI.setButtonFontVictor10()
         Font.VICTOR_14 -> tempTMAPI.setButtonFontVictor14()
         Font.ORBITRON_20 -> tempTMAPI.setButtonFontOrbitron20()
@@ -682,7 +769,11 @@ fun UIPanelAPI.addButton(
     shortcut?.let { button.setShortcut(shortcut, true) }
 
     // hijack button and move it to UIPanel
-    this.addComponent(button)
+    if (this is TooltipMakerAPI)
+        this.addCustom(button, 0f)
+    else
+        this.addComponent(button)
+
     button.xAlignOffset = 0f
     button.yAlignOffset = 0f
     return button
@@ -701,7 +792,11 @@ fun UIPanelAPI.addAreaCheckbox(
         text, data, baseColor, bgColor, brightColor, width, height, 0f, leftAlign
     )
 
-    this.addComponent(button)
+    if (this is TooltipMakerAPI)
+        this.addCustom(button, 0f)
+    else
+        this.addComponent(button)
+
     if (flag != null) {
         button.isChecked = flag.isChecked
         button.onClick { flag.isChecked = button.isChecked }
@@ -722,7 +817,11 @@ fun UIPanelAPI.addCheckbox(
 
     val checkbox = tempTMAPI.addCheckbox(width, height, text, data, getFontPath(font), color, size, 0f)
 
-    this.addComponent(checkbox)
+    if (this is TooltipMakerAPI)
+        this.addCustom(checkbox, 0f)
+    else
+        this.addComponent(checkbox)
+
     if (flag != null) {
         checkbox.isChecked = flag.isChecked
         checkbox.onClick { flag.isChecked = checkbox.isChecked }

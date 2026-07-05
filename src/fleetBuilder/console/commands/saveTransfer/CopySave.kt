@@ -1,7 +1,7 @@
 package fleetBuilder.console.commands.saveTransfer
 
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.serialization.PlayerSaveUtils
-import fleetBuilder.core.FBTxt
 import fleetBuilder.util.lib.ClipboardUtil.setClipboardText
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
@@ -13,6 +13,7 @@ class CopySave : BaseCommand {
     private val NO_REP = "-no-rep"
     private val NO_FLEET = "-no-fleet"
     private val NO_CARGO = "-no-cargo"
+    private val NO_SUBMARKET_CARGO = "-no-submarket-cargo"
     private val NO_HULLMODS = "-no-hullmods"
     private val NO_BLUEPRINTS = "-no-blueprints"
     private val NO_OFFICERS = "-no-officers"
@@ -28,6 +29,7 @@ class CopySave : BaseCommand {
         val argList = args.lowercase().split(" ")
         val json = PlayerSaveUtils.createSaveJson(
             handleCargo = !argList.contains(NO_CARGO),
+            handleSubmarketCargo = !argList.contains(NO_SUBMARKET_CARGO),
             handleRelations = !argList.contains(NO_REP),
             handleKnownBlueprints = !argList.contains(NO_BLUEPRINTS),
             handlePlayer = !argList.contains(NO_PLAYER),

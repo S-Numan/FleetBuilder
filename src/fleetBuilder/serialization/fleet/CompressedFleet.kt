@@ -2,8 +2,8 @@ package fleetBuilder.serialization.fleet
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage.showError
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage.showError
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep

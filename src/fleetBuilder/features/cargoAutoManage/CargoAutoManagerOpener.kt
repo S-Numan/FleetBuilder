@@ -12,7 +12,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
@@ -40,7 +40,7 @@ internal class CargoAutoManagerOpener : CampaignInputListener {
     private fun handleCargoMouseEvents(event: InputEventAPI, sector: SectorAPI) {
         // This try-catch may be unnecessary, but as this is a non-vital feature typically enabled by default, keep it to avoid possible future troubles.
         try {
-            if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
+            if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
             val cargoPanel = ReflectionMisc.getCargoPanel() ?: return
 
@@ -60,9 +60,9 @@ internal class CargoAutoManagerOpener : CampaignInputListener {
                     val selectedSubmarket = submarketPlugin.submarket
 
                     val coreUI = ReflectionMisc.getCoreUI() ?: return@forEach
-                    if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach
+                    //if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach // return SubmarketPlugin.OnClickAction.OPEN_SUBMARKET;
                     if (!submarketPlugin.isEnabled(coreUI)) return@forEach
-                    if (!submarketPlugin.isFreeTransfer) return@forEach//Temporary to avoid cheating when WIP
+                    if (!submarketPlugin.isFreeTransfer) return@forEach
                     if (submarketPlugin is LocalResourcesSubmarketPlugin) return@forEach
 
                     openSubmarketCargoAutoManagerDialog(selectedSubmarket)

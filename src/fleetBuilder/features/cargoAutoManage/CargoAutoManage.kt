@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
-import fleetBuilder.core.FBConst.PRIMARY_DIR
-import fleetBuilder.core.FBMisc.jsonArrayToList
+import fleetBuilder.core.config.FBConst.PRIMARY_DIR
+import fleetBuilder.core.util.FBMisc.jsonArrayToList
 import org.json.JSONArray
 import org.json.JSONObject
 

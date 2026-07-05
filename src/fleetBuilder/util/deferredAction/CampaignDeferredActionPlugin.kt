@@ -90,7 +90,7 @@ class CampaignDeferredActionPlugin : EveryFrameScript {
             }
         }
 
-        if (!Global.getSector().isPaused && onUnpause.isNotEmpty()) {
+        if (!Global.getSector()!!.isPaused && onUnpause.isNotEmpty()) {
             onUnpause.forEach { it.invoke() }
             onUnpause.clear()
         }

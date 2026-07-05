@@ -1,7 +1,7 @@
 package fleetBuilder.serialization.fleet.mods.secondInCommand
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.person.DataPerson

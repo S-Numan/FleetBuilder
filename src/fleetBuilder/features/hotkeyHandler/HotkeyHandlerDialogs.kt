@@ -21,12 +21,15 @@ import com.fs.starfarer.campaign.CharacterStats
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.ui.impl.StandardTooltipV2
 import com.fs.starfarer.ui.impl.StandardTooltipV2Expandable
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.FBTxt.txtPlural
-import fleetBuilder.core.displayMessage.DisplayMessage
-import fleetBuilder.core.makeSaveRemovable.RemoveFromSave.removeModThings
+import com.fs.state.AppDriver
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.FBTxt.txtPlural
+import fleetBuilder.core.util.file.directory.DirFile
+import fleetBuilder.core.util.file.directory.DirectoryManager
+import fleetBuilder.core.util.save.removable.RemoveFromSave.removeModThings
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.features.autofit.ui.AutofitSelector
@@ -41,10 +44,18 @@ import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.UIUtils
+import fleetBuilder.ui.addButtonD
 import fleetBuilder.ui.addCheckboxD
 import fleetBuilder.ui.addNumericTextField
-import fleetBuilder.ui.customPanel.common.DialogPanel
-import fleetBuilder.ui.customPanel.common.ModalPanel
+import fleetBuilder.ui.customPanel.core.ComposablePanel
+import fleetBuilder.ui.customPanel.core.ModalPanel
+import fleetBuilder.ui.customPanel.elements.AccordionMenu
+import fleetBuilder.ui.customPanel.elements.AccordionNode
+import fleetBuilder.ui.customPanel.elements.UIButton
+import fleetBuilder.ui.customPanel.modules.AreYouSureDialog
+import fleetBuilder.ui.customPanel.modules.TextInputDialog
+import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
+import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
@@ -58,6 +69,7 @@ import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
+import org.magiclib.util.membermemory.MemberMemoryExt.getMemberMemory
 import second_in_command.SCData
 import second_in_command.SCUtils
 import second_in_command.specs.SCOfficer
@@ -75,9 +87,24 @@ object HotkeyHandlerDialogs {
     fun createDevModeDialog() {
         val dialog = DialogPanel(FBTxt.txt("dev_options_title"))
         dialog.animation = ModalPanel.PanelAnimation.NONE
+        dialog.createUINoise = false
+
         dialog.uiBorderColor = Color(255, 70, 70)
 
         dialog.show(width = 500f, height = 200f) { ui ->
+            val but = UIButton(dialog.headerHeight, dialog.headerHeight)
+            val defaultCheck = Global.getSettings().getSprite("ui", "checkmark_x")
+            defaultCheck.color = Color.RED.darker()
+            but.setSprite(defaultCheck)
+            but.isToggle = true
+            but.triggerOnPress = false
+
+            but.renderBackground = false
+            but.onTrigger {
+                DisplayMessage.showMessage("la")
+            }
+            ui.addCustom(but.panel, 0f)
+
             val toggleDev = ui.addCheckboxD(FBTxt.txt("toggle_dev_mode"), Global.getSettings().isDevMode)
             toggleDev.setButtonPressedSound("FB_NONE")
             toggleDev.onClick {
@@ -127,6 +154,7 @@ object HotkeyHandlerDialogs {
                 160f, 24f, 0f
             )
             testMessageTrigger.position.inTR(0f, ui.height - testMessageTrigger.height)
+
             testMessageTrigger.onClick {
                 try {
                     //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
@@ -135,23 +163,28 @@ object HotkeyHandlerDialogs {
 
                     //val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
                     //val variant = memberInRefit.variant ?: return@onClick
+
                     //val modules = variant.stationModules
                     //val modules2 = variant.moduleSlots
                     //val modules3 = variant.getModules()
+                    //val memberMemory = memberInRefit.getMemberMemory()
                     //DisplayMessage.showError("Member memory = " + memberMemory.toString() + "\nModules = " + variant.hullSpec.getSlotsForModules().toString())
 
-
                     val sector = Global.getSector()
-                    val memory = sector.memoryWithoutUpdate
+                    val state = AppDriver.getInstance().currentState
+                    //if (state is CampaignState)
+                    //state.showNoise(0.5f, 0.25f, 1.5f)
 
-                    sector
+                    val memory = sector?.memoryWithoutUpdate
 
-                    /*
-                val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
-                val memberMemory = member.getMemberMemory()
+                    openFileViewPanel()
 
-                if (!memberMemory.containsKey("test"))
-                    memberMemory["test"] = "test"*/
+
+                    val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
+                    val memberMemory = member.getMemberMemory()
+
+                    if (!memberMemory.contains("\$test"))
+                        memberMemory.set("\$test", true)
 
 
                     //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
@@ -163,7 +196,8 @@ object HotkeyHandlerDialogs {
                     CampaignEngine.getInstance().saveDirName
                 }*/
                 } catch (e: Exception) {
-                    DisplayMessage.showError("Error", e)
+                    Global.getLogger(this.javaClass).error("ERROR", e)
+                    //DisplayMessage.showError("Error", e)
                 }
             }
 
@@ -175,14 +209,287 @@ object HotkeyHandlerDialogs {
         }
     }
 
+    private val rightPanelSizeMult = 5f
+
+    fun openFileViewPanel() {
+        val rightPanel = ComposablePanel().apply {
+            renderUIBorders = false
+        }
+        rightPanel.tooltipPadFromSide = 4f
+
+        rightPanel.buildUI(withScroller = true) { rightUI ->
+            rightUI.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
+            rightUI.addPara("Files:\n", 0f).position.inTL(0f, 10f)
+            (rightPanel.customData as? DirectoryManager)?.getContainingPaths()?.filterIsInstance<DirFile>()?.forEach { path ->
+                val width = rightUI.computeStringWidth(path.fileName)
+                val button = rightUI.addButtonD(path.fileName, width, style = CutStyle.NONE, pad = 4f)
+            }
+        }
+
+        openDirectoryManagerPanel("TestFolderOuter/TestFolderInner", rightPanel = rightPanel)
+        /*
+        val oldCursor = Mouse.getNativeCursor()
+        rightPanel.onExit {
+            Mouse.setNativeCursor(oldCursor)
+        }
+
+        var dragging = false
+        rightPanel.onProcessInput { event ->
+            val mouseX = event.x.toFloat()
+            val leftEdge = rightPanel.panel.position.x
+
+            if (event.isLMBUpEvent) {
+                dragging = false
+                Mouse.setNativeCursor(oldCursor)
+            }
+            if (dragging || (UIUtils.isMouseHoveringOverComponent(ui, event.x, event.y, 2f) && kotlin.math.abs(mouseX - leftEdge) <= 9f)) {
+                if (dragging || event.isLMBDownEvent) {
+                    Mouse.setNativeCursor(Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null))
+
+                    val uiLeft = ui.x
+                    val uiRight = ui.x + ui.width // Absolute right edge of the parent UI
+                    // Minimum sizes (tweak to taste)
+                    val minRightPanelWidth = ui.width / 2f
+                    val minLeftPanelWidth = ui.width / rightPanelSizeMult
+                    // Compute bounds for the draggable divider
+                    var minX = uiLeft + minLeftPanelWidth
+                    var maxX = uiRight - minRightPanelWidth
+                    // If constraints overlap, collapse to a safe midpoint
+                    if (minX > maxX) {
+                        val mid = (uiLeft + uiRight) / 2f
+                        minX = mid
+                        maxX = mid
+                    }
+                    val clampedX = mouseX.coerceIn(minX, maxX)
+
+                    rightPanel.panel.setAbsoluteX(clampedX)
+                    val newWidth = uiRight - clampedX // Width needed to extend to the end of the tooltip
+                    rightPanel.panel.setSize(newWidth, rightPanel.panel.height)
+                    rightPanel.tooltip!!.setSize(newWidth - rightPanel.tooltipPadFromSide * 2 - SCROLLER_WIDTH, rightPanel.tooltip!!.height)
+
+                    dragging = true
+                    event.consume()
+                }
+            }
+        }
+        */
+    }
+
+    fun fleetViewPanel() {
+
+    }
+
+    fun memberViewPanel() {
+
+    }
+
+    fun openDirectoryManagerPanel(inputDir: String, rightPanel: ComposablePanel) {
+        val rootManager = DirectoryManager.get(inputDir)
+        var currentManager = rootManager
+
+        val dialog = DialogPanel("WIP")
+        dialog.dialogStyle = false
+        dialog.darkenBackground = false
+        dialog.background.alphaMult = 1f
+        dialog.tooltipPadFromSide = 0f
+        dialog.tooltipPadFromTop = 0f
+        dialog.tooltipPadFromBottom = 0f
+        dialog.headerHeight = 30f
+
+        fun switchToManager(manager: DirectoryManager) {
+            if (manager === currentManager)
+                return
+            currentManager = manager
+            rightPanel.customData = currentManager
+            rightPanel.recreateUI()
+        }
+
+        var currentTree: AccordionMenu? = null
+        fun openRightClickPanel(manager: DirectoryManager) {
+            if (ContextMenuPanel.isContextMenuOpen()) return
+
+            val rightClickPanel = ContextMenuPanel()
+
+            rightClickPanel.show(360f, 512f) { ui ->
+                ui.addCheckboxD("createFile").apply {
+                    onClick {
+                        rightClickPanel.dismiss()
+                        TextInputDialog(title = "Create File", prompt = "Enter name for file:") { name ->
+                            if (name.trim(' ', '.').take(255).isNotBlank()) {
+                                manager.writeFile(name, "test content")
+                                if (manager === currentManager)
+                                    rightPanel.recreateUI()
+                            }
+                        }
+                    }
+                    position.inTL(25f, 10f)
+                }
+
+                ui.addCheckboxD("createFolder", pad = 5f).apply {
+                    onClick {
+                        rightClickPanel.dismiss()
+                        TextInputDialog(title = "Create Folder", prompt = "Enter name for folder:") { name ->
+                            if (name.trim(' ', '.').take(255).isNotBlank()) {
+                                val newFolder = manager.createFolder(name)
+                                currentTree?.addNode(AccordionNode(name, id = newFolder), parentId = manager)
+                            }
+                        }
+                    }
+                }
+
+                ui.addCheckboxD("removeFolder", pad = 5f).apply {
+                    onClick {
+                        rightClickPanel.dismiss()
+                        AreYouSureDialog(
+                            title = "Remove Folder", prompt = "Remove folder with the name '${manager.folderName}'?\nThis process cannot be undone." +
+                                    if (manager.getContainingPaths().isNotEmpty()) "\nThis will delete all containing files and folders as well." else ""
+                        ).onConfirm {
+                            currentTree?.removeNode(manager)
+                            manager.delete()
+                            if (currentManager === manager)
+                                manager.manager?.let { currentTree?.selectById(it) }
+                        }
+                    }
+                }
+
+                ui.addCheckboxD("renameFolder", pad = 5f).apply {
+                    onClick {
+
+                    }
+                }
+            }
+        }
+
+        dialog.show(width = 1280f, height = 800f) { ui ->
+            ui.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
+            //ui.setButtonFontDefault()
+
+            //val currentDirLabel = ui.addPara("/" + currentManager.folderPath, 0f)
+
+            /*val managerTree: MutableList<DirectoryManager> = mutableListOf()
+            fun addToManagerTree(manager: DirectoryManager?, parent: DirectoryManager? = null) {
+                if (manager == null) return
+                managerTree.add(manager)
+                addToManagerTree(manager.manager, parent)
+            }
+            addToManagerTree(currentManager)
+
+            var prevButton: ButtonAPI? = null
+            managerTree.asReversed().forEach { thisManager ->
+                val width = ui.computeStringWidth(thisManager.folderName)
+                ui.addAreaCheckboxD(thisManager.folderName, width).apply {
+                    if (prevButton != null) {
+                        val label = ui.addPara(">", 0f)
+                        label.position.rightOfMid(prevButton, 5f)
+                        position.rightOfMid(prevButton, 20f)
+                    } else {
+                        position.inTL(0f, 50f)
+                    }
+                    isEnabled = thisManager.exists()
+                    onClick {
+                        switchToManager(thisManager)
+                        isChecked = thisManager === currentManager
+                    }
+                    isChecked = thisManager === currentManager
+
+                    prevButton = this
+                }
+            }*/
+
+            val leftPanel = ComposablePanel().apply {
+                renderUIBorders = false
+            }
+            leftPanel.show(width = ui.width / 2f, height = ui.height, xOffset = 0f, yOffset = 0f, parent = ui, withScroller = false) { leftUI ->
+                fun DirectoryManager.toAccordionNode(): AccordionNode {
+                    val childNodes = getContainingPaths()
+                        .filterIsInstance<DirectoryManager>()
+                        .map { it.toAccordionNode() }
+
+                    return AccordionNode(
+                        label = folderName,
+                        id = this,
+                        children = childNodes
+                    )
+                }
+
+                val nodes = rootManager.getContainingPaths()
+                    .filterIsInstance<DirectoryManager>()
+                    .map { it.toAccordionNode() }
+
+                currentTree = AccordionMenu(
+                    parentPanel = leftUI,
+                    x = 0f,
+                    y = 0f,
+                    width = leftUI.width,
+                    visibleHeight = leftUI.height,
+                    nodes = nodes
+                )
+
+                currentTree.onSelect { node ->
+                    //DisplayMessage.showMessage("Selected: ${node.label} (id=${node.id})")
+                    switchToManager(node.id as DirectoryManager)
+                }
+
+                currentTree.onRightClickSelect { node ->
+                    //DisplayMessage.showMessage("Right-clicked: ${node.label} (id=${node.id})")
+                    openRightClickPanel(node.id as DirectoryManager)
+                }
+
+
+                /*leftUI.setParaFont(getFontPath(Font.ARIAL_16_BOLD))
+                leftUI.addPara("Folders:\n", 0f).position.inTL(0f, 10f)
+                containingPaths.filterIsInstance<DirectoryManager>().forEach { path ->
+                    val width = leftUI.computeStringWidth(path.folderName)
+                    val button = leftUI.addButtonD(path.folderName, width, style = CutStyle.NONE, pad = 4f)
+                    button.onClick {
+                        switchToManager(path)
+                    }
+                }*/
+            }
+            rightPanel.customData = currentManager
+            rightPanel.present(width = ui.width - (ui.width / rightPanelSizeMult), height = ui.height, xOffset = ui.width / rightPanelSizeMult, yOffset = 0f, parent = ui)
+        }
+
+        dialog.onClick { event ->
+            /*if (event.isMouseDownEvent) {
+                if (event.eventValue == 3) { // Page back button
+                    currentManager.manager?.let {
+                        if (it.exists())
+                            switchToManager(it)
+                    }
+                } else if (event.eventValue == 4) { // Page forward button
+
+                }
+            }*/
+
+            if (!event.isRMBDownEvent) return@onClick
+
+            openRightClickPanel(currentManager)
+        }
+
+    }
+
     private fun removeModButton(
         ui: TooltipMakerAPI
     ) {
-        val removeModButton = ui.addButton("Remove Mod", null, 160f, 24f, 0f)
+        val removeModButton = ui.addButtonD("Remove Mod", 160f)
 
         removeModButton.position.inTL(0f, ui.height - removeModButton.height)
         removeModButton.onClick {
             val dialog = DialogPanel("Remove Mod")
+            dialog.darkenBackgroundAlphaMult = 1.0f
+
+            // Rainbow!
+            /*var time = 0f
+            dialog.advance { amount ->
+                time += amount
+                val speed = 0.4f
+                var hue = (time * speed) % 1f  // stays between 0 and 1
+                hue = hue.toDouble().pow(1.3).toFloat()
+                dialog.uiBorderColor = Color.getHSBColor(hue, 0.6f, 1f)
+            }*/ // Let's not
+            dialog.uiBorderColor = Color(255, 50, 50)
+
             dialog.show(width = 800f, height = 800f) { ui ->
                 ui.addPara("HERE BE DRAGONS!\nPlease note that these are very unsafe options and are very likely to cause issues.", Color.RED, 0f)
                 ui.addSpacer(8f)
@@ -198,14 +505,15 @@ object HotkeyHandlerDialogs {
                 var yMargin = 16f
                 Global.getSettings().modManager.enabledModsCopy.forEach {
                     tempTMAPI.addButton(it.name + " - " + it.id, null, ui.width - 8f, 32f, 4f).onClick {
-                        val dialog = DialogPanel("Are you sure?")
-                        dialog.show(500f, 200f) { ui ->
+                        val youSureDialog = DialogPanel("Are you sure?")
+                        youSureDialog.uiBorderColor = Color(255, 20, 20)
+                        youSureDialog.show(500f, 200f) { ui ->
                             val removeModLabel = ui.addPara("Remove mod: ${it.name} - ${it.id}", 0f).autoSizeToText()
                             removeModLabel.position.inTMid(0f)
                             ui.addPara("Warning, this may brick your save file.", Color.RED, 0f).autoSizeToText().position.belowMid(removeModLabel as UIComponentAPI, 8f)
-                            dialog.addActionButtons()
+                            youSureDialog.addActionButtons()
                         }
-                        dialog.onConfirm {
+                        youSureDialog.onConfirm {
                             runCatching {
                                 removeModThings(
                                     listOf(it), removeListeners = removeListeners.isChecked,
@@ -311,7 +619,7 @@ object HotkeyHandlerDialogs {
 
         val secondInCommandModEnabled = Global.getSettings().modManager.isModEnabled("second_in_command")
 
-        val sector = Global.getSector()
+        val sector = Global.getSector()!!
         val data = inputData.copy(
             members = inputData.members.map { member ->
                 member.copy(id = sector.genUID())
@@ -320,6 +628,7 @@ object HotkeyHandlerDialogs {
         val cheatsEnabled = FBSettings.cheatsEnabled() || forceCheatsEnabled // Store this value for if some other logic temporarily enables it to mimic cheats being on without them actually being on.
 
         val dialog = DialogPanel()
+        dialog.background.alphaMult = 1f
 
         val brightColor = Global.getSettings().brightPlayerColor
         val factionColor = Global.getSettings().basePlayerColor//faction.baseUIColor
@@ -386,6 +695,9 @@ object HotkeyHandlerDialogs {
                 data,
                 true, settings = settings, missing = missingEx, random = deterministicRandom
             )
+
+            fleet.memoryWithoutUpdate["\$#FB_customBattleCreationPlugin"] = true
+
             if (secondInCommandModEnabled)
                 fleet.addTag("sc_do_not_generate_skills")
 
@@ -887,7 +1199,7 @@ object HotkeyHandlerDialogs {
                     // Fleet is not alive (location is null), so battle will see it as empty
                     //battle.genCombinedDoNotRemoveEmpty()
 
-                    val battleContext = BattleCreationContext(Global.getSector().playerFleet, FleetGoal.ATTACK, fleet, FleetGoal.ATTACK)
+                    val battleContext = BattleCreationContext(sector.playerFleet, FleetGoal.ATTACK, fleet, FleetGoal.ATTACK)
                     battleContext.fightToTheLast = fightToTheLast
                     battleContext.aiRetreatAllowed = !fightToTheLast
                     battleContext.enemyDeployAll = true
@@ -895,7 +1207,7 @@ object HotkeyHandlerDialogs {
                     battleContext.forceObjectivesOnMap = forceObjectives
                     battleContext.playerCommandPoints = 5
 
-                    val campUI = Global.getSector().campaignUI
+                    val campUI = sector.campaignUI
                     if (campUI.currentInteractionDialog == null) { // not at interaction?
                         //Campaign Dialog Shenanigans
                         val coreUITadId: CoreUITabId? = campUI.getActualCurrentTab()
@@ -914,11 +1226,11 @@ object HotkeyHandlerDialogs {
                         RecentBattleReplay.simulateBattle(battleContext) {
                             //battle.finish(null, false)
                             CampaignUtils.closeCampaignDummyDialog()
-                            Global.getSector().isPaused = true
+                            sector.isPaused = true
                             if (coreUITadId == CoreUITabId.FLEET) {
                                 campUI.safeInvoke("setNextTransitionFast", true)
                                 campUI.showCoreUITab(coreUITadId)
-                                dialog?.parent?.bringComponentToTop(dialog.panel)
+                                dialog?.panel?.parent?.bringComponentToTop(dialog.panel)
                             }
                             CampaignUtils.openCampaignDummyDialog()
                         }
@@ -926,7 +1238,7 @@ object HotkeyHandlerDialogs {
                     } else {
                         RecentBattleReplay.simulateBattle(battleContext) {
                             //battle.finish(null, false)
-                            dialog.parent.bringComponentToTop(dialog.panel)
+                            dialog.panel.parent?.bringComponentToTop(dialog.panel)
                         }
                     }
                 }
@@ -1078,10 +1390,10 @@ object HotkeyHandlerDialogs {
 
                     reportMissingContentIfAny(missingEx)
 
-                    val playerFleet = Global.getSector().playerFleet.fleetData
+                    val playerFleet = sector.playerFleet.fleetData
 
                     fleet.fleetData.membersListCopy.forEach { member ->
-                        member.id = Global.getSector().genUID()
+                        member.id = sector.genUID()
                         playerFleet.addFleetMember(member)
 
                         val captain = member.captain
@@ -1105,7 +1417,7 @@ object HotkeyHandlerDialogs {
                 }
             }
 
-            dialog.clearStarUIFunctions()
+            dialog.clearStarUICallbacks()
             dialog.onKeyDown { event ->
                 if (event.isCtrlDown) {
                     if (event.eventValue == Keyboard.KEY_C) {
@@ -1150,7 +1462,7 @@ object HotkeyHandlerDialogs {
     }
 
     // Torn straight from SCAddOfficersToFleetInteraction and hacked into function. Bad implementation, I know.
-    fun pasteFleetDialogSICSkills(tooltip: TooltipMakerAPI, officer: SCOfficer, data: SCData) {
+    private fun pasteFleetDialogSICSkills(tooltip: TooltipMakerAPI, officer: SCOfficer, data: SCData) {
         tooltip.addSpacer(10f)
 
         var width = 500f
@@ -1274,7 +1586,8 @@ object HotkeyHandlerDialogs {
         val width = 500f
         val height = 348f
 
-        val playerFleet = Global.getSector()?.playerFleet?.fleetData ?: return
+        val sector = Global.getSector()!!
+        val playerFleet = sector.playerFleet?.fleetData ?: return
 
         var officerSkillCount = 0
 
@@ -1291,10 +1604,10 @@ object HotkeyHandlerDialogs {
         val buttonHeight = 24f
 
         initialDialog.show(width, height) { ui ->
-            ui.addPara(FBTxt.txt("max_level"), 0f)
+            ui.addPara(FBTxt.txt("max_level"), -4f)
             val maxLevel = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
-            ui.addPara(FBTxt.txt("max_elite_skills"), 0f)
+            ui.addPara(FBTxt.txt("max_elite_skills"), 4f)
             val maxEliteSkills = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
             ui.addSpacer(buttonHeight / 3)
@@ -1330,7 +1643,7 @@ object HotkeyHandlerDialogs {
                 val maxEliteSkillsValue = maxEliteSkills.getText().toIntOrNull()
 
                 val person = OfficerManagerEvent.createOfficer(
-                    Global.getSector().playerFaction, 1, OfficerManagerEvent.SkillPickPreference.ANY,
+                    sector.playerFaction, 1, OfficerManagerEvent.SkillPickPreference.ANY,
                     false, null, false, false, -1, MathUtils.getRandom()
                 )
                 person.stats.skillsCopy.forEach { person.stats.setSkillLevel(it.skill.id, 0f) }
@@ -1434,6 +1747,7 @@ object HotkeyHandlerDialogs {
         FLEET(FBTxt.txt("include_fleet"), true),
         OFFICERS(FBTxt.txt("include_officers"), true),
         CARGO(FBTxt.txt("include_cargo"), true),
+        SUBMARKETCARGO(FBTxt.txt("include_submarket_cargo"), true, FBTxt.txt("include_submarket_cargo_tooltip")),
         CREDITS(FBTxt.txt("include_credits"), true),
         ABILITYBAR(FBTxt.txt("include_abilitybar"), true, FBTxt.txt("include_abilitybar_tooltip"));
     }
@@ -1442,7 +1756,7 @@ object HotkeyHandlerDialogs {
     fun createSaveTransferDialog() {
         val dialog = DialogPanel(headerTitle = FBTxt.txt("save_transfer"))
 
-        dialog.show(300f, 384f) { ui ->
+        dialog.show(300f, 400f) { ui ->
 
             val buttonHeight = 24f
 
@@ -1490,6 +1804,7 @@ object HotkeyHandlerDialogs {
             ui.addButton(FBTxt.txt("copy_save_to_clipboard"), null, ui.width, buttonHeight, 3f).onClick {
                 val json = PlayerSaveUtils.createSaveJson(
                     handleCargo = isEnabled(SaveOption.CARGO),
+                    handleSubmarketCargo = isEnabled(SaveOption.SUBMARKETCARGO),
                     handleRelations = isEnabled(SaveOption.REPUTATION),
                     handleKnownBlueprints = isEnabled(SaveOption.BLUEPRINTS),
                     handlePlayer = isEnabled(SaveOption.PLAYER),
@@ -1525,6 +1840,7 @@ object HotkeyHandlerDialogs {
                 PlayerSaveUtils.loadCompiledSave(
                     compiled,
                     handleCargo = isEnabled(SaveOption.CARGO),
+                    handleSubmarketCargo = isEnabled(SaveOption.SUBMARKETCARGO),
                     handleRelations = isEnabled(SaveOption.REPUTATION),
                     handleKnownBlueprints = isEnabled(SaveOption.BLUEPRINTS),
                     handlePlayer = isEnabled(SaveOption.PLAYER),

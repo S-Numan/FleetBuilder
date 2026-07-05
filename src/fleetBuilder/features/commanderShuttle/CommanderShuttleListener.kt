@@ -8,9 +8,9 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import java.awt.Color
 
 internal class CommanderShuttleListener :
@@ -31,11 +31,12 @@ internal class CommanderShuttleListener :
     override fun advance(amount: Float) {
         if (!Global.getSettings().isInCampaignState) return
 
-        val interactionDialog = Global.getSector().campaignUI.currentInteractionDialog
+        val sector = Global.getSector()!!
+        val interactionDialog = sector.campaignUI.currentInteractionDialog
         if (interactionDialog?.plugin != prevInteractionPlugin) {
             prevInteractionPlugin = interactionDialog?.plugin
             //Plugin change
-            val playerFleet = Global.getSector()?.playerFleet ?: return
+            val playerFleet = sector.playerFleet ?: return
 
             if (interactionDialog == null || interactionDialog.plugin is RuleBasedInteractionDialogPluginImpl) { // No dialog?
                 makeCommanderShuttleGood(playerFleet)
@@ -62,13 +63,13 @@ internal class CommanderShuttleListener :
 
         if (interactionDialog != null) return
 
-        val playerFleet = Global.getSector()?.playerFleet ?: return
+        val playerFleet = sector.playerFleet ?: return
 
         if (prevLocationSetter != null && playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
             playerFleet.containingLocation.removeEntity(playerFleet)
             prevLocationSetter!!.addEntity(playerFleet)
 
-            Global.getSector().currentLocation = prevLocationSetter
+            sector.currentLocation = prevLocationSetter
 
             playerFleet.setLocation(0f, 0f)
             DisplayMessage.showMessage(FBTxt.txt("no_command_shuttle_jump_alone") + "...", Color.YELLOW)
@@ -92,7 +93,7 @@ internal class CommanderShuttleListener :
     var marketOpened = false
 
     override fun reportShownInteractionDialog(dialog: InteractionDialogAPI) {
-        val playerFleet = Global.getSector().playerFleet ?: return
+        val playerFleet = Global.getSector()!!.playerFleet ?: return
 
         if (marketOpened) {
             marketOpened = false
@@ -125,7 +126,7 @@ internal class CommanderShuttleListener :
     }
 
     override fun reportPlayerMarketTransaction(transaction: PlayerMarketTransaction) {
-        val playerFleet = Global.getSector().playerFleet ?: return
+        val playerFleet = Global.getSector()!!.playerFleet ?: return
 
         if (transaction.shipsSold.isNotEmpty()) {
             val member = transaction.shipsSold.first().member

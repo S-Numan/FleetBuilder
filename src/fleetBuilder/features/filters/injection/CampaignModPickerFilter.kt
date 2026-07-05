@@ -5,10 +5,10 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.features.filters.filterPanels.ModPickerFilterPanel
+import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.otherMods.starficz.findChildWithMethod
 
 internal class CampaignModPickerFilter : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -23,9 +23,9 @@ internal class CampaignModPickerFilter : EveryFrameScript {
     var isPermMode: Boolean = false
 
     override fun advance(amount: Float) {
-        if (!Global.getSector().isPaused) return
+        if (!Global.getSector()!!.isPaused) return
 
-        val campaignState = Global.getSector().campaignUI
+        val campaignState = Global.getSector()!!.campaignUI
         if (campaignState.getActualCurrentTab() != CoreUITabId.REFIT) {
             if (filterPanel != null) {
                 filterPanel = null

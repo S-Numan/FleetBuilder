@@ -7,9 +7,9 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.features.filters.filterPanels.FleetFilterPanel
 import fleetBuilder.features.filters.filterPanels.FleetFilterPanel.Companion.removePreviousIfAny
+import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.getActualCurrentTab
-import fleetBuilder.otherMods.starficz.getChildrenCopy
 
 internal class CampaignFleetScreenFilter : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -24,9 +24,9 @@ internal class CampaignFleetScreenFilter : EveryFrameScript {
     var filterPanel: FleetFilterPanel? = null
 
     override fun advance(amount: Float) {
-        if (!Global.getSector().isPaused) return
+        if (!Global.getSector()!!.isPaused) return
 
-        val campaignState = Global.getSector().campaignUI
+        val campaignState = Global.getSector()!!.campaignUI
         if (campaignState.getActualCurrentTab() != CoreUITabId.FLEET) {
             if (prevFleetPanel != null)
                 prevFleetPanel = null

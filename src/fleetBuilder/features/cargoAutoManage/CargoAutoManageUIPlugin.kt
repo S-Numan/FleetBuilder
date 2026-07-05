@@ -10,10 +10,10 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.core.FBConst.PRIMARY_DIR
-import fleetBuilder.core.FBMisc.jsonArrayToList
-import fleetBuilder.core.FBMisc.listToJsonArray
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBConst.PRIMARY_DIR
+import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBMisc.jsonArrayToList
+import fleetBuilder.core.util.FBMisc.listToJsonArray
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromMap
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManageToMap
@@ -21,11 +21,11 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.unsetCargoAutoManage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
-import fleetBuilder.ui.customPanel.common.BasePanel
-import fleetBuilder.ui.customPanel.common.DialogPanel
-import fleetBuilder.ui.customPanel.common.ModalPanel
-import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.ui.addCheckboxD
+import fleetBuilder.ui.customPanel.core.BasePanel
+import fleetBuilder.ui.customPanel.core.ModalPanel
+import fleetBuilder.ui.customPanel.patterns.DialogPanel
+import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.loadTextureCached
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.json.JSONArray
@@ -236,6 +236,8 @@ internal class CargoAutoManageUIPlugin(
 
         //dialog = PopUpUIDialog(selectedSubmarket.name.replace("\n", " "), addCloseButton = true)
         dialog = DialogPanel(selectedSubmarket.name.replace("\n", " "))
+        dialog.animation = ModalPanel.PanelAnimation.FADE_ONLY
+        dialog.openDuration = 0.2f
 
         val headerHeight = 24f
         val rowHeight = 48f
@@ -533,7 +535,7 @@ internal class CargoAutoManageUIPlugin(
         }
 
         if (instantUp)
-            dialog.setMaxSize()
+            dialog.finishAnimation()
     }
 
     private fun addStack(
@@ -701,7 +703,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
         this.panel.position.setXAlignOffset(Global.getSettings().mouseX.toFloat() - panelWidth / 2f)
         this.panel.position.setYAlignOffset(Global.getSettings().mouseY.toFloat() + panelHeight + 20f - Global.getSettings().screenHeight)
 
-        parent.bringComponentToTop(panel)
+        this.panel.parent?.bringComponentToTop(panel)
 
         super.advance(amount)
     }

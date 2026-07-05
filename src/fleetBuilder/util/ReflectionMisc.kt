@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.ui.IntelUIAPI
 import com.fs.starfarer.api.ui.LabelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.econ.Submarket
@@ -53,7 +54,7 @@ object ReflectionMisc {
 
     fun getRefitTab(): UIPanelAPI? {
         if (Global.getCurrentState() == GameState.CAMPAIGN) {
-            return if (Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.REFIT)
+            return if (Global.getSector()?.campaignUI?.getActualCurrentTab() == CoreUITabId.REFIT)
                 getCurrentTab()
             else
                 null
@@ -114,15 +115,26 @@ object ReflectionMisc {
         return getCoreUI()?.safeInvoke("getCurrentTab") as? UIPanelAPI
     }
 
+    fun getIntelTab(): UIPanelAPI? {
+        return if (Global.getSector()?.campaignUI?.getActualCurrentTab() != CoreUITabId.INTEL)
+            null
+        else
+            getCurrentTab()
+    }
+
+    fun getIntelUI(): IntelUIAPI? {
+        return getIntelTab()?.safeInvoke("getEventsPanel") as? IntelUIAPI
+    }
+
     fun getFleetTab(): UIPanelAPI? {
-        return if (Global.getSector().campaignUI?.getActualCurrentTab() != CoreUITabId.FLEET)
+        return if (Global.getSector()?.campaignUI?.getActualCurrentTab() != CoreUITabId.FLEET)
             null
         else
             getCurrentTab()
     }
 
     fun getCargoTab(): UIPanelAPI? {
-        return if (Global.getSector().campaignUI?.getActualCurrentTab() != CoreUITabId.CARGO)
+        return if (Global.getSector()?.campaignUI?.getActualCurrentTab() != CoreUITabId.CARGO)
             null
         else
             getCurrentTab()
@@ -206,7 +218,7 @@ object ReflectionMisc {
         val gameState = Global.getCurrentState()
 
         // F2 while hovering over ship in the fleet screen. Clicking the question mark in the fleet screen. Does not include hovering over the question mark and pressing F2
-        if (gameState == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
+        if (gameState == GameState.CAMPAIGN && Global.getSector()?.campaignUI?.getActualCurrentTab() == CoreUITabId.FLEET) {
             val coreUI = getCoreUI() as? UIPanelAPI ?: return false
             if (coreUI.getChildrenCopy().any { it is CodexDialog })
                 return true
@@ -247,7 +259,7 @@ object ReflectionMisc {
             return getScreenPanel()?.getChildrenCopy()?.find { it is CodexDialog } as? CodexDialog
         }
 
-        if (gameState == GameState.CAMPAIGN && Global.getSector().campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
+        if (gameState == GameState.CAMPAIGN && Global.getSector()?.campaignUI?.getActualCurrentTab() == CoreUITabId.FLEET) {
             //F2 while hovering over ship in the fleet screen. Clicking the question mark in the fleet screen. Does not include hovering over the question mark and pressing F2, that is handled differently for some reason.
             val coreUI = getCoreUI() as? UIPanelAPI
 
@@ -291,7 +303,7 @@ object ReflectionMisc {
 
     fun getViewedFleetInFleetPanel(
     ): FleetDataAPI? {
-        val campaignUI = Global.getSector().campaignUI
+        val campaignUI = Global.getSector()?.campaignUI ?: return null
 
         if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
             val fleetPanel = getFleetPanel() ?: return null
@@ -303,7 +315,7 @@ object ReflectionMisc {
 
     fun getSelectedSubmarket(
     ): SubmarketAPI? {
-        val campaignUI = Global.getSector().campaignUI
+        val campaignUI = Global.getSector()?.campaignUI ?: return null
 
         if (campaignUI.isShowingDialog) {
             if (campaignUI.getActualCurrentTab() == CoreUITabId.FLEET) {
@@ -344,17 +356,9 @@ object ReflectionMisc {
     }
 
     fun updateFleetPanelContents() {
-        if (Global.getSector().campaignUI?.getActualCurrentTab() != CoreUITabId.FLEET) return
+        if (Global.getSector()?.campaignUI?.getActualCurrentTab() != CoreUITabId.FLEET) return
 
-        var fleetPanel: UIPanelAPI? = null
-        try {
-            val fleetTab = getFleetTab()
-            if (fleetTab != null) {
-                fleetPanel = fleetTab.safeInvoke(name = "getFleetPanel") as? UIPanelAPI // This is more safe
-            }
-        } catch (_: Exception) {
-        }
-        fleetPanel?.safeInvoke("updateListContents")
+        getFleetPanel()?.safeInvoke("updateListContents")
 
         postUpdateFleetPanelCallbacks.forEach { it.invoke() }
     }

@@ -45,7 +45,7 @@ class CommandIntercept : CommandListener {
         interceptedBy: CommandListener?
     ) {
         if (command.lowercase() == "forcedismissdialog") {
-            if (DialogUtils.forceCloseAllDialogs())
+            if (DialogUtils.forceCloseAllCustomPanels())
                 Console.showMessage("Forcibly closed CustomUIPanel dialog")
 
             if (CampaignUtils.closeCampaignDummyDialog())

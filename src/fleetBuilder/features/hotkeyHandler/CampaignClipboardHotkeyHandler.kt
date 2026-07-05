@@ -74,7 +74,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         event: InputEventAPI,
         ui: CampaignUIAPI
     ) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
+        if (ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
         val tab = ui.getActualCurrentTab() ?: return
         val isCtrlLmb = event.isCtrlDown && event.isLMBDownEvent
@@ -105,7 +105,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             event.consume()
             return
         }
-        if (DialogUtils.isPopUpPanelOpen())
+        if (DialogUtils.isModalPanelOpen())
             return
 
         when {
@@ -120,7 +120,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             ui: CampaignUIAPI,
             event: InputEventAPI?,
         ) {
-            if (ReflectionMisc.isCodexOpen() || DialogUtils.isPopUpPanelOpen()) return
+            if (ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
             val currentTab = ui.getActualCurrentTab()
 

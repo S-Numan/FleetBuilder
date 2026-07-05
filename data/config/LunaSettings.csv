@@ -61,7 +61,7 @@ autofitMenuEnabled,Enable Autofit Menu,Boolean,false,,A custom autofit menu for 
 ,,,,,,,,
 autofitSettingsHeader,Autofit Settings Header,Header,Settings,,,,,Autofit Menu
 replaceVanillaAutofitButton,Replace Vanilla Button,Boolean,true,,"When true, opens this mod’s autofit menu instead of vanilla’s autofit menu when clicking the autofit button.",,,Autofit Menu
-autofitMenuHotkey,Autofit Menu Hotkey,Keycode,47,,"Keybind to open this mod’s autofit menu. Press this keybind in the refit screen to open the autofit menu,.",,,Autofit Menu
+autofitMenuHotkey,Autofit Menu Hotkey,Keycode,47,,Keybind to open this mod’s autofit menu. Press this keybind in the refit screen to open the autofit menu.,,,Autofit Menu
 codexAutofitButton,Codex Autofit Button,Boolean,true,,Adds an autofit button in the codex which opens the autofit menu for the ship you’re looking at.,,,Autofit Menu
 uIHeader,UI Header,Header,UI,,,,,Autofit Menu
 selectorsPerRow,Selectors Per Row,Int,4,,"Amount of autofit loadouts you see per row.
@@ -97,7 +97,7 @@ transponderOffInHyperspace,Transponder Off,Boolean,false,,Turn the transponder o
 displayDerelictRecoveryEarly,Display Derelict Recovery Early,Boolean,false,,"Shows the ship preview earlier during derelict salvage.
 
 Instead of requiring “Consider Special Measures” to view the ship, the preview is available a step earlier when you get the option to salvage it.",,,Misc
-removeOldIntelUpdates,Remove Old Intel Updates,Boolean,false,,Removes codex unlocks and simulator unlocks after a specified number of days has passed since they have appeared.,,,Misc
+removeOldIntelUpdates,Remove Old Intel Updates,Boolean,false,,Remove codex unlocks and simulator unlocks after a specified number of days has passed since they have appeared.,,,Misc
 removeIntelUpdatesAfterXDays,After X Days,Int,120,,"Number of days after an intel unlock has appeared before it will be removed.
 Set this to 0 to remove every intel unlock immediately.",0,1000,Misc
 ,,,,,,,,

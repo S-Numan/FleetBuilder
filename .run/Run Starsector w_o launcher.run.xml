@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Starsector w/o launcher" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.fs.starfarer.StarfarerLauncher" />
+    <module name="FleetBuilder.main" />
+    <option name="VM_PARAMETERS" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 -DlaunchDirect=true -DstartRes=1920x1080 -DstartFS=false -DstartSound=false @devvmparams.txt" />
+    <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/../../" />
+    <method v="2">
+      <option name="MakeProject" enabled="true" />
+    </method>
+  </configuration>
+</component>

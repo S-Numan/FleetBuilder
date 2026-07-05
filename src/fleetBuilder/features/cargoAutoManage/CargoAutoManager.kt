@@ -8,9 +8,9 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.impl.items.BlueprintProviderItem
 import com.fs.starfarer.api.campaign.impl.items.ModSpecItemPlugin
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBTxt
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
 import fleetBuilder.util.api.kotlin.moveItem
 import fleetBuilder.util.api.kotlin.moveStack
@@ -26,7 +26,7 @@ internal class CargoAutoManager : EveryFrameScript {
 
     var interactionMarket: MarketAPI? = null
     override fun advance(amount: Float) {
-        val interaction = Global.getSector().campaignUI.currentInteractionDialog
+        val interaction = Global.getSector()!!.campaignUI.currentInteractionDialog
         val interactionTarget = interaction?.interactionTarget
         val market = interactionTarget?.market
 
@@ -76,7 +76,7 @@ internal class CargoAutoManager : EveryFrameScript {
         item: CargoAutoManage.ItemAutoManage,
         submarket: SubmarketAPI
     ): Boolean {
-        val playerCargo = Global.getSector().playerFleet.cargo
+        val playerCargo = Global.getSector()!!.playerFleet.cargo
 
         var playerItemQuantity = getItemQuantity(item, playerCargo)
 

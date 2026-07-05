@@ -6,8 +6,8 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.ui.trade.CargoItemStack
 import com.fs.starfarer.campaign.ui.trade.CargoStackView
 import com.fs.starfarer.campaign.util.CollectionView
-import fleetBuilder.core.FBMisc.getSpecialItemName
-import fleetBuilder.core.FBTxt
+import fleetBuilder.core.util.FBMisc.getSpecialItemName
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.util.api.CargoUtils
 import fleetBuilder.util.api.kotlin.safeGet

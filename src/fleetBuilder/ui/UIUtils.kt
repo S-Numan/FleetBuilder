@@ -17,6 +17,8 @@ import java.awt.Color
 
 object UIUtils {
 
+    const val SCROLLER_WIDTH = 5f
+
     @JvmOverloads
     fun playSound(id: String, volume: Float = 1f, pitch: Float = 1f) {
         Global.getSoundPlayer().playUISound(id, pitch, volume)
@@ -33,20 +35,44 @@ object UIUtils {
         return t * t * t
     }
 
-    fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color) {
-        drawRectangleFilledForPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width, tooltipMakerAPI.height, alphaMult, uiColor)
+    fun lerp(start: Float, stop: Float, fraction: Float): Float {
+        return start + fraction * (stop - start)
     }
 
-    fun drawRectangleFilledForPos(x: Float, y: Float, w: Float, h: Float, alphaMult: Float, uiColor: Color) {
+    fun lerpColor(from: Color, to: Color, t: Float): Color {
+        val clamped = t.coerceIn(0f, 1f)
+
+        val r = (from.red + (to.red - from.red) * clamped).toInt()
+        val g = (from.green + (to.green - from.green) * clamped).toInt()
+        val b = (from.blue + (to.blue - from.blue) * clamped).toInt()
+        val a = (from.alpha + (to.alpha - from.alpha) * clamped).toInt()
+
+        return Color(r, g, b, a)
+    }
+
+    internal fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color) {
+        drawRectangleFilledForTooltipPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width, tooltipMakerAPI.height, alphaMult, uiColor)
+    }
+
+    internal fun drawRectangleFilledForTooltipPos(
+        x: Float,
+        y: Float,
+        w: Float,
+        h: Float,
+        alphaMult: Float,
+        uiColor: Color
+    ) {
         GL11.glPushMatrix()
         GL11.glDisable(GL11.GL_TEXTURE_2D)
         GL11.glEnable(GL11.GL_BLEND)
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
         GL11.glColor4f(
             uiColor.red / 255f, uiColor.green / 255f, uiColor.blue / 255f,
-            uiColor.alpha / 255f * alphaMult * 23f
+            uiColor.alpha / 255f * alphaMult
         )
-        GL11.glRectf(x, y, x + w, y + h)
+
+        GL11.glRectf(x, y, x + w + 1f, y + h + 1f)
+
         GL11.glColor4f(1f, 1f, 1f, 1f)
         GL11.glPopMatrix()
     }
@@ -60,7 +86,7 @@ object UIUtils {
         renderProgress: Boolean = false,
         progress: Float = 0f
     ) {
-        renderUILines(panel.x, panel.y, panel.width, panel.height, alphaMult, boxColor, progression, widthPadding, renderProgress, progress)
+        renderUILines(panel.x - 1f, panel.y - 1f, panel.width + 1f, panel.height + 1f, alphaMult, boxColor, progression, widthPadding, renderProgress, progress)
     }
 
     fun renderUILines(
@@ -112,7 +138,7 @@ object UIUtils {
         GL11.glPopMatrix()
     }
 
-    private fun drawRectGL(x: Float, y: Float, w: Float, h: Float) {
+    fun drawRectGL(x: Float, y: Float, w: Float, h: Float) {
         GL11.glBegin(GL11.GL_QUADS)
         GL11.glVertex2f(x, y)
         GL11.glVertex2f(x + w, y)
@@ -122,37 +148,21 @@ object UIUtils {
     }
 
     fun darkenBackground(
-        alphaMult: Float,
-        bgColor: Color = Color.BLACK.withAlphaMult(0.6f)
+        alphaMult: Float = 0.6f,
+        aroundPanel: UIPanelAPI,
+        pad: Float = 0f,
+        bgColor: Color = Color.BLACK
     ) {
-        GL11.glPushMatrix()
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-
-        val bgAlpha = bgColor.alphaf * alphaMult
-        GL11.glColor4f(bgColor.redf, bgColor.greenf, bgColor.bluef, bgAlpha)
-
-        val screenW = Global.getSettings().screenWidth
-        val screenH = Global.getSettings().screenHeight
-
-        GL11.glRectf(0f, 0f, screenW, screenH)
-
-        GL11.glDisable(GL11.GL_BLEND)
-        GL11.glPopMatrix()
+        darkenBackground(alphaMult, aroundPanel.x - pad, aroundPanel.y - pad, aroundPanel.width + pad * 2, aroundPanel.height + pad * 2, bgColor)
     }
 
-    fun darkenBackgroundAround(alphaMult: Float, panel: UIPanelAPI, bgColor: Color = Color.BLACK.withAlphaMult(0.6f)) {
-        darkenBackgroundAround(alphaMult, panel.x, panel.y, panel.width, panel.height, bgColor)
-    }
-
-    fun darkenBackgroundAround(
-        alphaMult: Float,
-        x: Float,
-        y: Float,
-        width: Float,
-        height: Float,
-        bgColor: Color = Color.BLACK.withAlphaMult(0.6f)
+    fun darkenBackground(
+        alphaMult: Float = 0.6f,
+        x: Float = 0f,
+        y: Float = 0f,
+        width: Float = 0f,
+        height: Float = 0f,
+        bgColor: Color = Color.BLACK
     ) {
         GL11.glPushMatrix()
         GL11.glDisable(GL11.GL_TEXTURE_2D)
@@ -163,19 +173,26 @@ object UIUtils {
         GL11.glColor4f(bgColor.redf, bgColor.greenf, bgColor.bluef, bgAlpha)
         val screenW = Global.getSettings().screenWidth
         val screenH = Global.getSettings().screenHeight
-        val buffer = -5f
-        val tx = x - buffer
-        val ty = y - buffer
-        val tw = width + buffer * 2
-        val th = height + buffer * 2
-        // Left
-        GL11.glRectf(0f, 0f, tx, screenH)
-        // Right
-        GL11.glRectf(tx + tw, 0f, screenW, screenH)
-        // Top
-        GL11.glRectf(tx, ty + th, tx + tw, screenH)
-        // Bottom
-        GL11.glRectf(tx, 0f, tx + tw, ty)
+
+        // Full screen darken
+        if (width <= 0f || height <= 0f) {
+            GL11.glRectf(0f, 0f, screenW, screenH)
+        } else {
+            val buffer = -5f
+            val tx = x - buffer
+            val ty = y - buffer
+            val tw = width + buffer * 2
+            val th = height + buffer * 2
+
+            // Left
+            GL11.glRectf(0f, 0f, tx, screenH)
+            // Right
+            GL11.glRectf(tx + tw, 0f, screenW, screenH)
+            // Top
+            GL11.glRectf(tx, ty + th, tx + tw, screenH)
+            // Bottom
+            GL11.glRectf(tx, 0f, tx + tw, ty)
+        }
 
         GL11.glDisable(GL11.GL_BLEND)
         GL11.glPopMatrix()

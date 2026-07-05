@@ -13,12 +13,12 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
-import fleetBuilder.core.FBConst
-import fleetBuilder.core.FBMisc.sModHandlerTemp
-import fleetBuilder.core.FBSettings
-import fleetBuilder.core.FBTxt.txt
-import fleetBuilder.core.FBTxt.txtPlural
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.util.FBMisc.sModHandlerTemp
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.FBTxt.txt
+import fleetBuilder.core.util.FBTxt.txtPlural
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectory
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
@@ -31,7 +31,7 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.ui.customPanel.common.DialogPanel
+import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.ReflectionMisc
@@ -570,7 +570,7 @@ internal object AutofitPanel {
                     applySModsButton.enabled = false
                     applySModsButton.isEnabled = false
                 }
-                
+
             }
 
             // Add the buttons element to the panel

@@ -47,6 +47,8 @@ object CargoUtils {
      */
     @JvmStatic
     fun getFractionHoldableSupplies(cargo: CargoAPI, maxCargoFraction: Float = 1f): Int {
+        val sector = Global.getSector() ?: return 0
+
         var total = Math.min(
             cargo.getSpaceLeft(),
             Math.max(
@@ -56,7 +58,7 @@ object CargoUtils {
         ).toInt()
 
         // Adjust for cargo space supplies take up (if modded, only use 1 in vanilla)
-        val spacePerSupply = Global.getSector().economy
+        val spacePerSupply = sector.economy
             .getCommoditySpec("supplies").cargoSpace
         if (spacePerSupply > 0)
             total = (total / spacePerSupply).toInt()

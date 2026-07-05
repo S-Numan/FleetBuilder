@@ -6,7 +6,7 @@ import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import com.fs.starfarer.campaign.fleet.FleetMemberStatus
-import fleetBuilder.core.displayMessage.DisplayMessage
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.recentBattles.fleetDirectory.RBFleetDirectoryService
 import fleetBuilder.serialization.fleet.FleetSettings
 
