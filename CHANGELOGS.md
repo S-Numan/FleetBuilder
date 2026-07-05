@@ -1,6 +1,7 @@
 # 1.40.0
 ### Additions
 - Save Transfers now save and load all cargo from every player owned storage.
+    * Every separate player owned storage is saved separately and loaded in as individual cargo pods. Any organization you've done will be kept.
 ### Changes
 - A large amount of miscellaneous internal changes.
 ### Bugfixes
