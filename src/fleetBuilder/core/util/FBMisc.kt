@@ -39,6 +39,18 @@ internal object FBMisc {
         }
     }
 
+    inline fun <T> profileSection(name: String, block: () -> T): T {
+        val start = System.nanoTime()
+        try {
+            return block()
+        } finally {
+            val timeMs = (System.nanoTime() - start) / 1_000_000.0
+            val paddedName = name.padEnd(40) // adjust width as needed
+            Global.getLogger(this.javaClass)
+                .warn("$paddedName took ${"%8.3f".format(timeMs)} ms")
+        }
+    }
+
     fun isConsoleOpen(): Boolean {
         if (!FBSettings.isConsoleModEnabled)
             return false
