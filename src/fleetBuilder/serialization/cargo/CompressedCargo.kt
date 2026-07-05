@@ -4,6 +4,9 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
+import com.fs.starfarer.api.campaign.impl.items.FighterBlueprintItemPlugin
+import com.fs.starfarer.api.campaign.impl.items.MultiBlueprintItemPlugin
+import com.fs.starfarer.api.campaign.impl.items.ShipBlueprintItemPlugin
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.serialization.MissingContentExtended
@@ -66,21 +69,30 @@ object CompressedCargo {
                 CargoAPI.CargoItemType.SPECIAL -> {
                     val special = stack.specialDataIfSpecial ?: continue
 
-                    val errorResult = runCatching {
-                        templateCargo.removeEmptyStacks()
-                        templateCargo.addSpecial(SpecialItemData(special.id, special.data), 1f)
-                        val scroller = Global.getSettings().createCustom(800f, 800f, null).createUIElement(800f, 800f, false)
-                        templateCargo.stacksCopy.last().plugin.createTooltip(scroller, true, null, true)
+                    if (special.id == "wormhole_anchor" || special.id == "wormhole_scanner") {
+                        failedToSaveItems.add("Name: '${stack.specialItemSpecIfSpecial?.name}'   ID/DATA:(${special.id}, ${special.data})\nSkipped: wormhole items cannot be tooltip-validated\n")
+                        continue
                     }
 
-                    if (errorResult.isSuccess && special.id != "wormhole_anchor" && special.id != "wormhole_scanner"
-                        || (errorResult.exceptionOrNull()?.message?.contains("Parameter specified as non-null is null") == true && errorResult.exceptionOrNull()?.message?.contains("parameter transferHandler") == true)
-                    // Hack to sorta fix transferHandler being null causing throwing the error. If that is true, just skip it! If it got that far, it's proooobably fine. Don't quote me on that.
-                    ) {
+                    if (stack.plugin is MultiBlueprintItemPlugin || stack.plugin is ShipBlueprintItemPlugin || stack.plugin is FighterBlueprintItemPlugin) {
+                        // Skip expensive tooltip checks for things that are already known to be probably safe
                         Triple("SPECIAL", special.id, special.data)
                     } else {
-                        failedToSaveItems.add("Name: '${stack.specialItemSpecIfSpecial?.name}'   ID/DATA:(${special.id}, ${special.data})\n${errorResult.exceptionOrNull()?.message}\n")
-                        continue
+                        val errorResult = runCatching {
+                            templateCargo.removeEmptyStacks()
+                            templateCargo.addSpecial(SpecialItemData(special.id, special.data), 1f)
+                            val scroller = Global.getSettings().createCustom(800f, 800f, null).createUIElement(800f, 800f, false)
+                            templateCargo.stacksCopy.last().plugin.createTooltip(scroller, true, null, true)
+                        }
+                        if (errorResult.isSuccess
+                            || (errorResult.exceptionOrNull()?.message?.contains("Parameter specified as non-null is null") == true && errorResult.exceptionOrNull()?.message?.contains("parameter transferHandler") == true)
+                        // Hack to sorta fix transferHandler being null causing throwing the error. If that is true, just skip it! If it got that far, it's proooobably fine. Don't quote me on that.
+                        ) {
+                            Triple("SPECIAL", special.id, special.data)
+                        } else {
+                            failedToSaveItems.add("Name: '${stack.specialItemSpecIfSpecial?.name}'   ID/DATA:(${special.id}, ${special.data})\n${errorResult.exceptionOrNull()?.message}\n")
+                            continue
+                        }
                     }
                 }
 
