@@ -1,4 +1,8 @@
 # 1.40.0
+### Additions
+- Save Transfers now save and load all cargo from every player owned storage.
+### Changes
+- A large amount of miscellaneous internal changes.
 ### Bugfixes
 - Stop 'Loading JSON from ...' log spam
 

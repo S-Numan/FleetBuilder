@@ -419,6 +419,7 @@ internal object FBMisc {
     }
 
     // Untested
+    /*
     fun getIntelOfClass(c: Class<*>): IntelInfoPlugin? {
         val sector = Global.getSector() ?: return null
         try {
@@ -429,6 +430,7 @@ internal object FBMisc {
         }
         return sector.intelManager.getFirstIntel(c)
     }
+    */
 
     // Untested
     fun getIntelByName(name: String?): IntelInfoPlugin? {

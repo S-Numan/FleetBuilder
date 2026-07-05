@@ -60,8 +60,6 @@ object HullUtils {
     /**
      * Creates a ShipVariantAPI for a given ShipHullSpecAPI.
      *
-     * Remember to change the source of the variant to VariantSource.REFIT if you don't want the variant to be forgotten between save games.
-     *
      * This function exists because createEmptyVariant does not create modules.
      *
      * @param hull The hull spec for which to create a variant
@@ -85,7 +83,7 @@ object HullUtils {
                             Global.getLogger(javaClass).warn("Could not find ideal match when getting Hull Variant with hullId '${hull.hullId}' and effectiveId '${hull.getEffectiveHullId()}'")
                             hullVariants.firstOrNull() // Cannot find a good enough match, just go for whatever
                         }
-                }?.clone()
+                }?.clone()?.apply { source = null }
         } ?: runCatching {
             val emptyVariant = Global.getSettings().createEmptyVariant(hull.hullId, hull)
             Global.getLogger(javaClass).warn(

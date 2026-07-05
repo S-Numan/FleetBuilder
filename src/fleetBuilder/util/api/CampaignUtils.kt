@@ -28,6 +28,7 @@ object CampaignUtils {
      *
      * This function checks if the player is in a ghost interaction dialog and if so, returns null, indicating that the player is not in a CoreUITab]
      */
+    @JvmStatic
     fun getActualCurrentTab(ui: CampaignUIAPI): CoreUITabId? {
         val sector = Global.getSector() ?: return null
         if (!sector.isPaused) return null
@@ -44,6 +45,7 @@ object CampaignUtils {
      * Calculates how many days of supply the player has left, accounting for repairs and recovery.
      * @return days of supply
      */
+    @JvmStatic
     fun getPlayerSupplyDays(): Float {
         // Calculate days of supply remaining
         val playerFleet = Global.getSector()?.playerFleet ?: return 0f
@@ -79,6 +81,7 @@ object CampaignUtils {
      * Calculates how far the player's fleet can travel, minus amount needed to jump to hyper if in-system.
      * @return distance in lightyears
      */
+    @JvmStatic
     fun getPlayerFuelLY(): Float {
         // Calculate lightyears of fuel remaining
         val playerFleet = Global.getSector()?.playerFleet ?: return 0f
@@ -87,7 +90,7 @@ object CampaignUtils {
             playerFleet.cargo.fuel / fuelPerDay
         else
             (playerFleet.cargo.fuel - fuelPerDay) / fuelPerDay
-        // TODO multiple by overburn? Actual speed is a setting!
+        // multiple by overburn? Actual speed is a setting!
         return ly.coerceAtLeast(0f)
     }
 

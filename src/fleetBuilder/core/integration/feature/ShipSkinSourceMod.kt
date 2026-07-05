@@ -24,6 +24,8 @@ internal object ShipSkinSourceMod {
 
         if (count > 0)
             Global.getLogger(this.javaClass).info("Set modded ship skins source mods for $count hulls.")
+        else
+            Global.getLogger(this.javaClass).info("None present, no changes made.")
     }
 
     fun getSourceModFromSkin(hullId: String?): ModSpecAPI? {

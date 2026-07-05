@@ -301,6 +301,8 @@ object VariantUtils {
 
         if (!tempVariant.hasTag(FBConst.VARIANT_MADE_IN_ERROR))
             tempVariant.addTag(FBConst.VARIANT_MADE_IN_ERROR)
+        
+        tempVariant.source = null
 
         return tempVariant
     }

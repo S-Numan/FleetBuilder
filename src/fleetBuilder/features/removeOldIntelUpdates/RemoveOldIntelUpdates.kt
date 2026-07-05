@@ -19,7 +19,7 @@ class RemoveOldIntelUpdates : EveryFrameScript {
 
     override fun runWhilePaused(): Boolean = true
     override fun advance(amount: Float) {
-        val sector = Global.getSector()!!
+        val sector = Global.getSector() ?: return
 
         val maxDays = FBSettings.removeIntelUpdatesAfterXDays
 

@@ -1604,10 +1604,10 @@ object HotkeyHandlerDialogs {
         val buttonHeight = 24f
 
         initialDialog.show(width, height) { ui ->
-            ui.addPara(FBTxt.txt("max_level"), 0f)
+            ui.addPara(FBTxt.txt("max_level"), -4f)
             val maxLevel = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
-            ui.addPara(FBTxt.txt("max_elite_skills"), 0f)
+            ui.addPara(FBTxt.txt("max_elite_skills"), 4f)
             val maxEliteSkills = ui.addNumericTextField(ui.width, buttonHeight, font = Fonts.DEFAULT_SMALL, initialValue = null, maxValue = officerSkillCount)
 
             ui.addSpacer(buttonHeight / 3)
