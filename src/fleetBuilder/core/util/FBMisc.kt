@@ -39,7 +39,7 @@ internal object FBMisc {
         }
     }
 
-    inline fun <T> profileSection(name: String, block: () -> T): T {
+    inline fun <T> profileSection(name: String = "Unnamed", block: () -> T): T {
         val start = System.nanoTime()
         try {
             return block()
@@ -47,7 +47,7 @@ internal object FBMisc {
             val timeMs = (System.nanoTime() - start) / 1_000_000.0
             val paddedName = name.padEnd(40) // adjust width as needed
             Global.getLogger(this.javaClass)
-                .warn("$paddedName took ${"%8.3f".format(timeMs)} ms")
+                .error("$paddedName took ${"%8.3f".format(timeMs)} ms")
         }
     }
 
