@@ -21,6 +21,7 @@ import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.config.FBSettings.randomPastedCosmetics
+import fleetBuilder.core.integration.plugin.FleetBuilderPlugin
 import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.DisplayMessage.showMessage
 import fleetBuilder.core.util.FBTxt
@@ -65,7 +66,7 @@ internal object ClipboardHotkeyHandlerUtils {
             block()
         } catch (e: Exception) {
             DisplayMessage.showError(
-                FBTxt.txt("mod_hotkey_failed", FBSettings.getModName()),
+                FBTxt.txt("mod_hotkey_failed", FleetBuilderPlugin.getModName()),
                 e
             )
         }
@@ -74,7 +75,7 @@ internal object ClipboardHotkeyHandlerUtils {
     fun requireCheatsOrWarn(): Boolean {
         if (!FBSettings.cheatsEnabled()) {
             showMessage(
-                FBTxt.txt("enable_cheats_to_use", FBSettings.getModName()),
+                FBTxt.txt("enable_cheats_to_use", FleetBuilderPlugin.getModName()),
                 Color.YELLOW
             )
             return false
@@ -405,7 +406,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
                     else -> {
                         showMessage(
-                            FBTxt.txt("enable_unassign_player", FBSettings.getModName()),
+                            FBTxt.txt("enable_unassign_player", FleetBuilderPlugin.getModName()),
                             Color.YELLOW
                         )
                     }

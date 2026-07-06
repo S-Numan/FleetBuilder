@@ -3,6 +3,8 @@ package fleetBuilder.core.config
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 
 object FBConst {
+    const val PREFIX = "FTK" //TODO: Replace all 'FB' with '$PREFIX'
+
     const val PRIMARY_DIR = "FleetBuilder/"
     const val LOADOUT_DIR = (PRIMARY_DIR + "LoadoutPacks/")
     const val FLEET_DIR = (PRIMARY_DIR + "Fleets/")

@@ -180,11 +180,13 @@ object HotkeyHandlerDialogs {
                     openFileViewPanel()
 
 
-                    val member = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
-                    val memberMemory = member.getMemberMemory()
+                    val member = ReflectionMisc.getCurrentMemberInRefitTab()
+                    if (member != null) {
+                        val memberMemory = member.getMemberMemory()
 
-                    if (!memberMemory.contains("\$test"))
-                        memberMemory.set("\$test", true)
+                        if (!memberMemory.contains("\$test"))
+                            memberMemory.set("\$test", true)
+                    }
 
 
                     //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)

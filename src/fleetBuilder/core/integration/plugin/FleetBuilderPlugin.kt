@@ -1,9 +1,20 @@
 package fleetBuilder.core.integration.plugin
 
 import com.fs.starfarer.api.BaseModPlugin
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.ModSpecAPI
 import fleetBuilder.core.integration.listener.EventDispatcher
 
 class FleetBuilderPlugin : BaseModPlugin() {
+
+    companion object {
+        private var modSpec = Global.getSettings().modManager.enabledModsCopy.find { it.modPluginClassName == javaClass.enclosingClass.name }!!
+
+        fun getModSpec(): ModSpecAPI = modSpec
+        fun getModName(): String = modSpec.name.trim()
+        fun getModID(): String = modSpec.id
+    }
+
     override fun onApplicationLoad() {
         EventDispatcher.onApplicationLoad()
     }

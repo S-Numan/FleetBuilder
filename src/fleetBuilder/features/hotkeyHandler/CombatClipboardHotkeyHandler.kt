@@ -12,14 +12,15 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.input.InputEventType
 import com.fs.starfarer.api.mission.FleetSide
 import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.integration.plugin.FleetBuilderPlugin
 import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.util.ReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
@@ -52,7 +53,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                                 event.consume(); continue
                             }
                         } catch (e: Exception) {
-                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", FBSettings.getModName()), e)
+                            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", FleetBuilderPlugin.getModName()), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
                         if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isModalPanelOpen() && !ReflectionMisc.isCodexOpen()) {

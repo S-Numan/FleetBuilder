@@ -1,8 +1,6 @@
 package fleetBuilder.core.config
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.ModSpecAPI
-import fleetBuilder.core.integration.plugin.FleetBuilderPlugin
 import fleetBuilder.core.config.FBSettings.cheatsEnabled
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.api.kotlin.containsString
@@ -13,8 +11,6 @@ import org.lwjgl.input.Keyboard
 
 object FBSettings {
     fun onApplicationLoad() {
-        modSpec = Global.getSettings().modManager.enabledModsCopy.find { it.modPluginClassName == FleetBuilderPlugin::class.java.name }!!
-
         if (Global.getSettings().modManager.isModEnabled("lunalib") && !LunaSettings.hasSettingsListenerOfClass(LunaSettingsListener::class.java))
             LunaSettings.addSettingsListener(LunaSettingsListener())
 
@@ -68,11 +64,6 @@ object FBSettings {
             includeVariantID = true
         }
     }
-
-    private lateinit var modSpec: ModSpecAPI
-    fun getModSpec(): ModSpecAPI = modSpec
-    fun getModName(): String = modSpec.name.trim()
-    fun getModID(): String = modSpec.id
 
     var selectorsPerRow = 4
 

@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.CampaignEngine
-import fleetBuilder.core.config.FBSettings
+import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.serialization.PlayerSaveUtils
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.kotlin.getModules
@@ -20,23 +20,16 @@ internal object MakeSaveRemovable {
 
     private lateinit var hullmods: List<Thing>
 
-    var entitiesWithThing: List<MakeSaveRemovable.HasThing>? = null
-    var sectorMarkets: List<MarketAPI>? = null
+    //var entitiesWithThing: List<MakeSaveRemovable.HasThing>? = null
 
     fun beforeGameSave() {
         try {
-            sectorMarkets = CampaignUtils.getSectorMarkets()
-            if (sectorMarkets != null) {
-                for (market in sectorMarkets) {
-                    if (market.primaryEntity.hasScriptOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java)) {
-                        market.primaryEntity.removeScriptsOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java)
-                    }
-                }
-            }
+            CommanderShuttle.beforeGameSave()
+            PlayerSaveUtils.beforeGameSave()
 
-            clearMemoryKeys()
-            entitiesWithThing = getEntitiesWithThings()
-            entitiesWithThing?.forEach { processBeforeSave(it) }
+            /*clearMemoryKeys()
+            entitiesWithThing = getEntitiesWithThings(CampaignUtils.getSectorMarkets())
+            entitiesWithThing?.forEach { processBeforeSave(it) }*/
         } catch (e: Exception) {
             Global.getLogger(this.javaClass).error("Failed to process before game save", e)
         }
@@ -44,35 +37,29 @@ internal object MakeSaveRemovable {
 
     fun afterGameSave() {
         try {
-            if (sectorMarkets != null) {
-                for (market in sectorMarkets) {
-                    if (market.memoryWithoutUpdate.contains("\$FTK_SaveTransferStation")) {
-                        market.primaryEntity.addScript(PlayerSaveUtils.RemoveEmptyStation(market.primaryEntity))
-                    }
-                }
-            }
+            PlayerSaveUtils.afterGameSave()
+            CommanderShuttle.afterGameSave()
 
-            entitiesWithThing?.forEach { processAfterSave(it) }
+            /*entitiesWithThing?.forEach { processAfterSave(it) }
             clearMemoryKeys()
 
-            entitiesWithThing = null
-            sectorMarkets = null
+            entitiesWithThing = null*/
         } catch (e: Exception) {
             Global.getLogger(this.javaClass).error("Failed to process after game save", e)
         }
     }
 
     fun onGameLoad() {
-        val mutableHullMods: MutableList<Thing> = mutableListOf()
+        /*val mutableHullMods: MutableList<Thing> = mutableListOf()
 
-        Global.getSettings().allHullModSpecs.forEach { mod ->
-            if (mod.sourceMod != null && mod.sourceMod.id == FBSettings.getModID()) {//Hullmod is from this mod?
-                mutableHullMods.add(Thing(mod.id, "$${mod.id}"))//Add it for removal
+        Global.getSettings().allHullModSpecs.forEach { hullMod ->
+            if (hullMod.sourceMod != null && hullMod.sourceMod.id == FleetBuilderPlugin.getModID()) {//Hullmod is from this mod?
+                mutableHullMods.add(Thing(hullMod.id, "$${hullMod.id}"))//Add it for removal
             }
         }
         hullmods = mutableHullMods
 
-
+        entitiesWithThing = getEntitiesWithThings(CampaignUtils.getSectorMarkets())*/
         afterGameSave()
     }
 
@@ -105,10 +92,10 @@ internal object MakeSaveRemovable {
         }
     }
 
-    private fun getEntitiesWithThings(): List<HasThing> {
+    private fun getEntitiesWithThings(markets: List<MarketAPI>): List<HasThing> {
         val locations = Global.getSector()!!.allLocations
 
-        val submarkets = CampaignUtils.getSubmarkets(sectorMarkets!!)
+        val submarkets = CampaignUtils.getSubmarkets(markets)
         val cargos = CampaignUtils.getCargoFromSubmarkets(submarkets)
 
         val fleetMembers = listOf(

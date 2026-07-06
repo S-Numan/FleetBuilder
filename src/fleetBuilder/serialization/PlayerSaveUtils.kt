@@ -51,11 +51,43 @@ object PlayerSaveUtils {
             interval.advance(days)
             if (!interval.intervalElapsed()) return
 
+            if (!station.isVisibleToPlayerFleet) return
+
             val storage = station.market?.getStorageCargo() ?: return
             if (storage.isEmpty && (storage.mothballedShips == null || storage.mothballedShips.numMembers == 0)) {
                 isEmpty = true
                 station.containingLocation.removeEntity(station)
+
+                @Suppress("UNCHECKED_CAST")
+                val saveTransferStations = Global.getSector().persistentData["FTK_SaveTransferStations"] as? MutableSet<String>
+                    ?: run { Global.getLogger(this.javaClass).warn("Null data that should not be null"); mutableSetOf() }
+
+                saveTransferStations.remove(station.id)
+                if (saveTransferStations.isEmpty())
+                    Global.getSector().persistentData.remove("FTK_SaveTransferStations")
+                else
+                    Global.getSector().persistentData["FTK_SaveTransferStations"] = saveTransferStations
             }
+        }
+    }
+
+    internal fun beforeGameSave() {
+        @Suppress("UNCHECKED_CAST")
+        val saveTransferStations = Global.getSector().persistentData["FTK_SaveTransferStations"] as? MutableSet<String>
+        saveTransferStations?.forEach { entityID ->
+            val entity = Global.getSector().getEntityById(entityID) ?: return@forEach
+            if (entity.hasScriptOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java))
+                entity.removeScriptsOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java)
+        }
+    }
+
+    internal fun afterGameSave() {
+        @Suppress("UNCHECKED_CAST")
+        val saveTransferStations = Global.getSector().persistentData["FTK_SaveTransferStations"] as? MutableSet<String>
+        saveTransferStations?.forEach { entityID ->
+            val entity = Global.getSector().getEntityById(entityID) ?: return@forEach
+            if (!entity.hasScriptOfClass(PlayerSaveUtils.RemoveEmptyStation::class.java))
+                entity.addScript(PlayerSaveUtils.RemoveEmptyStation(entity))
         }
     }
 
@@ -94,13 +126,17 @@ object PlayerSaveUtils {
                 val markets = CampaignUtils.getSectorMarkets()
                 val checkedStorages = mutableSetOf<CargoAPI>()
 
+                @Suppress("UNCHECKED_CAST")
+                val saveTransferStations = sector.persistentData["FTK_SaveTransferStations"] as? MutableSet<String>
+
                 val marketsArray = JSONArray()
                 for (market in markets) {
                     //if (market.isHidden)
                     //    continue
                     //if (market.surveyLevel != MarketAPI.SurveyLevel.SEEN && market.surveyLevel != MarketAPI.SurveyLevel.FULL)
                     //    continue
-                    if (market.memoryWithoutUpdate.getBoolean("\$FTK_SaveTransferStation"))
+
+                    if (saveTransferStations?.contains(market.primaryEntity.id) == true)
                         continue
                     if (market.memoryWithoutUpdate.isEmpty)
                         continue
@@ -668,11 +704,14 @@ object PlayerSaveUtils {
         }
 
         try {
-            val markets = CampaignUtils.getSectorMarkets()
-            markets.toList().forEach {
-                if (it.memoryWithoutUpdate.contains("\$FTK_SaveTransferStation"))
-                    it.primaryEntity.containingLocation.removeEntity(it.primaryEntity)
+            @Suppress("UNCHECKED_CAST")
+            val saveTransferStations = sector.persistentData["FTK_SaveTransferStations"] as? MutableSet<String>
+            saveTransferStations?.forEach {
+                val entity = Global.getSector().getEntityById(it)
+                entity.containingLocation.removeEntity(entity)
             }
+            sector.persistentData.remove("FTK_SaveTransferStations")
+
             if (handleSubmarketCargo && compiled.marketCargos != null) {
                 // Remove all previous save transfer stations.
 
@@ -688,7 +727,11 @@ object PlayerSaveUtils {
                         entity.name = name
                         MagicCampaign.placeOnStableOrbit(entity, true)
 
-                        market.memoryWithoutUpdate.set("\$FTK_SaveTransferStation", true)
+                        @Suppress("UNCHECKED_CAST")
+                        val saveTransferStations = sector.persistentData["FTK_SaveTransferStations"] as? MutableSet<String> ?: mutableSetOf()
+                        saveTransferStations.add(entity.id)
+                        sector.persistentData["FTK_SaveTransferStations"] = saveTransferStations
+                        entity.addScript(RemoveEmptyStation(entity))
 
                         val cargo = market.getSubmarket(Submarkets.SUBMARKET_STORAGE).cargo
                         submarketCargo.cargo?.let { cargo.addAll(it) }
@@ -699,8 +742,6 @@ object PlayerSaveUtils {
                             }
                             cargo.mothballedShips.addFleetMember(it)
                         }
-
-                        entity.addScript(RemoveEmptyStation(entity))
                     }
                 }
             }

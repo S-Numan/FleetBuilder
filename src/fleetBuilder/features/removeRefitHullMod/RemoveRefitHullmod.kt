@@ -10,8 +10,9 @@ import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.config.FBSettings
-import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.integration.plugin.FleetBuilderPlugin
 import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
@@ -105,7 +106,7 @@ internal class RemoveRefitHullmod : CampaignInputListener {
             }
 
         } catch (e: Exception) {
-            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", FBSettings.getModName()), e)
+            DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", FleetBuilderPlugin.getModName()), e)
         }
     }
 

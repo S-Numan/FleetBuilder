@@ -194,8 +194,6 @@ internal class EventDispatcher : EveryFrameScript {
         fun beforeGameSave() {
             // This would be a very bad place for the game to crash, so try to catch the crash even if it isn't needed.
             try {
-                CommanderShuttle.beforeGameSave()
-
                 MakeSaveRemovable.beforeGameSave()
             } catch (e: Exception) {
                 Global.getLogger(this.javaClass).error("Error in beforeGameSave", e)
@@ -209,8 +207,6 @@ internal class EventDispatcher : EveryFrameScript {
 
         fun afterGameSave() {
             MakeSaveRemovable.afterGameSave()
-
-            CommanderShuttle.afterGameSave()
 
             if (FBSettings.backupSave)
                 SaveBackupManager.createBackup()

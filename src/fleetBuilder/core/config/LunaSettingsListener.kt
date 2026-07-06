@@ -1,6 +1,7 @@
 package fleetBuilder.core.config
 
 import fleetBuilder.core.integration.listener.EventDispatcher
+import fleetBuilder.core.integration.plugin.FleetBuilderPlugin
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import fleetBuilder.util.LookupUtils
 import lunalib.lunaSettings.LunaSettings
@@ -8,11 +9,11 @@ import lunalib.lunaSettings.LunaSettingsListener
 
 internal class LunaSettingsListener : LunaSettingsListener {
     init {
-        settingsChanged(FBSettings.getModID())
+        settingsChanged(FleetBuilderPlugin.getModID())
 
         //Only happens once
 
-        val _defaultPrefix = LunaSettings.getString(FBSettings.getModID(), "defaultPrefix")!!
+        val _defaultPrefix = LunaSettings.getString(FleetBuilderPlugin.getModID(), "defaultPrefix")!!
 
         if (ShipDirectoryService.generatePrefixes().contains(_defaultPrefix))
             FBSettings.defaultPrefix = _defaultPrefix
@@ -21,7 +22,7 @@ internal class LunaSettingsListener : LunaSettingsListener {
 
     //Gets called whenever settings are saved in the campaign or the main menu.
     override fun settingsChanged(modID: String) {
-        if (modID != FBSettings.getModID())
+        if (modID != FleetBuilderPlugin.getModID())
             return
 
         val featuresDisabled = LunaSettings.getBoolean(modID, "featuresDisabled")!!
