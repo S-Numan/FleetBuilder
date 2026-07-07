@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import fleetBuilder.core.config.FBConst.PRIMARY_DIR
-import fleetBuilder.core.util.FBMisc.jsonArrayToList
+import fleetBuilder.util.api.JSONUtils.jsonToList
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -70,7 +70,7 @@ internal object CargoAutoManage {
             cargoAutoManagerPoliciesJSON.put("policies", JSONArray())
         }
         @Suppress("UNCHECKED_CAST")
-        val cargoAutoManagerPoliciesTemp = jsonArrayToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
+        val cargoAutoManagerPoliciesTemp = jsonToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
         return cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it) }.sortedBy { it.orderInList }.toMutableList()
     }
 

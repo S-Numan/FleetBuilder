@@ -175,19 +175,6 @@ fun UIPanelAPI.addExcludeTextField(
 }
 
 /**
- * Sets the color properties of a Color object. Any unset/null parameters will be unchanged
- *
- * @param red The new red value for the color (optional).
- * @param green The new green value for the color (optional).
- * @param blue The new blue value for the color (optional).
- * @param alpha The new alpha value for the color (optional).
- * @return A new Color object with the specified color properties.
- */
-fun Color.setColor(red: Int? = null, green: Int? = null, blue: Int? = null, alpha: Int? = null): Color {
-    return Color(red ?: this.red, green ?: this.green, blue ?: this.blue, alpha ?: this.alpha)
-}
-
-/**
  * Creates a new Color object with the same RGB values as the original color, but with the alpha value scaled by the provided multiplier.
  *
  * @param alphaMult The multiplier to apply to the original alpha value. Must be between 0 and 1 (inclusive).

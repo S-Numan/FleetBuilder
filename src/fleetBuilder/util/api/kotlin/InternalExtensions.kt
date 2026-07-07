@@ -97,7 +97,7 @@ internal fun Any.safeGet(name: String? = null, type: Class<*>? = null, searchSup
     return null
 }
 
-fun Any.safeSet(name: String? = null, value: Any?, searchSuperclass: Boolean = false) {
+internal fun Any.safeSet(name: String? = null, value: Any?, searchSuperclass: Boolean = false) {
     val valueType = value?.let { it::class.javaPrimitiveType ?: it::class.java }
     val reflectedFields = this.getFieldsMatching(name, fieldAccepts = valueType, searchSuperclass = searchSuperclass)
     if (reflectedFields.isEmpty())

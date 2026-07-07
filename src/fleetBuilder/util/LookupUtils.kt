@@ -5,27 +5,30 @@ import com.fs.starfarer.api.characters.SkillSpecAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipSystemSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.loading.FighterWingSpecAPI
 import com.fs.starfarer.api.loading.HullModSpecAPI
 import com.fs.starfarer.api.loading.WeaponSpecAPI
 import fleetBuilder.core.config.FBSettings
-import fleetBuilder.util.api.VariantUtils.createErrorVariant
 import fleetBuilder.util.api.kotlin.completelyRemoveMod
 import fleetBuilder.util.api.kotlin.getActualHullId
 import fleetBuilder.util.api.kotlin.getCompatibleDLessHullId
 import fleetBuilder.util.api.kotlin.getEffectiveHullId
 
 object LookupUtils {
+    init {
+        setup()
+    }
 
     private lateinit var allDMods: Set<String>
     private lateinit var allHiddenEverywhereMods: Set<String>
-    private lateinit var allVariants: List<ShipVariantAPI>
+
+    //private lateinit var allVariants: List<ShipVariantAPI>
     private lateinit var hullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var effectiveHullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var baseHullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var compatibleDLessHullIDToVariant: Map<String, List<ShipVariantAPI>>
     private lateinit var hullIDSet: Set<String>
-    private lateinit var errorVariantHullID: String
     private lateinit var IDToHullSpec: Map<String, ShipHullSpecAPI>
     private lateinit var IDToWing: Map<String, FighterWingSpecAPI>
     private lateinit var IDToWeapon: Map<String, WeaponSpecAPI>
@@ -39,9 +42,14 @@ object LookupUtils {
     internal fun setup() {
         val settings = Global.getSettings()
 
+        hullIDSet = settings.allShipHullSpecs.map { it.hullId }.toSet()
+
+        if (hullIDSet.isEmpty())
+            Global.getLogger(this.javaClass).error("No hulls found. It is very likely that the '${this.javaClass.name}' object was accessed before onApplicationLoad. Avoid calling ${this.javaClass.name} before onApplicationLoad")
+
         allDMods = settings.allHullModSpecs
             .asSequence()
-            .filter { it.hasTag("dmod") }
+            .filter { it.hasTag(Tags.HULLMOD_DMOD) }
             .map { it.id }
             .toSet()
 
@@ -51,36 +59,6 @@ object LookupUtils {
             .map { it.id }
             .toSet()
 
-        /*
-        //val variantIdMap = settings.hullIdToVariantListMap//Does not contain every variant
-        val tempVariantMap: MutableMap<String, MutableList<ShipVariantAPI>> = mutableMapOf()
-        for (variantId in settings.allVariantIds) {
-            val variant = settings.getVariant(variantId) ?: continue
-            if (variant.source != VariantSource.STOCK) continue
-            val hullId = variant.hullSpec?.getEffectiveHullId() ?: continue
-
-            //Are modules automatically put in every variant?
-            /*variant.moduleSlots.forEach { slot ->
-                val moduleVariant = settings.getVariant(variant.stationModules[slot].orEmpty())
-                if(moduleVariant != null) {
-                    variant.setModuleVariant(slot, moduleVariant)
-                } else {
-                    Global.getLogger(this.javaClass).error("module variant with id ${variant.stationModules[slot]} was null")
-                }
-            }*/
-
-            //getOrPut
-            //Checks if tempVariantMap contains the key hullId.
-            //    If yes: returns the existing list.
-            //    If no: creates a new mutableListOf() and puts it into the map under hullId
-            tempVariantMap.getOrPut(hullId) { mutableListOf() }.add(variant)
-        }
-
-        effectiveVariantMap = tempVariantMap.mapValues { it.value.toList() }
-        */
-
-        hullIDSet = settings.allShipHullSpecs.map { it.hullId }.toSet()
-        errorVariantHullID = createErrorVariant().hullSpec.hullId
         IDToHullSpec = settings.allShipHullSpecs.associateBy { it.hullId }
         IDToWing = settings.allFighterWingSpecs.associateBy { it.id }
         IDToHullMod = settings.allHullModSpecs.associateBy { it.id }
@@ -90,10 +68,10 @@ object LookupUtils {
         IDToShipSystem = settings.allShipSystemSpecs.associateBy { it.id }
 
 
-        allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }
+        val allVariants = settings.allVariantIds.mapNotNull { runCatching { settings.getVariant(it) }.getOrNull() }
 
         if (FBSettings.cleanGameVariantsForRemovedElements && !init) { // Only do this once for performance reasons
-            cleanVariantsForRemovedElements()
+            cleanVariantsForRemovedElements(allVariants)
         }
 
         hullIDToVariant = allVariants.groupBy { it.hullSpec.hullId }
@@ -104,7 +82,7 @@ object LookupUtils {
         init = true
     }
 
-    private fun cleanVariantsForRemovedElements() {
+    private fun cleanVariantsForRemovedElements(allVariants: List<ShipVariantAPI>) {
         Global.getLogger(this.javaClass).info("Cleaning variants for removed weapons, wings, and hull-mods")
         allVariants.forEach { varianty ->
             try {
@@ -179,6 +157,8 @@ object LookupUtils {
 
     @JvmStatic
     fun getHullIDSet(): Set<String> = IDToHullSpec.keys
+
+    @JvmStatic
     fun getFighterWingSpec(wingId: String) = IDToWing[wingId]
 
     @JvmStatic
@@ -218,57 +198,4 @@ object LookupUtils {
 
     @JvmStatic
     fun getShipSystemSpec(systemId: String): ShipSystemSpecAPI? = IDToShipSystem[systemId]
-
-    internal fun getErrorVariantHullID() = errorVariantHullID
-
-    //Is this needed? - Numan
-    //No - Future Numan
-    //fun reportFleetMemberVariantSaved(member: FleetMemberAPI, dockedAt: MarketAPI?) {
-
-    //Here sets the variant ID after a variant is saved.
-
-    /*val idIfNone = makeVariantID(member.variant)
-
-    var matchingVariant: ShipVariantAPI? = null
-
-    for (dir in LoadoutManager.getShipDirectories()) {
-        val hullspecVariants = getLoadoutVariantsForHullspec(dir.prefix, member.variant.hullSpec)
-        for (hullspecVariant in hullspecVariants) {
-            if (compareVariantContents(
-                    member.variant,
-                    hullspecVariant,
-                    CompareOptions(tags = false)
-                )
-            ) {//If the variants are equal
-                matchingVariant = hullspecVariant
-                break
-            }
-        }
-        if (matchingVariant != null)
-            break
-    }
-
-    if (matchingVariant == null) { // If not matching loadout variants
-        matchingVariant = getCoreVariantsForEffectiveHullspec(member.hullSpec).find { candidate -> // Try looking in the base game?
-            compareVariantContents(candidate, member.variant, CompareOptions(tags = false))
-        }
-    }
-
-    member.variant.hullVariantId = when {
-        matchingVariant != null -> {
-            member.variant.moduleSlots.forEach { slot ->
-                member.variant.getModuleVariant(slot).hullVariantId =
-                    matchingVariant.getModuleVariant(slot).hullVariantId
-            }
-            matchingVariant.hullVariantId
-        }
-
-        else -> {
-            member.variant.moduleSlots.forEach { slot ->
-                member.variant.getModuleVariant(slot).hullVariantId = "${idIfNone}_$slot"
-            }
-            idIfNone
-        }
-    }*/
-    //}
 }

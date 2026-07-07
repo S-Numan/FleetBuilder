@@ -12,10 +12,8 @@ import fleetBuilder.core.util.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.completelyRemoveMod
-import fleetBuilder.util.api.kotlin.createHullVariant
-import fleetBuilder.util.api.kotlin.getActualHullId
-import fleetBuilder.util.api.kotlin.getModules
+import fleetBuilder.util.api.kotlin.*
+import org.magiclib.kotlin.getHullIdForVariantId
 
 object DataVariant {
 
@@ -358,7 +356,7 @@ object DataVariant {
         }
 
         val cleanedData = data.copy(
-            hullId = validHullId ?: LookupUtils.getErrorVariantHullID(),
+            hullId = validHullId ?: Global.getSettings().getErrorVariantID().getHullIdForVariantId(),
             //variantId = fixedVariantId,
             displayName = fixedDisplayName,
             hullMods = cleanHullMods.toSet(),

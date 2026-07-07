@@ -170,6 +170,7 @@ object HullUtils {
      *
      * @return removes the _default_D hull suffix
      */
+    @JvmStatic
     fun getActualHullID(
         hullID: String
     ): String {

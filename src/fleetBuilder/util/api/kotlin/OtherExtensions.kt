@@ -58,6 +58,9 @@ fun String.isJSON(): Boolean {
 fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI =
     HullUtils.createHullVariant(hull)
 
+fun SettingsAPI.getErrorVariantID(): String =
+    this.getString("errorShipVariant")
+
 internal inline fun <T> withoutLogging(block: () -> T): T {
     val rootLogger = Logger.getRootLogger()
     val previousLevel = rootLogger.level

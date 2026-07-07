@@ -22,8 +22,9 @@ import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.serialization.person.DataPerson.validateAndCleanPersonData
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.LookupUtils.getErrorVariantHullID
+import fleetBuilder.util.api.kotlin.getErrorVariantID
 import fleetBuilder.util.lib.PrefixedCodec
+import org.magiclib.kotlin.getHullIdForVariantId
 import java.util.*
 
 object DataFleet {
@@ -192,7 +193,7 @@ object DataFleet {
                 missing.add(ourMissing)
                 val name = "ERR:NOVAR"
                 return@mapNotNull validated.copy(
-                    variantData = DataVariant.ParsedVariantData(getErrorVariantHullID(), displayName = name),
+                    variantData = DataVariant.ParsedVariantData(hullId = Global.getSettings().getErrorVariantID().getHullIdForVariantId(), displayName = name),
                     shipName = name
                 )
             }
@@ -207,7 +208,7 @@ object DataFleet {
 
                 val name = "ERR:NOHUL:${variantData.hullId}"
                 return@mapNotNull validated.copy(
-                    variantData = DataVariant.ParsedVariantData(getErrorVariantHullID(), displayName = name),
+                    variantData = DataVariant.ParsedVariantData(hullId = Global.getSettings().getErrorVariantID().getHullIdForVariantId(), displayName = name),
                     shipName = name
                 )
             }

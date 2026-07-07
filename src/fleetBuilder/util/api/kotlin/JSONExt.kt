@@ -1,6 +1,7 @@
 package fleetBuilder.util.api.kotlin
 
 import com.fs.starfarer.api.Global
+import fleetBuilder.util.api.JSONUtils
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -24,3 +25,7 @@ fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
     }
     return list
 }
+
+fun JSONObject.toMap(): Map<String, Any?> = JSONUtils.jsonToMap(this)
+
+fun JSONArray.toList(): List<Any?> = JSONUtils.jsonToList(this)

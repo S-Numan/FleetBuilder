@@ -136,8 +136,6 @@ internal class EventDispatcher : EveryFrameScript {
 
             FBTxt.setup()
 
-            LookupUtils.setup()
-
             if (fixShipSkinSourceMod)
                 ShipSkinSourceMod.setShipSkinSourceMods()
 

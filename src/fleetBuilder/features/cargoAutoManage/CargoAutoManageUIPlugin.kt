@@ -12,7 +12,6 @@ import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.config.FBConst.PRIMARY_DIR
 import fleetBuilder.core.util.DisplayMessage
-import fleetBuilder.core.util.FBMisc.jsonArrayToList
 import fleetBuilder.core.util.FBMisc.listToJsonArray
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromMap
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
@@ -26,6 +25,7 @@ import fleetBuilder.ui.customPanel.core.BasePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.api.JSONUtils.jsonToList
 import fleetBuilder.util.api.kotlin.loadTextureCached
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.json.JSONArray
@@ -386,7 +386,7 @@ internal class CargoAutoManageUIPlugin(
                             cargoAutoManagerPoliciesJSON.put("policies", JSONArray())
                         }
                         @Suppress("UNCHECKED_CAST")
-                        val cargoAutoManagerPoliciesTemp = jsonArrayToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
+                        val cargoAutoManagerPoliciesTemp = jsonToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
                         val cargoAutoManagerPolicies = cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it, true) }.sortedBy { it.orderInList }.toMutableList()
 
 
