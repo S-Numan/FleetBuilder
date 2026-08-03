@@ -4,11 +4,11 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.getMaxOfficerLevel
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.CommandUtils
 import org.lazywizard.console.Console
+import org.magiclib.util.api.kotlin.getMaxOfficerLevel
 import kotlin.math.max
 import kotlin.math.min
 

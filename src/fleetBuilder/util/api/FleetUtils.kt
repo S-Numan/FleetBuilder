@@ -5,7 +5,6 @@ import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.fleet.RepairTrackerAPI
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.addPlayerShuttle
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.playerShuttleExists
 import fleetBuilder.features.commanderShuttle.CommanderShuttle.removePlayerShuttle
@@ -18,11 +17,10 @@ import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.CargoUtils.getFractionHoldableSupplies
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.api.PersonUtils.copyOfficerDataTo
-import fleetBuilder.util.api.kotlin.getAssignedOfficers
 import org.magiclib.kotlin.getMaxOfficers
-import org.magiclib.kotlin.isMercenary
+import org.magiclib.util.api.FleetUtils.repairAndRestoreCR
+import org.magiclib.util.api.kotlin.getAssignedOfficers
 import second_in_command.specs.SCSpecStore
-import kotlin.math.max
 
 object FleetUtils {
 
@@ -55,36 +53,6 @@ object FleetUtils {
         }
 
         return sourceMods
-    }
-
-    @JvmStatic
-    @JvmOverloads
-    fun getUnassignedOfficers(fleet: FleetDataAPI, includeMercenaries: Boolean = true): List<PersonAPI> {
-        return fleet.officersCopy.map { it.person }.filter {
-            fleet.getMemberWithCaptain(it) == null && (includeMercenaries || !it.isMercenary())
-        }
-    }
-
-    @JvmStatic
-    @JvmOverloads
-    fun getAssignedOfficers(fleet: FleetDataAPI, includeMercenaries: Boolean = true): List<PersonAPI> {
-        return fleet.officersCopy.map { it.person }.filter {
-            fleet.getMemberWithCaptain(it) != null && (includeMercenaries || !it.isMercenary())
-        }
-    }
-
-    /**
-     * Repairs all ships in the fleet and restores their CR to maximum
-     */
-    @JvmStatic
-    fun repairAndRestoreCR(fleet: FleetDataAPI) {
-        fleet.membersListCopy.forEach { member ->
-            member.status.repairFully()
-
-            val repairs: RepairTrackerAPI = member.repairTracker
-            repairs.cr = max(repairs.cr, repairs.maxCR)
-            member.setStatUpdateNeeded(true)
-        }
     }
 
     @JvmStatic

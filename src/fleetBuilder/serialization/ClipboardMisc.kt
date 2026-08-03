@@ -7,8 +7,8 @@ import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.codex2.CodexDialog
 import fleetBuilder.core.config.FBConst
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.serialization.fleet.CompressedFleet
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
@@ -29,12 +29,12 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.createHullVariant
 import fleetBuilder.util.lib.ClipboardUtil
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.api.kotlin.createHullVariant
 import java.awt.Color
 
 object ClipboardMisc {
@@ -62,7 +62,7 @@ object ClipboardMisc {
 
         val dataVariant = DataVariant.filterParsedVariantData(variant, settings)//.copy(variantId = VariantUtils.makeVariantID(variant.hullId, variant.displayName))
 
-        if (dataVariant.tags.contains(FBConst.NO_COPY_TAG) || LookupUtils.getHullSpec(dataVariant.hullId)?.hasTag(FBConst.NO_COPY_TAG) == true) {
+        if (dataVariant.tags.contains(FBConst.NO_COPY_TAG) || MagicLookup.getHullSpec(dataVariant.hullId)?.hasTag(FBConst.NO_COPY_TAG) == true) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_no_copy_tag"), Color.YELLOW)
             return false
         }
@@ -148,7 +148,7 @@ object ClipboardMisc {
         else
             member
 
-        if (dataMember.variantData != null && (dataMember.variantData.tags.contains(FBConst.NO_COPY_TAG) || LookupUtils.getHullSpec(dataMember.variantData.hullId)?.hasTag(FBConst.NO_COPY_TAG) == true)) {
+        if (dataMember.variantData != null && (dataMember.variantData.tags.contains(FBConst.NO_COPY_TAG) || MagicLookup.getHullSpec(dataMember.variantData.hullId)?.hasTag(FBConst.NO_COPY_TAG) == true)) {
             DisplayMessage.showMessage(FBTxt.txt("no_copy_no_copy_tag"), Color.YELLOW)
             return false
         }

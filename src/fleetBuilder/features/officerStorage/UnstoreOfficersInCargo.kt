@@ -7,13 +7,13 @@ import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.config.FBSettings
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.DisplayMessage
-import fleetBuilder.util.api.kotlin.getActualCurrentTab
-import fleetBuilder.util.api.kotlin.getAssignedOfficers
+import fleetBuilder.core.util.FBTxt
 import org.lwjgl.input.Mouse
 import org.magiclib.kotlin.getMaxOfficers
 import org.magiclib.kotlin.isMercenary
+import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.kotlin.getAssignedOfficers
 
 internal class UnstoreOfficersInCargo : EveryFrameScript {
     override fun advance(amount: Float) {

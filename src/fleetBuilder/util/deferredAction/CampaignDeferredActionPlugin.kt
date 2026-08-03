@@ -22,7 +22,7 @@ class CampaignDeferredActionPlugin : EveryFrameScript {
         }
 
         // Does not persist on load
-        @JvmOverloads
+        @JvmStatic
         fun performLater(delayInMilli: Float = 0f, action: () -> Unit): TaskHandle {
             val handle = TaskHandle()
             val inst = active ?: return handle
@@ -32,6 +32,7 @@ class CampaignDeferredActionPlugin : EveryFrameScript {
             return handle
         }
 
+        @JvmStatic
         fun performEvery(intervalInMilli: Float, action: (TaskHandle) -> Unit): TaskHandle {
             val handle = TaskHandle()
             val inst = active ?: return handle
@@ -50,10 +51,12 @@ class CampaignDeferredActionPlugin : EveryFrameScript {
             return handle
         }
 
+        @JvmStatic
         fun performOnUnpause(action: () -> Unit) {
             active?.onUnpause?.add(action)
         }
 
+        @JvmStatic
         fun performOnPlayerBattleFinish(action: () -> Unit) {
             active?.onPlayerBattleFinish?.add(action)
         }

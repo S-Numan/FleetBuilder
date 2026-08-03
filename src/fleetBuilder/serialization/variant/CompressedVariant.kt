@@ -2,8 +2,8 @@ package fleetBuilder.serialization.variant
 
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.DisplayMessage.showError
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
@@ -14,12 +14,12 @@ import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.HullUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.getBuiltInDMods
 import fleetBuilder.util.api.kotlin.toBinary
 import fleetBuilder.util.lib.CompressionUtil
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.api.kotlin.getBuiltInDMods
 
 object CompressedVariant {
     fun isCompressedVariant(comp: String): Boolean {
@@ -154,7 +154,7 @@ object CompressedVariant {
             suppressedMods = fields[fieldNum].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
             fieldNum++
         } else { // Legacy behavior hack
-            val hull = LookupUtils.getHullSpec(HullUtils.getActualHullID(hullId))
+            val hull = MagicLookup.getHullSpec(HullUtils.getActualHullID(hullId))
             suppressedMods = mutableSetOf()
             if (hull != null) {
                 val allMods = hullMods + sMods + sModdedBuiltIns + permaMods
@@ -277,7 +277,7 @@ object CompressedVariant {
         compressedVariant = "$ver$compressedVariant"//Indicate structure version for compatibility with future compressed format changes
 
         if (includePrepend)
-            compressedVariant = "${data.displayName} ${LookupUtils.getHullSpec(data.hullId)?.hullName} : $requiredMods\n" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
+            compressedVariant = "${data.displayName} ${MagicLookup.getHullSpec(data.hullId)?.hullName} : $requiredMods\n" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
 
         return compressedVariant
     }

@@ -1,23 +1,10 @@
-// Thanks to Lukas04 and atlanticaccent
+import java.util.zip.ZipFile
 
-
-//Automatically points to the starsector folder if the mod is placed in to the "mods" folder.
-//If you do not place the project in to your mods folder, replace this with the path to Starsectors root folder.
-val starsectorPath = "../../"
-
-
-val modId = "SN_FleetBuilder"
-val modName = "FleetBuilder" // For the developer to see. Don't use spaces here
-val modPlugin = "fleetBuilder.core.integration.plugin.FleetBuilderPlugin"
-val modVersion = "1.40.1"
-val gameVersion = "0.98a-RC8"
-val isUtilityMod = true
-
-val modAuthor = "S-Numan"
-val modDescription = "Help with easily managing fleets by providing tools to copy, add, and save; fleets, officers, ships, variants, and more.\n\nThis mod can be safely added and removed at any time."
-val displayName = " $modName" // For the user to see.
-
-val shouldAutomaticallyCreateMetadataFiles = true
+/**
+ * The name of your mod. Used to create a mod folder name (and the name of your mod, if using auto-updated mod_info.json).
+ * Defaults to the name of the mod's folder.
+ */
+val modName = rootDir.name
 
 //Other mods to load as compile-time dependencies. Adding them will provide auto-complete for their functions.
 //Each entry is the jar name. The build searches every mod /jars/ folder for a matching file ("LazyLib.jar" -> "Starsector/mods/LazyLib/jars/LazyLib.jar")
@@ -36,21 +23,29 @@ val modDependencies = listOf(
     "SecondInCommand.jar",
 )
 
-val modDependenciesData = listOf(
-    ModDependency(
-        id = "lw_lazylib",
-        name = "LazyLib"
-        //version = "2.7b"
-    ),
-    ModDependency(
-        id = "MagicLib",
-        name = "MagicLib"
+/** Set below to `true` to automatically create mod_info.json and Version Checker files. */
+val shouldAutomaticallyCreateMetadataFiles = true
 
-    )
+// REQUIRED CORE SETTINGS
+val modId = "SN_FleetBuilder" // Unique ID of your mod. Ensure it is unique from other mods.
+val gameVersion = "0.98a-RC8" // The version of Starsector that the mod is intended for.
+val modVersion = "1.40.1" // Your mod version
+val isUtilityMod = true // Whether this mod can be safely removed from a save.
+var modPlugin = "fleetBuilder.core.integration.plugin.FleetBuilderPlugin" // Path to your main plugin class
+
+// DEPENDENCIES (mods required to run yours)
+val modInfoDependencyData = listOf(
+    ModDependency(id = "lw_lazylib", name = "LazyLib"),
+    ModDependency(id = "MagicLib", name = "MagicLib"),
 )
 
+// USER-FACING INFO
+val modAuthor = "S-Numan"
+val displayName = "!FleetBuilder" // This is the user facing name of your mod.
+val modDescription = "Help with easily managing fleets by providing tools to copy, add, and save; fleets, officers, ships, variants, and more.\n\nThis mod can be safely added and removed at any time." // The description of your mod as it appears in the mod loader.
 
-// Version checker. OPTIONAL
+
+// OPTIONAL: VERSION CHECKER (leave blank if not using)
 val directDownloadURL = "https://github.com/S-Numan/FleetBuilder/releases/latest/download/FleetBuilder.zip"
 val changelogURL = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/CHANGELOGS.md"
 val masterVersionFile = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/fleetbuilder.version"
@@ -83,61 +78,56 @@ val otherDependencies = listOf<String>(
     // "jars/dependency.jar",
 )
 
+val modNameNoSpaces = modName.replace(" ", "-") // Defaults to the name of your mod, with spaces replaced by hyphens.
+
 //Folder (relative to this project root) that is also searched for modDependencies and otherDependencies.
 //Drop jars here when you don't have the source mod installed under /mods/, or want to pin a specific version.
 //For modDependencies, files are matched by filename (recursively).
 //For otherDependencies, the entry's path is also tried relative to this folder.
 val libsFolder = "libs"
 
+val devResolution = "1920x1080"
+
 //Java version to use. Should be 17, as it is what starsector itself uses.
 val javaVersion = 17
 
+//When set to true, .java and .kt source files will be bundled with your jar. This will provide people
+//with real javadocs/comments when viewing things from your mod within their IDE. Does increase the jar size.
+//You should set this to "true" if you expect other people to add your mod as a dependency
+val isLibrary = true
 
-val modFolderName = modName.replace(" ", "-") // Defaults to the name of your mod, with spaces replaced by hyphens.
-val modVersionName = "fleetbuilder"//modId // Defaults to the mod id.
-val jarFileName = "${modName}.jar"
-val jars = arrayOf("jars/$jarFileName")
+val modVersionName = "fleetbuilder" // Name of the .version file. Defaults to the mod id.
 
+val jarName = "${modNameNoSpaces}.jar"
+val jars = arrayOf("jars/$jarName")
+
+//Name for the Zip that is created when you run package_mod.bat.
+//This zip includes the data, graphics, jars, sounds and src folder.
+//It also includes the mod_info.json and .version files at the root folder.
+val zipName = "$modNameNoSpaces.zip"
+
+//Automatically points to the starsector folder if the mod is placed in to the "mods" folder.
+//If you do not place the project in to your mods folder, replace this with the path to Starsectors root folder.
+val starsectorPath = "../../"
+
+
+
+
+
+runCatching {
+    // Auto detect mod plugin if it was not found
+    if (!classExistsInSrc(modPlugin, file("src")))
+        modPlugin = findModPluginClass(file("src")) ?: modPlugin
+}
 
 /// BUILD PIPELINE
 /// In Most cases, you should not need to change anything below here.
 
-fun File.writeIfChanged(content: String) {
-    if (!exists() || readText() != content) {
-        writeText(content)
-    }
-}
-
-fun String.jsonEscape(): String =
-    this
-        .replace("\\", "\\\\")
-        .replace("\"", "\\\"")
-        .replace("\n", "\\n")
-
-data class ModDependency(
-    val id: String,
-    val name: String,
-    val version: String? = null
-)
-
-fun ModDependency.toJson(): String {
-    val versionPart = version?.let { """"version": "$it"""" }
-
-    return buildString {
-        append("{")
-        append(""""id": "$id", """)
-        append(""""name": "$name"""")
-
-        if (versionPart != null) {
-            append(", ")
-            append(versionPart)
-        }
-
-        append("}")
-    }
-}
-
-val docsRepoDir = layout.buildDirectory.dir("communityApiDocs")
+//Local Maven repo where mod-dependency jars get staged, along with a matching "-sources.jar"
+//(see stageModDependency / addModJars below). Declared up here (rather than next to docsRepoDir)
+//because it needs to be initialized before the dependencies{} block runs, which happens earlier
+//in this file.
+val modDepsRepoDir = layout.buildDirectory.dir("modDepsRepo").get().asFile
 
 dependencies {
     addModJars(modDependencies)
@@ -189,7 +179,22 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+
+    // The built-in `idea` plugin lets us steer IntelliJ's module config from this script,
+    // namely the compile-output dirs (see the `idea { ... }` block below).
+    idea
 }
+
+// Move IntelliJ's compiled output from out/ to build/idea-out/ so we only have one top-level
+// build folder.
+idea {
+    module {
+        outputDir = file("build/idea-out/main")
+        testOutputDir = file("build/idea-out/test")
+    }
+}
+
+val docsRepoDir = layout.buildDirectory.dir("communityApiDocs")
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -198,6 +203,12 @@ repositories {
     //Local Maven repo of staged Starsector API artifacts. The maven layout (vs flatDir) is what
     //actually lets IntelliJ pick up the "-sources.jar" sibling for autocomplete and navigation.
     maven { url = uri(stageStarsectorApi()) }
+
+    //Local Maven repo of staged mod-dependency jars (see addModJars/stageModDependency). Same trick as
+    //above: each mod jar is also staged under a matching "-sources.jar" name so IntelliJ attaches
+    //docs/navigation for it. Starsector mod jars already bundle their .java/.kt source files
+    //alongside the .class files, so the jar itself works fine as its own "sources" jar.
+    maven { url = uri(modDepsRepoDir) }
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -219,8 +230,34 @@ sourceSets {
 }
 
 
+//Build in parameter names, in case another mod needs to check out the code without having source access.
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("-parameters")
+}
+kotlin {
+    compilerOptions {
+        javaParameters = true
+    }
+}
+
+
 tasks.test {
     enabled = false
+}
+
+tasks.jar {
+    destinationDirectory.set(file("$rootDir/jars"))
+    archiveFileName.set(jarName)
+
+    if (isLibrary) {
+        //Includes the .java and .kt sources for documentation detection
+        from(sourceSets.main.get().allSource) {
+            include("**/*.java", "**/*.kt")
+        }
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+
+    dependsOn("createCommunityDocs")
 }
 
 fun DependencyHandler.addModJars(jarNames: List<String>) {
@@ -246,10 +283,10 @@ fun DependencyHandler.addModJars(jarNames: List<String>) {
         files()
     }
 
-    val allJarFiles = modJarFiles + libsJarFiles
+    val allJarFiles = (modJarFiles + libsJarFiles).files
 
     // Realize the file tree once to detect missing entries.
-    val foundNames = allJarFiles.files.map { it.name }.toSet()
+    val foundNames = allJarFiles.map { it.name }.toSet()
     jarNames.filterNot { it in foundNames }.forEach { missing ->
         logger.error(
             "Mod dependency '$missing' was not found in any mod's " +
@@ -258,19 +295,116 @@ fun DependencyHandler.addModJars(jarNames: List<String>) {
         )
     }
 
-    compileOnly(allJarFiles)
+    // A jar name could theoretically be found more than once (e.g. present in both the mods
+    // folder and the libs folder) - keep only the first match per filename.
+    allJarFiles.distinctBy { it.name }.forEach { jarFile ->
+        val notation = stageModDependency(jarFile)
+        compileOnly(notation)
+        if (jarDeclaresAnnotationProcessor(jarFile)) {
+            annotationProcessor(notation)
+        }
+    }
+}
+
+//Jars that ship an annotation processor declare it in META-INF/services.
+//Such jars get registered on the annotation processor path too, so javac picks the processor
+//up automatically. Kotlin sources would additionally need the kapt/ksp plugin, this only
+//covers Java compilation.
+fun jarDeclaresAnnotationProcessor(jarFile: File): Boolean {
+    //Track the jar's mtime as a configuration-cache input, so a swapped/updated jar re-runs this check.
+    providers.of(FileMtimeSource::class.java) { parameters.path.set(jarFile.absolutePath) }.get()
+    return runCatching {
+        ZipFile(jarFile).use { zip ->
+            zip.getEntry("META-INF/services/javax.annotation.processing.Processor") != null
+        }
+    }.getOrDefault(false)
+}
+
+//Stages a mod-dependency jar as a local Maven artifact under modDepsRepoDir, so it can be added
+//as "modjars:<jarBaseName>:local". This mirrors stageStarsectorApi() below: the maven layout +
+//"-sources.jar" naming convention is what lets IntelliJ automatically attach sources/docs for a
+//compileOnly dependency.
+//Starsector mod jars typically bundle their .java/.kt source files alongside the .class files
+//in the same jar.
+fun stageModDependency(jarFile: File): String {
+    val jarBaseName = jarFile.nameWithoutExtension
+    val artifactDir = File(modDepsRepoDir, "modjars/$jarBaseName/local")
+    val dstJar = File(artifactDir, "$jarBaseName-local.jar")
+    val dstSources = File(artifactDir, "$jarBaseName-local-sources.jar")
+    val pomFile = File(artifactDir, "$jarBaseName-local.pom")
+
+    // Force the configuration cache to depend on this jar's mtime. Without this, an
+    // updated mod jar's timestamp is invisible to the cache and re-staging silently
+    // stops happening once the cache is warm (same issue stageStarsectorApi() avoids
+    // for the core Starsector API jar).
+    //providers.of(FileMtimeSource::class.java) { parameters.path.set(jarFile.absolutePath) }.get()
+
+    artifactDir.mkdirs()
+
+    if (!dstJar.exists() || dstJar.lastModified() < jarFile.lastModified()) {
+        jarFile.copyTo(dstJar, overwrite = true)
+    }
+
+    if (!dstSources.exists() || dstSources.lastModified() < jarFile.lastModified()) {
+        extractSourceEntriesOnly(jarFile, dstSources)
+    }
+
+    if (!pomFile.exists()) {
+        pomFile.writeText(
+            """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project xmlns="http://maven.apache.org/POM/4.0.0">
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>modjars</groupId>
+                <artifactId>$jarBaseName</artifactId>
+                <version>local</version>
+            </project>
+            """.trimIndent()
+        )
+    }
+
+    return "modjars:$jarBaseName:local"
+}
+
+//Builds a "real" sources jar containing only .kt/.java/.kts entries copied out of the mod jar,
+//discarding the .class entries. A straight copy of the whole jar technically also satisfies the
+//"-sources.jar" naming convention and works fine for Java classes (IntelliJ's Java decompiler
+//navigation matches by filename regardless of what else is in the jar), but the Kotlin plugin's
+//library-source resolution appears to fall back to the compiled stub when it finds .class files
+//sitting in what's supposed to be a pure source root. Filtering them out fixes that.
+fun extractSourceEntriesOnly(srcJar: File, dstJar: File) {
+    val extractDir = File(dstJar.parentFile, "${dstJar.nameWithoutExtension}-tmp")
+    extractDir.deleteRecursively()
+
+    project.copy {
+        from(zipTree(srcJar))
+        into(extractDir)
+        include("**/*.kt", "**/*.java", "**/*.kts")
+    }
+
+    dstJar.delete()
+    ant.withGroovyBuilder {
+        "zip"(
+            "destfile" to dstJar.absolutePath,
+            "basedir" to extractDir.absolutePath
+        )
+    }
+
+    extractDir.deleteRecursively()
 }
 
 fun DependencyHandler.addCompileOnlyJar(path: String) {
     val jarFile = file(path)
     if (jarFile.exists()) {
         compileOnly(files(jarFile))
+        if (jarDeclaresAnnotationProcessor(jarFile)) annotationProcessor(files(jarFile))
         return
     }
     // Fallback: try resolving the same path relative to the libs folder.
     val libsFile = file("$libsFolder/$path")
     if (libsFile.exists()) {
         compileOnly(files(libsFile))
+        if (jarDeclaresAnnotationProcessor(jarFile)) annotationProcessor(files(jarFile))
         return
     }
     logger.error(
@@ -363,6 +497,8 @@ fun stageStarsectorApi(): File {
                 "Check starsectorPath at the top of this build script."
     }
 
+
+    // Hack to show documentation
     val docsSrcDir = docsRepoDir.get().asFile.resolve("src")
 
     if (docsSrcDir.exists()) {
@@ -399,7 +535,7 @@ fun stageStarsectorApi(): File {
 
     //Minimal POM. Gradle's maven resolver needs one to recognise the artifact and to look up the -sources classifier.
     if (!pomFile.exists()) {
-        pomFile.writeIfChanged(
+        pomFile.writeText(
             """
             <?xml version="1.0" encoding="UTF-8"?>
             <project xmlns="http://maven.apache.org/POM/4.0.0">
@@ -536,49 +672,52 @@ fun parseLauncher(): StarsectorLaunchSpec {
 
 val launcherInfo by lazy { starsectorLayout() to parseLauncher() }
 
-val jbrLauncher = javaToolchains.launcherFor {
-    languageVersion = JavaLanguageVersion.of(javaVersion)
-    vendor = JvmVendorSpec.AZUL
-}
+fun List<String>.filteredArgs(): List<String> = filterNot { it.contains("PrintCodeCache") }
 
-//AllowEnhancedClassRedefinition requires Serial or G1 GC, but Starsector's vmparams
-//configures Shenandoah. Drop the Shenandoah-specific flags so JBR falls back to its
-//default (G1). Only affects these gradle tasks; the in-game launcher (vmparams) is
-//untouched, so normal runs still use Shenandoah.
-fun List<String>.forJbr(): List<String> = filterNot { it.contains("Shenandoah") }
 
-runCatching {
+//Builds the mod jar, then runs Starsector using the same classpath/jvmArgs the launcher would use.
+tasks.register<JavaExec>("runStarsector") {
+    group = "starsector"
+    description = "Build the mod and launch Starsector (with launcher)."
+    dependsOn(tasks.jar)
+
     val (layout, parsed) = launcherInfo
-
-    val outputFile = File(layout.gameWorkingDir, "devvmparams.txt")
-
-    // 1. Remove the unwanted JVM arg
-    val filteredJvmArgs = parsed.jvmArgs
-        .filterNot { it == "-XX:+PrintCodeCache" }
-
-    // 2. Platform-specific classpath tail
-    val tail = when (currentPlatform()) {
-        StarsectorPlatform.WINDOWS ->
-            """-classpath janino.jar;commons-compiler.jar;commons-compiler-jdk.jar;starfarer.api.jar;starfarer_obf.jar;jogg-0.0.7.jar;jorbis-0.0.15.jar;json.jar;lwjgl.jar;jinput.jar;log4j-1.2.9.jar;lwjgl_util.jar;fs.sound_obf.jar;fs.common_obf.jar;xstream-1.4.10.jar;txw2-3.0.2.jar;jaxb-api-2.4.0-b180830.0359.jar;webp-imageio-0.1.6.jar com.fs.starfarer.StarfarerLauncher"""
-
-        StarsectorPlatform.LINUX, StarsectorPlatform.MAC ->
-            """-classpath janino.jar:commons-compiler.jar:commons-compiler-jdk.jar:starfarer.api.jar:starfarer_obf.jar:jogg-0.0.7.jar:jorbis-0.0.15.jar:json.jar:lwjgl.jar:jinput.jar:log4j-1.2.9.jar:lwjgl_util.jar:fs.sound_obf.jar:fs.common_obf.jar:xstream-1.4.10.jar:txw2-3.0.2.jar:jaxb-api-2.4.0-b180830.0359.jar:webp-imageio-0.1.6.jar com.fs.starfarer.StarfarerLauncher "$@""""
-    }
-
-    // 3. Combine everything
-    val content = (filteredJvmArgs + tail)
-        .joinToString(System.lineSeparator())
-
-    // 4. Only write if changed (prevents spam)
-    if (!outputFile.exists() || outputFile.readText() != content) {
-        outputFile.writeText(content)
-        logger.lifecycle("Updated devvmparams.txt")
-    }
-
-}.onFailure { e ->
-    logger.warn("Failed to write devvmparams.txt (non-fatal): ${e.message}")
+    setExecutable(layout.javaExecutable.absolutePath)
+    workingDir = layout.gameWorkingDir
+    mainClass.set(parsed.mainClass)
+    classpath = files(parsed.classpath)
+    //Stops treating game-crashes as build errors
+    isIgnoreExitValue = true
+    jvmArgs = parsed.jvmArgs.filteredArgs()
 }
 
+//Same as above, but skips the launcher window and jumps straight in to the game.
+//The extra -D flags are the same ones the launcher passes when you hit play, so the game gets the settings it expects.
+tasks.register<JavaExec>("runStarsectorNoLauncher") {
+    group = "starsector"
+    description = "Build the mod and launch Starsector, skipping the launcher."
+    dependsOn(tasks.jar)
+
+    val (layout, parsed) = launcherInfo
+    setExecutable(layout.javaExecutable.absolutePath)
+    workingDir = layout.gameWorkingDir
+    mainClass.set(parsed.mainClass)
+    classpath = files(parsed.classpath)
+    isIgnoreExitValue = true
+    jvmArgs = listOf(
+        "-DstartRes=$devResolution",
+        "-DlaunchDirect=true",
+        "-DstartFS=false",
+        "-DstartSound=true",
+    ) + parsed.jvmArgs.filteredArgs()
+}
+
+//Ensure IntelliJ's "Build and run using" stays on IDEA (not Gradle) so HotSwap can recompile
+//changed classes in milliseconds via IntelliJ's incremental compiler instead of shelling out to
+//Gradle on every reload. The .idea/ folder is gitignored (IDE config is user-specific), so we
+//re-apply this on every Gradle sync. Never creates gradle.xml: if it's missing, IntelliJ is in
+//the middle of a first-time import and writing the file ourselves can break its sync detection.
+//Wrapped in runCatching: any failure here is non-fatal, sothe build/sync continues.
 runCatching {
     val gradleXml = file(".idea/gradle.xml")
     if (gradleXml.exists()) {
@@ -599,96 +738,97 @@ runCatching {
     logger.warn("Could not enforce delegatedBuild=false in .idea/gradle.xml (non-fatal): ${e.message}")
 }
 
-// Prevent gradle from compiling
-tasks.matching {
-    it.name in setOf("build", "assemble", "jar", "test", "check", "compileJava", "compileKotlin")
-}.configureEach {
-    doFirst {
-        throw GradleException("Configuration updated. Run build again.")
+
+tasks.register<Zip>("packageMod") {
+    group = "distribution"
+    description = "Packages the mod into a ZIP file for release."
+
+    // The name of the resulting zip file
+    archiveFileName.set(zipName)
+    // Where to put the zip
+    destinationDirectory.set(layout.projectDirectory)
+
+    // Wrap everything inside a top-level folder named after this project's root directory,
+    // so the zip extracts to a single "<ProjectName>/" folder ready to drop into /mods/.
+    // Every from() below inherits this prefix.
+    into(projectDir.name)
+
+    // 1. Include the compiled jar from the build task
+    from(tasks.jar) {
+        into("jars") // Optional: place inside a jar folder in the zip
     }
-}
 
-
-// Change WORKING_DIRECTORY's in .run files, and the modName.
-runCatching {
-    val runDir = file(".run")
-    if (!runDir.exists()) return@runCatching
-
-    val desiredWorkingDir = when (currentPlatform()) {
-        StarsectorPlatform.WINDOWS -> "\$ProjectFileDir\$/../../starsector-core"
-        StarsectorPlatform.LINUX, StarsectorPlatform.MAC -> "\$ProjectFileDir\$/../../"
-    }
-
-    val regex = Regex("""<option name="WORKING_DIRECTORY" value="[^"]*" />""")
-
-    runDir.listFiles { f -> f.extension == "xml" }?.forEach { file ->
-        val original = file.readText()
-
-        val workingDirReplacement =
-            """<option name="WORKING_DIRECTORY" value="$desiredWorkingDir" />"""
-        val safeWorkingDirReplacement = Regex.escapeReplacement(workingDirReplacement)
-
-        val moduleRegex = Regex("""<module name="[^"]*\.main"\s*/>""")
-        val moduleReplacement = """<module name="$modName.main" />"""
-        val safeModuleReplacement = Regex.escapeReplacement(moduleReplacement)
-
-        var updated = original
-
-        // Replace WORKING_DIRECTORY
-        updated = if (regex.containsMatchIn(updated)) {
-            updated.replace(regex, safeWorkingDirReplacement)
+    // 2. Include the files and folders listed in packageIncludes.
+    // Directories are placed into a same-named folder; files go at the folder root.
+    packageIncludes.forEach { name ->
+        val source = file(name)
+        if (source.isDirectory) {
+            from(source) { into(name) }
         } else {
-            Regex("""<configuration[^>]*>""").find(updated)?.let { match ->
-                updated.replaceRange(
-                    match.range.last + 1,
-                    match.range.last + 1,
-                    "\n    $workingDirReplacement"
-                )
-            } ?: updated
-        }
-
-        // Replace module name
-        if (moduleRegex.containsMatchIn(updated)) {
-            updated = updated.replace(moduleRegex, safeModuleReplacement)
-        }
-
-        if (updated != original) {
-            file.writeText(updated)
-            logger.lifecycle("Updated ${file.name}")
+            from(source)
         }
     }
 
-}.onFailure { e ->
-    logger.warn("Failed to patch .run configs (non-fatal): ${e.message}")
-}
-
-// Change artifact names
-runCatching {
-    val artifactFile = file(".idea/artifacts/Create_jar.xml")
-    if (!artifactFile.exists()) return@runCatching
-
-    val original = artifactFile.readText()
-
-    var updated = original
-
-    // Replace module-output name="X.main"
-    val moduleRegex = Regex("""name="[^"]+\.main"""")
-    updated = updated.replace(moduleRegex, """name="$modName.main"""")
-
-    // Replace jar output name="Something.jar"
-    val jarRegex = Regex("""name="[^"]+\.jar"""")
-    updated = updated.replace(jarRegex, """name="$jarFileName"""")
-
-    if (updated != original) {
-        artifactFile.writeText(updated)
-        logger.lifecycle("Updated artifact Create_jar.xml to $jarFileName")
+    // 3. Include any project-root files matching packageIncludeExtensions.
+    from(projectDir) {
+        packageIncludeExtensions.forEach { ext -> include("*.$ext") }
     }
-
-}.onFailure { e ->
-    logger.warn("Failed to patch artifact XML (non-fatal): ${e.message}")
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fun File.writeIfChanged(content: String) {
+    if (!exists() || readText() != content) {
+        writeText(content)
+    }
+}
+
+fun String.jsonEscape(): String =
+    this
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .replace("\n", "\\n")
+
+data class ModDependency(
+    val id: String,
+    val name: String,
+    val version: String? = null
+)
+
+fun ModDependency.toJson(): String {
+    val versionPart = version?.let { """"version": "$it"""" }
+
+    return buildString {
+        append("{")
+        append(""""id": "$id", """)
+        append(""""name": "$name"""")
+
+        if (versionPart != null) {
+            append(", ")
+            append(versionPart)
+        }
+
+        append("}")
+    }
+}
+
+// Setup metadata files
 runCatching {
 
     val version = modVersion.split(".").let { Triple(it[0], it[1], it[2]) }
@@ -699,6 +839,7 @@ runCatching {
         File(projectDir, "mod_info.json")
             .writeIfChanged(
                 """
+# THIS FILE IS GENERATED BY build.gradle.kts.
 {
     "id": "$modId",
     "name": "$displayName",
@@ -712,11 +853,12 @@ runCatching {
     "modPlugin":"$modPlugin",
     "gameVersion": "$gameVersion",
     "dependencies": [
-${modDependenciesData.joinToString(",\n") { "       " + it.toJson() }}
+${modInfoDependencyData.joinToString(",\n") { "       " + it.toJson() }}
     ],
 }
 """.trimIndent()
             )
+
 
         if (directDownloadURL.isNotBlank() || changelogURL.isNotBlank() || masterVersionFile.isNotBlank() || modThreadId.isNotBlank()) {
             // Generates a Version Checker csv file from the variables defined at the top of this script.
@@ -763,10 +905,11 @@ ${modDependenciesData.joinToString(",\n") { "       " + it.toJson() }}
 
             File(projectDir, "${modVersionName}.version").writeIfChanged(
                 """
+# THIS FILE IS GENERATED BY build.gradle.kts.
 {
     ${fields.joinToString(",\n    ")}
 }
-        """.trimIndent()
+""".trimIndent()
             )
         }
 
@@ -774,10 +917,50 @@ ${modDependenciesData.joinToString(",\n") { "       " + it.toJson() }}
         // Not needed if not using Github Actions (but doesn't hurt to keep).
         with(File(projectDir, ".github/workflows/mod-folder-name.txt")) {
             this.parentFile.mkdirs()
-            this.writeIfChanged(modFolderName)
+            this.writeIfChanged(modNameNoSpaces)
         }
 
     }
+}
+
+
+fun findModPluginClass(srcDir: File): String? {
+    if (!srcDir.exists()) return null
+
+    val javaOrKotlinFiles = srcDir.walkTopDown()
+        .filter { it.isFile && (it.extension == "java" || it.extension == "kt") }
+
+    val classRegex = Regex("""class\s+(\w+)\s*[:(]\s*BaseModPlugin""")
+    val javaExtendsRegex = Regex("""class\s+(\w+)\s+extends\s+BaseModPlugin""")
+    val packageRegex = Regex("""package\s+([\w\.]+)""")
+
+    for (file in javaOrKotlinFiles) {
+        val text = file.readText()
+
+        val classMatch =
+            classRegex.find(text) ?: javaExtendsRegex.find(text)
+
+        if (classMatch != null) {
+            val className = classMatch.groupValues[1]
+
+            val packageName = packageRegex.find(text)?.groupValues?.get(1)
+
+            return if (packageName != null) {
+                "$packageName.$className"
+            } else {
+                className // fallback (default package)
+            }
+        }
+    }
+
+    return null
+}
+
+fun classExistsInSrc(fqcn: String, srcDir: File): Boolean {
+    val path = fqcn.replace('.', '/') + ".kt"
+    val altPath = fqcn.replace('.', '/') + ".java"
+
+    return File(srcDir, path).exists() || File(srcDir, altPath).exists()
 }
 
 
@@ -859,10 +1042,9 @@ val createCommunityDocs = tasks.register<Jar>("createCommunityDocs") {
     )
 }
 
-// Force run createCommunityDocs every gradle sync
-tasks.named("prepareKotlinBuildScriptModel") {
-    dependsOn(createCommunityDocs)
-}
+//tasks.named("prepareKotlinBuildScriptModel") { // Force run createCommunityDocs every gradle sync. If using gradle to build, this could probably be done in a better place like a jar task.
+//    dependsOn("createCommunityDocs")
+//}
 
 updateCommunityApiDocs.configure {
     mustRunAfter(checkoutCommunityApiDocs)

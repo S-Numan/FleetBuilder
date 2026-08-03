@@ -7,36 +7,13 @@ import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.FullName.Gender
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Factions
-import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.PersonSettings
-import fleetBuilder.util.LookupUtils
+import org.magiclib.util.MagicLookup
 import java.util.*
 
 
 object PersonUtils {
-
-    @JvmStatic
-    fun getMaxOfficerLevel(person: PersonAPI): Int {
-        if (person.isPlayer) {
-            val levelUpPlugin = Global.getSettings().levelupPlugin
-            return levelUpPlugin.maxLevel
-            //return Global.getSettings().getInt("playerMaxLevel")
-        } else if (!person.isAICore) {
-            val plugin = Global.getSettings().getPlugin("officerLevelUp") as OfficerLevelupPlugin
-            return plugin.getMaxLevel(person)
-        }
-        return person.stats.level
-    }
-
-    @JvmStatic
-    fun getMaxOfficerEliteSkills(person: PersonAPI): Int {
-        if (!person.isAICore) {
-            val plugin = Global.getSettings().getPlugin("officerLevelUp") as OfficerLevelupPlugin
-            return plugin.getMaxEliteSkills(person)
-        }
-        return person.stats.level
-    }
 
     @JvmStatic
     fun getAllSourceModsFromPerson(
@@ -51,7 +28,7 @@ object PersonUtils {
         val sourceMods = mutableSetOf<ModSpecAPI>()
 
         for (skill in data.skills) {
-            LookupUtils.getSkillSpec(skill.key)?.sourceMod?.let { sm ->
+            MagicLookup.getSkillSpec(skill.key)?.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
         }
@@ -98,20 +75,19 @@ object PersonUtils {
         factionID: String? = null,
         random: Random = Random()
     ): String {
-        val faction = Global.getSettings().getFactionSpec(factionID ?: Factions.PLAYER)
-        val playerFaction = Global.getSettings().getFactionSpec(Factions.PLAYER)
+        val settings = Global.getSettings()
+        val faction = settings.getFactionSpec(factionID ?: Factions.PLAYER)
 
         return if (gender == Gender.MALE) {
-            faction.malePortraits?.pick(random) ?: playerFaction.malePortraits.pick(random)
+            faction.malePortraits?.pick(random) ?: settings.getFactionSpec(Factions.PLAYER).malePortraits.pick(random)
         } else if (gender == Gender.FEMALE) {
-            faction.femalePortraits.pick(random) ?: playerFaction.femalePortraits.pick(random)
+            faction.femalePortraits.pick(random) ?: settings.getFactionSpec(Factions.PLAYER).femalePortraits.pick(random)
         } else {
             if (random.nextBoolean())
-                faction.malePortraits.pick(random) ?: playerFaction.malePortraits.pick(random)
+                faction.malePortraits.pick(random) ?: settings.getFactionSpec(Factions.PLAYER).malePortraits.pick(random)
             else
-                faction.femalePortraits.pick(random) ?: playerFaction.femalePortraits.pick(random)
+                faction.femalePortraits.pick(random) ?: settings.getFactionSpec(Factions.PLAYER).femalePortraits.pick(random)
         }
-        Factions.CUSTOM_ENGAGE_EVEN
     }
 
     @JvmStatic

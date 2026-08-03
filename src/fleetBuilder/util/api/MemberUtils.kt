@@ -42,11 +42,10 @@ object MemberUtils {
     }
 
     @JvmStatic
-    fun getMaxSMods(fleetMember: FleetMemberAPI): Int {
-        return getMaxSMods(fleetMember.stats)
+    fun getMaxSMods(member: FleetMemberAPI): Int {
+        return getMaxSMods(member.stats)
     }
 
-    @JvmStatic
     fun getMaxSMods(stats: MutableShipStatsAPI): Int {
         return stats.dynamic
             .getMod(Stats.MAX_PERMANENT_HULLMODS_MOD)

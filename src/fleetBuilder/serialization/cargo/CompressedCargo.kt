@@ -13,9 +13,9 @@ import fleetBuilder.serialization.MissingContentExtended
 import fleetBuilder.serialization.SerializationUtils.fieldSep
 import fleetBuilder.serialization.SerializationUtils.metaSep
 import fleetBuilder.serialization.SerializationUtils.sep
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.lib.CompressionUtil
 import org.lazywizard.console.Console
+import org.magiclib.util.MagicLookup
 import java.awt.Color
 
 object CompressedCargo {
@@ -204,16 +204,16 @@ object CompressedCargo {
                 }
                 "SPECIAL" -> {
                     when {
-                        id == "fighter_bp" && data?.let { LookupUtils.getFighterWingSpec(it) } == null ->
+                        id == "fighter_bp" && data?.let { MagicLookup.getFighterWingSpec(it) } == null ->
                             missing.blueprintWingIds.add(data ?: "null")
 
-                        id == "weapon_bp" && data?.let { LookupUtils.getWeaponSpec(it) } == null ->
+                        id == "weapon_bp" && data?.let { MagicLookup.getWeaponSpec(it) } == null ->
                             missing.blueprintWeaponIds.add(data ?: "null")
 
-                        id == "ship_bp" && data?.let { LookupUtils.getHullSpec(it) } == null ->
+                        id == "ship_bp" && data?.let { MagicLookup.getHullSpec(it) } == null ->
                             missing.blueprintHullIds.add(data ?: "null")
 
-                        id == "modspec" && data?.let { LookupUtils.getHullModSpec(it) } == null ->
+                        id == "modspec" && data?.let { MagicLookup.getHullModSpec(it) } == null ->
                             missing.hullModIdsKnown.add(data ?: "null")
 
                         id == "industry_bp" && Global.getSettings().allIndustrySpecs.none { it.id == data } ->

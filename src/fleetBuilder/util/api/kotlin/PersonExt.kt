@@ -4,7 +4,6 @@ import com.fs.starfarer.api.characters.MutableCharacterStatsAPI
 import com.fs.starfarer.api.characters.PersonAPI
 import fleetBuilder.serialization.person.DataPerson
 import fleetBuilder.serialization.person.PersonSettings
-import fleetBuilder.util.api.PersonUtils
 
 /**
  * Creates a copy of this person
@@ -15,14 +14,6 @@ import fleetBuilder.util.api.PersonUtils
  */
 fun PersonAPI.clone(settings: PersonSettings = PersonSettings()): PersonAPI {
     return DataPerson.clonePerson(this, settings = settings)
-}
-
-fun PersonAPI.getMaxOfficerLevel(): Int {
-    return PersonUtils.getMaxOfficerLevel(this)
-}
-
-fun PersonAPI.getMaxOfficerEliteSkills(): Int {
-    return PersonUtils.getMaxOfficerEliteSkills(this)
 }
 
 /**

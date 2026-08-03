@@ -14,11 +14,11 @@ import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.coreui.refit.ModWidget
 import com.fs.starfarer.loading.specs.HullVariantSpec
 import fleetBuilder.core.config.FBConst
-import fleetBuilder.core.util.FBMisc.sModHandlerTemp
 import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBMisc.sModHandlerTemp
 import fleetBuilder.core.util.FBTxt.txt
 import fleetBuilder.core.util.FBTxt.txtPlural
-import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.autofit.lib.AutofitApplier.applyVariantInRefitScreen
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectory
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
@@ -32,20 +32,22 @@ import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.LookupUtils.getAllDMods
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
 import fleetBuilder.util.api.VariantUtils.processSModsForComparison
-import fleetBuilder.util.api.kotlin.*
+import fleetBuilder.util.api.kotlin.getCompatibleDLessHull
+import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
 import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.MagicLookup.getAllDMods
+import org.magiclib.util.api.kotlin.*
 import java.awt.Color
 
 
@@ -737,7 +739,7 @@ internal object AutofitPanel {
                 if (FBSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod) {
                     draggedVariant.sModdedBuiltIns.toList().forEach {
                         if (it !in draggedVariant.hullSpec.builtInMods) {
-                            draggedVariant.completelyRemoveMod(it)
+                            draggedVariant.removeModFull(it)
                         }
                     }
                 }
@@ -850,7 +852,7 @@ internal object AutofitPanel {
             //We want to highlight but not outline the variant if it has sModdedBuiltIns that the HullSpec does not have as a built-in hullmod.
             baseVariantClone.sModdedBuiltIns.forEach {
                 if (it !in baseVariant.hullSpec.builtInMods)
-                    baseVariantClone.completelyRemoveMod(it)
+                    baseVariantClone.removeModFull(it)
             }
 
             if (compareVariantContents(
@@ -942,7 +944,7 @@ internal object AutofitPanel {
 
         var unequalDMod = false
         if (compareBaseVariant.allDMods().isNotEmpty()) {
-            compareBaseVariant.allDMods().forEach { compareBaseVariant.completelyRemoveMod(it); compareBaseVariant.hullMods.remove(it) }
+            compareBaseVariant.allDMods().forEach { compareBaseVariant.removeModFull(it); compareBaseVariant.hullMods.remove(it) }
             if (compareBaseVariant.sMods.isNotEmpty()) {
                 unequalDMod = compareVariantHullMods(
                     compareVariant,
@@ -1116,7 +1118,7 @@ internal object AutofitPanel {
             }
 
 
-            val allMods = variant.hullMods.mapNotNull { LookupUtils.getHullModSpec(it) }
+            val allMods = variant.hullMods.mapNotNull { MagicLookup.getHullModSpec(it) }
 
             val smoddedBuiltIns = mutableListOf<String>()
             val builtIns = mutableListOf<String>()

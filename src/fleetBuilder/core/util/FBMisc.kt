@@ -13,19 +13,19 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.util.LookupUtils
+
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.MemberUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.completelyRemoveMod
-import fleetBuilder.util.api.kotlin.getEffectiveHullId
-import fleetBuilder.util.api.kotlin.getModules
-import fleetBuilder.util.api.kotlin.getRegularHullMods
-import org.json.JSONArray
 import org.json.JSONObject
 import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.api.kotlin.allRegularHullMods
+import org.magiclib.util.api.kotlin.getEffectiveHullId
+import org.magiclib.util.api.kotlin.getModules
+import org.magiclib.util.api.kotlin.removeModFull
 import java.awt.Color
 import kotlin.math.min
 
@@ -221,10 +221,10 @@ internal object FBMisc {
         to.hullMods.toList().forEach { mod ->
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
-            if (dontForceClearDMods && LookupUtils.getAllDMods().contains(mod))
+            if (dontForceClearDMods && MagicLookup.getAllDMods().contains(mod))
                 return@forEach
 
-            to.completelyRemoveMod(mod)
+            to.removeModFull(mod)
         }
 
         if (!dontForceClearSMods) {
@@ -243,7 +243,7 @@ internal object FBMisc {
         }
 
         // Copy hullmod data
-        for (mod in from.getRegularHullMods()) {
+        for (mod in from.allRegularHullMods()) {
             to.addMod(mod)
         }
 
@@ -319,43 +319,6 @@ internal object FBMisc {
             )
             to.setModuleVariant(slot, toVariant)
         }
-    }
-
-    fun mapToJsonObject(map: Map<*, *>): JSONObject {
-        val json = JSONObject()
-
-        for ((key, value) in map) {
-            // JSON keys must be strings
-            val stringKey = key?.toString() ?: continue
-
-            json.put(
-                stringKey, when (value) {
-                    null -> JSONObject.NULL
-                    is Map<*, *> -> mapToJsonObject(value)
-                    is List<*> -> listToJsonArray(value)
-                    else -> value
-                }
-            )
-        }
-
-        return json
-    }
-
-    fun listToJsonArray(list: List<*>): JSONArray {
-        val array = JSONArray()
-
-        for (value in list) {
-            array.put(
-                when (value) {
-                    null -> JSONObject.NULL
-                    is Map<*, *> -> mapToJsonObject(value)
-                    is List<*> -> listToJsonArray(value)
-                    else -> value
-                }
-            )
-        }
-
-        return array
     }
 
 

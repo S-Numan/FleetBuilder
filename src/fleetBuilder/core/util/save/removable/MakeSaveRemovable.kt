@@ -9,8 +9,8 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.CampaignEngine
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.serialization.PlayerSaveUtils
-import fleetBuilder.util.api.CampaignUtils
-import fleetBuilder.util.api.kotlin.getModules
+import org.magiclib.util.api.SectorUtils
+import org.magiclib.util.api.kotlin.getModules
 
 //Original code is from AITweaks "MakeAITweaksRemovable", the author being Genrir. Credit to them.
 
@@ -95,8 +95,8 @@ internal object MakeSaveRemovable {
     private fun getEntitiesWithThings(markets: List<MarketAPI>): List<HasThing> {
         val locations = Global.getSector()!!.allLocations
 
-        val submarkets = CampaignUtils.getSubmarkets(markets)
-        val cargos = CampaignUtils.getCargoFromSubmarkets(submarkets)
+        val submarkets = SectorUtils.getSubmarkets(markets)
+        val cargos = SectorUtils.getCargoFromSubmarkets(submarkets)
 
         val fleetMembers = listOf(
             locations.flatMap { it.fleets }.map { it.fleetData }, // Ships in active fleets.

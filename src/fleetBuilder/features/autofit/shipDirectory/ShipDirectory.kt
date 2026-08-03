@@ -3,9 +3,9 @@ package fleetBuilder.features.autofit.shipDirectory
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.core.util.FBMisc.deepDiff
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBMisc.deepDiff
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.CompressedVariant
 import fleetBuilder.serialization.variant.CompressedVariant.extractVariantDataFromCompString
@@ -15,10 +15,10 @@ import fleetBuilder.serialization.variant.DataVariant.filterParsedVariantData
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.getActualHullId
-import fleetBuilder.util.api.kotlin.getEffectiveHullId
 import org.json.JSONArray
 import org.json.JSONObject
+import org.magiclib.util.api.kotlin.getActualHullId
+import org.magiclib.util.api.kotlin.getEffectiveHullId
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -1,7 +1,6 @@
 package fleetBuilder.util.api.kotlin
 
-import com.fs.starfarer.api.SettingsAPI
-import com.fs.starfarer.api.graphics.SpriteAPI
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.*
 import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
@@ -10,6 +9,8 @@ import fleetBuilder.otherMods.starficz.addButton
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.width
+import org.json.JSONArray
+import org.json.JSONObject
 import org.magiclib.kotlin.setAlpha
 import java.awt.Color
 
@@ -22,27 +23,12 @@ internal fun UIPanelAPI.whiteBoxForTesting(width: Float? = null, height: Float? 
     return whiteBox
 }
 
-internal var previouslyLoadedSprite = HashMap<String, Boolean>()
-internal fun SettingsAPI.getAndLoadSprite(filename: String): SpriteAPI? {
-    if (!previouslyLoadedSprite.contains(filename)) {
-        this.loadTexture(filename)
-        previouslyLoadedSprite[filename] = true
-    }
-    return this.getSprite(filename)
-}
-
-internal fun SettingsAPI.loadTextureCached(filename: String) {
-    if (!previouslyLoadedSprite.contains(filename)) {
-        this.loadTexture(filename)
-        previouslyLoadedSprite[filename] = true
-    }
-}
-
-
 internal fun Any.safeInvoke(name: String? = null, vararg args: Any?): Any? {
     val paramTypes = args.map { arg -> arg?.let { it::class.javaPrimitiveType ?: it::class.java } }.toTypedArray()
     val reflectedMethods = this.getMethodsMatching(name, parameterTypes = paramTypes)
     if (reflectedMethods.isEmpty()) {
+        // TODO, replace with logger error. User does not need to be informed of non user understandable errors.
+        //Global.getLogger(this.javaClass).error()
         DisplayMessage.showErrorFull(
             displayed = "ERROR: No method found on class: ${this::class.java.name}. See console for more details.",
             logged = "No method found for name: '$name' on class: ${this::class.java.name} " +
@@ -124,4 +110,25 @@ internal fun UIPanelAPI.findChildWithPlugin(clazz: Class<*>): CustomPanelAPI? {
     return getChildrenCopy().firstOrNull { child ->
         (child as? CustomPanelAPI)?.plugin?.let { clazz.isInstance(it) } == true
     } as? CustomPanelAPI
+}
+
+internal fun JSONArray.containsString(value: String): Boolean {
+    for (i in 0 until this.length()) {
+        if (this.optString(i) == value) return true
+    }
+    return false
+}
+
+internal fun JSONObject.optJSONArrayToStringList(fieldName: String): List<String> {
+    val array = optJSONArray(fieldName) ?: return emptyList()
+    val list = mutableListOf<String>()
+    for (i in 0 until array.length()) {
+        val value = array.optString(i, null)
+        if (value != null) {
+            list.add(value)
+        } else {
+            Global.getLogger(javaClass).warn("Invalid string at index $i in '$fieldName'")
+        }
+    }
+    return list
 }

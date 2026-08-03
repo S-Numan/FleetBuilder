@@ -10,14 +10,14 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBTxt
 import fleetBuilder.otherMods.starficz.*
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.allDMods
-import fleetBuilder.util.api.kotlin.allSMods
 import fleetBuilder.util.api.kotlin.getShipNameWithoutPrefix
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.api.kotlin.allDMods
+import org.magiclib.util.api.kotlin.allSMods
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
 
@@ -257,10 +257,10 @@ class FleetFilterPanel(
             hullSpec.sourceMod?.name?.lowercase()?.startsWith(desc) ?: "vanilla".startsWith(desc) -> true
 
             // Ship systems
-            LookupUtils.getShipSystemSpec(hullSpec.shipSystemId)?.name?.lowercase()?.contains(desc) == true -> true
+            MagicLookup.getShipSystemSpec(hullSpec.shipSystemId)?.name?.lowercase()?.contains(desc) == true -> true
 
             hullSpec.shipDefenseId.isNotEmpty() && hullSpec.shipDefenseId != "phasecloak" &&
-                    LookupUtils.getShipSystemSpec(hullSpec.shipDefenseId)?.name?.lowercase()?.contains(desc) == true -> true
+                    MagicLookup.getShipSystemSpec(hullSpec.shipDefenseId)?.name?.lowercase()?.contains(desc) == true -> true
 
             //LookupUtils.getShipSystemSpec(hullSpec.shipSystemId)?.let { FuzzySearch.fuzzyMatch(desc, it.name).second >= 90 } == true
             //        && desc.startsWith("marines") -> true

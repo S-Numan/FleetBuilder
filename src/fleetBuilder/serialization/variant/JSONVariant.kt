@@ -8,12 +8,12 @@ import fleetBuilder.core.util.FBMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
-import fleetBuilder.util.LookupUtils.getVariantsForEffectiveHullSpec
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.makeVariantID
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
 import org.json.JSONArray
 import org.json.JSONObject
+import org.magiclib.util.MagicLookup
 
 object JSONVariant {
     @JvmOverloads
@@ -43,7 +43,7 @@ object JSONVariant {
 
             val hullSpec = Global.getSettings().allShipHullSpecs.find { it.hullId == hullId }
             if (hullSpec != null) {
-                val effectivePossibleVariants = getVariantsForEffectiveHullSpec(hullSpec).filter { it.source == VariantSource.STOCK }.map { it.hullVariantId }
+                val effectivePossibleVariants = MagicLookup.getVariantsForEffectiveHullSpec(hullSpec).filter { it.source == VariantSource.STOCK }.map { it.hullVariantId }
                 if (effectivePossibleVariants.isNotEmpty())
                     return getParsed(effectivePossibleVariants)
             }

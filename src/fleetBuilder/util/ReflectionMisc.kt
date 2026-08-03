@@ -25,8 +25,9 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.util.api.kotlin.getActualCurrentTab
+import fleetBuilder.util.api.kotlin.isIdle
 import fleetBuilder.util.api.kotlin.safeInvoke
+import org.magiclib.util.api.kotlin.getActualCurrentTab
 
 object ReflectionMisc {
 
@@ -342,6 +343,15 @@ object ReflectionMisc {
             }
         }
         return null
+    }
+
+    fun closeCurrentCoreTab() {
+        val campUI: CampaignUIAPI? = Global.getSector().campaignUI
+        if (campUI != null && !campUI.isIdle()) {
+            campUI.safeInvoke("setNextTransitionFast", true)
+            val coreUI = getCoreUI()
+            coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
+        }
     }
 
     private var postUpdateFleetPanelCallbacks = mutableListOf<() -> Unit>()

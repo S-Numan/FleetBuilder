@@ -7,20 +7,6 @@ import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.member.MemberSettings
 
 /**
- * Delegate to [ShipHullSpecAPI.getActualHull]
- */
-fun FleetMemberAPI.getActualHull(): ShipHullSpecAPI {
-    return hullSpec.getActualHull()
-}
-
-/**
- * Delegate to [ShipHullSpecAPI.getActualHullId]
- */
-fun FleetMemberAPI.getActualHullId(): String {
-    return hullSpec.getActualHullId()
-}
-
-/**
  * Creates a copy of this member with the specified settings.
  *
  * Will apply a filter pass based on the settings, enabling this to be serializable. This will remove non value types memKeys if present.

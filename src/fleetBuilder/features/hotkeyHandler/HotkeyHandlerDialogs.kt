@@ -61,14 +61,22 @@ import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.*
+import fleetBuilder.util.api.kotlin.getAdmiralSkills
+import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.lib.ClipboardUtil
 import lunalib.lunaExtensions.addLunaElement
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
+import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
+import org.magiclib.util.api.FleetUtils.repairAndRestoreCR
+import org.magiclib.util.api.SectorUtils
+import org.magiclib.util.api.kotlin.createFleetMember
+import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.kotlin.getEffectiveHull
+import org.magiclib.util.api.kotlin.removeModFull
 import org.magiclib.util.membermemory.MemberMemoryExt.getMemberMemory
 import second_in_command.SCData
 import second_in_command.SCUtils
@@ -157,9 +165,13 @@ object HotkeyHandlerDialogs {
 
             testMessageTrigger.onClick {
                 try {
+                    Mouse.setCursorPosition(0, 0)
                     //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
                     //DisplayMessage.showError("Test Message: " + Random().nextInt())
                     //Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
+
+                    val test = SectorUtils.getCargoFromSectorSubmarkets()
+                    DisplayMessage.showMessage("size = ${test.size}", Color.BLUE)
 
                     //val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
                     //val variant = memberInRefit.variant ?: return@onClick
@@ -614,7 +626,7 @@ object HotkeyHandlerDialogs {
 
             variant.hullMods.toList().forEach {
                 if (!variant.hullSpec.isBuiltInMod(it) && it in unknown.hullModIds) {
-                    variant.completelyRemoveMod(it)
+                    variant.removeModFull(it)
                 }
             }
         }
@@ -710,7 +722,7 @@ object HotkeyHandlerDialogs {
             }
 
             if (repairAndSetMaxCR)
-                FleetUtils.repairAndRestoreCR(fleet.fleetData)
+                repairAndRestoreCR(fleet.fleetData)
 
             if (fightToTheLast)
                 fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true
@@ -1595,7 +1607,7 @@ object HotkeyHandlerDialogs {
 
         Global.getSettings().skillIds.forEach { skill ->
             val spec = Global.getSettings().getSkillSpec(skill)
-            if (spec.isCombatOfficerSkill && !spec.isAdminSkill && !spec.isAdmiralSkill && !spec.isAptitudeEffect && !spec.isPermanent && !spec.hasTag("npc_only") && !spec.hasTag("deprecated"))
+            if (spec.isCombatOfficerSkill && !spec.isAdminSkill && !spec.isAdmiralSkill && !spec.isAptitudeEffect && !spec.isPermanent && !spec.hasTag("npc_only") && !spec.hasTag("deprecated") && !spec.hasTag("ai_core_only"))
                 officerSkillCount += 1
         }
 

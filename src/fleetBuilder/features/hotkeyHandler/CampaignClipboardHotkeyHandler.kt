@@ -25,9 +25,9 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.api.kotlin.isIdle
 import org.lwjgl.input.Keyboard
+import org.magiclib.util.api.kotlin.getActualCurrentTab
 
 
 internal class CampaignClipboardHotkeyHandler : CampaignInputListener {

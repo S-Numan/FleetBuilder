@@ -1,9 +1,5 @@
 package fleetBuilder.util.api.kotlin
 
-import com.fs.starfarer.api.SettingsAPI
-import com.fs.starfarer.api.combat.ShipHullSpecAPI
-import com.fs.starfarer.api.combat.ShipVariantAPI
-import fleetBuilder.util.api.HullUtils
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import kotlin.math.pow
@@ -52,15 +48,6 @@ fun String.isJSON(): Boolean {
 }
  */
 
-/**
- * Delegates to [HullUtils.createHullVariant].
- */
-fun SettingsAPI.createHullVariant(hull: ShipHullSpecAPI): ShipVariantAPI =
-    HullUtils.createHullVariant(hull)
-
-fun SettingsAPI.getErrorVariantID(): String =
-    this.getString("errorShipVariant")
-
 internal inline fun <T> withoutLogging(block: () -> T): T {
     val rootLogger = Logger.getRootLogger()
     val previousLevel = rootLogger.level
@@ -105,22 +92,3 @@ fun SettingsAPI.doesJSONExist(
         false
     }
 }*/
-
-/**
- * Checks if a file exists in `/data`.
- *
- * @param filename The path to the file.
- * @param modID The mod ID of the mod to check. If null, checks all available sources.
- * @return `true` if the file exists and can be loaded, `false` otherwise.
- */
-fun SettingsAPI.doesFileExist(
-    filename: String,
-    modID: String? = null,
-): Boolean {
-    return try {
-        modID?.let { loadText(filename, it) } ?: loadText(filename)
-        true
-    } catch (_: Exception) {
-        false
-    }
-}

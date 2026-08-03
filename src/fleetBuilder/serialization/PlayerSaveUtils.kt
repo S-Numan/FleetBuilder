@@ -23,7 +23,6 @@ import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet
 import fleetBuilder.serialization.person.JSONPerson
 import fleetBuilder.serialization.person.PersonSettings
-import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
 import fleetBuilder.util.api.kotlin.safeInvoke
@@ -35,6 +34,7 @@ import org.lazywizard.lazylib.ext.json.optFloat
 import org.lwjgl.util.vector.Vector2f
 import org.magiclib.kotlin.getStorageCargo
 import org.magiclib.util.MagicCampaign
+import org.magiclib.util.api.SectorUtils
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -123,7 +123,7 @@ object PlayerSaveUtils {
 
         if (handleSubmarketCargo) {
             try {
-                val markets = CampaignUtils.getSectorMarkets()
+                val markets = SectorUtils.getSectorMarkets()
                 val checkedStorages = mutableSetOf<CargoAPI>()
 
                 @Suppress("UNCHECKED_CAST")

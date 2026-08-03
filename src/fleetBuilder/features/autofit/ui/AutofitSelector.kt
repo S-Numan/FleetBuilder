@@ -14,11 +14,11 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getConstructorsMatching
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.api.kotlin.createFleetMember
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
+import org.magiclib.util.api.kotlin.createFleetMember
 import java.awt.Color
 import kotlin.math.max
 

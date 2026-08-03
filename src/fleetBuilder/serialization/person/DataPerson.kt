@@ -9,11 +9,11 @@ import com.fs.starfarer.api.impl.campaign.ids.Ranks
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.serialization.MissingContent
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.lib.PrefixedCodec
 import org.histidine.chatter.ChatterDataManager
 import org.histidine.chatter.combat.ChatterCombatPlugin
+import org.magiclib.util.MagicLookup
 import java.util.*
 
 object DataPerson {
@@ -102,7 +102,7 @@ object DataPerson {
             if (skillId in settings.excludeSkillsWithID) return false
             if ((data.skills[skillId] ?: 0f) <= 0f) return false
 
-            val skillSpec = LookupUtils.getSkillSpec(skillId)
+            val skillSpec = MagicLookup.getSkillSpec(skillId)
             if (skillSpec != null) {
                 if (skillSpec.hasTag(FBConst.NO_COPY_TAG)) return false
                 if (skillSpec.isAptitudeEffect) return false

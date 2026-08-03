@@ -17,12 +17,12 @@ import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember.cloneMember
 import fleetBuilder.serialization.person.DataPerson.clonePerson
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.Console
+import org.magiclib.util.api.kotlin.getActualCurrentTab
 
 class CopyFleet : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {

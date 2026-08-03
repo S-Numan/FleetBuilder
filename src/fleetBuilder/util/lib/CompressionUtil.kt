@@ -7,6 +7,9 @@ import java.util.zip.Inflater
 object CompressionUtil {
     const val BLOCK_SIZE = 1024
 
+    /**
+     * Compresses a string using the DEFLATE algorithm and encodes it in Base64.
+     */
     fun base64Deflate(input: String): String {
         val data = input.toByteArray(Charsets.UTF_8)
         val fullOutput = mutableListOf<ByteArray>()

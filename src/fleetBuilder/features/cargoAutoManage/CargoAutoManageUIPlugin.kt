@@ -2,17 +2,18 @@ package fleetBuilder.features.cargoAutoManage
 
 import com.fs.graphics.util.Fader
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.SettingsAPI
 import com.fs.starfarer.api.campaign.CargoAPI
 import com.fs.starfarer.api.campaign.CargoStackAPI
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
+import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.config.FBConst.PRIMARY_DIR
 import fleetBuilder.core.util.DisplayMessage
-import fleetBuilder.core.util.FBMisc.listToJsonArray
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromMap
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.loadCargoAutoManageFromSubmarket
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManageToMap
@@ -25,14 +26,30 @@ import fleetBuilder.ui.customPanel.core.BasePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.JSONUtils.jsonToList
-import fleetBuilder.util.api.kotlin.loadTextureCached
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
+import org.magiclib.util.api.JSONUtils
+import org.magiclib.util.api.kotlin.toJson
 
 //The implementation of this is extremely scuffed, I am aware.
+
+internal var previouslyLoadedSprite = HashMap<String, Boolean>()
+internal fun SettingsAPI.getAndLoadSprite(filename: String): SpriteAPI? {
+    if (!previouslyLoadedSprite.contains(filename)) {
+        this.loadTexture(filename)
+        previouslyLoadedSprite[filename] = true
+    }
+    return this.getSprite(filename)
+}
+
+internal fun SettingsAPI.loadTextureCached(filename: String) {
+    if (!previouslyLoadedSprite.contains(filename)) {
+        this.loadTexture(filename)
+        previouslyLoadedSprite[filename] = true
+    }
+}
 
 private val defaultIcon = "graphics/factions/crest_player_flag.png"
 private val errorIcon = "graphics/ui/icons/64x_xcircle.png"
@@ -386,7 +403,7 @@ internal class CargoAutoManageUIPlugin(
                             cargoAutoManagerPoliciesJSON.put("policies", JSONArray())
                         }
                         @Suppress("UNCHECKED_CAST")
-                        val cargoAutoManagerPoliciesTemp = jsonToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
+                        val cargoAutoManagerPoliciesTemp = JSONUtils.jsonToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
                         val cargoAutoManagerPolicies = cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it, true) }.sortedBy { it.orderInList }.toMutableList()
 
 
@@ -435,7 +452,7 @@ internal class CargoAutoManageUIPlugin(
 
                                     cargoAutoManagerPolicies.remove(autoManage)
                                     val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it, true) }
-                                    val json = JSONObject().put("policies", listToJsonArray(mapList))
+                                    val json = JSONObject().put("policies", mapList.toJson())
                                     Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
                                     //autoManagePoliciesDialog.createUI()
                                     DisplayMessage.showMessageCustom("Policy removed!")
@@ -461,7 +478,7 @@ internal class CargoAutoManageUIPlugin(
                                     )
                                     cargoAutoManagerPolicies.add(currentAutoManageCopy)
                                     val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it, true) }
-                                    val json = JSONObject().put("policies", listToJsonArray(mapList))
+                                    val json = JSONObject().put("policies", mapList.toJson())
                                     Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
                                     autoManagePoliciesDialog.recreateUI()
                                     DisplayMessage.showMessageCustom("Policy overwritten!")
@@ -505,7 +522,7 @@ internal class CargoAutoManageUIPlugin(
                                 cargoAutoManagerPolicies.add(currentAutoManageCopy)
 
                                 val mapList = cargoAutoManagerPolicies.map { saveCargoAutoManageToMap(it, true) }
-                                val json = JSONObject().put("policies", listToJsonArray(mapList))
+                                val json = JSONObject().put("policies", mapList.toJson())
                                 Global.getSettings().writeJSONToCommon(cargoAutoManagerPoliciesPath, json, false)
                                 autoManagePoliciesDialog.recreateUI()
                                 DisplayMessage.showMessageCustom("Policy saved!")

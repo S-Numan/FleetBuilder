@@ -3,70 +3,18 @@ package fleetBuilder.util.api
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
-import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.api.VariantUtils.getModulesAllowNull
 import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
-import fleetBuilder.util.api.kotlin.*
 import org.magiclib.kotlin.getBuildInBonusXP
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.api.kotlin.*
 
 object VariantUtils {
-
-    /**
-     * Returns a map of all modules attached to this variant.
-     *
-     * Any slots with null variants are filtered out. Use [getModulesAllowNull] if you want to include null variants.
-     *
-     * The map key is the module slot ID, and the value is the corresponding [ShipVariantAPI] for that module.
-     */
-    @JvmStatic
-    fun getModules(variant: ShipVariantAPI): Map<String, ShipVariantAPI> {
-        // stationModules: weapon slot id -> original variant id
-        val modules = variant.stationModules
-            ?.mapNotNull { (slot, _) ->
-                if (variant.hullSpec.getWeaponSlot(slot)?.weaponType != WeaponAPI.WeaponType.STATION_MODULE) {
-                    Global.getLogger(this.javaClass).warn("Slot '$slot' of variantID '${variant.hullVariantId}' of hullID '${variant.hullSpec.hullId}' is not a station module despite a module being assigned to that slot?")
-                    return@mapNotNull null
-                }
-                val variant: ShipVariantAPI? = variant.getModuleVariant(slot)
-                variant?.let { slot to it }
-            }
-            ?.toMap() // converts the list of pairs back into a Map
-            ?: emptyMap()
-
-        return modules
-    }
-
-    /**
-     * Returns a map of all modules attached to this variant.
-     *
-     * The map key is the module slot ID, and the value is the corresponding [ShipVariantAPI] for that module.
-     */
-    @JvmStatic
-    fun getModulesAllowNull(
-        variant: ShipVariantAPI
-    ): Map<String, ShipVariantAPI?> {
-        val modules = variant.stationModules
-            ?.mapNotNull { (slot, _) ->
-                if (variant.hullSpec.getWeaponSlot(slot)?.weaponType != WeaponAPI.WeaponType.STATION_MODULE) {
-                    Global.getLogger(this.javaClass).warn("Slot '$slot' of variantID '${variant.hullVariantId}' of hullID '${variant.hullSpec.hullId}' is not a station module despite a module being assigned to that slot?")
-                    return@mapNotNull null
-                }
-                val variant: ShipVariantAPI? = variant.getModuleVariant(slot)
-                slot to variant
-            }
-            ?.toMap() // converts the list of pairs back into a Map
-            ?: emptyMap()
-
-        return modules
-    }
-
 
     /**
      * Returns all source mods from a variant. Including the hullspec, all weapons, wings, hullmods, and the contents of modules.
@@ -106,7 +54,7 @@ object VariantUtils {
         }
 
         // HullSpec
-        LookupUtils.getHullSpec(data.hullId)?.let { hullSpec ->
+        MagicLookup.getHullSpec(data.hullId)?.let { hullSpec ->
             hullSpec.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
@@ -114,7 +62,7 @@ object VariantUtils {
 
         // HullMods
         for (mod in data.hullMods) {
-            LookupUtils.getHullModSpec(mod)?.sourceMod?.let { sm ->
+            MagicLookup.getHullModSpec(mod)?.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
         }
@@ -122,7 +70,7 @@ object VariantUtils {
         // Weapons
         for (group in data.weaponGroups) {
             group.weapons.forEach { (slot, weaponId) ->
-                LookupUtils.getWeaponSpec(weaponId)?.sourceMod?.let { sm ->
+                MagicLookup.getWeaponSpec(weaponId)?.sourceMod?.let { sm ->
                     sourceMods.add(sm)
                 }
             }
@@ -130,7 +78,7 @@ object VariantUtils {
 
         // Fighter Wings
         for (wing in data.wings) {
-            LookupUtils.getFighterWingSpec(wing)?.sourceMod?.let { sm ->
+            MagicLookup.getFighterWingSpec(wing)?.sourceMod?.let { sm ->
                 sourceMods.add(sm)
             }
         }
@@ -213,7 +161,7 @@ object VariantUtils {
                 }
             }
             va.nonBuiltInWings.forEach { wing ->
-                val wingSpec = LookupUtils.getFighterWingSpec(wing) ?: return@forEach
+                val wingSpec = MagicLookup.getFighterWingSpec(wing) ?: return@forEach
 
                 if (wingSpec.hasTag(Tags.CODEX_UNLOCKABLE)) {
                     if (!SharedUnlockData.get().isPlayerAwareOfFighter(wing))
@@ -225,7 +173,7 @@ object VariantUtils {
             va.nonBuiltInHullmods.forEach { mod ->
                 if (va.hullSpec.isBuiltInMod(mod)) // Don't check built in mods
                     return@forEach
-                val hullModSpec = LookupUtils.getHullModSpec(mod) ?: return@forEach
+                val hullModSpec = MagicLookup.getHullModSpec(mod) ?: return@forEach
 
                 if (hullModSpec.hasTag(Tags.CODEX_UNLOCKABLE)) {
                     if (!SharedUnlockData.get().isPlayerAwareOfHullmod(mod))
@@ -301,7 +249,7 @@ object VariantUtils {
 
         if (!tempVariant.hasTag(FBConst.VARIANT_MADE_IN_ERROR))
             tempVariant.addTag(FBConst.VARIANT_MADE_IN_ERROR)
-        
+
         tempVariant.source = null
 
         return tempVariant
@@ -465,8 +413,8 @@ object VariantUtils {
         insertVariant2: ShipVariantAPI,
         options: CompareOptions = CompareOptions(),
     ): Boolean {
-        val allDMods = LookupUtils.getAllDMods()
-        val allHiddenEverywhereMods = LookupUtils.getAllHiddenEverywhereMods()
+        val allDMods = MagicLookup.getAllDMods()
+        val allHiddenEverywhereMods = MagicLookup.getAllHiddenEverywhereMods()
 
         val variant1 = insertVariant1.clone()
         val variant2 = insertVariant2.clone()
@@ -488,11 +436,11 @@ object VariantUtils {
             val toRemove2 = variant2.hullSpec.builtInMods.filter { it !in allDMods }
 
             toRemove1.forEach {
-                variant1.completelyRemoveMod(it)
+                variant1.removeModFull(it)
             }
 
             toRemove2.forEach {
-                variant2.completelyRemoveMod(it)
+                variant2.removeModFull(it)
             }
         } else {
             if (!hullModSetsEqual(variant1.hullSpec.builtInMods.toSet(), variant2.hullSpec.builtInMods.toSet()))
@@ -506,14 +454,14 @@ object VariantUtils {
 
         if (!options.permaMods) {
             variant1.permaMods.toList().forEach {
-                variant1.completelyRemoveMod(it)
+                variant1.removeModFull(it)
             }
             variant2.permaMods.toList().forEach {
-                variant2.completelyRemoveMod(it)
+                variant2.removeModFull(it)
             }
         }
 
-        val variantModsEqual = hullModSetsEqual(variant1.getRegularHullMods(), variant2.getRegularHullMods()) &&
+        val variantModsEqual = hullModSetsEqual(variant1.allRegularHullMods(), variant2.allRegularHullMods()) &&
                 hullModSetsEqual(variant1.sModdedBuiltIns, variant2.sModdedBuiltIns) &&
                 hullModSetsEqual(variant1.sMods, variant2.sMods) &&
                 hullModSetsEqual(variant1.permaMods, variant2.permaMods) &&
@@ -526,7 +474,7 @@ object VariantUtils {
         val sModsCopy = (variant.sMods + variant.sModdedBuiltIns).toSet()
         sModsCopy.forEach { sMod ->
             val isBuiltIn = sMod in variant.hullSpec.builtInMods
-            variant.completelyRemoveMod(sMod)
+            variant.removeModFull(sMod)
             if (convert && !isBuiltIn) {
                 variant.addMod(sMod)
             }

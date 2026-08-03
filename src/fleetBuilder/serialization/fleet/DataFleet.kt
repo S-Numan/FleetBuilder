@@ -21,10 +21,10 @@ import fleetBuilder.serialization.person.DataPerson.filterParsedPersonData
 import fleetBuilder.serialization.person.DataPerson.getPersonDataFromPerson
 import fleetBuilder.serialization.person.DataPerson.validateAndCleanPersonData
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.api.kotlin.getErrorVariantID
 import fleetBuilder.util.lib.PrefixedCodec
+import org.magiclib.kotlin.getErrorVariantID
 import org.magiclib.kotlin.getHullIdForVariantId
+import org.magiclib.util.MagicLookup
 import java.util.*
 
 object DataFleet {
@@ -119,7 +119,7 @@ object DataFleet {
             if (variantData?.hullId in settings.excludeMembersWithHullID ||
                 member.id in settings.excludeMembersWithID ||
                 variantData?.tags?.contains(FBConst.NO_COPY_TAG) == true
-                || variantData?.let { LookupUtils.getHullSpec(it.hullId)?.hasTag(FBConst.NO_COPY_TAG) == true } == true
+                || variantData?.let { MagicLookup.getHullSpec(it.hullId)?.hasTag(FBConst.NO_COPY_TAG) == true } == true
             ) return@mapNotNull null
 
             var processedMember = member
@@ -199,7 +199,7 @@ object DataFleet {
             }
 
             // If hull ID does not exist: log missing and maybe replace with error variant
-            if (variantData.hullId !in LookupUtils.getHullIDSet()) {
+            if (variantData.hullId !in MagicLookup.getHullIDSet()) {
                 missing.hullIds.add(variantData.hullId)
 
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
@@ -233,7 +233,7 @@ object DataFleet {
         }
 
         val validatedFaction =
-            if (LookupUtils.getAllFactionIDs().contains(data.factionID)) data.factionID
+            if (MagicLookup.getAllFactionIDs().contains(data.factionID)) data.factionID
             else null
 
         if (data.secondInCommandData != null)

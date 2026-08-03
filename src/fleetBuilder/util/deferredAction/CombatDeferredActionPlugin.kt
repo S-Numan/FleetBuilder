@@ -22,6 +22,7 @@ class CombatDeferredActionPlugin : BaseEveryFrameCombatPlugin() {
 
         // Not system time, depends on combat time. Stops on pause.
 
+        @JvmStatic
         fun performLater(delayInMilli: Float, action: () -> Unit): TaskHandle {
             val handle = TaskHandle()
             val inst = active ?: return handle
@@ -30,6 +31,7 @@ class CombatDeferredActionPlugin : BaseEveryFrameCombatPlugin() {
             return handle
         }
 
+        @JvmStatic
         fun performEvery(intervalInMilli: Float, action: (TaskHandle) -> Unit): TaskHandle {
             val handle = TaskHandle()
             val inst = active ?: return handle
@@ -46,6 +48,7 @@ class CombatDeferredActionPlugin : BaseEveryFrameCombatPlugin() {
             return handle
         }
 
+        @JvmStatic
         fun performOnUnpause(action: () -> Unit) {
             active?.onUnpause?.add(action)
         }
@@ -55,6 +58,7 @@ class CombatDeferredActionPlugin : BaseEveryFrameCombatPlugin() {
         /**
          * Happens more frequently than you might imagine.
          */
+        @JvmStatic
         fun performOnPlayerBattleStart(action: () -> Unit) {
             onStart.add(action)
         }

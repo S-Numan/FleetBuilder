@@ -2,6 +2,7 @@ package fleetBuilder.serialization.member
 
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.core.util.DisplayMessage.showError
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.SerializationUtils.fieldSep
@@ -12,12 +13,11 @@ import fleetBuilder.serialization.member.DataMember.buildMemberFull
 import fleetBuilder.serialization.member.DataMember.getMemberDataFromMember
 import fleetBuilder.serialization.person.CompressedPerson
 import fleetBuilder.serialization.variant.CompressedVariant
-import fleetBuilder.core.util.FBTxt
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
-import fleetBuilder.util.lib.CompressionUtil
 import fleetBuilder.util.api.kotlin.roundToDecimals
-import java.util.Random
+import fleetBuilder.util.lib.CompressionUtil
+import org.magiclib.util.MagicLookup
+import java.util.*
 
 object CompressedMember {
     fun isCompressedMember(comp: String): Boolean {
@@ -249,7 +249,7 @@ object CompressedMember {
         if (includePrepend) {
             val shipName = data.shipName
             val displayName = data.variantData?.displayName ?: "null"
-            val hullName = LookupUtils.getHullSpec(data.variantData?.hullId ?: "")?.hullName ?: "null"
+            val hullName = MagicLookup.getHullSpec(data.variantData?.hullId ?: "")?.hullName ?: "null"
 
             val readable = if (data.personData != null) {
                 val personName = data.personData.first + if (data.personData.last.isNotEmpty()) " " + data.personData.last else ""

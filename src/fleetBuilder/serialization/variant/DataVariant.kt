@@ -10,10 +10,14 @@ import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.util.DisplayMessage.showError
 import fleetBuilder.serialization.MissingContent
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.*
+import org.magiclib.kotlin.getErrorVariantID
 import org.magiclib.kotlin.getHullIdForVariantId
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.api.kotlin.createHullVariant
+import org.magiclib.util.api.kotlin.getActualHullId
+import org.magiclib.util.api.kotlin.getModules
+import org.magiclib.util.api.kotlin.removeModFull
 
 object DataVariant {
 
@@ -166,27 +170,27 @@ object DataVariant {
         missing: MissingContent = MissingContent()
     ): ParsedVariantData {
         val neverSaveMods = FBSettings.getHullModsToNeverSave()
-        val allDMods = LookupUtils.getAllDMods()
-        val allHiddenMods = LookupUtils.getAllHiddenEverywhereMods()
+        val allDMods = MagicLookup.getAllDMods()
+        val allHiddenMods = MagicLookup.getAllHiddenEverywhereMods()
 
         fun shouldKeepMod(modId: String): Boolean {
             if (modId in neverSaveMods) return false
             if (modId in settings.excludeHullModsWithID) return false
             if (!settings.includeDMods && modId in allDMods) return false
             if (!settings.includeHiddenMods && modId in allHiddenMods) return false
-            if (LookupUtils.getHullModSpec(modId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
+            if (MagicLookup.getHullModSpec(modId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
             return true
         }
 
         fun shouldKeepWeapon(weaponId: String): Boolean {
             if (weaponId in settings.excludeWeaponsWithID) return false
-            if (LookupUtils.getWeaponSpec(weaponId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
+            if (MagicLookup.getWeaponSpec(weaponId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
             return true
         }
 
         fun shouldKeepWing(wingId: String): Boolean {
             if (wingId in settings.excludeWingsWithID) return false
-            if (LookupUtils.getFighterWingSpec(wingId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
+            if (MagicLookup.getFighterWingSpec(wingId)?.hasTag(FBConst.NO_COPY_TAG) == true) return false
             return true
         }
 
@@ -252,13 +256,13 @@ object DataVariant {
         missing: MissingContent = MissingContent(),
     ): ParsedVariantData {
         // --- Hull ID ---
-        val validHullId = if (data.hullId in LookupUtils.getHullIDSet()) {
+        val validHullId = if (data.hullId in MagicLookup.getHullIDSet()) {
             data.hullId
         } else {
             missing.hullIds.add(data.hullId)
             null
         }
-        val validHull = validHullId?.let { LookupUtils.getHullSpec(it) }
+        val validHull = validHullId?.let { MagicLookup.getHullSpec(it) }
 
         // --- Variant ID ---
         /*val fixedVariantId = data.variantId.ifBlank {
@@ -271,7 +275,7 @@ object DataVariant {
         }
 
         // --- HullMods ---
-        val allHullMods = LookupUtils.getHullModIDSet()
+        val allHullMods = MagicLookup.getHullModIDSet()
 
         val cleanHullMods = data.hullMods.filter { modId ->
             if (modId !in allHullMods) {
@@ -312,7 +316,7 @@ object DataVariant {
         }
 
         // --- Wings ---
-        val allWingIds = LookupUtils.getFighterWingIDSet()
+        val allWingIds = MagicLookup.getFighterWingIDSet()
         val cleanWings = data.wings.mapIndexed { _, wingId ->
             if (wingId !in allWingIds && wingId.isNotBlank()) {
                 missing.wingIds.add(wingId)
@@ -321,7 +325,7 @@ object DataVariant {
         }
 
         // --- Weapon Groups ---
-        val allWeapons = LookupUtils.getActuallyAllWeaponSpecIDSet()
+        val allWeapons = MagicLookup.getActuallyAllWeaponSpecIDSet()
         val cleanWeaponGroups = data.weaponGroups.map { wg ->
             val cleanedSlots = wg.weapons.filter { (slotId, weaponId) ->
                 var valid = weaponId in allWeapons
@@ -334,7 +338,7 @@ object DataVariant {
                         valid = false
                     } else if (!validWeaponSlot.isBuiltIn) {
                         // Can weapon fit in slot?
-                        val weapon = LookupUtils.getWeaponSpec(weaponId)
+                        val weapon = MagicLookup.getWeaponSpec(weaponId)
                         val slot = validHull.getWeaponSlot(slotId)
                         if (weapon != null && slot != null) {
                             if (!slot.weaponFits(weapon))
@@ -427,7 +431,7 @@ object DataVariant {
         }
 
         data.suppressedMods.forEach { modId ->
-            loadout.completelyRemoveMod(modId, true)
+            loadout.removeModFull(modId, true)
         }
 
         val wingOffset = hullSpec.builtInWings.size

@@ -13,20 +13,35 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin
 import com.fs.starfarer.api.impl.campaign.ids.Items
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial
+import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.campaign.CampaignEngine
 import com.fs.util.container.repo.ObjectRepository
 import fleetBuilder.core.util.FBMisc.replaceVariantWithVariant
-import fleetBuilder.util.LookupUtils
-import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FactionUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.completelyRemoveMod
-import fleetBuilder.util.api.kotlin.getModules
 import fleetBuilder.util.api.kotlin.safeGet
+import org.magiclib.kotlin.doesFileExist
+import org.magiclib.kotlin.getErrorVariantID
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.api.SectorUtils
+import org.magiclib.util.api.kotlin.getModules
+import org.magiclib.util.api.kotlin.removeModFull
 
 // Jank code alert!
 
 internal object RemoveFromSave {
+
+    fun detectVariantSourceMod(variant: ShipVariantAPI): ModSpecAPI? {
+        if (variant.variantFilePath == null) return null
+        val settings = Global.getSettings()
+
+        settings.modManager.enabledModsCopy.forEach { mod ->
+            if (settings.doesFileExist(variant.variantFilePath, mod.id))
+                return mod
+        }
+
+        return null
+    }
 
     fun removeModThings(
         modsToRemove: List<ModSpecAPI>,
@@ -37,6 +52,7 @@ internal object RemoveFromSave {
         removeIndustries: Boolean = true,
         removeWings: Boolean = true,
         removeCargoItems: Boolean = true,
+        removeVariantIDs: Boolean = true,
         removeMarkets: Boolean = true,
         removeAllFactionOwnedEntities: Boolean = true,
         removeListeners: Boolean = true,
@@ -68,7 +84,7 @@ internal object RemoveFromSave {
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
             .map { it.id }
 
-        val skills = LookupUtils.getAllSkillSpecs()
+        val skills = MagicLookup.getAllSkillSpecs()
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
             .map { it.id }
 
@@ -77,6 +93,10 @@ internal object RemoveFromSave {
             .map { it.id } + settings.allSpecialItemSpecs
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
             .map { it.id }
+
+        val variantIDs = MagicLookup.getAllVariantsRaw()
+            .filter { detectVariantSourceMod(it)?.id in modIds }
+            .map { it.hullVariantId }
 
 
         if (modsToRemoveStuffFrom.isNotEmpty() && removeListeners) {
@@ -174,6 +194,10 @@ internal object RemoveFromSave {
                 cargoItems.forEach { cargoItem ->
                     entity.removeCargoItem(cargoItem)
                 }
+            if (removeVariantIDs)
+                variantIDs.forEach { variantID ->
+                    entity.removeStockVariantID(variantID)
+                }
         }
 
         // Remove empty fleets
@@ -270,9 +294,9 @@ internal object RemoveFromSave {
         val sector = Global.getSector()!!
         val locations = sector.allLocations
 
-        val markets = CampaignUtils.getSectorMarkets()
-        val submarkets = CampaignUtils.getSubmarkets(markets)
-        val cargos = CampaignUtils.getCargoFromSubmarkets(submarkets)
+        val markets = SectorUtils.getSectorMarkets()
+        val submarkets = SectorUtils.getSubmarkets(markets)
+        val cargos = SectorUtils.getCargoFromSubmarkets(submarkets)
 
         val fleetMembers = listOf(
             locations.flatMap { it.fleets }.map { it.fleetData }, // Ships in active fleets.
@@ -300,6 +324,7 @@ internal object RemoveFromSave {
         fun removeSkills(value: String)
         fun removeIndustries(value: String)
         fun removeCargoItem(value: String)
+        fun removeStockVariantID(value: String)
     }
 
     private fun MutableCollection<String>.removeMatching(value: String) {
@@ -309,8 +334,8 @@ internal object RemoveFromSave {
     private class Variant(val variant: ShipVariantAPI?, val perShipData: ShipRecoverySpecial.PerShipData? = null) :
         HasThing {
         override fun removeHullmod(value: String) {
-            variant?.completelyRemoveMod(value, true)
-            perShipData?.variant?.completelyRemoveMod(value, true)
+            variant?.removeModFull(value, true)
+            perShipData?.variant?.removeModFull(value, true)
         }
 
         override fun removeHullSpec(value: String) {
@@ -369,11 +394,21 @@ internal object RemoveFromSave {
         override fun removeSkills(value: String) {}
         override fun removeIndustries(value: String) {}
         override fun removeCargoItem(value: String) {}
+        override fun removeStockVariantID(value: String) {
+            if (perShipData != null) {
+                if (perShipData.variantId == value)
+                    perShipData.variantId = Global.getSettings().getErrorVariantID()
+                if (perShipData.variant != null && perShipData.variant.hullVariantId == value)
+                    perShipData.variant = VariantUtils.createErrorVariant("Removed Mod")
+            }
+            if (variant != null && variant.source == VariantSource.STOCK && variant.hullVariantId == value)
+                variant.hullVariantId = Global.getSettings().getErrorVariantID()
+        }
     }
 
     private class Ship(val member: FleetMemberAPI) : HasThing {
         override fun removeHullmod(value: String) {
-            member.variant.completelyRemoveMod(value, true)
+            member.variant.removeModFull(value, true)
         }
 
         override fun removeHullSpec(value: String) {
@@ -416,6 +451,10 @@ internal object RemoveFromSave {
 
         override fun removeIndustries(value: String) {}
         override fun removeCargoItem(value: String) {}
+        override fun removeStockVariantID(value: String) {
+            if (member.variant.source == VariantSource.STOCK && member.variant.hullVariantId == value)
+                member.fleetData?.removeFleetMember(member)
+        }
     }
 
     private class Faction(val faction: FactionAPI) : HasThing {
@@ -450,6 +489,10 @@ internal object RemoveFromSave {
 
         override fun removeCargoItem(value: String) {
             faction.illegalCommodities.removeMatching(value)
+        }
+
+        override fun removeStockVariantID(value: String) {
+
         }
     }
 
@@ -556,6 +599,10 @@ internal object RemoveFromSave {
                 }
             }
         }
+
+        override fun removeStockVariantID(value: String) {
+
+        }
     }
 
     private class Market(val market: MarketAPI) : HasThing {
@@ -609,6 +656,9 @@ internal object RemoveFromSave {
         }
 
         override fun removeCargoItem(value: String) {}
+        override fun removeStockVariantID(value: String) {
+
+        }
     }
 
     private class Cargo(val cargo: CargoAPI) : HasThing {
@@ -704,6 +754,10 @@ internal object RemoveFromSave {
                     cargo.removeItems(stack.type, stack.data, stack.size)
                 }
             }
+        }
+
+        override fun removeStockVariantID(value: String) {
+
         }
 
     }

@@ -13,15 +13,15 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI
 import com.fs.starfarer.api.ui.*
 import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.config.FBSettings
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.createHullVariant
 import org.lwjgl.input.Keyboard
+import org.magiclib.util.api.kotlin.createHullVariant
 
 internal class CampaignDevModeCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {

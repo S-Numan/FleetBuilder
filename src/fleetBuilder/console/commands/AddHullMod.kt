@@ -1,9 +1,8 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.completelyRemoveMod
+
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
@@ -11,6 +10,8 @@ import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.CommandUtils.findBestStringMatch
 import org.lazywizard.console.Console
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.api.kotlin.removeModFull
 
 class AddHullMod : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
@@ -26,7 +27,7 @@ class AddHullMod : BaseCommandWithSuggestion {
         val argList = args.split(" ")
 
         val modIdInput = argList.getOrNull(0)
-        val modId = findBestStringMatch(modIdInput, LookupUtils.getHullModIDSet())
+        val modId = findBestStringMatch(modIdInput, MagicLookup.getHullModIDSet())
 
         if (modId == null) {
             Console.showMessage("No modspec found with id '$modIdInput'! Use 'list hullmods' for a complete list of valid ids.")
@@ -48,7 +49,7 @@ class AddHullMod : BaseCommandWithSuggestion {
                 return BaseCommand.CommandResult.ERROR
             }
 
-            variant.completelyRemoveMod(modId)
+            variant.removeModFull(modId)
 
             val addType: String = when {
                 isOf == null -> {
@@ -84,7 +85,7 @@ class AddHullMod : BaseCommandWithSuggestion {
         context: CommandContext?
     ): MutableList<String?> {
         return when (parameter) {
-            0 -> LookupUtils.getHullModIDSet().toMutableList()//.filterNot { LookupUtils.getHullModSpec(it)?.isHidden == true }.toMutableList()
+            0 -> MagicLookup.getHullModIDSet().toMutableList()//.filterNot { LookupUtils.getHullModSpec(it)?.isHidden == true }.toMutableList()
             //1 -> mutableListOf("true", "false")
             //2 -> mutableListOf("true", "false")
             else -> ArrayList()

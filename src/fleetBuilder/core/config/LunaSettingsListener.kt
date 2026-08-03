@@ -3,9 +3,9 @@ package fleetBuilder.core.config
 import fleetBuilder.core.integration.listener.EventDispatcher
 import fleetBuilder.core.integration.plugin.FleetBuilderPlugin
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
-import fleetBuilder.util.LookupUtils
 import lunalib.lunaSettings.LunaSettings
 import lunalib.lunaSettings.LunaSettingsListener
+import org.magiclib.util.MagicLookup
 
 internal class LunaSettingsListener : LunaSettingsListener {
     init {
@@ -100,7 +100,7 @@ internal class LunaSettingsListener : LunaSettingsListener {
             FBSettings.cleanGameVariantsForRemovedElements = false
         }
 
-        if (LookupUtils.isSetup())
+        if (MagicLookup.isSetup())
             EventDispatcher.updateApplicationState()
     }
 }

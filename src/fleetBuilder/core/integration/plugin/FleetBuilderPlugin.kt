@@ -8,10 +8,10 @@ import fleetBuilder.core.integration.listener.EventDispatcher
 class FleetBuilderPlugin : BaseModPlugin() {
 
     companion object {
-        private var modSpec = Global.getSettings().modManager.enabledModsCopy.find { it.modPluginClassName == javaClass.enclosingClass.name }!!
+        private var modSpec = Global.getSettings().modManager.enabledModsCopy.find { it.modPluginClassName == this::class.java.enclosingClass.name }!!
 
         fun getModSpec(): ModSpecAPI = modSpec
-        fun getModName(): String = modSpec.name.trim()
+        fun getModName(): String = modSpec.name
         fun getModID(): String = modSpec.id
     }
 

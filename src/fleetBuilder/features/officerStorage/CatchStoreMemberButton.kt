@@ -12,17 +12,17 @@ import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.config.FBSettings
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
+import org.magiclib.util.api.kotlin.getActualCurrentTab
 
 internal class CatchStoreMemberButton : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 10

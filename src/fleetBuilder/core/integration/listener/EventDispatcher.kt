@@ -5,8 +5,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignEventListener
 import fleetBuilder.core.config.FBSettings
-import fleetBuilder.core.config.FBSettings.fixShipSkinSourceMod
-import fleetBuilder.core.integration.feature.ShipSkinSourceMod
+import fleetBuilder.core.integration.feature.RemoveNullGoalVariants.removeNullGoalVariants
 import fleetBuilder.core.integration.plugin.FBCampaignPlugin
 import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.save.backup.SaveBackupManager
@@ -32,7 +31,6 @@ import fleetBuilder.features.removeOldIntelUpdates.RemoveOldIntelUpdates
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.LookupUtils
 import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
 import fleetBuilder.util.listeners.MemberChangeEvents
 import fleetBuilder.util.listeners.MemberChangeTracker
@@ -124,23 +122,15 @@ internal class EventDispatcher : EveryFrameScript {
 
             FBTxt.setup()
 
-            LookupUtils.setup()
-
             updateApplicationState()
         }
 
         fun onApplicationLoad() {
             Global.getLogger(this.javaClass).info("onApplicationLoad")
 
-            FBSettings.onApplicationLoad()
-
             FBTxt.setup()
 
-            if (!LookupUtils.isSetup())
-                LookupUtils.setup()
-            
-            if (fixShipSkinSourceMod)
-                ShipSkinSourceMod.setShipSkinSourceMods()
+            FBSettings.onApplicationLoad()
 
             updateApplicationState()
         }
@@ -190,6 +180,8 @@ internal class EventDispatcher : EveryFrameScript {
             CommanderShuttle.onGameLoad(newGame)
 
             sector.registerPlugin(FBCampaignPlugin())
+
+            removeNullGoalVariants()
         }
 
         fun beforeGameSave() {

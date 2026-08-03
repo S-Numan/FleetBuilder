@@ -11,18 +11,18 @@ import com.fs.starfarer.api.plugins.impl.CoreAutofitPlugin
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.loading.specs.HullVariantSpec
+import fleetBuilder.core.config.FBSettings
+import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBMisc.replaceVariantWithVariant
 import fleetBuilder.core.util.FBMisc.sModHandlerTemp
-import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.util.FBTxt
-import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
-import fleetBuilder.util.api.kotlin.createHullVariant
-import fleetBuilder.util.api.kotlin.getModules
-import fleetBuilder.util.api.kotlin.getSlotsForModules
 import fleetBuilder.util.api.kotlin.safeInvoke
+import org.magiclib.util.api.kotlin.createHullVariant
+import org.magiclib.util.api.kotlin.getModules
+import org.magiclib.util.api.kotlin.getSlotsForModules
 import java.awt.Color
 import java.util.*
 

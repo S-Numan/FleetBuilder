@@ -11,10 +11,10 @@ import fleetBuilder.core.config.FBConst
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.api.kotlin.allDMods
-import fleetBuilder.util.api.kotlin.getEffectiveHullId
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11.*
+import org.magiclib.util.api.kotlin.allDMods
+import org.magiclib.util.api.kotlin.getEffectiveHullId
 import java.awt.Color
 import kotlin.math.max
 

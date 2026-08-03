@@ -10,9 +10,9 @@ import fleetBuilder.features.autofit.ui.AutofitPanelCreator
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.api.kotlin.getActualCurrentTab
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
+import org.magiclib.util.api.kotlin.getActualCurrentTab
 
 internal class CampaignAutofitAdder : EveryFrameScript {
 
