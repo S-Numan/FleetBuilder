@@ -15,6 +15,8 @@ object FBSettings {
             LunaSettings.addSettingsListener(LunaSettingsListener())
 
         isConsoleModEnabled = Global.getSettings().modManager.isModEnabled("lw_console")
+
+        setNeverSaveHullmods()
     }
 
     fun setNeverSaveHullmods() {
@@ -139,11 +141,7 @@ object FBSettings {
     var recentBattleTracker = false
 
     var showTagsInTooltip = false
-
-    var fixShipSkinSourceMod = true
-
-    var cleanGameVariantsForRemovedElements = true
-
+    
     private var unassignPlayer = false
     fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()
     fun setUnassignPlayer(value: Boolean) {

@@ -5,9 +5,10 @@ import fleetBuilder.core.integration.plugin.FleetBuilderPlugin
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService
 import lunalib.lunaSettings.LunaSettings
 import lunalib.lunaSettings.LunaSettingsListener
-import org.magiclib.util.MagicLookup
 
 internal class LunaSettingsListener : LunaSettingsListener {
+    var init = false
+
     init {
         settingsChanged(FleetBuilderPlugin.getModID())
 
@@ -18,6 +19,7 @@ internal class LunaSettingsListener : LunaSettingsListener {
         if (ShipDirectoryService.generatePrefixes().contains(_defaultPrefix))
             FBSettings.defaultPrefix = _defaultPrefix
 
+        init = true
     }
 
     //Gets called whenever settings are saved in the campaign or the main menu.
@@ -56,10 +58,7 @@ internal class LunaSettingsListener : LunaSettingsListener {
             FBSettings.replaceVanillaAutofitButton = LunaSettings.getBoolean(modID, "replaceVanillaAutofitButton")!!
             FBSettings.removeRefitHullmod = LunaSettings.getBoolean(modID, "removeRefitHullmod")!!
             FBSettings.autofitMenuHotkey = LunaSettings.getInt(modID, "autofitMenuHotkey")!!
-            FBSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod = LunaSettings.getBoolean(
-                modID,
-                "autofitNoSModdedBuiltInWhenNotBuiltInMod"
-            )!!
+            FBSettings.autofitNoSModdedBuiltInWhenNotBuiltInMod = LunaSettings.getBoolean(modID, "autofitNoSModdedBuiltInWhenNotBuiltInMod")!!
             FBSettings.reserveFirstFourAutofitSlots = LunaSettings.getBoolean(modID, "reserveFirstFourAutofitSlots")!!
             FBSettings.autoMothballRecoveredShips = LunaSettings.getBoolean(modID, "autoMothballRecoveredShips")!!
             FBSettings.removeOldIntelUpdates = LunaSettings.getBoolean(modID, "removeOldIntelUpdates")!!
@@ -68,11 +67,6 @@ internal class LunaSettingsListener : LunaSettingsListener {
             FBSettings.displayDerelictRecoveryEarly = LunaSettings.getBoolean(modID, "displayDerelictRecoveryEarly")!!
             FBSettings.recentBattleTracker = LunaSettings.getBoolean(modID, "recentBattleTracker")!!
             FBSettings.showTagsInTooltip = LunaSettings.getBoolean(modID, "showTagsInTooltip")!!
-            FBSettings.fixShipSkinSourceMod = LunaSettings.getBoolean(modID, "fixShipSkinSourceMod")!!
-            FBSettings.cleanGameVariantsForRemovedElements = LunaSettings.getBoolean(
-                modID,
-                "cleanGameVariantsForRemovedElements"
-            )!!
 
             FBSettings.setUnassignPlayer(LunaSettings.getBoolean(modID, "unassignPlayer")!!)
 
@@ -96,11 +90,9 @@ internal class LunaSettingsListener : LunaSettingsListener {
             FBSettings.transponderOffInHyperspace = false
             FBSettings.displayDerelictRecoveryEarly = false
             FBSettings.recentBattleTracker = false
-            FBSettings.fixShipSkinSourceMod = false
-            FBSettings.cleanGameVariantsForRemovedElements = false
         }
 
-        if (MagicLookup.isSetup())
+        if (init)
             EventDispatcher.updateApplicationState()
     }
 }

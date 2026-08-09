@@ -465,8 +465,13 @@ internal object RemoveFromSave {
 
         override fun removeHullSpec(value: String) {
             faction.removeKnownShip(value)
+            faction.alwaysKnownShips.remove(value)
+
             faction.removePriorityShip(value)
             faction.removeUseWhenImportingShip(value)
+            faction.hullFrequency.remove(value)
+
+            faction.clearShipRoleCache()
         }
 
         override fun removeWeapon(value: String) {

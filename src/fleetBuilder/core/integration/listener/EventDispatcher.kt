@@ -118,7 +118,7 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun onDevModeF8Reload() {
-            Global.getLogger(this.javaClass).info("F8 Reload")
+            Global.getLogger(this::class.java).info("F8 Reload")
 
             FBTxt.setup()
 
@@ -126,7 +126,7 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun onApplicationLoad() {
-            Global.getLogger(this.javaClass).info("onApplicationLoad")
+            Global.getLogger(this::class.java).info("onApplicationLoad")
 
             FBTxt.setup()
 
@@ -136,8 +136,6 @@ internal class EventDispatcher : EveryFrameScript {
         }
 
         fun updateApplicationState() {
-
-            FBSettings.setNeverSaveHullmods()
 
             if (FBSettings.autofitMenuEnabled)
                 ShipDirectoryService.loadAllDirectories()
@@ -154,7 +152,7 @@ internal class EventDispatcher : EveryFrameScript {
         val eventDispatcher = EventDispatcher()
 
         fun onGameLoad(newGame: Boolean) {
-            Global.getLogger(this.javaClass).info("onGameLoad")
+            Global.getLogger(this::class.java).info("onGameLoad")
 
             val sector = Global.getSector() ?: run {
                 throw Error("How was sector null here?")

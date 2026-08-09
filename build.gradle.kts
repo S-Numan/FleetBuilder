@@ -41,7 +41,7 @@ val modInfoDependencyData = listOf(
 
 // USER-FACING INFO
 val modAuthor = "S-Numan"
-val displayName = "!FleetBuilder" // This is the user facing name of your mod.
+val displayName = "FleetBuilder" // This is the user facing name of your mod.
 val modDescription = "Help with easily managing fleets by providing tools to copy, add, and save; fleets, officers, ships, variants, and more.\n\nThis mod can be safely added and removed at any time." // The description of your mod as it appears in the mod loader.
 
 
