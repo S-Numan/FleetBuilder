@@ -5,7 +5,7 @@ import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.util.FBMisc.isConsoleOpen
 import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
 import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
+import fleetBuilder.util.deferredAction.SectorTaskScheduler
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
@@ -26,7 +26,7 @@ class ForcePaste : BaseCommand {
         instance?.placeHolderDialog?.safeInvoke("makeOptionInstant", 0)
         instance?.close() // Close the console
 
-        CampaignDeferredActionPlugin.performLater(0f) {
+        SectorTaskScheduler.performLater(systemTime = true) {
             val cheatsEnabled = FBSettings.cheatsEnabled()
             if (!cheatsEnabled)
                 FBSettings.setCheatsEnabledInSettings(true)

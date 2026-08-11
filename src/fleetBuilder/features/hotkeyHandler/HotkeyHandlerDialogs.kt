@@ -63,7 +63,7 @@ import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.getAdmiralSkills
 import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
+import fleetBuilder.util.deferredAction.SectorTaskScheduler
 import fleetBuilder.util.lib.ClipboardUtil
 import lunalib.lunaExtensions.addLunaElement
 import org.lazywizard.lazylib.MathUtils
@@ -171,7 +171,7 @@ object HotkeyHandlerDialogs {
                     //Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
 
                     val test = SectorUtils.getCargoFromSectorSubmarkets()
-                    DisplayMessage.showMessage("size = ${test.size}", Color.BLUE)
+                    //DisplayMessage.showMessage("size = ${test.size}", Color.BLUE)
 
                     //val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
                     //val variant = memberInRefit.variant ?: return@onClick
@@ -189,8 +189,6 @@ object HotkeyHandlerDialogs {
 
                     val memory = sector?.memoryWithoutUpdate
 
-                    openFileViewPanel()
-
 
                     val member = ReflectionMisc.getCurrentMemberInRefitTab()
                     if (member != null) {
@@ -200,6 +198,13 @@ object HotkeyHandlerDialogs {
                             memberMemory.set("\$test", true)
                     }
 
+
+                    //openFileViewPanel()
+
+
+                    SectorTaskScheduler.performLater(0) {
+                        //DisplayMessage.showMessage("Test", Color.BLUE)
+                    }
 
                     //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
                     /*val state = AppDriver.getInstance().currentState
@@ -1447,7 +1452,7 @@ object HotkeyHandlerDialogs {
                         val missing = MissingContent()
                         val data = ClipboardMisc.extractDataFromClipboard(missing)
                         if (data != null && (data is DataFleet.ParsedFleetData || data is DataMember.ParsedMemberData || data is DataVariant.ParsedVariantData)) {
-                            CampaignDeferredActionPlugin.performLater(0f) {
+                            SectorTaskScheduler.performLater(systemTime = true) {
                                 pasteFleet(data, missing)
                             }
                         }

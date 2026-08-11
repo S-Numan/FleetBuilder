@@ -18,8 +18,8 @@ import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedSt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.util.deferredAction.CampaignDeferredActionPlugin
-import fleetBuilder.util.deferredAction.CombatDeferredActionPlugin
+import fleetBuilder.util.deferredAction.CombatTaskScheduler
+import fleetBuilder.util.deferredAction.SectorTaskScheduler
 
 // Initial code taken from Ship Mastery System by float
 
@@ -76,7 +76,7 @@ object RecentBattleReplay {
                     member.updateStats()
                 }
 
-                CampaignDeferredActionPlugin.performLater {
+                SectorTaskScheduler.performLater(systemTime = true) {
                     sector.lastPlayerBattleTimestamp = lastPlayerBattleTimestamp!!
                     sector.isLastPlayerBattleWon = lastPlayerBattleWon!!
 
@@ -89,7 +89,7 @@ object RecentBattleReplay {
                 onBackFromEngagement(true)
             }
             if (!dummyOpen) {
-                CampaignDeferredActionPlugin.performOnPlayerBattleFinish {
+                SectorTaskScheduler.performOnPlayerBattleFinish {
                     onBackFromEngagement(false)
                 }
             }
@@ -123,7 +123,7 @@ object RecentBattleReplay {
 
             engine.customData[IS_SIMULATOR_KEY] = true
 
-            CombatDeferredActionPlugin.performOnPlayerBattleStart {
+            CombatTaskScheduler.performOnPlayerBattleStart {
                 val engine = CombatEngine.getInstance()
                 engine.addPlugin(object : BaseEveryFrameCombatPlugin() {
                     private var removedConfirm = false
