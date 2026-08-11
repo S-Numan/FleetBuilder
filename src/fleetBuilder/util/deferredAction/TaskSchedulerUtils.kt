@@ -2,7 +2,7 @@ package fleetBuilder.util.deferredAction
 
 import com.fs.starfarer.api.Global
 
-internal object DeferredActionUtils {
+internal object TaskSchedulerUtils {
     inline fun safeRun(what: String, block: () -> Unit) {
         try {
             block()

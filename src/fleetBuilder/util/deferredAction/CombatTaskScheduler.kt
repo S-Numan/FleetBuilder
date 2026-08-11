@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.input.InputEventAPI
-import fleetBuilder.util.deferredAction.DeferredActionUtils.safeRun
+import fleetBuilder.util.deferredAction.TaskSchedulerUtils.safeRun
 import java.util.*
 
 class CombatTaskScheduler : BaseEveryFrameCombatPlugin() {
