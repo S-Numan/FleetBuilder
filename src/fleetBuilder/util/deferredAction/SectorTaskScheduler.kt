@@ -80,7 +80,7 @@ class SectorTaskScheduler : EveryFrameScript {
                 time =
                     if (systemTime) System.nanoTime() + convertedInterval
                     else Global.getSector().clock.timestamp + convertedInterval,
-                interval = if (systemTime) convertedInterval else convertedInterval,
+                interval = convertedInterval,
                 handle = handle
             )
 
