@@ -199,12 +199,8 @@ object HotkeyHandlerDialogs {
                     }
 
 
-                    //openFileViewPanel()
+                    openFileViewPanel()
 
-
-                    SectorTaskScheduler.performLater(0) {
-                        //DisplayMessage.showMessage("Test", Color.BLUE)
-                    }
 
                     //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
                     /*val state = AppDriver.getInstance().currentState

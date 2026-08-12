@@ -89,7 +89,7 @@ object RecentBattleReplay {
                 onBackFromEngagement(true)
             }
             if (!dummyOpen) {
-                SectorTaskScheduler.performOnPlayerBattleFinish {
+                SectorTaskScheduler.performAfterPlayerBattle {
                     onBackFromEngagement(false)
                 }
             }
