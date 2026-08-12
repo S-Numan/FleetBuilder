@@ -75,6 +75,9 @@ object DisplayMessage {
         // Console or logger output
         if (FBSettings.isConsoleModEnabled) {
             if (e != null) {
+                if (!Console.getSettings().showExceptionDetails)
+                    Console.getSettings().showExceptionDetails = true
+
                 Console.showException(logged, e)
             } else {
                 Console.showMessage(callerClass.name + " - " + logged, Level.ERROR)

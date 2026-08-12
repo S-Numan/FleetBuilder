@@ -30,8 +30,8 @@ import fleetBuilder.util.api.kotlin.safeInvoke
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
-import org.magiclib.util.api.toJson
-import org.magiclib.util.api.toList
+import org.magiclib.kotlin.toJson
+import org.magiclib.kotlin.toList
 
 //The implementation of this is extremely scuffed, I am aware.
 

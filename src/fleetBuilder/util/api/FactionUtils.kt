@@ -2,7 +2,7 @@ package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
-import org.magiclib.util.api.toList
+import org.magiclib.kotlin.toList
 
 object FactionUtils {
 

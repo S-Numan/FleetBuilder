@@ -1,5 +1,10 @@
 import java.util.zip.ZipFile
 
+// Workaround for a Kotlin Gradle plugin race: the compiler daemon
+// can try to write its session-alive flag file before build/.kotlin/sessions/ exists.
+layout.buildDirectory.dir(".kotlin/sessions").get().asFile.mkdirs()
+
+
 /**
  * The name of your mod. Used to create a mod folder name (and the name of your mod, if using auto-updated mod_info.json).
  * Defaults to the name of the mod's folder.
