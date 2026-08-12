@@ -63,7 +63,6 @@ import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.getAdmiralSkills
 import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.util.deferredAction.SectorTaskScheduler
 import fleetBuilder.util.lib.ClipboardUtil
 import lunalib.lunaExtensions.addLunaElement
 import org.lazywizard.lazylib.MathUtils
@@ -78,6 +77,8 @@ import org.magiclib.util.api.kotlin.getActualCurrentTab
 import org.magiclib.util.api.kotlin.getEffectiveHull
 import org.magiclib.util.api.kotlin.removeModFull
 import org.magiclib.util.membermemory.MemberMemoryExt.getMemberMemory
+import org.magiclib.util.taskScheduler.CombatTaskScheduler
+import org.magiclib.util.taskScheduler.SectorTaskScheduler
 import second_in_command.SCData
 import second_in_command.SCUtils
 import second_in_command.specs.SCOfficer
@@ -200,7 +201,6 @@ object HotkeyHandlerDialogs {
 
 
                     openFileViewPanel()
-
 
                     //CombatEngine.getInstance()?.combatUI?.setAutopilot(true)
                     /*val state = AppDriver.getInstance().currentState

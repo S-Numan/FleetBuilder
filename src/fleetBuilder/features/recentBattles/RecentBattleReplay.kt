@@ -18,8 +18,8 @@ import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedSt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.util.deferredAction.CombatTaskScheduler
-import fleetBuilder.util.deferredAction.SectorTaskScheduler
+import org.magiclib.util.taskScheduler.CombatTaskScheduler
+import org.magiclib.util.taskScheduler.SectorTaskScheduler
 
 // Initial code taken from Ship Mastery System by float
 

@@ -5,11 +5,11 @@ import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.util.FBMisc.isConsoleOpen
 import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
 import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.util.deferredAction.SectorTaskScheduler
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
 import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
+import org.magiclib.util.taskScheduler.SectorTaskScheduler
 
 class ForcePaste : BaseCommand {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {

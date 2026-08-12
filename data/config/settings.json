@@ -1,6 +1,5 @@
 {
   "plugins": {
-    "CombatTaskScheduler": "fleetBuilder.util.deferredAction.CombatTaskScheduler",
     "CacheObfOnTitle": "fleetBuilder.core.integration.listener.CacheObfOnTitle",
     "TitleAutofitAdder": "fleetBuilder.features.autofit.listener.TitleAutofitAdder",
     "CodexAutofitButton": "fleetBuilder.features.autofit.listener.CodexAutofitButton",

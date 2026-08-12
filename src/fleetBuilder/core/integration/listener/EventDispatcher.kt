@@ -31,7 +31,6 @@ import fleetBuilder.features.removeOldIntelUpdates.RemoveOldIntelUpdates
 import fleetBuilder.features.removeRefitHullMod.RemoveRefitHullmod
 import fleetBuilder.features.transponderOff.TransponderOff
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.deferredAction.SectorTaskScheduler
 import fleetBuilder.util.listeners.MemberChangeEvents
 import fleetBuilder.util.listeners.MemberChangeTracker
 import fleetBuilder.util.listeners.OfficerChangeEvents
@@ -157,10 +156,6 @@ internal class EventDispatcher : EveryFrameScript {
             val sector = Global.getSector() ?: run {
                 throw Error("How was sector null here?")
             }
-
-            val deferredActionPlugin = SectorTaskScheduler()
-            manageTransientScript(SectorTaskScheduler::class.java) { deferredActionPlugin }
-            SectorTaskScheduler.setActive(deferredActionPlugin)
 
             sector.addTransientScript(eventDispatcher)
 
