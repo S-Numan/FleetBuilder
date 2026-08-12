@@ -70,14 +70,8 @@ import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
-import org.magiclib.util.api.FleetUtils.repairAndRestoreCR
-import org.magiclib.util.api.SectorUtils
-import org.magiclib.util.api.kotlin.createFleetMember
-import org.magiclib.util.api.kotlin.getActualCurrentTab
-import org.magiclib.util.api.kotlin.getEffectiveHull
-import org.magiclib.util.api.kotlin.removeModFull
+import org.magiclib.util.api.*
 import org.magiclib.util.membermemory.MemberMemoryExt.getMemberMemory
-import org.magiclib.util.taskScheduler.CombatTaskScheduler
 import org.magiclib.util.taskScheduler.SectorTaskScheduler
 import second_in_command.SCData
 import second_in_command.SCUtils
@@ -171,7 +165,7 @@ object HotkeyHandlerDialogs {
                     //DisplayMessage.showError("Test Message: " + Random().nextInt())
                     //Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
 
-                    val test = SectorUtils.getCargoFromSectorSubmarkets()
+                    val test = getCargoFromSectorSubmarkets()
                     //DisplayMessage.showMessage("size = ${test.size}", Color.BLUE)
 
                     //val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
@@ -723,7 +717,7 @@ object HotkeyHandlerDialogs {
             }
 
             if (repairAndSetMaxCR)
-                repairAndRestoreCR(fleet.fleetData)
+                fleet.fleetData.repairAndRestoreCR()
 
             if (fightToTheLast)
                 fleet.memoryWithoutUpdate[MemFlags.FLEET_FIGHT_TO_THE_LAST] = true

@@ -22,7 +22,7 @@ import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.Console
-import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.getActualCurrentTab
 
 class CopyFleet : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {

@@ -18,7 +18,7 @@ import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
-import org.magiclib.util.api.kotlin.createFleetMember
+import org.magiclib.util.api.createFleetMember
 import java.awt.Color
 import kotlin.math.max
 

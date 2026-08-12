@@ -27,7 +27,7 @@ import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.util.api.kotlin.isIdle
 import fleetBuilder.util.api.kotlin.safeInvoke
-import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.getActualCurrentTab
 
 object ReflectionMisc {
 

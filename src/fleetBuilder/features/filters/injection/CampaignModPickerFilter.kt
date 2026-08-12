@@ -8,7 +8,7 @@ import fleetBuilder.features.filters.filterPanels.ModPickerFilterPanel
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
-import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.getActualCurrentTab
 
 internal class CampaignModPickerFilter : EveryFrameScript {
     override fun isDone(): Boolean {

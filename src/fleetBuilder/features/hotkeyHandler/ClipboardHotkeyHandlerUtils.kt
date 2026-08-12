@@ -56,7 +56,7 @@ import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
-import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.getActualCurrentTab
 import java.awt.Color
 
 internal object ClipboardHotkeyHandlerUtils {

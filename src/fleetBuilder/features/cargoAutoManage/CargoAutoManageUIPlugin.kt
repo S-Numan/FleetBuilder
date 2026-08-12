@@ -30,8 +30,8 @@ import fleetBuilder.util.api.kotlin.safeInvoke
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
-import org.magiclib.util.api.JSONUtils
-import org.magiclib.util.api.kotlin.toJson
+import org.magiclib.util.api.toJson
+import org.magiclib.util.api.toList
 
 //The implementation of this is extremely scuffed, I am aware.
 
@@ -403,7 +403,7 @@ internal class CargoAutoManageUIPlugin(
                             cargoAutoManagerPoliciesJSON.put("policies", JSONArray())
                         }
                         @Suppress("UNCHECKED_CAST")
-                        val cargoAutoManagerPoliciesTemp = JSONUtils.jsonToList(cargoAutoManagerPoliciesJSON.getJSONArray("policies")) as List<Map<*, *>>
+                        val cargoAutoManagerPoliciesTemp = cargoAutoManagerPoliciesJSON.getJSONArray("policies").toList() as List<Map<*, *>>
                         val cargoAutoManagerPolicies = cargoAutoManagerPoliciesTemp.map { loadCargoAutoManageFromMap(it, true) }.sortedBy { it.orderInList }.toMutableList()
 
 

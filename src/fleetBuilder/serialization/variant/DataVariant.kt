@@ -14,10 +14,10 @@ import fleetBuilder.util.api.VariantUtils
 import org.magiclib.kotlin.getErrorVariantID
 import org.magiclib.kotlin.getHullIdForVariantId
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.kotlin.createHullVariant
-import org.magiclib.util.api.kotlin.getActualHullId
-import org.magiclib.util.api.kotlin.getModules
-import org.magiclib.util.api.kotlin.removeModFull
+import org.magiclib.util.api.createHullVariant
+import org.magiclib.util.api.getActualHullId
+import org.magiclib.util.api.getModules
+import org.magiclib.util.api.removeModFull
 
 object DataVariant {
 

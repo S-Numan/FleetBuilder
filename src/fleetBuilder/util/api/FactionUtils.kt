@@ -2,7 +2,7 @@ package fleetBuilder.util.api
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ModSpecAPI
-import org.magiclib.util.api.JSONUtils
+import org.magiclib.util.api.toList
 
 object FactionUtils {
 
@@ -30,7 +30,7 @@ object FactionUtils {
 
         val path = "data/world/factions/factions.csv"
         val csv = settings.getMergedSpreadsheetData("faction", path)
-        val csvList = JSONUtils.jsonToList(csv)
+        val csvList = csv.toList()
 
         val factions = sector.allFactions
 

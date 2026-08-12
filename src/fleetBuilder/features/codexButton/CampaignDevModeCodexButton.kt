@@ -21,7 +21,7 @@ import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.util.ReflectionMisc
 import org.lwjgl.input.Keyboard
-import org.magiclib.util.api.kotlin.createHullVariant
+import org.magiclib.util.api.createHullVariant
 
 internal class CampaignDevModeCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {

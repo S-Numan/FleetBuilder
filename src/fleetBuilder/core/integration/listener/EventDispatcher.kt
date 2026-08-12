@@ -182,7 +182,7 @@ internal class EventDispatcher : EveryFrameScript {
             try {
                 MakeSaveRemovable.beforeGameSave()
             } catch (e: Exception) {
-                Global.getLogger(this.javaClass).error("Error in beforeGameSave", e)
+                Global.getLogger(this::class.java).error("Error in beforeGameSave", e)
             }
         }
 

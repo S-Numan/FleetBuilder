@@ -8,7 +8,7 @@ import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.CommandUtils
 import org.lazywizard.console.Console
-import org.magiclib.util.api.kotlin.getMaxOfficerLevel
+import org.magiclib.util.api.getMaxOfficerLevel
 import kotlin.math.max
 import kotlin.math.min
 

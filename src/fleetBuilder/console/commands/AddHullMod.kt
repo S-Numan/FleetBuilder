@@ -11,7 +11,7 @@ import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.CommandUtils.findBestStringMatch
 import org.lazywizard.console.Console
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.kotlin.removeModFull
+import org.magiclib.util.api.removeModFull
 
 class AddHullMod : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {

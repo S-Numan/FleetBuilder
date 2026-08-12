@@ -34,7 +34,7 @@ import fleetBuilder.util.lib.ClipboardUtil
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.kotlin.createHullVariant
+import org.magiclib.util.api.createHullVariant
 import java.awt.Color
 
 object ClipboardMisc {

@@ -23,9 +23,7 @@ import fleetBuilder.util.api.kotlin.safeGet
 import org.magiclib.kotlin.doesFileExist
 import org.magiclib.kotlin.getErrorVariantID
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.SectorUtils
-import org.magiclib.util.api.kotlin.getModules
-import org.magiclib.util.api.kotlin.removeModFull
+import org.magiclib.util.api.*
 
 // Jank code alert!
 
@@ -294,9 +292,9 @@ internal object RemoveFromSave {
         val sector = Global.getSector()!!
         val locations = sector.allLocations
 
-        val markets = SectorUtils.getSectorMarkets()
-        val submarkets = SectorUtils.getSubmarkets(markets)
-        val cargos = SectorUtils.getCargoFromSubmarkets(submarkets)
+        val markets = getSectorMarkets()
+        val submarkets = getSubmarkets(markets)
+        val cargos = getCargoFromSubmarkets(submarkets)
 
         val fleetMembers = listOf(
             locations.flatMap { it.fleets }.map { it.fleetData }, // Ships in active fleets.

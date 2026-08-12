@@ -22,10 +22,10 @@ import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.kotlin.allRegularHullMods
-import org.magiclib.util.api.kotlin.getEffectiveHullId
-import org.magiclib.util.api.kotlin.getModules
-import org.magiclib.util.api.kotlin.removeModFull
+import org.magiclib.util.api.allRegularHullMods
+import org.magiclib.util.api.getEffectiveHullId
+import org.magiclib.util.api.getModules
+import org.magiclib.util.api.removeModFull
 import java.awt.Color
 import kotlin.math.min
 

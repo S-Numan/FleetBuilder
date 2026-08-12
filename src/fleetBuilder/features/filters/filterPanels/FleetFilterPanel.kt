@@ -16,8 +16,8 @@ import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.kotlin.allDMods
-import org.magiclib.util.api.kotlin.allSMods
+import org.magiclib.util.api.allDMods
+import org.magiclib.util.api.allSMods
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
 

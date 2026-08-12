@@ -18,8 +18,8 @@ import fleetBuilder.util.api.CargoUtils.getFractionHoldableSupplies
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.api.PersonUtils.copyOfficerDataTo
 import org.magiclib.kotlin.getMaxOfficers
-import org.magiclib.util.api.FleetUtils.repairAndRestoreCR
-import org.magiclib.util.api.kotlin.getAssignedOfficers
+import org.magiclib.util.api.getAssignedOfficers
+import org.magiclib.util.api.repairAndRestoreCR
 import second_in_command.specs.SCSpecStore
 
 object FleetUtils {
@@ -180,7 +180,7 @@ object FleetUtils {
             }
         }
         // Repair
-        repairAndRestoreCR(playerFleet.fleetData)
+        playerFleet.fleetData.repairAndRestoreCR()
 
         updateFleetPanelContents()
     }

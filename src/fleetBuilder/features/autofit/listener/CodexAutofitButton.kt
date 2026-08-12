@@ -15,7 +15,7 @@ import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.addShortcutNoShow
 import fleetBuilder.util.ReflectionMisc
-import org.magiclib.util.api.kotlin.createHullVariant
+import org.magiclib.util.api.createHullVariant
 
 internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin() {
 

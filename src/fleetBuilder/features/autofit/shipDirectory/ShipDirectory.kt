@@ -17,8 +17,8 @@ import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.util.api.VariantUtils
 import org.json.JSONArray
 import org.json.JSONObject
-import org.magiclib.util.api.kotlin.getActualHullId
-import org.magiclib.util.api.kotlin.getEffectiveHullId
+import org.magiclib.util.api.getActualHullId
+import org.magiclib.util.api.getEffectiveHullId
 import java.text.SimpleDateFormat
 import java.util.*
 

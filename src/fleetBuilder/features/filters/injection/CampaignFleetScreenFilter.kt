@@ -9,7 +9,7 @@ import fleetBuilder.features.filters.filterPanels.FleetFilterPanel
 import fleetBuilder.features.filters.filterPanels.FleetFilterPanel.Companion.removePreviousIfAny
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.util.ReflectionMisc
-import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.getActualCurrentTab
 
 internal class CampaignFleetScreenFilter : EveryFrameScript {
     override fun isDone(): Boolean {

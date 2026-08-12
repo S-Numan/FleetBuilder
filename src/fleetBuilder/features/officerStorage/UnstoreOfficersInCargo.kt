@@ -12,8 +12,8 @@ import fleetBuilder.core.util.FBTxt
 import org.lwjgl.input.Mouse
 import org.magiclib.kotlin.getMaxOfficers
 import org.magiclib.kotlin.isMercenary
-import org.magiclib.util.api.kotlin.getActualCurrentTab
-import org.magiclib.util.api.kotlin.getAssignedOfficers
+import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.api.getAssignedOfficers
 
 internal class UnstoreOfficersInCargo : EveryFrameScript {
     override fun advance(amount: Float) {

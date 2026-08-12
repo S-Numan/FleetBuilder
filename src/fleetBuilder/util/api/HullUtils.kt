@@ -4,10 +4,9 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.impl.SharedUnlockData
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.util.Misc
-import fleetBuilder.util.api.HullUtils.isDHullFix
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.HullUtils.getActualHull
-import org.magiclib.util.api.HullUtils.isSkin
+import org.magiclib.util.api.getActualHull
+import org.magiclib.util.api.isSkin
 
 object HullUtils {
 
@@ -54,8 +53,8 @@ object HullUtils {
      */
     // Marked as private to avoid confusion
     private fun isDSkin(hull: ShipHullSpecAPI): Boolean {
-        val hull = getActualHull(hull)
-        return isSkin(hull) && hull.builtInMods.any { MagicLookup.getHullModSpec(it)?.hasTag(Tags.HULLMOD_DMOD) == true } // Has DMod as built in mod
+        val hull = hull.getActualHull()
+        return hull.isSkin() && hull.builtInMods.any { MagicLookup.getHullModSpec(it)?.hasTag(Tags.HULLMOD_DMOD) == true } // Has DMod as built in mod
                 && hull.isRestoreToBase // And is restorable
     }
 
@@ -83,7 +82,7 @@ object HullUtils {
     internal fun getCompatibleDLessHull(
         hull: ShipHullSpecAPI,
     ): ShipHullSpecAPI {
-        val hull = getActualHull(hull)
+        val hull = hull.getActualHull()
         if (!hull.isCompatibleWithBase) return hull
         if (!isDSkin(hull)) return hull
         return hull.dParentHull?.let { getCompatibleDLessHull(hull) } ?: hull.baseHull ?: hull

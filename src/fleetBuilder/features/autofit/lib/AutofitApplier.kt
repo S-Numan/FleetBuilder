@@ -20,9 +20,9 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
 import fleetBuilder.util.api.kotlin.safeInvoke
-import org.magiclib.util.api.kotlin.createHullVariant
-import org.magiclib.util.api.kotlin.getModules
-import org.magiclib.util.api.kotlin.getSlotsForModules
+import org.magiclib.util.api.createHullVariant
+import org.magiclib.util.api.getModules
+import org.magiclib.util.api.getSlotsForModules
 import java.awt.Color
 import java.util.*
 

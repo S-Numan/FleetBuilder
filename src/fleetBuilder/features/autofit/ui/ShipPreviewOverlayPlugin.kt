@@ -13,8 +13,8 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.ui.UIUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11.*
-import org.magiclib.util.api.kotlin.allDMods
-import org.magiclib.util.api.kotlin.getEffectiveHullId
+import org.magiclib.util.api.allDMods
+import org.magiclib.util.api.getEffectiveHullId
 import java.awt.Color
 import kotlin.math.max
 

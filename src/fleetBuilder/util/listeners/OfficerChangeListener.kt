@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetBuilder.util.ReflectionMisc
-import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.getActualCurrentTab
 import java.util.concurrent.CopyOnWriteArrayList
 
 fun interface OfficerChangeListener {

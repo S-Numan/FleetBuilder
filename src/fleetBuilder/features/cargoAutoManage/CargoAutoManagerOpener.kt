@@ -19,7 +19,7 @@ import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
-import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.getActualCurrentTab
 
 internal class CargoAutoManagerOpener : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 1

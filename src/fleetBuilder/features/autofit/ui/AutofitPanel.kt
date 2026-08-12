@@ -47,7 +47,7 @@ import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.MagicLookup.getAllDMods
-import org.magiclib.util.api.kotlin.*
+import org.magiclib.util.api.*
 import java.awt.Color
 
 

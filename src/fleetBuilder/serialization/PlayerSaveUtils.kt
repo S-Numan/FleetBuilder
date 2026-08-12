@@ -34,7 +34,7 @@ import org.lazywizard.lazylib.ext.json.optFloat
 import org.lwjgl.util.vector.Vector2f
 import org.magiclib.kotlin.getStorageCargo
 import org.magiclib.util.MagicCampaign
-import org.magiclib.util.api.SectorUtils
+import org.magiclib.util.api.getSectorMarkets
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -123,7 +123,7 @@ object PlayerSaveUtils {
 
         if (handleSubmarketCargo) {
             try {
-                val markets = SectorUtils.getSectorMarkets()
+                val markets = getSectorMarkets()
                 val checkedStorages = mutableSetOf<CargoAPI>()
 
                 @Suppress("UNCHECKED_CAST")

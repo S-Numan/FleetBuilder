@@ -22,7 +22,7 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
-import org.magiclib.util.api.kotlin.getActualCurrentTab
+import org.magiclib.util.api.getActualCurrentTab
 
 internal class CatchStoreMemberButton : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 10

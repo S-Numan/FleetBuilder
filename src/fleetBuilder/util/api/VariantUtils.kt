@@ -9,10 +9,9 @@ import fleetBuilder.core.config.FBConst
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.api.VariantUtils.isVariantKnownToPlayer
 import org.magiclib.kotlin.getBuildInBonusXP
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.kotlin.*
+import org.magiclib.util.api.*
 
 object VariantUtils {
 

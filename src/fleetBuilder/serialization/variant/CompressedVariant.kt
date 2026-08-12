@@ -19,7 +19,7 @@ import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.toBinary
 import fleetBuilder.util.lib.CompressionUtil
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.kotlin.getBuiltInDMods
+import org.magiclib.util.api.getBuiltInDMods
 
 object CompressedVariant {
     fun isCompressedVariant(comp: String): Boolean {

@@ -23,8 +23,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.magiclib.util.MagicLookup.getHullSpec
 import org.magiclib.util.MagicLookup.getVariantsForEffectiveHullSpec
-import org.magiclib.util.api.kotlin.getActualHullId
-import org.magiclib.util.api.kotlin.getEffectiveHullId
+import org.magiclib.util.api.getActualHullId
+import org.magiclib.util.api.getEffectiveHullId
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.max

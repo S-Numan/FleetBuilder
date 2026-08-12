@@ -23,8 +23,8 @@ import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.util.vector.Vector2f
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.kotlin.getActualCurrentTab
-import org.magiclib.util.api.kotlin.removeModFull
+import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.api.removeModFull
 
 internal class RemoveRefitHullmod : CampaignInputListener {
 
