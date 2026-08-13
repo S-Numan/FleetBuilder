@@ -7,13 +7,13 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.HullModItemManager
+import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.serialization.GameModInfo
-
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.MemberUtils
 import fleetBuilder.util.api.VariantUtils
@@ -29,7 +29,31 @@ import org.magiclib.util.api.removeModFull
 import java.awt.Color
 import kotlin.math.min
 
+
 internal object FBMisc {
+
+    //Nex
+    /**
+     * Adds an intel item that "ends" as soon as it starts (e.g. notification messages).
+     * @param <T>
+     * @param intel
+    </T> */
+    fun <T : BaseIntelPlugin?> addExpiringIntel(intel: T?) {
+        Global.getSector().intelManager.addIntel(intel)
+        Global.getSector().addScript(intel)
+        intel!!.endAfterDelay()
+    }
+
+    fun printStackTrace(depth: Int): String {
+        var output: String = ""
+        val stack = Thread.currentThread().stackTrace
+        // skip the first two elements, which are getStackTrace and this method itself
+        for (i in 2..<depth + 2) {
+            if (i >= stack.size) return output
+            output + stack[i].toString()
+        }
+        return output
+    }
 
     internal inline fun runSafe(block: () -> Unit) {
         try {
