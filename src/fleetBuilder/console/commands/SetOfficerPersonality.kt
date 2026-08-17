@@ -12,8 +12,8 @@ import org.lazywizard.console.Console
 class SetOfficerPersonality : BaseCommandWithSuggestion {
     val personalities = listOf(Personalities.TIMID, Personalities.CAUTIOUS, Personalities.STEADY, Personalities.AGGRESSIVE, Personalities.RECKLESS)
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
-        val refitPanel = ReflectionMisc.getRefitPanel()
-        if (refitPanel == null) {
+        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        if (refitTab == null) {
             Console.showMessage("Must be in refit tab")
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
@@ -21,7 +21,7 @@ class SetOfficerPersonality : BaseCommandWithSuggestion {
             return CommandResult.BAD_SYNTAX
         }
 
-        val member = ReflectionMisc.getCurrentMemberInRefitTab()
+        val member = refitTab.getCurrentMember()
         if (member == null) {
             Console.showMessage("Failed to get member in refit screen")
             return BaseCommand.CommandResult.ERROR

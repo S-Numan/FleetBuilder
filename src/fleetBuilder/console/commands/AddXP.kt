@@ -16,8 +16,8 @@ class AddXP : BaseCommand {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
         var officer: PersonAPI? = null
 
-        val refitPanel = ReflectionMisc.getRefitPanel()
-        if (refitPanel == null) {
+        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        if (refitTab == null) {
             if (context.isInCampaign)
                 officer = Global.getSector()!!.playerPerson
             else {
@@ -26,7 +26,7 @@ class AddXP : BaseCommand {
         }
 
         if (officer == null) {
-            val member = ReflectionMisc.getCurrentMemberInRefitTab()
+            val member = refitTab?.getCurrentMember()
             if (member == null) {
                 Console.showMessage("Failed to get member in refit screen")
                 return BaseCommand.CommandResult.ERROR

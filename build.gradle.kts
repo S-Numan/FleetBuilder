@@ -1,7 +1,7 @@
 import java.util.zip.ZipFile
 
-// Workaround for a Kotlin Gradle plugin race: the compiler daemon
-// can try to write its session-alive flag file before build/.kotlin/sessions/ exists.
+// Workaround for a Gradle issue: the Kotlin compiler can try to write its session-alive flag file before build/.kotlin/sessions/ exists.
+// This creates the folder preemptively before compilation to avoid that issue.
 layout.buildDirectory.dir(".kotlin/sessions").get().asFile.mkdirs()
 
 

@@ -14,6 +14,7 @@ import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.addShortcutNoShow
+import fleetBuilder.util.InternalReflectionMisc
 import fleetBuilder.util.ReflectionMisc
 import org.magiclib.util.api.createHullVariant
 
@@ -94,7 +95,7 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
             )
             openAutofitButton!!.width = Global.getSettings().computeStringWidth(buttonText, Fonts.ORBITRON_20AA) + 12f
 
-            val belowTitleBarDeeperPanel = ReflectionMisc.getBelowTitleDeeperPanel(codex)
+            val belowTitleBarDeeperPanel = InternalReflectionMisc.getBelowTitleDeeperPanel(codex)
             val shipDisplay = belowTitleBarDeeperPanel?.findChildWithMethod("isSchematicMode") as? UIPanelAPI ?: return
 
             val leftPanelSize = belowTitleBarDeeperPanel.x - codex.x

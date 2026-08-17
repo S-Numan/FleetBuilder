@@ -185,7 +185,7 @@ object HotkeyHandlerDialogs {
                     val memory = sector?.memoryWithoutUpdate
 
 
-                    val member = ReflectionMisc.getCurrentMemberInRefitTab()
+                    val member = ReflectionMisc.getBoxedRefitTab()?.getCurrentMember()
                     if (member != null) {
                         val memberMemory = member.getMemberMemory()
 

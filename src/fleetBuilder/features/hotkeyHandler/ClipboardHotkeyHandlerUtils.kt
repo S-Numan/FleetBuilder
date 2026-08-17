@@ -47,8 +47,8 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
+import fleetBuilder.util.InternalReflectionMisc
 import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel
 import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
 import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.MemberUtils.randomizeMemberCosmetics
@@ -117,7 +117,7 @@ internal object ClipboardHotkeyHandlerUtils {
     fun handleFleetMouseEvents(
         event: InputEventAPI
     ): Unit = hotkeySafe {
-        val memberUI = getMemberUIHoveredInFleetTabLowerPanel() ?: return
+        val memberUI = InternalReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel() ?: return
 
         val member =
             memberUI.getFieldsMatching(type = FleetMember::class.java)
@@ -369,7 +369,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleRefitCopy(isShiftDown: Boolean): Boolean {
-        val baseVariant = ReflectionMisc.getCurrentVariantInRefitTab() ?: return false
+        val baseVariant = ReflectionMisc.getBoxedRefitTab()?.getCurrentVariant() ?: return false
 
         ClipboardMisc.saveVariantToClipboard(baseVariant, isShiftDown)
         return true

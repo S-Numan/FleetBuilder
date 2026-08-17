@@ -19,6 +19,7 @@ import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.width
+import fleetBuilder.util.InternalReflectionMisc
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.util.vector.Vector2f
@@ -54,8 +55,8 @@ internal class RemoveRefitHullmod : CampaignInputListener {
         if (isAutofitPanelOpen) return
 
         try {
-            val refitPanel = ReflectionMisc.getRefitPanel() ?: return
-            val modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return
+            val refitTab = ReflectionMisc.getBoxedRefitTab() ?: return
+            val modWidget = InternalReflectionMisc.getRefitPanelModWidget(refitTab.refitPanel) ?: return
 
             val modWidgetModIcons = modWidget.findChildWithMethod("getColumns")
 
@@ -76,17 +77,17 @@ internal class RemoveRefitHullmod : CampaignInputListener {
                         ?: return@forEach
                     val hullModID = hullModField.get(item) as? HullModSpecAPI ?: return@forEach
 
-                    val variant = ReflectionMisc.getCurrentVariantInRefitTab()
+                    val variant = refitTab.getCurrentVariant()
                     if (variant != null) {
                         if (variant.hullSpec.builtInMods.contains(hullModID.id)) {//Built in SMod?
                             if (variant.sModdedBuiltIns.contains(hullModID.id)) {
                                 variant.removeModFull(hullModID.id)
-                                refitPanel.safeInvoke("syncWithCurrentVariant")
+                                refitTab.syncWithCurrentVariant()
 
                                 DisplayMessage.showMessage(FBTxt.txt("removed_smoddedbuiltin", hullModID.displayName))
                             } else if (MagicLookup.getAllDMods().contains(hullModID.id)) {//Built in DMod?
                                 variant.removeModFull(hullModID.id, true)
-                                refitPanel.safeInvoke("syncWithCurrentVariant")
+                                refitTab.syncWithCurrentVariant()
 
                                 DisplayMessage.showMessage(FBTxt.txt("removed_built_in_dmod", hullModID.displayName))
                             } else {
@@ -94,7 +95,7 @@ internal class RemoveRefitHullmod : CampaignInputListener {
                             }
                         } else {
                             variant.removeModFull(hullModID.id)
-                            refitPanel.safeInvoke("syncWithCurrentVariant")
+                            refitTab.syncWithCurrentVariant()
 
                             DisplayMessage.showMessage(FBTxt.txt("removed_hullmod", hullModID.displayName))
                         }

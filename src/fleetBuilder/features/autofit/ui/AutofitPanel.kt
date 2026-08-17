@@ -32,6 +32,7 @@ import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
+import fleetBuilder.util.InternalReflectionMisc
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
@@ -229,7 +230,7 @@ internal object AutofitPanel {
         if (refitPanel != null && shipDisplay != null) {
             fleetMember = refitPanel.safeInvoke("getMember") as? FleetMemberAPI ?: return autofitPanel
             ship = shipDisplay.safeInvoke("getShip") as? ShipAPI ?: return autofitPanel
-            modWidget = ReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return autofitPanel
+            modWidget = InternalReflectionMisc.getRefitPanelModWidget(refitPanel) ?: return autofitPanel
         }
 
         val modWidgetHeight = modWidget?.height ?: 0f

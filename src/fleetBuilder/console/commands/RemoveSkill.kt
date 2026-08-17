@@ -11,8 +11,8 @@ import org.lazywizard.console.Console
 
 class RemoveSkill : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: CommandContext): BaseCommand.CommandResult {
-        val refitPanel = ReflectionMisc.getRefitPanel()
-        if (refitPanel == null) {
+        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        if (refitTab == null) {
             Console.showMessage("Must be in refit tab")
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
@@ -27,7 +27,7 @@ class RemoveSkill : BaseCommandWithSuggestion {
             return BaseCommand.CommandResult.ERROR
         }
 
-        val member = ReflectionMisc.getCurrentMemberInRefitTab()
+        val member = refitTab.getCurrentMember()
         if (member == null) {
             Console.showMessage("Failed to get member in refit screen")
             return BaseCommand.CommandResult.ERROR
@@ -56,8 +56,9 @@ class RemoveSkill : BaseCommandWithSuggestion {
         if (parameter != 0)
             return ArrayList()
 
-        val member = ReflectionMisc.getCurrentMemberInRefitTab()
-        if (member != null && member.captain != null && !member.captain.isDefault) {
+        val member = ReflectionMisc.getBoxedRefitTab()?.getCurrentMember()
+
+        if (member?.captain != null && !member.captain.isDefault) {
             return member.captain.stats.skillsCopy.filter { it.level > 0f }.map { it.skill.id }.toMutableList()
         }
 

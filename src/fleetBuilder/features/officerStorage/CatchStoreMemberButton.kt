@@ -18,6 +18,7 @@ import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.UIUtils
+import fleetBuilder.util.InternalReflectionMisc
 import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
@@ -44,7 +45,7 @@ internal class CatchStoreMemberButton : CampaignInputListener {
             return
 
         fun storeOfficer(captain: PersonAPI) {
-            val submarket = ReflectionMisc.getSelectedSubmarket() ?: return
+            val submarket = InternalReflectionMisc.getSelectedSubmarket() ?: return
             if (!submarket.plugin.isFreeTransfer) return // Don't sell officers
 
             if (!captain.isDefault && !captain.isPlayer && !captain.memoryWithoutUpdate.contains(Misc.CAPTAIN_UNREMOVABLE)
@@ -57,7 +58,7 @@ internal class CatchStoreMemberButton : CampaignInputListener {
         }
 
         fun hoveringOverStore(): FleetMemberAPI? {
-            val memberUI = ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel() ?: return null
+            val memberUI = InternalReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel() ?: return null
 
             try {
                 val parent = (memberUI.safeInvoke("getParent") as? UIPanelAPI) ?: return null
@@ -100,7 +101,7 @@ internal class CatchStoreMemberButton : CampaignInputListener {
             if (event.isConsumed) return@forEach
 
             if (event.eventType == InputEventType.KEY_DOWN && event.eventValue == Keyboard.KEY_S) {
-                val memberUI = ReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel() ?: return@forEach
+                val memberUI = InternalReflectionMisc.getMemberUIHoveredInFleetTabLowerPanel() ?: return@forEach
                 val mouseOverMember = memberUI.getFieldsMatching(type = FleetMember::class.java).getOrNull(0)?.get(memberUI) as? FleetMemberAPI
                     ?: return@forEach
                 val captain = mouseOverMember.captain

@@ -2,8 +2,6 @@ package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
 import fleetBuilder.util.ReflectionMisc
-
-import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
@@ -15,8 +13,8 @@ import org.magiclib.util.api.removeModFull
 
 class AddHullMod : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
-        val refitPanel = ReflectionMisc.getRefitPanel()
-        if (refitPanel == null && !context.isInCampaign) {
+        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        if (refitTab == null && !context.isInCampaign) {
             Console.showMessage("Error: This command can only be used in the campaign or refit tab.")
             return CommandResult.WRONG_CONTEXT
         }
@@ -34,7 +32,7 @@ class AddHullMod : BaseCommandWithSuggestion {
             return BaseCommand.CommandResult.ERROR
         }
 
-        if (refitPanel == null) {
+        if (refitTab == null) {
             val cargo = Global.getSector()?.playerFleet?.cargo ?: return BaseCommand.CommandResult.ERROR
 
             cargo.addHullmods(modId, 1)
@@ -43,7 +41,7 @@ class AddHullMod : BaseCommandWithSuggestion {
         } else {
             val isOf = argList.getOrNull(1)?.lowercase()
 
-            val variant = ReflectionMisc.getCurrentVariantInRefitTab()
+            val variant = refitTab.getCurrentVariant()
             if (variant == null) {
                 Console.showMessage("Failed to get variant in refit screen")
                 return BaseCommand.CommandResult.ERROR
@@ -70,8 +68,7 @@ class AddHullMod : BaseCommandWithSuggestion {
                 }
             }
 
-            refitPanel.safeInvoke("syncWithCurrentVariant")
-
+            refitTab.syncWithCurrentVariant()
 
             Console.showMessage("Added ${addType}hull-mod of id '$modId' to currently viewed variant of hull '${variant.hullSpec.hullName}'")
 

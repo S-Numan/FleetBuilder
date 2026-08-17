@@ -12,8 +12,8 @@ import org.lazywizard.console.Console
 
 class AddSkill : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
-        val refitPanel = ReflectionMisc.getRefitPanel()
-        if (refitPanel == null) {
+        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        if (refitTab == null) {
             Console.showMessage("Must be in refit tab")
             return BaseCommand.CommandResult.WRONG_CONTEXT
         }
@@ -31,7 +31,7 @@ class AddSkill : BaseCommandWithSuggestion {
         val eliteArg = argList.getOrNull(1)
         val isElite = eliteArg != null && (eliteArg.toBoolean == true || "elite".startsWith(eliteArg.lowercase()))
 
-        val member = ReflectionMisc.getCurrentMemberInRefitTab()
+        val member = refitTab.getCurrentMember()
         if (member == null) {
             Console.showMessage("Failed to get member in refit screen")
             return BaseCommand.CommandResult.ERROR
