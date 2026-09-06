@@ -119,7 +119,7 @@ internal object RemoveFromSave {
                 }
             }
 
-            sectorScripts?.forEach { listenerClass ->
+            sectorScripts.forEach { listenerClass ->
                 if (listenerClass.name.startsWith("com")) return@forEach
                 val listenerJarLocation = listenerClass.protectionDomain.codeSource?.location.toString().substringAfter("mods/")
                 modsToRemoveStuffFrom.forEach { mod ->
@@ -289,12 +289,12 @@ internal object RemoveFromSave {
     }
 
     private fun getEntitiesWithThings(): List<HasThing> {
-        val sector = Global.getSector()!!
+        val sector = Global.getSector()
         val locations = sector.allLocations
 
-        val markets = getSectorMarkets()
-        val submarkets = getSubmarkets(markets)
-        val cargos = getCargoFromSubmarkets(submarkets)
+        val markets = sector.getMarkets()
+        val submarkets = sector.getSubmarkets(markets)
+        val cargos = sector.getCargoFromSubmarkets(submarkets)
 
         val fleetMembers = listOf(
             locations.flatMap { it.fleets }.map { it.fleetData }, // Ships in active fleets.

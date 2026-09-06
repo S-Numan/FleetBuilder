@@ -21,7 +21,7 @@ import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector2f

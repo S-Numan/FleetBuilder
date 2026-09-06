@@ -3,7 +3,7 @@ package fleetBuilder.console
 import fleetBuilder.console.commands.AddHullMod
 import fleetBuilder.console.commands.AddXP
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommandListener

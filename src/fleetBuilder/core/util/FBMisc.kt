@@ -1,7 +1,6 @@
 package fleetBuilder.core.util
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CoreUIAPI
 import com.fs.starfarer.api.campaign.SpecialItemData
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin
 import com.fs.starfarer.api.combat.ShipAPI
@@ -14,7 +13,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.MemberUtils
 import fleetBuilder.util.api.VariantUtils
 import org.json.JSONObject
@@ -568,7 +567,7 @@ internal object FBMisc {
     ): Pair<List<String>, Float> {
         val sector = Global.getSector() ?: return emptyList<String>() to 0f
 
-        val coreUI = ReflectionMisc.getCoreUI() as? CoreUIAPI ?: return emptyList<String>() to 0f
+        val coreUI = ReflectionMisc.getCoreUI() ?: return emptyList<String>() to 0f
 
         val playerSPLeft = sector.playerStats.storyPoints
 

@@ -29,7 +29,7 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.lib.ClipboardUtil
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard

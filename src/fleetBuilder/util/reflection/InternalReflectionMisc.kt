@@ -1,10 +1,11 @@
-package fleetBuilder.util
+package fleetBuilder.util.reflection
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.ui.LabelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.econ.Submarket
 import com.fs.starfarer.campaign.fleet.FleetMember
@@ -14,13 +15,14 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.util.ReflectionMisc.getCargoPanel
-import fleetBuilder.util.ReflectionMisc.getCodexDetailPanel
-import fleetBuilder.util.ReflectionMisc.getCoreUI
-import fleetBuilder.util.ReflectionMisc.getFleetPanel
-import fleetBuilder.util.ReflectionMisc.getFleetTab
 import fleetBuilder.util.api.kotlin.isIdle
 import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.util.reflection.ReflectionMisc.getCargoPanel
+import fleetBuilder.util.reflection.ReflectionMisc.getCodexDetailPanel
+import fleetBuilder.util.reflection.ReflectionMisc.getCoreUI
+import fleetBuilder.util.reflection.ReflectionMisc.getFleetPanel
+import fleetBuilder.util.reflection.ReflectionMisc.getFleetTab
+import fleetBuilder.util.reflection.ReflectionMisc.getRefitTab
 import org.magiclib.util.api.getActualCurrentTab
 
 internal object InternalReflectionMisc {
@@ -143,5 +145,16 @@ internal object InternalReflectionMisc {
             val coreUI = getCoreUI()
             coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
         }
+    }
+
+    @JvmStatic
+    fun getCodexDetailLabel(codex: CodexDialog): LabelAPI? {
+        return getCodexDetailPanel(codex)?.getChildrenCopy()?.filterIsInstance<LabelAPI>()?.firstOrNull()
+    }
+
+    @JvmOverloads
+    @JvmStatic
+    fun getRefitPanel(refitTab: UIPanelAPI? = getRefitTab()): UIPanelAPI? {
+        return refitTab?.safeInvoke("getRefitPanel") as? UIPanelAPI
     }
 }

@@ -138,11 +138,11 @@ object JSONPerson {
     fun savePersonToJson(data: DataPerson.ParsedPersonData): JSONObject {
         val json = JSONObject()
 
-        if (data.aiCoreId.isNotBlank())
+        if (data.aiCoreId.isNotEmpty())
             json.put("aicoreid", data.aiCoreId)
 
         json.put("first", data.first)
-        if (data.last.isNotBlank())
+        if (data.last.isNotEmpty())
             json.put("last", data.last)
         if (data.gender != FullName.Gender.ANY)
             json.put("gender", data.gender)

@@ -19,7 +19,7 @@ import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.magiclib.util.api.createHullVariant
 

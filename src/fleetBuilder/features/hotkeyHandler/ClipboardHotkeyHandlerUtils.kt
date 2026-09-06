@@ -47,15 +47,16 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.InternalReflectionMisc
-import fleetBuilder.util.ReflectionMisc
-import fleetBuilder.util.ReflectionMisc.getViewedFleetInFleetPanel
-import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.MemberUtils.randomizeMemberCosmetics
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
+import fleetBuilder.util.reflection.InternalReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc.getViewedFleetInFleetPanel
+import fleetBuilder.util.reflection.ReflectionMisc.updateFleetPanelContents
+import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.magiclib.util.api.getActualCurrentTab
 import java.awt.Color
 
@@ -369,7 +370,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleRefitCopy(isShiftDown: Boolean): Boolean {
-        val baseVariant = ReflectionMisc.getBoxedRefitTab()?.getCurrentVariant() ?: return false
+        val baseVariant = BoxedRefitTab.get()?.getCurrentVariant() ?: return false
 
         ClipboardMisc.saveVariantToClipboard(baseVariant, isShiftDown)
         return true

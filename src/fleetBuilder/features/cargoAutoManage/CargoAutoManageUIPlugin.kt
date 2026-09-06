@@ -25,7 +25,7 @@ import fleetBuilder.ui.addCheckboxD
 import fleetBuilder.ui.customPanel.core.BasePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.json.JSONArray
 import org.json.JSONObject
@@ -750,7 +750,6 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                     event.consume()
 
                     val cargoPanel = ReflectionMisc.getCargoPanel() ?: continue
-                    ?: return
 
                     val dataViewPanels = cargoPanel.allChildrenWithMethod("isInvalidDropTarget")
 

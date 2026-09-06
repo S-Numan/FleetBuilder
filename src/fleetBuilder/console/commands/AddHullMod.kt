@@ -1,7 +1,7 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
@@ -13,7 +13,7 @@ import org.magiclib.util.api.removeModFull
 
 class AddHullMod : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
-        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        val refitTab = BoxedRefitTab.get()
         if (refitTab == null && !context.isInCampaign) {
             Console.showMessage("Error: This command can only be used in the campaign or refit tab.")
             return CommandResult.WRONG_CONTEXT

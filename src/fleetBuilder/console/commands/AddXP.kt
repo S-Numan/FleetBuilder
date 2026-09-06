@@ -3,7 +3,7 @@ package fleetBuilder.console.commands
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.plugins.OfficerLevelupPlugin
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.CommandUtils
@@ -16,7 +16,7 @@ class AddXP : BaseCommand {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
         var officer: PersonAPI? = null
 
-        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        val refitTab = BoxedRefitTab.get()
         if (refitTab == null) {
             if (context.isInCampaign)
                 officer = Global.getSector()!!.playerPerson

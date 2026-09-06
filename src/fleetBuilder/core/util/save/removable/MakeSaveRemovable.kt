@@ -94,10 +94,11 @@ internal object MakeSaveRemovable {
     }
 
     private fun getEntitiesWithThings(markets: List<MarketAPI>): List<HasThing> {
-        val locations = Global.getSector()!!.allLocations
+        val sector = Global.getSector()
+        val locations = sector.allLocations
 
-        val submarkets = getSubmarkets(markets)
-        val cargos = getCargoFromSubmarkets(submarkets)
+        val submarkets = sector.getSubmarkets(markets)
+        val cargos = sector.getCargoFromSubmarkets(submarkets)
 
         val fleetMembers = listOf(
             locations.flatMap { it.fleets }.map { it.fleetData }, // Ships in active fleets.

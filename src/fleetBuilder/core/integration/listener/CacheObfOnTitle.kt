@@ -12,7 +12,7 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getConstructorsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 
 internal class CacheObfOnTitle : BaseEveryFrameCombatPlugin() {

@@ -19,9 +19,10 @@ import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.width
-import fleetBuilder.util.InternalReflectionMisc
-import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.util.reflection.InternalReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
+import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lwjgl.util.vector.Vector2f
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.api.getActualCurrentTab
@@ -55,7 +56,7 @@ internal class RemoveRefitHullmod : CampaignInputListener {
         if (isAutofitPanelOpen) return
 
         try {
-            val refitTab = ReflectionMisc.getBoxedRefitTab() ?: return
+            val refitTab = BoxedRefitTab.get() ?: return
             val modWidget = InternalReflectionMisc.getRefitPanelModWidget(refitTab.refitPanel) ?: return
 
             val modWidgetModIcons = modWidget.findChildWithMethod("getColumns")

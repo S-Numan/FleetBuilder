@@ -12,7 +12,7 @@ import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.isIdle
 import java.text.SimpleDateFormat
 import java.util.*

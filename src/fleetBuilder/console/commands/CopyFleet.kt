@@ -16,7 +16,7 @@ import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember.cloneMember
 import fleetBuilder.serialization.person.DataPerson.clonePerson
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.console.BaseCommand

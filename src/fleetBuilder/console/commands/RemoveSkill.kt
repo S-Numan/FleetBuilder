@@ -1,7 +1,7 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommandWithSuggestion
@@ -11,7 +11,7 @@ import org.lazywizard.console.Console
 
 class RemoveSkill : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: CommandContext): BaseCommand.CommandResult {
-        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        val refitTab = BoxedRefitTab.get()
         if (refitTab == null) {
             Console.showMessage("Must be in refit tab")
             return BaseCommand.CommandResult.WRONG_CONTEXT
@@ -56,7 +56,7 @@ class RemoveSkill : BaseCommandWithSuggestion {
         if (parameter != 0)
             return ArrayList()
 
-        val member = ReflectionMisc.getBoxedRefitTab()?.getCurrentMember()
+        val member = BoxedRefitTab.get()?.getCurrentMember()
 
         if (member?.captain != null && !member.captain.isDefault) {
             return member.captain.stats.skillsCopy.filter { it.level > 0f }.map { it.skill.id }.toMutableList()

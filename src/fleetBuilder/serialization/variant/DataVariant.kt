@@ -98,6 +98,10 @@ object DataVariant {
         sMods.removeAll(sModdedBuiltIns)
     }
 
+    private fun ShipVariantAPI.hasOnlyBuiltInWeaponGroups(): Boolean {
+        return weaponGroups.all { group -> group.slots.all { it in hullSpec.builtInWeapons.keys } }
+    }
+
     @JvmOverloads
     fun getVariantDataFromVariant(
         inputVariant: ShipVariantAPI,

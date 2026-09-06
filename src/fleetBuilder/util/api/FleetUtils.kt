@@ -13,7 +13,7 @@ import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.person.DataPerson
-import fleetBuilder.util.ReflectionMisc.updateFleetPanelContents
+import fleetBuilder.util.reflection.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.CargoUtils.getFractionHoldableSupplies
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.api.PersonUtils.copyOfficerDataTo

@@ -17,7 +17,7 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.magiclib.util.api.getActualCurrentTab
 

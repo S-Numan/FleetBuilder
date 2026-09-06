@@ -32,8 +32,8 @@ import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.InternalReflectionMisc
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.InternalReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
@@ -250,7 +250,7 @@ internal object AutofitPanel {
         if (currentPrefix == FBSettings.defaultPrefix) { // Only add core goal autofits if default prefix
             // Get core specs and convert to mutable list
             coreEffectiveHullAutofitSpecs =
-                getCoreAutofitSpecsForShip((baseVariant as ShipVariantAPI).hullSpec).toMutableList()
+                getCoreAutofitSpecsForShip(baseVariant.hullSpec).toMutableList()
 
             // Determine minimum reserved slots for core specs
             val minCoreSlots = if (FBSettings.reserveFirstFourAutofitSlots) 4 else 0
@@ -265,7 +265,7 @@ internal object AutofitPanel {
         val loadoutEffectiveHullAutofitSpecs =
             getLoadoutAutofitSpecsForShip(
                 currentPrefix,
-                (baseVariant as ShipVariantAPI).hullSpec,
+                baseVariant.hullSpec,
                 coreEffectiveHullAutofitSpecs.size
             )
 
@@ -1136,7 +1136,7 @@ internal object AutofitPanel {
                     mod.displayName
                 }
 
-                if ((variant as ShipVariantAPI).hullSpec.builtInMods.contains(mod.id)) {
+                if (variant.hullSpec.builtInMods.contains(mod.id)) {
                     if (allDMods.contains(mod.id) && !variant.permaMods.contains(mod.id)) {//DMod that the hull has, but the variant doesn't, means it's a DMOD built into the hull
                         dMods += "$name (D) (B)"
                         continue

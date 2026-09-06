@@ -11,7 +11,7 @@ import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.customPanel.core.BasePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 
 class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
     companion object {

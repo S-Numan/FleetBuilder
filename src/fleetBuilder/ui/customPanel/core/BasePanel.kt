@@ -13,7 +13,7 @@ import fleetBuilder.core.util.FBMisc.startStencilWithXPad
 import fleetBuilder.core.util.FBMisc.startStencilWithYPad
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import java.awt.Color
 
 open class BasePanel : StarUIPanelPlugin() {

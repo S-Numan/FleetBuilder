@@ -8,7 +8,7 @@ import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.integration.listener.EventDispatcher
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.listeners.OfficerChangeEvents
 
 internal object CommanderShuttle {

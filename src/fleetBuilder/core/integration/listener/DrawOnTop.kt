@@ -11,7 +11,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.core.util.misc.DrawMessageOnTop
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.TimeKeeper
 
 

@@ -1,8 +1,8 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.kotlin.toBoolean
+import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommandWithSuggestion
@@ -12,7 +12,7 @@ import org.lazywizard.console.Console
 
 class AddSkill : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
-        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        val refitTab = BoxedRefitTab.get()
         if (refitTab == null) {
             Console.showMessage("Must be in refit tab")
             return BaseCommand.CommandResult.WRONG_CONTEXT

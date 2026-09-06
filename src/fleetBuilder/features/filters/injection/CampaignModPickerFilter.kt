@@ -6,7 +6,7 @@ import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.features.filters.filterPanels.ModPickerFilterPanel
 import fleetBuilder.otherMods.starficz.findChildWithMethod
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.magiclib.util.api.getActualCurrentTab
 

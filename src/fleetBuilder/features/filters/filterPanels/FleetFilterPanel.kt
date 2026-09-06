@@ -10,7 +10,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBTxt
 import fleetBuilder.otherMods.starficz.*
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.getShipNameWithoutPrefix
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard

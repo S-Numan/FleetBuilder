@@ -16,7 +16,7 @@ import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBMisc.replaceVariantWithVariant
 import fleetBuilder.core.util.FBMisc.sModHandlerTemp
 import fleetBuilder.core.util.FBTxt
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
 import fleetBuilder.util.api.kotlin.safeInvoke

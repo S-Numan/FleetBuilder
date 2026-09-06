@@ -18,8 +18,8 @@ import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.InternalReflectionMisc
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.InternalReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse

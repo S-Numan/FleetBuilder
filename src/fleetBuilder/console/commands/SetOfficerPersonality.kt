@@ -1,7 +1,7 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import fleetBuilder.util.ReflectionMisc
+import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
@@ -12,7 +12,7 @@ import org.lazywizard.console.Console
 class SetOfficerPersonality : BaseCommandWithSuggestion {
     val personalities = listOf(Personalities.TIMID, Personalities.CAUTIOUS, Personalities.STEADY, Personalities.AGGRESSIVE, Personalities.RECKLESS)
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
-        val refitTab = ReflectionMisc.getBoxedRefitTab()
+        val refitTab = BoxedRefitTab.get()
         if (refitTab == null) {
             Console.showMessage("Must be in refit tab")
             return BaseCommand.CommandResult.WRONG_CONTEXT

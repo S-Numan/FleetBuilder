@@ -56,7 +56,6 @@ import fleetBuilder.ui.customPanel.modules.AreYouSureDialog
 import fleetBuilder.ui.customPanel.modules.TextInputDialog
 import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.PersonUtils
@@ -64,6 +63,8 @@ import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.getAdmiralSkills
 import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
+import fleetBuilder.util.reflection.ReflectionMisc
+import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import lunalib.lunaExtensions.addLunaElement
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
@@ -165,7 +166,7 @@ object HotkeyHandlerDialogs {
                     //DisplayMessage.showError("Test Message: " + Random().nextInt())
                     //Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
 
-                    val test = getCargoFromSectorSubmarkets()
+                    val test = Global.getSector().getCargoFromSubmarkets()
                     //DisplayMessage.showMessage("size = ${test.size}", Color.BLUE)
 
                     //val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
@@ -185,7 +186,7 @@ object HotkeyHandlerDialogs {
                     val memory = sector?.memoryWithoutUpdate
 
 
-                    val member = ReflectionMisc.getBoxedRefitTab()?.getCurrentMember()
+                    val member = BoxedRefitTab.get()?.getCurrentMember()
                     if (member != null) {
                         val memberMemory = member.getMemberMemory()
 
@@ -1532,7 +1533,7 @@ object HotkeyHandlerDialogs {
         background.elementPanel.position.belowLeft(offsetElement.elementPanel, offset)
 
         var originSkill = SCSpecStore.getSkillSpec(aptitudePlugin.getOriginSkillId())
-        var originSkillElement = SkillWidgetElement(originSkill!!.id, aptitudePlugin.id, true, false, true, originSkill!!.iconPath, "leadership1", aptitudePlugin.getColor(), element, 58f, 58f)
+        var originSkillElement = SkillWidgetElement(originSkill!!.id, aptitudePlugin.id, true, false, true, originSkill.iconPath, "leadership1", aptitudePlugin.getColor(), element, 58f, 58f)
         element.addTooltipTo(SCSkillTooltipCreator(data, originSkill.getPlugin(), aptitudePlugin, 0, false), originSkillElement.elementPanel, TooltipMakerAPI.TooltipLocation.BELOW)
         //originSkillElement.elementPanel.position.rightOfMid(officerPickerElement.elementPanel, 20f)
         originSkillElement.elementPanel.position.rightOfMid(background.elementPanel, 20f)
