@@ -412,8 +412,8 @@ object VariantUtils {
         insertVariant2: ShipVariantAPI,
         options: CompareOptions = CompareOptions(),
     ): Boolean {
-        val allDMods = MagicLookup.getAllDMods()
-        val allHiddenEverywhereMods = MagicLookup.getAllHiddenEverywhereMods()
+        val allDMods = MagicLookup.getAllDModIds()
+        val allHiddenEverywhereMods = MagicLookup.getAllHiddenEverywhereModIds()
 
         val variant1 = insertVariant1.clone()
         val variant2 = insertVariant2.clone()

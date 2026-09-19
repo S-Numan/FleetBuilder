@@ -13,9 +13,9 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.serialization.GameModInfo
-import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.MemberUtils
 import fleetBuilder.util.api.VariantUtils
+import fleetBuilder.util.reflection.ReflectionMisc
 import org.json.JSONObject
 import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
 import org.lwjgl.opengl.GL11
@@ -244,7 +244,7 @@ internal object FBMisc {
         to.hullMods.toList().forEach { mod ->
             if (dontForceClearSMods && to.sMods.contains(mod))
                 return@forEach
-            if (dontForceClearDMods && MagicLookup.getAllDMods().contains(mod))
+            if (dontForceClearDMods && MagicLookup.getAllDModIds().contains(mod))
                 return@forEach
 
             to.removeModFull(mod)

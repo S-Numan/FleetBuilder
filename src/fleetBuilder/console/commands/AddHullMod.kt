@@ -25,7 +25,7 @@ class AddHullMod : BaseCommandWithSuggestion {
         val argList = args.split(" ")
 
         val modIdInput = argList.getOrNull(0)
-        val modId = findBestStringMatch(modIdInput, MagicLookup.getHullModIDSet())
+        val modId = findBestStringMatch(modIdInput, MagicLookup.getHullModMap().keys)
 
         if (modId == null) {
             Console.showMessage("No modspec found with id '$modIdInput'! Use 'list hullmods' for a complete list of valid ids.")
@@ -82,7 +82,7 @@ class AddHullMod : BaseCommandWithSuggestion {
         context: CommandContext?
     ): MutableList<String?> {
         return when (parameter) {
-            0 -> MagicLookup.getHullModIDSet().toMutableList()//.filterNot { LookupUtils.getHullModSpec(it)?.isHidden == true }.toMutableList()
+            0 -> MagicLookup.getHullModMap().keys.toMutableList()//.filterNot { LookupUtils.getHullModSpec(it)?.isHidden == true }.toMutableList()
             //1 -> mutableListOf("true", "false")
             //2 -> mutableListOf("true", "false")
             else -> ArrayList()

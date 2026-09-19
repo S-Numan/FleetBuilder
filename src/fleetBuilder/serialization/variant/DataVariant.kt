@@ -174,8 +174,8 @@ object DataVariant {
         missing: MissingContent = MissingContent()
     ): ParsedVariantData {
         val neverSaveMods = FBSettings.getHullModsToNeverSave()
-        val allDMods = MagicLookup.getAllDMods()
-        val allHiddenMods = MagicLookup.getAllHiddenEverywhereMods()
+        val allDMods = MagicLookup.getAllDModIds()
+        val allHiddenMods = MagicLookup.getAllHiddenEverywhereModIds()
 
         fun shouldKeepMod(modId: String): Boolean {
             if (modId in neverSaveMods) return false
@@ -260,7 +260,7 @@ object DataVariant {
         missing: MissingContent = MissingContent(),
     ): ParsedVariantData {
         // --- Hull ID ---
-        val validHullId = if (data.hullId in MagicLookup.getHullIDSet()) {
+        val validHullId = if (data.hullId in MagicLookup.getHullSpecMap().keys) {
             data.hullId
         } else {
             missing.hullIds.add(data.hullId)
@@ -279,7 +279,7 @@ object DataVariant {
         }
 
         // --- HullMods ---
-        val allHullMods = MagicLookup.getHullModIDSet()
+        val allHullMods = MagicLookup.getHullModMap().keys
 
         val cleanHullMods = data.hullMods.filter { modId ->
             if (modId !in allHullMods) {
@@ -320,7 +320,7 @@ object DataVariant {
         }
 
         // --- Wings ---
-        val allWingIds = MagicLookup.getFighterWingIDSet()
+        val allWingIds = MagicLookup.getFighterWingMap().keys
         val cleanWings = data.wings.mapIndexed { _, wingId ->
             if (wingId !in allWingIds && wingId.isNotBlank()) {
                 missing.wingIds.add(wingId)
@@ -329,7 +329,7 @@ object DataVariant {
         }
 
         // --- Weapon Groups ---
-        val allWeapons = MagicLookup.getActuallyAllWeaponSpecIDSet()
+        val allWeapons = MagicLookup.getWeaponSpecMap().keys
         val cleanWeaponGroups = data.weaponGroups.map { wg ->
             val cleanedSlots = wg.weapons.filter { (slotId, weaponId) ->
                 var valid = weaponId in allWeapons

@@ -32,14 +32,14 @@ import fleetBuilder.serialization.variant.DataVariant.cloneVariant
 import fleetBuilder.serialization.variant.VariantSettings
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.reflection.InternalReflectionMisc
-import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
 import fleetBuilder.util.api.VariantUtils.processSModsForComparison
 import fleetBuilder.util.api.kotlin.getCompatibleDLessHull
 import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.util.reflection.InternalReflectionMisc
+import fleetBuilder.util.reflection.ReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
@@ -47,7 +47,6 @@ import org.magiclib.kotlin.bluef
 import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.MagicLookup.getAllDMods
 import org.magiclib.util.api.*
 import java.awt.Color
 
@@ -1015,7 +1014,7 @@ internal object AutofitPanel {
         margin: Float? = null,
         width: Float = if (FBSettings.showDebug) 400f else 350f
     ) {
-        val allDMods = getAllDMods()
+        val allDMods = MagicLookup.getAllDModIds()
         val sizeOrder = mapOf(
             WeaponAPI.WeaponSize.LARGE to 0,
             WeaponAPI.WeaponSize.MEDIUM to 1,

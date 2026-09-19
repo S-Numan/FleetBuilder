@@ -82,7 +82,7 @@ internal object RemoveFromSave {
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
             .map { it.id }
 
-        val skills = MagicLookup.getAllSkillSpecs()
+        val skills = MagicLookup.getSkillSpecMap().values
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
             .map { it.id }
 

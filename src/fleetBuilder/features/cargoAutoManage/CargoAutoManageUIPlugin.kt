@@ -25,13 +25,13 @@ import fleetBuilder.ui.addCheckboxD
 import fleetBuilder.ui.customPanel.core.BasePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.util.reflection.ReflectionMisc
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
-import org.magiclib.kotlin.toJson
-import org.magiclib.kotlin.toList
+import org.magiclib.util.api.toJson
+import org.magiclib.util.api.toList
 
 //The implementation of this is extremely scuffed, I am aware.
 

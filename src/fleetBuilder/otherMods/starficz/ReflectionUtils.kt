@@ -1,3 +1,5 @@
+@file:Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+
 package fleetBuilder.otherMods.starficz
 
 import java.lang.invoke.MethodHandle

@@ -199,7 +199,7 @@ object DataFleet {
             }
 
             // If hull ID does not exist: log missing and maybe replace with error variant
-            if (variantData.hullId !in MagicLookup.getHullIDSet()) {
+            if (variantData.hullId !in MagicLookup.getHullSpecMap().keys) {
                 missing.hullIds.add(variantData.hullId)
 
                 if (settings.excludeMembersWithMissingHullSpec) return@mapNotNull null
@@ -233,7 +233,7 @@ object DataFleet {
         }
 
         val validatedFaction =
-            if (MagicLookup.getAllFactionIDs().contains(data.factionID)) data.factionID
+            if (MagicLookup.getAllFactionIds().contains(data.factionID)) data.factionID
             else null
 
         if (data.secondInCommandData != null)

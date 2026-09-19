@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import fleetBuilder.core.config.FBConst.PRIMARY_DIR
 import org.json.JSONArray
 import org.json.JSONObject
-import org.magiclib.kotlin.toList
+import org.magiclib.util.api.toList
 
 internal object CargoAutoManage {
     data class AutoManage(

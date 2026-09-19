@@ -86,7 +86,7 @@ internal class RemoveRefitHullmod : CampaignInputListener {
                                 refitTab.syncWithCurrentVariant()
 
                                 DisplayMessage.showMessage(FBTxt.txt("removed_smoddedbuiltin", hullModID.displayName))
-                            } else if (MagicLookup.getAllDMods().contains(hullModID.id)) {//Built in DMod?
+                            } else if (MagicLookup.getAllDModIds().contains(hullModID.id)) {//Built in DMod?
                                 variant.removeModFull(hullModID.id, true)
                                 refitTab.syncWithCurrentVariant()
 
