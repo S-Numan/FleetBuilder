@@ -17,9 +17,9 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.campaign.CampaignEngine
 import com.fs.util.container.repo.ObjectRepository
 import fleetBuilder.core.util.FBMisc.replaceVariantWithVariant
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeGet
 import fleetBuilder.util.api.FactionUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.safeGet
 import org.magiclib.kotlin.doesFileExist
 import org.magiclib.kotlin.getErrorVariantID
 import org.magiclib.util.MagicLookup

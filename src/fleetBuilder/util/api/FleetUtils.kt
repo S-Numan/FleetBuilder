@@ -13,13 +13,13 @@ import fleetBuilder.serialization.fleet.DataFleet.buildFleetFull
 import fleetBuilder.serialization.fleet.DataFleet.getFleetDataFromFleet
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.person.DataPerson
-import fleetBuilder.util.reflection.ReflectionMisc.updateFleetPanelContents
 import fleetBuilder.util.api.CargoUtils.getFractionHoldableSupplies
 import fleetBuilder.util.api.MemberUtils.getAllSourceModsFromMember
 import fleetBuilder.util.api.PersonUtils.copyOfficerDataTo
 import org.magiclib.kotlin.getMaxOfficers
 import org.magiclib.util.api.getAssignedOfficers
 import org.magiclib.util.api.repairAndRestoreCR
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
 import second_in_command.specs.SCSpecStore
 
 object FleetUtils {
@@ -182,6 +182,6 @@ object FleetUtils {
         // Repair
         playerFleet.fleetData.repairAndRestoreCR()
 
-        updateFleetPanelContents()
+        BoxedFleetTab.get()?.updateFleetPanelContents()
     }
 }

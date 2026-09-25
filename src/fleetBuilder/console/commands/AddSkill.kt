@@ -2,12 +2,12 @@ package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
 import fleetBuilder.util.api.kotlin.toBoolean
-import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.CommandUtils.findBestStringMatch
 import org.lazywizard.console.Console
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 
 
 class AddSkill : BaseCommandWithSuggestion {

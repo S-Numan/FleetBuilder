@@ -5,7 +5,7 @@ import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.codex2.CodexDialog
+import com.fs.starfarer.api.impl.codex.CodexDialogAPI
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBTxt
@@ -29,12 +29,12 @@ import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.serialization.variant.JSONVariant
 import fleetBuilder.serialization.variant.VariantSettings
-import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.lib.ClipboardUtil
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.api.createHullVariant
+import org.magiclib.util.reflection.boxed.BoxedCodexDialog
 import java.awt.Color
 
 object ClipboardMisc {
@@ -200,8 +200,8 @@ object ClipboardMisc {
         return true
     }
 
-    fun codexEntryToClipboard(codex: CodexDialog) {
-        val param = ReflectionMisc.getCodexEntryParam(codex) ?: return
+    fun codexEntryToClipboard(codex: CodexDialogAPI) {
+        val param = BoxedCodexDialog.get(codex)?.getEntryParam() ?: return
 
         when (param) {
             is ShipHullSpecAPI -> {

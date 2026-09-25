@@ -13,7 +13,7 @@ import fleetBuilder.core.util.FBMisc.startStencilWithXPad
 import fleetBuilder.core.util.FBMisc.startStencilWithYPad
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.UIUtils
-import fleetBuilder.util.reflection.ReflectionMisc
+import org.magiclib.util.reflection.UIFinder
 import java.awt.Color
 
 open class BasePanel : StarUIPanelPlugin() {
@@ -33,7 +33,7 @@ open class BasePanel : StarUIPanelPlugin() {
         height: Float,
         xOffset: Float = 0f,
         yOffset: Float = 0f,
-        parent: UIPanelAPI? = ReflectionMisc.getScreenPanel()
+        parent: UIPanelAPI? = UIFinder.getScreenPanel()
     ): CustomPanelAPI {
         val inputPanel = Global.getSettings().createCustom(width, height, this)
 

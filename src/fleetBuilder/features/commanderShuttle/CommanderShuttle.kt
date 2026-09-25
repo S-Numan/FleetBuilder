@@ -5,11 +5,11 @@ import com.fs.starfarer.api.fleet.FleetMemberType
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import fleetBuilder.core.config.FBConst
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.integration.listener.EventDispatcher
+import fleetBuilder.core.util.FBTxt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
-import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.listeners.OfficerChangeEvents
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
 
 internal object CommanderShuttle {
     var commanderShuttleListener = CommanderShuttleListener()//Should not be present as a script if the shuttle is not in the player's fleet
@@ -82,7 +82,7 @@ internal object CommanderShuttle {
             EventDispatcher.manageTransientCampaignListener(CommanderShuttleListener::class.java, false)
         }
 
-        ReflectionMisc.updateFleetPanelContents()
+        BoxedFleetTab.get()?.updateFleetPanelContents()
     }
 
     fun addPlayerShuttle() {
@@ -112,7 +112,7 @@ internal object CommanderShuttle {
         sector.playerFleet.fleetData.setFlagship(shuttleMember)
         shuttleMember.repairTracker.cr = shuttleMember.repairTracker.maxCR
 
-        ReflectionMisc.updateFleetPanelContents()
+        BoxedFleetTab.get()?.updateFleetPanelContents()
     }
 
     fun togglePlayerShuttle() {

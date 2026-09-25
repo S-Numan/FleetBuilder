@@ -18,6 +18,7 @@ import fleetBuilder.otherMods.starficz.Anchor.AnchorReference
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
+import org.magiclib.util.reflection.boxed.BoxedUIElement
 import java.awt.Color
 
 
@@ -311,9 +312,6 @@ fun UIPanelAPI.allChildrenWithMethod(methodName: String): List<UIComponentAPI> {
 internal fun UIPanelAPI.clearChildren() {
     invoke("clearChildren")
 }
-
-// Abstract base class for Boxed vanilla elements to fix vanilla jank / things with no API's (like images)
-abstract class BoxedUIElement(val boxedElement: UIComponentAPI)
 
 class BoxedScrollPanel(val scrollPanel: ScrollPanelAPI) : BoxedUIElement(scrollPanel as UIComponentAPI),
     ScrollPanelAPI by scrollPanel {

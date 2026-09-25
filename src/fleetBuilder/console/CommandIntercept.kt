@@ -3,11 +3,11 @@ package fleetBuilder.console
 import fleetBuilder.console.commands.AddHullMod
 import fleetBuilder.console.commands.AddXP
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.CampaignUtils
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommandListener
 import org.lazywizard.console.Console
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
 
 class CommandIntercept : CommandListener {
     override fun onPreExecute(
@@ -55,7 +55,7 @@ class CommandIntercept : CommandListener {
         if (result != BaseCommand.CommandResult.SUCCESS) return
 
         if (command.lowercase() == "addship") {
-            ReflectionMisc.updateFleetPanelContents()
+            BoxedFleetTab.get()?.updateFleetPanelContents()
         }
     }
 }

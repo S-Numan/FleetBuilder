@@ -8,8 +8,9 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.features.filters.filterPanels.FleetFilterPanel
 import fleetBuilder.features.filters.filterPanels.FleetFilterPanel.Companion.removePreviousIfAny
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.util.reflection.ReflectionMisc
+import fleetBuilder.util.reflection.InternalReflectionMisc
 import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
 
 internal class CampaignFleetScreenFilter : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -37,13 +38,14 @@ internal class CampaignFleetScreenFilter : EveryFrameScript {
             return
         }
 
-        val fleetPanel = ReflectionMisc.getFleetPanel() ?: return
+        val fleetTab = BoxedFleetTab.get() ?: return
+        val fleetPanel = fleetTab.fleetPanel
 
         //On fleet panel appearing
         if (filterPanel == null) {
-            val fleetSidePanel = ReflectionMisc.getFleetSidePanel() ?: return
+            val fleetSidePanel = InternalReflectionMisc.getFleetSidePanel(fleetTab) ?: return
 
-            filterPanel = FleetFilterPanel(20f, fleetSidePanel)
+            filterPanel = FleetFilterPanel(20f, fleetTab, fleetSidePanel)
         }
 
         //On fleet panel change
@@ -51,12 +53,12 @@ internal class CampaignFleetScreenFilter : EveryFrameScript {
             if (filterPanel == null) return
             filterPanel!!.resetText()
 
-            val fleetSidePanel = ReflectionMisc.getFleetSidePanel() ?: return
+            val fleetSidePanel = InternalReflectionMisc.getFleetSidePanel(fleetTab) ?: return
             //If the FilterPanel is not in fleetSidePanel
             val currentFilterPanel = fleetSidePanel.getChildrenCopy().find { (it as? CustomPanelAPI)?.plugin as? FleetFilterPanel != null }
             if (currentFilterPanel == null) {
                 //Remake and add it!
-                filterPanel = FleetFilterPanel(20f, fleetSidePanel)
+                filterPanel = FleetFilterPanel(20f, fleetTab, fleetSidePanel)
             } else {
 
             }

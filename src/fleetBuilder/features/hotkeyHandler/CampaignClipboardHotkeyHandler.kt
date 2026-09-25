@@ -24,10 +24,11 @@ import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.isIdle
+import fleetBuilder.util.reflection.InternalReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.reflection.UIFinder
 
 internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 1
@@ -73,13 +74,13 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         event: InputEventAPI,
         ui: CampaignUIAPI
     ) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+        if (InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
         val tab = ui.getActualCurrentTab() ?: return
         val isCtrlLmb = event.isCtrlDown && event.isLMBDownEvent
 
         if (tab == CoreUITabId.REFIT || tab == CoreUITabId.FLEET) {
-            val captainPicker = ReflectionMisc.getCaptainPickerDialog()
+            val captainPicker = UIFinder.getCaptainPickerDialog()
 
             if (captainPicker != null) {
                 if (isCtrlLmb)
@@ -98,7 +99,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         sector: SectorAPI,
         ui: CampaignUIAPI
     ) {
-        val codex = ReflectionMisc.getCodexDialog()
+        val codex = UIFinder.getCodexDialog()
         if (codex != null) {
             ClipboardMisc.codexEntryToClipboard(codex)
             event.consume()
@@ -119,7 +120,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             ui: CampaignUIAPI,
             event: InputEventAPI?,
         ) {
-            if (ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+            if (InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
             val currentTab = ui.getActualCurrentTab()
 

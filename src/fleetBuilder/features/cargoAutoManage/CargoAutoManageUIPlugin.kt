@@ -21,17 +21,18 @@ import fleetBuilder.features.cargoAutoManage.CargoAutoManage.saveCargoAutoManage
 import fleetBuilder.features.cargoAutoManage.CargoAutoManage.unsetCargoAutoManage
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtils.invoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.ui.addCheckboxD
 import fleetBuilder.ui.customPanel.core.BasePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.util.reflection.ReflectionMisc
+import fleetBuilder.util.reflection.InternalReflectionMisc
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
 import org.magiclib.util.api.toJson
 import org.magiclib.util.api.toList
+import org.magiclib.util.reflection.UIFinder
 
 //The implementation of this is extremely scuffed, I am aware.
 
@@ -276,7 +277,7 @@ internal class CargoAutoManageUIPlugin(
                 20f,
                 Global.getSettings().mouseX.toFloat(),
                 Global.getSettings().mouseY.toFloat(),
-                ReflectionMisc.getScreenPanel()
+                UIFinder.getScreenPanel()
             )
             panelAPI.addPara("Click a cargo item to select it. Right click to cancel.")
 
@@ -749,7 +750,7 @@ class CargoItemSelector(val market: MarketAPI, val selectedSubmarket: SubmarketA
                 } else if (event.isLMBDownEvent) {
                     event.consume()
 
-                    val cargoPanel = ReflectionMisc.getCargoPanel() ?: continue
+                    val cargoPanel = InternalReflectionMisc.getCargoPanel() ?: continue
 
                     val dataViewPanels = cargoPanel.allChildrenWithMethod("isInvalidDropTarget")
 

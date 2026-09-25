@@ -6,7 +6,7 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.otherMods.starficz.Font
 import fleetBuilder.otherMods.starficz.getFontPath
 import fleetBuilder.ui.customPanel.elements.ObservedTextField
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import org.magiclib.kotlin.setAlpha
 import java.awt.Color
 

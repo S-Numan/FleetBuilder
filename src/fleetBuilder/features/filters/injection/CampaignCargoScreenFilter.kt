@@ -8,8 +8,8 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.campaign.listeners.CargoScreenListener
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.features.filters.filterPanels.CargoFilterPanel
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
+import fleetBuilder.util.reflection.InternalReflectionMisc
 
 internal class CampaignCargoScreenFilter : CargoScreenListener, EveryFrameScript {
     var marketOpened = false
@@ -34,7 +34,7 @@ internal class CampaignCargoScreenFilter : CargoScreenListener, EveryFrameScript
         if (!marketOpened)
             return
 
-        val cargoPanel = ReflectionMisc.getCargoPanel() ?: return
+        val cargoPanel = InternalReflectionMisc.getCargoPanel() ?: return
 
         fun makePlayerFilter() {
             val playerCargoDisplay = cargoPanel.safeInvoke("getPlayerCargoDisplay") as? UIPanelAPI

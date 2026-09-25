@@ -12,8 +12,8 @@ import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.customPanel.DialogUtils
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.patterns.DialogPanel
-import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.api.kotlin.isIdle
+import fleetBuilder.util.reflection.InternalReflectionMisc
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -26,7 +26,7 @@ import java.util.*
 
 object RecentBattleDialog {
     fun recentBattleDialog(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (!FBSettings.recentBattleTracker || !ui.isIdle() || ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen())
+        if (!FBSettings.recentBattleTracker || !ui.isIdle() || InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen())
             return
         val fleetDirectory = RBFleetDirectoryService.getDirectory() ?: return
         showDialog(fleetDirectory)

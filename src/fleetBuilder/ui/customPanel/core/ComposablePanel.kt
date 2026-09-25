@@ -7,7 +7,7 @@ import fleetBuilder.otherMods.starficz.lastComponent
 import fleetBuilder.otherMods.starficz.setSize
 import fleetBuilder.otherMods.starficz.width
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 
 open class ComposablePanel : BasePanel() {
 

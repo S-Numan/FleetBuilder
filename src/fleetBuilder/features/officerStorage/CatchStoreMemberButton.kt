@@ -18,12 +18,12 @@ import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.UIUtils
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.reflection.InternalReflectionMisc
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
 
 internal class CatchStoreMemberButton : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 10
@@ -40,8 +40,8 @@ internal class CatchStoreMemberButton : CampaignInputListener {
         val playerFleet = sector.playerFleet ?: return
         val playerFleetData = playerFleet.fleetData ?: return
 
-        val viewedFleet = ReflectionMisc.getViewedFleetInFleetPanel()
-        if (viewedFleet !== playerFleetData)//If we aren't looking at the user's fleet, don't continue
+        val viewedFleet = BoxedFleetTab.get()?.getFleetData()
+        if (viewedFleet !== playerFleetData) // If we aren't looking at the user's fleet, don't continue
             return
 
         fun storeOfficer(captain: PersonAPI) {

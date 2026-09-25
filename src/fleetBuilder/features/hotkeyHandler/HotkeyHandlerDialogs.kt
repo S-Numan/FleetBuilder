@@ -38,6 +38,7 @@ import fleetBuilder.features.autofit.ui.ShipPreviewOverlayPlugin
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils.pasteFleet
 import fleetBuilder.features.recentBattles.RecentBattleReplay
 import fleetBuilder.otherMods.starficz.*
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.serialization.*
 import fleetBuilder.serialization.fleet.DataFleet
 import fleetBuilder.serialization.fleet.FleetSettings
@@ -61,10 +62,7 @@ import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
 import fleetBuilder.util.api.kotlin.getAdmiralSkills
-import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import lunalib.lunaExtensions.addLunaElement
 import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.input.Keyboard
@@ -73,6 +71,9 @@ import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.*
 import org.magiclib.util.api.*
 import org.magiclib.util.membermemory.MemberMemoryExt.getMemberMemory
+import org.magiclib.util.reflection.UIFinder
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 import org.magiclib.util.taskScheduler.SectorTaskScheduler
 import second_in_command.SCData
 import second_in_command.SCUtils
@@ -161,12 +162,14 @@ object HotkeyHandlerDialogs {
 
             testMessageTrigger.onClick {
                 try {
+                    val mode = BoxedFleetTab.get()?.getMode()
+                    Global.getLogger(this.javaClass).error("Market mode: $mode")
                     Mouse.setCursorPosition(0, 0)
                     //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
                     //DisplayMessage.showError("Test Message: " + Random().nextInt())
                     //Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
 
-                    val test = Global.getSector().getCargoFromSubmarkets()
+                    //val test = Global.getSector().getCargoFromSubmarkets()
                     //DisplayMessage.showMessage("size = ${test.size}", Color.BLUE)
 
                     //val memberInRefit = ReflectionMisc.getCurrentMemberInRefitTab() ?: return@onClick
@@ -190,8 +193,8 @@ object HotkeyHandlerDialogs {
                     if (member != null) {
                         val memberMemory = member.getMemberMemory()
 
-                        if (!memberMemory.contains("\$test"))
-                            memberMemory.set("\$test", true)
+                        //if (!memberMemory.contains("\$test"))
+                        //memberMemory.set("\$test", true)
                     }
 
 
@@ -1225,7 +1228,7 @@ object HotkeyHandlerDialogs {
                             dialog.forceDismiss()
 
                             campUI.safeInvoke("setNextTransitionFast", true)
-                            val coreUI = ReflectionMisc.getCoreUI()
+                            val coreUI = UIFinder.getCoreUI()
                             coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
                         }
 
@@ -1383,7 +1386,7 @@ object HotkeyHandlerDialogs {
                     if (repairAndSetMaxCR)
                         FleetUtils.fulfillPlayerFleet()
 
-                    ReflectionMisc.updateFleetPanelContents()
+                    BoxedFleetTab.get()?.updateFleetPanelContents()
 
                     DisplayMessage.showMessage(FBTxt.txt("player_fleet_replaced"))
 
@@ -1416,7 +1419,7 @@ object HotkeyHandlerDialogs {
                     if (repairAndSetMaxCR)
                         FleetUtils.fulfillPlayerFleet()
 
-                    ReflectionMisc.updateFleetPanelContents()
+                    BoxedFleetTab.get()?.updateFleetPanelContents()
 
                     if (fleet.fleetData.membersListCopy.size > 1)
                         DisplayMessage.showMessage(FBTxt.txt("members_appended_into_fleet", fleet.fleetData.membersListCopy.size))

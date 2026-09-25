@@ -25,7 +25,7 @@ import fleetBuilder.serialization.person.JSONPerson
 import fleetBuilder.serialization.person.PersonSettings
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.lib.CompressionUtil
 import org.json.JSONArray
 import org.json.JSONObject

@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import fleetBuilder.util.reflection.ReflectionMisc
 import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
 import java.util.concurrent.CopyOnWriteArrayList
 
 fun interface OfficerChangeListener {
@@ -96,7 +96,7 @@ class OfficerChangeTracker {
 
         // Picking up and putting down a member in the fleet screen would be considered an officer change by default, this prevents that
         if (Global.getSector()?.campaignUI?.getActualCurrentTab() == CoreUITabId.FLEET)
-            justPickedUpMember = ReflectionMisc.getFleetPanelPickedUpMember() != null
+            justPickedUpMember = BoxedFleetTab.get()?.getPickedUpMember() != null
 
         return changed
     }

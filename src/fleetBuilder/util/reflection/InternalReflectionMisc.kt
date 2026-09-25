@@ -1,31 +1,76 @@
 package fleetBuilder.util.reflection
 
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.api.impl.codex.CodexDialogAPI
+import com.fs.starfarer.api.ui.IntelUIAPI
 import com.fs.starfarer.api.ui.LabelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.econ.Submarket
 import com.fs.starfarer.campaign.fleet.FleetMember
-import com.fs.starfarer.codex2.CodexDialog
+import com.fs.starfarer.campaign.ui.UITable
 import com.fs.starfarer.coreui.refit.ModWidget
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.util.api.kotlin.isIdle
-import fleetBuilder.util.api.kotlin.safeInvoke
-import fleetBuilder.util.reflection.ReflectionMisc.getCargoPanel
-import fleetBuilder.util.reflection.ReflectionMisc.getCodexDetailPanel
-import fleetBuilder.util.reflection.ReflectionMisc.getCoreUI
-import fleetBuilder.util.reflection.ReflectionMisc.getFleetPanel
-import fleetBuilder.util.reflection.ReflectionMisc.getFleetTab
-import fleetBuilder.util.reflection.ReflectionMisc.getRefitTab
 import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.reflection.UIFinder
+import org.magiclib.util.reflection.boxed.BoxedCodexDialog
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
 
 internal object InternalReflectionMisc {
+
+    @JvmStatic
+    fun isCodexOpen(): Boolean {
+        if (Global.getSettings().isShowingCodex) return true
+
+        val gameState = Global.getCurrentState()
+
+        // F2 while hovering over ship in the fleet screen. Clicking the question mark in the fleet screen. Does not include hovering over the question mark and pressing F2
+        if (gameState == GameState.CAMPAIGN && Global.getSector()?.campaignUI?.getActualCurrentTab() == CoreUITabId.FLEET) {
+            val coreUI = UIFinder.getCoreUI() as? UIPanelAPI ?: return false
+            if (coreUI.getChildrenCopy().any { it is CodexDialogAPI })
+                return true
+        }
+
+        // Check for the codex that opens when clicking a ship in the title-screen missions
+        if (gameState == GameState.TITLE) {
+            if (UIFinder.getScreenPanel()?.getChildrenCopy()?.any { it is CodexDialogAPI } == true)
+                return true
+        }
+        return false
+    }
+
+    @JvmOverloads
+    @JvmStatic
+    fun getIntelUI(intelTab: UIPanelAPI? = UIFinder.getIntelTab()): IntelUIAPI? {
+        return intelTab?.safeInvoke("getEventsPanel") as? IntelUIAPI
+    }
+
+    @JvmOverloads
+    @JvmStatic
+    fun getCargoPanel(cargoTab: UIPanelAPI? = UIFinder.getCargoTab()): UIPanelAPI? {
+        return cargoTab?.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI
+        //val transferHandler = cargoTabChild?.invoke("getTransferHandler")// Howto get Cargo drawn when picked up with the mouse
+
+        //Alternative method
+        //val border = ReflectionMisc.getBorderContainer()
+        //val cargoTab = border?.findChildWithMethod("shouldShowLogisticsOnSwitch") as? UIPanelAPI ?: return null
+    }
+
+    @JvmOverloads
+    fun getFleetSidePanel(fleetTab: BoxedFleetTab? = BoxedFleetTab.get()): UIPanelAPI? {
+        val children = fleetTab?.target?.getChildrenCopy()
+        return children?.find { it.getFieldsMatching(type = UITable::class.java).isNotEmpty() } as? UIPanelAPI
+    }
+
     fun getRefitPanelModWidget(refitPanel: UIPanelAPI): ModWidget? {
         val children = refitPanel.getChildrenCopy()
         var desiredChild: UIPanelAPI? = null
@@ -67,10 +112,10 @@ internal object InternalReflectionMisc {
     }*/
 
     fun getMemberUIHoveredInFleetTabLowerPanel(): UIPanelAPI? {
-        val fleetTab = getFleetTab() ?: return null
+        val fleetTab = UIFinder.getFleetTab() ?: return null
         val mouseOverMember = fleetTab.safeInvoke("getMousedOverFleetMember") as? FleetMemberAPI ?: return null
 
-        val fleetPanel = getFleetPanel() ?: return null
+        val fleetPanel = BoxedFleetTab.get()?.fleetPanel ?: return null
         val list = fleetPanel.safeInvoke("getList") ?: return null
         val items = list.safeInvoke("getItems") as? List<Any?>
             ?: return null//Core UI box that contains everything related to the fleet member, including the ship, officer, cr, etc. There is one for each member in your fleet.
@@ -102,8 +147,8 @@ internal object InternalReflectionMisc {
         return null
     }
 
-    fun getBelowTitleDeeperPanel(codex: CodexDialog): UIPanelAPI? {
-        val belowTitleBarPanel = getCodexDetailPanel(codex)?.findChildWithMethod("addToOverlay") as? UIPanelAPI
+    fun getBelowTitleDeeperPanel(codex: BoxedCodexDialog): UIPanelAPI? {
+        val belowTitleBarPanel = codex.getDetailPanel()?.findChildWithMethod("addToOverlay") as? UIPanelAPI
         return belowTitleBarPanel?.getChildrenCopy()?.find { (it as? UIPanelAPI)?.getChildrenCopy()?.isNotEmpty() == true } as? UIPanelAPI
     }
 
@@ -116,7 +161,7 @@ internal object InternalReflectionMisc {
                 val dialog = campaignUI.currentInteractionDialog ?: return null
                 dialog.interactionTarget?.market ?: return null
 
-                val fleetTab = getFleetTab() ?: return null
+                val fleetTab = UIFinder.getFleetTab() ?: return null
 
                 return fleetTab
                     .getFieldsMatching(fieldAssignableTo = Submarket::class.java)
@@ -142,19 +187,19 @@ internal object InternalReflectionMisc {
         val campUI: CampaignUIAPI? = Global.getSector().campaignUI
         if (campUI != null && !campUI.isIdle()) {
             campUI.safeInvoke("setNextTransitionFast", true)
-            val coreUI = getCoreUI()
+            val coreUI = UIFinder.getCoreUI()
             coreUI?.safeInvoke("dialogDismissed", coreUI, 0)
         }
     }
 
     @JvmStatic
-    fun getCodexDetailLabel(codex: CodexDialog): LabelAPI? {
-        return getCodexDetailPanel(codex)?.getChildrenCopy()?.filterIsInstance<LabelAPI>()?.firstOrNull()
+    fun getCodexDetailLabel(codex: BoxedCodexDialog): LabelAPI? {
+        return codex.getDetailPanel()?.getChildrenCopy()?.filterIsInstance<LabelAPI>()?.firstOrNull()
     }
 
     @JvmOverloads
     @JvmStatic
-    fun getRefitPanel(refitTab: UIPanelAPI? = getRefitTab()): UIPanelAPI? {
+    fun getRefitPanel(refitTab: UIPanelAPI? = UIFinder.getRefitTab()): UIPanelAPI? {
         return refitTab?.safeInvoke("getRefitPanel") as? UIPanelAPI
     }
 }

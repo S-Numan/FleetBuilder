@@ -6,9 +6,9 @@ import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.features.filters.filterPanels.ModPickerFilterPanel
 import fleetBuilder.otherMods.starficz.findChildWithMethod
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.reflection.UIFinder
 
 internal class CampaignModPickerFilter : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -33,7 +33,7 @@ internal class CampaignModPickerFilter : EveryFrameScript {
             return
         }
 
-        val coreUI = ReflectionMisc.getCoreUI() as? UIPanelAPI ?: return
+        val coreUI = UIFinder.getCoreUI() as? UIPanelAPI ?: return
         val modPicker = coreUI.findChildWithMethod("canInstallGivenMarket") as? UIPanelAPI
         if (modPicker == null) {
             filterPanel = null

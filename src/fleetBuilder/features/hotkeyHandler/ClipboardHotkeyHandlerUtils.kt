@@ -30,6 +30,7 @@ import fleetBuilder.features.commanderShuttle.CommanderShuttle
 import fleetBuilder.features.hotkeyHandler.HotkeyHandlerDialogs.createDevModeDialog
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingContent
@@ -50,14 +51,12 @@ import fleetBuilder.ui.customPanel.patterns.DialogPanel
 import fleetBuilder.util.api.MemberUtils.randomizeMemberCosmetics
 import fleetBuilder.util.api.PersonUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
 import fleetBuilder.util.reflection.InternalReflectionMisc
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.reflection.ReflectionMisc.getViewedFleetInFleetPanel
-import fleetBuilder.util.reflection.ReflectionMisc.updateFleetPanelContents
-import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.reflection.UIFinder
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 import java.awt.Color
 
 internal object ClipboardHotkeyHandlerUtils {
@@ -138,7 +137,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleRefitMouseEvents(event: InputEventAPI): Unit = hotkeySafe {
-        val refitTab = ReflectionMisc.getRefitTab() ?: return
+        val refitTab = UIFinder.getRefitTab() ?: return
         val children = refitTab.safeInvoke("getChildrenCopy") as? MutableList<*> ?: return
 
         val thing = children.lastOrNull {
@@ -173,11 +172,12 @@ internal object ClipboardHotkeyHandlerUtils {
             includeIdleOfficers = false
         }
 
-        val fleetToCopy = getViewedFleetInFleetPanel() ?: playerFleet
+        val fleetTab = BoxedFleetTab.get()
+        val fleetToCopy = fleetTab?.getFleetData() ?: playerFleet
         val uiShowsSubmarketFleet = fleetToCopy !== playerFleet
 
         hotkeySafe {
-            val fleetGrid = ReflectionMisc.getFleetPanel()
+            val fleetGrid = fleetTab?.fleetPanel
                 ?.findChildWithMethod("removeItem")
                 ?: return false
 
@@ -228,7 +228,7 @@ internal object ClipboardHotkeyHandlerUtils {
     //
 
     fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+        if (InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
         if (ui.getActualCurrentTab() == null &&
             ui.currentInteractionDialog == null
@@ -239,7 +239,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleCreateOfficer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (ReflectionMisc.getCodexDialog() != null || DialogUtils.isModalPanelOpen()) return
+        if (UIFinder.getCodexDialog() != null || DialogUtils.isModalPanelOpen()) return
 
         if (ui.getActualCurrentTab() == CoreUITabId.FLEET ||
             (ui.getActualCurrentTab() == null && ui.currentInteractionDialog == null)
@@ -251,7 +251,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleDevModeHotkey(event: InputEventAPI) {
-        if (ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+        if (InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
         event.consume()
         createDevModeDialog()
@@ -469,7 +469,8 @@ internal object ClipboardHotkeyHandlerUtils {
 
         var uiShowsSubmarketFleet = false
 
-        val fleetToAddTo = getViewedFleetInFleetPanel() ?: playerFleet
+        val fleetTab = BoxedFleetTab.get()
+        val fleetToAddTo = fleetTab?.getFleetData() ?: playerFleet
         if (fleetToAddTo !== playerFleet)
             uiShowsSubmarketFleet = true
 
@@ -514,7 +515,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
                 showMessage(message, shipName, Misc.getHighlightColor())
 
-                updateFleetPanelContents()
+                fleetTab?.updateFleetPanelContents()
             }
 
             is DataMember.ParsedMemberData -> {
@@ -554,7 +555,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
                 showMessage(message, shipName, Misc.getHighlightColor())
 
-                updateFleetPanelContents()
+                fleetTab?.updateFleetPanelContents()
             }
 
             else -> {

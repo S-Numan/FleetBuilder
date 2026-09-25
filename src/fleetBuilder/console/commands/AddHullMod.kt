@@ -1,7 +1,6 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
@@ -10,6 +9,7 @@ import org.lazywizard.console.CommandUtils.findBestStringMatch
 import org.lazywizard.console.Console
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.api.removeModFull
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 
 class AddHullMod : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {

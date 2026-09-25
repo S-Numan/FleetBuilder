@@ -10,19 +10,20 @@ import com.fs.starfarer.api.util.Misc
 import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBTxt
 import fleetBuilder.otherMods.starficz.*
-import fleetBuilder.util.reflection.ReflectionMisc
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.api.kotlin.getShipNameWithoutPrefix
-import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.api.allDMods
 import org.magiclib.util.api.allSMods
+import org.magiclib.util.reflection.boxed.BoxedFleetTab
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
 
 class FleetFilterPanel(
     height: Float,
+    private val fleetTab: BoxedFleetTab,
     private val fleetSidePanel: UIPanelAPI
 ) : BaseFilterPanel(
     width = fleetSidePanel.getChildrenCopy().minByOrNull { it.x }?.width ?: 32f,
@@ -38,7 +39,7 @@ class FleetFilterPanel(
         var fleetPanelFilterCallback: (() -> Unit)? = null
 
         fun removePreviousIfAny() {
-            fleetPanelFilterCallback?.let { ReflectionMisc.removePostUpdateFleetPanelCallback(it) }
+            fleetPanelFilterCallback?.let { BoxedFleetTab.removePostUpdateFleetPanelCallback(it) }
         }
     }
 
@@ -48,7 +49,7 @@ class FleetFilterPanel(
         // Create the new one
         fleetPanelFilterCallback = { filterFleetGrid() }
         // Register the new one
-        ReflectionMisc.addPostUpdateFleetPanelCallback(fleetPanelFilterCallback!!)
+        BoxedFleetTab.addPostUpdateFleetPanelCallback(fleetPanelFilterCallback!!)
 
         mainPanel.opacity = 0f
         mainPanel.addTooltip(TooltipMakerAPI.TooltipLocation.RIGHT, 670f) {
@@ -109,9 +110,8 @@ class FleetFilterPanel(
 
         if (textField.hasFocus() || !textField.enabled) {
             if (textField.text != defaultText) { // On focus
-                val fleetPanel = ReflectionMisc.getFleetPanel() ?: return
                 //Unfocus textField if mouse is inside fleetPanel
-                if (Global.getSettings().mouseX > fleetPanel.x) {
+                if (Global.getSettings().mouseX > fleetTab.fleetPanel.x) {
                     if (textField.enabled && textField.hasFocus()) {
                         //ReflectionMisc.updateFleetPanelContents()
                         textField.safeInvoke("releaseFocus", null)
@@ -145,7 +145,7 @@ class FleetFilterPanel(
                 if (event.eventValue == Keyboard.KEY_ESCAPE) {
                     textField.enabled = true
                     resetText()
-                    ReflectionMisc.updateFleetPanelContents()
+                    fleetTab.updateFleetPanelContents()
                     event.consume()
                     return
                 }
@@ -173,20 +173,19 @@ class FleetFilterPanel(
     }
 
     override fun onFilterChanged(text: String) {
-        ReflectionMisc.updateFleetPanelContents()
+        fleetTab.updateFleetPanelContents()
     }
 
     override fun onMiddleMouseReset() {
         super.onMiddleMouseReset()
-        ReflectionMisc.updateFleetPanelContents()
+        fleetTab.updateFleetPanelContents()
         textField.enabled = true
     }
 
     private fun filterFleetGrid() {
-        val fleetPanel = ReflectionMisc.getFleetPanel() ?: return
         if (textField.text.isBlank() || textField.text == defaultText) return
 
-        val fleetGrid = fleetPanel.findChildWithMethod("removeItem") ?: return
+        val fleetGrid = fleetTab.fleetPanel.findChildWithMethod("removeItem") ?: return
 
         @Suppress("UNCHECKED_CAST")
         val items = fleetGrid.safeInvoke("getItems") as? List<UIPanelAPI?> ?: return

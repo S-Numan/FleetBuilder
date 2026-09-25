@@ -11,7 +11,7 @@ import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.customPanel.core.BasePanel
 import fleetBuilder.ui.customPanel.core.ModalPanel
 import fleetBuilder.ui.customPanel.patterns.ContextMenuPanel
-import fleetBuilder.util.reflection.ReflectionMisc
+import org.magiclib.util.reflection.UIFinder
 
 class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
     companion object {
@@ -27,7 +27,7 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
             if (gameState == null) {
                 prependPanelToShow(dialog, width, height) // To create a dialog before the game has fully booted up, so it is shown on start
             } else {
-                val parent = parent ?: ReflectionMisc.getScreenPanel() ?: run {
+                val parent = parent ?: UIFinder.getScreenPanel() ?: run {
                     DisplayMessage.showError("Failed to get Screen Panel")
                     return
                 }
@@ -43,7 +43,7 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
         }
 
         fun isModalPanelOpen(): Boolean {
-            ReflectionMisc.getScreenPanel()?.getChildrenCopy()?.forEach { child ->
+            UIFinder.getScreenPanel()?.getChildrenCopy()?.forEach { child ->
                 if (child is CustomPanelAPI && (child.plugin is ModalPanel)
                 ) {
                     return true
@@ -60,7 +60,7 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
 
         fun forceCloseAllCustomPanels(): Boolean {
             var closedOne = false
-            val screenPanel = ReflectionMisc.getScreenPanel() ?: return false
+            val screenPanel = UIFinder.getScreenPanel() ?: return false
             screenPanel.getChildrenCopy().toList().forEach { child ->
                 if (child is CustomPanelAPI && (child.plugin is BasePanel)) {
                     try {
@@ -94,7 +94,7 @@ class DialogUtils : BaseEveryFrameCombatPlugin(), EveryFrameScript {
             ContextMenuPanel.contextMenuJustClosed--
 
         if (panelsToShow.isNotEmpty()) {
-            val screenPanel = ReflectionMisc.getScreenPanel() ?: return
+            val screenPanel = UIFinder.getScreenPanel() ?: return
 
             val (dialog, width, height) = panelsToShow.removeAt(panelsToShow.size - 1)
 

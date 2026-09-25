@@ -17,9 +17,10 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
+import fleetBuilder.util.reflection.InternalReflectionMisc
 import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.reflection.UIFinder
 
 internal class CargoAutoManagerOpener : CampaignInputListener {
     override fun getListenerInputPriority(): Int = 1
@@ -40,9 +41,9 @@ internal class CargoAutoManagerOpener : CampaignInputListener {
     private fun handleCargoMouseEvents(event: InputEventAPI, sector: SectorAPI) {
         // This try-catch may be unnecessary, but as this is a non-vital feature typically enabled by default, keep it to avoid possible future troubles.
         try {
-            if (sector.currentlyOpenMarket == null || ReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+            if (sector.currentlyOpenMarket == null || InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
 
-            val cargoPanel = ReflectionMisc.getCargoPanel() ?: return
+            val cargoPanel = InternalReflectionMisc.getCargoPanel() ?: return
 
             val submarketButtonParent = cargoPanel.findChildWithMethod("showSubmarketTextDialog") as? UIPanelAPI
                 ?: return
@@ -59,7 +60,7 @@ internal class CargoAutoManagerOpener : CampaignInputListener {
                         ?: return@forEach
                     val selectedSubmarket = submarketPlugin.submarket
 
-                    val coreUI = ReflectionMisc.getCoreUI() ?: return@forEach
+                    val coreUI = UIFinder.getCoreUI() ?: return@forEach
                     //if (!submarketPlugin.getOnClickAction(coreUI).equals(SubmarketPlugin.OnClickAction.OPEN_SUBMARKET)) return@forEach // return SubmarketPlugin.OnClickAction.OPEN_SUBMARKET;
                     if (!submarketPlugin.isEnabled(coreUI)) return@forEach
                     if (!submarketPlugin.isFreeTransfer) return@forEach

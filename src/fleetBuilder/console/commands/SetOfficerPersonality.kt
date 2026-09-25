@@ -1,13 +1,13 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommand.CommandResult
 import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.CommandUtils.findBestStringMatch
 import org.lazywizard.console.Console
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 
 class SetOfficerPersonality : BaseCommandWithSuggestion {
     val personalities = listOf(Personalities.TIMID, Personalities.CAUTIOUS, Personalities.STEADY, Personalities.AGGRESSIVE, Personalities.RECKLESS)

@@ -21,10 +21,11 @@ import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.reportMissingContentIfAny
 import fleetBuilder.serialization.variant.DataVariant
 import fleetBuilder.ui.customPanel.DialogUtils
-import fleetBuilder.util.reflection.ReflectionMisc
+import fleetBuilder.util.reflection.InternalReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector2f
+import org.magiclib.util.reflection.UIFinder
 import java.awt.Color
 import kotlin.math.cos
 import kotlin.math.sin
@@ -43,7 +44,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                 if (event.isCtrlDown) {
                     if (event.eventValue == Keyboard.KEY_C) {
                         try {
-                            val codex = ReflectionMisc.getCodexDialog()
+                            val codex = UIFinder.getCodexDialog()
 
                             if (codex != null) {
                                 ClipboardMisc.codexEntryToClipboard(codex)
@@ -56,7 +57,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                             DisplayMessage.showError(FBTxt.txt("mod_hotkey_failed", FleetBuilderPlugin.getModName()), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
-                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isModalPanelOpen() && !ReflectionMisc.isCodexOpen()) {
+                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isModalPanelOpen() && !InternalReflectionMisc.isCodexOpen()) {
                             HotkeyHandlerDialogs.createDevModeDialog()
                             event.consume(); continue
                         }
@@ -65,7 +66,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                             pasteShipIntoCombat(engine, event)
                             event.consume(); continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
-                            if (Global.getCurrentState() != GameState.COMBAT && !ReflectionMisc.isCodexOpen() && !DialogUtils.isModalPanelOpen()) {
+                            if (Global.getCurrentState() != GameState.COMBAT && !InternalReflectionMisc.isCodexOpen() && !DialogUtils.isModalPanelOpen()) {
                                 if (ClipboardHotkeyHandlerUtils.handleRefitPaste()) {
                                     event.consume(); continue
                                 }
@@ -155,7 +156,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
         engine: CombatEngineAPI,
         event: InputEventAPI
     ) {
-        if (ReflectionMisc.isCodexOpen() || engine.combatUI.isShowingCommandUI)
+        if (InternalReflectionMisc.isCodexOpen() || engine.combatUI.isShowingCommandUI)
             return
 
         var element: Any? = null

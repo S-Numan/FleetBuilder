@@ -19,9 +19,10 @@ import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.serialization.member.DataMember
 import fleetBuilder.serialization.variant.DataVariant
-import fleetBuilder.util.reflection.ReflectionMisc
+import fleetBuilder.util.reflection.InternalReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.magiclib.util.api.createHullVariant
+import org.magiclib.util.reflection.boxed.BoxedCodexDialog
 
 internal class CampaignDevModeCodexButton : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -39,12 +40,12 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
         val sector = Global.getSector()!!
         if (!sector.isPaused) return
         if (!FBSettings.cheatsEnabled()) return
-        if (!ReflectionMisc.isCodexOpen()) {
+        if (!InternalReflectionMisc.isCodexOpen()) {
             addToFleetButton = null
             return
         }
 
-        val codex = ReflectionMisc.getCodexDialog() ?: run {
+        val codex = BoxedCodexDialog.get() ?: run {
             DisplayMessage.showError("Code should not reach here")
             return
         }
@@ -56,7 +57,8 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
         (tempArray[2] as TextFieldAPI)//Text input field for searching
         val navContainer = (tempArray[3] as UIPanelAPI)//Bottom left: Left, Right, Up, Random, icons UI container.*/
 
-        val newParam = ReflectionMisc.getCodexEntryParam(codex)
+        val newParam = codex.getEntryParam()
+        codex as UIPanelAPI
         if (param !== newParam) {
             param = newParam
 
@@ -76,7 +78,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
             val pad = 18f
 
             var exists = false
-            val children = (codex as? UIPanelAPI)?.getChildrenCopy() as List<UIComponentAPI>
+            val children = codex.target.getChildrenCopy()
             children.forEach { child ->
                 if (child === addToFleetButton) {
                     exists = true

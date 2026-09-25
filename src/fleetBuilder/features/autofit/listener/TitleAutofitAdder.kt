@@ -8,11 +8,11 @@ import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.features.autofit.ui.AutofitPanelCreator
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.onClick
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.api.kotlin.safeInvoke
 import org.lwjgl.input.Keyboard
+import org.magiclib.util.reflection.UIFinder
 
 internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
     companion object {
@@ -25,7 +25,7 @@ internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
 
         if (!FBSettings.autofitMenuEnabled) return
 
-        val screenPanel = ReflectionMisc.getScreenPanel() ?: return
+        val screenPanel = UIFinder.getScreenPanel() ?: return
         val delegateChild = screenPanel.findChildWithMethod("dismiss") as? UIPanelAPI ?: return
         val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return
         val holographicBG = oldCoreUI.findChildWithMethod("forceFoldIn") ?: return

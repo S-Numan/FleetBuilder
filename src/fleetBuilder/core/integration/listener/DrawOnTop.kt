@@ -11,9 +11,8 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import fleetBuilder.core.util.misc.DrawMessageOnTop
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.util.reflection.ReflectionMisc
 import fleetBuilder.util.TimeKeeper
-
+import org.magiclib.util.reflection.UIFinder
 
 internal class DrawOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin() {
     companion object {
@@ -47,7 +46,7 @@ internal class DrawOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin() {
         if (justLoadedGame > 0) {
             justLoadedGame--
             if (justLoadedGame == 0) {
-                val screenPanel = ReflectionMisc.getScreenPanel()
+                val screenPanel = UIFinder.getScreenPanel()
                 if (screenPanel != null && screenPanel.getChildrenCopy().none { CampaignRenderer::class.java.isInstance((it as? CustomPanelAPI)?.plugin) })
                     CampaignRenderer()
             }
@@ -73,7 +72,7 @@ internal class DrawOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin() {
         if (state != curState) {
             curState = state
 
-            val screenPanel = ReflectionMisc.getScreenPanel()
+            val screenPanel = UIFinder.getScreenPanel()
             if (screenPanel != null && curState == GameState.CAMPAIGN && screenPanel.getChildrenCopy().none { CampaignRenderer::class.java.isInstance((it as? CustomPanelAPI)?.plugin) })
                 CampaignRenderer()
         }
@@ -81,7 +80,7 @@ internal class DrawOnTop : EveryFrameScript, BaseEveryFrameCombatPlugin() {
 }
 
 private class CampaignRenderer : BaseCustomUIPanelPlugin() {
-    private val screenPanel = ReflectionMisc.getScreenPanel()
+    private val screenPanel = UIFinder.getScreenPanel()
     var panel: CustomPanelAPI
 
     init {

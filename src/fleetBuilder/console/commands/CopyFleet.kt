@@ -12,17 +12,17 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 import fleetBuilder.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getMethodsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.serialization.fleet.FleetSettings
 import fleetBuilder.serialization.fleet.JSONFleet.saveFleetToJson
 import fleetBuilder.serialization.member.DataMember.cloneMember
 import fleetBuilder.serialization.person.DataPerson.clonePerson
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.api.kotlin.safeInvoke
 import fleetBuilder.util.lib.ClipboardUtil
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.Console
 import org.magiclib.util.api.getActualCurrentTab
+import org.magiclib.util.reflection.UIFinder
 
 class CopyFleet : BaseCommandWithSuggestion {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {
@@ -103,7 +103,7 @@ class CopyFleet : BaseCommandWithSuggestion {
 
             return BaseCommand.CommandResult.SUCCESS
         } else if (context.isInMainMenu) {
-            val screenPanel = ReflectionMisc.getScreenPanel() ?: return BaseCommand.CommandResult.ERROR
+            val screenPanel = UIFinder.getScreenPanel() ?: return BaseCommand.CommandResult.ERROR
 
             val missionThing = (screenPanel.safeInvoke("getChildrenCopy") as List<*>).find { it?.getMethodsMatching(name = "getMissionList")?.isNotEmpty() == true }
             val missionDetail = missionThing?.safeInvoke("getMissionDetail") as? UIPanelAPI

@@ -16,13 +16,13 @@ import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBMisc.replaceVariantWithVariant
 import fleetBuilder.core.util.FBMisc.sModHandlerTemp
 import fleetBuilder.core.util.FBTxt
-import fleetBuilder.util.reflection.ReflectionMisc
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.api.CampaignUtils.spendStoryPoint
 import fleetBuilder.util.api.VariantUtils.getHullModBuildInBonusXP
-import fleetBuilder.util.api.kotlin.safeInvoke
 import org.magiclib.util.api.createHullVariant
 import org.magiclib.util.api.getModules
 import org.magiclib.util.api.getSlotsForModules
+import org.magiclib.util.reflection.UIFinder
 import java.awt.Color
 import java.util.*
 
@@ -60,7 +60,7 @@ internal object AutofitApplier {
             } else {
                 val sector = Global.getSector()!!
 
-                val coreUI = ReflectionMisc.getCoreUI() ?: return
+                val coreUI = UIFinder.getCoreUI() ?: return
 
                 val delegate = FBPlayerAutofitDelegate(
                     fleetMember,

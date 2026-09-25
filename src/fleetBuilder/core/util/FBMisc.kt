@@ -15,7 +15,6 @@ import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
 import fleetBuilder.serialization.GameModInfo
 import fleetBuilder.util.api.MemberUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.reflection.ReflectionMisc
 import org.json.JSONObject
 import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
 import org.lwjgl.opengl.GL11
@@ -25,6 +24,7 @@ import org.magiclib.util.api.allRegularHullMods
 import org.magiclib.util.api.getEffectiveHullId
 import org.magiclib.util.api.getModules
 import org.magiclib.util.api.removeModFull
+import org.magiclib.util.reflection.UIFinder
 import java.awt.Color
 import kotlin.math.min
 
@@ -567,7 +567,7 @@ internal object FBMisc {
     ): Pair<List<String>, Float> {
         val sector = Global.getSector() ?: return emptyList<String>() to 0f
 
-        val coreUI = ReflectionMisc.getCoreUI() ?: return emptyList<String>() to 0f
+        val coreUI = UIFinder.getCoreUI() ?: return emptyList<String>() to 0f
 
         val playerSPLeft = sector.playerStats.storyPoints
 

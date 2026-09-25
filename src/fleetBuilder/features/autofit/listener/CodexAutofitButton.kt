@@ -15,8 +15,8 @@ import fleetBuilder.features.autofit.ui.AutofitPanel
 import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.ui.addShortcutNoShow
 import fleetBuilder.util.reflection.InternalReflectionMisc
-import fleetBuilder.util.reflection.ReflectionMisc
 import org.magiclib.util.api.createHullVariant
+import org.magiclib.util.reflection.boxed.BoxedCodexDialog
 
 internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin() {
 
@@ -43,24 +43,25 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
     }
 
     fun onAdvance() {
-        if (!ReflectionMisc.isCodexOpen()) {
+        if (!InternalReflectionMisc.isCodexOpen()) {
             Companion.param = null
             openAutofitButton = null
             autofitPanel = null
             return
         }
 
-        val codex = ReflectionMisc.getCodexDialog() ?: run {
+        val codex = BoxedCodexDialog.get() ?: run {
             DisplayMessage.showError("Code should not reach here")
             return
         }
-        val param = ReflectionMisc.getCodexEntryParam(codex)
+        val param = codex.getEntryParam()
+        codex as UIPanelAPI
 
         if (Companion.param === param)
             return
         // Param change detected (may also occur on codex opening)
 
-        val codexDetailPanel = ReflectionMisc.getCodexDetailPanel(codex) ?: return
+        val codexDetailPanel = codex.getDetailPanel() ?: return
 
         // Remove any previous button
         if (openAutofitButton != null) {

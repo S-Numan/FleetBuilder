@@ -10,10 +10,10 @@ import com.fs.starfarer.combat.entities.Ship
 import fleetBuilder.otherMods.starficz.BoxedUIShipPreview
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getConstructorsMatching
 import fleetBuilder.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.api.kotlin.safeInvoke
+import org.magiclib.util.reflection.UIFinder
 
 internal class CacheObfOnTitle : BaseEveryFrameCombatPlugin() {
     companion object {
@@ -22,7 +22,7 @@ internal class CacheObfOnTitle : BaseEveryFrameCombatPlugin() {
             if (!init) {
                 if (Global.getCurrentState() != GameState.TITLE)
                     return
-                val screenPanel = ReflectionMisc.getScreenPanel() ?: return
+                val screenPanel = UIFinder.getScreenPanel() ?: return
                 cacheObfClassesIfNeeded(screenPanel)
                 init = true
             }

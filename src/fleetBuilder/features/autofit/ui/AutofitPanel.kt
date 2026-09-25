@@ -37,9 +37,8 @@ import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
 import fleetBuilder.util.api.VariantUtils.processSModsForComparison
 import fleetBuilder.util.api.kotlin.getCompatibleDLessHull
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.reflection.InternalReflectionMisc
-import fleetBuilder.util.reflection.ReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.alphaf
@@ -48,6 +47,7 @@ import org.magiclib.kotlin.greenf
 import org.magiclib.kotlin.redf
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.api.*
+import org.magiclib.util.reflection.UIFinder
 import java.awt.Color
 
 
@@ -178,7 +178,7 @@ internal object AutofitPanel {
             if (draggedPanel == null)
                 draggedPanel = ShipPreviewOverlayPlugin(draggedAutofitSpec!!.variant.createFleetMember(), selectorWidth, selectorWidth, manualScaleShipsToBetterFit = true).panel
 
-            val screenPanel = ReflectionMisc.getScreenPanel() ?: return
+            val screenPanel = UIFinder.getScreenPanel() ?: return
             if (screenPanel.getChildrenCopy().find { it === draggedPanel } == null)
                 screenPanel.addComponent(draggedPanel)
 

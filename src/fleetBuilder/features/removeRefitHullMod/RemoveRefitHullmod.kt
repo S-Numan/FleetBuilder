@@ -19,14 +19,14 @@ import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.getChildrenCopy
 import fleetBuilder.otherMods.starficz.height
 import fleetBuilder.otherMods.starficz.width
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.reflection.InternalReflectionMisc
-import fleetBuilder.util.reflection.ReflectionMisc
-import fleetBuilder.util.reflection.boxed.BoxedRefitTab
 import org.lwjgl.util.vector.Vector2f
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.api.getActualCurrentTab
 import org.magiclib.util.api.removeModFull
+import org.magiclib.util.reflection.UIFinder
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 
 internal class RemoveRefitHullmod : CampaignInputListener {
 
@@ -48,7 +48,7 @@ internal class RemoveRefitHullmod : CampaignInputListener {
     }
 
     private fun handleRefitRemoveHullMod(event: InputEventAPI) {
-        val screenPanel = ReflectionMisc.getScreenPanel() ?: return
+        val screenPanel = UIFinder.getScreenPanel() ?: return
         val isAutofitPanelOpen = screenPanel
             .getChildrenCopy()
             .filterIsInstance<CustomPanelAPI>()

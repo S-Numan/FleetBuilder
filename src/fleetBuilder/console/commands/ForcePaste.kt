@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.util.FBMisc.isConsoleOpen
 import fleetBuilder.features.hotkeyHandler.CampaignClipboardHotkeyHandler
-import fleetBuilder.util.api.kotlin.safeInvoke
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console

@@ -16,8 +16,8 @@ import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.origCap
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedCR
 import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedStatuses
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.api.CampaignUtils
-import fleetBuilder.util.api.kotlin.safeInvoke
 import org.magiclib.util.taskScheduler.CombatTaskScheduler
 import org.magiclib.util.taskScheduler.SectorTaskScheduler
 
