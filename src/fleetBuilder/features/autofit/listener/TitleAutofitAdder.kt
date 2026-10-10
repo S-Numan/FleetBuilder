@@ -12,31 +12,29 @@ import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.onClick
 import org.lwjgl.input.Keyboard
-import org.magiclib.util.reflection.UIFinder
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 
 internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
-    companion object {
-        var refitTab: UIPanelAPI? = null
-    }
+
+    var refitPanel: UIPanelAPI? = null
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>) {
-        if (Global.getCurrentState() != GameState.TITLE)
+        if (Global.getCurrentState() != GameState.TITLE) {
+            refitPanel = null
             return
-
+        }
         if (!FBSettings.autofitMenuEnabled) return
 
-        val screenPanel = UIFinder.getScreenPanel() ?: return
-        val delegateChild = screenPanel.findChildWithMethod("dismiss") as? UIPanelAPI ?: return
-        val oldCoreUI = delegateChild.findChildWithMethod("getMissionInstance") as? UIPanelAPI ?: return
-        val holographicBG = oldCoreUI.findChildWithMethod("forceFoldIn") ?: return
+        val refitTab = BoxedRefitTab.get()
+        if (refitTab == null) {
+            refitPanel = null
+            return
+        }
 
-        val refitTab = holographicBG.safeInvoke("getCurr") as? UIPanelAPI ?: return
-
-        if (Companion.refitTab === refitTab)
+        if (refitPanel === refitTab.refitPanel)
             return
 
-        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return
-        val bottomLeftPanel = refitPanel.findChildWithMethod("instantiateForSimulation") as? UIPanelAPI ?: return
+        val bottomLeftPanel = refitTab.refitPanel.findChildWithMethod("instantiateForSimulation") as? UIPanelAPI ?: return
 
         val autofitButton = bottomLeftPanel.safeInvoke("getManageButton") as? ButtonAPI ?: return
         autofitButton.setShortcut(FBSettings.autofitMenuHotkey, false)
@@ -51,6 +49,6 @@ internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
             }
         }
 
-        Companion.refitTab = refitTab
+        refitPanel = refitTab.refitPanel
     }
 }

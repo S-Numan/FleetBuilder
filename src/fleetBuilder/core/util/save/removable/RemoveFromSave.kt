@@ -20,7 +20,6 @@ import fleetBuilder.core.util.FBMisc.replaceVariantWithVariant
 import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeGet
 import fleetBuilder.util.api.FactionUtils
 import fleetBuilder.util.api.VariantUtils
-import org.magiclib.kotlin.doesFileExist
 import org.magiclib.kotlin.getErrorVariantID
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.api.*

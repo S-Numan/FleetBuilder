@@ -2,7 +2,6 @@ package fleetBuilder.features.autofit.listener
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.config.FBSettings
@@ -11,8 +10,7 @@ import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.onClick
 import org.lwjgl.input.Keyboard
-import org.magiclib.util.api.getActualCurrentTab
-import org.magiclib.util.reflection.UIFinder
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 
 internal class CampaignAutofitAdder : EveryFrameScript {
 
@@ -24,27 +22,23 @@ internal class CampaignAutofitAdder : EveryFrameScript {
         return true
     }
 
-    var refitTab: UIPanelAPI? = null
+    var refitPanel: UIPanelAPI? = null
     override fun advance(amount: Float) {
         val sector = Global.getSector() ?: return
         if (!sector.isPaused) {
-            refitTab = null
+            refitPanel = null
             return
         }
 
-        val ui = sector.campaignUI ?: return
-
-        if (ui.getActualCurrentTab() != CoreUITabId.REFIT) {
-            refitTab = null
+        val refitTab = BoxedRefitTab.get()
+        if (refitTab == null) {
+            refitPanel = null
             return
         }
-
-        val refitTab = UIFinder.getRefitTab() ?: return
-        if (this.refitTab === refitTab)
+        if (this.refitPanel === refitTab.refitPanel)
             return
 
-        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return
-        val bottomLeftPanel = refitPanel.findChildWithMethod("instantiateForSimulation") as? UIPanelAPI ?: return
+        val bottomLeftPanel = refitTab.refitPanel.findChildWithMethod("instantiateForSimulation") as? UIPanelAPI ?: return
         val autofitButton = bottomLeftPanel.safeInvoke("getManageButton") as? ButtonAPI ?: return
         autofitButton.setShortcut(FBSettings.autofitMenuHotkey, false)
 
@@ -58,6 +52,6 @@ internal class CampaignAutofitAdder : EveryFrameScript {
             }
         }
 
-        this.refitTab = refitTab
+        this.refitPanel = refitTab.refitPanel
     }
 }

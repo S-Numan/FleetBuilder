@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.codex.CodexDialogAPI
-import com.fs.starfarer.api.ui.IntelUIAPI
 import com.fs.starfarer.api.ui.LabelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.econ.Submarket
@@ -47,13 +46,7 @@ internal object InternalReflectionMisc {
         }
         return false
     }
-
-    @JvmOverloads
-    @JvmStatic
-    fun getIntelUI(intelTab: UIPanelAPI? = UIFinder.getIntelTab()): IntelUIAPI? {
-        return intelTab?.safeInvoke("getEventsPanel") as? IntelUIAPI
-    }
-
+    
     @JvmOverloads
     @JvmStatic
     fun getCargoPanel(cargoTab: UIPanelAPI? = UIFinder.getCargoTab()): UIPanelAPI? {
@@ -195,11 +188,5 @@ internal object InternalReflectionMisc {
     @JvmStatic
     fun getCodexDetailLabel(codex: BoxedCodexDialog): LabelAPI? {
         return codex.getDetailPanel()?.getChildrenCopy()?.filterIsInstance<LabelAPI>()?.firstOrNull()
-    }
-
-    @JvmOverloads
-    @JvmStatic
-    fun getRefitPanel(refitTab: UIPanelAPI? = UIFinder.getRefitTab()): UIPanelAPI? {
-        return refitTab?.safeInvoke("getRefitPanel") as? UIPanelAPI
     }
 }

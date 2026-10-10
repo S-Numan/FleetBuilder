@@ -1,12 +1,12 @@
 package fleetBuilder.features.autofit.ui
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
+import fleetBuilder.otherMods.starficz.*
 import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import org.magiclib.kotlin.setAlpha
-import fleetBuilder.otherMods.starficz.*
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 import java.awt.Color
 
 /**
@@ -16,9 +16,8 @@ import java.awt.Color
 internal object AutofitPanelCreator {
     private val AUTOFIT_BUTTON_COLOR = Color(240, 160, 0, 130)
     private val AUTOFIT_BUTTON_TEXT_COLOR = AUTOFIT_BUTTON_COLOR.brighter().setAlpha(255)
-    fun toggleAutofitButton(refitTab: UIPanelAPI, inCampaign: Boolean): Boolean {
-        val refitPanel = refitTab.findChildWithMethod("syncWithCurrentVariant") as? UIPanelAPI ?: return false
-        val statsAndHullmodsPanel = refitPanel.findChildWithMethod("getColorFor") as? UIPanelAPI ?: return false
+    fun toggleAutofitButton(refitTab: BoxedRefitTab, inCampaign: Boolean): Boolean {
+        val statsAndHullmodsPanel = refitTab.refitPanel.findChildWithMethod("getColorFor") as? UIPanelAPI ?: return false
         val hullmodsPanel =
             statsAndHullmodsPanel.findChildWithMethod("removeNotApplicableMods") as? UIPanelAPI ?: return false
 
@@ -28,7 +27,7 @@ internal object AutofitPanelCreator {
 
         }*/
 
-        val fleetMember = refitPanel.safeInvoke("getMember") as? FleetMemberAPI
+        val fleetMember = refitTab.getCurrentMember()
         val existingElements = hullmodsPanel.getChildrenCopy()
         if (existingElements.isEmpty()) return false // if children is empty, return
 
@@ -36,12 +35,11 @@ internal object AutofitPanelCreator {
         //    button.customData is String && button.customData == "REFIT_BUTTON"
         //}
 
-        val shipDisplay = refitPanel.safeInvoke("getShipDisplay") as? UIPanelAPI ?: return false
-
-        val dialogShowing = shipDisplay.safeInvoke("isShowingDialog") as Boolean
-        if (dialogShowing) return false
-
-        val coreUI = refitPanel.safeInvoke("getCoreUI") as? UIPanelAPI ?: return false
+        val dialogShowing = refitTab.shipDisplay.safeInvoke("isShowingDialog") as Boolean
+        //val dialogShowing = refitTab.isShowingDialog()
+        if (dialogShowing)
+            return false
+        val coreUI = refitTab.refitPanel.safeInvoke("getCoreUI") as? UIPanelAPI ?: return false
 
         val curAutofitPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->
             panel.plugin != null && panel.plugin is AutofitPanel.AutofitPanelPlugin
@@ -93,7 +91,7 @@ internal object AutofitPanelCreator {
         val width = (refitTab.width - 343 + 32).coerceIn(667f, 700f + 213f + 32)
         val height = (refitTab.height - 12).coerceIn(722f, 800f + 26f + 16f + 2f)
         val paintjobPanel =
-            AutofitPanel.createMagicAutofitPanel(refitTab, refitPanel, shipDisplay, width, height)
+            AutofitPanel.createMagicAutofitPanel(refitTab.target, refitTab.refitPanel, refitTab.shipDisplay, width, height)
 
         coreUI.addComponent(paintjobPanel)
 
