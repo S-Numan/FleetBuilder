@@ -74,7 +74,7 @@ import org.magiclib.util.membermemory.MemberMemoryExt.getMemberMemory
 import org.magiclib.util.reflection.UIFinder
 import org.magiclib.util.reflection.boxed.BoxedFleetTab
 import org.magiclib.util.reflection.boxed.BoxedRefitTab
-import org.magiclib.util.taskScheduler.SectorTaskScheduler
+import org.magiclib.util.taskScheduler.SystemTaskScheduler
 import second_in_command.SCData
 import second_in_command.SCUtils
 import second_in_command.specs.SCOfficer
@@ -165,6 +165,7 @@ object HotkeyHandlerDialogs {
                     val mode = BoxedFleetTab.get()?.getMode()
                     Global.getLogger(this.javaClass).error("Market mode: $mode")
                     Mouse.setCursorPosition(0, 0)
+
                     //DisplayMessage.showMessageCustom("Test Message! " + Random().nextInt(), Color.RED)
                     //DisplayMessage.showError("Test Message: " + Random().nextInt())
                     //Global.getLogger(this.javaClass).error("Test ERROR " + Random().nextInt())
@@ -1446,7 +1447,7 @@ object HotkeyHandlerDialogs {
                         val missing = MissingContent()
                         val data = ClipboardMisc.extractDataFromClipboard(missing)
                         if (data != null && (data is DataFleet.ParsedFleetData || data is DataMember.ParsedMemberData || data is DataVariant.ParsedVariantData)) {
-                            SectorTaskScheduler.performLater(systemTime = true) {
+                            SystemTaskScheduler.performLater {
                                 pasteFleet(data, missing)
                             }
                         }

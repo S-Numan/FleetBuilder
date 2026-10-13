@@ -20,6 +20,7 @@ import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.api.CampaignUtils
 import org.magiclib.util.taskScheduler.CombatTaskScheduler
 import org.magiclib.util.taskScheduler.SectorTaskScheduler
+import org.magiclib.util.taskScheduler.SystemTaskScheduler
 
 // Initial code taken from Ship Mastery System by float
 
@@ -76,7 +77,7 @@ object RecentBattleReplay {
                     member.updateStats()
                 }
 
-                SectorTaskScheduler.performLater(systemTime = true) {
+                SystemTaskScheduler.performLater {
                     sector.lastPlayerBattleTimestamp = lastPlayerBattleTimestamp!!
                     sector.isLastPlayerBattleWon = lastPlayerBattleWon!!
 

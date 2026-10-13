@@ -13,7 +13,7 @@ internal class TransponderOff : CurrentLocationChangedListener {
 
         val playerFleet = Global.getSector()!!.playerFleet ?: return
 
-        if (!playerFleet.isTransponderOn && curr.isHyperspace && !prev.isHyperspace) {
+        if (playerFleet.isTransponderOn && curr.isHyperspace && !prev.isHyperspace) {
             playerFleet.isTransponderOn = false
             playerFleet.getAbility(Abilities.TRANSPONDER).deactivate()
         }
