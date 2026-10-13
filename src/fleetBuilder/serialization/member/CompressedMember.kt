@@ -19,6 +19,8 @@ import fleetBuilder.util.lib.CompressionUtil
 import org.magiclib.util.MagicLookup
 import java.util.*
 
+/** Note: this code is poorly made. If you intended to use this as library, it is suggested to use the JSON version instead */
+
 object CompressedMember {
     fun isCompressedMember(comp: String): Boolean {
         val metaIndexStart = comp.indexOf(metaSep)

@@ -21,6 +21,8 @@ import fleetBuilder.util.lib.CompressionUtil
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.api.getBuiltInDMods
 
+/** Note: this code is poorly made. If you intended to use this as library, it is suggested to use the JSON version instead */
+
 object CompressedVariant {
     fun isCompressedVariant(comp: String): Boolean {
         val metaIndexStart = comp.indexOf(metaSep)
