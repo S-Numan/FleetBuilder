@@ -14,6 +14,7 @@ import com.fs.starfarer.campaign.CampaignUIPersistentData
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.util.DisplayMessage
 import fleetBuilder.core.util.FBTxt
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.serialization.SerializationUtils.getJSONFromStringSafe
 import fleetBuilder.serialization.cargo.CompressedCargo
 import fleetBuilder.serialization.cargo.JSONCargo
@@ -25,7 +26,6 @@ import fleetBuilder.serialization.person.JSONPerson
 import fleetBuilder.serialization.person.PersonSettings
 import fleetBuilder.util.api.FleetUtils
 import fleetBuilder.util.api.kotlin.optJSONArrayToStringList
-import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.lib.CompressionUtil
 import org.json.JSONArray
 import org.json.JSONObject
@@ -829,11 +829,16 @@ object PlayerSaveUtils {
 
                         val isAbilityUnlocked = playerFleet.abilities?.contains(newID) == true || sector.characterData.abilities.contains(newID) || sector.playerStats.grantedAbilityIds.contains(newID)
                         if (!isAbilityUnlocked) {
-                            newID = when (id) {
-                                "SKR_emergency_burn" -> convertMissing(Abilities.EMERGENCY_BURN)
-                                "SKR_sustained_burn" -> convertMissing(Abilities.SUSTAINED_BURN)
-                                "SKR_neutrino_detector" -> convertMissing(Abilities.GRAVITIC_SCAN)
-                                "SKR_remote_survey" -> convertMissing(Abilities.REMOTE_SURVEY)
+                            fun matches(id: String, vararg keys: String) =
+                                keys.any { id.contains(it) }
+
+                            newID = when {
+                                matches(id, Abilities.EMERGENCY_BURN) -> convertMissing(Abilities.EMERGENCY_BURN)
+                                matches(id, Abilities.SUSTAINED_BURN) -> convertMissing(Abilities.SUSTAINED_BURN)
+                                matches(id, Abilities.GRAVITIC_SCAN, "neutrino_detector") -> convertMissing(Abilities.GRAVITIC_SCAN)
+                                matches(id, Abilities.REMOTE_SURVEY) -> convertMissing(Abilities.REMOTE_SURVEY)
+                                matches(id, Abilities.SCAVENGE) -> convertMissing(Abilities.SCAVENGE)
+                                matches(id, Abilities.SENSOR_BURST) -> convertMissing(Abilities.SENSOR_BURST)
                                 else -> null
                             }
                         }
