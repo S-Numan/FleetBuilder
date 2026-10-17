@@ -867,6 +867,15 @@ fun ButtonAPI.onClick(function: () -> Unit) {
     }
 }
 
+internal fun ButtonAPI.clearOnClick() {
+    val existingListener = invoke("getListener")
+    if (existingListener is CustomPanelAPI && existingListener.plugin is ButtonListener) {
+        (existingListener.plugin as ButtonListener).clearOnClickFunctions()
+    } else {
+        invoke("setListener", null)
+    }
+}
+
 // Custom CustomUIPanelPlugin extensions that map the plugin to the panel
 val StarUIPanelPlugin.width
     get() = panel.width

@@ -9,6 +9,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.features.autofit.ui.AutofitPanelCreator
 import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
+import fleetBuilder.otherMods.starficz.clearOnClick
 import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.onClick
 import org.lwjgl.input.Keyboard
@@ -39,11 +40,12 @@ internal class TitleAutofitAdder : BaseEveryFrameCombatPlugin() {
         val autofitButton = bottomLeftPanel.safeInvoke("getManageButton") as? ButtonAPI ?: return
         autofitButton.setShortcut(FBSettings.autofitMenuHotkey, false)
 
+        autofitButton.clearOnClick()
         autofitButton.onClick {
             if (FBSettings.autofitMenuHotkey != Keyboard.KEY_NONE && Keyboard.isKeyDown(FBSettings.autofitMenuHotkey))
-                AutofitPanelCreator.toggleAutofitButton(refitTab, true)
+                AutofitPanelCreator.toggleAutofitButton(refitTab, false)
             else if (FBSettings.replaceVanillaAutofitButton) {
-                AutofitPanelCreator.toggleAutofitButton(refitTab, true)
+                AutofitPanelCreator.toggleAutofitButton(refitTab, false)
             } else {
                 bottomLeftPanel.safeInvoke("actionPerformed", null, autofitButton)
             }

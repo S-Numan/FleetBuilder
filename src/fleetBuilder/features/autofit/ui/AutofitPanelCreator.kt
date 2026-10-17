@@ -39,7 +39,7 @@ internal object AutofitPanelCreator {
         //val dialogShowing = refitTab.isShowingDialog()
         if (dialogShowing)
             return false
-        val coreUI = refitTab.refitPanel.safeInvoke("getCoreUI") as? UIPanelAPI ?: return false
+        val coreUI = refitTab.getCoreUI() as? UIPanelAPI ?: return false
 
         val curAutofitPanel = coreUI.getChildrenCopy().filterIsInstance<CustomPanelAPI>().firstOrNull { panel ->
             panel.plugin != null && panel.plugin is AutofitPanel.AutofitPanelPlugin
