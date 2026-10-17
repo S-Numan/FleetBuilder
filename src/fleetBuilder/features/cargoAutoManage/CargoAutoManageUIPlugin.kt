@@ -30,8 +30,8 @@ import fleetBuilder.util.reflection.InternalReflectionMisc
 import org.json.JSONArray
 import org.json.JSONObject
 import org.lwjgl.input.Keyboard
-import org.magiclib.util.api.toJson
-import org.magiclib.util.api.toList
+import org.magiclib.kotlin.toJson
+import org.magiclib.kotlin.toList
 import org.magiclib.util.reflection.UIFinder
 
 //The implementation of this is extremely scuffed, I am aware.

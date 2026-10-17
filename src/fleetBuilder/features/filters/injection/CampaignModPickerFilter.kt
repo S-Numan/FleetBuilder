@@ -2,13 +2,11 @@ package fleetBuilder.features.filters.injection
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetBuilder.features.filters.filterPanels.ModPickerFilterPanel
-import fleetBuilder.otherMods.starficz.findChildWithMethod
 import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
-import org.magiclib.util.api.getActualCurrentTab
-import org.magiclib.util.reflection.UIFinder
+import fleetBuilder.otherMods.starficz.findChildWithMethod
+import org.magiclib.util.reflection.boxed.BoxedRefitTab
 
 internal class CampaignModPickerFilter : EveryFrameScript {
     override fun isDone(): Boolean {
@@ -25,15 +23,15 @@ internal class CampaignModPickerFilter : EveryFrameScript {
     override fun advance(amount: Float) {
         if (!Global.getSector()!!.isPaused) return
 
-        val campaignState = Global.getSector()!!.campaignUI
-        if (campaignState.getActualCurrentTab() != CoreUITabId.REFIT) {
+        val refitTab = BoxedRefitTab.get()
+        if (refitTab == null) {
             if (filterPanel != null) {
                 filterPanel = null
             }
             return
         }
 
-        val coreUI = UIFinder.getCoreUI() as? UIPanelAPI ?: return
+        val coreUI = refitTab.getCoreUI() as? UIPanelAPI ?: return
         val modPicker = coreUI.findChildWithMethod("canInstallGivenMarket") as? UIPanelAPI
         if (modPicker == null) {
             filterPanel = null
