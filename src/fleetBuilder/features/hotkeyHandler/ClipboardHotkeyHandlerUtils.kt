@@ -17,7 +17,6 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
-import com.fs.starfarer.coreui.CaptainPickerDialog
 import fleetBuilder.core.config.FBConst
 import fleetBuilder.core.config.FBSettings
 import fleetBuilder.core.config.FBSettings.randomPastedCosmetics
@@ -91,7 +90,7 @@ internal object ClipboardHotkeyHandlerUtils {
 
     fun handleCaptainPickerMouseEvents(
         event: InputEventAPI,
-        captainPicker: CaptainPickerDialog
+        captainPicker: UIPanelAPI
     ): Unit = hotkeySafe {
         val officers =
             captainPicker.safeInvoke("getListOfficers")
