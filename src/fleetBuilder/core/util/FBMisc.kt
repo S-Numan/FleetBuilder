@@ -20,9 +20,9 @@ import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
 import org.lwjgl.opengl.GL11
 import org.magiclib.kotlin.getOPCost
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.allRegularHullMods
 import org.magiclib.util.api.getEffectiveHullId
 import org.magiclib.util.api.getModules
+import org.magiclib.util.api.getRegularHullMods
 import org.magiclib.util.api.removeModFull
 import org.magiclib.util.reflection.UIFinder
 import java.awt.Color
@@ -266,7 +266,7 @@ internal object FBMisc {
         }
 
         // Copy hullmod data
-        for (mod in from.allRegularHullMods()) {
+        for (mod in from.getRegularHullMods()) {
             to.addMod(mod)
         }
 

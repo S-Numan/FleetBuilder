@@ -26,6 +26,7 @@ import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.deleteLo
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getCoreAutofitSpecsForShip
 import fleetBuilder.features.autofit.shipDirectory.ShipDirectoryService.getLoadoutAutofitSpecsForShip
 import fleetBuilder.otherMods.starficz.*
+import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.serialization.ClipboardMisc
 import fleetBuilder.serialization.MissingContent
 import fleetBuilder.serialization.variant.DataVariant.cloneVariant
@@ -37,7 +38,6 @@ import fleetBuilder.util.api.VariantUtils.compareVariantContents
 import fleetBuilder.util.api.VariantUtils.compareVariantHullMods
 import fleetBuilder.util.api.VariantUtils.processSModsForComparison
 import fleetBuilder.util.api.kotlin.getCompatibleDLessHull
-import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.reflection.InternalReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
@@ -943,8 +943,8 @@ internal object AutofitPanel {
         }
 
         var unequalDMod = false
-        if (compareBaseVariant.allDMods().isNotEmpty()) {
-            compareBaseVariant.allDMods().forEach { compareBaseVariant.removeModFull(it); compareBaseVariant.hullMods.remove(it) }
+        if (compareBaseVariant.getDMods().isNotEmpty()) {
+            compareBaseVariant.getDMods().forEach { compareBaseVariant.removeModFull(it); compareBaseVariant.hullMods.remove(it) }
             if (compareBaseVariant.sMods.isNotEmpty()) {
                 unequalDMod = compareVariantHullMods(
                     compareVariant,

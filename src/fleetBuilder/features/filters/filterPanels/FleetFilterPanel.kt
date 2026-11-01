@@ -15,8 +15,8 @@ import fleetBuilder.util.api.kotlin.getShipNameWithoutPrefix
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.magiclib.util.MagicLookup
-import org.magiclib.util.api.allDMods
-import org.magiclib.util.api.allSMods
+import org.magiclib.util.api.getAllSMods
+import org.magiclib.util.api.getDMods
 import org.magiclib.util.reflection.boxed.BoxedFleetTab
 
 //Credit to Genrir's Fleet Storage Filter for being a starting point for this code
@@ -239,8 +239,8 @@ class FleetFilterPanel(
             isStation && "station".startsWith(desc) -> true
 
             //
-            variant.allSMods().isNotEmpty() && "smodded".startsWith(desc) -> true
-            variant.allDMods().isNotEmpty() && "dmodded".startsWith(desc) -> true
+            variant.getAllSMods().isNotEmpty() && "smodded".startsWith(desc) -> true
+            variant.getDMods().isNotEmpty() && "dmodded".startsWith(desc) -> true
             !captain.isDefault && ("officered".startsWith(desc) || "captained".startsWith(desc)) -> true
 
             variant.stationModules.isNotEmpty() && ("modules".startsWith(desc)) -> true

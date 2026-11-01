@@ -13,7 +13,7 @@ import fleetBuilder.serialization.MissingContent
 import fleetBuilder.ui.UIUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11.*
-import org.magiclib.util.api.allDMods
+import org.magiclib.util.api.getDMods
 import org.magiclib.util.api.getEffectiveHullId
 import java.awt.Color
 import kotlin.math.max
@@ -279,7 +279,7 @@ class ShipPreviewOverlayPlugin(
 
     private fun showSModAndDModBars() {
         val sMods = member.variant.sMods.size
-        val dMods = member.variant.allDMods().size
+        val dMods = member.variant.getDMods().size
 
         if (sMods <= 0 && dMods <= 0) return
 

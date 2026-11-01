@@ -460,7 +460,7 @@ object VariantUtils {
             }
         }
 
-        val variantModsEqual = hullModSetsEqual(variant1.allRegularHullMods(), variant2.allRegularHullMods()) &&
+        val variantModsEqual = hullModSetsEqual(variant1.getRegularHullMods(), variant2.getRegularHullMods()) &&
                 hullModSetsEqual(variant1.sModdedBuiltIns, variant2.sModdedBuiltIns) &&
                 hullModSetsEqual(variant1.sMods, variant2.sMods) &&
                 hullModSetsEqual(variant1.permaMods, variant2.permaMods) &&
