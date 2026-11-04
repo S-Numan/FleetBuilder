@@ -133,10 +133,20 @@ open class BasePanel : StarUIPanelPlugin() {
             return
         }
 
-        renderDialogBorders(alphaMult)
+        renderBorderSprite(alphaMult, top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight)
     }
 
-    protected open fun renderDialogBorders(alphaMult: Float) {
+    protected fun renderBorderSprite(
+        alphaMult: Float,
+        top: SpriteAPI,
+        bot: SpriteAPI,
+        left: SpriteAPI,
+        right: SpriteAPI,
+        topLeft: SpriteAPI,
+        topRight: SpriteAPI,
+        bottomLeft: SpriteAPI,
+        bottomRight: SpriteAPI
+    ) {
         listOf(top, bot, left, right, topLeft, topRight, bottomLeft, bottomRight)
             .forEach {
                 it.alphaMult = alphaMult

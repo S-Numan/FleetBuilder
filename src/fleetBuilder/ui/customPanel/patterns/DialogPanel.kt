@@ -7,6 +7,7 @@ import fleetBuilder.core.util.FBTxt
 import fleetBuilder.otherMods.starficz.onClick
 import fleetBuilder.ui.UIUtils
 import fleetBuilder.ui.customPanel.core.ModalPanel
+import fleetBuilder.ui.customPanel.elements.UIButton
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
@@ -20,7 +21,7 @@ open class DialogPanel(
 
     var confirmButton: ButtonAPI? = null
     var cancelButton: ButtonAPI? = null
-    var closeButton: ButtonAPI? = null
+    internal var closeButton: UIButton? = null
 
     var confirmCancelButtonWidth: Float = 160f
 
@@ -47,6 +48,29 @@ open class DialogPanel(
         super.createUI()
     }
 
+    protected open fun borderSpriteFB(id: String) =
+        sprite("FleetBuilder", id).apply { setSize(16f, 16f) }
+
+    open val bot_cut = borderSpriteFB("panel00_bot_cut")
+    open val top_cut = borderSpriteFB("panel00_top_cut")
+    open val left_cut = borderSpriteFB("panel00_left_cut")
+    open val right_cut = borderSpriteFB("panel00_right_cut")
+    open val topLeft_cut = borderSpriteFB("panel00_top_left_cut")
+    open val topRight_cut = borderSpriteFB("panel00_top_right_cut")
+    open val bottomLeft_cut = borderSpriteFB("panel00_bot_left_cut")
+    open val bottomRight_cut = borderSpriteFB("panel00_bot_right_cut")
+
+    /*
+    open val bot_inner = borderSpriteFB("panel00_bot_inner")
+    open val top_inner = borderSpriteFB("panel00_top_inner")
+    open val left_inner = borderSpriteFB("panel00_left_inner")
+    open val right_inner = borderSpriteFB("panel00_right_inner")
+    open val topLeft_inner = borderSpriteFB("panel00_top_left_inner")
+    open val topRight_inner = borderSpriteFB("panel00_top_right_inner")
+    open val bottomLeft_inner = borderSpriteFB("panel00_bot_left_inner")
+    open val bottomRight_inner = borderSpriteFB("panel00_bot_right_inner")
+    */
+
     override fun renderBelow(alphaMult: Float) {
         super.renderBelow(alphaMult)
 
@@ -59,6 +83,10 @@ open class DialogPanel(
                 )
             }
         }
+
+        // Render inner borders again to overwrite parts that clip into the panel.
+        if (renderUIBorders && dialogStyle)
+            renderBorderSprite(alphaMult, top_cut, bot_cut, left_cut, right_cut, topLeft_cut, topRight_cut, bottomLeft_cut, bottomRight_cut)
     }
 
     private var confirmCallback: (() -> Unit)? = null
@@ -141,28 +169,27 @@ open class DialogPanel(
         panel.addUIElement(tooltip).inTL(alignX, bottom - 40)
     }
 
-    fun addCloseButton(closeButtonSize: Float = 28f) {
+    fun addCloseButton(
+        closeButtonSize: Float = 26f,
+        closeButtonSpacer: Float = 2f,
+        defaultColor: Color = Color.RED.darker()
+    ) {
         val ui = panel.createUIElement(closeButtonSize, closeButtonSize, false)
 
-        ui.setButtonFontOrbitron20Bold()
-        // TODO, custom button functionality to avoid button background. Only the red X is needed here. (maybe a red outline on hover, but that's it)
-        val closeButton = ui.addButton(
-            "X",
-            "close_button",
-            Color.RED.darker(),
-            headerColor,
-            Alignment.MID,
-            CutStyle.NONE,
-            closeButtonSize,
-            closeButtonSize,
-            0f
-        )
+        val closeButton = UIButton(closeButtonSize, closeButtonSize)
+        val defaultCheck = Global.getSettings().getSprite("ui", "checkmark_x")
+        defaultCheck.color = defaultColor
+        closeButton.setSprite(defaultCheck)
+        closeButton.triggerOnPress = false
+        closeButton.renderBackground = false
+
+        ui.addCustom(closeButton.panel, 0f)
 
         // Position in top-right
-        panel.addUIElement(ui).inTR(5f, 0f)
+        panel.addUIElement(ui).inTR(5f + closeButtonSpacer, 0f + closeButtonSpacer)
         panel.bringComponentToTop(ui)
 
-        closeButton!!.onClick { dismiss() }
+        closeButton.onTrigger { dismiss() }
 
         this.closeButton = closeButton
     }
@@ -171,7 +198,7 @@ open class DialogPanel(
     var headerHeight = 28f
     var headerPadFromTop = 0f
     var headerPadFromSide = 0f
-    var headerColor: Color = Global.getSettings().getColor("buttonBgDark").darker() //Global.getSector().playerFaction.darkUIColor.darker()
+    var headerColor: Color = Global.getSettings().getColor("buttonBgDark").darker().darker() //Global.getSector().playerFaction.darkUIColor.darker()
     protected fun createHeader() {
         if (headerTitle != null && headerTooltip == null) {
             val headerSidePad =

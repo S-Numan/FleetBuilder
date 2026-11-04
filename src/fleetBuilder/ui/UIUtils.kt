@@ -50,8 +50,13 @@ object UIUtils {
         return Color(r, g, b, a)
     }
 
-    internal fun drawRectangleFilledForTooltip(tooltipMakerAPI: TooltipMakerAPI, alphaMult: Float, uiColor: Color) {
-        drawRectangleFilledForTooltipPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width, tooltipMakerAPI.height, alphaMult, uiColor)
+    internal fun drawRectangleFilledForTooltip(
+        tooltipMakerAPI: TooltipMakerAPI,
+        alphaMult: Float,
+        uiColor: Color,
+        blend: Boolean = false
+    ) {
+        drawRectangleFilledForTooltipPos(tooltipMakerAPI.x, tooltipMakerAPI.y, tooltipMakerAPI.width - 1f, tooltipMakerAPI.height - 1f, alphaMult, uiColor, blend)
     }
 
     internal fun drawRectangleFilledForTooltipPos(
@@ -60,12 +65,15 @@ object UIUtils {
         w: Float,
         h: Float,
         alphaMult: Float,
-        uiColor: Color
+        uiColor: Color,
+        blend: Boolean = false
     ) {
         GL11.glPushMatrix()
         GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        if (blend) {
+            GL11.glEnable(GL11.GL_BLEND)
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        }
         GL11.glColor4f(
             uiColor.red / 255f, uiColor.green / 255f, uiColor.blue / 255f,
             uiColor.alpha / 255f * alphaMult
