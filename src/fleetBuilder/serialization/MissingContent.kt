@@ -149,7 +149,7 @@ fun reportMissingContentIfAny(
 ) {
     val fullMessage = missingContent.getMissingContentString()
     if (fullMessage.isNotBlank()) {
-        DisplayMessage.showMessage(defaultShortMessage, Color.YELLOW)
+        DisplayMessage.showMessageCustom(defaultShortMessage, Color.YELLOW)
         DisplayMessage.logMessage(MissingContent::class.java, "\n" + fullMessage, Level.WARN, displayMessage = false)
     }
 }
