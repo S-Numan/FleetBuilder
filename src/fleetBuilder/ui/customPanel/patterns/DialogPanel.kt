@@ -48,16 +48,7 @@ open class DialogPanel(
     }
 
     override fun renderBelow(alphaMult: Float) {
-        val previousRenderUIBorders = renderUIBorders
-        renderUIBorders = false
-
         super.renderBelow(alphaMult)
-
-        var innerBorderRendered = false
-        if (previousRenderUIBorders && renderInnerUIBorders && dialogStyle) {
-            renderBorderSprite(alphaMult, top_inner, bot_inner, left_inner, right_inner, topLeft_inner, topRight_inner, bottomLeft_inner, bottomRight_inner)
-            innerBorderRendered = true
-        }
 
         if (!closing) {
             headerTooltip?.let { tooltip ->
@@ -67,17 +58,6 @@ open class DialogPanel(
                     headerColor
                 )
             }
-        }
-
-        if (previousRenderUIBorders) {
-            renderUIBorders = true
-
-            if (innerBorderRendered)
-                renderInnerUIBorders = false
-
-            renderBorders(alphaMult)
-            if (innerBorderRendered)
-                renderInnerUIBorders = true
         }
     }
 
