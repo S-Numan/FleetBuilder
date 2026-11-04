@@ -640,6 +640,9 @@ internal object FBMisc {
 
     fun getModInfosFromJson(json: JSONObject, onlyMissing: Boolean = false): MutableSet<GameModInfo> {
         val gameMods = mutableSetOf<GameModInfo>()
+        json.optString("gameVersion")?.let {
+            gameMods.add(GameModInfo("SS", "Starsector", it))
+        }
         json.optJSONArray("mod_info")?.let {
             repeat(it.length()) { i ->
                 val modSpecJson = it.optJSONObject(i)

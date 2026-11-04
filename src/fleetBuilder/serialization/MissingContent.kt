@@ -1,8 +1,8 @@
 package fleetBuilder.serialization
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.core.util.FBTxt
 import fleetBuilder.core.util.DisplayMessage
+import fleetBuilder.core.util.FBTxt
 import org.apache.log4j.Level
 import java.awt.Color
 
@@ -70,11 +70,11 @@ open class MissingContent(
         val filteredMods: Set<GameModInfo> = if (doNotPrintEnabledMods) {
             val modManager = Global.getSettings().modManager
             gameMods
+                .filter { it.id != "SS" } // Starsector is always included
                 .filterNot { mod -> modManager.isModEnabled(mod.id) }
-                .toSet()
         } else {
-            gameMods.toSet()
-        }
+            gameMods
+        }.toSet()
 
         printIfNotEmpty(FBTxt.txt("mods_saved_with"), missingMessages, filteredMods) { mod ->
             val (id, name, version) = mod

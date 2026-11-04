@@ -1,5 +1,6 @@
 package fleetBuilder.serialization.fleet
 
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FleetDataAPI
 import fleetBuilder.core.util.DisplayMessage.showError
@@ -356,15 +357,17 @@ object CompressedFleet {
 
         /* -------- MOD INFO -------- */
 
-        var requiredMods = ""
-        var addedModDetails = ""
+        var requiredMods = "" // For the user to see
+        var addedModDetails = "" //For the computer to see
 
         if (includeModInfo) {
+            val requiredModsBuilder = StringBuilder("(${Global.getSettings().gameVersion})")
+            val addedModDetailsBuilder = StringBuilder("SS${sep}Starsector$sep${Global.getSettings().gameVersion}$sep")
+
             val mods = getAllSourceModsFromFleet(data)
 
             if (mods.isNotEmpty()) {
-                val addedModDetailsBuilder = StringBuilder()
-                val requiredModsBuilder = StringBuilder(FBTxt.txt("mods_used_prefix"))
+                requiredModsBuilder.append(" : ").append(FBTxt.txt("mods_used_prefix"))
 
                 for (mod in mods) {
                     addedModDetailsBuilder
@@ -372,12 +375,12 @@ object CompressedFleet {
                         .append(mod.name).append(sep)
                         .append(mod.version).append(sep)
 
-                    requiredModsBuilder.append("(").append(mod.name).append(") ").append(sep).append(" ")
+                    requiredModsBuilder.append("(").append(mod.name).append(") , ")
                 }
 
                 requiredMods = requiredModsBuilder.dropLast(3).toString()
-                addedModDetails = addedModDetailsBuilder.dropLast(1).toString()
-            }
+            } else requiredMods = requiredModsBuilder.toString()
+            addedModDetails = addedModDetailsBuilder.dropLast(1).toString()
         }
 
         fleetString = "$addedModDetails$fleetSep2$fleetString"

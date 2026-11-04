@@ -318,10 +318,13 @@ object CompressedPerson {
 
         var personString = parts.joinToString(fieldSep)
 
-        var requiredMods = ""
-        var addedModDetails = ""
+        var requiredMods = "" // For the user to see
+        var addedModDetails = "" //For the computer to see
 
         if (includeModInfo) {
+            requiredMods += "(${Global.getSettings().gameVersion})"
+            addedModDetails += "SS${sep}Starsector$sep${Global.getSettings().gameVersion}$sep"
+
             val mods = mutableSetOf<GameModInfo>()
 
             for (skill in data.skills.keys) {
@@ -337,18 +340,15 @@ object CompressedPerson {
             }
 
             if (mods.isNotEmpty()) {
-                requiredMods = FBTxt.txt("mods_used_prefix")
+                requiredMods += " : " + FBTxt.txt("mods_used_prefix")
 
                 for (mod in mods) {
-
                     addedModDetails += "${mod.id}$sep${mod.name}$sep${mod.version}$sep"
-
-                    requiredMods += "(${mod.name}) $sep "
+                    requiredMods += "(${mod.name}) , "
                 }
-
                 requiredMods = requiredMods.dropLast(3)
-                addedModDetails = addedModDetails.dropLast(1)
             }
+            addedModDetails = addedModDetails.dropLast(1)
         }
 
         // Prepend mod metadata to data block

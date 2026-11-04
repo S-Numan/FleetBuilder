@@ -38,7 +38,7 @@ internal object DrawMessageOnTop {
         if (toDraw != null && currentMessage != null) {
             val screenWidth = Global.getSettings().screenWidth
             val x = (screenWidth - toDraw!!.width) / 2f
-            val y = Global.getSettings().screenHeight - (TOP_BUFFER + if (DrawOnTop.curState == GameState.CAMPAIGN) 10f else 0f)
+            val y = Global.getSettings().screenHeight - (TOP_BUFFER + if (DrawOnTop.curState == GameState.CAMPAIGN) 14f else 0f)
 
             val alpha = when {
                 fadingOut -> {

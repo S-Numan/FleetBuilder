@@ -259,6 +259,9 @@ object JSONVariant {
         data: DataVariant.ParsedVariantData,
         json: JSONObject
     ) {
+        if (!json.has("gameVersion"))
+            json.put("gameVersion", Global.getSettings().gameVersion)
+
         val addedMods = VariantUtils.getAllSourceModsFromVariant(data)
 
         if (addedMods.isNotEmpty()) {

@@ -1,5 +1,6 @@
 package fleetBuilder.serialization.person
 
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.characters.FullName
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
@@ -137,6 +138,8 @@ object JSONPerson {
 
     fun savePersonToJson(data: DataPerson.ParsedPersonData): JSONObject {
         val json = JSONObject()
+
+        json.put("gameVersion", Global.getSettings().gameVersion)
 
         if (data.aiCoreId.isNotEmpty())
             json.put("aicoreid", data.aiCoreId)
