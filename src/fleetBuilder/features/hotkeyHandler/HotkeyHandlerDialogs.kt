@@ -74,7 +74,7 @@ import org.magiclib.util.membermemory.MemberMemoryExt.getMemberMemory
 import org.magiclib.util.reflection.UIFinder
 import org.magiclib.util.reflection.boxed.BoxedFleetTab
 import org.magiclib.util.reflection.boxed.BoxedRefitTab
-import org.magiclib.util.taskScheduler.SystemTaskScheduler
+import org.magiclib.util.taskscheduler.SystemTaskScheduler
 import second_in_command.SCData
 import second_in_command.SCUtils
 import second_in_command.specs.SCOfficer

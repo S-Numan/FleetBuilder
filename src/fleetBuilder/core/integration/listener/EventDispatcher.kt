@@ -35,6 +35,10 @@ import fleetBuilder.util.listeners.MemberChangeEvents
 import fleetBuilder.util.listeners.MemberChangeTracker
 import fleetBuilder.util.listeners.OfficerChangeEvents
 import fleetBuilder.util.listeners.OfficerChangeTracker
+import org.lazywizard.console.Console
+import org.magiclib.util.MagicIncompatibleHullmods
+import org.magiclib.util.taskscheduler.CombatTaskScheduler
+import org.magiclib.util.taskscheduler.SectorTaskScheduler
 
 internal class EventDispatcher : EveryFrameScript {
     companion object {
@@ -132,6 +136,20 @@ internal class EventDispatcher : EveryFrameScript {
             FBSettings.onApplicationLoad()
 
             updateApplicationState()
+
+            if (FBSettings.enableDebug) {
+                Global.getSettings().allHullModSpecs.forEach { // TODO: remove later. This is testing to assure that wrapping the class does not break something else by accident
+                    MagicIncompatibleHullmods.addIncompatibility(it.id, "debug")
+                }
+
+                CombatTaskScheduler.performOnPlayerBattleStartPersistent {
+                    Console.showMessage("battle start persistent")
+                }
+
+                SectorTaskScheduler.performAfterSectorExit(true) {
+                    Console.showMessage("after sector exit")
+                }
+            }
         }
 
         fun updateApplicationState() {
@@ -175,6 +193,16 @@ internal class EventDispatcher : EveryFrameScript {
             sector.registerPlugin(FBCampaignPlugin())
 
             removeNullGoalVariants()
+
+            if (FBSettings.enableDebug) {
+                CombatTaskScheduler.performOnPlayerBattleStart(true) {
+                    Console.showMessage("battle start non-persistent")
+                }
+
+                SectorTaskScheduler.performAfterPlayerBattle(true) {
+                    Console.showMessage("after player battle")
+                }
+            }
         }
 
         fun beforeGameSave() {

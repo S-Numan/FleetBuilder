@@ -9,7 +9,7 @@ import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.CommonStrings
 import org.lazywizard.console.Console
 import org.lazywizard.console.overlay.v2.panels.ConsoleOverlayPanel
-import org.magiclib.util.taskScheduler.SystemTaskScheduler
+import org.magiclib.util.taskscheduler.SystemTaskScheduler
 
 class ForcePaste : BaseCommand {
     override fun runCommand(args: String, context: BaseCommand.CommandContext): BaseCommand.CommandResult {

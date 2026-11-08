@@ -17,7 +17,6 @@ import fleetBuilder.serialization.variant.DataVariant.buildVariantFull
 import fleetBuilder.serialization.variant.DataVariant.getVariantDataFromVariant
 import fleetBuilder.util.api.HullUtils
 import fleetBuilder.util.api.VariantUtils
-import fleetBuilder.util.api.kotlin.toBinary
 import fleetBuilder.util.lib.CompressionUtil
 import org.magiclib.util.MagicLookup
 import org.magiclib.util.api.getBuiltInDMods
@@ -295,7 +294,7 @@ object CompressedVariant {
         // Weapon groups (mode;autofire;slot+id,slot+id - ...)
         val weaponGroupStrings = data.weaponGroups.map { group ->
             val mode = group.mode.ordinal // 0 = LINKED, 1 = ALTERNATING
-            val autofire = group.autofire.toString().toBinary ?: 0
+            val autofire = if (group.autofire) 1 else 0
             val weapons = group.weapons.mapNotNull { (slotId, weaponId) ->
                 "$slotId$sep$weaponId"
             }

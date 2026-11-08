@@ -18,20 +18,6 @@ fun Double.roundToDecimals(decimals: Int): Double {
     return round(this * factor) / factor
 }
 
-val String.toBinary: Int?
-    get() =
-        if (this.equals("TRUE", ignoreCase = true) || this == "1") 1
-        else if (this.equals("FALSE", ignoreCase = true) || this == "0") 0
-        else null
-
-val String.toBoolean: Boolean?
-    get() =
-        when (this.toBinary) {
-            1 -> true
-            0 -> false
-            else -> null
-        }
-
 
 /*
 fun String.isJSON(): Boolean {

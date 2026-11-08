@@ -91,7 +91,7 @@ internal object RemoveFromSave {
             .filter { it.sourceMod != null && it.sourceMod.id in modIds }
             .map { it.id }
 
-        val variantIDs = MagicLookup.getAllVariantsRaw()
+        val variantIDs = MagicLookup.getAllVariantSpecs()
             .filter { detectVariantSourceMod(it)?.id in modIds }
             .map { it.hullVariantId }
 

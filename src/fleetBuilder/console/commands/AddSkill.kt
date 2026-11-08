@@ -1,12 +1,12 @@
 package fleetBuilder.console.commands
 
 import com.fs.starfarer.api.Global
-import fleetBuilder.util.api.kotlin.toBoolean
 import org.lazywizard.console.BaseCommand
 import org.lazywizard.console.BaseCommand.CommandContext
 import org.lazywizard.console.BaseCommandWithSuggestion
 import org.lazywizard.console.CommandUtils.findBestStringMatch
 import org.lazywizard.console.Console
+import org.magiclib.kotlin.toBooleanOrNull
 import org.magiclib.util.reflection.boxed.BoxedRefitTab
 
 
@@ -29,7 +29,7 @@ class AddSkill : BaseCommandWithSuggestion {
         }
 
         val eliteArg = argList.getOrNull(1)
-        val isElite = eliteArg != null && (eliteArg.toBoolean == true || "elite".startsWith(eliteArg.lowercase()))
+        val isElite = eliteArg != null && (eliteArg.toBooleanOrNull() == true || "elite".startsWith(eliteArg.lowercase()))
 
         val member = refitTab.getCurrentMember()
         if (member == null) {

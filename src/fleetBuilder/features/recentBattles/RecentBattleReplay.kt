@@ -18,9 +18,9 @@ import fleetBuilder.features.recentBattles.RecentBattleTracker.Companion.savedSt
 import fleetBuilder.otherMods.starficz.ReflectionUtils.set
 import fleetBuilder.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetBuilder.util.api.CampaignUtils
-import org.magiclib.util.taskScheduler.CombatTaskScheduler
-import org.magiclib.util.taskScheduler.SectorTaskScheduler
-import org.magiclib.util.taskScheduler.SystemTaskScheduler
+import org.magiclib.util.taskscheduler.CombatTaskScheduler
+import org.magiclib.util.taskscheduler.SectorTaskScheduler
+import org.magiclib.util.taskscheduler.SystemTaskScheduler
 
 // Initial code taken from Ship Mastery System by float
 
