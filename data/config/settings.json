@@ -1,14 +1,14 @@
 {
   "plugins": {
-    "CacheObfOnTitle": "fleetBuilder.core.integration.listener.CacheObfOnTitle",
-    "TitleAutofitAdder": "fleetBuilder.features.autofit.listener.TitleAutofitAdder",
-    "CodexAutofitButton": "fleetBuilder.features.autofit.listener.CodexAutofitButton",
-    "DrawOnTop": "fleetBuilder.core.integration.listener.DrawOnTop",
-    "DialogUtil": "fleetBuilder.ui.customPanel.DialogUtils",
-    "CombatClipboardHotkeyHandler": "fleetBuilder.features.hotkeyHandler.CombatClipboardHotkeyHandler"
+    "CacheObfOnTitle": "fleetkit.core.integration.listener.CacheObfOnTitle",
+    "TitleAutofitAdder": "fleetkit.features.autofit.listener.TitleAutofitAdder",
+    "CodexAutofitButton": "fleetkit.features.autofit.listener.CodexAutofitButton",
+    "DrawOnTop": "fleetkit.core.integration.listener.DrawOnTop",
+    "DialogUtil": "fleetkit.ui.customPanel.DialogUtils",
+    "CombatClipboardHotkeyHandler": "fleetkit.features.hotkeyHandler.CombatClipboardHotkeyHandler"
   },
   "graphics": {
-    "FleetBuilder": {
+    "SN_FleetToolkit": {
       "arrow_down": "graphics/ui/arrow_down.png",
       "arrow_right": "graphics/ui/arrow_right.png",
       "mission_indicator": "graphics/icons/mission_marker.png",

@@ -32,11 +32,11 @@ val modDependencies = listOf(
 val shouldAutomaticallyCreateMetadataFiles = true
 
 // REQUIRED CORE SETTINGS
-val modId = "SN_FleetBuilder" // Unique ID of your mod. Ensure it is unique from other mods.
+val modId = "SN_FleetToolkit" // Unique ID of your mod. Ensure it is unique from other mods.
 val gameVersion = "0.98a-RC8" // The version of Starsector that the mod is intended for.
-val modVersion = "1.40.1" // Your mod version
+val modVersion = "2.0.0" // Your mod version
 val isUtilityMod = true // Whether this mod can be safely removed from a save.
-var modPlugin = "fleetBuilder.core.integration.plugin.FleetBuilderPlugin" // Path to your main plugin class
+var modPlugin = "fleetkit.core.integration.plugin.ModPlugin" // Path to your main plugin class
 
 // DEPENDENCIES (mods required to run yours)
 val modInfoDependencyData = listOf(
@@ -46,7 +46,7 @@ val modInfoDependencyData = listOf(
 
 // USER-FACING INFO
 val modAuthor = "S-Numan"
-val displayName = "FleetBuilder" // This is the user facing name of your mod.
+val displayName = "Fleet Toolkit" // This is the user facing name of your mod.
 val modDescription = "Help with easily managing fleets by providing tools to copy, add, and save; fleets, officers, ships, variants, and more.\n\nThis mod can be safely added and removed at any time." // The description of your mod as it appears in the mod loader.
 
 
@@ -55,6 +55,7 @@ val directDownloadURL = "https://github.com/S-Numan/FleetBuilder/releases/latest
 val changelogURL = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/CHANGELOGS.md"
 val masterVersionFile = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/fleetbuilder.version"
 val modThreadId = "33414"
+val modVersionName = "fleetbuilder" // Name of the .version file. Defaults to the mod id.
 
 
 //Files and folders (relative to the project root) included in the packaged zip.
@@ -100,8 +101,6 @@ val javaVersion = 17
 //with real javadocs/comments when viewing things from your mod within their IDE. Does increase the jar size.
 //You should set this to "true" if you expect other people to add your mod as a dependency
 val isLibrary = true
-
-val modVersionName = "fleetbuilder" // Name of the .version file. Defaults to the mod id.
 
 val jarName = "${modNameNoSpaces}.jar"
 val jars = arrayOf("jars/$jarName")

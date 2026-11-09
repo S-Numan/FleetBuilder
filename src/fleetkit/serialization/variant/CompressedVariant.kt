@@ -1,0 +1,322 @@
+package fleetkit.serialization.variant
+
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.combat.ShipVariantAPI
+import com.fs.starfarer.api.loading.WeaponGroupType
+import fleetkit.core.util.DisplayMessage.showError
+import fleetkit.core.util.FTTxt
+import fleetkit.serialization.GameModInfo
+import fleetkit.serialization.MissingContent
+import fleetkit.serialization.SerializationUtils.fieldSep
+import fleetkit.serialization.SerializationUtils.joinSep
+import fleetkit.serialization.SerializationUtils.memKeyJoinSep
+import fleetkit.serialization.SerializationUtils.memKeySep
+import fleetkit.serialization.SerializationUtils.metaSep
+import fleetkit.serialization.SerializationUtils.sep
+import fleetkit.serialization.variant.DataVariant.buildVariantFull
+import fleetkit.serialization.variant.DataVariant.getVariantDataFromVariant
+import fleetkit.util.api.HullUtils
+import fleetkit.util.api.VariantUtils
+import fleetkit.util.lib.CompressionUtil
+import org.magiclib.util.MagicLookup
+import org.magiclib.util.api.getBuiltInDMods
+
+/** Note: this code is poorly made. If you intended to use this as library, it is suggested to use the JSON version instead */
+
+object CompressedVariant {
+    fun isCompressedVariant(comp: String): Boolean {
+        val metaIndexStart = comp.indexOf(metaSep)
+        if (metaIndexStart == -1) return false
+
+        val metaVersion = comp.getOrNull(metaIndexStart + 1)
+        return metaVersion?.equals('v', ignoreCase = true) == true
+    }
+
+    @JvmOverloads
+    fun getVariantFromCompString(
+        comp: String,
+        settings: VariantSettings = VariantSettings(),
+        missing: MissingContent = MissingContent(),
+    ): ShipVariantAPI {
+        val parsed = extractVariantDataFromCompString(comp, missing) ?: run {
+            DataVariant.ParsedVariantData("")
+        }
+
+        return buildVariantFull(parsed, settings, missing)
+    }
+
+    @JvmOverloads
+    fun extractVariantDataFromCompString(
+        comp: String,
+        missing: MissingContent = MissingContent()
+    ): DataVariant.ParsedVariantData? {
+        val metaIndexStart = comp.indexOf(metaSep)
+        val metaIndexEnd = comp.indexOf(metaSep, metaIndexStart + 1)
+
+        if (metaIndexStart == -1 || metaIndexEnd == -1) {
+            //showError("Invalid format: missing meta version section.")
+            return null
+        }
+
+        val metaVersionFull = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        if (!metaVersionFull.lowercase().startsWith('v'))
+            return null
+        val metaVersionNumber = metaVersionFull.substring(1).toInt()
+        val metaVersionCompressed = metaVersionFull.startsWith('v')
+
+        val fullData = if (metaVersionCompressed) {
+            val compressedData = comp.substring(metaIndexEnd + 1)
+            CompressionUtil.base64Inflate(compressedData)
+        } else {
+            comp.substring(metaIndexEnd + 1)
+        } ?: run {
+            showError("Invalid meta version: $metaVersionFull")
+            return null
+        }
+
+        if (fullData.isBlank()) {
+            showError("Error decompressing variant data", "Error decompressing variant data\n$comp")
+            return null
+        }
+
+        // From here, your original logic applies — parse fields
+        val firstFieldSep = fullData.indexOf(fieldSep)
+        if (firstFieldSep == -1) {
+            //showError("Invalid format: missing field separator.")
+            return null
+        }
+
+        val modInfoBulk = fullData.substring(0, firstFieldSep)
+
+        // Split by separator first
+        val parts = modInfoBulk.split(sep)
+
+        // Group every 3 parts together and join back with separator
+        val modInfos = parts.chunked(3).map { it.joinToString(sep) }
+
+        val gameMods: Set<GameModInfo> = modInfos
+            .mapNotNull { mod ->
+                val parts = mod.split(sep)
+                if (parts.size == 3) {
+                    val (id, name, ver) = parts
+                    GameModInfo(id, name, ver)
+                } else null // Skip malformed lines
+            }
+            .toSet()
+
+        missing.gameMods.addAll(gameMods)
+
+        val allData = fullData.substring(firstFieldSep + 1)
+
+        val segments = if (metaVersionNumber == 0)
+            allData.split(metaSep)
+        else
+            allData.split(memKeyJoinSep)
+
+        val rootSegment = segments[0]
+        val moduleSegments = segments.drop(1)
+
+        try {
+            return extractModuleFromCompString(rootSegment, moduleSegments, metaVersionNumber)
+        } catch (e: Exception) {
+            showError("Error parsing variant data", e)
+            return null
+        }
+    }
+
+
+    private fun extractModuleFromCompString(
+        data: String,
+        moduleSegments: List<String>,
+        metaVersionNumber: Int
+    ): DataVariant.ParsedVariantData {
+        val fields = data.split(fieldSep)
+
+        val hullId = fields[0]
+        val variantId = fields[1]
+        val displayName = fields[2]
+
+        //val variantId = "${hullId}_$displayName"
+
+        val fluxCap = fields[3].toInt()
+        val fluxVents = fields[4].toInt()
+
+        val weaponGroupString = fields[5]
+        val fittedWings = fields[6].takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
+
+        val hullMods = fields[7].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+        val sMods = fields[8].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+        val sModdedBuiltIns = fields[9].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+        val permaMods = fields[10].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+        DataVariant.normalizeHullModSets(hullMods, permaMods, sMods, sModdedBuiltIns)
+
+        var fieldNum = 11
+        val suppressedMods: MutableSet<String>
+        if (metaVersionNumber >= 2) {
+            suppressedMods = fields[fieldNum].takeIf { it.isNotBlank() }?.split(sep)?.toMutableSet() ?: mutableSetOf()
+            fieldNum++
+        } else { // Legacy behavior hack
+            val hull = MagicLookup.getHullSpec(HullUtils.getActualHullID(hullId))
+            suppressedMods = mutableSetOf()
+            if (hull != null) {
+                val allMods = hullMods + sMods + sModdedBuiltIns + permaMods
+                hull.getBuiltInDMods().forEach {
+                    if (it !in allMods)
+                        suppressedMods.add(it)
+                }
+            }
+        }
+
+        val tags = if (metaVersionNumber == 0)
+            fields.getOrNull(fieldNum)?.takeIf { it.isNotBlank() }?.split(sep) ?: emptyList()
+        else
+            fields.getOrNull(fieldNum)?.takeIf { it.isNotBlank() }?.split(memKeySep) ?: emptyList()
+
+        val weaponGroups = if (weaponGroupString.isNotBlank()) {
+            weaponGroupString.split(joinSep).map { group ->
+                val parts = group.split(sep)
+                val mode = parts[0].toInt()
+                val autofire = parts[1] == "1"
+
+                val weapons = parts
+                    .drop(2)
+                    .windowed(2, 2)
+                    .associate { (slot, weapon) -> slot to weapon }
+                DataVariant.ParsedWeaponGroup(autofire, if (mode == 0) WeaponGroupType.LINKED else WeaponGroupType.ALTERNATING, weapons)
+            }
+        } else {
+            emptyList()
+        }
+
+        val modules = moduleSegments
+            .mapNotNull { segment ->
+                val parts = segment.split(fieldSep, limit = 2)
+                if (parts.size == 2) {
+                    val (slot, moduleData) = parts
+                    slot to extractModuleFromCompString(moduleData, emptyList(), metaVersionNumber)
+                } else null
+            }
+            .toMap()
+
+
+        return DataVariant.ParsedVariantData(
+            variantId = variantId,
+            hullId = hullId,
+            displayName = displayName,
+            fluxCapacitors = fluxCap,
+            fluxVents = fluxVents,
+            tags = tags,
+            hullMods = hullMods,
+            permaMods = permaMods,
+            sMods = sMods,
+            sModdedBuiltIns = sModdedBuiltIns,
+            suppressedMods = suppressedMods,
+            wings = fittedWings,
+            weaponGroups = weaponGroups,
+            moduleVariants = modules,
+        )
+    }
+
+    @JvmOverloads
+    fun saveVariantToCompString(
+        variant: ShipVariantAPI,
+        settings: VariantSettings = VariantSettings(),
+        includePrepend: Boolean = true,
+        includeModInfo: Boolean = true,
+        compress: Boolean = true
+    ): String {
+        return saveVariantToCompString(getVariantDataFromVariant(variant, settings), includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
+    }
+
+    @JvmOverloads
+    fun saveVariantToCompString(
+        data: DataVariant.ParsedVariantData,
+        includePrepend: Boolean = true,
+        includeModInfo: Boolean = true,
+        compress: Boolean = true,
+    ): String {
+        val structureVersion =
+            if (compress) "v2"
+            else "V2"
+
+
+        val ver = "$metaSep$structureVersion$metaSep"//v for variant. To identify the type of compressed string without having to decompress it first. member would be m, fleet would be f, person would be p, etc.
+
+
+        var compressedVariant = ""
+        compressedVariant += saveModuleVariantToCompString(data)
+
+        data.moduleVariants.forEach { (moduleSlot, module) ->
+            val compressedModuleVariant = saveModuleVariantToCompString(module)
+
+            compressedVariant += "$memKeyJoinSep$moduleSlot$fieldSep$compressedModuleVariant"
+        }
+
+        var requiredMods = "" // For the user to see
+        var addedModDetails = "" // For the computer to see
+
+        if (includeModInfo) {
+            requiredMods += "(${Global.getSettings().gameVersion})"
+            addedModDetails += "SS${sep}Starsector$sep${Global.getSettings().gameVersion}$sep"
+
+            val addedMods = VariantUtils.getAllSourceModsFromVariant(data)
+
+            if (addedMods.isNotEmpty()) {
+                requiredMods += " : " + FTTxt.txt("mods_used_prefix")
+
+                for (mod in addedMods) {
+                    addedModDetails += "${mod.id}$sep${mod.name}$sep${mod.version}$sep"
+                    requiredMods += "(${mod.name}) , "
+                }
+                requiredMods = requiredMods.dropLast(3)
+            }
+            addedModDetails = addedModDetails.dropLast(1)
+        }
+
+        compressedVariant = "$addedModDetails$fieldSep$compressedVariant"
+
+        if (compress)
+            compressedVariant = CompressionUtil.base64Deflate(compressedVariant)
+
+        compressedVariant = "$ver$compressedVariant"//Indicate structure version for compatibility with future compressed format changes
+
+        if (includePrepend)
+            compressedVariant = "${data.displayName} ${MagicLookup.getHullSpec(data.hullId)?.hullName} : $requiredMods\n" + compressedVariant//Prepend for the user to see. Should be ignored by the computer
+
+        return compressedVariant
+    }
+
+    private fun saveModuleVariantToCompString(
+        data: DataVariant.ParsedVariantData
+    ): String {
+        val parts = mutableListOf<String>()
+
+        // Weapon groups (mode;autofire;slot+id,slot+id - ...)
+        val weaponGroupStrings = data.weaponGroups.map { group ->
+            val mode = group.mode.ordinal // 0 = LINKED, 1 = ALTERNATING
+            val autofire = if (group.autofire) 1 else 0
+            val weapons = group.weapons.mapNotNull { (slotId, weaponId) ->
+                "$slotId$sep$weaponId"
+            }
+            "$mode$sep$autofire$sep${weapons.joinToString(sep)}"
+        }
+        val weaponGroupString = weaponGroupStrings.joinToString(joinSep)
+
+        // Join everything
+        parts += data.hullId
+        parts += data.variantId
+        parts += data.displayName
+        parts += data.fluxCapacitors.toString()
+        parts += data.fluxVents.toString()
+        parts += weaponGroupString
+        parts += data.wings.joinToString(sep)
+        parts += data.hullMods.joinToString(sep)
+        parts += data.sMods.joinToString(sep)
+        parts += data.sModdedBuiltIns.joinToString(sep)
+        parts += data.permaMods.joinToString(sep)
+        parts += data.suppressedMods.joinToString(sep)
+        parts += data.tags.joinToString(memKeySep)
+
+        return parts.joinToString(fieldSep)
+    }
+}
