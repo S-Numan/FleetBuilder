@@ -2,7 +2,6 @@ package fleetkit.ui.customPanel.patterns
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.UIPanelAPI
-import fleetkit.otherMods.starficz.parent
 import fleetkit.ui.customPanel.core.ModalPanel
 
 class ContextMenuPanel : ModalPanel() {

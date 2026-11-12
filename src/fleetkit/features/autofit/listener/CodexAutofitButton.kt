@@ -94,7 +94,7 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
                 24f, 18f,
                 Font.ORBITRON_20
             )
-            openAutofitButton!!.width = Global.getSettings().computeStringWidth(buttonText, Fonts.ORBITRON_20AA) + 12f
+            openAutofitButton!!.setWidth(Global.getSettings().computeStringWidth(buttonText, Fonts.ORBITRON_20AA) + 12f)
 
             val belowTitleBarDeeperPanel = InternalReflectionMisc.getBelowTitleDeeperPanel(codex)
             val shipDisplay = belowTitleBarDeeperPanel?.findChildWithMethod("isSchematicMode") as? UIPanelAPI ?: return

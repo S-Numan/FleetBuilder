@@ -28,7 +28,7 @@ var UIComponentAPI.fader: Fader?
     set(fader) {
         invoke("setFader", fader)
     }
-
+/*
 var UIComponentAPI.opacity: Float
     get() = invoke("getOpacity") as Float
     set(alpha) {
@@ -40,6 +40,7 @@ var UIComponentAPI.parent: UIPanelAPI?
     set(parent) {
         invoke("setParent", parent)
     }
+*/
 
 fun UIComponentAPI.setMouseOverPad(pad1: Float, pad2: Float, pad3: Float, pad4: Float) {
     invoke("setMouseOverPad", pad1, pad2, pad3, pad4)
@@ -100,17 +101,13 @@ var UIComponentAPI.enabled: Boolean
         invoke("setEnabled", enabled)
     }
 
-var UIComponentAPI.width
-    get() = position.width
-    set(width) {
-        position.setSize(width, position.height)
-    }
+fun UIComponentAPI.setWidth(width: Float) {
+    position.setSize(width, position.height)
+}
 
-var UIComponentAPI.height
-    get() = position.height
-    set(height) {
-        position.setSize(position.width, height)
-    }
+fun UIComponentAPI.setHeight(height: Float) {
+    position.setSize(position.width, height)
+}
 
 fun UIComponentAPI.setSize(width: Float, height: Float) {
     position.setSize(width, height)
@@ -309,39 +306,17 @@ fun UIPanelAPI.allChildrenWithMethod(methodName: String): List<UIComponentAPI> {
     return children.filter { it.getMethodsMatching(name = methodName).isNotEmpty() }
 }
 
-internal fun UIPanelAPI.clearChildren() {
+/*internal fun UIPanelAPI.clearChildren() {
     invoke("clearChildren")
-}
+}*/
 
 class BoxedScrollPanel(val scrollPanel: ScrollPanelAPI) : BoxedUIElement(scrollPanel as UIComponentAPI),
     ScrollPanelAPI by scrollPanel {
-    var isLeftScrollbar
-        get() = scrollPanel.invoke("isLeftScrollbar") as Boolean
-        set(isLeftScrollbar) {
-            scrollPanel.invoke("setLeftScrollbar", isLeftScrollbar)
-        }
     var renderShadows
         get() = (!(scrollPanel.invoke("isDoNotRenderShadows") as Boolean))
         set(renderShadows) {
             scrollPanel.invoke("setDoNotRenderShadows", !renderShadows)
         }
-    var maxShadowHeight
-        get() = scrollPanel.invoke("getMaxShadowHeight") as Float
-        set(maxShadowHeight) {
-            scrollPanel.invoke("setMaxShadowHeight", maxShadowHeight)
-        }
-    var scrollWidgetColor
-        get() = scrollPanel.invoke("getScrollWidgetColor") as Color
-        set(scrollWidgetColor) {
-            scrollPanel.invoke("setScrollWidgetColor", scrollWidgetColor)
-        }
-    var scrollRailColor
-        get() = scrollPanel.invoke("getScrollRailColor") as Color
-        set(scrollRailColor) {
-            scrollPanel.invoke("setScrollRailColor", scrollRailColor)
-        }
-    val contentContainer
-        get() = scrollPanel.invoke("getContentContainer") as UIPanelAPI
 
     fun addToOverlay(uiComponent: UIComponentAPI) {
         scrollPanel.invoke("addToOverlay", uiComponent)
@@ -351,18 +326,17 @@ class BoxedScrollPanel(val scrollPanel: ScrollPanelAPI) : BoxedUIElement(scrollP
         scrollPanel.invoke("removeFromOverlay", uiComponent)
     }
 
-    fun setContentSize(width: Float, height: Float) {
-        scrollPanel.invoke("setContentSize", width, height)
-    }
+    //fun setContentSize(width: Float, height: Float) {
+    //    scrollPanel.invoke("setContentSize", width, height)
+    //}
 
-    fun setUseSimpleShadows(simpleShadows: Boolean) {
-        scrollPanel.invoke("setUseSimpleShadows", simpleShadows)
-    }
+    //fun setUseSimpleShadows(simpleShadows: Boolean) {
+    //   scrollPanel.invoke("setUseSimpleShadows", simpleShadows)
+    //}
 
 }
 
-class BoxedUILabel(val uiLabel: LabelAPI) : BoxedUIElement(uiLabel as UIComponentAPI),
-    UIComponentAPI by (uiLabel as UIComponentAPI), LabelAPI by uiLabel {
+class BoxedUILabel(val uiLabel: LabelAPI) : BoxedUIElement(uiLabel as UIComponentAPI), UIComponentAPI by uiLabel {
     override fun advance(amount: Float) {
         uiLabel.advance(amount)
     }

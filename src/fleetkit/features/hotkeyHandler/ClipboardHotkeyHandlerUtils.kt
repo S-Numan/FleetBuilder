@@ -17,9 +17,9 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.campaign.fleet.FleetMember
-import fleetkit.core.config.FTVariables
 import fleetkit.core.config.FTSettings
 import fleetkit.core.config.FTSettings.randomPastedCosmetics
+import fleetkit.core.config.FTVariables
 import fleetkit.core.integration.plugin.ModPlugin
 import fleetkit.core.util.DisplayMessage
 import fleetkit.core.util.DisplayMessage.showMessage
@@ -197,7 +197,7 @@ internal object ClipboardHotkeyHandlerUtils {
             }
         }
 
-        val key = if (!isShiftDown) {
+        val key = if (isShiftDown) {
             val json = saveFleetToJson(fleetToCopy, settings)
             ClipboardUtil.setClipboardText(json.toString(4))
             when {

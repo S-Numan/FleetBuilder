@@ -1,12 +1,10 @@
 package fleetkit.util.reflection
 
-import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignUIAPI
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import com.fs.starfarer.api.impl.codex.CodexDialogAPI
 import com.fs.starfarer.api.ui.LabelAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.econ.Submarket
@@ -30,7 +28,7 @@ internal object InternalReflectionMisc {
     fun isCodexOpen(): Boolean {
         if (Global.getSettings().isShowingCodex) return true
 
-        val gameState = Global.getCurrentState()
+        /*val gameState = Global.getCurrentState()
 
         // F2 while hovering over ship in the fleet screen. Clicking the question mark in the fleet screen. Does not include hovering over the question mark and pressing F2
         if (gameState == GameState.CAMPAIGN && Global.getSector()?.campaignUI?.getActualCurrentTab() == CoreUITabId.FLEET) {
@@ -43,7 +41,7 @@ internal object InternalReflectionMisc {
         if (gameState == GameState.TITLE) {
             if (UIFinder.getScreenPanel()?.getChildrenCopy()?.any { it is CodexDialogAPI } == true)
                 return true
-        }
+        }*/
         return false
     }
 
