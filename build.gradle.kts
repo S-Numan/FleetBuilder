@@ -51,11 +51,11 @@ val modDescription = "Help with easily managing fleets by providing tools to cop
 
 
 // OPTIONAL: VERSION CHECKER (leave blank if not using)
-val directDownloadURL = "https://github.com/S-Numan/FleetBuilder/releases/latest/download/FleetBuilder.zip"
-val changelogURL = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/CHANGELOGS.md"
-val masterVersionFile = "https://raw.githubusercontent.com/S-Numan/FleetBuilder/master/fleetbuilder.version"
+val directDownloadURL = "https://github.com/S-Numan/FleetToolkit/releases/latest/download/FleetToolkit.zip"
+val changelogURL = "https://raw.githubusercontent.com/S-Numan/FleetToolkit/master/CHANGELOGS.md"
+val masterVersionFile = "https://raw.githubusercontent.com/S-Numan/FleetToolkit/master/fleettoolkit.version"
 val modThreadId = "33414"
-val modVersionName = "fleetbuilder" // Name of the .version file. Defaults to the mod id.
+val modVersionName = "fleettoolkit" // Name of the .version file. Defaults to the mod id.
 
 
 //Files and folders (relative to the project root) included in the packaged zip.
