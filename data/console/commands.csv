@@ -1,5 +1,5 @@
 command,class,tags,syntax,help
-CopySave,fleetkit.console.commands.saveTransfer.CopySave,"cheat,campaign,fleettoolkit",copysave,"Put a space between each flag. The list of flags are:
+CopySave,fleetBuilder.console.commands.saveTransfer.CopySave,"cheat,campaign,fleetbuilder",copysave,"Put a space between each flag. The list of flags are:
 -no-rep
 -no-fleet
 -no-cargo
@@ -8,7 +8,7 @@ CopySave,fleetkit.console.commands.saveTransfer.CopySave,"cheat,campaign,fleetto
 -no-officers
 -no-player
 -no-credits"
-LoadSave,fleetkit.console.commands.saveTransfer.LoadSave,"cheat,campaign,fleettoolkit",loadsave FLAGS,"Put a space between each flag. The list of flags are:
+LoadSave,fleetBuilder.console.commands.saveTransfer.LoadSave,"cheat,campaign,fleetbuilder",loadsave FLAGS,"Put a space between each flag. The list of flags are:
 -no-rep
 -no-fleet
 -no-cargo
@@ -21,27 +21,27 @@ LoadSave,fleetkit.console.commands.saveTransfer.LoadSave,"cheat,campaign,fleetto
 ,,,,
 ,,,,
 ,,,,
-BuildFleet,fleetkit.console.commands.BuildFleet,"cheat,campaign,fleettoolkit",buildfleet,"Prepares the player fleet for full customization.
+BuildFleet,fleetBuilder.console.commands.BuildFleet,"cheat,campaign,fleetbuilder",buildfleet,"Prepares the player fleet for full customization.
 
 Removes all ships and officers.
 Unlocks all hullmods.
 Puts all weapons and wings in the Abandoned Terraforming Platform in the Corvus system.
 Teleports player fleet to the Abandoned Terraforming Platform in the Corvus system."
-CopyFleet,fleetkit.console.commands.CopyFleet,fleettoolkit,copyfleet <”player” or ”enemy”>,Arg ‘player’ or ‘enemy’ In combat or when looking at a mission to choose what side you want to copy
+CopyFleet,fleetBuilder.console.commands.CopyFleet,fleetbuilder,copyfleet <”player” or ”enemy”>,Arg ‘player’ or ‘enemy’ In combat or when looking at a mission to choose what side you want to copy
 ,,,,
-RemoveIdleOfficers,fleetkit.console.commands.RemoveIdleOfficers,"cheat,campaign,fleettoolkit",removeidleofficers,Removes all officers in your fleet which are not currently captaining any ship.
+RemoveIdleOfficers,fleetBuilder.console.commands.RemoveIdleOfficers,"cheat,campaign,fleetbuilder",removeidleofficers,Removes all officers in your fleet which are not currently captaining any ship.
 ,,,,
 ,,,,
-AddSkill,fleetkit.console.commands.AddSkill,"cheat,campaign,fleettoolkit",addskill <skill_ID> [optionalIsElite],"Adds the specified skill to the officer assigned to the ship you are viewing in the refit screen.
+AddSkill,fleetBuilder.console.commands.AddSkill,"cheat,campaign,fleetbuilder",addskill <skill_ID> [optionalIsElite],"Adds the specified skill to the officer assigned to the ship you are viewing in the refit screen.
 Set isElite to true to add the skill as an elite skill."
-RemoveSkill,fleetkit.console.commands.RemoveSkill,"cheat,campaign,fleettoolkit",removeskill <skill_ID>,Removes the specified skill from the officer assigned to the ship you are viewing in the refit screen.
+RemoveSkill,fleetBuilder.console.commands.RemoveSkill,"cheat,campaign,fleetbuilder",removeskill <skill_ID>,Removes the specified skill from the officer assigned to the ship you are viewing in the refit screen.
 ,,,,
 ,,,,
-#AddHullMod,fleetkit.console.commands.AddHullMod,"cheat,campaign,fleettoolkit",addhullmod <hullmod_ID> [optionalIsPerma] [OptionalIsSMod],"Adds the specified hullmod to the ship viewed in the refit screen.
+#AddHullMod,fleetBuilder.console.commands.AddHullMod,"cheat,campaign,fleetbuilder",addhullmod <hullmod_ID> [optionalIsPerma] [OptionalIsSMod],"Adds the specified hullmod to the ship viewed in the refit screen.
 Set isPerma and isSMod to true or false to add the hullmod as described.
 If not in the refit screen, adds the specified modspec to your fleet's cargo."
-SetPersonality,fleetkit.console.commands.SetOfficerPersonality,"cheat,campaign,fleettoolkit",setpersonality <personality>,Changes the personality of the officer captaining the ship viewed in the refit screen.
-Paste,fleetkit.console.commands.ForcePaste,"cheat,campaign,fleettoolkit",paste,"Functions the same as using CTRL + V, but assumes cheats are enabled."
+SetPersonality,fleetBuilder.console.commands.SetOfficerPersonality,"cheat,campaign,fleetbuilder",setpersonality <personality>,Changes the personality of the officer captaining the ship viewed in the refit screen.
+Paste,fleetBuilder.console.commands.ForcePaste,"cheat,campaign,fleetbuilder",paste,"Functions the same as using CTRL + V, but assumes cheats are enabled."
 ,,,,
-Cheats,fleetkit.console.commands.Cheats,"cheat,fleettoolkit",cheats,"Toggles cheats in this mod. Can also be achieved via LunaLib settings or by enabling devMode.
+Cheats,fleetBuilder.console.commands.Cheats,"cheat,fleetbuilder",cheats,"Toggles cheats in this mod. Can also be achieved via LunaLib settings or by enabling devMode.
 The effects of this command are forgotten on game restart."

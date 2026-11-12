@@ -1,0 +1,184 @@
+package fleetBuilder.core.config
+
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.ModSpecAPI
+import fleetBuilder.core.integration.plugin.FleetBuilderPlugin
+import fleetBuilder.core.config.FBSettings.cheatsEnabled
+import fleetBuilder.serialization.variant.VariantSettings
+import fleetBuilder.util.api.kotlin.containsString
+import lunalib.lunaSettings.LunaSettings
+import org.json.JSONArray
+import org.json.JSONObject
+import org.lwjgl.input.Keyboard
+
+object FBSettings {
+    fun onApplicationLoad() {
+        modSpec = Global.getSettings().modManager.enabledModsCopy.find { it.modPluginClassName == FleetBuilderPlugin::class.java.name }!!
+
+        if (Global.getSettings().modManager.isModEnabled("lunalib") && !LunaSettings.hasSettingsListenerOfClass(LunaSettingsListener::class.java))
+            LunaSettings.addSettingsListener(LunaSettingsListener())
+
+        isConsoleModEnabled = Global.getSettings().modManager.isModEnabled("lw_console")
+    }
+
+    fun setNeverSaveHullmods() {
+        val neverHullModsPath = "${FBConst.PRIMARY_DIR}HullModsToNeverSave"
+        val neverHullModsJson = try {
+            if (Global.getSettings().fileExistsInCommon(neverHullModsPath)) {
+                Global.getSettings().readJSONFromCommon(neverHullModsPath, false)
+            } else {
+                JSONObject()
+            }
+        } catch (_: Exception) {
+            JSONObject()
+        }
+
+        val hullModsToNeverSaveJSONArray = neverHullModsJson.optJSONArray("HullModsToNeverSave") ?: JSONArray()
+
+        listOf(
+            "rat_controller", "rat_artifact_controller", "SCVE_officerdetails_X", "sun_sl_notable",
+            "sun_sl_wellknown", "sun_sl_famous", "sun_sl_legendary", "sun_sl_enemy_reputation",
+        ).forEach { mod ->
+            if (!hullModsToNeverSaveJSONArray.containsString(mod)) {
+                hullModsToNeverSaveJSONArray.put(mod)
+            }
+        }
+
+        neverHullModsJson.put("HullModsToNeverSave", hullModsToNeverSaveJSONArray)
+
+        Global.getSettings().writeJSONToCommon(neverHullModsPath, neverHullModsJson, false)
+
+
+        hullModsToNeverSave = (0 until hullModsToNeverSaveJSONArray.length())
+            .asSequence()
+            .map { hullModsToNeverSaveJSONArray.getString(it) }
+            .toSet()
+    }
+
+    private var hullModsToNeverSave = setOf<String>()
+
+    fun getHullModsToNeverSave(): Set<String> = hullModsToNeverSave
+
+    fun getConfiguredAutofitSaveSettings(): VariantSettings {
+        return VariantSettings().apply {
+            applySMods = autofitApplySMods
+            includeDMods = autofitSaveDMods
+            includeHiddenMods = autofitSaveHiddenMods
+            excludeTagsWithID = FBConst.DEFAULT_EXCLUDE_TAGS_ON_VARIANT_COPY.toMutableSet()
+            includeVariantID = true
+        }
+    }
+
+    private lateinit var modSpec: ModSpecAPI
+    fun getModSpec(): ModSpecAPI = modSpec
+    fun getModName(): String = modSpec.name.trim()
+    fun getModID(): String = modSpec.id
+
+    var selectorsPerRow = 4
+
+    var showDebug = false
+    var enableDebug = false
+
+    var showHiddenModsInTooltip = false
+
+    var showCoreGoalVariants = true
+
+    var showCoreNonGoalVariants = false
+
+    var autofitSaveDMods = false
+
+    var autofitApplySMods = true
+
+    var autofitSaveHiddenMods = true
+
+    var autofitMenuEnabled = false
+
+    var codexAutofitButton = true
+
+    var replaceVanillaAutofitButton = true
+
+    var autofitMenuHotkey = Keyboard.KEY_V
+
+    var randomPastedCosmetics = true
+
+    var forceAutofit = false
+
+    var dontForceClearDMods = false
+    var dontForceClearSMods = false
+
+    var defaultPrefix = "DF"
+
+    var backupSave = true
+
+    var hideErrorMessages = false
+
+    var fleetClipboardHotkeyHandler = true
+
+    var devModeCodexButtonEnabled = true
+
+    var fleetScreenFilter = false
+
+    var isConsoleModEnabled = false
+
+    var storeOfficersInCargo = false
+
+    var cargoAutoManager = true
+
+    var modPickerFilter = false
+
+    var cargoScreenFilter = false
+
+    var reportCargoAutoManagerChanges = true
+
+    var removeRefitHullmod = true
+
+    var autoMothballRecoveredShips = false
+
+    var removeOldIntelUpdates = false
+    var removeIntelUpdatesAfterXDays = 120
+
+    var transponderOffInHyperspace = false
+
+    var displayDerelictRecoveryEarly = false
+
+    var autofitNoSModdedBuiltInWhenNotBuiltInMod = true
+
+    var reserveFirstFourAutofitSlots = true
+
+    var recentBattleTracker = false
+
+    var showTagsInTooltip = false
+
+    var fixShipSkinSourceMod = true
+
+    var cleanGameVariantsForRemovedElements = true
+
+    private var unassignPlayer = false
+    fun unassignPlayer(): Boolean = unassignPlayer || cheatsEnabled()
+    fun setUnassignPlayer(value: Boolean) {
+        unassignPlayer = value
+    }
+
+    private var cheatsEnabledInConsole = false
+    private var cheatsEnabledInSettings = false
+
+    /**
+     * Use [cheatsEnabled] instead if you don't know what you're doing.
+     */
+    fun cheatsEnabledInSettings(): Boolean = cheatsEnabledInSettings
+    internal fun setCheatsEnabledInSettings(value: Boolean) {
+        cheatsEnabledInSettings = value
+        if (cheatsEnabledInSettings)
+            cheatsEnabledInConsole = false
+    }
+
+    /**
+     * Use [cheatsEnabled] instead if you don't know what you're doing.
+     */
+    fun cheatsEnabledInConsole(): Boolean = cheatsEnabledInConsole
+    internal fun setCheatsEnabledInConsole(value: Boolean) {
+        cheatsEnabledInConsole = value
+    }
+
+    fun cheatsEnabled(): Boolean = cheatsEnabledInSettings || cheatsEnabledInConsole || Global.getSettings().isDevMode
+}

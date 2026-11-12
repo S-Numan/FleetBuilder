@@ -1,0 +1,144 @@
+package fleetBuilder.features.commanderShuttle
+
+import com.fs.starfarer.api.EveryFrameScript
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.*
+import com.fs.starfarer.api.campaign.econ.MarketAPI
+import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
+import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
+import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl
+import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl
+import fleetBuilder.core.config.FBConst
+import fleetBuilder.core.util.FBTxt
+import fleetBuilder.core.util.DisplayMessage
+import java.awt.Color
+
+internal class CommanderShuttleListener :
+    BaseCampaignEventListener(false),
+    EveryFrameScript,
+    CurrentLocationChangedListener {
+
+    override fun isDone(): Boolean {
+        return false
+    }
+
+    override fun runWhilePaused(): Boolean {
+        return true
+    }
+
+    var prevInteractionPlugin: InteractionDialogPlugin? = null
+
+    override fun advance(amount: Float) {
+        if (!Global.getSettings().isInCampaignState) return
+
+        val sector = Global.getSector()!!
+        val interactionDialog = sector.campaignUI.currentInteractionDialog
+        if (interactionDialog?.plugin != prevInteractionPlugin) {
+            prevInteractionPlugin = interactionDialog?.plugin
+            //Plugin change
+            val playerFleet = sector.playerFleet ?: return
+
+            if (interactionDialog == null || interactionDialog.plugin is RuleBasedInteractionDialogPluginImpl) { // No dialog?
+                makeCommanderShuttleGood(playerFleet)
+            } else { // Yes dialog?
+
+                makeCommanderShuttleNonCombat(playerFleet)
+
+                if (playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
+                    //No getting around jumping with only the command shuttle
+
+                    if (interactionDialog.plugin is JumpPointInteractionDialogPluginImpl
+                        || (interactionDialog.interactionTarget != null && interactionDialog.interactionTarget.customPlugin is GateEntityPlugin)
+                    ) {
+                        interactionDialog.dismiss()
+                        DisplayMessage.showMessage(FBTxt.txt("no_command_shuttle_jump_alone"), Color.YELLOW)
+                    }
+                    //val pods = Misc.addCargoPods(playerFleet.containingLocation, playerFleet.location)
+                    //pods.cargo.addFuel(playerFleet.cargo.fuel)
+                    //playerFleet.cargo.removeFuel(playerFleet.cargo.fuel)
+                    //playerFleet.fleetData.membersListCopy.first().stats.fuelUseMod.modifyFlat("test", 99999f)
+                }
+            }
+        }
+
+        if (interactionDialog != null) return
+
+        val playerFleet = sector.playerFleet ?: return
+
+        if (prevLocationSetter != null && playerFleet.fleetSizeCount == 1 && playerFleet.fleetData.membersListCopy.first().variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
+            playerFleet.containingLocation.removeEntity(playerFleet)
+            prevLocationSetter!!.addEntity(playerFleet)
+
+            sector.currentLocation = prevLocationSetter
+
+            playerFleet.setLocation(0f, 0f)
+            DisplayMessage.showMessage(FBTxt.txt("no_command_shuttle_jump_alone") + "...", Color.YELLOW)
+
+            prevLocationSetter = null
+        }
+
+        makeCommanderShuttleGood(playerFleet)
+    }
+
+    var prevLocationSetter: LocationAPI? = null
+
+    override fun reportCurrentLocationChanged(prev: LocationAPI?, curr: LocationAPI?) {
+        if (prev == null || curr == null)
+            return
+
+        if (CommanderShuttle.playerShuttleExists() && !prev.isHyperspace && curr.isHyperspace)
+            prevLocationSetter = prev
+    }
+
+    var marketOpened = false
+
+    override fun reportShownInteractionDialog(dialog: InteractionDialogAPI) {
+        val playerFleet = Global.getSector()!!.playerFleet ?: return
+
+        if (marketOpened) {
+            marketOpened = false
+            return
+        }
+
+        makeCommanderShuttleNonCombat(playerFleet)
+    }
+
+    private fun makeCommanderShuttleNonCombat(playerFleet: CampaignFleetAPI) {
+        for (member in playerFleet.fleetData.membersListCopy) {
+            if (member.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
+                member.repairTracker.isMothballed = true
+            }
+        }
+    }
+
+    private fun makeCommanderShuttleGood(playerFleet: CampaignFleetAPI) {
+        for (member in playerFleet.fleetData.membersListCopy) {
+            if (member.repairTracker.isMothballed && member.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
+                member.repairTracker.isMothballed = false
+                member.repairTracker.cr = member.repairTracker.maxCR
+                member.stats.fuelUseMod.flatBonus = 0f
+            }
+        }
+    }
+
+    override fun reportPlayerOpenedMarket(market: MarketAPI?) {
+        marketOpened = true
+    }
+
+    override fun reportPlayerMarketTransaction(transaction: PlayerMarketTransaction) {
+        val playerFleet = Global.getSector()!!.playerFleet ?: return
+
+        if (transaction.shipsSold.isNotEmpty()) {
+            val member = transaction.shipsSold.first().member
+            if (member.variant.hasHullMod(FBConst.COMMAND_SHUTTLE_ID)) {
+                transaction.submarket.cargo.mothballedShips.removeFleetMember(member)
+
+                if (transaction.creditValue > 0) {
+                    val message = FBTxt.txt("command_shuttle_transfer_message", transaction.creditValue.toInt())
+                    playerFleet.cargo.credits.subtract(transaction.creditValue)
+                    DisplayMessage.showMessage(message, Color.YELLOW)
+                }
+            }
+        }
+    }
+}
