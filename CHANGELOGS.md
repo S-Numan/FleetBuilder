@@ -1,6 +1,7 @@
 # 2.0.0
 - Renamed mod to Fleet Toolkit
-- Basic 0.98.5a compatability, not well tested yet. Expect issues.
+- Basic 0.98.5a compatibility, not well tested yet. Expect issues.
+- Copy over your '/saves/common/FleetBuilder' folder to the new version of Starsector to keep your autofits.
 - Large migration of code into MagicLib
 - Assorted changes.
 
