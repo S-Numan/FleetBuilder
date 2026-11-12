@@ -1,3 +1,9 @@
+# 2.0.0
+- Renamed mod to Fleet Toolkit
+- Basic 0.98.5a compatability, not well tested yet. Expect issues.
+- Large migration of code into MagicLib
+- Assorted changes.
+
 # 1.40.1
 ### Changes
 - Improved performance of Save Transfers to run roughly 4 times faster.

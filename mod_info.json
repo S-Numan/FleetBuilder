@@ -1,10 +1,10 @@
 {
     "id": "SN_FleetBuilder",
-    "name": " FleetBuilder",
+    "name": "FleetBuilder-Update&Remove Me",
     "author": "S-Numan",
     "utility": "true",
     "version": { "major":"1", "minor": "40", "patch": "1" },
-    "description": "Help with easily managing fleets by providing tools to copy, add, and save; fleets, officers, ships, variants, and more.\n\nThis mod can be safely added and removed at any time.",
+    "description": "Update and remove me. The new 0.98.5a mod is called Fleet Toolkit\nThis mod exists purely for the version checker to get the new mod.",
     "jars": [
         "jars/FleetBuilder.jar"
     ],
