@@ -1,8 +1,8 @@
 {
-    "directDownloadURL":"https://github.com/S-Numan/FleetToolkit/releases/latest/download/FleetToolkit.zip",
-    "changelogURL":"https://raw.githubusercontent.com/S-Numan/FleetToolkit/master/CHANGELOGS.md",
-    "masterVersionFile":"https://raw.githubusercontent.com/S-Numan/FleetToolkit/master/fleettoolkit.version",
-    "modName":" FleetBuilder",
+    "directDownloadURL":"https://github.com/S-Numan/FleetBuilderMigration/releases/latest/download/FleetBuilderMigration.zip",
+    "changelogURL":"https://raw.githubusercontent.com/S-Numan/FleetBuilderMigration/master/CHANGELOGS.md",
+    "masterVersionFile":"https://raw.githubusercontent.com/S-Numan/FleetBuilderMigration/master/fleetbuilder.version",
+    "modName":"FleetBuilderMigration",
     "modThreadId":33414,
     "modVersion":
     {
