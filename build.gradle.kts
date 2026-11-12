@@ -919,10 +919,10 @@ ${modInfoDependencyData.joinToString(",\n") { "       " + it.toJson() }}
 
         // Creates a file with the mod name to tell the Github Actions script the name of the mod.
         // Not needed if not using Github Actions (but doesn't hurt to keep).
-        with(File(projectDir, ".github/workflows/mod-folder-name.txt")) {
-            this.parentFile.mkdirs()
-            this.writeIfChanged(modNameNoSpaces)
-        }
+        //with(File(projectDir, ".github/workflows/mod-folder-name.txt")) {
+        //    this.parentFile.mkdirs()
+        //    this.writeIfChanged(modNameNoSpaces)
+        //}
 
     }
 }
