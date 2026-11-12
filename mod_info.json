@@ -3,7 +3,7 @@
     "name": "FleetBuilder-Update&Remove Me",
     "author": "S-Numan",
     "utility": "true",
-    "version": { "major":"1", "minor": "40", "patch": "1" },
+    "version": { "major":"1", "minor": "5", "patch": "0" },
     "description": "Update and remove me. The new 0.98.5a mod is called Fleet Toolkit\nThis mod exists purely for the version checker to get the new mod.",
     "jars": [
         "jars/FleetBuilder.jar"
