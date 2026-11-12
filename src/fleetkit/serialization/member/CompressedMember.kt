@@ -1,5 +1,6 @@
 package fleetkit.serialization.member
 
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import fleetkit.core.util.DisplayMessage.showError
 import fleetkit.core.util.FTTxt
@@ -225,20 +226,19 @@ object CompressedMember {
 
         if (includeModInfo && data.variantData != null) {
             val mods = getAllSourceModsFromMember(data)
+            requiredMods += "(${Global.getSettings().gameVersion})"
+            addedModDetails += "SS${sep}Starsector$sep${Global.getSettings().gameVersion}$sep"
 
             if (mods.isNotEmpty()) {
-                requiredMods = FTTxt.txt("mods_used_prefix")
+                requiredMods += " : " + FTTxt.txt("mods_used_prefix")
 
                 for (mod in mods) {
-                    addedModDetails +=
-                        "${mod.id}$sep${mod.name}$sep${mod.version}$sep"
-
-                    requiredMods += "(${mod.name}) $sep "
+                    addedModDetails += "${mod.id}$sep${mod.name}$sep${mod.version}$sep"
+                    requiredMods += "(${mod.name}) , "
                 }
-
                 requiredMods = requiredMods.dropLast(3)
-                addedModDetails = addedModDetails.dropLast(1)
             }
+            addedModDetails = addedModDetails.dropLast(1)
         }
 
         memberString = "$addedModDetails$fieldSep$memberString"
