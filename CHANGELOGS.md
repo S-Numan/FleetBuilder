@@ -1,8 +1,8 @@
 # 2.0.0
-- Renamed to Fleet Toolkit
+- Renamed mod to Fleet Toolkit
+- Basic 0.98.5a compatability, not well tested yet. Expect issues.
 - Large migration of code into MagicLib
 - Assorted changes.
-- Basic 0.98.5a compatability, not well tested yet. Expect issues.
 
 # 1.40.1
 ### Changes
