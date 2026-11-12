@@ -19,7 +19,6 @@ import fleetkit.features.hotkeyHandler.ClipboardHotkeyHandlerUtils
 import fleetkit.otherMods.starficz.*
 import fleetkit.serialization.member.DataMember
 import fleetkit.serialization.variant.DataVariant
-import fleetkit.util.reflection.InternalReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.magiclib.util.api.createHullVariant
 import org.magiclib.util.reflection.boxed.BoxedCodexDialog
@@ -40,7 +39,7 @@ internal class CampaignDevModeCodexButton : EveryFrameScript {
         val sector = Global.getSector()!!
         if (!sector.isPaused) return
         if (!FTSettings.cheatsEnabled()) return
-        if (!InternalReflectionMisc.isCodexOpen()) {
+        if (!Global.getSettings().isShowingCodex) {
             addToFleetButton = null
             return
         }

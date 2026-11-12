@@ -14,10 +14,10 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import fleetkit.core.util.DisplayMessage
 import fleetkit.otherMods.starficz.ReflectionUtils.getFieldsMatching
+import fleetkit.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetkit.otherMods.starficz.findChildWithMethod
 import fleetkit.otherMods.starficz.getChildrenCopy
 import fleetkit.ui.customPanel.DialogUtils
-import fleetkit.otherMods.starficz.ReflectionUtilsSafe.safeInvoke
 import fleetkit.util.reflection.InternalReflectionMisc
 import org.magiclib.util.api.getActualCurrentTab
 import org.magiclib.util.reflection.UIFinder
@@ -41,7 +41,7 @@ internal class CargoAutoManagerOpener : CampaignInputListener {
     private fun handleCargoMouseEvents(event: InputEventAPI, sector: SectorAPI) {
         // This try-catch may be unnecessary, but as this is a non-vital feature typically enabled by default, keep it to avoid possible future troubles.
         try {
-            if (sector.currentlyOpenMarket == null || InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+            if (sector.currentlyOpenMarket == null || Global.getSettings().isShowingCodex || DialogUtils.isModalPanelOpen()) return
 
             val cargoPanel = InternalReflectionMisc.getCargoPanel() ?: return
 

@@ -227,7 +227,7 @@ internal object ClipboardHotkeyHandlerUtils {
     //
 
     fun handleSaveTransfer(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+        if (Global.getSettings().isShowingCodex || DialogUtils.isModalPanelOpen()) return
 
         if (ui.getActualCurrentTab() == null &&
             ui.currentInteractionDialog == null
@@ -250,7 +250,7 @@ internal object ClipboardHotkeyHandlerUtils {
     }
 
     fun handleDevModeHotkey(event: InputEventAPI) {
-        if (InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+        if (Global.getSettings().isShowingCodex || DialogUtils.isModalPanelOpen()) return
 
         event.consume()
         createDevModeDialog()

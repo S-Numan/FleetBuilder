@@ -8,12 +8,11 @@ import fleetkit.core.config.FTSettings
 import fleetkit.features.hotkeyHandler.HotkeyHandlerDialogs.pasteFleetDialog
 import fleetkit.features.recentBattles.fleetDirectory.RBFleetDirectory
 import fleetkit.features.recentBattles.fleetDirectory.RBFleetDirectoryService
-import fleetkit.otherMods.starficz.*
+import fleetkit.otherMods.starficz.onClick
 import fleetkit.ui.customPanel.DialogUtils
 import fleetkit.ui.customPanel.core.ModalPanel
 import fleetkit.ui.customPanel.patterns.DialogPanel
 import fleetkit.util.api.kotlin.isIdle
-import fleetkit.util.reflection.InternalReflectionMisc
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -26,7 +25,7 @@ import java.util.*
 
 object RecentBattleDialog {
     fun recentBattleDialog(event: InputEventAPI, ui: CampaignUIAPI) {
-        if (!FTSettings.recentBattleTracker || !ui.isIdle() || InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen())
+        if (!FTSettings.recentBattleTracker || !ui.isIdle() || Global.getSettings().isShowingCodex || DialogUtils.isModalPanelOpen())
             return
         val fleetDirectory = RBFleetDirectoryService.getDirectory() ?: return
         showDialog(fleetDirectory)

@@ -21,7 +21,6 @@ import fleetkit.serialization.member.DataMember
 import fleetkit.serialization.reportMissingContentIfAny
 import fleetkit.serialization.variant.DataVariant
 import fleetkit.ui.customPanel.DialogUtils
-import fleetkit.util.reflection.InternalReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector2f
@@ -57,7 +56,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                             DisplayMessage.showError(FTTxt.txt("mod_hotkey_failed", ModPlugin.getModName()), e)
                         }
                     } else if (event.eventValue == Keyboard.KEY_V || event.eventValue == Keyboard.KEY_D) {
-                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isModalPanelOpen() && !InternalReflectionMisc.isCodexOpen()) {
+                        if (event.isShiftDown && event.eventValue == Keyboard.KEY_D && !DialogUtils.isModalPanelOpen() && !Global.getSettings().isShowingCodex) {
                             HotkeyHandlerDialogs.createDevModeDialog()
                             event.consume(); continue
                         }
@@ -66,7 +65,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
                             pasteShipIntoCombat(engine, event)
                             event.consume(); continue
                         } else if (event.eventValue == Keyboard.KEY_V) {
-                            if (Global.getCurrentState() != GameState.COMBAT && !InternalReflectionMisc.isCodexOpen() && !DialogUtils.isModalPanelOpen()) {
+                            if (Global.getCurrentState() != GameState.COMBAT && !Global.getSettings().isShowingCodex && !DialogUtils.isModalPanelOpen()) {
                                 if (ClipboardHotkeyHandlerUtils.handleRefitPaste()) {
                                     event.consume(); continue
                                 }
@@ -156,7 +155,7 @@ internal class CombatClipboardHotkeyHandler : BaseEveryFrameCombatPlugin() {
         engine: CombatEngineAPI,
         event: InputEventAPI
     ) {
-        if (InternalReflectionMisc.isCodexOpen() || engine.combatUI.isShowingCommandUI)
+        if (Global.getSettings().isShowingCodex || engine.combatUI.isShowingCommandUI)
             return
 
         var element: Any? = null

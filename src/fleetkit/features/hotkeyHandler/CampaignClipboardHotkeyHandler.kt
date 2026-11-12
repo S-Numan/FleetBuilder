@@ -25,7 +25,6 @@ import fleetkit.serialization.MissingContent
 import fleetkit.serialization.fleet.DataFleet
 import fleetkit.ui.customPanel.DialogUtils
 import fleetkit.util.api.kotlin.isIdle
-import fleetkit.util.reflection.InternalReflectionMisc
 import org.lwjgl.input.Keyboard
 import org.magiclib.util.api.getActualCurrentTab
 import org.magiclib.util.reflection.UIFinder
@@ -74,7 +73,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
         event: InputEventAPI,
         ui: CampaignUIAPI
     ) {
-        if (InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+        if (Global.getSettings().isShowingCodex || DialogUtils.isModalPanelOpen()) return
 
         val tab = ui.getActualCurrentTab() ?: return
         val isCtrlLmb = event.isCtrlDown && event.isLMBDownEvent
@@ -120,7 +119,7 @@ internal class CampaignClipboardHotkeyHandler : CampaignInputListener {
             ui: CampaignUIAPI,
             event: InputEventAPI?,
         ) {
-            if (InternalReflectionMisc.isCodexOpen() || DialogUtils.isModalPanelOpen()) return
+            if (Global.getSettings().isShowingCodex || DialogUtils.isModalPanelOpen()) return
 
             val currentTab = ui.getActualCurrentTab()
 

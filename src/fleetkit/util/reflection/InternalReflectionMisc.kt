@@ -24,27 +24,6 @@ import org.magiclib.util.reflection.boxed.BoxedFleetTab
 
 internal object InternalReflectionMisc {
 
-    @JvmStatic
-    fun isCodexOpen(): Boolean {
-        if (Global.getSettings().isShowingCodex) return true
-
-        /*val gameState = Global.getCurrentState()
-
-        // F2 while hovering over ship in the fleet screen. Clicking the question mark in the fleet screen. Does not include hovering over the question mark and pressing F2
-        if (gameState == GameState.CAMPAIGN && Global.getSector()?.campaignUI?.getActualCurrentTab() == CoreUITabId.FLEET) {
-            val coreUI = UIFinder.getCoreUI() as? UIPanelAPI ?: return false
-            if (coreUI.getChildrenCopy().any { it is CodexDialogAPI })
-                return true
-        }
-
-        // Check for the codex that opens when clicking a ship in the title-screen missions
-        if (gameState == GameState.TITLE) {
-            if (UIFinder.getScreenPanel()?.getChildrenCopy()?.any { it is CodexDialogAPI } == true)
-                return true
-        }*/
-        return false
-    }
-
     @JvmOverloads
     @JvmStatic
     fun getCargoPanel(cargoTab: UIPanelAPI? = UIFinder.getCargoTab()): UIPanelAPI? {

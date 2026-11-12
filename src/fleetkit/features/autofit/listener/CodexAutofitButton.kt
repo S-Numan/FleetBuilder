@@ -43,7 +43,7 @@ internal class CodexAutofitButton : EveryFrameScript, BaseEveryFrameCombatPlugin
     }
 
     fun onAdvance() {
-        if (!InternalReflectionMisc.isCodexOpen()) {
+        if (!Global.getSettings().isShowingCodex) {
             Companion.param = null
             openAutofitButton = null
             autofitPanel = null
