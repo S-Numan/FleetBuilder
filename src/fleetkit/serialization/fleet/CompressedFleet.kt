@@ -1,0 +1,410 @@
+package fleetkit.serialization.fleet
+
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CampaignFleetAPI
+import com.fs.starfarer.api.campaign.FleetDataAPI
+import fleetkit.core.util.DisplayMessage.showError
+import fleetkit.core.util.FTTxt
+import fleetkit.serialization.GameModInfo
+import fleetkit.serialization.MissingContent
+import fleetkit.serialization.SerializationUtils.fieldSep
+import fleetkit.serialization.SerializationUtils.fleetSep1
+import fleetkit.serialization.SerializationUtils.fleetSep2
+import fleetkit.serialization.SerializationUtils.memKeyJoinSep
+import fleetkit.serialization.SerializationUtils.memKeySep
+import fleetkit.serialization.SerializationUtils.metaSep
+import fleetkit.serialization.SerializationUtils.sep
+import fleetkit.serialization.fleet.DataFleet.createCampaignFleetFromData
+import fleetkit.serialization.fleet.DataFleet.getFleetDataFromFleet
+import fleetkit.serialization.fleet.mods.secondInCommand.CompressedSecondInCommand
+import fleetkit.serialization.fleet.mods.secondInCommand.DataSecondInCommand
+import fleetkit.serialization.member.CompressedMember
+import fleetkit.serialization.member.DataMember
+import fleetkit.serialization.person.CompressedPerson
+import fleetkit.serialization.person.DataPerson
+import fleetkit.util.api.FleetUtils.getAllSourceModsFromFleet
+import fleetkit.util.lib.CompressionUtil
+import fleetkit.util.lib.PrefixedCodec
+import java.util.*
+
+/** Note: this code is poorly made. If you intended to use this as library, it is suggested to use the JSON version instead */
+
+object CompressedFleet {
+    fun isCompressedFleet(comp: String): Boolean {
+        val metaIndexStart = comp.indexOf(metaSep)
+        if (metaIndexStart == -1) return false
+
+        val metaVersion = comp.getOrNull(metaIndexStart + 1)
+        return metaVersion?.equals('f', ignoreCase = true) == true
+    }
+
+    @JvmOverloads
+    fun getFleetFromCompString(
+        comp: String,
+        aiMode: Boolean,
+        settings: FleetSettings = FleetSettings(),
+        missing: MissingContent = MissingContent(),
+        random: Random = Random(),
+    ): CampaignFleetAPI {
+        val parsed = extractFleetDataFromCompString(comp, missing) ?: run {
+            DataFleet.ParsedFleetData()
+        }
+
+        return createCampaignFleetFromData(parsed, aiMode = aiMode, settings, missing, random)
+    }
+
+    @JvmOverloads
+    fun extractFleetDataFromCompString(
+        comp: String,
+        missing: MissingContent = MissingContent()
+    ): DataFleet.ParsedFleetData? {
+
+        val metaIndexStart = comp.indexOf(metaSep)
+        val metaIndexEnd = comp.indexOf(metaSep, metaIndexStart + 1)
+
+        if (metaIndexStart == -1 || metaIndexEnd == -1)
+            return null
+
+        val metaVersionFull = comp.substring(metaIndexStart + 1, metaIndexEnd)
+        if (!metaVersionFull.lowercase().startsWith('f'))
+            return null
+        val metaVersionNumber = metaVersionFull.substring(1).toInt()
+        val metaVersionCompressed = metaVersionFull.startsWith('f')
+
+        val fullData = if (metaVersionCompressed) {
+            val compressedData = comp.substring(metaIndexEnd + 1)
+            CompressionUtil.base64Inflate(compressedData)
+        } else {
+            comp.substring(metaIndexEnd + 1)
+        } ?: return null
+
+        if (fullData.isBlank())
+            return null
+
+        try {
+
+            val blocks = fullData.split(fleetSep2)
+
+            if (blocks.size < 5)
+                return null
+
+            /* -------- MOD INFO -------- */
+
+            val modInfoBulk = blocks[0]
+
+            val parts = modInfoBulk.split(sep)
+
+            val modInfos = parts.chunked(3).map { it.joinToString(sep) }
+
+            val gameMods: Set<GameModInfo> =
+                modInfos.mapNotNull { mod ->
+                    val p = mod.split(sep)
+
+                    if (p.size == 3) {
+                        val (id, name, ver) = p
+                        GameModInfo(id, name, ver)
+                    } else null
+                }.toSet()
+
+            missing.gameMods.addAll(gameMods)
+
+            /* -------- FLEET META -------- */
+
+            val metaParts = blocks[1].split(fieldSep)
+
+            val fleetName =
+                metaParts.getOrNull(0)?.ifBlank { null }
+
+            val aggression =
+                metaParts.getOrNull(1)?.toIntOrNull() ?: -1
+
+            val factionID =
+                metaParts.getOrNull(2)?.ifBlank { null }
+
+            /* -------- MEMBERS -------- */
+
+            val members = mutableListOf<DataMember.ParsedMemberData>()
+
+            val membersBlock = blocks[2]
+
+            if (membersBlock.isNotBlank()) {
+
+                membersBlock.split(fleetSep1)
+                    .filter { it.isNotBlank() }
+                    .forEach {
+
+                        val member =
+                            CompressedMember.extractMemberDataFromCompString(
+                                it,
+                                missing
+                            )
+
+                        if (member != null)
+                            members += member
+                    }
+            }
+
+            /* -------- COMMANDER -------- */
+
+            val commander =
+                blocks[3].takeIf { it.isNotBlank() }?.let {
+                    CompressedPerson.extractPersonDataFromCompString(
+                        it,
+                        missing
+                    )
+                }
+
+            /* -------- IDLE OFFICERS -------- */
+
+            val idleOfficers = mutableListOf<DataPerson.ParsedPersonData>()
+
+            val officersBlock = blocks[4]
+
+            if (officersBlock.isNotBlank()) {
+                officersBlock.split(fleetSep1)
+                    .filter { it.isNotBlank() }
+                    .forEach {
+
+                        val officer =
+                            CompressedPerson.extractPersonDataFromCompString(
+                                it,
+                                missing
+                            )
+
+                        if (officer != null)
+                            idleOfficers += officer
+                    }
+            }
+            val sicData: DataSecondInCommand.SecondInCommandData?
+            val memKeys: Map<String, Any?>?
+
+            if (metaVersionNumber == 0) {
+                sicData =
+                    blocks.getOrNull(5)
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let {
+                            CompressedSecondInCommand.extractSecondInCommandFromCompString(
+                                it,
+                                missing
+                            )
+                        }
+                memKeys = null
+            } else {
+                memKeys =
+                    blocks.getOrNull(5)
+                        ?.takeIf { it.isNotBlank() }
+                        ?.split(memKeySep)
+                        ?.mapNotNull {
+                            val p = it.split(memKeyJoinSep, limit = 2)
+                            if (p.size == 2) {
+                                val key = "$" + p[0]
+                                val raw = p[1]
+
+                                val parsedValue = PrefixedCodec.decodeAny(raw)
+                                if (!parsedValue.success) return@mapNotNull null
+
+                                key to parsedValue.value
+                            } else null
+                        }
+                        ?.toMap()
+                        ?: emptyMap()
+
+                sicData =
+                    blocks.getOrNull(6)
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let {
+                            CompressedSecondInCommand.extractSecondInCommandFromCompString(
+                                it,
+                                missing
+                            )
+                        }
+            }
+
+            return DataFleet.ParsedFleetData(
+                fleetName = fleetName,
+                aggression = aggression,
+                factionID = factionID,
+                commanderIfNoFlagship = commander,
+                members = members,
+                idleOfficers = idleOfficers,
+                memKeys = memKeys ?: emptyMap(),
+                secondInCommandData = sicData,
+            )
+
+        } catch (e: Exception) {
+            showError("Error parsing fleet data", e)
+            return null
+        }
+    }
+
+    @JvmOverloads
+    fun saveFleetToCompString(
+        fleet: CampaignFleetAPI,
+        settings: FleetSettings = FleetSettings(),
+        includePrepend: Boolean = true,
+        includeModInfo: Boolean = true,
+        compress: Boolean = true
+    ): String = saveFleetToCompString(fleet.fleetData, settings = settings, includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
+
+    @JvmOverloads
+    fun saveFleetToCompString(
+        fleet: FleetDataAPI,
+        settings: FleetSettings = FleetSettings(),
+        includePrepend: Boolean = true,
+        includeModInfo: Boolean = true,
+        compress: Boolean = true
+    ): String {
+        return saveFleetToCompString(getFleetDataFromFleet(fleet, settings), fleet, includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
+    }
+
+    fun saveFleetToCompString(
+        data: DataFleet.ParsedFleetData,
+        includePrepend: Boolean = true,
+        includeModInfo: Boolean = true,
+        compress: Boolean = true
+    ): String {
+        return saveFleetToCompString(data, null, includePrepend = includePrepend, includeModInfo = includeModInfo, compress = compress)
+    }
+
+    private fun saveFleetToCompString(
+        data: DataFleet.ParsedFleetData,
+        fleetData: FleetDataAPI?,
+        includePrepend: Boolean = true,
+        includeModInfo: Boolean = true,
+        compress: Boolean = true
+    ): String {
+
+        val structureVersion =
+            if (compress) "f1"
+            else "F1"
+
+        val ver = "$metaSep$structureVersion$metaSep"
+
+        /* -------- FLEET META -------- */
+
+        val fleetMeta = listOf(
+            data.fleetName ?: "",
+            data.aggression.toString(),
+            data.factionID ?: ""
+        ).joinToString(fieldSep)
+
+        /* -------- MEMBERS -------- */
+
+        val membersBlock =
+            data.members.joinToString(fleetSep1) { member ->
+                CompressedMember.saveMemberToCompString(
+                    member,
+                    includePrepend = false,
+                    includeModInfo = false,
+                    compress = false
+                )
+            }
+
+        /* -------- COMMANDER -------- */
+
+        val commanderString =
+            data.commanderIfNoFlagship?.let {
+                CompressedPerson.savePersonToCompString(
+                    it,
+                    includePrepend = false,
+                    includeModInfo = false,
+                    compress = false
+                )
+            } ?: ""
+
+        /* -------- IDLE OFFICERS -------- */
+
+        val officersBlock =
+            data.idleOfficers.joinToString(fleetSep1) {
+                CompressedPerson.savePersonToCompString(
+                    it,
+                    includePrepend = false,
+                    includeModInfo = false,
+                    compress = false
+                )
+            }
+
+        /* -------- SECOND IN COMMAND -------- */
+
+        val sicString =
+            data.secondInCommandData?.let {
+                CompressedSecondInCommand.saveSecondInCommandToCompString(
+                    it,
+                    includePrepend = false,
+                    compress = false
+                )
+            } ?: ""
+
+        /* -------- MEMORY KEYS -------- */
+
+        val memKeyString = data.memKeys.entries.mapNotNull { entry ->
+            val key = entry.key
+            val value = entry.value
+            val formattedValue = PrefixedCodec.encode(value) ?: return@mapNotNull null
+            "${key.removePrefix("$")}$memKeyJoinSep$formattedValue"
+        }.joinToString(memKeySep)
+
+        /* -------- BUILD BLOCKS -------- */
+
+        var fleetString = listOf(
+            fleetMeta,
+            membersBlock,
+            commanderString,
+            officersBlock,
+            memKeyString,
+            sicString
+        ).joinToString(fleetSep2)
+
+        /* -------- MOD INFO -------- */
+
+        var requiredMods = "" // For the user to see
+        var addedModDetails = "" //For the computer to see
+
+        if (includeModInfo) {
+            val requiredModsBuilder = StringBuilder("(${Global.getSettings().gameVersion})")
+            val addedModDetailsBuilder = StringBuilder("SS${sep}Starsector$sep${Global.getSettings().gameVersion}$sep")
+
+            val mods = getAllSourceModsFromFleet(data)
+
+            if (mods.isNotEmpty()) {
+                requiredModsBuilder.append(" : ").append(FTTxt.txt("mods_used_prefix"))
+
+                for (mod in mods) {
+                    addedModDetailsBuilder
+                        .append(mod.id).append(sep)
+                        .append(mod.name).append(sep)
+                        .append(mod.version).append(sep)
+
+                    requiredModsBuilder.append("(").append(mod.name).append(") , ")
+                }
+
+                requiredMods = requiredModsBuilder.dropLast(3).toString()
+            } else requiredMods = requiredModsBuilder.toString()
+            addedModDetails = addedModDetailsBuilder.dropLast(1).toString()
+        }
+
+        fleetString = "$addedModDetails$fleetSep2$fleetString"
+
+        /* -------- COMPRESSION -------- */
+
+        if (compress)
+            fleetString = CompressionUtil.base64Deflate(fleetString)
+
+        fleetString = "$ver$fleetString"
+
+        /* -------- READABLE PREFIX -------- */
+
+        if (includePrepend) {
+            val resolvedFleetData = fleetData ?: DataFleet.createCampaignFleetFromData(data, false).fleetData
+
+            val dp = resolvedFleetData.membersListCopy.sumOf { it.deploymentPointsCost.toDouble() }
+
+            val fleetName = data.fleetName ?: "Fleet"
+            val readable = FTTxt.txt("fleet_summary", fleetName, dp.toInt(), data.members.size, requiredMods)
+
+            fleetString = "$readable\n$fleetString"
+        }
+
+        return fleetString
+    }
+}
