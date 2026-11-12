@@ -33,7 +33,7 @@ val shouldAutomaticallyCreateMetadataFiles = true
 
 // REQUIRED CORE SETTINGS
 val modId = "SN_FleetToolkit" // Unique ID of your mod. Ensure it is unique from other mods.
-val gameVersion = "0.98a-RC8" // The version of Starsector that the mod is intended for.
+val gameVersion = "0.98.5a-RC4" // The version of Starsector that the mod is intended for.
 val modVersion = "2.0.0" // Your mod version
 val isUtilityMod = true // Whether this mod can be safely removed from a save.
 var modPlugin = "fleetkit.core.integration.plugin.ModPlugin" // Path to your main plugin class
